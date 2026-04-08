@@ -1,0 +1,31 @@
+relative_path,file_name,size_bytes,storage_group,dataset_family,api_or_source_url,status
+DS_BPE_2024_CSV_FR.zip,DS_BPE_2024_CSV_FR.zip,13413554,insee_main,accessibility_services,https://api.insee.fr/melodi/data/DS_BPE_2024,available_validated
+DS_BPE_EVOLUTION_2024_CSV_FR.zip,DS_BPE_EVOLUTION_2024_CSV_FR.zip,6616461,insee_main,accessibility_services,https://api.insee.fr/melodi/data/DS_BPE_EVOLUTION_2024,available_validated
+DS_BTS_SAL_EQTP_SEX_AGE_2023_CSV_FR.zip,DS_BTS_SAL_EQTP_SEX_AGE_2023_CSV_FR.zip,5216982,insee_main,wages_private_sector,https://api.insee.fr/melodi/data/DS_BTS_SAL_EQTP_SEX_AGE_2023,available_validated
+DS_BTS_SAL_EQTP_SEX_PCS_2023_CSV_FR.zip,DS_BTS_SAL_EQTP_SEX_PCS_2023_CSV_FR.zip,4395755,insee_main,wages_private_sector,https://api.insee.fr/melodi/data/DS_BTS_SAL_EQTP_SEX_PCS_2023,available_validated
+DS_FILOSOFI_CC_2021_CSV_FR.zip,DS_FILOSOFI_CC_2021_CSV_FR.zip,5064436,insee_main,income_poverty,https://api.insee.fr/melodi/data/DS_FILOSOFI_CC_2021,available_validated
+DS_FLORES_A17_2024_CSV_FR.zip,DS_FLORES_A17_2024_CSV_FR.zip,64309589,insee_main,employment_establishments,https://api.insee.fr/melodi/data/DS_FLORES_A17_2024,available_validated
+DS_FLORES_ECONOMIC_SPHERE_2024_CSV_FR.zip,DS_FLORES_ECONOMIC_SPHERE_2024_CSV_FR.zip,4431431,insee_main,employment_establishments,https://api.insee.fr/melodi/data/DS_FLORES_ECONOMIC_SPHERE_2024,available_validated
+DS_RP_DIPLOMES_PRINC_2022_CSV_FR.zip,DS_RP_DIPLOMES_PRINC_2022_CSV_FR.zip,25888546,insee_main,population_census,https://api.insee.fr/melodi/data/DS_RP_DIPLOMES_PRINC_2022,available_validated
+DS_RP_EMPLOI_LR_COMP_2022_CSV_FR.zip,DS_RP_EMPLOI_LR_COMP_2022_CSV_FR.zip,18437278,insee_main,population_census,https://api.insee.fr/melodi/data/DS_RP_EMPLOI_LR_COMP_2022,available_validated
+DS_RP_EMPLOI_LT_COMP_2022_CSV_FR.zip,DS_RP_EMPLOI_LT_COMP_2022_CSV_FR.zip,50066379,insee_main,population_census,https://api.insee.fr/melodi/data/DS_RP_EMPLOI_LT_COMP_2022,available_validated
+DS_RP_EMPLOI_LT_PRINC_2022_CSV_FR (1).zip,DS_RP_EMPLOI_LT_PRINC_2022_CSV_FR (1).zip,18445010,insee_main,population_census,https://api.insee.fr/melodi/data/DS_RP_EMPLOI_LT_PRINC_2022,available_validated
+DS_RP_EMPLOI_LT_PRINC_2022_CSV_FR.zip,DS_RP_EMPLOI_LT_PRINC_2022_CSV_FR.zip,18445010,insee_main,population_census,https://api.insee.fr/melodi/data/DS_RP_EMPLOI_LT_PRINC_2022,available_validated
+DS_RP_NAVETTES_PRINC_2022_CSV_FR.zip,DS_RP_NAVETTES_PRINC_2022_CSV_FR.zip,12438499,insee_main,population_census,https://api.insee.fr/melodi/data/DS_RP_NAVETTES_PRINC_2022,available_validated
+DS_RP_POPULATION_PRINC_2022_CSV_FR.zip,DS_RP_POPULATION_PRINC_2022_CSV_FR.zip,40079532,insee_main,population_census,https://api.insee.fr/melodi/data/DS_RP_POPULATION_PRINC_2022,available_validated
+DS_SIDE_CREA_ENT_COM_2024_CSV.zip,DS_SIDE_CREA_ENT_COM_2024_CSV.zip,115790552,insee_main,business_demography,,available_validated
+DS_SIDE_CREA_ENT_COM_2024_CSV_FR.zip,DS_SIDE_CREA_ENT_COM_2024_CSV_FR.zip,115790552,insee_main,business_demography,,available_validated
+DS_SIDE_CREA_ENT_SERIES_CSV_FR.zip,DS_SIDE_CREA_ENT_SERIES_CSV_FR.zip,1169737,insee_main,business_demography,https://api.insee.fr/melodi/data/DS_SIDE_CREA_ENT_SERIES,available_validated
+DS_SIDE_CREA_ETAB_COM_2024_CSV.zip,DS_SIDE_CREA_ETAB_COM_2024_CSV.zip,118032422,insee_main,business_demography,https://api.insee.fr/melodi/data/DS_SIDE_CREA_ETAB_COM_2024,available_validated
+DS_SIDE_CREA_ETAB_COM_2024_CSV_FR.zip,DS_SIDE_CREA_ETAB_COM_2024_CSV_FR.zip,118032422,insee_main,business_demography,https://api.insee.fr/melodi/data/DS_SIDE_CREA_ETAB_COM_2024,available_validated
+DS_SIDE_STOCKS_ET_COM_2022_CSV.zip,DS_SIDE_STOCKS_ET_COM_2022_CSV.zip,31374938,insee_main,business_demography,https://api.insee.fr/melodi/data/DS_SIDE_STOCKS_ET_COM_2022,available_validated
+DS_SIDE_STOCKS_ET_COM_2023_CSV.zip,DS_SIDE_STOCKS_ET_COM_2023_CSV.zip,21760560,insee_main,business_demography,https://api.insee.fr/melodi/data/DS_SIDE_STOCKS_ET_COM_2023,available_validated
+DS_SIDE_STOCKS_ET_COM_2023_CSV_FR.zip,DS_SIDE_STOCKS_ET_COM_2023_CSV_FR.zip,21742880,insee_main,business_demography,https://api.insee.fr/melodi/data/DS_SIDE_STOCKS_ET_COM_2023,available_validated
+DS_SIDE_STOCKS_UL_COM_2023_CSV.zip,DS_SIDE_STOCKS_UL_COM_2023_CSV.zip,22005325,insee_main,business_demography,https://api.insee.fr/melodi/data/DS_SIDE_STOCKS_UL_COM_2023,available_validated
+DS_SIDE_STOCKS_UL_COM_2023_CSV_FR.zip,DS_SIDE_STOCKS_UL_COM_2023_CSV_FR.zip,22006377,insee_main,business_demography,https://api.insee.fr/melodi/data/DS_SIDE_STOCKS_UL_COM_2023,available_validated
+Listes de codes DS_SIDE_STOCKS_ET_COM.zip,Listes de codes DS_SIDE_STOCKS_ET_COM.zip,1611146,insee_main,other,,available_validated
+base-cc-demo-entreprises-2022.zip,base-cc-demo-entreprises-2022.zip,20824049,insee_main,other,,available_validated
+data/raw/territorial/ZE2020_au_01-01-2026.zip,ZE2020_au_01-01-2026.zip,990782,territorial,territorial_reference,https://www.insee.fr/fr/statistiques/fichier/4652957/ZE2020_au_01-01-2026.zip,available_validated
+data/raw/territorial/cog_ensemble_2026_csv.zip,cog_ensemble_2026_csv.zip,1961824,territorial,territorial_reference,https://www.insee.fr/fr/statistiques/fichier/8740222/cog_ensemble_2026_csv.zip,available_validated
+data/raw/territorial/fonds_ze2020_2026.zip,fonds_ze2020_2026.zip,8869386,territorial,territorial_reference,https://www.insee.fr/fr/statistiques/fichier/4652957/fonds_ze2020_2026.zip,available_validated
+data/raw/territorial/table-appartenance-geo-communes-2020.zip,table-appartenance-geo-communes-2020.zip,2054074,territorial,territorial_reference,https://www.insee.fr/fr/statistiques/fichier/7671844/table-appartenance-geo-communes-2020.zip,available_validated

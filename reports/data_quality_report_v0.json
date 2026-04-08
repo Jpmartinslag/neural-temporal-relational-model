@@ -1,0 +1,25 @@
+{
+  "dataset_inventory_files": 30,
+  "variable_dictionary_rows": 35,
+  "commune_to_ze2020_rows": 34875,
+  "unique_ze2020_count": 306,
+  "zones_master_rows": 306,
+  "zones_with_population": 305,
+  "zones_with_side_et": 306,
+  "zones_with_side_ul": 306,
+  "zones_with_bpe": 306,
+  "notes": [
+    "zones_master_annual_v0 is intentionally minimal and annual-first",
+    "monthly harmonization is deferred to a later sprint",
+    "DS_SIDE_CREA_ENT_COM_2024 remains without public Melodi endpoint mapping in current catalog"
+  ],
+  "anomalies": [
+    {
+      "type": "missing_population",
+      "ze2020": "0601",
+      "libze2020": "Mayotte",
+      "reg": "06",
+      "note": "population_2022_total was not aggregated in zones_master_annual_v0"
+    }
+  ]
+}

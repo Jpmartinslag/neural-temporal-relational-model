@@ -1,0 +1,37 @@
+# Raw archives and large source files
+*.zip
+*.7z
+*.rar
+*.tar
+*.gz
+*.xz
+*.pdf
+*.xlsx
+*.xls
+*.ods
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.codex
+
+# Temporary outputs
+tmp/
+.tmp/
+*.tmp
+
+# Keep processed and metadata artifacts versioned.
+# Do not ignore:
+# - metadata/
+# - reports/
+# - data/interim/mappings/
+# - data/interim/tables/
+# - data/processed/
