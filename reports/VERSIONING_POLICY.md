@@ -29,9 +29,12 @@ Objetivo:
 
 Para datasets processados:
 
-- usar nomes versionados como `zones_master_annual_v0`, `v1`, `v2`
-- nao sobrescrever versoes anteriores quando houver mudanca metodologica
+- iniciar o estado canonico do repositorio em `v0`
+- avancar para `v1`, `v2` e seguintes apenas quando houver mudanca metodologica real
+- nao sobrescrever versoes anteriores quando houver necessidade de comparacao metodologica
 - cada nova versao deve ter justificativa no journal
+- depois que uma versao se tornar canonica e as anteriores perderem utilidade operacional, manter no repositorio apenas a versao ativa
+- o historico metodologico fica registrado no `git` e no journal, nao em multiplos arquivos redundantes no diretorio
 
 Para scripts:
 

@@ -1,4 +1,4 @@
-# Investigacao Mayotte v1
+# Investigacao Mayotte v0
 
 Data: 2026-04-08
 
@@ -18,7 +18,7 @@ Tabela canonica:
 Cobertura observada nas tabelas interim:
 
 - `rp_population_commune_2022.csv`: 0 comunas `976xx`
-- `rp_emploi_lr_comp_commune_2022_v2.csv`: 0 comunas `976xx`
+- `rp_emploi_lr_comp_commune_2022_v0.csv`: 0 comunas `976xx`
 - `rp_emploi_lt_princ_commune_2022.csv`: 0 comunas `976xx`
 - `filosofi_commune_2021.csv`: 0 comunas `976xx`
 - `bpe_commune_2024.csv`: 17 comunas `976xx`
@@ -31,7 +31,7 @@ Leitura tecnica:
 - o merge territorial esta correto
 - a ausencia esta concentrada nas fontes RP e Filosofi usadas nesta versao
 - para Mayotte, zeros seriam semanticamente falsos
-- no `zones_master_annual_v2`, esses campos passaram a ficar vazios
+- no `zones_master_annual_v0`, esses campos passaram a ficar vazios
 
 ## Fontes oficiais consultadas
 
@@ -65,7 +65,7 @@ Impacto:
 
 ## Decisao aplicada no pipeline
 
-No `zones_master_annual_v2`:
+No `zones_master_annual_v0`:
 
 - `population_2022_total` para Mayotte ficou vazio
 - `jobs_lt_2022_total` para Mayotte ficou vazio

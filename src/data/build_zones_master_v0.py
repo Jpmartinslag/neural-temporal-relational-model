@@ -11,11 +11,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 
 MAPPING_PATH = ROOT / "data" / "interim" / "mappings" / "commune_to_ze2020_2026.csv"
-V1_PATH = ROOT / "data" / "processed" / "zones_master_annual_v1.csv"
+BASE_ZONES_PATH = ROOT / "data" / "processed" / "zones_master_annual_v0.csv"
 EMP_ZIP_PATH = ROOT / "DS_RP_EMPLOI_LR_COMP_2022_CSV_FR.zip"
-EMP_INTERIM_V2_PATH = ROOT / "data" / "interim" / "tables" / "rp_emploi_lr_comp_commune_2022_v2.csv"
-V2_PATH = ROOT / "data" / "processed" / "zones_master_annual_v2.csv"
-QUALITY_V1_PATH = ROOT / "reports" / "data_quality_report_v1.json"
+EMP_INTERIM_V0_PATH = ROOT / "data" / "interim" / "tables" / "rp_emploi_lr_comp_commune_2022_v0.csv"
+V0_PATH = ROOT / "data" / "processed" / "zones_master_annual_v0.csv"
+QUALITY_V0_PATH = ROOT / "reports" / "data_quality_report_v0.json"
 
 
 def parse_number(value: str) -> float | None:
@@ -59,7 +59,7 @@ def load_mapping() -> tuple[dict[str, dict[str, str]], dict[str, dict[str, str]]
     return commune_map, zone_map
 
 
-def build_employment_v2(commune_map: dict[str, dict[str, str]]) -> tuple[dict[str, dict[str, float]], dict[str, int]]:
+def build_employment_v0(commune_map: dict[str, dict[str, str]]) -> tuple[dict[str, dict[str, float]], dict[str, int]]:
     by_commune: dict[str, dict[str, float]] = defaultdict(dict)
     counters: dict[str, int] = defaultdict(int)
 
@@ -139,8 +139,8 @@ def build_employment_v2(commune_map: dict[str, dict[str, str]]) -> tuple[dict[st
         metrics["unemployed_15_64_2022_est"] = unemployed
         metrics["unemployment_rate_est_2022"] = rate
 
-    EMP_INTERIM_V2_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with EMP_INTERIM_V2_PATH.open("w", encoding="utf-8", newline="") as f:
+    EMP_INTERIM_V0_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with EMP_INTERIM_V0_PATH.open("w", encoding="utf-8", newline="") as f:
         fieldnames = [
             "codgeo",
             "ze2020",
@@ -160,8 +160,8 @@ def build_employment_v2(commune_map: dict[str, dict[str, str]]) -> tuple[dict[st
     return by_zone, counters
 
 
-def build_zones_master_v2(zone_employment: dict[str, dict[str, float]]) -> dict[str, object]:
-    with V1_PATH.open(encoding="utf-8", newline="") as f:
+def build_zones_master_v0(zone_employment: dict[str, dict[str, float]]) -> dict[str, object]:
+    with BASE_ZONES_PATH.open(encoding="utf-8", newline="") as f:
         rows = list(csv.DictReader(f))
 
     output_rows = []
@@ -227,8 +227,8 @@ def build_zones_master_v2(zone_employment: dict[str, dict[str, float]]) -> dict[
         "filosofi_s_dir_tax_di_weighted_proxy_2021",
     ]
 
-    V2_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with V2_PATH.open("w", encoding="utf-8", newline="") as f:
+    V0_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with V0_PATH.open("w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
         for row in output_rows:
@@ -244,10 +244,10 @@ def build_zones_master_v2(zone_employment: dict[str, dict[str, float]]) -> dict[
         "missing_population_zones": missing_population_zones,
         "missing_jobs_lt_zones": missing_jobs_lt_zones,
         "missing_active_zones": missing_active_zones,
-        "mayotte_row_v2": mayotte_row,
+        "mayotte_row_v0": mayotte_row,
     }
 
-    with QUALITY_V1_PATH.open("w", encoding="utf-8") as f:
+    with QUALITY_V0_PATH.open("w", encoding="utf-8") as f:
         json.dump(quality, f, ensure_ascii=False, indent=2)
 
     return quality
@@ -255,17 +255,17 @@ def build_zones_master_v2(zone_employment: dict[str, dict[str, float]]) -> dict[
 
 def main() -> None:
     commune_map, _ = load_mapping()
-    zone_employment, counters = build_employment_v2(commune_map)
-    quality = build_zones_master_v2(zone_employment)
+    zone_employment, counters = build_employment_v0(commune_map)
+    quality = build_zones_master_v0(zone_employment)
     print(
         json.dumps(
             {
                 "employment_counters": counters,
                 "quality": quality,
                 "outputs": {
-                    "employment_interim_v2": str(EMP_INTERIM_V2_PATH),
-                    "zones_master_annual_v2": str(V2_PATH),
-                    "data_quality_report_v1": str(QUALITY_V1_PATH),
+                    "employment_interim_v0": str(EMP_INTERIM_V0_PATH),
+                    "zones_master_annual_v0": str(V0_PATH),
+                    "data_quality_report_v0": str(QUALITY_V0_PATH),
                 },
             },
             ensure_ascii=False,

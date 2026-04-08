@@ -129,7 +129,7 @@ O que foi feito:
 - revisao da fonte `DS_RP_EMPLOI_LR_COMP_2022`
 - reconstrucao da tabela comunal de emprego com `ativos` e `ocupados`
 - substituicao da taxa anterior por uma estimativa defensavel
-- emissao de `zones_master_annual_v2`
+- emissao de um `zones_master` revisado que passa a ser o `v0` canonico do repositorio limpo
 
 Nova regra:
 
@@ -138,10 +138,10 @@ Nova regra:
 
 Artefatos:
 
-- [build_zones_master_v2.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_zones_master_v2.py)
-- [rp_emploi_lr_comp_commune_2022_v2.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/rp_emploi_lr_comp_commune_2022_v2.csv)
-- [zones_master_annual_v2.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zones_master_annual_v2.csv)
-- [data_quality_report_v1.json](/home/jpdark/Downloads/project_recomm/dataset/reports/data_quality_report_v1.json)
+- [build_zones_master_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_zones_master_v0.py)
+- [rp_emploi_lr_comp_commune_2022_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/rp_emploi_lr_comp_commune_2022_v0.csv)
+- [zones_master_annual_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zones_master_annual_v0.csv)
+- [data_quality_report_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/data_quality_report_v0.json)
 
 Decisoes:
 
@@ -163,7 +163,7 @@ O que foi feito:
 
 Artefato:
 
-- [mayotte_investigation_v1.md](/home/jpdark/Downloads/project_recomm/dataset/reports/mayotte_investigation_v1.md)
+- [mayotte_investigation_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/mayotte_investigation_v0.md)
 
 Conclusao:
 
@@ -245,3 +245,30 @@ Decisoes:
 - usar `main` como branch principal
 - manter commits pequenos por decisao metodologica
 - tratar `PROJECT_JOURNEY.md` como memoria tecnica viva do repositorio
+
+### 2026-04-08 - Limpeza do repositorio para estado canonico
+
+O que foi feito:
+
+- remocao de artefatos intermediarios que ja nao fazem parte do pipeline ativo
+- consolidacao do repositorio em torno da versao canonica atual
+
+Artefatos removidos do estado ativo:
+
+- `data/interim/tables/rp_emploi_lr_comp_commune_2022.csv`
+- `data/processed/zones_master_annual_v0.csv`
+- `data/processed/zones_master_annual_v1.csv`
+- `reports/data_quality_report_v0.json`
+- `reports/interim_tables_summary_v1.json`
+
+Artefatos canonicos mantidos:
+
+- `data/interim/tables/rp_emploi_lr_comp_commune_2022_v0.csv`
+- `data/processed/zones_master_annual_v0.csv`
+- `reports/data_quality_report_v0.json`
+
+Decisoes:
+
+- o repositorio deve refletir apenas o pipeline vivo
+- versoes antigas ficam preservadas no historico do `git`, nao como arquivos ativos
+- o conjunto atual de referencia para a Fase 1 passa a ser o `v0`

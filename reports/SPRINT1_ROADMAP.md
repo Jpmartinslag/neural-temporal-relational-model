@@ -175,9 +175,10 @@ Resumo:
 
 ### `zones_master_annual_v1`
 
-Artefato:
+Status atual:
 
-- [zones_master_annual_v1.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zones_master_annual_v1.csv)
+- versao historica removida do estado ativo do repositorio
+- substituida operacionalmente pela versao canonica `v0` do repositorio limpo
 
 Status:
 
@@ -199,9 +200,9 @@ Cobertura observada:
 - 297 zonas com proxy FILOSOFI
 - 306 zonas com cobertura FLORES por esfera economica
 
-Artefato de apoio:
+Observacao:
 
-- [interim_tables_summary_v1.json](/home/jpdark/Downloads/project_recomm/dataset/reports/interim_tables_summary_v1.json)
+- o resumo auxiliar `interim_tables_summary_v1.json` tambem foi removido do estado ativo
 
 ## Falta fazer neste sprint
 
@@ -321,16 +322,16 @@ O Sprint 1 pode ser considerado fechado quando existirem:
 
 ### Indicador de desemprego revisado
 
-Artefatos:
+Artefatos canonicos:
 
-- [rp_emploi_lr_comp_commune_2022_v2.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/rp_emploi_lr_comp_commune_2022_v2.csv)
-- [zones_master_annual_v2.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zones_master_annual_v2.csv)
-- [data_quality_report_v1.json](/home/jpdark/Downloads/project_recomm/dataset/reports/data_quality_report_v1.json)
+- [rp_emploi_lr_comp_commune_2022_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/rp_emploi_lr_comp_commune_2022_v0.csv)
+- [zones_master_annual_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zones_master_annual_v0.csv)
+- [data_quality_report_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/data_quality_report_v0.json)
 
 Decisao:
 
 - o indicador antigo `unemployment_rate_proxy_2022` foi descartado
-- a versao `v2` passa a usar:
+- a versao `v0` passa a usar:
   - `active_15_64_2022_total`
   - `employed_15_64_2022_total`
   - `unemployed_15_64_2022_total = active - employed`
@@ -352,10 +353,10 @@ Cobertura:
 
 Artefato:
 
-- [mayotte_investigation_v1.md](/home/jpdark/Downloads/project_recomm/dataset/reports/mayotte_investigation_v1.md)
+- [mayotte_investigation_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/mayotte_investigation_v0.md)
 
 Conclusao operacional:
 
 - a anomalia de `0601 / Mayotte` nao e erro de merge
 - ela decorre da ausencia de cobertura nas fontes RP e Filosofi usadas nesta versao
-- no `zones_master_annual_v2`, os campos RP derivados de Mayotte passaram a ficar vazios, nao zero
+- no `zones_master_annual_v0`, os campos RP derivados de Mayotte passaram a ficar vazios, nao zero
