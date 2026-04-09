@@ -1,0 +1,14 @@
+{
+  "annual_target_rows":7560,
+  "annual_target_zones":280,
+  "annual_target_min_year":2000,
+  "annual_target_max_year":2026,
+  "baseline_rows":1120,
+  "baseline_rows_with_target_tplus1":1120,
+  "baseline_feature_min_year":2021,
+  "baseline_feature_max_year":2024,
+  "baseline_target_min_year":2022,
+  "baseline_target_max_year":2025,
+  "target_column":"target_proxy_establishment_creations_tplus1",
+  "baseline_definition":"annual_features_t_to_annual_target_tplus1"
+}

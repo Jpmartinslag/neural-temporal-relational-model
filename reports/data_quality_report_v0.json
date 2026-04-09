@@ -32,5 +32,12 @@
     "flores_productive_unit_loc_2024_total": "894.0",
     "filosofi_s_hh_tax_weighted_proxy_2021": "",
     "filosofi_s_dir_tax_di_weighted_proxy_2021": ""
-  }
+  },
+  "zones_with_filosofi": 297,
+  "zones_with_flores": 306,
+  "training_eligible_zones_v0": 305,
+  "structural_anomaly_zones_v0": 1,
+  "anomaly_zone_ids_v0": [
+    "0601"
+  ]
 }

@@ -10,6 +10,17 @@
 *.xls
 *.ods
 
+# Local environment
+.venv/
+.env
+
+# Scan outputs
+scan_output/
+scan_output_bundle.tar.gz
+
+# Raw acquisition cache
+data/raw/
+
 # Python cache
 __pycache__/
 *.pyc
@@ -28,10 +39,15 @@ tmp/
 .tmp/
 *.tmp
 
+# Notebook and ad-hoc outputs
+*.log
+
 # Keep processed and metadata artifacts versioned.
 # Do not ignore:
 # - metadata/
 # - reports/
 # - data/interim/mappings/
 # - data/interim/tables/
+# - data/interim/policy/
+# - data/interim/population_history/
 # - data/processed/

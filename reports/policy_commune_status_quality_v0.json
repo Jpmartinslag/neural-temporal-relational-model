@@ -1,0 +1,27 @@
+{
+  "rows": 433235,
+  "policy_types_present": [
+    "QPV",
+    "ZRR"
+  ],
+  "years_present": [
+    "1995",
+    "2005",
+    "2006",
+    "2007",
+    "2009",
+    "2010",
+    "2012",
+    "2013",
+    "2014",
+    "2017",
+    "2018",
+    "2021",
+    "2024"
+  ],
+  "notes": [
+    "Canonical policy layer initialized with ZRR.",
+    "QPV 2024 commune layer appended to canonical policy table.",
+    "FRR/FRR+ and ZAN remain pending in the registry until reliable sources are loaded."
+  ]
+}

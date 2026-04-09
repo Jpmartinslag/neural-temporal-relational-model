@@ -1,0 +1,14 @@
+{
+  "rows_scanned": 43116645,
+  "rows_with_valid_date_and_commune": 39099279,
+  "rows_in_core_mapping": 33268077,
+  "distinct_core_communes_observed": 34386,
+  "distinct_core_ze2020_observed": 280,
+  "distinct_year_month": 324,
+  "min_year_month": "2000-01",
+  "max_year_month": "2026-12",
+  "target_definition": "proxy_establishment_creations_from_current_sirene_stock",
+  "territorial_caveat": "Commune is observed from current stock establishment address, not necessarily the exact commune at historical creation time.",
+  "excluded_aggregated_rows_out_of_range": 131912,
+  "excluded_creation_count_out_of_range": 6934525
+}

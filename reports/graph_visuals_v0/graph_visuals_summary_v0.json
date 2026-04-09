@@ -1,0 +1,29 @@
+{
+  "component_count": 8,
+  "component_sizes": [
+    280,
+    7,
+    6,
+    4,
+    4,
+    3,
+    1,
+    1
+  ],
+  "isolated_nodes": [
+    {
+      "ze2020": "0103",
+      "libze2020": "Marie-Galante"
+    },
+    {
+      "ze2020": "0601",
+      "libze2020": "Mayotte"
+    }
+  ],
+  "files": [
+    "ze2020_boundaries_v0.png",
+    "ze2020_graph_components_v0.png",
+    "ze2020_isolated_nodes_v0.png"
+  ],
+  "interactive_html": "ze2020_graph_interactive_v0.html"
+}

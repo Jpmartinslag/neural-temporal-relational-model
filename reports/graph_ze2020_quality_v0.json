@@ -1,0 +1,15 @@
+{
+  "node_count": 306,
+  "directed_edge_count": 1552,
+  "undirected_edge_count": 776,
+  "isolated_nodes_count": 2,
+  "isolated_nodes": [
+    "0103",
+    "0601"
+  ],
+  "crs": "EPSG:4326",
+  "notes": [
+    "Adjacency is defined by polygon boundary contiguity using touches().",
+    "Edges are exported in directed form for graph-model convenience."
+  ]
+}

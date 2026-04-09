@@ -1,0 +1,29 @@
+{
+  "core_node_count": 280,
+  "outputs": {
+    "zones_master": {
+      "rows_in": 306,
+      "rows_out": 280,
+      "zones_out": 280
+    },
+    "panel_zones": {
+      "rows_in": 1224,
+      "rows_out": 1120,
+      "zones_out": 280
+    },
+    "population_history": {
+      "rows_in": 306,
+      "rows_out": 280,
+      "zones_out": 280
+    },
+    "zan_ze2020": {
+      "rows_in": 305,
+      "rows_out": 280,
+      "zones_out": 280
+    }
+  },
+  "notes": [
+    "All core views are filtered to the largest connected component of the ZE2020 graph.",
+    "These files define the territorial universe of the MVP after exclusion of Corsica and overseas components."
+  ]
+}

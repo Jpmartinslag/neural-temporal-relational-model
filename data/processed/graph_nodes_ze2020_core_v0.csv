@@ -1,0 +1,281 @@
+ze2020,libze2020,nb_com,geometry_type,is_multipolygon
+0051,Alençon,184,Polygon,0
+0052,Arles,20,Polygon,0
+0053,Avignon,36,Polygon,0
+0054,Beauvais,327,Polygon,0
+0055,Bollène-Pierrelatte,29,Polygon,0
+0056,Cosne-Cours-sur-Loire,119,Polygon,0
+0057,Dreux,115,Polygon,0
+0058,La Vallée de la Bresle-Vimeu,93,Polygon,0
+0059,Mâcon,159,Polygon,0
+0060,Nevers,180,Polygon,0
+0061,Nogent-le-Rotrou,82,Polygon,0
+0062,Redon,43,Polygon,0
+0063,Ussel,186,Polygon,0
+0064,Valréas,114,Polygon,0
+1101,Cergy-Vexin,120,Polygon,0
+1102,Coulommiers,54,Polygon,0
+1103,Étampes,64,Polygon,0
+1104,Évry-Courcouronnes,68,Polygon,0
+1105,Fontainebleau-Nemours,106,Polygon,0
+1106,Marne-la-Vallée,69,Polygon,0
+1107,Meaux,102,Polygon,0
+1108,Melun,71,Polygon,0
+1109,Paris,122,Polygon,0
+1110,Provins,81,Polygon,0
+1111,Rambouillet,36,Polygon,0
+1112,Roissy,87,Polygon,0
+1113,Saclay,62,Polygon,0
+1114,Seine-Yvelinoise,121,Polygon,0
+1115,Versailles-Saint-Quentin,103,Polygon,0
+2401,Blois,104,Polygon,0
+2402,Bourges,170,Polygon,0
+2403,Chartres,150,Polygon,0
+2404,Châteaudun,63,Polygon,0
+2405,Châteauroux,213,Polygon,0
+2406,Chinon,42,Polygon,0
+2407,Gien,67,Polygon,0
+2408,Loches,78,Polygon,0
+2409,Montargis,96,Polygon,0
+2410,Orléans,133,Polygon,0
+2411,Pithiviers,78,Polygon,0
+2412,Romorantin-Lanthenay,70,Polygon,0
+2413,Tours,166,Polygon,0
+2414,Vendôme,89,Polygon,0
+2415,Vierzon,28,Polygon,0
+2701,Autun,66,Polygon,0
+2702,Auxerre,211,Polygon,0
+2703,Avallon,172,Polygon,0
+2704,Beaune,143,Polygon,0
+2705,Belfort,164,Polygon,0
+2706,Besançon,408,Polygon,0
+2707,Chalon-sur-Saône,133,Polygon,0
+2708,Charolais,132,Polygon,0
+2709,Châtillon-Montbard,233,Polygon,0
+2710,Creusot-Montceau,57,Polygon,0
+2711,Dijon,322,Polygon,0
+2712,Dole,123,Polygon,0
+2713,Lons-le-Saunier,333,Polygon,0
+2714,Montbéliard,146,Polygon,0
+2715,Pontarlier,174,Polygon,0
+2716,Saint-Claude,71,Polygon,0
+2717,Sens,102,Polygon,0
+2718,Vesoul,336,Polygon,0
+2801,Argentan,73,Polygon,0
+2802,Avranches,101,MultiPolygon,1
+2803,Bernay,106,Polygon,0
+2804,Caen,378,Polygon,0
+2805,Cherbourg-en-Cotentin,135,MultiPolygon,1
+2806,Coutances,67,Polygon,0
+2807,Dieppe-Caux maritime,196,Polygon,0
+2808,Évreux,167,Polygon,0
+2809,Flers,91,Polygon,0
+2810,Granville,45,Polygon,0
+2811,Honfleur Pont-Audemer,119,Polygon,0
+2812,L'Aigle,79,Polygon,0
+2813,Le Havre,115,Polygon,0
+2814,Lisieux,93,Polygon,0
+2815,Rouen,299,Polygon,0
+2816,Saint-Lô,104,Polygon,0
+2817,Vernon-Gisors,110,Polygon,0
+2818,Vire Normandie,21,Polygon,0
+2819,Yvetot-Vallée du Commerce,99,Polygon,0
+3201,Abbeville,165,Polygon,0
+3202,Amiens,455,Polygon,0
+3203,Arras,232,Polygon,0
+3204,Berck,201,Polygon,0
+3205,Béthune,109,Polygon,0
+3206,Boulogne-sur-Mer,92,Polygon,0
+3207,Calais,51,Polygon,0
+3208,Cambrai,111,Polygon,0
+3209,Château-Thierry,119,Polygon,0
+3210,Compiègne,181,Polygon,0
+3211,Creil,134,Polygon,0
+3212,Douai,71,Polygon,0
+3213,Dunkerque,75,Polygon,0
+3214,Laon,225,Polygon,0
+3215,Lens,58,Polygon,0
+3216,Lille,133,Polygon,0
+3217,Maubeuge,199,Polygon,0
+3218,Roubaix-Tourcoing,22,Polygon,0
+3219,Saint-Omer,126,Polygon,0
+3220,Saint-Quentin,326,Polygon,0
+3221,Soissons,232,Polygon,0
+3222,Valenciennes,125,Polygon,0
+4401,Bar-le-Duc,154,Polygon,0
+4402,Châlons-en-Champagne,151,Polygon,0
+4403,Charleville-Mézières,180,Polygon,0
+4404,Chaumont,369,Polygon,0
+4405,Colmar,100,Polygon,0
+4406,Épernay,113,Polygon,0
+4407,Épinal,328,Polygon,0
+4408,Forbach,30,Polygon,0
+4409,Haguenau,164,Polygon,0
+4410,Metz,246,Polygon,0
+4411,Mulhouse,170,Polygon,0
+4412,Nancy,445,Polygon,0
+4413,Reims,225,Polygon,0
+4414,Remiremont,49,Polygon,0
+4415,Romilly-sur-Seine,170,Polygon,0
+4416,Saint-Avold,131,Polygon,0
+4417,Saint-Dié-des-Vosges,110,Polygon,0
+4418,Saint-Louis,91,Polygon,0
+4419,Sarrebourg,215,Polygon,0
+4420,Sarreguemines,141,Polygon,0
+4421,Sedan,245,Polygon,0
+4422,Sélestat,72,Polygon,0
+4423,Strasbourg,213,Polygon,0
+4424,Thionville,190,Polygon,0
+4425,Troyes,358,Polygon,0
+4426,Verdun,231,Polygon,0
+4427,Vitry-le-François Saint-Dizier,224,Polygon,0
+5201,Ancenis,23,Polygon,0
+5202,Angers,67,Polygon,0
+5203,Challans,42,MultiPolygon,1
+5204,Château-Gontier-sur-Mayenne,32,Polygon,0
+5205,Châteaubriant,32,Polygon,0
+5206,Cholet,35,Polygon,0
+5207,Fontenay-le-Comte,98,Polygon,0
+5208,La Ferté-Bernard,80,Polygon,0
+5209,La Flèche,28,Polygon,0
+5210,La Roche-sur-Yon,45,Polygon,0
+5211,Laval,85,Polygon,0
+5212,Le Mans,148,Polygon,0
+5213,Les Herbiers-Montaigu,49,Polygon,0
+5214,Les Sables-d'Olonne,18,Polygon,0
+5215,Mayenne,92,Polygon,0
+5216,Nantes,95,Polygon,0
+5217,Pornic,16,Polygon,0
+5218,Sablé-sur-Sarthe,52,Polygon,0
+5219,Saint-Nazaire,37,Polygon,0
+5220,Saumur,45,Polygon,0
+5221,Segré-en-Anjou Bleu,30,Polygon,0
+5301,Auray,28,MultiPolygon,1
+5302,Brest,92,MultiPolygon,1
+5303,Carhaix-Plouguer,81,Polygon,0
+5304,Dinan,66,Polygon,0
+5305,Fougères,45,Polygon,0
+5306,Guingamp,49,Polygon,0
+5307,Lamballe-Armor,40,Polygon,0
+5308,Lannion,65,MultiPolygon,1
+5309,Lorient,35,MultiPolygon,1
+5310,Morlaix,59,MultiPolygon,1
+5311,Ploërmel,53,Polygon,0
+5312,Pontivy-Loudéac,64,Polygon,0
+5313,Quimper,83,MultiPolygon,1
+5314,Quimperlé,18,Polygon,0
+5315,Rennes,160,Polygon,0
+5316,Saint-Brieuc,58,Polygon,0
+5317,Saint-Malo,54,MultiPolygon,1
+5318,Vannes,60,MultiPolygon,1
+5319,Vitré,56,Polygon,0
+7501,Agen,99,Polygon,0
+7502,Angoulême,229,Polygon,0
+7503,Bayonne,111,Polygon,0
+7504,Bergerac,153,Polygon,0
+7505,Bordeaux,164,Polygon,0
+7506,Bressuire,80,Polygon,0
+7507,Brive-la-Gaillarde,98,Polygon,0
+7508,Châtellerault,50,Polygon,0
+7509,Cognac,191,Polygon,0
+7510,Dax,119,Polygon,0
+7511,Guéret,255,Polygon,0
+7512,La Rochelle,83,MultiPolygon,1
+7513,La Teste-de-Buch,33,MultiPolygon,1
+7514,Langon,175,Polygon,0
+7515,Lesparre-Médoc,40,Polygon,0
+7516,Libourne,140,Polygon,0
+7517,Limoges,130,Polygon,0
+7518,Marmande,131,Polygon,0
+7519,Mont-de-Marsan,166,Polygon,0
+7520,Niort,158,Polygon,0
+7521,Oloron-Sainte-Marie,163,Polygon,0
+7522,Pau,286,Polygon,0
+7523,Périgueux,231,Polygon,0
+7524,Poitiers,163,Polygon,0
+7525,Rochefort,41,MultiPolygon,1
+7526,Royan,51,MultiPolygon,1
+7527,Saint-Junien,104,Polygon,0
+7528,Saintes,147,Polygon,0
+7529,Sarlat-la-Canéda,107,Polygon,0
+7530,Thouars,76,Polygon,0
+7531,Tulle,130,Polygon,0
+7532,Villeneuve-sur-Lot,98,Polygon,0
+7601,Agde-Pézenas,18,Polygon,0
+7602,Albi,190,Polygon,0
+7603,Alès-Le Vigan,172,Polygon,0
+7604,Auch,392,Polygon,0
+7605,Bagnols-sur-Cèze,52,Polygon,0
+7606,Béziers,110,Polygon,0
+7607,Cahors,134,Polygon,0
+7608,Carcassonne-Limoux,309,Polygon,0
+7609,Castelsarrasin-Moissac,104,Polygon,0
+7610,Castres-Mazamet,134,Polygon,0
+7611,Figeac-Villefranche,136,Polygon,0
+7612,Foix-Pamiers,268,Polygon,0
+7613,Mende,135,Polygon,0
+7614,Millau,91,Polygon,0
+7615,Montauban,101,Polygon,0
+7616,Montpellier,172,Polygon,0
+7617,Narbonne,102,Polygon,0
+7618,Nîmes,118,Polygon,0
+7619,Nord-du-Lot,110,Polygon,0
+7620,Perpignan,235,Polygon,0
+7621,Rodez,133,Polygon,0
+7622,Saint-Gaudens,387,Polygon,0
+7623,Sète,11,Polygon,0
+7624,Tarbes-Lourdes,477,MultiPolygon,1
+7625,Toulouse,335,Polygon,0
+8401,Annecy,98,Polygon,0
+8402,Aubenas,175,Polygon,0
+8403,Aurillac,102,Polygon,0
+8404,Belley,72,Polygon,0
+8405,Bourg-en-Bresse,166,Polygon,0
+8406,Bourgoin-Jallieu,106,Polygon,0
+8407,Chambéry,110,Polygon,0
+8408,Clermont-Ferrand,191,Polygon,0
+8409,Grenoble,189,Polygon,0
+8410,Issoire,138,Polygon,0
+8411,La Maurienne,48,Polygon,0
+8412,La Plaine du Forez,88,Polygon,0
+8413,La Tarentaise,68,Polygon,0
+8414,La Vallée de l'Arve,28,Polygon,0
+8415,Le Chablais,48,Polygon,0
+8416,Le Genevois Français,146,Polygon,0
+8417,Le Livradois,109,Polygon,0
+8418,Le Mont Blanc,20,Polygon,0
+8419,Le Puy-en-Velay,184,Polygon,0
+8420,Les Sources de la Loire,77,Polygon,0
+8421,Lyon,235,Polygon,0
+8422,Montélimar,65,Polygon,0
+8423,Montluçon,114,Polygon,0
+8424,Moulins,101,Polygon,0
+8425,Oyonnax,35,Polygon,0
+8426,Roanne,76,Polygon,0
+8427,Romans-sur-Isère,57,Polygon,0
+8428,Saint-Étienne,134,Polygon,0
+8429,Saint-Flour,88,Polygon,0
+8430,Tarare,42,Polygon,0
+8431,Valence,157,Polygon,0
+8432,Vichy,144,Polygon,0
+8433,Vienne-Annonay,146,Polygon,0
+8434,Villefranche-sur-Saône,92,Polygon,0
+8435,Voiron,130,Polygon,0
+9301,Aix-en-Provence,61,Polygon,0
+9302,Briançon,36,Polygon,0
+9303,Brignoles,41,Polygon,0
+9304,Cannes,50,MultiPolygon,1
+9305,Carpentras,29,Polygon,0
+9306,Cavaillon,54,Polygon,0
+9307,Digne-les-Bains,123,Polygon,0
+9308,Draguignan,39,Polygon,0
+9309,Fréjus,5,Polygon,0
+9310,Gap,125,Polygon,0
+9311,Manosque,67,Polygon,0
+9312,Marseille,32,Polygon,0
+9313,Martigues-Salon,26,MultiPolygon,1
+9314,Menton,18,Polygon,0
+9315,Nice,116,Polygon,0
+9316,Orange,16,Polygon,0
+9317,Sainte-Maxime,12,Polygon,0
+9318,Toulon,33,MultiPolygon,1

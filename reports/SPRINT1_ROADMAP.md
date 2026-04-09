@@ -360,3 +360,26 @@ Conclusao operacional:
 - a anomalia de `0601 / Mayotte` nao e erro de merge
 - ela decorre da ausencia de cobertura nas fontes RP e Filosofi usadas nesta versao
 - no `zones_master_annual_v0`, os campos RP derivados de Mayotte passaram a ficar vazios, nao zero
+
+### Flags de cobertura e anomalia
+
+Artefatos:
+
+- [add_coverage_flags_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/add_coverage_flags_v0.py)
+- [zones_master_annual_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zones_master_annual_v0.csv)
+- [data_quality_report_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/data_quality_report_v0.json)
+
+O que entrou no schema:
+
+- flags de cobertura por fonte
+- `source_coverage_count`
+- `source_coverage_ratio`
+- `is_structural_anomaly`
+- `anomaly_reason`
+- `is_training_eligible_v0`
+
+Resultado:
+
+- 305 zonas elegiveis no recorte inicial de treino
+- 1 zona anomala estrutural
+- Mayotte explicitamente fora do treino inicial

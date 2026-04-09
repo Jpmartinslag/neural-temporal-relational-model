@@ -1,0 +1,22 @@
+{
+  "historical_years_found": [
+    "1995",
+    "2005",
+    "2006",
+    "2007",
+    "2009",
+    "2010",
+    "2012",
+    "2013",
+    "2014",
+    "2017",
+    "2018"
+  ],
+  "historical_rows": 396897,
+  "cog2021_rows": 34965,
+  "notes": [
+    "Historical workbook stores one sheet per reference year.",
+    "COG2021 workbook provides commune-level ZRR status aligned to COG 2021.",
+    "Legend rows with non-communal labels were removed from zrr_historique_communes_v0.csv."
+  ]
+}

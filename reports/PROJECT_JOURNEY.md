@@ -221,6 +221,7 @@ Artefatos:
 - [.gitignore](/home/jpdark/Downloads/project_recomm/dataset/.gitignore)
 - [VERSIONING_POLICY.md](/home/jpdark/Downloads/project_recomm/dataset/reports/VERSIONING_POLICY.md)
 - [PHASE1_GRAPH_ROADMAP.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PHASE1_GRAPH_ROADMAP.md)
+- [PROJECT_EXPLANATIONS.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_EXPLANATIONS.md)
 
 Decisoes:
 
@@ -228,6 +229,7 @@ Decisoes:
 - arquivos brutos pesados ficam fora do git
 - a Fase 1 fica explicitamente orientada a construcao do grafo territorial inicial
 - tarefas fora do caminho critico do grafo devem ser adiadas
+- o projeto passa a manter tres trilhas permanentes de memoria: `git`, `PROJECT_JOURNEY.md` e `PROJECT_EXPLANATIONS.md`
 
 ### 2026-04-08 - Inicializacao do repositorio Git
 
@@ -272,3 +274,791 @@ Decisoes:
 - o repositorio deve refletir apenas o pipeline vivo
 - versoes antigas ficam preservadas no historico do `git`, nao como arquivos ativos
 - o conjunto atual de referencia para a Fase 1 passa a ser o `v0`
+
+### 2026-04-08 - Flags de cobertura e anomalia no `zones_master_v0`
+
+O que foi feito:
+
+- adicao de flags de cobertura por fonte no `zones_master`
+- adicao de contagem e razao de cobertura por zona
+- adicao de flag de anomalia estrutural
+- adicao de flag de elegibilidade inicial para treino
+
+Artefatos:
+
+- [add_coverage_flags_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/add_coverage_flags_v0.py)
+- [zones_master_annual_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zones_master_annual_v0.csv)
+- [data_quality_report_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/data_quality_report_v0.json)
+
+Novas colunas principais:
+
+- `has_population_2022`
+- `has_active_lr_2022`
+- `has_jobs_lt_2022`
+- `has_side_stocks_et_2023`
+- `has_side_stocks_ul_2023`
+- `has_bpe_2024`
+- `has_flores_2024`
+- `has_filosofi_2021`
+- `source_coverage_count`
+- `source_coverage_ratio`
+- `is_structural_anomaly`
+- `anomaly_reason`
+- `is_training_eligible_v0`
+
+Resultado:
+
+- 305 zonas elegiveis para o recorte inicial de treino
+- 1 anomalia estrutural confirmada
+- Mayotte marcada com `is_structural_anomaly = 1`
+
+Decisoes:
+
+- FILOSOFI nao entra como criterio obrigatorio de elegibilidade inicial
+- a elegibilidade inicial de treino usa o nucleo: populacao, ativos, empregos LT, SIDE, BPE e FLORES
+- Mayotte permanece no dataset, mas fora do treino inicial
+
+### 2026-04-08 - Construcao do `panel_zones_v0`
+
+O que foi feito:
+
+- definicao da janela temporal inicial `2021-2024`
+- criacao do painel minimo em formato `zone-year`
+- registro explicito da regra temporal de cada feature
+- geracao do relatorio de qualidade do painel
+
+Artefatos:
+
+- [build_panel_zones_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_panel_zones_v0.py)
+- [panel_zones_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/panel_zones_v0.csv)
+- [panel_feature_registry_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/panel_feature_registry_v0.csv)
+- [panel_zones_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/panel_zones_quality_v0.json)
+- [PANEL_ZONES_DESIGN.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PANEL_ZONES_DESIGN.md)
+
+Resultado:
+
+- 1.224 linhas no painel
+- 306 zonas
+- 4 anos
+- 305 zonas com cobertura observada em `2022`
+- 306 zonas com cobertura observada em `2023` e `2024`
+- 297 zonas com observacao em `2021` por conta do FILOSOFI
+
+Decisoes:
+
+- nenhuma feature foi projetada para anos em que nao foi observada
+- o painel `v0` e explicito, auditavel e ainda nao e um painel denso final para STGNN
+- Mayotte permanece no painel, mas segue fora do recorte inicial de treino
+
+### 2026-04-08 - Matriz inicial de cobertura temporal e guia de coleta
+
+O que foi feito:
+
+- consolidacao da visao por familia de fonte
+- registro dos anos ja presentes localmente
+- formalizacao de onde procurar a expansao temporal oficial
+
+Artefatos:
+
+- [source_time_coverage_matrix_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/source_time_coverage_matrix_v0.csv)
+- [DATA_COLLECTION_GUIDE.md](/home/jpdark/Downloads/project_recomm/dataset/reports/DATA_COLLECTION_GUIDE.md)
+
+Decisoes:
+
+- a janela temporal alvo passa a ser a maior janela confiavel oficialmente publicada ate o ano atual
+- cada familia sera expandida apenas ate o ultimo ano oficial disponivel
+- a coleta adicional passa a seguir a ordem de prioridade por familia e por utilidade no projeto
+
+### 2026-04-08 - Triagem de downloads externos ao fluxo principal
+
+O que foi feito:
+
+- revisao dos arquivos baixados manualmente fora do acervo principal
+- classificacao entre pipeline, apoio e contexto institucional
+
+Artefato:
+
+- [DOWNLOAD_INBOX_REVIEW_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/DOWNLOAD_INBOX_REVIEW_v0.md)
+
+Achados principais:
+
+- apareceu um shapefile potencialmente relevante da `FRR`
+- apareceram planilhas `ZRR` relevantes para contexto de politica territorial
+- apareceu uma serie historica longa de populacao
+- apareceram tabelas FILOSOFI detalhadas que podem enriquecer muito o bloco de renda
+
+Decisao:
+
+- esses downloads entram agora no radar de integracao controlada
+- a entrada no pipeline sera feita por prioridade e por utilidade metodologica
+
+### 2026-04-08 - Inspecao da camada FRR baixada
+
+O que foi feito:
+
+- inspecao estrutural do arquivo `dataset-1775678390572.zip`
+- verificacao de geometria, projecao, campos e cobertura territorial
+
+Artefato:
+
+- [FRR_LAYER_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FRR_LAYER_INSPECTION_v0.md)
+
+Achado principal:
+
+- a camada `N_FRR_026` e comunal, mas cobre apenas o departamento `26`
+- portanto, nao e uma camada nacional pronta para integrar ao pipeline
+
+Decisao:
+
+- manter como referencia de schema e prova de fonte
+- nao integrar ao pipeline ativo enquanto nao localizarmos a cobertura nacional
+
+### 2026-04-08 - Extracao e inspecao das tabelas ZRR
+
+O que foi feito:
+
+- conversao dos `.xls` de `ZRR`
+- extracao para CSV canonico do projeto
+- verificacao de cobertura historica e de cobertura comunal `COG 2021`
+
+Artefatos:
+
+- [extract_zrr_tables_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/extract_zrr_tables_v0.py)
+- [zrr_historique_communes_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/policy/zrr_historique_communes_v0.csv)
+- [zrr_cog2021_communes_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/policy/zrr_cog2021_communes_v0.csv)
+- [zrr_tables_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/zrr_tables_quality_v0.json)
+- [ZRR_TABLES_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ZRR_TABLES_INSPECTION_v0.md)
+
+Achado principal:
+
+- `ZRR` entra como camada comunal muito forte de politica territorial
+- ha historico institucional utilisavel e uma tabela alinhada ao `COG 2021`
+
+Decisao:
+
+- manter `ZRR` no pipeline ampliado de politica territorial
+- usaremos `ZRR` como referencia enquanto buscamos a cobertura nacional de `FRR`
+
+### 2026-04-08 - Verificacao de alinhamento com o projeto original
+
+O que foi feito:
+
+- releitura dos documentos de projeto para verificar o papel de `ZRR` e das outras restricoes territoriais
+
+Achado principal:
+
+- o projeto original ja previa um bloco de politica territorial com `QPV/ZRR`
+- em versoes posteriores, o desenho tambem incorpora `FRR/FRR+` e `ZAN`
+- isso confirma que a coleta atual de `ZRR/FRR` esta no caminho metodologico correto
+
+Decisao:
+
+- consolidar um bloco futuro de `policy layers`
+- tratar `ZRR`, `FRR/FRR+`, `QPV` e `ZAN` como familia propria no acervo e na documentacao
+
+### 2026-04-08 - Extracao da serie historica de populacao
+
+O que foi feito:
+
+- inspecao da base historica de populacao
+- extracao para CSV comunal canônico
+- validacao de cobertura temporal e geografica
+
+Artefatos:
+
+- [extract_population_history_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/extract_population_history_v0.py)
+- [population_history_communes_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/population_history/population_history_communes_v0.csv)
+- [population_history_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/population_history_quality_v0.json)
+- [POPULATION_HISTORY_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/POPULATION_HISTORY_INSPECTION_v0.md)
+
+Achado principal:
+
+- a base traz uma serie comunal longa e harmonizada em geografia `01/01/2025`
+- ela amplia fortemente o eixo temporal demografico do projeto
+
+Decisao:
+
+- manter a base como fonte estrutural temporal de alta prioridade
+- usar esta serie para preparar a futura expansao temporal do painel
+
+### 2026-04-09 - Agregacao da serie historica de populacao para ZE2020
+
+O que foi feito:
+
+- agregacao da base comunal de populacao historica para `zone d'emploi`
+- geracao de uma serie temporal demografica diretamente no nivel final do projeto
+
+Artefatos:
+
+- [build_population_history_ze2020_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_population_history_ze2020_v0.py)
+- [population_history_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/population_history_ze2020_v0.csv)
+- [population_history_ze2020_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/population_history_ze2020_quality_v0.json)
+- [POPULATION_HISTORY_ZE2020_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/POPULATION_HISTORY_ZE2020_INSPECTION_v0.md)
+
+Resultado:
+
+- `306` zonas
+- `37` colunas temporais
+- apenas `0601 / Mayotte` sem cobertura recente
+
+Decisao:
+
+- esta serie entra como eixo temporal demografico estruturante
+- o proximo debate passa a ser como incorpora-la ao `panel_zones` sem perder clareza metodologica
+
+### 2026-04-09 - Formalizacao da familia `policy_layers`
+
+O que foi feito:
+
+- criacao do desenho formal da familia `policy_layers`
+- definicao do schema comunal canonico
+- normalizacao inicial da camada `ZRR`
+
+Artefatos:
+
+- [build_policy_commune_status_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_policy_commune_status_v0.py)
+- [policy_commune_status_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/policy/policy_commune_status_v0.csv)
+- [policy_layers_registry_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/policy_layers_registry_v0.csv)
+- [policy_commune_status_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/policy_commune_status_quality_v0.json)
+- [POLICY_LAYERS_DESIGN.md](/home/jpdark/Downloads/project_recomm/dataset/reports/POLICY_LAYERS_DESIGN.md)
+
+Decisao:
+
+- `policy_layers` passa a ser familia explicita do projeto
+- `ZRR` entra como primeiro membro normalizado
+- `FRR/FRR+`, `QPV` e `ZAN` permanecem como alvos seguintes da mesma familia
+
+### 2026-04-09 - Organizacao dos downloads brutos de politica
+
+O que foi feito:
+
+- reorganizacao dos downloads de politica em subpastas dedicadas
+- retirada desses arquivos do topo do repositorio
+- preparacao da atualizacao do inventario
+
+Artefatos:
+
+- [POLICY_DOWNLOAD_ORGANIZATION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/POLICY_DOWNLOAD_ORGANIZATION_v0.md)
+- [update_policy_inventory_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/update_policy_inventory_v0.py)
+
+Decisao:
+
+- `data/raw/policy` passa a ser a raiz unica dos brutos institucionais
+- a organizacao por `zrr`, `frr`, `qpv`, `zan` e `legal` fica oficial no projeto
+
+### 2026-04-09 - Organizacao dos brutos de registro empresarial
+
+O que foi feito:
+
+- criacao de uma area dedicada para arquivos `SIRENE`
+- remocao desses brutos do topo do repositorio
+
+Artefatos:
+
+- [RAW_DOWNLOAD_ORGANIZATION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RAW_DOWNLOAD_ORGANIZATION_v0.md)
+- [update_business_registry_inventory_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/update_business_registry_inventory_v0.py)
+
+Decisao:
+
+- `data/raw/business_registry/sirene` passa a ser a raiz desses brutos
+- o topo do repositorio continua reservado ao pipeline vivo e ao acervo principal
+
+### 2026-04-09 - Posicionamento do OCS GE Artificialisation
+
+O que foi decidido:
+
+- `OCS GE Artificialisation` foi reconhecido como fonte importante para o projeto
+- ele tem forte alinhamento com `ZAN` e com a camada de politica/conformidade
+
+Decisao metodologica:
+
+- a fonte fica registrada como importante
+- mas nao entra no caminho critico imediato desta rodada
+- primeiro vamos estruturar `QPV` e `ZAN` com os arquivos ja baixados
+- `OCS GE Artificialisation` entra como expansao posterior qualificada da familia `policy_layers`
+
+### 2026-04-09 - Convencao de nomes do repositorio
+
+O que foi feito:
+
+- formalizacao de uma convencao de nomes para scripts, datasets, relatorios e documentos vivos
+- alinhamento do script de integracao do `QPV` ao padrao definido
+
+Artefatos:
+
+- [NAMING_CONVENTIONS_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/NAMING_CONVENTIONS_v0.md)
+- [integrate_qpv_policy_commune_status_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/integrate_qpv_policy_commune_status_v0.py)
+
+Decisao:
+
+- arquivos tecnicos novos passam a seguir padrao explicito de nomenclatura
+- scripts Python devem combinar verbo, objeto, escopo e versao
+
+### 2026-04-09 - Integracao do `QPV` na familia `policy_layers`
+
+O que foi feito:
+
+- extracao das tabelas `QPV`
+- integracao de `QPV 2024` no schema canônico `policy_commune_status_v0`
+- ativacao formal de `QPV` no registro da familia
+
+Artefatos:
+
+- [extract_qpv_tables_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/extract_qpv_tables_v0.py)
+- [integrate_qpv_policy_commune_status_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/integrate_qpv_policy_commune_status_v0.py)
+- [qpv_2024_communes_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/policy/qpv_2024_communes_v0.csv)
+- [qpv_correspondance_2024_2015_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/policy/qpv_correspondance_2024_2015_v0.csv)
+- [policy_commune_status_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/policy/policy_commune_status_v0.csv)
+- [policy_layers_registry_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/policy_layers_registry_v0.csv)
+- [policy_commune_status_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/policy_commune_status_quality_v0.json)
+- [QPV_TABLES_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/QPV_TABLES_INSPECTION_v0.md)
+
+Resultado:
+
+- `1584` linhas `QPV` adicionadas
+- `823` comunas distintas cobertas
+- `policy_layers` agora tem `ZRR` e `QPV` ativos
+
+Decisao:
+
+- `QPV` passa a integrar o bloco institucional ativo do projeto
+- o proximo membro a estruturar continua sendo `ZAN`
+
+### 2026-04-09 - Abertura da camada quantitativa `ZAN`
+
+O que foi feito:
+
+- extracao canônica da tabela comunal `conso2009-2024-resultats-com.csv`
+- criacao de uma camada interim quantitativa para `ZAN`
+- atualizacao do registro da familia para indicar carga quantitativa parcial
+
+Artefatos:
+
+- [extract_zan_consumption_communes_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/extract_zan_consumption_communes_v0.py)
+- [zan_consumption_communes_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/policy/zan_consumption_communes_v0.csv)
+- [zan_consumption_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/zan_consumption_quality_v0.json)
+- [ZAN_CONSUMPTION_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ZAN_CONSUMPTION_INSPECTION_v0.md)
+- [policy_layers_registry_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/policy_layers_registry_v0.csv)
+
+Resultado:
+
+- `34905` linhas comunais
+- `138` colunas
+- `ZAN` passa a ter camada interim ativa
+
+Decisao:
+
+- `ZAN` entra primeiro como tabela quantitativa
+- a traducao para status, regras de conformidade e agregacao `ZE2020` fica para a proxima rodada
+
+### 2026-04-09 - Agregacao da camada quantitativa `ZAN` para `ZE2020`
+
+O que foi feito:
+
+- agregacao de metricas aditivas de `ZAN` para `zone d'emploi`
+- criacao de derivados simples por populacao e por superficie
+
+Artefatos:
+
+- [build_zan_consumption_ze2020_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_zan_consumption_ze2020_v0.py)
+- [zan_consumption_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zan_consumption_ze2020_v0.csv)
+- [zan_consumption_ze2020_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/zan_consumption_ze2020_quality_v0.json)
+- [ZAN_CONSUMPTION_ZE2020_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ZAN_CONSUMPTION_ZE2020_INSPECTION_v0.md)
+
+Resultado:
+
+- `305` zonas cobertas
+- `34837` comunas mapeadas
+- `68` comunas fora do mapeamento atual desta camada
+
+Decisao:
+
+- `ZAN` ja pode entrar no raciocinio territorial em nivel `ZE2020`
+- as `68` comunas nao mapeadas parecem refletir diferencas de `COG` ou alteracoes comunais difusas
+- a proxima etapa sera definir sinais de conformidade para agentes e depois tratar esse ajuste residual de correspondencia
+
+### 2026-04-09 - Revisao de consistencia do pipeline atual
+
+O que foi feito:
+
+- auditoria cruzada entre `zones_master`, `panel_zones`, `population_history_ze2020`, `zan_consumption_ze2020` e `policy_layers`
+- correcao da leitura `QPV`
+- saneamento do historico `ZRR`
+- reconstrucao sequencial de `policy_commune_status_v0`
+
+Artefatos:
+
+- [CONSISTENCY_REVIEW_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/CONSISTENCY_REVIEW_v0.md)
+- [consistency_review_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/consistency_review_v0.json)
+- [extract_qpv_tables_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/extract_qpv_tables_v0.py)
+- [sanitize_zrr_historical_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/sanitize_zrr_historical_v0.py)
+
+Resultado:
+
+- datasets canônicos principais estao coerentes
+- `policy_commune_status_v0.csv` voltou a `433235` linhas validas
+- `QPV` ficou com `1373` linhas comunais limpas
+- a unica ausencia territorial recorrente segue sendo `0601 / Mayotte`
+
+Decisao:
+
+- podemos seguir para visualizacao diagnostica sem carregar incoerencia estrutural grave
+- antes do grafo, ainda permanecem como passivos conhecidos:
+  - `QPV` multi-comuna
+  - reproducao bruta `ZRR`
+  - traducao de `ZAN` para sinais de agente
+
+### 2026-04-09 - Visualizacao diagnostica inicial
+
+O que foi feito:
+
+- geracao de um primeiro pacote de visualizacao diagnostica
+- inspecao da cobertura do `zones_master`
+- inspecao da densidade anual do `panel_zones`
+- inspecao inicial dos extremos da camada `ZAN`
+
+Artefatos:
+
+- [DIAGNOSTICS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/DIAGNOSTICS_V0.md)
+- [diagnostics_summary_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/diagnostics_summary_v0.json)
+- [coverage_count_hist_v0.png](/home/jpdark/Downloads/project_recomm/dataset/reports/diagnostics_v0/coverage_count_hist_v0.png)
+- [zones_master_distributions_v0.png](/home/jpdark/Downloads/project_recomm/dataset/reports/diagnostics_v0/zones_master_distributions_v0.png)
+- [panel_observed_feature_count_v0.png](/home/jpdark/Downloads/project_recomm/dataset/reports/diagnostics_v0/panel_observed_feature_count_v0.png)
+- [zan_top_intensity_v0.png](/home/jpdark/Downloads/project_recomm/dataset/reports/diagnostics_v0/zan_top_intensity_v0.png)
+
+Decisao:
+
+- o dataset ja esta suficientemente visivel para passarmos ao primeiro grafo espacial
+
+### 2026-04-09 - Revisao de prontidao antes do grafo
+
+O que foi feito:
+
+- revisao metodologica do passo seguinte
+- explicitação do problema de ausencia de `ground truth`
+- definicao do papel real do primeiro grafo no projeto
+
+Artefatos:
+
+- [PRE_GRAPH_READINESS_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PRE_GRAPH_READINESS_v0.md)
+- [EVALUATION_WITHOUT_GROUND_TRUTH_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/EVALUATION_WITHOUT_GROUND_TRUTH_v0.md)
+
+Decisao:
+
+- o primeiro grafo sera tratado como infraestrutura metodologica
+- nao como validacao do sistema final
+- o projeto pode avancar para o grafo desde que essa limitacao continue explicita
+
+### 2026-04-09 - Formalizacao da base de dependencias do ambiente
+
+O que foi feito:
+
+- criacao de um arquivo inicial de dependencias Python
+- registro da stack geoespacial como parte oficial do projeto
+
+Artefatos:
+
+- [requirements.txt](/home/jpdark/Downloads/project_recomm/dataset/requirements.txt)
+- [ENVIRONMENT_SETUP_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ENVIRONMENT_SETUP_v0.md)
+
+Decisao:
+
+- a etapa do grafo depende formalmente de uma stack geoespacial
+- essa dependencia deixa de ser implicita e passa a ser registrada no projeto
+
+### 2026-04-09 - Construcao do primeiro grafo `ZE2020`
+
+O que foi feito:
+
+- instalacao da stack geoespacial em `.venv`
+- leitura da geometria oficial `ZE2020`
+- construcao do primeiro grafo por adjacencia geografica
+- validacao de nos, arestas, componentes e isolados
+
+Artefatos:
+
+- [build_ze2020_graph_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_ze2020_graph_v0.py)
+- [graph_nodes_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_nodes_ze2020_v0.csv)
+- [graph_edges_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_edges_ze2020_v0.csv)
+- [graph_ze2020_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_ze2020_quality_v0.json)
+- [GRAPH_ZE2020_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_ZE2020_INSPECTION_v0.md)
+
+Resultado:
+
+- `306` nos
+- `1552` arestas direcionadas
+- `776` arestas nao direcionadas
+- `8` componentes conectados
+- `2` nos isolados: `Marie-Galante` e `Mayotte`
+
+Decisao:
+
+- o primeiro grafo estrutural do projeto esta pronto
+- desconexoes ultramarinas passam a ser tratadas como propriedade territorial do grafo, nao como erro
+
+### 2026-04-09 - Visualizacao inicial do grafo
+
+O que foi feito:
+
+- geracao de mapas do fundo `ZE2020`
+- geracao de mapa por componentes conectados
+- destaque visual dos nos isolados
+
+Artefatos:
+
+- [GRAPH_VISUALS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_VISUALS_V0.md)
+- [ze2020_boundaries_v0.png](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_visuals_v0/ze2020_boundaries_v0.png)
+- [ze2020_graph_components_v0.png](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_visuals_v0/ze2020_graph_components_v0.png)
+- [ze2020_isolated_nodes_v0.png](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_visuals_v0/ze2020_isolated_nodes_v0.png)
+
+Decisao:
+
+- o grafo agora tambem esta visivel, nao apenas tabulado
+
+### 2026-04-09 - Visualizacao interativa do grafo
+
+O que foi feito:
+
+- geracao de um HTML interativo para o grafo `ZE2020`
+
+Artefatos:
+
+- [ze2020_graph_interactive_v0.html](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_visuals_v0/ze2020_graph_interactive_v0.html)
+- [build_graph_visuals_html_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_graph_visuals_html_v0.py)
+
+Decisao:
+
+- a visualizacao principal do grafo passa a ser o HTML interativo
+
+### 2026-04-09 - Recorte `core_v0` do grafo
+
+O que foi feito:
+
+- filtragem do grafo completo para manter apenas a maior componente conectada
+- exclusao formal de Corse e territorios ultramarinos do MVP
+
+Artefatos:
+
+- [GRAPH_SCOPE_DECISION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_SCOPE_DECISION_v0.md)
+- [GRAPH_CORE_V0_INSPECTION.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_CORE_V0_INSPECTION.md)
+- [graph_nodes_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_nodes_ze2020_core_v0.csv)
+- [graph_edges_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_edges_ze2020_core_v0.csv)
+- [graph_excluded_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_excluded_ze2020_core_v0.csv)
+
+Decisao:
+
+- o MVP passa a trabalhar com o `graph_core_v0`
+- Corse e ultramarinos ficam documentados como excluidos temporarios
+
+### 2026-04-09 - Alinhamento dos datasets ao `core_v0`
+
+O que foi feito:
+
+- filtragem dos datasets processados para o mesmo universo territorial do `graph_core_v0`
+- geracao de uma visualizacao HTML exclusiva da Francia continental
+
+Artefatos:
+
+- [CORE_DATASETS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/CORE_DATASETS_V0.md)
+- [zones_master_annual_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zones_master_annual_core_v0.csv)
+- [panel_zones_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/panel_zones_core_v0.csv)
+- [population_history_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/population_history_ze2020_core_v0.csv)
+- [zan_consumption_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zan_consumption_ze2020_core_v0.csv)
+- [GRAPH_CORE_VISUALS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_CORE_VISUALS_V0.md)
+- [ze2020_graph_core_interactive_v0.html](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_visuals_v0/ze2020_graph_core_interactive_v0.html)
+
+Decisao:
+
+- o universo territorial ativo do MVP passa a ser o `core_v0`
+- os proximos blocos devem usar esse recorte de forma consistente
+
+### 2026-04-09 - Pacote pre-STGNN do `core_v0`
+
+O que foi feito:
+
+- criacao do pacote estrutural pre-STGNN
+- geracao do indice de nos
+- geracao do `edge_index`
+- consolidacao do painel com features dinamicas, contexto estatico e masks
+
+Artefatos:
+
+- [PRE_STGNN_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PRE_STGNN_CORE_V0.md)
+- [graph_node_index_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_node_index_core_v0.csv)
+- [graph_edge_index_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_edge_index_core_v0.csv)
+- [pre_stgnn_dataset_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/pre_stgnn_dataset_core_v0.csv)
+- [pre_stgnn_feature_masks_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/pre_stgnn_feature_masks_core_v0.csv)
+- [pre_stgnn_feature_registry_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/pre_stgnn_feature_registry_core_v0.csv)
+- [pre_stgnn_core_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/pre_stgnn_core_quality_v0.json)
+
+Resultado:
+
+- `280` nos
+- `1486` arestas direcionadas
+- `1120` linhas no dataset temporal
+- `16` features dinamicas
+- `6` features estaticas de contexto
+
+Decisao:
+
+- o pacote estrutural do pre-STGNN esta pronto
+- o proximo congelamento necessario e o target inicial do forecasting
+
+### 2026-04-09 - Formalizacao da logica de auditabilidade
+
+O que foi feito:
+
+- registro formal da justificativa metodologica para separar `STGNN`, decisao, agentes e orquestrador
+
+Artefato:
+
+- [AUDITABILITY_RATIONALE_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/AUDITABILITY_RATIONALE_v0.md)
+
+Decisao:
+
+- a arquitetura modular fica explicitamente reconhecida como estrategia de auditoria e validacao, nao apenas de implementacao
+
+### 2026-04-09 - Revisao de prontidao do target inicial
+
+O que foi feito:
+
+- verificacao das bases locais de criacao de empresas
+- comparacao entre o target previsto no plano e a oferta real do acervo atual
+
+Artefato:
+
+- [TARGET_READINESS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_READINESS_V0.md)
+
+Decisao:
+
+- o target do projeto permanece conceitualmente definido
+- mas sua implementacao ainda nao deve ser forçada com o acervo atual
+
+### 2026-04-09 - Abertura das opcoes de derivacao do target
+
+O que foi feito:
+
+- inspecao dos brutos `SIRENE` para avaliar se o target pode ser derivado localmente
+- comparacao entre o estoque atual de estabelecimentos e o historico de periodos
+
+Artefato:
+
+- [TARGET_DERIVATION_OPTIONS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_DERIVATION_OPTIONS_V0.md)
+
+Decisao:
+
+- `SIRENE StockEtablissement` abre um caminho viavel para um target proxy mensal por `commune`
+- esse caminho tem caveat territorial porque a comuna observada e a do estoque atual
+- o projeto passa a distinguir explicitamente `target oficial alvo` de `target proxy candidato`
+
+### 2026-04-09 - Construcao do primeiro target proxy canonico
+
+O que foi feito:
+
+- derivacao do primeiro target proxy mensal por `ZE2020 core_v0` a partir de `SIRENE StockEtablissement`
+- limpeza temporal para manter apenas a janela plausivel `2000 -> 2026`
+
+Artefatos:
+
+- [build_target_proxy_candidate_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_target_proxy_candidate_core_v0.py)
+- [target_proxy_candidate_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/target_proxy_candidate_core_v0.csv)
+- [target_proxy_candidate_core_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/target_proxy_candidate_core_quality_v0.json)
+- [TARGET_PROXY_CANDIDATE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_PROXY_CANDIDATE_CORE_V0.md)
+
+Decisao:
+
+- o projeto passa a ter um target proxy canônico utilizável para baseline tecnico
+- o caveat territorial continua explicito
+- o target oficial da pesquisa continua conceitualmente superior ao proxy
+
+### 2026-04-09 - Alinhamento anual do target para baseline
+
+O que foi feito:
+
+- agregacao do target proxy mensal para frequencia anual
+- construcao de um dataset de baseline com `features_t -> target_t+1`
+
+Artefatos:
+
+- [build_baseline_annual_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_baseline_annual_target_core_v0.py)
+- [target_proxy_annual_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/target_proxy_annual_core_v0.csv)
+- [baseline_annual_dataset_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/baseline_annual_dataset_core_v0.csv)
+- [baseline_annual_target_core_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/baseline_annual_target_core_quality_v0.json)
+- [BASELINE_ANNUAL_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BASELINE_ANNUAL_TARGET_CORE_V0.md)
+
+Decisao:
+
+- o primeiro treino coerente do projeto deve nascer como baseline anual
+- o STGNN mensal fica para uma etapa posterior, quando as features temporais tambem estiverem densas nessa frequencia
+
+### 2026-04-09 - Primeira avaliacao baseline anual sem grafo
+
+O que foi feito:
+
+- avaliacao de dois baselines anuais no `core_v0`
+- `persistence`
+- `ridge_linear`
+
+Artefatos:
+
+- [evaluate_baseline_annual_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_baseline_annual_core_v0.py)
+- [baseline_annual_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/baseline_annual_predictions_core_v0.csv)
+- [baseline_annual_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/baseline_annual_metrics_core_v0.json)
+- [BASELINE_ANNUAL_EVALUATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BASELINE_ANNUAL_EVALUATION_V0.md)
+
+Decisao:
+
+- `persistence` passa a ser o benchmark minimo oficial do projeto
+- a regressao linear simples nao superou esse benchmark
+- o proximo salto de valor esperado fica corretamente deslocado para o modelo com grafo
+
+### 2026-04-09 - Prontidao para o commit da base concreta
+
+O que foi feito:
+
+- consolidacao do escopo da fundacao que deve ser congelada antes da modelagem com grafo
+
+Artefato:
+
+- [FOUNDATION_COMMIT_READINESS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FOUNDATION_COMMIT_READINESS_V0.md)
+- [FOUNDATION_COMMIT_SCOPE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FOUNDATION_COMMIT_SCOPE_V0.md)
+
+Decisao:
+
+- o proximo commit importante do projeto deve congelar grafo, datasets core, target proxy e baseline anual
+- a etapa seguinte passa a ser explicitamente a modelagem com grafo
+- `data/raw/` fica fora desse commit
+
+### 2026-04-09 - Criacao do workflow de scan completo do repositorio
+
+O que foi feito:
+
+- criacao de um script unificado para varrer o repositorio inteiro
+- definicao do bundle padrao de saida para analise posterior
+
+Artefatos:
+
+- [scan_full_repository_v0.sh](/home/jpdark/Downloads/project_recomm/dataset/src/data/scan_full_repository_v0.sh)
+- [SCAN_WORKFLOW_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SCAN_WORKFLOW_V0.md)
+
+Decisao:
+
+- o scan completo passa a ser uma ferramenta oficial de inspeção do projeto
+- o resultado esperado do scan sera interpretado depois como insumo de governanca e auditoria
+
+### 2026-04-09 - Revisao do scan completo do repositorio
+
+O que foi feito:
+
+- leitura dos artefatos centrais produzidos pelo scan
+- consolidacao dos achados tecnicos de integridade e ambiente
+
+Artefato:
+
+- [SCAN_REVIEW_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SCAN_REVIEW_V0.md)
+
+Decisao:
+
+- o acervo foi confirmado como estruturalmente saudavel
+- `SIRENE` permanece como principal candidato para derivacao do target proxy
+- o suporte a `parquet` foi fechado com `pyarrow` e o schema leve dos arquivos `SIRENE` foi confirmado

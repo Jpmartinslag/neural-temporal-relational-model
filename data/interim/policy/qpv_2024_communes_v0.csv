@@ -1,0 +1,1374 @@
+code_qp,lib_qp,insee_reg,lib_reg,insee_dep,lib_dep,insee_com,lib_com,siren_epci,lib_epci
+QN01001I,Gare,44,Grand Est,10,Aube,10387,Troyes,200069250,Communauté d'agglomération Troyes Champagne Métropole
+QN01002M,Bords De Seine,44,Grand Est,10,Aube,10387,Troyes,200069250,Communauté d'agglomération Troyes Champagne Métropole
+QN01004I,Debussy,44,Grand Est,10,Aube,10297,Pont-Sainte-Marie,200069250,Communauté d'agglomération Troyes Champagne Métropole
+QN01005M,Maugout,44,Grand Est,10,Aube,10333,Saint-André-les-Vergers,200069250,Communauté d'agglomération Troyes Champagne Métropole
+QN01007I,Jules Guesde,44,Grand Est,10,Aube,10387,Troyes,200069250,Communauté d'agglomération Troyes Champagne Métropole
+QN01008I,Sénardes,44,Grand Est,10,Aube,10387,Troyes,200069250,Communauté d'agglomération Troyes Champagne Métropole
+QN01009M,Point Du Jour,44,Grand Est,10,Aube,10387,Troyes,200069250,Communauté d'agglomération Troyes Champagne Métropole
+QN01010M,Lumières Boucher Champagne,44,Grand Est,10,Aube,10323,Romilly-sur-Seine,200000545,Communauté de communes des Portes de Romilly-sur-Seine
+QN01101I,Quartier Aude,76,Occitanie,11,Aude,11206,Limoux,200071926,Communauté de communes du Limouxin
+QN01102I,La Conte - Ozanam,76,Occitanie,11,Aude,11069,Carcassonne,200035715,Communauté d'agglomération Carcassonne Agglo
+QN01103I,Le Viguier - Saint-Jacques,76,Occitanie,11,Aude,11069,Carcassonne,200035715,Communauté d'agglomération Carcassonne Agglo
+QN01104I,Bastide Pont-Vieux,76,Occitanie,11,Aude,11069,Carcassonne,200035715,Communauté d'agglomération Carcassonne Agglo
+QN01105I,Fleming La Reille,76,Occitanie,11,Aude,11069,Carcassonne,200035715,Communauté d'agglomération Carcassonne Agglo
+QN01106M,Grazailles,76,Occitanie,11,Aude,11069,Carcassonne,200035715,Communauté d'agglomération Carcassonne Agglo
+QN01107I,Narbonne Ouest,76,Occitanie,11,Aude,11262,Narbonne,241100593,Communauté d'agglomération Le Grand Narbonne
+QN01108I,Narbonne Centre,76,Occitanie,11,Aude,11262,Narbonne,241100593,Communauté d'agglomération Le Grand Narbonne
+QN01109I,Narbonne Est,76,Occitanie,11,Aude,11262,Narbonne,241100593,Communauté d'agglomération Le Grand Narbonne
+QN01110I,Centre-ville,76,Occitanie,11,Aude,11203,Lézignan-Corbières,200035863,Communauté de communes Région Lézignanaise; Corbières et Minervois
+QN01201M,Quatre Saisons,76,Occitanie,12,Aveyron,12176,Onet-le-Château,241200187,Communauté d'agglomération Rodez Agglomération
+QN01202M,Bastide; Tricot et Lapeyrade,76,Occitanie,12,Aveyron,12300,Villefranche-de-Rouergue,200069383,Communauté de communes Ouest Aveyron Communauté
+QN01203N,Costes Rouges,76,Occitanie,12,Aveyron,12176,Onet-le-Château,241200187,Communauté d'agglomération Rodez Agglomération
+QN01204N,Saint- Éloi et Camonil,76,Occitanie,12,Aveyron,12202,Rodez,241200187,Communauté d'agglomération Rodez Agglomération
+QN01205N,Centre ancien et Beauregard,76,Occitanie,12,Aveyron,12145,Millau,241200567,Communauté de communes de Millau Grands Causses
+QN01301M,Florida Parc,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13054,Marignane,200054807,Métropole d'Aix-Marseille-Provence
+QN01302M,Quartier Centre Ville,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13014,Berre-l'Étang,200054807,Métropole d'Aix-Marseille-Provence
+QN01303I,Saint Henri,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01304I,La Viste,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01305M,Roquecoquille,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13027,Châteaurenard,200035087,Communauté d'agglomération Terre de Provence
+QN01306M,La Gavotte - Peyret,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13106,Septèmes-les-Vallons,200054807,Métropole d'Aix-Marseille-Provence
+QN01307M,Château Saint Loup,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01308I,La Capelette,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01309M,Griffeuille,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13004,Arles,241300417,Communauté d'agglomération d'Arles-Crau-Camargue-Montagnette
+QN01310I,Barriol,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13004,Arles,241300417,Communauté d'agglomération d'Arles-Crau-Camargue-Montagnette
+QN01311I,Le Trébon,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13004,Arles,241300417,Communauté d'agglomération d'Arles-Crau-Camargue-Montagnette
+QN01312M,Centre Historique - Ferrages,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13108,Tarascon,241300417,Communauté d'agglomération d'Arles-Crau-Camargue-Montagnette
+QN01313M,Jas-De-Bouffan,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13001,Aix-en-Provence,200054807,Métropole d'Aix-Marseille-Provence
+QN01314M,Beisson,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13001,Aix-en-Provence,200054807,Métropole d'Aix-Marseille-Provence
+QN01315M,Encagnane,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13001,Aix-en-Provence,200054807,Métropole d'Aix-Marseille-Provence
+QN01316M,Corsy,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13001,Aix-en-Provence,200054807,Métropole d'Aix-Marseille-Provence
+QN01317I,Secteur Centre,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13117,Vitrolles,200054807,Métropole d'Aix-Marseille-Provence
+QN01318I,La Frescoule,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13117,Vitrolles,200054807,Métropole d'Aix-Marseille-Provence
+QN01319I,Le Charrel,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13005,Aubagne,200054807,Métropole d'Aix-Marseille-Provence
+QN01320I,Mas de Pouane,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13056,Martigues,200054807,Métropole d'Aix-Marseille-Provence
+QN01321I,Notre Dame Des Marins,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13056,Martigues,200054807,Métropole d'Aix-Marseille-Provence
+QN01322M,Canto Perdrix,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13056,Martigues,200054807,Métropole d'Aix-Marseille-Provence
+QN01323I,Les Aigues Douces,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13077,Port-de-Bouc,200054807,Métropole d'Aix-Marseille-Provence
+QN01324M,Les Comtes,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13077,Port-de-Bouc,200054807,Métropole d'Aix-Marseille-Provence
+QN01325M,Centre Historique,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13067,Orgon,200035087,Communauté d'agglomération Terre de Provence
+QN01326I,Quartier Béalet-Bessons-Mariélie,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13014,Berre-l'Étang,200054807,Métropole d'Aix-Marseille-Provence
+QN01327I,Les Canourgues,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13103,Salon-de-Provence,200054807,Métropole d'Aix-Marseille-Provence
+QN01328I,La Monaque,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13103,Salon-de-Provence,200054807,Métropole d'Aix-Marseille-Provence
+QN01329I,Centre ville,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13054,Marignane,200054807,Métropole d'Aix-Marseille-Provence
+QN01330M,Centre Ville 1er et 2e Arrondissements,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01331M,Canet Arnavaux Jean Jaurès,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01332M,Centre Ville 3e Arrondissement,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01333I,La Cravache Le Trioulet,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01334I,La Cayolle,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01335M,La Sauvagère,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01336M,Benza,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01337I,Saint Thys,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01338I,Air Bel,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01339I,La Rouguière,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01340I,Valbarelle Néréïdes Bosquet,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01342I,Malpassé Corot,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01343I,Balustres Cerisaie,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01344M,Frais Vallon,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01345M,Le Clos La Rose,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01346M,Le Petit Séminaire,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01347I,La Marie,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01348M,Les Olives,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01349M,La Simiane La Paternelle Vieux Moulin,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01350M,Saint Gabriel Bon Secours,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01351M,Saint Jérôme Les Tilleuls,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01352M,Grand Saint Barthélémy,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01353M,Le Castellas Les Micocouliers,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01354M,La Castellane La Bricarde,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01355M,Plan d'Aou Saint Antoine,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01356I,Consolat Ruisseau Mirabeau,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01357M,Saint Louis Campagne Lévêque,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01358I,Les Aygalades,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01359I,Kalliste La Granière La Solidarité,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01360M,La Savine Bosphore,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01361I,Les Tilleuls La Maurelette,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01362I,Cap Janet La Cabucelle Les Crottes,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01363I,La Visitation - Bassens,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01364I,Saint André,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01365M,Le Prépaou,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13047,Istres,200054807,Métropole d'Aix-Marseille-Provence
+QN01366I,La Carraire,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13063,Miramas,200054807,Métropole d'Aix-Marseille-Provence
+QN01367M,La Maille,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13063,Miramas,200054807,Métropole d'Aix-Marseille-Provence
+QN01368M,La Soude Bengale,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01369I,Caillols La Moularde,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13055,Marseille,200054807,Métropole d'Aix-Marseille-Provence
+QN01370N,Boudème-Les Deux Portes-Bargemont,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13056,Martigues,200054807,Métropole d'Aix-Marseille-Provence
+QN01371N,Quartier prioritaire de Port-Saint-Louis,93,Provence-Alpes-Côte d'Azur,13,Bouches-du-Rhône,13078,Port-Saint-Louis-du-Rhône,200054807,Métropole d'Aix-Marseille-Provence
+QN01401M,Chemin Vert,28,Normandie,14,Calvados,14118,Caen,200065597,Communauté urbaine Caen la Mer
+QN01404M,Pierre Heuzé,28,Normandie,14,Calvados,14118,Caen,200065597,Communauté urbaine Caen la Mer
+QN01405I,Calvaire Saint Pierre,28,Normandie,14,Calvados,14118,Caen,200065597,Communauté urbaine Caen la Mer
+QN01406M,Grande Delle - Val - Belles Portes - Grand Parc - Haute Folie - Le Bois,28,Normandie,14,Calvados,14327,Hérouville-Saint-Clair,200065597,Communauté urbaine Caen la Mer
+QN01407M,Le quartier prioritaire de Honfleur,28,Normandie,14,Calvados,14333,Honfleur,200066827,Communauté de communes du Pays de Honfleur-Beuzeville
+QN01408M,Hauteville,28,Normandie,14,Calvados,14366,Lisieux,200069532,Communauté d'agglomération Lisieux Normandie
+QN01501M,Aurillac Sud,84,Auvergne-Rhône-Alpes,15,Cantal,15014,Aurillac,241500230,Communauté d'agglomération du Bassin d'Aurillac
+QN01601M,Basseau - Grande Garenne,75,Nouvelle-Aquitaine,16,Charente,16015,Angoulême,200071827,Communauté d'agglomération du Grand Angoulême
+QN01602I,Ma Campagne,75,Nouvelle-Aquitaine,16,Charente,16015,Angoulême,200071827,Communauté d'agglomération du Grand Angoulême
+QN01603M,Bel Air - La Grand Font,75,Nouvelle-Aquitaine,16,Charente,16015,Angoulême,200071827,Communauté d'agglomération du Grand Angoulême
+QN01604M,L'Etang Des Moines,75,Nouvelle-Aquitaine,16,Charente,16113,La Couronne,200071827,Communauté d'agglomération du Grand Angoulême
+QN01605M,Champ De Manuvre,75,Nouvelle-Aquitaine,16,Charente,16374,Soyaux,200071827,Communauté d'agglomération du Grand Angoulême
+QN01606M,Crouin,75,Nouvelle-Aquitaine,16,Charente,16102,Cognac,200070514,Communauté d'agglomération du Grand Cognac
+QN01701M,Mireuil,75,Nouvelle-Aquitaine,17,Charente-Maritime,17300,La Rochelle,241700434,Communauté d'agglomération de La Rochelle
+QN01702M,Villeneuve-Les-Salines,75,Nouvelle-Aquitaine,17,Charente-Maritime,17300,La Rochelle,241700434,Communauté d'agglomération de La Rochelle
+QN01703M,Boiffiers - Bellevue,75,Nouvelle-Aquitaine,17,Charente-Maritime,17415,Saintes,200036473,Communauté d'agglomération de Saintes - Grandes Rives - L'Agglo
+QN01704I,Sud Centre-Ville - Avant-Garde,75,Nouvelle-Aquitaine,17,Charente-Maritime,17299,Rochefort,200041762,Communauté d'agglomération Rochefort Océan
+QN01705M,Petit Marseille - Gélinerie,75,Nouvelle-Aquitaine,17,Charente-Maritime,17299,Rochefort,200041762,Communauté d'agglomération Rochefort Océan
+QN01706M,L'Estuaire,75,Nouvelle-Aquitaine,17,Charente-Maritime,17306,Royan,241700640,Communauté d'agglomération Royan Atlantique
+QN01707M,Port-Neuf,75,Nouvelle-Aquitaine,17,Charente-Maritime,17300,La Rochelle,241700434,Communauté d'agglomération de La Rochelle
+QN01801M,Bourges Nord,24,Centre-Val de Loire,18,Cher,18033,Bourges,241800507,Communauté d'agglomération Bourges Plus
+QN01802M,Val d'Auron - Bourges,24,Centre-Val de Loire,18,Cher,18033,Bourges,241800507,Communauté d'agglomération Bourges Plus
+QN01803M,Le Vernet - Saint Amand Montrond,24,Centre-Val de Loire,18,Cher,18197,Saint-Amand-Montrond,200036135,Communauté de communes Cur de France
+QN01804M,Clos Du Roy - Centre Ville - Vierzon,24,Centre-Val de Loire,18,Cher,18279,Vierzon,200090561,Communauté de communes Vierzon-Sologne-Berry
+QN01901M,Quartier de Rivet,75,Nouvelle-Aquitaine,19,Corrèze,19031,Brive-la-Gaillarde,200043172,Communauté d'agglomération du Bassin de Brive
+QN01902M,Quartier Tujac-Gaubre,75,Nouvelle-Aquitaine,19,Corrèze,19031,Brive-la-Gaillarde,200043172,Communauté d'agglomération du Bassin de Brive
+QN01903M,Quartier des Chapélies,75,Nouvelle-Aquitaine,19,Corrèze,19031,Brive-la-Gaillarde,200043172,Communauté d'agglomération du Bassin de Brive
+QN02101M,Le Mail,27,Bourgogne-Franche-Comté,21,Côte-d'Or,21166,Chenôve,242100410,Dijon Métropole
+QN02102M,Fontaine D'Ouche,27,Bourgogne-Franche-Comté,21,Côte-d'Or,21231,Dijon,242100410,Dijon Métropole
+QN02103M,Les Grésilles,27,Bourgogne-Franche-Comté,21,Côte-d'Or,21231,Dijon,242100410,Dijon Métropole
+QN02104M,Le Bief Du Moulin,27,Bourgogne-Franche-Comté,21,Côte-d'Or,21355,Longvic,242100410,Dijon Métropole
+QN02105M,Le Belvédère,27,Bourgogne-Franche-Comté,21,Côte-d'Or,21617,Talant,242100410,Dijon Métropole
+QN02106N,Quetigny Centre,27,Bourgogne-Franche-Comté,21,Côte-d'Or,21515,Quetigny,242100410,Dijon Métropole
+QN02201M,Ar Santé - Les Fontaines,53,Bretagne,22,Côtes-d'Armor,22113,Lannion,200065928,Communauté d'agglomération Lannion-Trégor Communauté
+QN02202M,Ker Uhel,53,Bretagne,22,Côtes-d'Armor,22113,Lannion,200065928,Communauté d'agglomération Lannion-Trégor Communauté
+QN02203I,Croix Saint-Lambert - Ville Oger,53,Bretagne,22,Côtes-d'Armor,22278,Saint-Brieuc,200069409,Communauté d'agglomération Saint-Brieuc Armor Agglomération
+QN02204M,Le Plateau - Europe - Balzac,53,Bretagne,22,Côtes-d'Armor,22278,Saint-Brieuc,200069409,Communauté d'agglomération Saint-Brieuc Armor Agglomération
+QN02205I,Waron - Point Du Jour,53,Bretagne,22,Côtes-d'Armor,22278,Saint-Brieuc,200069409,Communauté d'agglomération Saint-Brieuc Armor Agglomération
+QN02206I,La Fontaine des Eaux,53,Bretagne,22,Côtes-d'Armor,22050,Dinan,200068989,Communauté d'agglomération Dinan Agglomération
+QN02207N,Castel Pic - Roudourou - La Madeleine,53,Bretagne,22,Côtes-d'Armor,22070,Guingamp,200067981,Communauté d'agglomération Guingamp-Paimpol Agglomération de l'Armor à l'Argoat
+QN02301M,L'Albatros,75,Nouvelle-Aquitaine,23,Creuse,23096,Guéret,200034825,Communauté d'agglomération du Grand Guéret
+QN02401M,Quartier Rive-Gauche,75,Nouvelle-Aquitaine,24,Dordogne,24037,Bergerac,200070647,Communauté d'agglomération Bergeracoise
+QN02402M,Quartier Centre-ville,75,Nouvelle-Aquitaine,24,Dordogne,24037,Bergerac,200070647,Communauté d'agglomération Bergeracoise
+QN02403M,Quartier Nord,75,Nouvelle-Aquitaine,24,Dordogne,24037,Bergerac,200070647,Communauté d'agglomération Bergeracoise
+QN02404M,Chamiers,75,Nouvelle-Aquitaine,24,Dordogne,24138,Coulounieix-Chamiers,200040392,Communauté d'agglomération Le Grand Périgueux
+QN02501M,Le Grand-Longs-Traits/Berlioz,27,Bourgogne-Franche-Comté,25,Doubs,25462,Pontarlier,242500338,Communauté de communes du Grand Pontarlier
+QN02502M,Orchamps-Palente,27,Bourgogne-Franche-Comté,25,Doubs,25056,Besançon,242500361,Communauté urbaine Grand Besançon Métropole
+QN02503M,Planoise,27,Bourgogne-Franche-Comté,25,Doubs,25056,Besançon,242500361,Communauté urbaine Grand Besançon Métropole
+QN02504M,Montrapon,27,Bourgogne-Franche-Comté,25,Doubs,25056,Besançon,242500361,Communauté urbaine Grand Besançon Métropole
+QN02505M,Clairs Soleil,27,Bourgogne-Franche-Comté,25,Doubs,25056,Besançon,242500361,Communauté urbaine Grand Besançon Métropole
+QN02506M,Les Champs Montants,27,Bourgogne-Franche-Comté,25,Doubs,25031,Audincourt,200065647,Communauté d'agglomération Pays de Montbéliard Agglomération
+QN02507M,Champvallon,27,Bourgogne-Franche-Comté,25,Doubs,25057,Bethoncourt,200065647,Communauté d'agglomération Pays de Montbéliard Agglomération
+QN02508M,Les Fougères,27,Bourgogne-Franche-Comté,25,Doubs,25284,Grand-Charmont,200065647,Communauté d'agglomération Pays de Montbéliard Agglomération
+QN02509M,Chiffogne,27,Bourgogne-Franche-Comté,25,Doubs,25388,Montbéliard,200065647,Communauté d'agglomération Pays de Montbéliard Agglomération
+QN02510M,Petite Hollande,27,Bourgogne-Franche-Comté,25,Doubs,25388,Montbéliard,200065647,Communauté d'agglomération Pays de Montbéliard Agglomération
+QN02511M,Les Evoironnes,27,Bourgogne-Franche-Comté,25,Doubs,25547,Sochaux,200065647,Communauté d'agglomération Pays de Montbéliard Agglomération
+QN02512M,Les Buis,27,Bourgogne-Franche-Comté,25,Doubs,25580,Valentigney,200065647,Communauté d'agglomération Pays de Montbéliard Agglomération
+QN02513N,Batteries du Parc,27,Bourgogne-Franche-Comté,25,Doubs,25388,Montbéliard,200065647,Communauté d'agglomération Pays de Montbéliard Agglomération
+QN02514N,Forges - Montanot,27,Bourgogne-Franche-Comté,25,Doubs,25031,Audincourt,200065647,Communauté d'agglomération Pays de Montbéliard Agglomération
+QN02515N,Hauts de Saint-Claude,27,Bourgogne-Franche-Comté,25,Doubs,25056,Besançon,242500361,Communauté urbaine Grand Besançon Métropole
+QN02516N,Les Pareuses,27,Bourgogne-Franche-Comté,25,Doubs,25462,Pontarlier,242500338,Communauté de communes du Grand Pontarlier
+QN02517N,Battant,27,Bourgogne-Franche-Comté,25,Doubs,25056,Besançon,242500361,Communauté urbaine Grand Besançon Métropole
+QN02601I,Centre Ancien,84,Auvergne-Rhône-Alpes,26,Drôme,26281,Romans-sur-Isère,200068781,Communauté d'agglomération Valence Romans Agglo
+QN02602M,Quartiers Ouest,84,Auvergne-Rhône-Alpes,26,Drôme,26198,Montélimar,200040459,Communauté d'agglomération Montélimar Agglomération
+QN02603M,Nocaze,84,Auvergne-Rhône-Alpes,26,Drôme,26198,Montélimar,200040459,Communauté d'agglomération Montélimar Agglomération
+QN02604M,Centre Historique,84,Auvergne-Rhône-Alpes,26,Drôme,26198,Montélimar,200040459,Communauté d'agglomération Montélimar Agglomération
+QN02605I,Quartiers Est,84,Auvergne-Rhône-Alpes,26,Drôme,26281,Romans-sur-Isère,200068781,Communauté d'agglomération Valence Romans Agglo
+QN02606M,Polygone,84,Auvergne-Rhône-Alpes,26,Drôme,26362,Valence,200068781,Communauté d'agglomération Valence Romans Agglo
+QN02607M,Les Hauts de Valence,84,Auvergne-Rhône-Alpes,26,Drôme,26362,Valence,200068781,Communauté d'agglomération Valence Romans Agglo
+QN02608I,Valensolles,84,Auvergne-Rhône-Alpes,26,Drôme,26362,Valence,200068781,Communauté d'agglomération Valence Romans Agglo
+QN02609M,Chamberlière,84,Auvergne-Rhône-Alpes,26,Drôme,26362,Valence,200068781,Communauté d'agglomération Valence Romans Agglo
+QN02610M,Le Roc,84,Auvergne-Rhône-Alpes,26,Drôme,26235,Pierrelatte,200042901,Communauté de communes Drôme Sud Provence
+QN02611M,Cur De Loriol,84,Auvergne-Rhône-Alpes,26,Drôme,26166,Loriol-sur-Drôme,242600252,Communauté de communes du Val de Drôme en Biovallée
+QN02612M,Clairval,84,Auvergne-Rhône-Alpes,26,Drôme,26325,Saint-Rambert-d'Albon,200040491,Communauté de communes Porte de DrômArdèche
+QN02701M,Les Eglantiers - Valmeux Blanchères - Boutardes,28,Normandie,27,Eure,27681,Vernon,200072312,Communauté d'agglomération Seine Normandie Agglomération
+QN02702M,La Madeleine,28,Normandie,27,Eure,27229,Évreux,200071454,Communauté d'agglomération Evreux Portes de Normandie
+QN02703M,Nétreville,28,Normandie,27,Eure,27229,Évreux,200071454,Communauté d'agglomération Evreux Portes de Normandie
+QN02704M,Navarre,28,Normandie,27,Eure,27229,Évreux,200071454,Communauté d'agglomération Evreux Portes de Normandie
+QN02705M,Maison-Rouge,28,Normandie,27,Eure,27375,Louviers,200089456,Communauté d'agglomération Seine-Eure
+QN02706M,Acacias - La Londe - Les Oiseaux - Salengro,28,Normandie,27,Eure,27375,Louviers,200089456,Communauté d'agglomération Seine-Eure
+QN02707M,Centre ville,28,Normandie,27,Eure,27701,Val-de-Reuil,200089456,Communauté d'agglomération Seine-Eure
+QN02708M,Le Bourg Le Comte,28,Normandie,27,Eure,27056,Bernay,200066413,Communauté de communes Intercom Bernay Terres de Normandie
+QN02709M,L'Europe,28,Normandie,27,Eure,27467,Pont-Audemer,200065787,Communauté de communes de Pont-Audemer / Val de Risle
+QN02710M,La Passerelle,28,Normandie,27,Eure,27467,Pont-Audemer,200065787,Communauté de communes de Pont-Audemer / Val de Risle
+QN02711N,Gailloncelle - Verte Bonne - Jardin du bas,28,Normandie,27,Eure,27275,Gaillon,200089456,Communauté d'agglomération Seine-Eure
+QN02712N,Quartier du Stade,28,Normandie,27,Eure,27056,Bernay,200066413,Communauté de communes Intercom Bernay Terres de Normandie
+QN02801M,Les Vauvettes,24,Centre-Val de Loire,28,Eure-et-Loir,28404,Vernouillet,200040277,Communauté d'agglomération Agglo du Pays de Dreux
+QN02802M,Les Clos,24,Centre-Val de Loire,28,Eure-et-Loir,28085,Chartres,200033181,Communauté d'agglomération Chartres Métropole
+QN02803M,Vieux Puits - Paradis - Maunoury,24,Centre-Val de Loire,28,Eure-et-Loir,28218,Lucé,200033181,Communauté d'agglomération Chartres Métropole
+QN02804M,Bruxelles - Arcades - Béguines,24,Centre-Val de Loire,28,Eure-et-Loir,28218,Lucé,200033181,Communauté d'agglomération Chartres Métropole
+QN02805I,Tallemont - Bretagne,24,Centre-Val de Loire,28,Eure-et-Loir,28229,Mainvilliers,200033181,Communauté d'agglomération Chartres Métropole
+QN02807M,Les Rochelles - Barthou,24,Centre-Val de Loire,28,Eure-et-Loir,28134,Dreux,200040277,Communauté d'agglomération Agglo du Pays de Dreux
+QN02808M,Dunant - Kennedy,24,Centre-Val de Loire,28,Eure-et-Loir,28134,Dreux,200040277,Communauté d'agglomération Agglo du Pays de Dreux
+QN02809M,Beauvoir,24,Centre-Val de Loire,28,Eure-et-Loir,28088,Châteaudun,200069961,Communauté de communes du Grand Châteaudun
+QN02810M,Le Val,24,Centre-Val de Loire,28,Eure-et-Loir,28280,Nogent-le-Rotrou,200006971,Communauté de communes du Perche
+QN02811N,La Madeleine,24,Centre-Val de Loire,28,Eure-et-Loir,28085,Chartres,200033181,Communauté d'agglomération Chartres Métropole
+QN02901M,Kerandon,53,Bretagne,29,Finistère,29039,Concarneau,242900769,Communauté d'agglomération Concarneau Cornouaille Agglomération
+QN02902M,Kermoysan,53,Bretagne,29,Finistère,29232,Quimper,200068120,Communauté d'agglomération Quimper Bretagne Occidentale
+QN02903M,Kerourien,53,Bretagne,29,Finistère,29019,Brest,242900314,Brest Métropole
+QN02904M,Bellevue,53,Bretagne,29,Finistère,29019,Brest,242900314,Brest Métropole
+QN02905M,Keredern,53,Bretagne,29,Finistère,29019,Brest,242900314,Brest Métropole
+QN02906M,Lambézellec Bourg,53,Bretagne,29,Finistère,29019,Brest,242900314,Brest Métropole
+QN02907M,Pontanézen,53,Bretagne,29,Finistère,29019,Brest,242900314,Brest Métropole
+QN02908M,Queliverzan Pontaniou,53,Bretagne,29,Finistère,29019,Brest,242900314,Brest Métropole
+QN02909M,Kerangoff Loti,53,Bretagne,29,Finistère,29019,Brest,242900314,Brest Métropole
+QN03001I,Près Saint Jean - Cévennes - Tamaris - Cauvel-la Royale - Rochebelle - Centre ville,76,Occitanie,30,Gard,30007,Alès,200066918,Communauté d'agglomération Alès Agglomération
+QN03002M,Centre Ville,76,Occitanie,30,Gard,30010,Anduze,200066918,Communauté d'agglomération Alès Agglomération
+QN03003M,Pissevin - Valdegour,76,Occitanie,30,Gard,30189,Nîmes,243000643,Communauté d'agglomération de Nîmes Métropole
+QN03004I,Gambetta-Richelieu,76,Occitanie,30,Gard,30189,Nîmes,243000643,Communauté d'agglomération de Nîmes Métropole
+QN03005I,Chemin-Bas D'Avignon - Clos D'Orville,76,Occitanie,30,Gard,30189,Nîmes,243000643,Communauté d'agglomération de Nîmes Métropole
+QN03006I,Mas De Mingue,76,Occitanie,30,Gard,30189,Nîmes,243000643,Communauté d'agglomération de Nîmes Métropole
+QN03007M,Route de Beaucaire,76,Occitanie,30,Gard,30189,Nîmes,243000643,Communauté d'agglomération de Nîmes Métropole
+QN03008M,Némausus-Jonquilles - Haute Magaille - Oliviers,76,Occitanie,30,Gard,30189,Nîmes,243000643,Communauté d'agglomération de Nîmes Métropole
+QN03009M,Sabatot - Centre Ancien,76,Occitanie,30,Gard,30258,Saint-Gilles,243000643,Communauté d'agglomération de Nîmes Métropole
+QN03010M,Escanaux - Coronelle - Citadelle - Vigan Braquet,76,Occitanie,30,Gard,30028,Bagnols-sur-Cèze,200034692,Communauté d'agglomération du Gard Rhodanien
+QN03011I,Centre Ville,76,Occitanie,30,Gard,30202,Pont-Saint-Esprit,200034692,Communauté d'agglomération du Gard Rhodanien
+QN03012M,La Moulinelle,76,Occitanie,30,Gard,30032,Beaucaire,243000585,Communauté de communes Beaucaire Terre d'Argence
+QN03013M,Centre Ville,76,Occitanie,30,Gard,30032,Beaucaire,243000585,Communauté de communes Beaucaire Terre d'Argence
+QN03014M,L'Ecusson,76,Occitanie,30,Gard,30227,Saint-Ambroix,200035129,Communauté de communes de Cèze Cévennes
+QN03015M,Les Costières,76,Occitanie,30,Gard,30341,Vauvert,243000593,Communauté de communes de Petite Camargue
+QN03017M,Quartier Amandiers-Mûriers,76,Occitanie,30,Gard,30334,Uzès,200034379,Communauté de communes Pays d'Uzès
+QN03101M,Saint Jean,76,Occitanie,31,Haute-Garonne,31395,Muret,200068641,Communauté d'agglomération Le Muretain Agglo
+QN03102M,Centre Ouest,76,Occitanie,31,Haute-Garonne,31395,Muret,200068641,Communauté d'agglomération Le Muretain Agglo
+QN03103M,Cur et quartier de Saint-Gaudens,76,Occitanie,31,Haute-Garonne,31483,Saint-Gaudens,200072643,Communauté de communes Cur et Coteaux du Comminges
+QN03104M,Barradels,76,Occitanie,31,Haute-Garonne,31069,Blagnac,243100518,Toulouse Métropole
+QN03105M,Grand Val d'Aran-en-Jacca,76,Occitanie,31,Haute-Garonne,31149,Colomiers,243100518,Toulouse Métropole
+QN03106I,Pradettes,76,Occitanie,31,Haute-Garonne,31555,Toulouse,243100518,Toulouse Métropole
+QN03107M,Grand Mirail,76,Occitanie,31,Haute-Garonne,31555,Toulouse,243100518,Toulouse Métropole
+QN03108M,Arènes,76,Occitanie,31,Haute-Garonne,31555,Toulouse,243100518,Toulouse Métropole
+QN03109M,Empalot,76,Occitanie,31,Haute-Garonne,31555,Toulouse,243100518,Toulouse Métropole
+QN03110M,Izards - 3 Cocus - La Vache,76,Occitanie,31,Haute-Garonne,31555,Toulouse,243100518,Toulouse Métropole
+QN03111I,Cépière Beauregard,76,Occitanie,31,Haute-Garonne,31555,Toulouse,243100518,Toulouse Métropole
+QN03112M,Breguet Lecrivain - Saint Exupéry,76,Occitanie,31,Haute-Garonne,31555,Toulouse,243100518,Toulouse Métropole
+QN03113M,Soupetard,76,Occitanie,31,Haute-Garonne,31555,Toulouse,243100518,Toulouse Métropole
+QN03114M,Vivier Maçon,76,Occitanie,31,Haute-Garonne,31157,Cugnaux,243100518,Toulouse Métropole
+QN03115I,La Gloire,76,Occitanie,31,Haute-Garonne,31555,Toulouse,243100518,Toulouse Métropole
+QN03116N,Le Seycheron,76,Occitanie,31,Haute-Garonne,31149,Colomiers,243100518,Toulouse Métropole
+QN03117N,Lalande Nord,76,Occitanie,31,Haute-Garonne,31555,Toulouse,243100518,Toulouse Métropole
+QN03118N,Ginestous,76,Occitanie,31,Haute-Garonne,31555,Toulouse,243100518,Toulouse Métropole
+QN03119N,La Fourguette,76,Occitanie,31,Haute-Garonne,31555,Toulouse,243100518,Toulouse Métropole
+QN03201M,Grand Garros,76,Occitanie,32,Gers,32013,Auch,200066926,Communauté d'agglomération Grand Auch Cur de Gascogne
+QN03302M,Yser - Pont de Madame,75,Nouvelle-Aquitaine,33,Gironde,33281,Mérignac,243300316,Bordeaux Métropole
+QN03303M,Quartier du Centre,75,Nouvelle-Aquitaine,33,Gironde,33138,Coutras,200070092,Communauté d'agglomération du Libournais
+QN03305M,Quartier de l'Avenir,75,Nouvelle-Aquitaine,33,Gironde,33032,Bassens,243300316,Bordeaux Métropole
+QN03307M,Le Lac,75,Nouvelle-Aquitaine,33,Gironde,33063,Bordeaux,243300316,Bordeaux Métropole
+QN03308M,Marne-Capucins,75,Nouvelle-Aquitaine,33,Gironde,33063,Bordeaux,243300316,Bordeaux Métropole
+QN03310M,Grand-Parc,75,Nouvelle-Aquitaine,33,Gironde,33063,Bordeaux,243300316,Bordeaux Métropole
+QN03311M,Bacalan,75,Nouvelle-Aquitaine,33,Gironde,33063,Bordeaux,243300316,Bordeaux Métropole
+QN03313M,Grand Caillou,75,Nouvelle-Aquitaine,33,Gironde,33162,Eysines,243300316,Bordeaux Métropole
+QN03314M,Jean Jaurès,75,Nouvelle-Aquitaine,33,Gironde,33167,Floirac,243300316,Bordeaux Métropole
+QN03315M,Barthez,75,Nouvelle-Aquitaine,33,Gironde,33192,Gradignan,243300316,Bordeaux Métropole
+QN03316M,Carriet,75,Nouvelle-Aquitaine,33,Gironde,33249,Lormont,243300316,Bordeaux Métropole
+QN03317M,Génicart Est,75,Nouvelle-Aquitaine,33,Gironde,33249,Lormont,243300316,Bordeaux Métropole
+QN03318M,Alpilles-Vincennes-Bois Fleuri,75,Nouvelle-Aquitaine,33,Gironde,33249,Lormont,243300316,Bordeaux Métropole
+QN03319M,Beaudésert,75,Nouvelle-Aquitaine,33,Gironde,33281,Mérignac,243300316,Bordeaux Métropole
+QN03320M,Châtaigneraie - Arago,75,Nouvelle-Aquitaine,33,Gironde,33318,Pessac,243300316,Bordeaux Métropole
+QN03321M,Saige,75,Nouvelle-Aquitaine,33,Gironde,33318,Pessac,243300316,Bordeaux Métropole
+QN03322M,Thouars,75,Nouvelle-Aquitaine,33,Gironde,33522,Talence,243300316,Bordeaux Métropole
+QN03323M,Dorat,75,Nouvelle-Aquitaine,33,Gironde,33039,Bègles,243300316,Bordeaux Métropole
+QN03324N,Thorez Goëlands,75,Nouvelle-Aquitaine,33,Gironde,33039,Bègles,243300316,Bordeaux Métropole
+QN03325N,Haut Livrac,75,Nouvelle-Aquitaine,33,Gironde,33318,Pessac,243300316,Bordeaux Métropole
+QN03401M,Centre Ville,76,Occitanie,34,Hérault,34032,Béziers,243400769,Communauté d'agglomération de Béziers-Méditerranée
+QN03402M,Iranget Grangette,76,Occitanie,34,Hérault,34032,Béziers,243400769,Communauté d'agglomération de Béziers-Méditerranée
+QN03403M,Devèze,76,Occitanie,34,Hérault,34032,Béziers,243400769,Communauté d'agglomération de Béziers-Méditerranée
+QN03404M,Celleneuve,76,Occitanie,34,Hérault,34172,Montpellier,243400017,Montpellier Méditerranée Métropole
+QN03405M,Mosson,76,Occitanie,34,Hérault,34172,Montpellier,243400017,Montpellier Méditerranée Métropole
+QN03406I,Petit Bard Pergola,76,Occitanie,34,Hérault,34172,Montpellier,243400017,Montpellier Méditerranée Métropole
+QN03407I,Paul Valéry - Pas Du Loup - Val De Croze,76,Occitanie,34,Hérault,34172,Montpellier,243400017,Montpellier Méditerranée Métropole
+QN03408I,Cévennes,76,Occitanie,34,Hérault,34172,Montpellier,243400017,Montpellier Méditerranée Métropole
+QN03409M,Gély - Figuerolles,76,Occitanie,34,Hérault,34172,Montpellier,243400017,Montpellier Méditerranée Métropole
+QN03410M,Lemasson - Croix d'Argent,76,Occitanie,34,Hérault,34172,Montpellier,243400017,Montpellier Méditerranée Métropole
+QN03411I,Tournezy-Saint Martin,76,Occitanie,34,Hérault,34172,Montpellier,243400017,Montpellier Méditerranée Métropole
+QN03412I,Pompignane,76,Occitanie,34,Hérault,34172,Montpellier,243400017,Montpellier Méditerranée Métropole
+QN03413I,Aiguelongue,76,Occitanie,34,Hérault,34172,Montpellier,243400017,Montpellier Méditerranée Métropole
+QN03414M,Coeur de ville à Calmette,76,Occitanie,34,Hérault,34108,Frontignan,200066355,Communauté d'agglomération Sète Agglopôle Méditerranée
+QN03415I,Ile De Thau,76,Occitanie,34,Hérault,34301,Sète,200066355,Communauté d'agglomération Sète Agglopôle Méditerranée
+QN03416M,Centre Ville - Ile Sud,76,Occitanie,34,Hérault,34301,Sète,200066355,Communauté d'agglomération Sète Agglopôle Méditerranée
+QN03417M,Centre Ville,76,Occitanie,34,Hérault,34003,Agde,243400819,Communauté d'agglomération Hérault-Méditerranée
+QN03418M,Centre Ville,76,Occitanie,34,Hérault,34028,Bédarieux,200042646,Communauté de communes Grand Orb communauté de communes en Languedoc
+QN03419M,Centre Et Périphérie,76,Occitanie,34,Hérault,34145,Lunel,243400520,Communauté d'agglomération Lunel Agglo
+QN03420M,Centre Ville,76,Occitanie,34,Hérault,34142,Lodève,200017341,Communauté de communes Lodévois et Larzac
+QN03421N,Centre Ville,76,Occitanie,34,Hérault,34079,Clermont-l'Hérault,243400355,Communauté de communes du Clermontais
+QN03501I,La Découverte,53,Bretagne,35,Ille-et-Vilaine,35288,Saint-Malo,243500782,Communauté d'agglomération du Pays de Saint Malo Agglomération
+QN03502M,Villejean,53,Bretagne,35,Ille-et-Vilaine,35238,Rennes,243500139,Rennes Métropole
+QN03503I,Bréquigny - Champs-Manceaux - Les Clôteaux,53,Bretagne,35,Ille-et-Vilaine,35238,Rennes,243500139,Rennes Métropole
+QN03504M,Maurepas,53,Bretagne,35,Ille-et-Vilaine,35238,Rennes,243500139,Rennes Métropole
+QN03505M,Le Blosne,53,Bretagne,35,Ille-et-Vilaine,35238,Rennes,243500139,Rennes Métropole
+QN03506I,Cleunay,53,Bretagne,35,Ille-et-Vilaine,35238,Rennes,243500139,Rennes Métropole
+QN03601M,Beaulieu,24,Centre-Val de Loire,36,Indre,36044,Châteauroux,243600327,Communauté d'agglomération Châteauroux Métropole
+QN03602M,Saint Jean - Saint Jacques,24,Centre-Val de Loire,36,Indre,36044,Châteauroux,243600327,Communauté d'agglomération Châteauroux Métropole
+QN03603M,Vaugirard - Saint Christophe - Les Rocheforts,24,Centre-Val de Loire,36,Indre,36044,Châteauroux,243600327,Communauté d'agglomération Châteauroux Métropole
+QN03604I,Nation Bernardines,24,Centre-Val de Loire,36,Indre,36088,Issoudun,243600236,Communauté de communes du Pays d'Issoudun
+QN03701I,La Verrerie,24,Centre-Val de Loire,37,Indre-et-Loire,37003,Amboise,200043065,Communauté de communes du Val d'Amboise
+QN03702M,Rabière,24,Centre-Val de Loire,37,Indre-et-Loire,37122,Joué-lès-Tours,243700754,Tours Métropole Val de Loire
+QN03703M,Niqueux Bruère - Marcel Pagnol,24,Centre-Val de Loire,37,Indre-et-Loire,37195,La Riche,243700754,Tours Métropole Val de Loire
+QN03704M,Rabaterie,24,Centre-Val de Loire,37,Indre-et-Loire,37233,Saint-Pierre-des-Corps,243700754,Tours Métropole Val de Loire
+QN03705M,Fontaines,24,Centre-Val de Loire,37,Indre-et-Loire,37261,Tours,243700754,Tours Métropole Val de Loire
+QN03706I,Rochepinard,24,Centre-Val de Loire,37,Indre-et-Loire,37261,Tours,243700754,Tours Métropole Val de Loire
+QN03707I,Rives Du Cher,24,Centre-Val de Loire,37,Indre-et-Loire,37261,Tours,243700754,Tours Métropole Val de Loire
+QN03708M,Europe,24,Centre-Val de Loire,37,Indre-et-Loire,37261,Tours,243700754,Tours Métropole Val de Loire
+QN03709M,Sanitas,24,Centre-Val de Loire,37,Indre-et-Loire,37261,Tours,243700754,Tours Métropole Val de Loire
+QN03710M,Maryse Bastié,24,Centre-Val de Loire,37,Indre-et-Loire,37261,Tours,243700754,Tours Métropole Val de Loire
+QN03711M,Bords De Loire,24,Centre-Val de Loire,37,Indre-et-Loire,37261,Tours,243700754,Tours Métropole Val de Loire
+QN03712M,Patte D'Oie - Malétrenne - Plaisance,24,Centre-Val de Loire,37,Indre-et-Loire,37003,Amboise,200043065,Communauté de communes du Val d'Amboise
+QN03713N,Les Tourettes,24,Centre-Val de Loire,37,Indre-et-Loire,37261,Tours,243700754,Tours Métropole Val de Loire
+QN03714N,La Galboisière,24,Centre-Val de Loire,37,Indre-et-Loire,37233,Saint-Pierre-des-Corps,243700754,Tours Métropole Val de Loire
+QN03715N,Le Morier,24,Centre-Val de Loire,37,Indre-et-Loire,37122,Joué-lès-Tours,243700754,Tours Métropole Val de Loire
+QN03801M,La Luire - Viscose,84,Auvergne-Rhône-Alpes,38,Isère,38151,Échirolles,200040715,Grenoble-Alpes-Métropole
+QN03802M,Champaret,84,Auvergne-Rhône-Alpes,38,Isère,38053,Bourgoin-Jallieu,243800604,Communauté d'agglomération Porte de l'Isère (CAPI)
+QN03803M,Essarts - Surieux,84,Auvergne-Rhône-Alpes,38,Isère,38151,Échirolles,200040715,Grenoble-Alpes-Métropole
+QN03804I,Village Sud,84,Auvergne-Rhône-Alpes,38,Isère,38151,Échirolles,200040715,Grenoble-Alpes-Métropole
+QN03805M,Alpes Cachin Floralies,84,Auvergne-Rhône-Alpes,38,Isère,38169,Fontaine,200040715,Grenoble-Alpes-Métropole
+QN03806M,Mistral Lys Rouge Camine,84,Auvergne-Rhône-Alpes,38,Isère,38185,Grenoble,200040715,Grenoble-Alpes-Métropole
+QN03807M,Villeneuve - Village Olympique,84,Auvergne-Rhône-Alpes,38,Isère,38185,Grenoble,200040715,Grenoble-Alpes-Métropole
+QN03808M,Teisseire Abbaye Jouhaux Malherbe,84,Auvergne-Rhône-Alpes,38,Isère,38185,Grenoble,200040715,Grenoble-Alpes-Métropole
+QN03809M,Alma - Très Cloîtres - Chenoise,84,Auvergne-Rhône-Alpes,38,Isère,38185,Grenoble,200040715,Grenoble-Alpes-Métropole
+QN03810M,Iles De Mars Olympiades,84,Auvergne-Rhône-Alpes,38,Isère,38317,Le Pont-de-Claix,200040715,Grenoble-Alpes-Métropole
+QN03811M,Renaudie Champberton Henri Wallon,84,Auvergne-Rhône-Alpes,38,Isère,38421,Saint-Martin-d'Hères,200040715,Grenoble-Alpes-Métropole
+QN03812M,Brunetière,84,Auvergne-Rhône-Alpes,38,Isère,38563,Voiron,243800984,Communauté d'agglomération du Pays Voironnais
+QN03813I,Champfleuri,84,Auvergne-Rhône-Alpes,38,Isère,38053,Bourgoin-Jallieu,243800604,Communauté d'agglomération Porte de l'Isère (CAPI)
+QN03814M,Saint Hubert Les Remparts,84,Auvergne-Rhône-Alpes,38,Isère,38193,L'Isle-d'Abeau,243800604,Communauté d'agglomération Porte de l'Isère (CAPI)
+QN03815M,Saint Bonnet,84,Auvergne-Rhône-Alpes,38,Isère,38553,Villefontaine,243800604,Communauté d'agglomération Porte de l'Isère (CAPI)
+QN03816I,Les Roches,84,Auvergne-Rhône-Alpes,38,Isère,38553,Villefontaine,243800604,Communauté d'agglomération Porte de l'Isère (CAPI)
+QN03819M,Barbières - Château,84,Auvergne-Rhône-Alpes,38,Isère,38087,Chasse-sur-Rhône,200077014,Communauté d'agglomération Vienne Condrieu
+QN03820M,Plan des Aures,84,Auvergne-Rhône-Alpes,38,Isère,38318,Pont-Évêque,200077014,Communauté d'agglomération Vienne Condrieu
+QN03821M,Estressin,84,Auvergne-Rhône-Alpes,38,Isère,38544,Vienne,200077014,Communauté d'agglomération Vienne Condrieu
+QN03822M,Vallée de Gère,84,Auvergne-Rhône-Alpes,38,Isère,38544,Vienne,200077014,Communauté d'agglomération Vienne Condrieu
+QN03824M,Malissol,84,Auvergne-Rhône-Alpes,38,Isère,38544,Vienne,200077014,Communauté d'agglomération Vienne Condrieu
+QN03901M,Mesnils Pasteur,27,Bourgogne-Franche-Comté,39,Jura,39198,Dole,200010650,Communauté d'agglomération du Grand Dole
+QN03902M,Marjorie - Les Mouillères,27,Bourgogne-Franche-Comté,39,Jura,39300,Lons-le-Saunier,200071116,Communauté d'agglomération ECLA  (Espace Communautaire Lons Agglomération)
+QN03903M,Les Avignonnets,27,Bourgogne-Franche-Comté,39,Jura,39478,Saint-Claude,200026573,Communauté de communes Haut-Jura Saint-Claude
+QN03904M,Chabot - Le Miroir - Faubourg,27,Bourgogne-Franche-Comté,39,Jura,39478,Saint-Claude,200026573,Communauté de communes Haut-Jura Saint-Claude
+QN04001M,Le Sablar,75,Nouvelle-Aquitaine,40,Landes,40088,Dax,244000675,Communauté d'agglomération du Grand Dax
+QN04002I,Cuyès,75,Nouvelle-Aquitaine,40,Landes,40088,Dax,244000675,Communauté d'agglomération du Grand Dax
+QN04003I,Le Gond,75,Nouvelle-Aquitaine,40,Landes,40088,Dax,244000675,Communauté d'agglomération du Grand Dax
+QN04004M,Le Peyrouat élargi,75,Nouvelle-Aquitaine,40,Landes,40192,Mont-de-Marsan,244000808,Mont de Marsan Agglomération
+QN04005I,La Moustey,75,Nouvelle-Aquitaine,40,Landes,40281,Saint-Pierre-du-Mont,244000808,Mont de Marsan Agglomération
+QN04101M,Blois Nord,24,Centre-Val de Loire,41,Loir-et-Cher,41018,Blois,200030385,"Communauté d'agglomération de Blois ""Agglopolys"
+QN04102M,Les Rottes,24,Centre-Val de Loire,41,Loir-et-Cher,41269,Vendôme,200072072,Communauté d'agglomération Territoires Vendômois
+QN04103M,Les Favignolles,24,Centre-Val de Loire,41,Loir-et-Cher,41194,Romorantin-Lanthenay,200018406,Communauté de communes du Romorantinais et du Monestois
+QN04104N,Quinière Nord Ouest,24,Centre-Val de Loire,41,Loir-et-Cher,41018,Blois,200030385,"Communauté d'agglomération de Blois ""Agglopolys"
+QN04201M,Beauregard,84,Auvergne-Rhône-Alpes,42,Loire,42147,Montbrison,200065886,Communauté d'agglomération Loire Forez Agglomération
+QN04202M,La Chapelle,84,Auvergne-Rhône-Alpes,42,Loire,42005,Andrézieux-Bouthéon,244200770,Saint-Etienne Métropole
+QN04203M,La Romière,84,Auvergne-Rhône-Alpes,42,Loire,42044,Le Chambon-Feugerolles,244200770,Saint-Etienne Métropole
+QN04206M,Montcel - Centre Ville,84,Auvergne-Rhône-Alpes,42,Loire,42183,La Ricamarie,244200770,Saint-Etienne Métropole
+QN04207M,Grand Pont,84,Auvergne-Rhône-Alpes,42,Loire,42186,Rive-de-Gier,244200770,Saint-Etienne Métropole
+QN04208M,Centre Ville,84,Auvergne-Rhône-Alpes,42,Loire,42186,Rive-de-Gier,244200770,Saint-Etienne Métropole
+QN04209M,Centre Ville,84,Auvergne-Rhône-Alpes,42,Loire,42207,Saint-Chamond,244200770,Saint-Etienne Métropole
+QN04210M,St Julien - Crêt De L'Oeillet,84,Auvergne-Rhône-Alpes,42,Loire,42207,Saint-Chamond,244200770,Saint-Etienne Métropole
+QN04211M,Cotonne Montferré,84,Auvergne-Rhône-Alpes,42,Loire,42218,Saint-Étienne,244200770,Saint-Etienne Métropole
+QN04212M,Tardy Tarentaize Beaubrun Couriot,84,Auvergne-Rhône-Alpes,42,Loire,42218,Saint-Étienne,244200770,Saint-Etienne Métropole
+QN04213M,Montreynaud,84,Auvergne-Rhône-Alpes,42,Loire,42218,Saint-Étienne,244200770,Saint-Etienne Métropole
+QN04214M,Crêt De Roc - Soleil,84,Auvergne-Rhône-Alpes,42,Loire,42218,Saint-Étienne,244200770,Saint-Etienne Métropole
+QN04215M,Quartiers Sud-Est,84,Auvergne-Rhône-Alpes,42,Loire,42218,Saint-Étienne,244200770,Saint-Etienne Métropole
+QN04216M,Terrenoire,84,Auvergne-Rhône-Alpes,42,Loire,42218,Saint-Étienne,244200770,Saint-Etienne Métropole
+QN04217M,Bourgogne,84,Auvergne-Rhône-Alpes,42,Loire,42187,Roanne,200035731,Communauté d'agglomération Roannais Agglomération
+QN04218M,Le Parc,84,Auvergne-Rhône-Alpes,42,Loire,42187,Roanne,200035731,Communauté d'agglomération Roannais Agglomération
+QN04219I,Saint-Clair,84,Auvergne-Rhône-Alpes,42,Loire,42187,Roanne,200035731,Communauté d'agglomération Roannais Agglomération
+QN04220N,Monthieu,84,Auvergne-Rhône-Alpes,42,Loire,42218,Saint-Étienne,244200770,Saint-Etienne Métropole
+QN04221N,Grand Clos,84,Auvergne-Rhône-Alpes,42,Loire,42218,Saint-Étienne,244200770,Saint-Etienne Métropole
+QN04222N,Layat Bas-Mas,84,Auvergne-Rhône-Alpes,42,Loire,42095,Firminy,244200770,Saint-Etienne Métropole
+QN04223N,Firminy Vert,84,Auvergne-Rhône-Alpes,42,Loire,42095,Firminy,244200770,Saint-Etienne Métropole
+QN04224N,Solaure,84,Auvergne-Rhône-Alpes,42,Loire,42218,Saint-Étienne,244200770,Saint-Etienne Métropole
+QN04301M,Val Vert,84,Auvergne-Rhône-Alpes,43,Haute-Loire,43157,Le Puy-en-Velay,200073419,Communauté d'agglomération du Puy-en-Velay
+QN04302M,Guitard,84,Auvergne-Rhône-Alpes,43,Haute-Loire,43157,Le Puy-en-Velay,200073419,Communauté d'agglomération du Puy-en-Velay
+QN04401M,Ville Ouest,52,Pays de la Loire,44,Loire-Atlantique,44184,Saint-Nazaire,244400644,Communauté d'agglomération de la Région Nazairienne et de l'Estuaire (CARENE)
+QN04402I,Petit Caporal - île du Pé,52,Pays de la Loire,44,Loire-Atlantique,44184,Saint-Nazaire,244400644,Communauté d'agglomération de la Région Nazairienne et de l'Estuaire (CARENE)
+QN04403I,Prézégat - Berthauderie - Robespierre,52,Pays de la Loire,44,Loire-Atlantique,44184,Saint-Nazaire,244400644,Communauté d'agglomération de la Région Nazairienne et de l'Estuaire (CARENE)
+QN04404M,La Ville aux Roses,52,Pays de la Loire,44,Loire-Atlantique,44036,Châteaubriant,200072726,Communauté de communes Châteaubriant-Derval
+QN04406M,Les Dervallières,52,Pays de la Loire,44,Loire-Atlantique,44109,Nantes,244400404,Nantes Métropole
+QN04407I,Le Breil,52,Pays de la Loire,44,Loire-Atlantique,44109,Nantes,244400404,Nantes Métropole
+QN04408M,Bout des landes - Bout des pavés - Chêne des Anglais,52,Pays de la Loire,44,Loire-Atlantique,44109,Nantes,244400404,Nantes Métropole
+QN04409I,La Boissière,52,Pays de la Loire,44,Loire-Atlantique,44109,Nantes,244400404,Nantes Métropole
+QN04410I,Port Boyer,52,Pays de la Loire,44,Loire-Atlantique,44109,Nantes,244400404,Nantes Métropole
+QN04411I,Le Clos Toreau,52,Pays de la Loire,44,Loire-Atlantique,44109,Nantes,244400404,Nantes Métropole
+QN04412M,Le Ranzay,52,Pays de la Loire,44,Loire-Atlantique,44109,Nantes,244400404,Nantes Métropole
+QN04413M,Malakoff,52,Pays de la Loire,44,Loire-Atlantique,44109,Nantes,244400404,Nantes Métropole
+QN04414M,Bottière Pin Sec,52,Pays de la Loire,44,Loire-Atlantique,44109,Nantes,244400404,Nantes Métropole
+QN04415I,La Halvêque,52,Pays de la Loire,44,Loire-Atlantique,44109,Nantes,244400404,Nantes Métropole
+QN04416I,La Petite Sensive,52,Pays de la Loire,44,Loire-Atlantique,44109,Nantes,244400404,Nantes Métropole
+QN04417I,Plaisance,52,Pays de la Loire,44,Loire-Atlantique,44114,Orvault,244400404,Nantes Métropole
+QN04418M,Château,52,Pays de la Loire,44,Loire-Atlantique,44143,Rezé,244400404,Nantes Métropole
+QN04419I,Le Sillon de Bretagne,52,Pays de la Loire,44,Loire-Atlantique,44162,Saint-Herblain,244400404,Nantes Métropole
+QN04501M,Le Clos de la Grande Salle,24,Centre-Val de Loire,45,Loiret,45147,Fleury-les-Aubrais,244500468,Orléans Métropole
+QN04502I,Andrillons Ormes du Mail,24,Centre-Val de Loire,45,Loiret,45147,Fleury-les-Aubrais,244500468,Orléans Métropole
+QN04503M,Lignerolles-Hartière,24,Centre-Val de Loire,45,Loiret,45147,Fleury-les-Aubrais,244500468,Orléans Métropole
+QN04504M,Dauphine,24,Centre-Val de Loire,45,Loiret,45234,Orléans,244500468,Orléans Métropole
+QN04505M,La Source,24,Centre-Val de Loire,45,Loiret,45234,Orléans,244500468,Orléans Métropole
+QN04506M,Argonne,24,Centre-Val de Loire,45,Loiret,45234,Orléans,244500468,Orléans Métropole
+QN04507M,Blossières,24,Centre-Val de Loire,45,Loiret,45234,Orléans,244500468,Orléans Métropole
+QN04508M,Pont Bordeau,24,Centre-Val de Loire,45,Loiret,45284,Saint-Jean-de-Braye,244500468,Orléans Métropole
+QN04509M,Les Chaises,24,Centre-Val de Loire,45,Loiret,45285,Saint-Jean-de-la-Ruelle,244500468,Orléans Métropole
+QN04510I,Les 3 Fontaines,24,Centre-Val de Loire,45,Loiret,45285,Saint-Jean-de-la-Ruelle,244500468,Orléans Métropole
+QN04511M,Vésines,24,Centre-Val de Loire,45,Loiret,45068,Châlette-sur-Loing,244500203,Communauté d'agglomération Montargoise et Rives du Loing (AME)
+QN04514M,La Chaussée,24,Centre-Val de Loire,45,Loiret,45208,Montargis,244500203,Communauté d'agglomération Montargoise et Rives du Loing (AME)
+QN04515I,Le Hameau,24,Centre-Val de Loire,45,Loiret,45315,Sully-sur-Loire,200070100,Communauté de communes du Val de Sully
+QN04516I,Champs de la Ville,24,Centre-Val de Loire,45,Loiret,45155,Gien,244500211,Communauté de communes Giennoises
+QN04517M,Montoires,24,Centre-Val de Loire,45,Loiret,45155,Gien,244500211,Communauté de communes Giennoises
+QN04518M,Quartiers Nord,24,Centre-Val de Loire,45,Loiret,45252,Pithiviers,200066280,Communauté de communes du Pithiverais
+QN04519M,Saint Aignan,24,Centre-Val de Loire,45,Loiret,45252,Pithiviers,200066280,Communauté de communes du Pithiverais
+QN04601M,Terre Rouge,76,Occitanie,46,Lot,46042,Cahors,200023737,Communauté d'agglomération du Grand Cahors
+QN04701I,Rodrigues - Barleté,75,Nouvelle-Aquitaine,47,Lot-et-Garonne,47001,Agen,200096956,Communauté d'agglomération Agglomération d'Agen
+QN04702M,Agen nord-est,75,Nouvelle-Aquitaine,47,Lot-et-Garonne,47001,Agen,200096956,Communauté d'agglomération Agglomération d'Agen
+QN04703M,Pin,75,Nouvelle-Aquitaine,47,Lot-et-Garonne,47001,Agen,200096956,Communauté d'agglomération Agglomération d'Agen
+QN04704M,Bastide au bord du Lot,75,Nouvelle-Aquitaine,47,Lot-et-Garonne,47252,Sainte-Livrade-sur-Lot,200023307,Communauté d'agglomération du Grand Villeneuvois
+QN04705M,Bastide des deux rives,75,Nouvelle-Aquitaine,47,Lot-et-Garonne,47323,Villeneuve-sur-Lot,200023307,Communauté d'agglomération du Grand Villeneuvois
+QN04706M,Baylac-Gravette,75,Nouvelle-Aquitaine,47,Lot-et-Garonne,47157,Marmande,200030674,Communauté d'agglomération Val de Garonne Agglomération
+QN04707M,Coeur de ville,75,Nouvelle-Aquitaine,47,Lot-et-Garonne,47310,Tonneins,200030674,Communauté d'agglomération Val de Garonne Agglomération
+QN04801N,Fontanilles,76,Occitanie,48,Lozère,48095,Mende,244800405,Communauté de communes Cur de Lozère
+QN04901M,Belle Beille,52,Pays de la Loire,49,Maine-et-Loire,49007,Angers,244900015,Communauté urbaine Angers Loire Métropole
+QN04902M,Roseraie,52,Pays de la Loire,49,Maine-et-Loire,49007,Angers,244900015,Communauté urbaine Angers Loire Métropole
+QN04903M,Savary-Giran,52,Pays de la Loire,49,Maine-et-Loire,49007,Angers,244900015,Communauté urbaine Angers Loire Métropole
+QN04904M,Grand Pigeon,52,Pays de la Loire,49,Maine-et-Loire,49007,Angers,244900015,Communauté urbaine Angers Loire Métropole
+QN04905M,Monplaisir,52,Pays de la Loire,49,Maine-et-Loire,49007,Angers,244900015,Communauté urbaine Angers Loire Métropole
+QN04906M,Hauts de Saint Aubin,52,Pays de la Loire,49,Maine-et-Loire,49007,Angers,244900015,Communauté urbaine Angers Loire Métropole
+QN04907M,Bédier Beauval Morellerie,52,Pays de la Loire,49,Maine-et-Loire,49007,Angers,244900015,Communauté urbaine Angers Loire Métropole
+QN04908M,Le Grand Bellevue,52,Pays de la Loire,49,Maine-et-Loire,49353,Trélazé,244900015,Communauté urbaine Angers Loire Métropole
+QN04909M,Bretagne Bostangis,52,Pays de la Loire,49,Maine-et-Loire,49099,Cholet,200071678,Communauté d'agglomération Cholet Agglomération
+QN04910M,Jean Monnet,52,Pays de la Loire,49,Maine-et-Loire,49099,Cholet,200071678,Communauté d'agglomération Cholet Agglomération
+QN04911M,Favreau Les Mauges,52,Pays de la Loire,49,Maine-et-Loire,49099,Cholet,200071678,Communauté d'agglomération Cholet Agglomération
+QN04912M,Colline Villeneuve,52,Pays de la Loire,49,Maine-et-Loire,49099,Cholet,200071678,Communauté d'agglomération Cholet Agglomération
+QN04913M,Chemin Vert - Hauts Quartiers,52,Pays de la Loire,49,Maine-et-Loire,49328,Saumur,200071876,Communauté d'agglomération Saumur Val de Loire
+QN04914N,Gide - Colomb,52,Pays de la Loire,49,Maine-et-Loire,49353,Trélazé,244900015,Communauté urbaine Angers Loire Métropole
+QN04915N,Saint Exupéry,52,Pays de la Loire,49,Maine-et-Loire,49007,Angers,244900015,Communauté urbaine Angers Loire Métropole
+QN05001I,La Turfaudière,28,Normandie,50,Manche,50025,Avranches,200069425,Communauté d'agglomération Mont-Saint-Michel-Normandie
+QN05002I,Val Saint Jean,28,Normandie,50,Manche,50502,Saint-Lô,200066389,Communauté d'agglomération Saint-Lô Agglo
+QN05003I,La Dollée,28,Normandie,50,Manche,50502,Saint-Lô,200066389,Communauté d'agglomération Saint-Lô Agglo
+QN05004M,Claires Fontaines,28,Normandie,50,Manche,50147,Coutances,200067023,Communauté de communes Coutances Mer et Bocage
+QN05005I,Les Provinces,28,Normandie,50,Manche,50129,Cherbourg-en-Cotentin,200067205,Communauté d'agglomération du Cotentin
+QN05006I,Maupas - Hautmarais - Brêche Du Bois,28,Normandie,50,Manche,50129,Cherbourg-en-Cotentin,200067205,Communauté d'agglomération du Cotentin
+QN05007M,Fourches - Charcot,28,Normandie,50,Manche,50129,Cherbourg-en-Cotentin,200067205,Communauté d'agglomération du Cotentin
+QN05101M,Quartier Prioritaire Ouest,44,Grand Est,51,Marne,51108,Châlons-en-Champagne,200066876,Communauté d'agglomération de Châlons-en-Champagne
+QN05102M,Quartier Prioritaire Sud,44,Grand Est,51,Marne,51108,Châlons-en-Champagne,200066876,Communauté d'agglomération de Châlons-en-Champagne
+QN05103M,Croix Rouge,44,Grand Est,51,Marne,51454,Reims,200067213,Communauté urbaine du Grand Reims
+QN05104M,Wilson - Maison Blanche - Chatillons,44,Grand Est,51,Marne,51454,Reims,200067213,Communauté urbaine du Grand Reims
+QN05105M,Orgeval,44,Grand Est,51,Marne,51454,Reims,200067213,Communauté urbaine du Grand Reims
+QN05106M,Europe,44,Grand Est,51,Marne,51454,Reims,200067213,Communauté urbaine du Grand Reims
+QN05107M,Walbaum,44,Grand Est,51,Marne,51454,Reims,200067213,Communauté urbaine du Grand Reims
+QN05108M,Epinettes - Maladrerie - Chemin Des Bouchers - Paul Petit,44,Grand Est,51,Marne,51454,Reims,200067213,Communauté urbaine du Grand Reims
+QN05109M,Le Hamois,44,Grand Est,51,Marne,51649,Vitry-le-François,200034718,Communauté de communes de Vitry; Champagne et Der
+QN05110I,Rome Saint Charles,44,Grand Est,51,Marne,51649,Vitry-le-François,200034718,Communauté de communes de Vitry; Champagne et Der
+QN05111M,Bernon - Vignes Blanches,44,Grand Est,51,Marne,51230,Épernay,200067684,Communauté d'agglomération Épernay; Coteaux et Plaine de Champagne
+QN05112N,Schmit,44,Grand Est,51,Marne,51108,Châlons-en-Champagne,200066876,Communauté d'agglomération de Châlons-en-Champagne
+QN05113N,La Fauvarge,44,Grand Est,51,Marne,51649,Vitry-le-François,200034718,Communauté de communes de Vitry; Champagne et Der
+QN05201M,Rochotte,44,Grand Est,52,Haute-Marne,52121,Chaumont,200068658,Communauté d'agglomération de Chaumont
+QN05202M,Cavalier,44,Grand Est,52,Haute-Marne,52121,Chaumont,200068658,Communauté d'agglomération de Chaumont
+QN05203M,Quartier Neuf,44,Grand Est,52,Haute-Marne,52269,Langres,200072999,Communauté de communes du Grand Langres
+QN05204I,Vert-Bois,44,Grand Est,52,Haute-Marne,52448,Saint-Dizier,200068666,Communauté d'agglomération de Saint-Dizier Der et Blaise
+QN05301M,Les Fourches,52,Pays de la Loire,53,Mayenne,53130,Laval,200083392,Communauté d'agglomération Laval Agglomération
+QN05302M,Kellermann,52,Pays de la Loire,53,Mayenne,53130,Laval,200083392,Communauté d'agglomération Laval Agglomération
+QN05303M,Pavement - Charité - Mortier - Murat,52,Pays de la Loire,53,Mayenne,53130,Laval,200083392,Communauté d'agglomération Laval Agglomération
+QN05401M,Mouzimpré,44,Grand Est,54,Meurthe-et-Moselle,54184,Essey-lès-Nancy,245400676,Métropole du Grand Nancy
+QN05402I,Gouraincourt - Remparts,44,Grand Est,54,Meurthe-et-Moselle,54323,Longwy,245400262,Grand Longwy Agglomération
+QN05403I,Concorde,44,Grand Est,54,Meurthe-et-Moselle,54261,Herserange,245400262,Grand Longwy Agglomération
+QN05404I,Quartier Voltaire,44,Grand Est,54,Meurthe-et-Moselle,54323,Longwy,245400262,Grand Longwy Agglomération
+QN05405I,Val Saint Martin,44,Grand Est,54,Meurthe-et-Moselle,54382,Mont-Saint-Martin,245400262,Grand Longwy Agglomération
+QN05406M,Quartier Les Mouettes,44,Grand Est,54,Meurthe-et-Moselle,54115,Champigneulles,245400601,Communauté de communes du Bassin de Pompey
+QN05407M,Quartier La Penotte,44,Grand Est,54,Meurthe-et-Moselle,54215,Frouard,245400601,Communauté de communes du Bassin de Pompey
+QN05408I,Bois Le Prêtre - Procheville,44,Grand Est,54,Meurthe-et-Moselle,54431,Pont-à-Mousson,200041515,Communauté de communes du Bassin de Pont-à-Mousson
+QN05409I,Centre Ancien,44,Grand Est,54,Meurthe-et-Moselle,54329,Lunéville,200070324,Communauté de communes du Territoire de Lunéville à Baccarat
+QN05410I,Niederbronn - Zola,44,Grand Est,54,Meurthe-et-Moselle,54329,Lunéville,200070324,Communauté de communes du Territoire de Lunéville à Baccarat
+QN05411I,Quartier La Croix De Metz,44,Grand Est,54,Meurthe-et-Moselle,54528,Toul,200070563,Communauté de communes Terres Touloises
+QN05412I,La Californie,44,Grand Est,54,Meurthe-et-Moselle,54274,Jarville-la-Malgrange,245400676,Métropole du Grand Nancy
+QN05413I,Les Provinces,44,Grand Est,54,Meurthe-et-Moselle,54304,Laxou,245400676,Métropole du Grand Nancy
+QN05418I,Coeur De Ville,44,Grand Est,54,Meurthe-et-Moselle,54526,Tomblaine,245400676,Métropole du Grand Nancy
+QN05501M,Côte Sainte-Catherine-Libération,44,Grand Est,55,Meuse,55029,Bar-le-Duc,200033025,Communauté d'agglomération de Bar-le-Duc - Sud Meuse
+QN05502I,Planchettes,44,Grand Est,55,Meuse,55545,Verdun,200049187,Communauté d'agglomération du Grand Verdun
+QN05503M,Centre Verdun - Cité verte,44,Grand Est,55,Meuse,55545,Verdun,200049187,Communauté d'agglomération du Grand Verdun
+QN05601M,Gumenen Goaner-Parco Pointer,53,Bretagne,56,Morbihan,56007,Auray,200043123,Communauté de communes Auray Quiberon Terre Atlantique
+QN05602M,Keriou Ker,53,Bretagne,56,Morbihan,56083,Hennebont,200042174,Communauté d'agglomération Lorient Agglomération
+QN05603M,Enezeg,53,Bretagne,56,Morbihan,56098,Lanester,200042174,Communauté d'agglomération Lorient Agglomération
+QN05604M,Kervenanec Nord,53,Bretagne,56,Morbihan,56121,Lorient,200042174,Communauté d'agglomération Lorient Agglomération
+QN05605M,Polygone Frebault,53,Bretagne,56,Morbihan,56121,Lorient,200042174,Communauté d'agglomération Lorient Agglomération
+QN05606M,Bois du Château,53,Bretagne,56,Morbihan,56121,Lorient,200042174,Communauté d'agglomération Lorient Agglomération
+QN05607M,Kerguillette - Petit Paradis - St Armel,53,Bretagne,56,Morbihan,56121,Lorient,200042174,Communauté d'agglomération Lorient Agglomération
+QN05608M,Kercado,53,Bretagne,56,Morbihan,56260,Vannes,200067932,Communauté d'agglomération Golfe du Morbihan - Vannes Agglomération
+QN05609M,Ménimur,53,Bretagne,56,Morbihan,56260,Vannes,200067932,Communauté d'agglomération Golfe du Morbihan - Vannes Agglomération
+QN05701M,Quartier Saravis,44,Grand Est,57,Moselle,57630,Sarrebourg,200068146,Communauté de communes Sarrebourg Moselle Sud
+QN05702M,La cité,44,Grand Est,57,Moselle,57058,Behren-lès-Forbach,245700372,Communauté d'agglomération de Forbach Porte de France
+QN05703M,Wiesberg Hommel,44,Grand Est,57,Moselle,57227,Forbach,245700372,Communauté d'agglomération de Forbach Porte de France
+QN05704M,Bellevue,44,Grand Est,57,Moselle,57227,Forbach,245700372,Communauté d'agglomération de Forbach Porte de France
+QN05705M,Quartier Rémelange,44,Grand Est,57,Moselle,57206,Fameck,245701222,Communauté d'agglomération du Val de Fensch
+QN05706M,Quartier Ouest,44,Grand Est,57,Moselle,57683,Uckange,245701222,Communauté d'agglomération du Val de Fensch
+QN05707M,Côtes des Roses - Bel Air,44,Grand Est,57,Moselle,57672,Thionville,245701362,Communauté d'agglomération Portes de France-Thionville
+QN05708M,Quartier Saint-Pierre - La Milliaire,44,Grand Est,57,Moselle,57672,Thionville,245701362,Communauté d'agglomération Portes de France-Thionville
+QN05709M,Quartier Terrasses Des Provinces,44,Grand Est,57,Moselle,57757,Yutz,245701362,Communauté d'agglomération Portes de France-Thionville
+QN05710M,Beausoleil,44,Grand Est,57,Moselle,57631,Sarreguemines,200070746,Communauté d'agglomération Sarreguemines Confluences
+QN05711I,Vieille Ville Et Ville Haute,44,Grand Est,57,Moselle,57631,Sarreguemines,200070746,Communauté d'agglomération Sarreguemines Confluences
+QN05713M,Quartier République,44,Grand Est,57,Moselle,57269,Guénange,245701354,Communauté de communes de l'Arc Mosellan
+QN05715M,Carrière Wenheck,44,Grand Est,57,Moselle,57606,Saint-Avold,200067502,Communauté d'agglomération Saint-Avold Synergie
+QN05716M,Quartier Maroc,44,Grand Est,57,Moselle,57160,Creutzwald,245701164,Communauté de communes du Warndt
+QN05717M,Quartier Breckelberg Fatima,44,Grand Est,57,Moselle,57160,Creutzwald,245701164,Communauté de communes du Warndt
+QN05718M,Bellecroix,44,Grand Est,57,Moselle,57463,Metz,200039865,Metz Métropole
+QN05719M,Hauts De Vallières,44,Grand Est,57,Moselle,57463,Metz,200039865,Metz Métropole
+QN05720M,Borny,44,Grand Est,57,Moselle,57463,Metz,200039865,Metz Métropole
+QN05721M,Sablon Sud,44,Grand Est,57,Moselle,57463,Metz,200039865,Metz Métropole
+QN05722M,La Patrotte - Metz-Nord,44,Grand Est,57,Moselle,57463,Metz,200039865,Metz Métropole
+QN05724M,Les Chênes,44,Grand Est,57,Moselle,57332,Hombourg-Haut,245700398,Communauté de communes de Freyming-Merlebach
+QN05725N,Quartier Falogne,44,Grand Est,57,Moselle,57463,Metz,200039865,Metz Métropole
+QN05726N,Roi,44,Grand Est,57,Moselle,57751,Woippy,200039865,Metz Métropole
+QN05801M,Grande Pâture - Les Montôts,27,Bourgogne-Franche-Comté,58,Nièvre,58194,Nevers,245804406,Communauté d'agglomération de Nevers
+QN05802M,Le Banlay,27,Bourgogne-Franche-Comté,58,Nièvre,58194,Nevers,245804406,Communauté d'agglomération de Nevers
+QN05803M,Bords de Loire - Courlis - La Baratte,27,Bourgogne-Franche-Comté,58,Nièvre,58194,Nevers,245804406,Communauté d'agglomération de Nevers
+QN05804M,Saint-Laurent,27,Bourgogne-Franche-Comté,58,Nièvre,58086,Cosne-Cours-sur-Loire,200067916,Communauté de communes Cur de Loire
+QN05901M,Auby Centre,32,Hauts-de-France,59,Nord,59028,Auby,200044618,Communauté d'agglomération Douaisis Agglo
+QN05903M,Résidence Gayant,32,Hauts-de-France,59,Nord,59178,Douai,200044618,Communauté d'agglomération Douaisis Agglo
+QN05908M,Les Epis,32,Hauts-de-France,59,Nord,59569,Sin-le-Noble,200044618,Communauté d'agglomération Douaisis Agglo
+QN05909M,Waziers Centre,32,Hauts-de-France,59,Nord,59654,Waziers,200044618,Communauté d'agglomération Douaisis Agglo
+QN05910M,Les Explorateurs - Place Du 8 Mai 1945 - Jean Jaurès - La Flamenne,32,Hauts-de-France,59,Nord,59225,Feignies,200043396,Communauté d'agglomération Maubeuge Val de Sambre
+QN05911M,Quartier Du Village,32,Hauts-de-France,59,Nord,59230,Ferrière-la-Grande,200043396,Communauté d'agglomération Maubeuge Val de Sambre
+QN05912M,Bois Du Quesnoy,32,Hauts-de-France,59,Nord,59291,Hautmont,200043396,Communauté d'agglomération Maubeuge Val de Sambre
+QN05913M,Centre Lambreçon,32,Hauts-de-France,59,Nord,59324,Jeumont,200043396,Communauté d'agglomération Maubeuge Val de Sambre
+QN05914M,Long Prés - Prés Du Paradis,32,Hauts-de-France,59,Nord,59365,Louvroil,200043396,Communauté d'agglomération Maubeuge Val de Sambre
+QN05915M,Pont De Pierre,32,Hauts-de-France,59,Nord,59392,Maubeuge,200043396,Communauté d'agglomération Maubeuge Val de Sambre
+QN05916M,Provinces françaises - La Joyeuse,32,Hauts-de-France,59,Nord,59392,Maubeuge,200043396,Communauté d'agglomération Maubeuge Val de Sambre
+QN05917M,L'Epinette,32,Hauts-de-France,59,Nord,59392,Maubeuge,200043396,Communauté d'agglomération Maubeuge Val de Sambre
+QN05923M,Centre Ville - Le Jard,32,Hauts-de-France,59,Nord,59153,Condé-sur-l'Escaut,245901160,Communauté d'agglomération Valenciennes Métropole
+QN05924M,Chaussiette - Macou,32,Hauts-de-France,59,Nord,59153,Condé-sur-l'Escaut,245901160,Communauté d'agglomération Valenciennes Métropole
+QN05925M,Centre Ville,32,Hauts-de-France,59,Nord,59253,Fresnes-sur-Escaut,245901160,Communauté d'agglomération Valenciennes Métropole
+QN05926M,Le Trieu,32,Hauts-de-France,59,Nord,59253,Fresnes-sur-Escaut,245901160,Communauté d'agglomération Valenciennes Métropole
+QN05928M,Centre Ville,32,Hauts-de-France,59,Nord,59484,Quiévrechain,245901160,Communauté d'agglomération Valenciennes Métropole
+QN05929M,La Pépinière-De Gaulle,32,Hauts-de-France,59,Nord,59544,Saint-Saulve,245901160,Communauté d'agglomération Valenciennes Métropole
+QN05932M,Cité Le Jard,32,Hauts-de-France,59,Nord,59616,Vieux-Condé,245901160,Communauté d'agglomération Valenciennes Métropole
+QN05933M,La Solitude Hermitage,32,Hauts-de-France,59,Nord,59616,Vieux-Condé,245901160,Communauté d'agglomération Valenciennes Métropole
+QN05936M,Quartier Prioritaire De Masny,32,Hauts-de-France,59,Nord,59390,Masny,245901152,Communauté de communes Cur d'Ostrevent
+QN05937M,Quartier Prioritaire De Montigny En Ostrevent,32,Hauts-de-France,59,Nord,59414,Montigny-en-Ostrevent,245901152,Communauté de communes Cur d'Ostrevent
+QN05939M,Lemay Sainte Marie,32,Hauts-de-France,59,Nord,59456,Pecquencourt,245901152,Communauté de communes Cur d'Ostrevent
+QN05941I,Résidences Pasteur Et Foch,32,Hauts-de-France,59,Nord,59295,Hazebrouck,200040947,Communauté d'agglomération Cur de Flandre
+QN05942M,Centre Ville - Gambetta,32,Hauts-de-France,59,Nord,59139,Caudry,200030633,Communauté d'agglomération du Caudrésis et du Catésis
+QN05943M,Coeur D'Etoile,32,Hauts-de-France,59,Nord,59481,Le Quesnoy,200043321,Communauté de communes du Pays de Mormal
+QN05944M,Fourmies,32,Hauts-de-France,59,Nord,59249,Fourmies,200043404,Communauté de communes du Sud Avesnois
+QN05945M,Cité Des Bois,32,Hauts-de-France,59,Nord,59452,Ostricourt,200041960,Communauté de communes Pévèle-Carembault
+QN05946M,Vieux Centre Ville Saint Géry,32,Hauts-de-France,59,Nord,59122,Cambrai,200068500,Communauté d'agglomération de Cambrai
+QN05947M,Quartier Saint Roch,32,Hauts-de-France,59,Nord,59122,Cambrai,200068500,Communauté d'agglomération de Cambrai
+QN05948M,Quartier Amérique,32,Hauts-de-France,59,Nord,59122,Cambrai,200068500,Communauté d'agglomération de Cambrai
+QN05949M,Résidence D'Esnes,32,Hauts-de-France,59,Nord,59122,Cambrai,200068500,Communauté d'agglomération de Cambrai
+QN05950M,Denain,32,Hauts-de-France,59,Nord,59172,Denain,200042190,Communauté d'agglomération de la Porte du Hainaut
+QN05951M,Liberté Vieux Douchy,32,Hauts-de-France,59,Nord,59179,Douchy-les-Mines,200042190,Communauté d'agglomération de la Porte du Hainaut
+QN05953M,Couture Savonnerie,32,Hauts-de-France,59,Nord,59205,Escaudain,200042190,Communauté d'agglomération de la Porte du Hainaut
+QN05955M,Sabatier,32,Hauts-de-France,59,Nord,59491,Raismes,200042190,Communauté d'agglomération de la Porte du Hainaut
+QN05956M,Elnon,32,Hauts-de-France,59,Nord,59526,Saint-Amand-les-Eaux,200042190,Communauté d'agglomération de la Porte du Hainaut
+QN05957M,Collinière,32,Hauts-de-France,59,Nord,59526,Saint-Amand-les-Eaux,200042190,Communauté d'agglomération de la Porte du Hainaut
+QN05959M,Petit Steendam,32,Hauts-de-France,59,Nord,59155,Coudekerque-Branche,245900428,Communauté urbaine de Dunkerque
+QN05960M,Saint Pol Sur Mer Quartiers Ouest,32,Hauts-de-France,59,Nord,59183,Dunkerque,245900428,Communauté urbaine de Dunkerque
+QN05961M,Banc Vert - Ile Jeanty - Carré De La Vieille - Jeu De mail,32,Hauts-de-France,59,Nord,59183,Dunkerque,245900428,Communauté urbaine de Dunkerque
+QN05962M,Soubise - Basse Ville,32,Hauts-de-France,59,Nord,59183,Dunkerque,245900428,Communauté urbaine de Dunkerque
+QN05963M,Albeck - Europe - Moulin,32,Hauts-de-France,59,Nord,59271,Grande-Synthe,245900428,Communauté urbaine de Dunkerque
+QN05964M,Degroote,32,Hauts-de-France,59,Nord,59588,Téteghem-Coudekerque-Village,245900428,Communauté urbaine de Dunkerque
+QN05965M,Pont de Bois-Hôtel de ville,32,Hauts-de-France,59,Nord,59009,Villeneuve-d'Ascq,200093201,Métropole Européenne de Lille
+QN05966M,Résidence-Poste-Triolo,32,Hauts-de-France,59,Nord,59009,Villeneuve-d'Ascq,200093201,Métropole Européenne de Lille
+QN05967M,Attargette - Chanzy,32,Hauts-de-France,59,Nord,59017,Armentières,200093201,Métropole Européenne de Lille
+QN05968M,Bizet - Briqueterie,32,Hauts-de-France,59,Nord,59017,Armentières,200093201,Métropole Européenne de Lille
+QN05970M,Pacot - Vandracq,32,Hauts-de-France,59,Nord,59328,Lambersart,200093201,Métropole Européenne de Lille
+QN05971M,Secteur Ouest,32,Hauts-de-France,59,Nord,59350,Lille,200093201,Métropole Européenne de Lille
+QN05973M,Secteur Nord Est,32,Hauts-de-France,59,Nord,59350,Lille,200093201,Métropole Européenne de Lille
+QN05974M,Secteur Nord,32,Hauts-de-France,59,Nord,59350,Lille,200093201,Métropole Européenne de Lille
+QN05975M,Les Oliveaux,32,Hauts-de-France,59,Nord,59360,Loos,200093201,Métropole Européenne de Lille
+QN05976M,Clémenceau-Kiener,32,Hauts-de-France,59,Nord,59360,Loos,200093201,Métropole Européenne de Lille
+QN05977M,La Briquetterie,32,Hauts-de-France,59,Nord,59378,Marcq-en-Barul,200093201,Métropole Européenne de Lille
+QN05979M,Comtesse De Ségur,32,Hauts-de-France,59,Nord,59507,Ronchin,200093201,Métropole Européenne de Lille
+QN05981M,Nouveau Roubaix,32,Hauts-de-France,59,Nord,59512,Roubaix,200093201,Métropole Européenne de Lille
+QN05982M,La Mouchonnière,32,Hauts-de-France,59,Nord,59560,Seclin,200093201,Métropole Européenne de Lille
+QN05983M,Phalempins,32,Hauts-de-France,59,Nord,59599,Tourcoing,200093201,Métropole Européenne de Lille
+QN05984M,Virolois,32,Hauts-de-France,59,Nord,59599,Tourcoing,200093201,Métropole Européenne de Lille
+QN05985M,La Bourgogne,32,Hauts-de-France,59,Nord,59599,Tourcoing,200093201,Métropole Européenne de Lille
+QN05986M,Pont Rompu,32,Hauts-de-France,59,Nord,59599,Tourcoing,200093201,Métropole Européenne de Lille
+QN05987M,Blanc Riez,32,Hauts-de-France,59,Nord,59648,Wattignies,200093201,Métropole Européenne de Lille
+QN05989M,Centralité De Beaulieu,32,Hauts-de-France,59,Nord,59650,Wattrelos,200093201,Métropole Européenne de Lille
+QN05990N,Coeur de Ville,32,Hauts-de-France,59,Nord,59131,Cappelle-la-Grande,245900428,Communauté urbaine de Dunkerque
+QN05991N,Le Parc,32,Hauts-de-France,59,Nord,59286,Haubourdin,200093201,Métropole Européenne de Lille
+QN05992N,Bruay Centre - Pont de Bruay,32,Hauts-de-France,59,Nord,59112,Bruay-sur-l'Escaut,245901160,Communauté d'agglomération Valenciennes Métropole
+QN05993N,Quartier prioritaire d'Aulnoye-Aymeries Multisites,32,Hauts-de-France,59,Nord,59033,Aulnoye-Aymeries,200043396,Communauté d'agglomération Maubeuge Val de Sambre
+QN05994I,Quartier prioritaire de Hornaing,32,Hauts-de-France,59,Nord,59314,Hornaing,245901152,Communauté de communes Cur d'Ostrevent
+QN06001M,Les Hauts de Creil,32,Hauts-de-France,60,Oise,60175,Creil,200068047,Communauté d'agglomération Creil Sud Oise
+QN06002M,Les Martinets,32,Hauts-de-France,60,Oise,60414,Montataire,200068047,Communauté d'agglomération Creil Sud Oise
+QN06003I,Les Côteaux,32,Hauts-de-France,60,Oise,60463,Nogent-sur-Oise,200068047,Communauté d'agglomération Creil Sud Oise
+QN06004M,Les Rochers - L'Obier,32,Hauts-de-France,60,Oise,60463,Nogent-sur-Oise,200068047,Communauté d'agglomération Creil Sud Oise
+QN06005M,Bellevue - Belle Visée,32,Hauts-de-France,60,Oise,60684,Villers-Saint-Paul,200068047,Communauté d'agglomération Creil Sud Oise
+QN06006I,Vivier Corax,32,Hauts-de-France,60,Oise,60159,Compiègne,200067965,Communauté d'agglomération de la Région de Compiègne et de la Basse Automne
+QN06007M,Clos des Roses,32,Hauts-de-France,60,Oise,60159,Compiègne,200067965,Communauté d'agglomération de la Région de Compiègne et de la Basse Automne
+QN06008I,La Victoire,32,Hauts-de-France,60,Oise,60159,Compiègne,200067965,Communauté d'agglomération de la Région de Compiègne et de la Basse Automne
+QN06009I,Saint Jean,32,Hauts-de-France,60,Oise,60057,Beauvais,200067999,Communauté d'agglomération du Beauvaisis
+QN06010I,Saint Lucien,32,Hauts-de-France,60,Oise,60057,Beauvais,200067999,Communauté d'agglomération du Beauvaisis
+QN06011M,Argentine,32,Hauts-de-France,60,Oise,60057,Beauvais,200067999,Communauté d'agglomération du Beauvaisis
+QN06012I,Les Terriers,32,Hauts-de-France,60,Oise,60509,Pont-Sainte-Maxence,246000921,Communauté de communes des Pays d'Oise et d'Halatte
+QN06013I,La Nacre - Saint Exupéry,32,Hauts-de-France,60,Oise,60395,Méru,246000582,Communauté de communes des Sablons
+QN06014M,Les Sables,32,Hauts-de-France,60,Oise,60157,Clermont,246000376,Communauté de communes du Clermontois
+QN06015I,Kennedy,32,Hauts-de-France,60,Oise,60176,Crépy-en-Valois,246000871,Communauté de communes du Pays de Valois
+QN06016M,Beauséjour,32,Hauts-de-France,60,Oise,60471,Noyon,246000756,Communauté de communes du Pays Noyonnais
+QN06017M,Mont Saint Siméon,32,Hauts-de-France,60,Oise,60471,Noyon,246000756,Communauté de communes du Pays Noyonnais
+QN06018N,Montupet,32,Hauts-de-France,60,Oise,60463,Nogent-sur-Oise,200068047,Communauté d'agglomération Creil Sud Oise
+QN06101M,Les Provinces,28,Normandie,61,Orne,61006,Argentan,200068450,Communauté de communes Terres d'Argentan Interco
+QN06102M,Saint Michel - Vallée d'Auge,28,Normandie,61,Orne,61006,Argentan,200068450,Communauté de communes Terres d'Argentan Interco
+QN06103M,Saint Michel,28,Normandie,61,Orne,61169,Flers,200035814,Communauté d'agglomération Flers Agglo
+QN06104M,Saint-Sauveur - Pont Féron,28,Normandie,61,Orne,61169,Flers,200035814,Communauté d'agglomération Flers Agglo
+QN06105M,La Madeleine - Maréchal Leclerc,28,Normandie,61,Orne,61214,L'Aigle,200068468,Communauté de communes des Pays de L'Aigle
+QN06106M,Perseigne,28,Normandie,61,Orne,61001,Alençon,246100663,Communauté urbaine d'Alençon
+QN06107M,Courteille,28,Normandie,61,Orne,61001,Alençon,246100663,Communauté urbaine d'Alençon
+QN06201M,Quartier Du Mieux-Etre,32,Hauts-de-France,62,Pas-de-Calais,62560,Marquise,246200380,Communauté de communes de la Terre des Deux Caps
+QN06202M,Camus,32,Hauts-de-France,62,Pas-de-Calais,62032,Angres,246200364,Communauté d'agglomération de Lens - Liévin
+QN06203M,Plantigeons - Germinal - République,32,Hauts-de-France,62,Pas-de-Calais,62215,Carvin,246200299,Communauté d'agglomération d'Hénin-Carvin
+QN06204M,Centre Ville,32,Hauts-de-France,62,Pas-de-Calais,62048,Auchel,200072460,Communauté d'agglomération de Béthune-Bruay; Artois-Lys Romane
+QN06208M,Quartier Du Mont Liébaut,32,Hauts-de-France,62,Pas-de-Calais,62119,Béthune,200072460,Communauté d'agglomération de Béthune-Bruay; Artois-Lys Romane
+QN06212M,Terrasses Basly,32,Hauts-de-France,62,Pas-de-Calais,62178,Bruay-la-Buissière,200072460,Communauté d'agglomération de Béthune-Bruay; Artois-Lys Romane
+QN06218M,Terre-Noeve,32,Hauts-de-France,62,Pas-de-Calais,62617,Nux-les-Mines,200072460,Communauté d'agglomération de Béthune-Bruay; Artois-Lys Romane
+QN06219M,République - Cité 4,32,Hauts-de-France,62,Pas-de-Calais,62065,Avion,246200364,Communauté d'agglomération de Lens - Liévin
+QN06223M,Cité Bellevue,32,Hauts-de-France,62,Pas-de-Calais,62413,Harnes,246200364,Communauté d'agglomération de Lens - Liévin
+QN06226M,Cité 2,32,Hauts-de-France,62,Pas-de-Calais,62498,Lens,246200364,Communauté d'agglomération de Lens - Liévin
+QN06227M,Sellier Cité 4,32,Hauts-de-France,62,Pas-de-Calais,62498,Lens,246200364,Communauté d'agglomération de Lens - Liévin
+QN06228M,Calonne - Marichelles - Vent De Bise,32,Hauts-de-France,62,Pas-de-Calais,62510,Liévin,246200364,Communauté d'agglomération de Lens - Liévin
+QN06230M,Blum - Salengro - 109,32,Hauts-de-France,62,Pas-de-Calais,62510,Liévin,246200364,Communauté d'agglomération de Lens - Liévin
+QN06231M,3 Cités,32,Hauts-de-France,62,Pas-de-Calais,62563,Mazingarbe,246200364,Communauté d'agglomération de Lens - Liévin
+QN06232M,Cité 10,32,Hauts-de-France,62,Pas-de-Calais,62737,Sains-en-Gohelle,246200364,Communauté d'agglomération de Lens - Liévin
+QN06235M,Cité Des Taberneaux,32,Hauts-de-France,62,Pas-de-Calais,62895,Wingles,246200364,Communauté d'agglomération de Lens - Liévin
+QN06237M,Quai Du commerce - Saint Sépulcre,32,Hauts-de-France,62,Pas-de-Calais,62765,Saint-Omer,200069037,Communauté d'agglomération du Pays de Saint-Omer
+QN06238M,Du Village Au Moulin,32,Hauts-de-France,62,Pas-de-Calais,62249,Courcelles-lès-Lens,246200299,Communauté d'agglomération d'Hénin-Carvin
+QN06239M,Rotois - Saint Roch,32,Hauts-de-France,62,Pas-de-Calais,62250,Courrières,246200299,Communauté d'agglomération d'Hénin-Carvin
+QN06240M,Cornuault,32,Hauts-de-France,62,Pas-de-Calais,62321,Évin-Malmaison,246200299,Communauté d'agglomération d'Hénin-Carvin
+QN06241M,Macé - Darcy,32,Hauts-de-France,62,Pas-de-Calais,62427,Hénin-Beaumont,246200299,Communauté d'agglomération d'Hénin-Carvin
+QN06242M,Ponchelet - Kennedy,32,Hauts-de-France,62,Pas-de-Calais,62427,Hénin-Beaumont,246200299,Communauté d'agglomération d'Hénin-Carvin
+QN06246M,Nouméa,32,Hauts-de-France,62,Pas-de-Calais,62724,Rouvroy,246200299,Communauté d'agglomération d'Hénin-Carvin
+QN06248M,Quartier De La Haute Voie,32,Hauts-de-France,62,Pas-de-Calais,62907,Libercourt,246200299,Communauté d'agglomération d'Hénin-Carvin
+QN06249M,Damrémont,32,Hauts-de-France,62,Pas-de-Calais,62160,Boulogne-sur-Mer,246200729,Communauté d'agglomération du Boulonnais
+QN06250M,Centre Ville,32,Hauts-de-France,62,Pas-de-Calais,62160,Boulogne-sur-Mer,246200729,Communauté d'agglomération du Boulonnais
+QN06253M,Fort Nieulay - Cailloux - Saint-Pierre,32,Hauts-de-France,62,Pas-de-Calais,62193,Calais,200090751,Communauté d'agglomération Grand Calais Terres et Mers
+QN06254M,Beau Marais,32,Hauts-de-France,62,Pas-de-Calais,62193,Calais,200090751,Communauté d'agglomération Grand Calais Terres et Mers
+QN06255M,Ville Centre,32,Hauts-de-France,62,Pas-de-Calais,62516,Lillers,200072460,Communauté d'agglomération de Béthune-Bruay; Artois-Lys Romane
+QN06256M,Centre Historique,32,Hauts-de-France,62,Pas-de-Calais,62014,Aire-sur-la-Lys,200069037,Communauté d'agglomération du Pays de Saint-Omer
+QN06257M,Quartier De La Renaissance,32,Hauts-de-France,62,Pas-de-Calais,62318,Étaples,200069029,Communauté d'agglomération des Deux Baies en Montreuillois
+QN06258M,Quatre As,32,Hauts-de-France,62,Pas-de-Calais,62004,Achicourt,200033579,Communauté urbaine d'Arras
+QN06259M,Quartier Bonnettes - Saint Pol - Baudimont,32,Hauts-de-France,62,Pas-de-Calais,62041,Arras,200033579,Communauté urbaine d'Arras
+QN06260M,Quartier Blancs Monts - Hochettes,32,Hauts-de-France,62,Pas-de-Calais,62041,Arras,200033579,Communauté urbaine d'Arras
+QN06261M,Saint Michel Goudemand,32,Hauts-de-France,62,Pas-de-Calais,62041,Arras,200033579,Communauté urbaine d'Arras
+QN06264N,Les Vérotières,32,Hauts-de-France,62,Pas-de-Calais,62108,Berck,200069029,Communauté d'agglomération des Deux Baies en Montreuillois
+QN06301M,Saint-Jacques,84,Auvergne-Rhône-Alpes,63,Puy-de-Dôme,63113,Clermont-Ferrand,246300701,Clermont Auvergne Métropole
+QN06302I,Quartiers Nord,84,Auvergne-Rhône-Alpes,63,Puy-de-Dôme,63113,Clermont-Ferrand,246300701,Clermont Auvergne Métropole
+QN06303I,La Gauthière,84,Auvergne-Rhône-Alpes,63,Puy-de-Dôme,63113,Clermont-Ferrand,246300701,Clermont Auvergne Métropole
+QN06304I,Fontaine Du Bac,84,Auvergne-Rhône-Alpes,63,Puy-de-Dôme,63113,Clermont-Ferrand,246300701,Clermont Auvergne Métropole
+QN06305M,Cournon D'Auvergne,84,Auvergne-Rhône-Alpes,63,Puy-de-Dôme,63124,Cournon-d'Auvergne,246300701,Clermont Auvergne Métropole
+QN06306M,Thiers,84,Auvergne-Rhône-Alpes,63,Puy-de-Dôme,63430,Thiers,200070712,Communauté de communes Thiers Dore et Montagne
+QN06307N,Centre,84,Auvergne-Rhône-Alpes,63,Puy-de-Dôme,63113,Clermont-Ferrand,246300701,Clermont Auvergne Métropole
+QN06401I,Maubec - Citadelle,75,Nouvelle-Aquitaine,64,Pyrénées-Atlantiques,64102,Bayonne,200067106,Communauté d'agglomération du Pays Basque
+QN06402M,Hauts de Sainte-Croix - Mounédé,75,Nouvelle-Aquitaine,64,Pyrénées-Atlantiques,64102,Bayonne,200067106,Communauté d'agglomération du Pays Basque
+QN06403M,Saragosse,75,Nouvelle-Aquitaine,64,Pyrénées-Atlantiques,64445,Pau,200067254,Communauté d'agglomération Pau Béarn Pyrénées
+QN06404M,Ousse des Bois - Berlioz - Le Laü,75,Nouvelle-Aquitaine,64,Pyrénées-Atlantiques,64445,Pau,200067254,Communauté d'agglomération Pau Béarn Pyrénées
+QN06501M,Solazur,76,Occitanie,65,Hautes-Pyrénées,65440,Tarbes,200069300,Communauté d'agglomération Tarbes-Lourdes-Pyrénées
+QN06502M,Laubadère,76,Occitanie,65,Hautes-Pyrénées,65440,Tarbes,200069300,Communauté d'agglomération Tarbes-Lourdes-Pyrénées
+QN06503M,Ormeau/Bel Air - Mouysset,76,Occitanie,65,Hautes-Pyrénées,65440,Tarbes,200069300,Communauté d'agglomération Tarbes-Lourdes-Pyrénées
+QN06504M,Ophite,76,Occitanie,65,Hautes-Pyrénées,65286,Lourdes,200069300,Communauté d'agglomération Tarbes-Lourdes-Pyrénées
+QN06601M,Centre Ville,76,Occitanie,66,Pyrénées-Orientales,66065,Elne,200043602,Communauté de communes des Albères; de la Côte Vermeille et de l'Illibéris
+QN06602I,Quartier Saint Assiscle,76,Occitanie,66,Pyrénées-Orientales,66136,Perpignan,200027183,Communauté urbaine Perpignan Méditerranée Métropole
+QN06603I,Quartier Gare,76,Occitanie,66,Pyrénées-Orientales,66136,Perpignan,200027183,Communauté urbaine Perpignan Méditerranée Métropole
+QN06604I,Quartier Bas-Vernet Ancien Zus,76,Occitanie,66,Pyrénées-Orientales,66136,Perpignan,200027183,Communauté urbaine Perpignan Méditerranée Métropole
+QN06605M,Diagonale Du Haut - Moyen-Vernet,76,Occitanie,66,Pyrénées-Orientales,66136,Perpignan,200027183,Communauté urbaine Perpignan Méditerranée Métropole
+QN06606I,Rois De Majorque,76,Occitanie,66,Pyrénées-Orientales,66136,Perpignan,200027183,Communauté urbaine Perpignan Méditerranée Métropole
+QN06607I,Bas-Vernet Nouveau QPV,76,Occitanie,66,Pyrénées-Orientales,66136,Perpignan,200027183,Communauté urbaine Perpignan Méditerranée Métropole
+QN06608I,Quartier Centre Ancien,76,Occitanie,66,Pyrénées-Orientales,66136,Perpignan,200027183,Communauté urbaine Perpignan Méditerranée Métropole
+QN06609M,Quartier Nouveau Logis,76,Occitanie,66,Pyrénées-Orientales,66136,Perpignan,200027183,Communauté urbaine Perpignan Méditerranée Métropole
+QN06610I,Quartier Champs De Mars,76,Occitanie,66,Pyrénées-Orientales,66136,Perpignan,200027183,Communauté urbaine Perpignan Méditerranée Métropole
+QN06701M,Quartier Liberté,44,Grand Est,67,Bas-Rhin,67046,Bischwiller,200067874,Communauté d'agglomération de Haguenau
+QN06702I,Les Pins - Musau,44,Grand Est,67,Bas-Rhin,67180,Haguenau,200067874,Communauté d'agglomération de Haguenau
+QN06703I,Quartiers Est,44,Grand Est,67,Bas-Rhin,67437,Saverne,200068112,Communauté de communes du Pays de Saverne
+QN06705I,Guirbaden,44,Grand Est,67,Bas-Rhin,67043,Bischheim,246700488,Eurométropole de Strasbourg
+QN06706I,Libermann,44,Grand Est,67,Bas-Rhin,67218,Illkirch-Graffenstaden,246700488,Eurométropole de Strasbourg
+QN06707I,Marais,44,Grand Est,67,Bas-Rhin,67447,Schiltigheim,246700488,Eurométropole de Strasbourg
+QN06708I,Hohberg,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06710I,Hautepierre,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06711M,Koenigshoffen-Est,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06712I,Cronenbourg,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06713I,Elsau,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06714I,Laiterie,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06715M,Neuhof - Meinau,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06716I,Cité De L'Ill,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06717M,Spach - Rotterdam,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06718I,Ampère,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06719I,Port Du Rhin,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06720M,Murhof,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06721N,Centre,44,Grand Est,67,Bas-Rhin,67447,Schiltigheim,246700488,Eurométropole de Strasbourg
+QN06722N,Jura - Citadelle,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06723N,Risler,44,Grand Est,67,Bas-Rhin,67482,Strasbourg,246700488,Eurométropole de Strasbourg
+QN06724N,Wihrel,44,Grand Est,67,Bas-Rhin,67365,Ostwald,246700488,Eurométropole de Strasbourg
+QN06801M,Saint Vincent de Paul,44,Grand Est,68,Haut-Rhin,68066,Colmar,246800726,Communauté d'agglomération Colmar Agglomération
+QN06802M,Europe - Schweitzer,44,Grand Est,68,Haut-Rhin,68066,Colmar,246800726,Communauté d'agglomération Colmar Agglomération
+QN06803M,Les Coteaux,44,Grand Est,68,Haut-Rhin,68224,Mulhouse,200066009,Communauté d'agglomération Mulhouse Alsace Agglomération
+QN06804M,Bourtzwiller,44,Grand Est,68,Haut-Rhin,68224,Mulhouse,200066009,Communauté d'agglomération Mulhouse Alsace Agglomération
+QN06805M,Péricentre,44,Grand Est,68,Haut-Rhin,68224,Mulhouse,200066009,Communauté d'agglomération Mulhouse Alsace Agglomération
+QN06806M,Fonderie - Péricentre,44,Grand Est,68,Haut-Rhin,68224,Mulhouse,200066009,Communauté d'agglomération Mulhouse Alsace Agglomération
+QN06808M,Brustlein,44,Grand Est,68,Haut-Rhin,68224,Mulhouse,200066009,Communauté d'agglomération Mulhouse Alsace Agglomération
+QN06809M,Markstein - La Forêt,44,Grand Est,68,Haut-Rhin,68376,Wittenheim,200066009,Communauté d'agglomération Mulhouse Alsace Agglomération
+QN06810M,Quartier de la Gare,44,Grand Est,68,Haut-Rhin,68297,Saint-Louis,200066058,Communauté d'agglomération Saint-Louis Agglomération
+QN06811M,Quartier Bel-Air,44,Grand Est,68,Haut-Rhin,68063,Cernay,200036465,Communauté de communes de Thann-Cernay
+QN06901M,Monod - Baratin - Cacard,84,Auvergne-Rhône-Alpes,69,Rhône,69266,Villeurbanne,200046977,Métropole de Lyon
+QN06902M,Centre,84,Auvergne-Rhône-Alpes,69,Rhône,69091,Givors,200046977,Métropole de Lyon
+QN06903M,Les Pérouses - Compassion,84,Auvergne-Rhône-Alpes,69,Rhône,69027,Brignais,246900757,Communauté de communes de la Vallée du Garon (CCVG)
+QN06904I,Le Garet,84,Auvergne-Rhône-Alpes,69,Rhône,69264,Villefranche-sur-Saône,200040590,Communauté d'agglomération Villefranche Beaujolais Saône
+QN06905I,Béligny,84,Auvergne-Rhône-Alpes,69,Rhône,69264,Villefranche-sur-Saône,200040590,Communauté d'agglomération Villefranche Beaujolais Saône
+QN06907M,Aiguerande,84,Auvergne-Rhône-Alpes,69,Rhône,69019,Belleville-en-Beaujolais,200067817,Communauté de communes Saône-Beaujolais
+QN06908M,Parilly,84,Auvergne-Rhône-Alpes,69,Rhône,69029,Bron,200046977,Métropole de Lyon
+QN06910M,Les Vernes,84,Auvergne-Rhône-Alpes,69,Rhône,69091,Givors,200046977,Métropole de Lyon
+QN06912M,Haute Roche,84,Auvergne-Rhône-Alpes,69,Rhône,69149,Oullins-Pierre-Bénite,200046977,Métropole de Lyon
+QN06914M,Arsenal - Carnot - Parmentier,84,Auvergne-Rhône-Alpes,69,Rhône,69199,Saint-Fons,200046977,Métropole de Lyon
+QN06915I,Les Collonges,84,Auvergne-Rhône-Alpes,69,Rhône,69204,Saint-Genis-Laval,200046977,Métropole de Lyon
+QN06916M,Grande Île,84,Auvergne-Rhône-Alpes,69,Rhône,69256,Vaulx-en-Velin,200046977,Métropole de Lyon
+QN06917I,Sud,84,Auvergne-Rhône-Alpes,69,Rhône,69256,Vaulx-en-Velin,200046977,Métropole de Lyon
+QN06918M,Duclos - Barel,84,Auvergne-Rhône-Alpes,69,Rhône,69259,Vénissieux,200046977,Métropole de Lyon
+QN06919M,Bel Air - Les Brosses,84,Auvergne-Rhône-Alpes,69,Rhône,69266,Villeurbanne,200046977,Métropole de Lyon
+QN06920M,Saint-Jean,84,Auvergne-Rhône-Alpes,69,Rhône,69266,Villeurbanne,200046977,Métropole de Lyon
+QN06921M,Les Buers,84,Auvergne-Rhône-Alpes,69,Rhône,69266,Villeurbanne,200046977,Métropole de Lyon
+QN06922M,Tonkin,84,Auvergne-Rhône-Alpes,69,Rhône,69266,Villeurbanne,200046977,Métropole de Lyon
+QN06923M,Prainet,84,Auvergne-Rhône-Alpes,69,Rhône,69275,Décines-Charpieu,200046977,Métropole de Lyon
+QN06924I,Le Mathiolan,84,Auvergne-Rhône-Alpes,69,Rhône,69282,Meyzieu,200046977,Métropole de Lyon
+QN06925M,Ville Nouvelle,84,Auvergne-Rhône-Alpes,69,Rhône,69286,Rillieux-la-Pape,200046977,Métropole de Lyon
+QN06926M,Bellevue - Ermitage,84,Auvergne-Rhône-Alpes,69,Rhône,69290,Saint-Priest,200046977,Métropole de Lyon
+QN06927M,Garibaldi,84,Auvergne-Rhône-Alpes,69,Rhône,69290,Saint-Priest,200046977,Métropole de Lyon
+QN06928M,Bel Air,84,Auvergne-Rhône-Alpes,69,Rhône,69290,Saint-Priest,200046977,Métropole de Lyon
+QN06929M,Soeurs Janin,84,Auvergne-Rhône-Alpes,69,Rhône,69123,Lyon,200046977,Métropole de Lyon
+QN06930M,Cités Sociales Gerland,84,Auvergne-Rhône-Alpes,69,Rhône,69123,Lyon,200046977,Métropole de Lyon
+QN06931M,Moulin A Vent,84,Auvergne-Rhône-Alpes,69,Rhône,69123,Lyon,200046977,Métropole de Lyon
+QN06933I,Mermoz,84,Auvergne-Rhône-Alpes,69,Rhône,69123,Lyon,200046977,Métropole de Lyon
+QN06934M,Duchère,84,Auvergne-Rhône-Alpes,69,Rhône,69123,Lyon,200046977,Métropole de Lyon
+QN06935M,Gorge de Loup - La Vallonière,84,Auvergne-Rhône-Alpes,69,Rhône,69123,Lyon,200046977,Métropole de Lyon
+QN06936M,Les Plaines,84,Auvergne-Rhône-Alpes,69,Rhône,69091,Givors,200046977,Métropole de Lyon
+QN06937M,Le Vallon,84,Auvergne-Rhône-Alpes,69,Rhône,69096,Grigny,200046977,Métropole de Lyon
+QN06938I,Le Vergoin,84,Auvergne-Rhône-Alpes,69,Rhône,69123,Lyon,200046977,Métropole de Lyon
+QN06939I,Moncey,84,Auvergne-Rhône-Alpes,69,Rhône,69123,Lyon,200046977,Métropole de Lyon
+QN06940I,Les Plantées,84,Auvergne-Rhône-Alpes,69,Rhône,69282,Meyzieu,200046977,Métropole de Lyon
+QN06941N,La Borelle,84,Auvergne-Rhône-Alpes,69,Rhône,69259,Vénissieux,200046977,Métropole de Lyon
+QN06942N,Laennec,84,Auvergne-Rhône-Alpes,69,Rhône,69123,Lyon,200046977,Métropole de Lyon
+QN06943N,Monery,84,Auvergne-Rhône-Alpes,69,Rhône,69259,Vénissieux,200046977,Métropole de Lyon
+QN06944N,Les Sources - Le Pérollier,84,Auvergne-Rhône-Alpes,69,Rhône,69081,Écully,200046977,Métropole de Lyon
+QN06945N,Les Maronniers,84,Auvergne-Rhône-Alpes,69,Rhône,69259,Vénissieux,200046977,Métropole de Lyon
+QN06946N,Berthaudière - Sablons - Cornavent,84,Auvergne-Rhône-Alpes,69,Rhône,69275,Décines-Charpieu,200046977,Métropole de Lyon
+QN06947N,Le Péronnet,84,Auvergne-Rhône-Alpes,69,Rhône,69260,Vernaison,200046977,Métropole de Lyon
+QN07001M,Rêpes - Montmarin - Grand Grésil,27,Bourgogne-Franche-Comté,70,Haute-Saône,70550,Vesoul,247000011,Communauté d'agglomération de Vesoul
+QN07002I,Le Mortard,27,Bourgogne-Franche-Comté,70,Haute-Saône,70310,Lure,247000664,Communauté de communes du Pays de Lure
+QN07003M,Stade Messier,27,Bourgogne-Franche-Comté,70,Haute-Saône,70311,Luxeuil-les-Bains,247000755,Communauté de communes du Pays de Luxeuil
+QN07004I,Les Chenevières,27,Bourgogne-Franche-Comté,70,Haute-Saône,70285,Héricourt,247000722,Communauté de communes du Pays d'Héricourt
+QN07005M,Les Capucins,27,Bourgogne-Franche-Comté,70,Haute-Saône,70279,Gray,200036549,Communauté de communes Val de Gray
+QN07101I,Aubépins,27,Bourgogne-Franche-Comté,71,Saône-et-Loire,71076,Chalon-sur-Saône,247100589,Communauté d'agglomération Le Grand Chalon
+QN07102I,Prés Saint Jean,27,Bourgogne-Franche-Comté,71,Saône-et-Loire,71076,Chalon-sur-Saône,247100589,Communauté d'agglomération Le Grand Chalon
+QN07103M,La Chanaye - Résidence,27,Bourgogne-Franche-Comté,71,Saône-et-Loire,71270,Mâcon,200070308,Communauté d'agglomération Mâconnais Beaujolais Agglomération
+QN07104I,Les Blanchettes,27,Bourgogne-Franche-Comté,71,Saône-et-Loire,71270,Mâcon,200070308,Communauté d'agglomération Mâconnais Beaujolais Agglomération
+QN07105M,Les Saugeraies - Gautriats,27,Bourgogne-Franche-Comté,71,Saône-et-Loire,71270,Mâcon,200070308,Communauté d'agglomération Mâconnais Beaujolais Agglomération
+QN07106I,Marbé,27,Bourgogne-Franche-Comté,71,Saône-et-Loire,71270,Mâcon,200070308,Communauté d'agglomération Mâconnais Beaujolais Agglomération
+QN07107I,Saint Pantaléon,27,Bourgogne-Franche-Comté,71,Saône-et-Loire,71014,Autun,200070530,Communauté de communes du Grand Autunois Morvan
+QN07108M,Le Tennis,27,Bourgogne-Franche-Comté,71,Saône-et-Loire,71153,Le Creusot,247100290,Communauté urbaine Le Creusot Montceau-les-Mines
+QN07109M,Rives Du Plessis,27,Bourgogne-Franche-Comté,71,Saône-et-Loire,71306,Montceau-les-Mines,247100290,Communauté urbaine Le Creusot Montceau-les-Mines
+QN07110M,Bois Du Verne,27,Bourgogne-Franche-Comté,71,Saône-et-Loire,71306,Montceau-les-Mines,247100290,Communauté urbaine Le Creusot Montceau-les-Mines
+QN07111M,Résidence Du Lac,27,Bourgogne-Franche-Comté,71,Saône-et-Loire,71540,Torcy,247100290,Communauté urbaine Le Creusot Montceau-les-Mines
+QN07112N,La Molette,27,Bourgogne-Franche-Comté,71,Saône-et-Loire,71153,Le Creusot,247100290,Communauté urbaine Le Creusot Montceau-les-Mines
+QN07201I,Saint Exupéry,52,Pays de la Loire,72,Sarthe,72264,Sablé-sur-Sarthe,247200090,Communauté de communes du Pays Sabolien
+QN07202I,Chaoué-Perrières,52,Pays de la Loire,72,Sarthe,72003,Allonnes,247200132,Communauté urbaine Le Mans Métropole
+QN07204M,Ronceray - Glonnières - Vauguyon,52,Pays de la Loire,72,Sarthe,72181,Le Mans,247200132,Communauté urbaine Le Mans Métropole
+QN07205M,Sablons - Bords de l'Huisne,52,Pays de la Loire,72,Sarthe,72181,Le Mans,247200132,Communauté urbaine Le Mans Métropole
+QN07206M,Epine,52,Pays de la Loire,72,Sarthe,72181,Le Mans,247200132,Communauté urbaine Le Mans Métropole
+QN07207M,Montreux,52,Pays de la Loire,72,Sarthe,72264,Sablé-sur-Sarthe,247200090,Communauté de communes du Pays Sabolien
+QN07301M,Biollay - Bellevue,84,Auvergne-Rhône-Alpes,73,Savoie,73065,Chambéry,200069110,Communauté d'agglomération du Grand Chambéry
+QN07302M,Les Hauts De Chambéry,84,Auvergne-Rhône-Alpes,73,Savoie,73065,Chambéry,200069110,Communauté d'agglomération du Grand Chambéry
+QN07303M,Val Des Roses - Contamine - Champ de Mars,84,Auvergne-Rhône-Alpes,73,Savoie,73011,Albertville,200068997,Communauté d'agglomération Arlysère
+QN07401M,Le Perrier - Château Rouge - Livron,84,Auvergne-Rhône-Alpes,74,Haute-Savoie,74012,Annemasse,200011773,Communauté d'agglomération Annemasse-Les Voirons-Agglomération
+QN07402M,Le Chalet - Helvetia-Park - Hutins,84,Auvergne-Rhône-Alpes,74,Haute-Savoie,74133,Gaillard,200011773,Communauté d'agglomération Annemasse-Les Voirons-Agglomération
+QN07403M,Les Ewües,84,Auvergne-Rhône-Alpes,74,Haute-Savoie,74081,Cluses,200033116,Communauté de communes Cluses-Arve et Montagnes
+QN07404I,Collonges Sainte-Hélène,84,Auvergne-Rhône-Alpes,74,Haute-Savoie,74281,Thonon-les-Bains,200067551,Communauté d'agglomération Thonon Agglomération
+QN07405M,Saint Georges - Route De Thairy,84,Auvergne-Rhône-Alpes,74,Haute-Savoie,74243,Saint-Julien-en-Genevois,247400690,Communauté de communes du Genevois
+QN07406I,Bois Jolivet - Les Iles - Bellerive,84,Auvergne-Rhône-Alpes,74,Haute-Savoie,74042,Bonneville,200000172,Communauté de communes Faucigny-Glières
+QN07501M,Bédier - Boutroux - Villa d'Este,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07502M,Chaufourniers,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07503M,Kellermann - Paul Bourget,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07504M,Oudiné - Chevaleret,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07505I,Didot - Porte de Vanves,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07506M,Porte de Brançion - Périchaux,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07507I,Porte De Saint-Ouen - Porte Pouchet,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07508M,Blémont,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07509M,Porte Montmartre - Porte Des Poissonniers - Moskova,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07510M,La Chapelle - Evangile,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07511M,Goutte D'Or,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07512I,Porte De La Chapelle - Charles Hermite,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07513M,Stalingrad Riquet,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07514M,Michelet - Alphonse Karr - Rue de Nantes,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07515M,Danube - Solidarité - Marseillaise,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07516I,Algérie,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07517I,Les Portes Du Vingtième,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07518M,Petit Belleville,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07519M,Grand Belleville,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07520M,Les Amandiers,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07521N,Falguière,11,Île-de-France,75,Paris,75056,Paris,217500016,EPT Ville de Paris
+QN07601M,Val Druel,28,Normandie,76,Seine-Maritime,76217,Dieppe,247600786,Communauté d'agglomération de la Région Dieppoise
+QN07602M,Neuville,28,Normandie,76,Seine-Maritime,76217,Dieppe,247600786,Communauté d'agglomération de la Région Dieppoise
+QN07603I,Les Bruyères,28,Normandie,76,Seine-Maritime,76217,Dieppe,247600786,Communauté d'agglomération de la Région Dieppoise
+QN07604M,Centre ville,28,Normandie,76,Seine-Maritime,76305,Gonfreville-l'Orcher,200084952,Communauté urbaine Le Havre Seine Métropole
+QN07605I,Mont Gaillard - Mare Rouge,28,Normandie,76,Seine-Maritime,76351,Le Havre,200084952,Communauté urbaine Le Havre Seine Métropole
+QN07606M,Centre Ancien - Quartiers Sud,28,Normandie,76,Seine-Maritime,76351,Le Havre,200084952,Communauté urbaine Le Havre Seine Métropole
+QN07607I,Bois-De-Bléville,28,Normandie,76,Seine-Maritime,76351,Le Havre,200084952,Communauté urbaine Le Havre Seine Métropole
+QN07608I,Bléville,28,Normandie,76,Seine-Maritime,76351,Le Havre,200084952,Communauté urbaine Le Havre Seine Métropole
+QN07609M,Caucriauville Soquence,28,Normandie,76,Seine-Maritime,76351,Le Havre,200084952,Communauté urbaine Le Havre Seine Métropole
+QN07610M,Plateau,28,Normandie,76,Seine-Maritime,76157,Canteleu,200023414,Métropole Rouen Normandie
+QN07612I,Parc du Robec,28,Normandie,76,Seine-Maritime,76212,Darnétal,200023414,Métropole Rouen Normandie
+QN07613M,Centre ville,28,Normandie,76,Seine-Maritime,76231,Elbeuf,200023414,Métropole Rouen Normandie
+QN07614M,Quartier BCDM,28,Normandie,76,Seine-Maritime,76319,Grand-Couronne,200023414,Métropole Rouen Normandie
+QN07615M,QPV de Maromme,28,Normandie,76,Seine-Maritime,76410,Maromme,200023414,Métropole Rouen Normandie
+QN07616M,Quartier Rosa Parks,28,Normandie,76,Seine-Maritime,76474,Notre-Dame-de-Bondeville,200023414,Métropole Rouen Normandie
+QN07617M,Bel Air,28,Normandie,76,Seine-Maritime,76484,Oissel,200023414,Métropole Rouen Normandie
+QN07618M,Quartier de la Piscine,28,Normandie,76,Seine-Maritime,76498,Le Petit-Quevilly,200023414,Métropole Rouen Normandie
+QN07619M,Grammont - Saint Sever - Orléans,28,Normandie,76,Seine-Maritime,76540,Rouen,200023414,Métropole Rouen Normandie
+QN07621M,Quartier Château Blanc,28,Normandie,76,Seine-Maritime,76575,Saint-Étienne-du-Rouvray,200023414,Métropole Rouen Normandie
+QN07622M,Quartier Thorez - Grimau,28,Normandie,76,Seine-Maritime,76575,Saint-Étienne-du-Rouvray,200023414,Métropole Rouen Normandie
+QN07623M,Quartier Hartmann - La Houssière,28,Normandie,76,Seine-Maritime,76575,Saint-Étienne-du-Rouvray,200023414,Métropole Rouen Normandie
+QN07625M,Lalizel,28,Normandie,76,Seine-Maritime,76057,Barentin,247600646,Communauté de communes Caux - Austreberthe
+QN07626M,Fécamp quartier du Ramponneau,28,Normandie,76,Seine-Maritime,76259,Fécamp,200069821,Communauté d'agglomération Fécamp Caux Littoral Agglomération
+QN07627N,Quartier Saint-Julien,28,Normandie,76,Seine-Maritime,76498,Le Petit-Quevilly,200023414,Métropole Rouen Normandie
+QN07628N,Tourneville,28,Normandie,76,Seine-Maritime,76351,Le Havre,200084952,Communauté urbaine Le Havre Seine Métropole
+QN07629N,Quartier Clairval,28,Normandie,76,Seine-Maritime,76384,Lillebonne,200010700,Communauté d'agglomération Caux Seine Agglo
+QN07701I,La Renardière,11,Île-de-France,77,Seine-et-Marne,77390,Roissy-en-Brie,200057958,Communauté d'agglomération Paris - Vallée de la Marne
+QN07702I,La Grande Prairie,11,Île-de-France,77,Seine-et-Marne,77108,Chelles,200057958,Communauté d'agglomération Paris - Vallée de la Marne
+QN07703M,Schweitzer - Laennec,11,Île-de-France,77,Seine-et-Marne,77108,Chelles,200057958,Communauté d'agglomération Paris - Vallée de la Marne
+QN07704M,Orly Parc,11,Île-de-France,77,Seine-et-Marne,77243,Lagny-sur-Marne,247700594,Communauté d'agglomération Marne et Gondoire
+QN07706I,L'Arche Guedon,11,Île-de-France,77,Seine-et-Marne,77468,Torcy,200057958,Communauté d'agglomération Paris - Vallée de la Marne
+QN07707M,Le Mail,11,Île-de-France,77,Seine-et-Marne,77468,Torcy,200057958,Communauté d'agglomération Paris - Vallée de la Marne
+QN07708M,La Plaine De Lys - Bernard De Poret,11,Île-de-France,77,Seine-et-Marne,77152,Dammarie-les-Lys,247700057,Communauté d'agglomération Melun Val de Seine
+QN07709M,Les Courtilleraie - Le Circé,11,Île-de-France,77,Seine-et-Marne,77285,Le Mée-sur-Seine,247700057,Communauté d'agglomération Melun Val de Seine
+QN07711M,Les Mezereaux,11,Île-de-France,77,Seine-et-Marne,77288,Melun,247700057,Communauté d'agglomération Melun Val de Seine
+QN07712M,L'Almont,11,Île-de-France,77,Seine-et-Marne,77288,Melun,247700057,Communauté d'agglomération Melun Val de Seine
+QN07713M,Beauval Dunant,11,Île-de-France,77,Seine-et-Marne,77284,Meaux,200072130,Communauté d'agglomération du Pays de Meaux
+QN07714M,Surville,11,Île-de-France,77,Seine-et-Marne,77305,Montereau-Fault-Yonne,247700107,Communauté de communes Pays de Montereau
+QN07715I,Les Fougères,11,Île-de-France,77,Seine-et-Marne,77014,Avon,200072346,Communauté d'agglomération du Pays de Fontainebleau
+QN07716I,Résidence Montmirail,11,Île-de-France,77,Seine-et-Marne,77183,La Ferté-sous-Jouarre,200090504,Communauté d'agglomération Coulommiers Pays de Brie
+QN07717M,Champbenoist,11,Île-de-France,77,Seine-et-Marne,77379,Provins,200037133,Communauté de communes du Provinois
+QN07718M,Anne Franck,11,Île-de-France,77,Seine-et-Marne,77350,Ozoir-la-Ferrière,200023125,Communauté de communes Les Portes Briardes entre Villes et Forêts
+QN07719I,Les Templiers,11,Île-de-France,77,Seine-et-Marne,77131,Coulommiers,200090504,Communauté d'agglomération Coulommiers Pays de Brie
+QN07720M,Mont Saint Martin,11,Île-de-France,77,Seine-et-Marne,77333,Nemours,200023240,Communauté de communes Pays de Nemours
+QN07721M,Quartier République Vilvaudé,11,Île-de-France,77,Seine-et-Marne,77514,Villeparisis,200055655,Communauté d'agglomération Roissy Pays de France
+QN07722M,Lugny Maronniers - Résidence Du Parc,11,Île-de-France,77,Seine-et-Marne,77296,Moissy-Cramayel,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN07723M,Centre Ville - Quartier De L'Europe,11,Île-de-France,77,Seine-et-Marne,77445,Savigny-le-Temple,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN07724N,Normandie - Niemen - Poitou,11,Île-de-France,77,Seine-et-Marne,77514,Villeparisis,200055655,Communauté d'agglomération Roissy Pays de France
+QN07725N,Coeur de Champagne,11,Île-de-France,77,Seine-et-Marne,77079,Champagne-sur-Seine,247700032,Communauté de communes Moret Seine et Loing
+QN07801M,Val Fourré,11,Île-de-France,78,Yvelines,78361,Mantes-la-Jolie,200059889,Communauté urbaine Grand Paris Seine et Oise
+QN07802M,Merisiers Plaisances,11,Île-de-France,78,Yvelines,78362,Mantes-la-Ville,200059889,Communauté urbaine Grand Paris Seine et Oise
+QN07803M,Domaine De La Vallée,11,Île-de-France,78,Yvelines,78362,Mantes-la-Ville,200059889,Communauté urbaine Grand Paris Seine et Oise
+QN07804M,Pont Du Routoir 2,11,Île-de-France,78,Yvelines,78297,Guyancourt,200058782,Communauté d'agglomération de Saint-Quentin-en-Yvelines
+QN07805M,Merisiers-Plaine De Neauphle,11,Île-de-France,78,Yvelines,78621,Trappes,200058782,Communauté d'agglomération de Saint-Quentin-en-Yvelines
+QN07806M,Jean Macé,11,Île-de-France,78,Yvelines,78621,Trappes,200058782,Communauté d'agglomération de Saint-Quentin-en-Yvelines
+QN07807M,Bois De L'Etang - Orly Parc,11,Île-de-France,78,Yvelines,78644,La Verrière,200058782,Communauté d'agglomération de Saint-Quentin-en-Yvelines
+QN07808M,Oiseaux,11,Île-de-France,78,Yvelines,78123,Carrières-sous-Poissy,200059889,Communauté urbaine Grand Paris Seine et Oise
+QN07809M,Fleurs,11,Île-de-France,78,Yvelines,78123,Carrières-sous-Poissy,200059889,Communauté urbaine Grand Paris Seine et Oise
+QN07810M,Noe-Feucherets,11,Île-de-France,78,Yvelines,78138,Chanteloup-les-Vignes,200059889,Communauté urbaine Grand Paris Seine et Oise
+QN07811M,Cité Du Parc,11,Île-de-France,78,Yvelines,78643,Vernouillet,200059889,Communauté urbaine Grand Paris Seine et Oise
+QN07812M,Centre-Sud,11,Île-de-France,78,Yvelines,78335,Limay,200059889,Communauté urbaine Grand Paris Seine et Oise
+QN07813M,Alouettes,11,Île-de-France,78,Yvelines,78124,Carrières-sur-Seine,200058519,Communauté d'agglomération Saint Germain Boucles de Seine
+QN07814M,Plateau,11,Île-de-France,78,Yvelines,78586,Sartrouville,200058519,Communauté d'agglomération Saint Germain Boucles de Seine
+QN07815M,Valibout,11,Île-de-France,78,Yvelines,78490,Plaisir,200058782,Communauté d'agglomération de Saint-Quentin-en-Yvelines
+QN07816M,Friches,11,Île-de-France,78,Yvelines,78383,Maurepas,200058782,Communauté d'agglomération de Saint-Quentin-en-Yvelines
+QN07817M,Beauregard,11,Île-de-France,78,Yvelines,78498,Poissy,200059889,Communauté urbaine Grand Paris Seine et Oise
+QN07818M,Saint Exupéry,11,Île-de-France,78,Yvelines,78498,Poissy,200059889,Communauté urbaine Grand Paris Seine et Oise
+QN07819M,Cinq Quartiers,11,Île-de-France,78,Yvelines,78440,Les Mureaux,200059889,Communauté urbaine Grand Paris Seine et Oise
+QN07820M,Cité Renault - Centre Ville,11,Île-de-France,78,Yvelines,78440,Les Mureaux,200059889,Communauté urbaine Grand Paris Seine et Oise
+QN07821N,Les Acacias,11,Île-de-France,78,Yvelines,78168,Coignières,200058782,Communauté d'agglomération de Saint-Quentin-en-Yvelines
+QN07822N,L'Avre,11,Île-de-France,78,Yvelines,78165,Les Clayes-sous-Bois,200058782,Communauté d'agglomération de Saint-Quentin-en-Yvelines
+QN07901M,Clou Bouchet,75,Nouvelle-Aquitaine,79,Deux-Sèvres,79191,Niort,200041317,Communauté d'agglomération du Niortais
+QN07902I,Tour Chabot Gavacherie,75,Nouvelle-Aquitaine,79,Deux-Sèvres,79191,Niort,200041317,Communauté d'agglomération du Niortais
+QN07903M,Pontreau Colline Saint-André,75,Nouvelle-Aquitaine,79,Deux-Sèvres,79191,Niort,200041317,Communauté d'agglomération du Niortais
+QN07904M,Les Capucins,75,Nouvelle-Aquitaine,79,Deux-Sèvres,79329,Thouars,247900798,Communauté de communes du Thouarsais
+QN07905M,Valette,75,Nouvelle-Aquitaine,79,Deux-Sèvres,79049,Bressuire,200040244,Communauté d'agglomération du Bocage Bressuirais
+QN08001M,Etouvie,32,Hauts-de-France,80,Somme,80021,Amiens,248000531,Communauté d'agglomération Amiens Métropole
+QN08002M,Pierre Rollin,32,Hauts-de-France,80,Somme,80021,Amiens,248000531,Communauté d'agglomération Amiens Métropole
+QN08003M,Amiens Nord,32,Hauts-de-France,80,Somme,80021,Amiens,248000531,Communauté d'agglomération Amiens Métropole
+QN08004M,Marcel Paul - Salamandre,32,Hauts-de-France,80,Somme,80021,Amiens,248000531,Communauté d'agglomération Amiens Métropole
+QN08005M,Condorcet - Philéas Lebesgue,32,Hauts-de-France,80,Somme,80021,Amiens,248000531,Communauté d'agglomération Amiens Métropole
+QN08006M,Les Parcheminiers,32,Hauts-de-France,80,Somme,80021,Amiens,248000531,Communauté d'agglomération Amiens Métropole
+QN08007M,Soleil Levant - Bouleaux - Platanes,32,Hauts-de-France,80,Somme,80001,Abbeville,200070993,Communauté d'agglomération de la Baie de Somme
+QN08008M,Espérance - Provinces - Lopofa - Québec,32,Hauts-de-France,80,Somme,80001,Abbeville,200070993,Communauté d'agglomération de la Baie de Somme
+QN08009M,Les Argillières,32,Hauts-de-France,80,Somme,80001,Abbeville,200070993,Communauté d'agglomération de la Baie de Somme
+QN08010N,Elbeuf-Lescouvé,32,Hauts-de-France,80,Somme,80021,Amiens,248000531,Communauté d'agglomération Amiens Métropole
+QN08101M,La Falgalarié,76,Occitanie,81,Tarn,81021,Aussillon,248100430,Communauté d'agglomération de Castres Mazamet
+QN08102M,Laden Petit Train,76,Occitanie,81,Tarn,81065,Castres,248100430,Communauté d'agglomération de Castres Mazamet
+QN08103M,Lameilhé,76,Occitanie,81,Tarn,81065,Castres,248100430,Communauté d'agglomération de Castres Mazamet
+QN08104M,Aillot Bisséous Lardaillé,76,Occitanie,81,Tarn,81065,Castres,248100430,Communauté d'agglomération de Castres Mazamet
+QN08105M,Centre Ville,76,Occitanie,81,Tarn,81065,Castres,248100430,Communauté d'agglomération de Castres Mazamet
+QN08106M,Cantepau,76,Occitanie,81,Tarn,81004,Albi,248100737,Communauté d'agglomération de l'Albigeois (C2A)
+QN08107M,Veyrières Rayssac,76,Occitanie,81,Tarn,81004,Albi,248100737,Communauté d'agglomération de l'Albigeois (C2A)
+QN08108M,Lapanouse,76,Occitanie,81,Tarn,81004,Albi,248100737,Communauté d'agglomération de l'Albigeois (C2A)
+QN08109M,Rajol - Cérou - Gourgatieux - Bouloc - Verrerie,76,Occitanie,81,Tarn,81060,Carmaux,200040905,Communauté de communes Carmausin-Ségala
+QN08110M,Lentajou - Catalanis,76,Occitanie,81,Tarn,81099,Gaillac,200066124,Communauté d'agglomération Gaillac-Graulhet
+QN08111M,Crins - En Gach,76,Occitanie,81,Tarn,81105,Graulhet,200066124,Communauté d'agglomération Gaillac-Graulhet
+QN08201I,Cur de Ville,76,Occitanie,82,Tarn-et-Garonne,82121,Montauban,248200099,Communauté d'agglomération Grand Montauban
+QN08202M,Médiathèque,76,Occitanie,82,Tarn-et-Garonne,82121,Montauban,248200099,Communauté d'agglomération Grand Montauban
+QN08203M,Centre-Ville,76,Occitanie,82,Tarn-et-Garonne,82112,Moissac,200066322,Communauté de communes Terres des Confluences
+QN08204M,Sarlac,76,Occitanie,82,Tarn-et-Garonne,82112,Moissac,200066322,Communauté de communes Terres des Confluences
+QN08205N,Beausoleil-Bas,76,Occitanie,82,Tarn-et-Garonne,82121,Montauban,248200099,Communauté d'agglomération Grand Montauban
+QN08301M,L'Agachon,93,Provence-Alpes-Côte d'Azur,83,Var,83061,Fréjus,200035319,Communauté d'agglomération Estérel Côte d'Azur Agglomération
+QN08302M,Centre Ville,93,Provence-Alpes-Côte d'Azur,83,Var,83050,Draguignan,248300493,Communauté d'agglomération Dracénie Provence Verdon Agglomération
+QN08303M,Les Collettes,93,Provence-Alpes-Côte d'Azur,83,Var,83050,Draguignan,248300493,Communauté d'agglomération Dracénie Provence Verdon Agglomération
+QN08304M,Centre Ville,93,Provence-Alpes-Côte d'Azur,83,Var,83086,Le Muy,248300493,Communauté d'agglomération Dracénie Provence Verdon Agglomération
+QN08305M,Romain Rolland,93,Provence-Alpes-Côte d'Azur,83,Var,83062,La Garde,248300543,Métropole Toulon-Provence-Méditerranée
+QN08306I,Centre Ville,93,Provence-Alpes-Côte d'Azur,83,Var,83069,Hyères,248300543,Métropole Toulon-Provence-Méditerranée
+QN08307M,Val Des Rougières,93,Provence-Alpes-Côte d'Azur,83,Var,83069,Hyères,248300543,Métropole Toulon-Provence-Méditerranée
+QN08308M,Berthe,93,Provence-Alpes-Côte d'Azur,83,Var,83126,La Seyne-sur-Mer,248300543,Métropole Toulon-Provence-Méditerranée
+QN08309M,Centre Ville,93,Provence-Alpes-Côte d'Azur,83,Var,83126,La Seyne-sur-Mer,248300543,Métropole Toulon-Provence-Méditerranée
+QN08310M,La Beaucaire,93,Provence-Alpes-Côte d'Azur,83,Var,83137,Toulon,248300543,Métropole Toulon-Provence-Méditerranée
+QN08311M,La Florane,93,Provence-Alpes-Côte d'Azur,83,Var,83137,Toulon,248300543,Métropole Toulon-Provence-Méditerranée
+QN08312M,Pontcarral,93,Provence-Alpes-Côte d'Azur,83,Var,83137,Toulon,248300543,Métropole Toulon-Provence-Méditerranée
+QN08313M,Pont Du Las - Rodeilhac,93,Provence-Alpes-Côte d'Azur,83,Var,83137,Toulon,248300543,Métropole Toulon-Provence-Méditerranée
+QN08314I,Beaulieu- Sainte Marie,93,Provence-Alpes-Côte d'Azur,83,Var,83137,Toulon,248300543,Métropole Toulon-Provence-Méditerranée
+QN08315M,Sainte Musse,93,Provence-Alpes-Côte d'Azur,83,Var,83137,Toulon,248300543,Métropole Toulon-Provence-Méditerranée
+QN08316I,Centre Ville,93,Provence-Alpes-Côte d'Azur,83,Var,83137,Toulon,248300543,Métropole Toulon-Provence-Méditerranée
+QN08317I,Le Jonquet - La Baume- Le Guynemer,93,Provence-Alpes-Côte d'Azur,83,Var,83137,Toulon,248300543,Métropole Toulon-Provence-Méditerranée
+QN08318M,La Gabelle,93,Provence-Alpes-Côte d'Azur,83,Var,83061,Fréjus,200035319,Communauté d'agglomération Estérel Côte d'Azur Agglomération
+QN08319M,Centre Ville - Le Vergeiras,93,Provence-Alpes-Côte d'Azur,83,Var,83073,Le Luc,248300550,Communauté de communes Cur du Var
+QN08320I,Centre Ville,93,Provence-Alpes-Côte d'Azur,83,Var,83023,Brignoles,200068104,Communauté d'agglomération de la Provence Verte
+QN08321M,Le Carami,93,Provence-Alpes-Côte d'Azur,83,Var,83023,Brignoles,200068104,Communauté d'agglomération de la Provence Verte
+QN08322N,La Rode,93,Provence-Alpes-Côte d'Azur,83,Var,83137,Toulon,248300543,Métropole Toulon-Provence-Méditerranée
+QN08323N,Saint-Jean-du-Var,93,Provence-Alpes-Côte d'Azur,83,Var,83137,Toulon,248300543,Métropole Toulon-Provence-Méditerranée
+QN08401M,Les Griffons - Centre ville,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84129,Sorgues,248400293,Communauté d'agglomération des Sorgues du Comtat
+QN08402M,Monclar - Champfleury - Rocade Sud - Barbière - Croix des Oiseaux,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84007,Avignon,248400251,Communauté d'agglomération du Grand Avignon (COGA)
+QN08403M,Reine Jeanne - Saint Jean - Grange d'Orel,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84007,Avignon,248400251,Communauté d'agglomération du Grand Avignon (COGA)
+QN08404I,Saint Chamand,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84007,Avignon,248400251,Communauté d'agglomération du Grand Avignon (COGA)
+QN08405M,Camp Rambaud - Les Mérides - Joffre - Centre Ville,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84092,Le Pontet,248400251,Communauté d'agglomération du Grand Avignon (COGA)
+QN08406M,Centre ancien,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84089,Pertuis,200054807,Métropole d'Aix-Marseille-Provence
+QN08407M,Centre ville,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84031,Carpentras,248400053,Communauté d'agglomération Ventoux-Comtat-Venaissin (COVE)
+QN08408M,Amandiers - Éléphant,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84031,Carpentras,248400053,Communauté d'agglomération Ventoux-Comtat-Venaissin (COVE)
+QN08409M,Pous-du-Plan,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84031,Carpentras,248400053,Communauté d'agglomération Ventoux-Comtat-Venaissin (COVE)
+QN08410M,Quintine - Villemarie - Bois de l'Ubac - Le Parc,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84031,Carpentras,248400053,Communauté d'agglomération Ventoux-Comtat-Venaissin (COVE)
+QN08411I,Fourchevieillles - Comtadines - L'Aygues,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84087,Orange,248400236,Communauté de communes Pays d'Orange en Provence
+QN08412I,Nogent - Saint Clément,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84087,Orange,248400236,Communauté de communes Pays d'Orange en Provence
+QN08413I,Générat - Establet,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84129,Sorgues,248400293,Communauté d'agglomération des Sorgues du Comtat
+QN08414I,Chaffunes,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84129,Sorgues,248400293,Communauté d'agglomération des Sorgues du Comtat
+QN08415I,Vieux Moulin - Centre ville - Les Mûriers,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84080,Monteux,248400293,Communauté d'agglomération des Sorgues du Comtat
+QN08416M,Centre ancien - Saint Michel,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84003,Apt,200040624,Communauté de communes Pays d'Apt-Luberon
+QN08417I,Vallades - Rebenas - Clos Saint Michel - Capucins,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84054,L'Isle-sur-la-Sorgue,248400319,Communauté de communes du Pays des Sorgues et des Monts de Vaucluse
+QN08418I,Centre ancien - Les Tours - La Gaillarde - Mistral - Sévigné,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84138,Valréas,200040681,Communauté de communes Enclave des Papes-Pays de Grignan
+QN08419I,Docteur Ayme - Condamines - Barillon - Saint Martin - Bon Puits - Saint Gilles - Ratacans,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84035,Cavaillon,200040442,Communauté d'agglomération Luberon Monts de Vaucluse
+QN08420I,La Clède - Gare - Route de Pertuis - Sainte Anne,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84035,Cavaillon,200040442,Communauté d'agglomération Luberon Monts de Vaucluse
+QN08421M,Centre Ancien - Giono,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84019,Bollène,200000628,Communauté de communes Rhône Lez Provence
+QN08422N,Pont des Deux Eaux,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84007,Avignon,248400251,Communauté d'agglomération du Grand Avignon (COGA)
+QN08423N,Broquetons - Sainte Catherine,93,Provence-Alpes-Côte d'Azur,84,Vaucluse,84007,Avignon,248400251,Communauté d'agglomération du Grand Avignon (COGA)
+QN08501I,Jean Yole - Pyramides,52,Pays de la Loire,85,Vendée,85191,La Roche-sur-Yon,248500589,Communauté d'agglomération La Roche-sur-Yon Agglomération
+QN08502I,Vigne-aux-Roses,52,Pays de la Loire,85,Vendée,85191,La Roche-sur-Yon,248500589,Communauté d'agglomération La Roche-sur-Yon Agglomération
+QN08503I,Liberté - Zola,52,Pays de la Loire,85,Vendée,85191,La Roche-sur-Yon,248500589,Communauté d'agglomération La Roche-sur-Yon Agglomération
+QN08504I,Centre - Moulins Liots,52,Pays de la Loire,85,Vendée,85092,Fontenay-le-Comte,200071934,Communauté de communes Pays de Fontenay-Vendée
+QN08601M,Lac Renardières Ozon,75,Nouvelle-Aquitaine,86,Vienne,86066,Châtellerault,248600413,Communauté d'agglomération Grand Châtellerault
+QN08602M,Châteauneuf Centre Ville,75,Nouvelle-Aquitaine,86,Vienne,86066,Châtellerault,248600413,Communauté d'agglomération Grand Châtellerault
+QN08603M,Bel Air,75,Nouvelle-Aquitaine,86,Vienne,86194,Poitiers,200069854,Communauté urbaine du Grand Poitiers
+QN08606M,Beaulieu,75,Nouvelle-Aquitaine,86,Vienne,86194,Poitiers,200069854,Communauté urbaine du Grand Poitiers
+QN08701M,Portes Ferrées,75,Nouvelle-Aquitaine,87,Haute-Vienne,87085,Limoges,248719312,Communauté urbaine Limoges Métropole
+QN08702I,La Bastide,75,Nouvelle-Aquitaine,87,Haute-Vienne,87085,Limoges,248719312,Communauté urbaine Limoges Métropole
+QN08703I,Le Sablard,75,Nouvelle-Aquitaine,87,Haute-Vienne,87085,Limoges,248719312,Communauté urbaine Limoges Métropole
+QN08704I,Beaubreuil,75,Nouvelle-Aquitaine,87,Haute-Vienne,87085,Limoges,248719312,Communauté urbaine Limoges Métropole
+QN08705I,Val de l'Aurence Sud,75,Nouvelle-Aquitaine,87,Haute-Vienne,87085,Limoges,248719312,Communauté urbaine Limoges Métropole
+QN08706I,Val de l'Aurence Nord,75,Nouvelle-Aquitaine,87,Haute-Vienne,87085,Limoges,248719312,Communauté urbaine Limoges Métropole
+QN08707I,Les Coutures,75,Nouvelle-Aquitaine,87,Haute-Vienne,87085,Limoges,248719312,Communauté urbaine Limoges Métropole
+QN08708I,Bellevue,75,Nouvelle-Aquitaine,87,Haute-Vienne,87085,Limoges,248719312,Communauté urbaine Limoges Métropole
+QN08709I,Le Vigenal,75,Nouvelle-Aquitaine,87,Haute-Vienne,87085,Limoges,248719312,Communauté urbaine Limoges Métropole
+QN08801M,Bitola-La Vierge,44,Grand Est,88,Vosges,88160,Épinal,200068757,Communauté d'agglomération d'Épinal
+QN08802M,Justice-Saut le Cerf,44,Grand Est,88,Vosges,88160,Épinal,200068757,Communauté d'agglomération d'Épinal
+QN08803M,Le Haut Du Gras,44,Grand Est,88,Vosges,88209,Golbey,200068757,Communauté d'agglomération d'Épinal
+QN08804M,Le Rhumont,44,Grand Est,88,Vosges,88383,Remiremont,200068377,Communauté de communes de la Porte des Vosges Méridionales
+QN08805M,Saint-Roch - L'Orme,44,Grand Est,88,Vosges,88413,Saint-Dié-des-Vosges,200071066,Communauté d'agglomération de Saint-Dié-des-Vosges
+QN08806M,Kellermann-Foucharupt,44,Grand Est,88,Vosges,88413,Saint-Dié-des-Vosges,200071066,Communauté d'agglomération de Saint-Dié-des-Vosges
+QN08901I,La Rive Droite,27,Bourgogne-Franche-Comté,89,Yonne,89024,Auxerre,200067114,Communauté d'agglomération de l'Auxerrois
+QN08902I,Les Brichères - Sainte Geneviève,27,Bourgogne-Franche-Comté,89,Yonne,89024,Auxerre,200067114,Communauté d'agglomération de l'Auxerrois
+QN08903M,Les Rosoirs,27,Bourgogne-Franche-Comté,89,Yonne,89024,Auxerre,200067114,Communauté d'agglomération de l'Auxerrois
+QN08904I,Pompidou-Ravel,27,Bourgogne-Franche-Comté,89,Yonne,89257,Migennes,248900383,Communauté de communes de l'Agglomération Migennoise
+QN08905I,La Madeleine,27,Bourgogne-Franche-Comté,89,Yonne,89206,Joigny,248900938,Communauté de communes du Jovinien
+QN08906M,Arènes - Champs Plaisants,27,Bourgogne-Franche-Comté,89,Yonne,89387,Sens,248900334,Communauté d'agglomération du Grand Sénonais
+QN08907I,Les Chaillots,27,Bourgogne-Franche-Comté,89,Yonne,89387,Sens,248900334,Communauté d'agglomération du Grand Sénonais
+QN09001I,Bougenel - Mulhouse,27,Bourgogne-Franche-Comté,90,Territoire de Belfort,90010,Belfort,200069052,Communauté d'agglomération Grand Belfort
+QN09002M,Les Glacis Du Château,27,Bourgogne-Franche-Comté,90,Territoire de Belfort,90010,Belfort,200069052,Communauté d'agglomération Grand Belfort
+QN09003I,Dardel - La Méchelle,27,Bourgogne-Franche-Comté,90,Territoire de Belfort,90010,Belfort,200069052,Communauté d'agglomération Grand Belfort
+QN09005M,Le Mont,27,Bourgogne-Franche-Comté,90,Territoire de Belfort,90010,Belfort,200069052,Communauté d'agglomération Grand Belfort
+QN09007N,La Pépinière,27,Bourgogne-Franche-Comté,90,Territoire de Belfort,90010,Belfort,200069052,Communauté d'agglomération Grand Belfort
+QN09101M,L'entre bois des roches,11,Île-de-France,91,Essonne,91570,Saint-Michel-sur-Orge,200057859,Communauté d'agglomération Cur d'Essonne Agglomération
+QN09102M,Les Tarterêts,11,Île-de-France,91,Essonne,91174,Corbeil-Essonnes,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09103M,Montconseil,11,Île-de-France,91,Essonne,91174,Corbeil-Essonnes,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09104M,La Nacelle - Papeterie,11,Île-de-France,91,Essonne,91174,Corbeil-Essonnes,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09105I,Rive Droite,11,Île-de-France,91,Essonne,91174,Corbeil-Essonnes,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09106M,Quartier Ouest,11,Île-de-France,91,Essonne,91692,Les Ulis,200056232,Communauté d'agglomération Communauté Paris-Saclay
+QN09107M,Les Ardrets - Branly,11,Île-de-France,91,Essonne,91103,Brétigny-sur-Orge,200057859,Communauté d'agglomération Cur d'Essonne Agglomération
+QN09108M,Les Aunettes - Les Résidences - Joncs Marins,11,Île-de-France,91,Essonne,91235,Fleury-Mérogis,200057859,Communauté d'agglomération Cur d'Essonne Agglomération
+QN09109I,La Grange Aux Cerfs,11,Île-de-France,91,Essonne,91549,Sainte-Geneviève-des-Bois,200057859,Communauté d'agglomération Cur d'Essonne Agglomération
+QN09110M,Les Aunettes,11,Île-de-France,91,Essonne,91549,Sainte-Geneviève-des-Bois,200057859,Communauté d'agglomération Cur d'Essonne Agglomération
+QN09111M,Les Hautes Mardelles,11,Île-de-France,91,Essonne,91114,Brunoy,200058477,Communauté d'agglomération Val d'Yerres Val de Seine
+QN09112M,Plaine - Cinéastes,11,Île-de-France,91,Essonne,91215,Épinay-sous-Sénart,200058477,Communauté d'agglomération Val d'Yerres Val de Seine
+QN09113I,Le Vieillet,11,Île-de-France,91,Essonne,91514,Quincy-sous-Sénart,200058477,Communauté d'agglomération Val d'Yerres Val de Seine
+QN09114M,Bel Air - Rocade,11,Île-de-France,91,Essonne,91345,Longjumeau,200056232,Communauté d'agglomération Communauté Paris-Saclay
+QN09115M,Poterne - Zola,11,Île-de-France,91,Essonne,91377,Massy,200056232,Communauté d'agglomération Communauté Paris-Saclay
+QN09116M,Le Canal,11,Île-de-France,91,Essonne,91228,Évry-Courcouronnes,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09117M,Pyramides - Bois Sauvage,11,Île-de-France,91,Essonne,91228,Évry-Courcouronnes,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09118M,Les Aunettes,11,Île-de-France,91,Essonne,91228,Évry-Courcouronnes,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09119M,Champtier Du Coq - Champs Elysées - Petit Bourg,11,Île-de-France,91,Essonne,91228,Évry-Courcouronnes,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09120M,Le Parc Aux Lièvres,11,Île-de-France,91,Essonne,91228,Évry-Courcouronnes,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09121M,Les Passages,11,Île-de-France,91,Essonne,91228,Évry-Courcouronnes,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09122M,Les Epinettes,11,Île-de-France,91,Essonne,91228,Évry-Courcouronnes,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09123M,Le Plateau,11,Île-de-France,91,Essonne,91521,Ris-Orangis,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09124M,Plateau - Grande Borne,11,Île-de-France,91,Essonne,91687,Viry-Châtillon,200058014,EPT Grand-Orly Seine Bièvre
+QN09125M,La Grande Borne,11,Île-de-France,91,Essonne,91286,Grigny,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09126M,Grigny 2,11,Île-de-France,91,Essonne,91286,Grigny,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09127M,Le Noyer Renard,11,Île-de-France,91,Essonne,91027,Athis-Mons,200058014,EPT Grand-Orly Seine Bièvre
+QN09128M,Clos Nollet,11,Île-de-France,91,Essonne,91027,Athis-Mons,200058014,EPT Grand-Orly Seine Bièvre
+QN09129M,Grand Vaux,11,Île-de-France,91,Essonne,91589,Savigny-sur-Orge,200058014,EPT Grand-Orly Seine Bièvre
+QN09131I,La Forêt,11,Île-de-France,91,Essonne,91421,Montgeron,200058477,Communauté d'agglomération Val d'Yerres Val de Seine
+QN09132M,La Croix Blanche,11,Île-de-France,91,Essonne,91657,Vigneux-sur-Seine,200058477,Communauté d'agglomération Val d'Yerres Val de Seine
+QN09134M,Quartier Sud,11,Île-de-France,91,Essonne,91021,Arpajon,200057859,Communauté d'agglomération Cur d'Essonne Agglomération
+QN09135M,La longue mare,11,Île-de-France,91,Essonne,91207,Égly,200057859,Communauté d'agglomération Cur d'Essonne Agglomération
+QN09136M,Plateau De Guinette,11,Île-de-France,91,Essonne,91223,Étampes,200017846,Communauté d'agglomération Étampois Sud Essonne
+QN09137M,La Croix De Vernailles,11,Île-de-France,91,Essonne,91223,Étampes,200017846,Communauté d'agglomération Étampois Sud Essonne
+QN09138M,Opéra,11,Île-de-France,91,Essonne,91377,Massy,200056232,Communauté d'agglomération Communauté Paris-Saclay
+QN09139N,Edouard Vaillant,11,Île-de-France,91,Essonne,91027,Athis-Mons,200058014,EPT Grand-Orly Seine Bièvre
+QN09140N,Quartier Est,11,Île-de-France,91,Essonne,91692,Les Ulis,200056232,Communauté d'agglomération Communauté Paris-Saclay
+QN09141N,Collénot - Marinière - Mouchotte,11,Île-de-France,91,Essonne,91103,Brétigny-sur-Orge,200057859,Communauté d'agglomération Cur d'Essonne Agglomération
+QN09142N,Léo Lagrange,11,Île-de-France,91,Essonne,91434,Morsang-sur-Orge,200057859,Communauté d'agglomération Cur d'Essonne Agglomération
+QN09143N,Les Mazières,11,Île-de-France,91,Essonne,91201,Draveil,200058477,Communauté d'agglomération Val d'Yerres Val de Seine
+QN09144N,La Rénovation,11,Île-de-France,91,Essonne,91521,Ris-Orangis,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09145N,Gare,11,Île-de-France,91,Essonne,91521,Ris-Orangis,200059228,Communauté d'agglomération Grand Paris Sud Seine Essonne Sénart
+QN09146N,Pré Barallon,11,Île-de-France,91,Essonne,91552,Saint-Germain-lès-Arpajon,200057859,Communauté d'agglomération Cur d'Essonne Agglomération
+QN09147N,Saint-Eloi,11,Île-de-France,91,Essonne,91161,Chilly-Mazarin,200056232,Communauté d'agglomération Communauté Paris-Saclay
+QN09201M,Université I,11,Île-de-France,92,Hauts-de-Seine,92050,Nanterre,200057982,EPT Paris Ouest La Défense
+QN09202I,Université II,11,Île-de-France,92,Hauts-de-Seine,92050,Nanterre,200057982,EPT Paris Ouest La Défense
+QN09203M,Noyer Doré,11,Île-de-France,92,Hauts-de-Seine,92002,Antony,200057966,EPT Vallée Sud-Grand Paris
+QN09204M,Cité Jardins,11,Île-de-France,92,Hauts-de-Seine,92019,Châtenay-Malabry,200057966,EPT Vallée Sud-Grand Paris
+QN09205I,Chemin De L'Île,11,Île-de-France,92,Hauts-de-Seine,92050,Nanterre,200057982,EPT Paris Ouest La Défense
+QN09206M,Le Parc,11,Île-de-France,92,Hauts-de-Seine,92050,Nanterre,200057982,EPT Paris Ouest La Défense
+QN09207M,Abbé Grégoire - Mirabeau - Lincoln,11,Île-de-France,92,Hauts-de-Seine,92007,Bagneux,200057966,EPT Vallée Sud-Grand Paris
+QN09208M,Luth-Fossé,11,Île-de-France,92,Hauts-de-Seine,92036,Gennevilliers,200057990,EPT Boucle Nord de Seine
+QN09209I,Fossés Jean,11,Île-de-France,92,Hauts-de-Seine,92025,Colombes,200057990,EPT Boucle Nord de Seine
+QN09210M,Hauts d'Asnières,11,Île-de-France,92,Hauts-de-Seine,92004,Asnières-sur-Seine,200057990,EPT Boucle Nord de Seine
+QN09211M,Agnettes,11,Île-de-France,92,Hauts-de-Seine,92036,Gennevilliers,200057990,EPT Boucle Nord de Seine
+QN09212I,Petit Colombes,11,Île-de-France,92,Hauts-de-Seine,92025,Colombes,200057990,EPT Boucle Nord de Seine
+QN09213M,Petit Nanterre,11,Île-de-France,92,Hauts-de-Seine,92050,Nanterre,200057982,EPT Paris Ouest La Défense
+QN09214M,Les Grésilllons,11,Île-de-France,92,Hauts-de-Seine,92036,Gennevilliers,200057990,EPT Boucle Nord de Seine
+QN09215M,Cap Villeneuve,11,Île-de-France,92,Hauts-de-Seine,92078,Villeneuve-la-Garenne,200057990,EPT Boucle Nord de Seine
+QN09216M,Cité Des Musiciens,11,Île-de-France,92,Hauts-de-Seine,92007,Bagneux,200057966,EPT Vallée Sud-Grand Paris
+QN09217M,Audra - Musiciens,11,Île-de-France,92,Hauts-de-Seine,92025,Colombes,200057990,EPT Boucle Nord de Seine
+QN09218N,Secteur Anatole France,11,Île-de-France,92,Hauts-de-Seine,92050,Nanterre,200057982,EPT Paris Ouest La Défense
+QN09301I,Secteur Gare - Aviatic,11,Île-de-France,93,Seine-Saint-Denis,93013,Le Bourget,200058097,EPT Paris Terres d'Envol
+QN09302M,Secteur Saint-Nicolas - Guynemer - Gai Logis,11,Île-de-France,93,Seine-Saint-Denis,93013,Le Bourget,200058097,EPT Paris Terres d'Envol
+QN09304M,Quartier Avenir Parisien,11,Île-de-France,93,Seine-Saint-Denis,93029,Drancy,200058097,EPT Paris Terres d'Envol
+QN09307M,Thorez - Larivière - Langevin - Moulin - Allende,11,Île-de-France,93,Seine-Saint-Denis,93030,Dugny,200058097,EPT Paris Terres d'Envol
+QN09308M,La Capsulerie,11,Île-de-France,93,Seine-Saint-Denis,93006,Bagnolet,200057875,EPT Est Ensemble
+QN09312I,Blanqui,11,Île-de-France,93,Seine-Saint-Denis,93010,Bondy,200057875,EPT Est Ensemble
+QN09317M,Boissière - Saussaie-Beauclair,11,Île-de-France,93,Seine-Saint-Denis,93064,Rosny-sous-Bois,200058790,EPT Grand Paris Grand Est
+QN09318M,Bel Air - Grands Pêchers - Ruffins - Le Morillon,11,Île-de-France,93,Seine-Saint-Denis,93048,Montreuil,200057875,EPT Est Ensemble
+QN09319I,Jean Moulin - Espoir,11,Île-de-France,93,Seine-Saint-Denis,93048,Montreuil,200057875,EPT Est Ensemble
+QN09320M,Béthisy,11,Île-de-France,93,Seine-Saint-Denis,93053,Noisy-le-Sec,200057875,EPT Est Ensemble
+QN09321I,Le Londeau,11,Île-de-France,93,Seine-Saint-Denis,93053,Noisy-le-Sec,200057875,EPT Est Ensemble
+QN09322I,La Boissière,11,Île-de-France,93,Seine-Saint-Denis,93053,Noisy-le-Sec,200057875,EPT Est Ensemble
+QN09323M,Sept Arpents - Stalingrad,11,Île-de-France,93,Seine-Saint-Denis,93055,Pantin,200057875,EPT Est Ensemble
+QN09324I,Quatre Chemins,11,Île-de-France,93,Seine-Saint-Denis,93055,Pantin,200057875,EPT Est Ensemble
+QN09325M,Marcel Cachin,11,Île-de-France,93,Seine-Saint-Denis,93063,Romainville,200057875,EPT Est Ensemble
+QN09326I,Quartier de L'Horloge,11,Île-de-France,93,Seine-Saint-Denis,93063,Romainville,200057875,EPT Est Ensemble
+QN09327I,Gagarine,11,Île-de-France,93,Seine-Saint-Denis,93063,Romainville,200057875,EPT Est Ensemble
+QN09329M,Centre Ville,11,Île-de-France,93,Seine-Saint-Denis,93031,Épinay-sur-Seine,200057867,EPT Plaine Commune
+QN09330M,Orgemont,11,Île-de-France,93,Seine-Saint-Denis,93031,Épinay-sur-Seine,200057867,EPT Plaine Commune
+QN09331M,La Source - Les Presles,11,Île-de-France,93,Seine-Saint-Denis,93031,Épinay-sur-Seine,200057867,EPT Plaine Commune
+QN09332M,Thorez-Géraux,11,Île-de-France,93,Seine-Saint-Denis,93039,L'Île-Saint-Denis,200057867,EPT Plaine Commune
+QN09333I,Méchin - Bocage,11,Île-de-France,93,Seine-Saint-Denis,93039,L'Île-Saint-Denis,200057867,EPT Plaine Commune
+QN09334I,Paul-Cachin,11,Île-de-France,93,Seine-Saint-Denis,93039,L'Île-Saint-Denis,200057867,EPT Plaine Commune
+QN09336I,Joncherolles - Fauvettes,11,Île-de-France,93,Seine-Saint-Denis,93059,Pierrefitte-sur-Seine,200057867,EPT Plaine Commune
+QN09337M,Plaine - Landy - Bailly,11,Île-de-France,93,Seine-Saint-Denis,93066,Saint-Denis,200057867,EPT Plaine Commune
+QN09338M,Grand Centre - Sémard,11,Île-de-France,93,Seine-Saint-Denis,93066,Saint-Denis,200057867,EPT Plaine Commune
+QN09340I,Plaine Trezel - Chaudron,11,Île-de-France,93,Seine-Saint-Denis,93066,Saint-Denis,200057867,EPT Plaine Commune
+QN09341M,Saint-Rémy - Joliot Curie - Bel Air,11,Île-de-France,93,Seine-Saint-Denis,93066,Saint-Denis,200057867,EPT Plaine Commune
+QN09343I,Cordon,11,Île-de-France,93,Seine-Saint-Denis,93070,Saint-Ouen-sur-Seine,200057867,EPT Plaine Commune
+QN09344M,Michelet - Les Puces - Debain,11,Île-de-France,93,Seine-Saint-Denis,93070,Saint-Ouen-sur-Seine,200057867,EPT Plaine Commune
+QN09345I,Vieux Saint-Ouen,11,Île-de-France,93,Seine-Saint-Denis,93070,Saint-Ouen-sur-Seine,200057867,EPT Plaine Commune
+QN09346M,Pasteur - Arago - Zola,11,Île-de-France,93,Seine-Saint-Denis,93070,Saint-Ouen-sur-Seine,200057867,EPT Plaine Commune
+QN09347M,Centre Elargi,11,Île-de-France,93,Seine-Saint-Denis,93072,Stains,200057867,EPT Plaine Commune
+QN09348M,Quartier Politique De La Ville,11,Île-de-France,93,Seine-Saint-Denis,93079,Villetaneuse,200057867,EPT Plaine Commune
+QN09350I,Montceleux - Pont Blanc,11,Île-de-France,93,Seine-Saint-Denis,93071,Sevran,200058097,EPT Paris Terres d'Envol
+QN09351M,Parc De La Noue - Picasso - Pasteur - Europe - Merisiers,11,Île-de-France,93,Seine-Saint-Denis,93078,Villepinte,200058097,EPT Paris Terres d'Envol
+QN09352I,Tremblay Grand Ensemble,11,Île-de-France,93,Seine-Saint-Denis,93073,Tremblay-en-France,200058097,EPT Paris Terres d'Envol
+QN09353M,Duclos-Sausset,11,Île-de-France,93,Seine-Saint-Denis,93005,Aulnay-sous-Bois,200058097,EPT Paris Terres d'Envol
+QN09354M,Balagny,11,Île-de-France,93,Seine-Saint-Denis,93005,Aulnay-sous-Bois,200058097,EPT Paris Terres d'Envol
+QN09357M,Jean Moulin - Jean Bouin,11,Île-de-France,93,Seine-Saint-Denis,93032,Gagny,200058790,EPT Grand Paris Grand Est
+QN09358I,Les Peupliers,11,Île-de-France,93,Seine-Saint-Denis,93032,Gagny,200058790,EPT Grand Paris Grand Est
+QN09359M,Val Coteau,11,Île-de-France,93,Seine-Saint-Denis,93050,Neuilly-sur-Marne,200058790,EPT Grand Paris Grand Est
+QN09360I,Mont d'Est - Palacio,11,Île-de-France,93,Seine-Saint-Denis,93051,Noisy-le-Grand,200058790,EPT Grand Paris Grand Est
+QN09361I,Pavé-Neuf,11,Île-de-France,93,Seine-Saint-Denis,93051,Noisy-le-Grand,200058790,EPT Grand Paris Grand Est
+QN09362I,Champy - Hauts Bâtons,11,Île-de-France,93,Seine-Saint-Denis,93051,Noisy-le-Grand,200058790,EPT Grand Paris Grand Est
+QN09363I,Pré-Gentil,11,Île-de-France,93,Seine-Saint-Denis,93064,Rosny-sous-Bois,200058790,EPT Grand Paris Grand Est
+QN09364M,Marnaudes - Bois-Perrier,11,Île-de-France,93,Seine-Saint-Denis,93064,Rosny-sous-Bois,200058790,EPT Grand Paris Grand Est
+QN09365N,Calon,11,Île-de-France,93,Seine-Saint-Denis,93066,Saint-Denis,200057867,EPT Plaine Commune
+QN09366N,Cité du Nord - Butte,11,Île-de-France,93,Seine-Saint-Denis,93029,Drancy,200058097,EPT Paris Terres d'Envol
+QN09367N,Paul Vaillant-Couturier Allende-Neruda,11,Île-de-France,93,Seine-Saint-Denis,93029,Drancy,200058097,EPT Paris Terres d'Envol
+QN09368N,Quartier Pasteur,11,Île-de-France,93,Seine-Saint-Denis,93007,Le Blanc-Mesnil,200058097,EPT Paris Terres d'Envol
+QN09369N,L'Eglise,11,Île-de-France,93,Seine-Saint-Denis,93046,Livry-Gargan,200058790,EPT Grand Paris Grand Est
+QN09370N,Les Renouillères,11,Île-de-France,93,Seine-Saint-Denis,93049,Neuilly-Plaisance,200058790,EPT Grand Paris Grand Est
+QN09371N,La Fourche/Canal de l'Ourcq,11,Île-de-France,93,Seine-Saint-Denis,93057,Les Pavillons-sous-Bois,200058790,EPT Grand Paris Grand Est
+QN09373N,Jaurès-Séverine,11,Île-de-France,93,Seine-Saint-Denis,93061,Le Pré-Saint-Gervais,200057875,EPT Est Ensemble
+QN09374N,Quartier des Dahlias,11,Île-de-France,93,Seine-Saint-Denis,93032,Gagny,200058790,EPT Grand Paris Grand Est
+QN09375N,Benoni,11,Île-de-France,93,Seine-Saint-Denis,93077,Villemomble,200058790,EPT Grand Paris Grand Est
+QN09401M,Pierre Et Marie Curie,11,Île-de-France,94,Val-de-Marne,94041,Ivry-sur-Seine,200058014,EPT Grand-Orly Seine Bièvre
+QN09402M,Irlandais - Paul Vaillant Couturier - Cherchefeuille - Clément Ader,11,Île-de-France,94,Val-de-Marne,94003,Arcueil,200058014,EPT Grand-Orly Seine Bièvre
+QN09404M,Chantereine,11,Île-de-France,94,Val-de-Marne,94002,Alfortville,200058006,EPT Grand Paris Sud Est Avenir
+QN09405M,Mont Mesly - La Habette - Coteaux Du Sud,11,Île-de-France,94,Val-de-Marne,94028,Créteil,200058006,EPT Grand Paris Sud Est Avenir
+QN09406I,Les Bleuets,11,Île-de-France,94,Val-de-Marne,94028,Créteil,200058006,EPT Grand Paris Sud Est Avenir
+QN09407I,Gagarine,11,Île-de-France,94,Val-de-Marne,94041,Ivry-sur-Seine,200058014,EPT Grand-Orly Seine Bièvre
+QN09408M,Ivry Port,11,Île-de-France,94,Val-de-Marne,94041,Ivry-sur-Seine,200058014,EPT Grand-Orly Seine Bièvre
+QN09409M,Monmousseau,11,Île-de-France,94,Val-de-Marne,94041,Ivry-sur-Seine,200058014,EPT Grand-Orly Seine Bièvre
+QN09410M,Colonel Fabien,11,Île-de-France,94,Val-de-Marne,94081,Vitry-sur-Seine,200058014,EPT Grand-Orly Seine Bièvre
+QN09411M,Centre Ville : Defresne - Vilmorin - Robespierre,11,Île-de-France,94,Val-de-Marne,94081,Vitry-sur-Seine,200058014,EPT Grand-Orly Seine Bièvre
+QN09412M,Commune De Paris - 8 Mai 1945,11,Île-de-France,94,Val-de-Marne,94081,Vitry-sur-Seine,200058014,EPT Grand-Orly Seine Bièvre
+QN09415I,Jardins Parisiens,11,Île-de-France,94,Val-de-Marne,94038,L'Haÿ-les-Roses,200058014,EPT Grand-Orly Seine Bièvre
+QN09416I,Jardins Parisiens - Stade,11,Île-de-France,94,Val-de-Marne,94038,L'Haÿ-les-Roses,200058014,EPT Grand-Orly Seine Bièvre
+QN09417M,Alexandre Dumas,11,Île-de-France,94,Val-de-Marne,94076,Villejuif,200058014,EPT Grand-Orly Seine Bièvre
+QN09419M,Lozaits Nord - Grimau - Armand Gouret,11,Île-de-France,94,Val-de-Marne,94076,Villejuif,200058014,EPT Grand-Orly Seine Bièvre
+QN09420M,Fabien - Saint Exupéry,11,Île-de-France,94,Val-de-Marne,94011,Bonneuil-sur-Marne,200058006,EPT Grand Paris Sud Est Avenir
+QN09421M,Les Quatre Cités,11,Île-de-France,94,Val-de-Marne,94017,Champigny-sur-Marne,200057941,EPT Paris Est Marne et Bois
+QN09422M,L'Egalité,11,Île-de-France,94,Val-de-Marne,94017,Champigny-sur-Marne,200057941,EPT Paris Est Marne et Bois
+QN09423I,Les Mordacs,11,Île-de-France,94,Val-de-Marne,94017,Champigny-sur-Marne,200057941,EPT Paris Est Marne et Bois
+QN09425I,Le Plateau,11,Île-de-France,94,Val-de-Marne,94017,Champigny-sur-Marne,200057941,EPT Paris Est Marne et Bois
+QN09426I,La Redoute (Le Fort-Michelet),11,Île-de-France,94,Val-de-Marne,94033,Fontenay-sous-Bois,200057941,EPT Paris Est Marne et Bois
+QN09427M,Les Larris - Jean Zay,11,Île-de-France,94,Val-de-Marne,94033,Fontenay-sous-Bois,200057941,EPT Paris Est Marne et Bois
+QN09428M,Quartier Est,11,Île-de-France,94,Val-de-Marne,94054,Orly,200058014,EPT Grand-Orly Seine Bièvre
+QN09429I,Quartier Sud,11,Île-de-France,94,Val-de-Marne,94022,Choisy-le-Roi,200058014,EPT Grand-Orly Seine Bièvre
+QN09430I,Rives De La Marne,11,Île-de-France,94,Val-de-Marne,94068,Saint-Maur-des-Fossés,200057941,EPT Paris Est Marne et Bois
+QN09432I,Lutèce - Bergerie,11,Île-de-France,94,Val-de-Marne,94074,Valenton,200058014,EPT Grand-Orly Seine Bièvre
+QN09433M,Centre Ville,11,Île-de-France,94,Val-de-Marne,94078,Villeneuve-Saint-Georges,200058014,EPT Grand-Orly Seine Bièvre
+QN09434I,Le Quartier Nord,11,Île-de-France,94,Val-de-Marne,94078,Villeneuve-Saint-Georges,200058014,EPT Grand-Orly Seine Bièvre
+QN09435I,HBM - Les Tours,11,Île-de-France,94,Val-de-Marne,94078,Villeneuve-Saint-Georges,200058014,EPT Grand-Orly Seine Bièvre
+QN09436M,Triage,11,Île-de-France,94,Val-de-Marne,94078,Villeneuve-Saint-Georges,200058014,EPT Grand-Orly Seine Bièvre
+QN09437M,Portes De Paris - Les Hautes-Noues,11,Île-de-France,94,Val-de-Marne,94079,Villiers-sur-Marne,200057941,EPT Paris Est Marne et Bois
+QN09438N,Fosse Rouge - Cité Verte,11,Île-de-France,94,Val-de-Marne,94071,Sucy-en-Brie,200058006,EPT Grand Paris Sud Est Avenir
+QN09439N,Grand Ensemble,11,Île-de-France,94,Val-de-Marne,94002,Alfortville,200058006,EPT Grand Paris Sud Est Avenir
+QN09440N,Centre-Ville (Barbusse),11,Île-de-France,94,Val-de-Marne,94022,Choisy-le-Roi,200058014,EPT Grand-Orly Seine Bièvre
+QN09441N,Pavé de Grignon,11,Île-de-France,94,Val-de-Marne,94073,Thiais,200058014,EPT Grand-Orly Seine Bièvre
+QN09443N,La Plaine,11,Île-de-France,94,Val-de-Marne,94016,Cachan,200058014,EPT Grand-Orly Seine Bièvre
+QN09445N,Les Combattants,11,Île-de-France,94,Val-de-Marne,94081,Vitry-sur-Seine,200058014,EPT Grand-Orly Seine Bièvre
+QN09446N,La Vallée aux Renards,11,Île-de-France,94,Val-de-Marne,94038,L'Haÿ-les-Roses,200058014,EPT Grand-Orly Seine Bièvre
+QN09447N,Haut-Pays - La Grusie,11,Île-de-France,94,Val-de-Marne,94077,Villeneuve-le-Roi,200058014,EPT Grand-Orly Seine Bièvre
+QN09501M,Noyer Crapaud,11,Île-de-France,95,Val-d'Oise,95598,Soisy-sous-Montmorency,200056380,Communauté d'agglomération Plaine Vallée
+QN09503I,Champioux,11,Île-de-France,95,Val-d'Oise,95018,Argenteuil,200057990,EPT Boucle Nord de Seine
+QN09505M,Val D'Argent Nord,11,Île-de-France,95,Val-d'Oise,95018,Argenteuil,200057990,EPT Boucle Nord de Seine
+QN09506M,Val D'Argent Sud,11,Île-de-France,95,Val-d'Oise,95018,Argenteuil,200057990,EPT Boucle Nord de Seine
+QN09507I,Champagne,11,Île-de-France,95,Val-d'Oise,95018,Argenteuil,200057990,EPT Boucle Nord de Seine
+QN09508M,Joliot Curie,11,Île-de-France,95,Val-d'Oise,95018,Argenteuil,200057990,EPT Boucle Nord de Seine
+QN09509M,Centre Ville,11,Île-de-France,95,Val-d'Oise,95018,Argenteuil,200057990,EPT Boucle Nord de Seine
+QN09510M,Delaune Masson Colomb,11,Île-de-France,95,Val-d'Oise,95063,Bezons,200058519,Communauté d'agglomération Saint Germain Boucles de Seine
+QN09511M,Axe Majeur - Horloge,11,Île-de-France,95,Val-d'Oise,95127,Cergy,249500109,Communauté d'agglomération de Cergy-Pontoise
+QN09512I,Les Dix Arpents,11,Île-de-France,95,Val-d'Oise,95218,Éragny,249500109,Communauté d'agglomération de Cergy-Pontoise
+QN09513M,Le Moulinard,11,Île-de-France,95,Val-d'Oise,95476,Osny,249500109,Communauté d'agglomération de Cergy-Pontoise
+QN09514M,Marcouville,11,Île-de-France,95,Val-d'Oise,95500,Pontoise,249500109,Communauté d'agglomération de Cergy-Pontoise
+QN09515M,Louvrais,11,Île-de-France,95,Val-d'Oise,95500,Pontoise,249500109,Communauté d'agglomération de Cergy-Pontoise
+QN09516M,Chennevières - Parc Le Nôtre,11,Île-de-France,95,Val-d'Oise,95572,Saint-Ouen-l'Aumône,249500109,Communauté d'agglomération de Cergy-Pontoise
+QN09518I,Les Lévriers,11,Île-de-France,95,Val-d'Oise,95427,Montmagny,200056380,Communauté d'agglomération Plaine Vallée
+QN09519M,Centre Ville,11,Île-de-France,95,Val-d'Oise,95427,Montmagny,200056380,Communauté d'agglomération Plaine Vallée
+QN09521I,Montédour,11,Île-de-France,95,Val-d'Oise,95252,Franconville,200058485,Communauté d'agglomération Val Parisis
+QN09522M,Les Naquettes,11,Île-de-France,95,Val-d'Oise,95306,Herblay-sur-Seine,200058485,Communauté d'agglomération Val Parisis
+QN09523M,Les Frances,11,Île-de-France,95,Val-d'Oise,95424,Montigny-lès-Cormeilles,200058485,Communauté d'agglomération Val Parisis
+QN09524M,Clos Saint Pierre Elargi,11,Île-de-France,95,Val-d'Oise,95488,Pierrelaye,200058485,Communauté d'agglomération Val Parisis
+QN09526M,Les Pins,11,Île-de-France,95,Val-d'Oise,95607,Taverny,200058485,Communauté d'agglomération Val Parisis
+QN09527M,Les Sarments Et Les Nérins - Jean Bouin,11,Île-de-France,95,Val-d'Oise,95607,Taverny,200058485,Communauté d'agglomération Val Parisis
+QN09528M,Cottage Elargi,11,Île-de-France,95,Val-d'Oise,95280,Goussainville,200055655,Communauté d'agglomération Roissy Pays de France
+QN09529M,Grandes Bornes Elargies,11,Île-de-France,95,Val-d'Oise,95280,Goussainville,200055655,Communauté d'agglomération Roissy Pays de France
+QN09530M,Terres de Garges,11,Île-de-France,95,Val-d'Oise,95268,Garges-lès-Gonesse,200055655,Communauté d'agglomération Roissy Pays de France
+QN09531M,Lochères,11,Île-de-France,95,Val-d'Oise,95585,Sarcelles,200055655,Communauté d'agglomération Roissy Pays de France
+QN09534M,Rosiers Chantepie,11,Île-de-France,95,Val-d'Oise,95585,Sarcelles,200055655,Communauté d'agglomération Roissy Pays de France
+QN09535M,Village - Mozart,11,Île-de-France,95,Val-d'Oise,95585,Sarcelles,200055655,Communauté d'agglomération Roissy Pays de France
+QN09536M,Village - Le Puits La Marlière - Derrière Les Murs De Monseigneur,11,Île-de-France,95,Val-d'Oise,95680,Villiers-le-Bel,200055655,Communauté d'agglomération Roissy Pays de France
+QN09537M,Les Chênes,11,Île-de-France,95,Val-d'Oise,95219,Ermont,200058485,Communauté d'agglomération Val Parisis
+QN09538M,Le Village,11,Île-de-France,95,Val-d'Oise,95487,Persan,249500489,Communauté de communes du Haut Val d'Oise
+QN09539M,Les Raguenets,11,Île-de-France,95,Val-d'Oise,95555,Saint-Gratien,200056380,Communauté d'agglomération Plaine Vallée
+QN09540N,Les Linandes,11,Île-de-France,95,Val-d'Oise,95127,Cergy,249500109,Communauté d'agglomération de Cergy-Pontoise
+QN09541N,Bon temps - Terroir,11,Île-de-France,95,Val-d'Oise,95127,Cergy,249500109,Communauté d'agglomération de Cergy-Pontoise
+QN09542N,Boyenval,11,Île-de-France,95,Val-d'Oise,95052,Beaumont-sur-Oise,249500489,Communauté de communes du Haut Val d'Oise
+QN97101M,Boissard-Morne Flory,01,Guadeloupe,971,Guadeloupe,97101,Les Abymes,200018653,CA CAP Excellence
+QN97103M,Grand Camp,01,Guadeloupe,971,Guadeloupe,97101,Les Abymes,200018653,CA CAP Excellence
+QN97104M,Raizet- Charneau - Dugazon,01,Guadeloupe,971,Guadeloupe,97101,Les Abymes,200018653,CA CAP Excellence
+QN97106M,Bourg - Jean Jaurès - Cadet - Bois Raimbault,01,Guadeloupe,971,Guadeloupe,97104,Baillif,249710070,CA Grand Sud Caraïbe
+QN97107M,Rivière des Pères - Pintade - Calebassier - Bas du Bourg,01,Guadeloupe,971,Guadeloupe,97105,Basse-Terre,249710070,CA Grand Sud Caraïbe
+QN97108M,Le Bourg - Cayenne - Marquisat - Moulin à Eau,01,Guadeloupe,971,Guadeloupe,97107,Capesterre-Belle-Eau,249710070,CA Grand Sud Caraïbe
+QN97109M,Sarlassonne - Fromager - Ilet pérou,01,Guadeloupe,971,Guadeloupe,97107,Capesterre-Belle-Eau,249710070,CA Grand Sud Caraïbe
+QN97111M,Centre bourg - Champs Grillé,01,Guadeloupe,971,Guadeloupe,97117,Le Moule,200044691,CA du Nord Grande Terre
+QN97115M,Le Bourg - Sainte-Marie - Bébel - Viard,01,Guadeloupe,971,Guadeloupe,97129,Sainte-Rose,249710062,CA du Nord Basse-Terre
+QN97116M,La Boucan - Cadet - Conodor - Belle Plaine,01,Guadeloupe,971,Guadeloupe,97129,Sainte-Rose,249710062,CA du Nord Basse-Terre
+QN97117M,Lauricisque- Bergevin,01,Guadeloupe,971,Guadeloupe,97120,Pointe-à-Pitre,200018653,CA CAP Excellence
+QN97118N,Sainte-Marie-Four à Chaux,01,Guadeloupe,971,Guadeloupe,97107,Capesterre-Belle-Eau,249710070,CA Grand Sud Caraïbe
+QN97119N,Centre Bourg,01,Guadeloupe,971,Guadeloupe,97116,Morne-à-l'Eau,200044691,CA du Nord Grande Terre
+QN97120N,Petit Paris - Circonvallation - Morne à Vaches,01,Guadeloupe,971,Guadeloupe,97105,Basse-Terre,249710070,CA Grand Sud Caraïbe
+QN97121N,Centre-Bourg,01,Guadeloupe,971,Guadeloupe,97125,Saint-François,200041507,CA La Riviéra du Levant
+QN97122N,Boisripeaux - Petite Guinée,01,Guadeloupe,971,Guadeloupe,97101,Les Abymes,200018653,CA CAP Excellence
+QN97201M,Quartiers Ouest,02,Martinique,972,Martinique,97209,Fort-de-France,249720061,CA du Centre de la Martinique
+QN97202M,Quartiers Sainte-Thérèse Bon Air,02,Martinique,972,Martinique,97209,Fort-de-France,249720061,CA du Centre de la Martinique
+QN97203M,Quartier Volga Plage,02,Martinique,972,Martinique,97209,Fort-de-France,249720061,CA du Centre de la Martinique
+QN97204M,Quartier Haut Dillon,02,Martinique,972,Martinique,97209,Fort-de-France,249720061,CA du Centre de la Martinique
+QN97205M,Frange Ouest Du Centre-Ville Aggloméré,02,Martinique,972,Martinique,97213,Le Lamentin,249720061,CA du Centre de la Martinique
+QN97206M,Zone De Cité Lacroix Trou Terre Pointe Lynch,02,Martinique,972,Martinique,97222,Le Robert,200041788,CA du Pays Nord Martinique
+QN97207I,Tombolo City,02,Martinique,972,Martinique,97228,Sainte-Marie,200041788,CA du Pays Nord Martinique
+QN97208N,Desfarges-Fanon,02,Martinique,972,Martinique,97220,Rivière-Pilote,249720053,CA de l'Espace Sud de la Martinique
+QN97209N,Duchêne,02,Martinique,972,Martinique,97222,Le Robert,200041788,CA du Pays Nord Martinique
+QN97301M,Anatole,03,Guyane,973,Guyane,97302,Cayenne,249730045,CA du Centre Littoral
+QN97302I,Bonhomme,03,Guyane,973,Guyane,97302,Cayenne,249730045,CA du Centre Littoral
+QN97304M,Cabassou,03,Guyane,973,Guyane,97302,Cayenne,249730045,CA du Centre Littoral
+QN97305M,De Gaulle,03,Guyane,973,Guyane,97302,Cayenne,249730045,CA du Centre Littoral
+QN97306M,Eau Lisette,03,Guyane,973,Guyane,97302,Cayenne,249730045,CA du Centre Littoral
+QN97307I,Galmot,03,Guyane,973,Guyane,97302,Cayenne,249730045,CA du Centre Littoral
+QN97308I,Village Chinois,03,Guyane,973,Guyane,97302,Cayenne,249730045,CA du Centre Littoral
+QN97309I,Mango,03,Guyane,973,Guyane,97302,Cayenne,249730045,CA du Centre Littoral
+QN97310I,Mirza,03,Guyane,973,Guyane,97302,Cayenne,249730045,CA du Centre Littoral
+QN97312M,Centre-Ville Marché,03,Guyane,973,Guyane,97302,Cayenne,249730045,CA du Centre Littoral
+QN97313I,Thémire,03,Guyane,973,Guyane,97302,Cayenne,249730045,CA du Centre Littoral
+QN97314M,Eldo,03,Guyane,973,Guyane,97304,Kourou,200027548,CC des Savanes
+QN97315M,L'Anse,03,Guyane,973,Guyane,97304,Kourou,200027548,CC des Savanes
+QN97316M,Mairie-Bourg,03,Guyane,973,Guyane,97304,Kourou,200027548,CC des Savanes
+QN97317M,Soula,03,Guyane,973,Guyane,97305,Macouria,249730045,CA du Centre Littoral
+QN97318M,Tonate,03,Guyane,973,Guyane,97305,Macouria,249730045,CA du Centre Littoral
+QN97319M,Balata,03,Guyane,973,Guyane,97307,Matoury,249730045,CA du Centre Littoral
+QN97320M,Cotonnière,03,Guyane,973,Guyane,97307,Matoury,249730045,CA du Centre Littoral
+QN97321M,Cogneau Est,03,Guyane,973,Guyane,97307,Matoury,249730045,CA du Centre Littoral
+QN97322M,Le Grand Larivot,03,Guyane,973,Guyane,97307,Matoury,249730045,CA du Centre Littoral
+QN97323M,Sud Bourg,03,Guyane,973,Guyane,97307,Matoury,249730045,CA du Centre Littoral
+QN97324M,Mahury Dedrad des Cannes,03,Guyane,973,Guyane,97309,Remire-Montjoly,249730045,CA du Centre Littoral
+QN97327I,Balate-Charbonnière,03,Guyane,973,Guyane,97311,Saint-Laurent-du-Maroni,249730037,CC de l'Ouest Guyanais
+QN97328I,Centre Ville,03,Guyane,973,Guyane,97311,Saint-Laurent-du-Maroni,249730037,CC de l'Ouest Guyanais
+QN97329M,Fatima-Route De Mana,03,Guyane,973,Guyane,97311,Saint-Laurent-du-Maroni,249730037,CC de l'Ouest Guyanais
+QN97330M,RN1-Les Sables Blancs,03,Guyane,973,Guyane,97311,Saint-Laurent-du-Maroni,249730037,CC de l'Ouest Guyanais
+QN97331M,Saint-Jean,03,Guyane,973,Guyane,97311,Saint-Laurent-du-Maroni,249730037,CC de l'Ouest Guyanais
+QN97332M,Saint-Maurice,03,Guyane,973,Guyane,97311,Saint-Laurent-du-Maroni,249730037,CC de l'Ouest Guyanais
+QN97334M,Mont Baduel,03,Guyane,973,Guyane,97302,Cayenne,249730045,CA du Centre Littoral
+QN97401I,Le Gol,04,La Réunion,974,La Réunion,97414,Saint-Louis,249740077,CA CIVIS (Communauté Intercommunale des Villes Solidaires)
+QN97402M,Palissade- La Chapelle,04,La Réunion,974,La Réunion,97414,Saint-Louis,249740077,CA CIVIS (Communauté Intercommunale des Villes Solidaires)
+QN97403M,La Rivière,04,La Réunion,974,La Réunion,97414,Saint-Louis,249740077,CA CIVIS (Communauté Intercommunale des Villes Solidaires)
+QN97404M,Roche Maigre,04,La Réunion,974,La Réunion,97414,Saint-Louis,249740077,CA CIVIS (Communauté Intercommunale des Villes Solidaires)
+QN97405M,Bois de Nèfles Cocos,04,La Réunion,974,La Réunion,97414,Saint-Louis,249740077,CA CIVIS (Communauté Intercommunale des Villes Solidaires)
+QN97406M,Cayenne - Butor - Les Quais,04,La Réunion,974,La Réunion,97412,Saint-Joseph,249740085,CA du Sud
+QN97407M,Centre Ville - Cités,04,La Réunion,974,La Réunion,97412,Saint-Joseph,249740085,CA du Sud
+QN97408M,Langevin,04,La Réunion,974,La Réunion,97412,Saint-Joseph,249740085,CA du Sud
+QN97409M,Bois D'Olives,04,La Réunion,974,La Réunion,97416,Saint-Pierre,249740077,CA CIVIS (Communauté Intercommunale des Villes Solidaires)
+QN97410M,Ravine Des Cabris,04,La Réunion,974,La Réunion,97416,Saint-Pierre,249740077,CA CIVIS (Communauté Intercommunale des Villes Solidaires)
+QN97411M,Ravine Blanche,04,La Réunion,974,La Réunion,97416,Saint-Pierre,249740077,CA CIVIS (Communauté Intercommunale des Villes Solidaires)
+QN97412I,Basse Terre - Joli Fond,04,La Réunion,974,La Réunion,97416,Saint-Pierre,249740077,CA CIVIS (Communauté Intercommunale des Villes Solidaires)
+QN97413M,Terre Sainte,04,La Réunion,974,La Réunion,97416,Saint-Pierre,249740077,CA CIVIS (Communauté Intercommunale des Villes Solidaires)
+QN97414I,Condé la Concession,04,La Réunion,974,La Réunion,97416,Saint-Pierre,249740077,CA CIVIS (Communauté Intercommunale des Villes Solidaires)
+QN97415I,Le Verger-La Découverte,04,La Réunion,974,La Réunion,97418,Sainte-Marie,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97416I,Gaspard La Réserve,04,La Réunion,974,La Réunion,97418,Sainte-Marie,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97418M,Le Port - Secteur Ouest,04,La Réunion,974,La Réunion,97407,Le Port,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97420M,Cressonnière - Manguiers - Mille Roches,04,La Réunion,974,La Réunion,97409,Saint-André,249740093,CA Intercommunale de la Réunion Est (CIREST)
+QN97421I,Centre Ville,04,La Réunion,974,La Réunion,97409,Saint-André,249740093,CA Intercommunale de la Réunion Est (CIREST)
+QN97422M,Petit Bazar - Chemin Du Centre - Fayard,04,La Réunion,974,La Réunion,97409,Saint-André,249740093,CA Intercommunale de la Réunion Est (CIREST)
+QN97423M,Cambuston Centre,04,La Réunion,974,La Réunion,97409,Saint-André,249740093,CA Intercommunale de la Réunion Est (CIREST)
+QN97424I,Sainte-Anne,04,La Réunion,974,La Réunion,97410,Saint-Benoît,249740093,CA Intercommunale de la Réunion Est (CIREST)
+QN97425M,Rive Droite de Saint-Benoît,04,La Réunion,974,La Réunion,97410,Saint-Benoît,249740093,CA Intercommunale de la Réunion Est (CIREST)
+QN97426M,Le Bas De La Rivière,04,La Réunion,974,La Réunion,97411,Saint-Denis,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97427I,Le Bas Maréchal Leclerc,04,La Réunion,974,La Réunion,97411,Saint-Denis,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97428I,Le Butor,04,La Réunion,974,La Réunion,97411,Saint-Denis,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97429I,Vauban,04,La Réunion,974,La Réunion,97411,Saint-Denis,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97430I,La Source Bellepierre,04,La Réunion,974,La Réunion,97411,Saint-Denis,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97431I,Les Camélias,04,La Réunion,974,La Réunion,97411,Saint-Denis,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97432M,Sainte Clotilde Le Chaudron,04,La Réunion,974,La Réunion,97411,Saint-Denis,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97433I,Moufia Les Bas,04,La Réunion,974,La Réunion,97411,Saint-Denis,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97434I,Primat,04,La Réunion,974,La Réunion,97411,Saint-Denis,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97435I,Moufia Les Hauts,04,La Réunion,974,La Réunion,97411,Saint-Denis,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97436I,Bois de Nèfles Portail Plate,04,La Réunion,974,La Réunion,97413,Saint-Leu,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97437M,Plateau Caillou,04,La Réunion,974,La Réunion,97415,Saint-Paul,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97438M,Fleurimont-Flamboyant,04,La Réunion,974,La Réunion,97415,Saint-Paul,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97439M,Eperon,04,La Réunion,974,La Réunion,97415,Saint-Paul,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97440M,Grande Fontaine - Bouillon,04,La Réunion,974,La Réunion,97415,Saint-Paul,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97441I,Etang - Rue Jacquot - Savanna,04,La Réunion,974,La Réunion,97415,Saint-Paul,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97442I,Centre Ville Saint-Charles,04,La Réunion,974,La Réunion,97415,Saint-Paul,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97443M,Bel Air Centre Ville Village Desprez,04,La Réunion,974,La Réunion,97420,Sainte-Suzanne,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97444M,Bagatelle - Les Jacques Bel-Air,04,La Réunion,974,La Réunion,97420,Sainte-Suzanne,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97445M,La Châtoire,04,La Réunion,974,La Réunion,97422,Le Tampon,249740085,CA du Sud
+QN97446M,Les Trois Mares,04,La Réunion,974,La Réunion,97422,Le Tampon,249740085,CA du Sud
+QN97447M,Les Araucarias,04,La Réunion,974,La Réunion,97422,Le Tampon,249740085,CA du Sud
+QN97448M,Centre-ville,04,La Réunion,974,La Réunion,97422,Le Tampon,249740085,CA du Sud
+QN97450N,Le Ruisseau,04,La Réunion,974,La Réunion,97411,Saint-Denis,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97451N,Ermitage - Vue belle - Saline,04,La Réunion,974,La Réunion,97415,Saint-Paul,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97452N,Ravine Daniel,04,La Réunion,974,La Réunion,97415,Saint-Paul,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97453N,Guillaume centre,04,La Réunion,974,La Réunion,97415,Saint-Paul,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97454N,Barrage - Cinq heures,04,La Réunion,974,La Réunion,97415,Saint-Paul,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97455N,Camélias Chaloupe,04,La Réunion,974,La Réunion,97413,Saint-Leu,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97456N,Sans-souci,04,La Réunion,974,La Réunion,97415,Saint-Paul,249740101,CA Territoire de la Côte Ouest (TCO)
+QN97457M,ZAC Avenir - l'Étang,04,La Réunion,974,La Réunion,97414,Saint-Louis,249740077,CA CIVIS (Communauté Intercommunale des Villes Solidaires)
+QN97458M,Le Chaudron,04,La Réunion,974,La Réunion,97411,Saint-Denis,249740119,CA Intercommunale du Nord de la Réunion (CINOR)
+QN97651C,Acoua,06,Mayotte,976,Mayotte,97601,Acoua,200060465,CA du Grand Nord de Mayotte
+QN97652C,Bandraboua,06,Mayotte,976,Mayotte,97602,Bandraboua,200060465,CA du Grand Nord de Mayotte
+QN97653C,Bandrele,06,Mayotte,976,Mayotte,97603,Bandrele,200060473,CC du Sud
+QN97654C,Bouéni,06,Mayotte,976,Mayotte,97604,Bouéni,200060473,CC du Sud
+QN97655C,Chiconi,06,Mayotte,976,Mayotte,97605,Chiconi,200059871,CC du Centre-Ouest
+QN97656C,Chirongui,06,Mayotte,976,Mayotte,97606,Chirongui,200060473,CC du Sud
+QN97657C,Dembeni,06,Mayotte,976,Mayotte,97607,Dembeni,200060457,CA de Dembeni / Mamoudzou
+QN97658C,Dzaoudzi,06,Mayotte,976,Mayotte,97608,Dzaoudzi,200050532,CC de Petite-Terre
+QN97659C,Kani-Kéli,06,Mayotte,976,Mayotte,97609,Kani-Kéli,200060473,CC du Sud
+QN97660C,Koungou,06,Mayotte,976,Mayotte,97610,Koungou,200060465,CA du Grand Nord de Mayotte
+QN97661C,Mamoudzou,06,Mayotte,976,Mayotte,97611,Mamoudzou,200060457,CA de Dembeni / Mamoudzou
+QN97662C,Mtsamboro,06,Mayotte,976,Mayotte,97612,Mtsamboro,200060465,CA du Grand Nord de Mayotte
+QN97663C,M'Tsangamouji,06,Mayotte,976,Mayotte,97613,M'Tsangamouji,200059871,CC du Centre-Ouest
+QN97664C,Ouangani,06,Mayotte,976,Mayotte,97614,Ouangani,200059871,CC du Centre-Ouest
+QN97665C,Pamandzi,06,Mayotte,976,Mayotte,97615,Pamandzi,200050532,CC de Petite-Terre
+QN97666C,Sada,06,Mayotte,976,Mayotte,97616,Sada,200059871,CC du Centre-Ouest
+QN97667C,Tsingoni,06,Mayotte,976,Mayotte,97617,Tsingoni,200059871,CC du Centre-Ouest
+QN97801M,Quartier D'Orléans - Gloire - Griselle,NA,Collectivité d'outre-mer,978,Saint-Martin,97801,Saint-Martin,NA,NA
+QN97802M,Sandy Ground,NA,Collectivité d'outre-mer,978,Saint-Martin,97801,Saint-Martin,NA,NA
+QN97803N,Saint-James,NA,Collectivité d'outre-mer,978,Saint-Martin,97801,Saint-Martin,NA,NA
+QN98701M,Ahititera - Arahiri,NA,Collectivité d'outre-mer,987,Polynésie,98712,Arue,NA,NA
+QN98702M,Erima,NA,Collectivité d'outre-mer,987,Polynésie,98712,Arue,NA,NA
+QN98703M,Papaoa,NA,Collectivité d'outre-mer,987,Polynésie,98712,Arue,NA,NA
+QN98704M,Paruau - Tahipu,NA,Collectivité d'outre-mer,987,Polynésie,98712,Arue,NA,NA
+QN98705M,Tearapae,NA,Collectivité d'outre-mer,987,Polynésie,98712,Arue,NA,NA
+QN98706M,Tefaaroa,NA,Collectivité d'outre-mer,987,Polynésie,98712,Arue,NA,NA
+QN98707M,Outuaramea,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98708M,Teroma,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98709M,Liliane Bordes,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98710M,Outuaraia,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98711M,Tavararo,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98712M,Hiupape,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98713M,Outuaraea,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98714M,Vaitupa,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98715M,Heiri,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98716M,Vaitea,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98717M,Puurai,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98719M,Pamatai Centre,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98720I,Pamatai Bas,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98721M,Oremu,NA,Collectivité d'outre-mer,987,Polynésie,98715,Faaa,NA,NA
+QN98722I,Vallee de Orofara,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98723M,Tuiho Haoa,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98724M,Vallee de Ahonu,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98725M,Vallee de Tuauru,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98726M,Haapape,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98727M,Taharaa,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98728I,Atima Nui,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98729I,Hitimahana,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98730I,Fareroi,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98731I,Titine,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98732M,Matavai,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98733M,Atiha,NA,Collectivité d'outre-mer,987,Polynésie,98729,Moorea-Maiao,NA,NA
+QN98734M,Papetoai,NA,Collectivité d'outre-mer,987,Polynésie,98729,Moorea-Maiao,NA,NA
+QN98735M,Maharepa,NA,Collectivité d'outre-mer,987,Polynésie,98729,Moorea-Maiao,NA,NA
+QN98736M,Paopao,NA,Collectivité d'outre-mer,987,Polynésie,98729,Moorea-Maiao,NA,NA
+QN98737I,Afareaitu,NA,Collectivité d'outre-mer,987,Polynésie,98729,Moorea-Maiao,NA,NA
+QN98738I,Teavaro,NA,Collectivité d'outre-mer,987,Polynésie,98729,Moorea-Maiao,NA,NA
+QN98739M,Varari 1,NA,Collectivité d'outre-mer,987,Polynésie,98729,Moorea-Maiao,NA,NA
+QN98740M,Vaihere,NA,Collectivité d'outre-mer,987,Polynésie,98729,Moorea-Maiao,NA,NA
+QN98741M,Urufara,NA,Collectivité d'outre-mer,987,Polynésie,98729,Moorea-Maiao,NA,NA
+QN98742I,Mara'a,NA,Collectivité d'outre-mer,987,Polynésie,98733,Paea,NA,NA
+QN98743M,Tefana iti,NA,Collectivité d'outre-mer,987,Polynésie,98733,Paea,NA,NA
+QN98744M,Vaiterupe,NA,Collectivité d'outre-mer,987,Polynésie,98733,Paea,NA,NA
+QN98745M,Orofero,NA,Collectivité d'outre-mer,987,Polynésie,98733,Paea,NA,NA
+QN98746M,Tiapa,NA,Collectivité d'outre-mer,987,Polynésie,98733,Paea,NA,NA
+QN98747M,Vaiatu,NA,Collectivité d'outre-mer,987,Polynésie,98733,Paea,NA,NA
+QN98748M,Tiamao,NA,Collectivité d'outre-mer,987,Polynésie,98734,Papara,NA,NA
+QN98749M,Afarerii,NA,Collectivité d'outre-mer,987,Polynésie,98734,Papara,NA,NA
+QN98750M,Tarirea,NA,Collectivité d'outre-mer,987,Polynésie,98734,Papara,NA,NA
+QN98751M,Taharuu,NA,Collectivité d'outre-mer,987,Polynésie,98734,Papara,NA,NA
+QN98752M,Haumaua - Carriere,NA,Collectivité d'outre-mer,987,Polynésie,98734,Papara,NA,NA
+QN98753I,Estall,NA,Collectivité d'outre-mer,987,Polynésie,98735,Papeete,NA,NA
+QN98755M,Grand Mama'o,NA,Collectivité d'outre-mer,987,Polynésie,98735,Papeete,NA,NA
+QN98756I,Vaitavatava,NA,Collectivité d'outre-mer,987,Polynésie,98735,Papeete,NA,NA
+QN98757I,Titioro,NA,Collectivité d'outre-mer,987,Polynésie,98735,Papeete,NA,NA
+QN98758M,Tipaerui,NA,Collectivité d'outre-mer,987,Polynésie,98735,Papeete,NA,NA
+QN98759I,Arupa Puea Vaininiore,NA,Collectivité d'outre-mer,987,Polynésie,98735,Papeete,NA,NA
+QN98760M,Mission,NA,Collectivité d'outre-mer,987,Polynésie,98735,Papeete,NA,NA
+QN98761I,Fautaua,NA,Collectivité d'outre-mer,987,Polynésie,98736,Pirae,NA,NA
+QN98762I,Hamuta Vallée,NA,Collectivité d'outre-mer,987,Polynésie,98736,Pirae,NA,NA
+QN98763M,Fautaua Vallée,NA,Collectivité d'outre-mer,987,Polynésie,98736,Pirae,NA,NA
+QN98764M,Atimaro,NA,Collectivité d'outre-mer,987,Polynésie,98736,Pirae,NA,NA
+QN98765M,Nahoata Vallée,NA,Collectivité d'outre-mer,987,Polynésie,98736,Pirae,NA,NA
+QN98766I,Taapuna,NA,Collectivité d'outre-mer,987,Polynésie,98738,Punaauia,NA,NA
+QN98767M,Punavai,NA,Collectivité d'outre-mer,987,Polynésie,98738,Punaauia,NA,NA
+QN98768I,Puna-Iti Puna-nui,NA,Collectivité d'outre-mer,987,Polynésie,98738,Punaauia,NA,NA
+QN98769M,Outumaoro Hauts,NA,Collectivité d'outre-mer,987,Polynésie,98738,Punaauia,NA,NA
+QN98770M,Nina Peata Fuller,NA,Collectivité d'outre-mer,987,Polynésie,98738,Punaauia,NA,NA
+QN98772I,Maeva Beach,NA,Collectivité d'outre-mer,987,Polynésie,98738,Punaauia,NA,NA
+QN98773M,Vaitavere,NA,Collectivité d'outre-mer,987,Polynésie,98738,Punaauia,NA,NA
+QN98775M,Bel Air,NA,Collectivité d'outre-mer,987,Polynésie,98738,Punaauia,NA,NA
+QN98776M,Atiue,NA,Collectivité d'outre-mer,987,Polynésie,98738,Punaauia,NA,NA
+QN98777M,Varari 2,NA,Collectivité d'outre-mer,987,Polynésie,98729,Moorea-Maiao,NA,NA
+QN98778M,Vaitupa,NA,Collectivité d'outre-mer,987,Polynésie,98733,Paea,NA,NA
+QN98779M,Aou'a,NA,Collectivité d'outre-mer,987,Polynésie,98733,Paea,NA,NA
+QN98780N,Amoe,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98781N,Mahina Nui,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98782N,Tetuanui,NA,Collectivité d'outre-mer,987,Polynésie,98725,Mahina,NA,NA
+QN98783N,Patae,NA,Collectivité d'outre-mer,987,Polynésie,98729,Moorea-Maiao,NA,NA
+QN98784N,Temae Village,NA,Collectivité d'outre-mer,987,Polynésie,98729,Moorea-Maiao,NA,NA
+QN98785N,Atetii,NA,Collectivité d'outre-mer,987,Polynésie,98734,Papara,NA,NA
+QN98786N,Taupeahotu Lagarde,NA,Collectivité d'outre-mer,987,Polynésie,98735,Papeete,NA,NA
+QN98787N,Hamuta plaine,NA,Collectivité d'outre-mer,987,Polynésie,98736,Pirae,NA,NA
+QN98788N,JT - Taaone,NA,Collectivité d'outre-mer,987,Polynésie,98736,Pirae,NA,NA
+QN98789N,Pater - Les Vini,NA,Collectivité d'outre-mer,987,Polynésie,98736,Pirae,NA,NA
+QN98790N,Raufea-Tahutini,NA,Collectivité d'outre-mer,987,Polynésie,98736,Pirae,NA,NA
+QN98791N,Nuuroa,NA,Collectivité d'outre-mer,987,Polynésie,98738,Punaauia,NA,NA
+QN98792N,Tepaheehee,NA,Collectivité d'outre-mer,987,Polynésie,98738,Punaauia,NA,NA

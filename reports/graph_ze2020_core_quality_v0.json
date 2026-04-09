@@ -1,0 +1,102 @@
+{
+  "rule": "Keep only the largest connected component of the ZE2020 geographic graph for core_v0.",
+  "core_node_count": 280,
+  "core_directed_edge_count": 1486,
+  "excluded_node_count": 26,
+  "excluded_components_count": 7,
+  "excluded_components_sizes": [
+    7,
+    6,
+    4,
+    4,
+    3,
+    1,
+    1
+  ],
+  "excluded_nodes_sample": [
+    {
+      "ze2020": "0101",
+      "libze2020": "Côte sous le vent"
+    },
+    {
+      "ze2020": "0102",
+      "libze2020": "Est Grande Terre"
+    },
+    {
+      "ze2020": "0103",
+      "libze2020": "Marie-Galante"
+    },
+    {
+      "ze2020": "0104",
+      "libze2020": "Région Pointoise"
+    },
+    {
+      "ze2020": "0105",
+      "libze2020": "Sud Basse-Terre"
+    },
+    {
+      "ze2020": "0201",
+      "libze2020": "Le Centre-Atlantique"
+    },
+    {
+      "ze2020": "0202",
+      "libze2020": "Le Centre agglomération"
+    },
+    {
+      "ze2020": "0203",
+      "libze2020": "Le Nord-Atlantique"
+    },
+    {
+      "ze2020": "0204",
+      "libze2020": "Le Nord-Caraibe"
+    },
+    {
+      "ze2020": "0205",
+      "libze2020": "Le Sud"
+    },
+    {
+      "ze2020": "0206",
+      "libze2020": "Le Sud-Caraibe"
+    },
+    {
+      "ze2020": "0301",
+      "libze2020": "Est-littoral"
+    },
+    {
+      "ze2020": "0302",
+      "libze2020": "Ouest-Guyanais"
+    },
+    {
+      "ze2020": "0303",
+      "libze2020": "Savanes"
+    },
+    {
+      "ze2020": "0401",
+      "libze2020": "L'Est"
+    },
+    {
+      "ze2020": "0402",
+      "libze2020": "L'Ouest"
+    },
+    {
+      "ze2020": "0403",
+      "libze2020": "Le Nord"
+    },
+    {
+      "ze2020": "0404",
+      "libze2020": "Le Sud"
+    },
+    {
+      "ze2020": "0601",
+      "libze2020": "Mayotte"
+    },
+    {
+      "ze2020": "9401",
+      "libze2020": "Ajaccio"
+    }
+  ],
+  "notes": [
+    "core_v0 is restricted to continental France as the largest connected component.",
+    "Corsica and overseas components are excluded from the MVP graph to reduce territorial anomalies in early-stage modeling."
+  ]
+}

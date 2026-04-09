@@ -40,6 +40,7 @@ Para scripts:
 
 - todo artefato processado deve ter script reprodutivel quando a logica deixar de ser trivial
 - mudancas de regra analitica devem acompanhar mudanca no script
+- nomes novos devem seguir [NAMING_CONVENTIONS_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/NAMING_CONVENTIONS_v0.md)
 
 ## Regra de commit
 

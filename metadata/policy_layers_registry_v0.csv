@@ -1,0 +1,5 @@
+policy_type,status_values,intended_role,current_source_status
+ZRR,classified; partially_classified; not_classified; unknown,policy_agent; territorial context; future aggregation to ZE2020,active
+FRR/FRR+,pending,policy_agent; territorial context; future aggregation to ZE2020,partial_source_only
+QPV,classified; unknown,policy_agent; territorial context; social priority layer,active
+ZAN,pending,policy_agent; land-use constraint layer,not_loaded_yet

@@ -89,6 +89,7 @@ Se a resposta for nao, a tarefa sai do caminho critico.
 
 O proximo passo no caminho critico e:
 
-1. fechar o `zones_master` canonico
-2. adicionar flags de cobertura e anomalia
-3. preparar o desenho do `panel_zones`
+1. revisar o `panel_zones_v0`
+2. extrair geometrias de `ZE2020`
+3. gerar a adjacencia espacial inicial
+4. produzir a primeira tabela de arestas

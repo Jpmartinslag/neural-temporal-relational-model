@@ -1,0 +1,27 @@
+{
+  "rows": 305,
+  "mapped_rows": 34837,
+  "unmapped_rows": 68,
+  "sum_columns": [
+    "naf09art24",
+    "art09act24",
+    "art09hab24",
+    "art09mix24",
+    "art09inc24",
+    "art09rou24",
+    "art09fer24",
+    "artcom0924",
+    "pop15",
+    "pop21",
+    "men15",
+    "men21",
+    "emp15",
+    "emp21",
+    "surfcom2024"
+  ],
+  "notes": [
+    "ZAN commune quantitative layer aggregated to ZE2020 using additive columns only.",
+    "Derived rates are limited to artif per population 2021 and artif per municipal surface 2024.",
+    "The 68 unmapped communes appear dispersed and likely reflect COG differences or commune-level territorial changes rather than a single missing regional block."
+  ]
+}
