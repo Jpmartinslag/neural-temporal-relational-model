@@ -1,0 +1,105 @@
+{
+  "node_count": 280,
+  "feature_count": 23,
+  "feature_years": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "target_years_available": [
+    2000,
+    2001,
+    2002,
+    2003,
+    2004,
+    2005,
+    2006,
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "horizon_years": 1,
+  "sample_count": 6,
+  "split_counts": {
+    "forecast_holdout": 1,
+    "test": 1,
+    "train": 3,
+    "validation": 1
+  },
+  "x_raw_shape": [
+    6,
+    280,
+    23
+  ],
+  "x_scaled_imputed_shape": [
+    6,
+    280,
+    23
+  ],
+  "x_mask_shape": [
+    6,
+    280,
+    23
+  ],
+  "y_raw_shape": [
+    6,
+    280
+  ],
+  "adjacency_shape": [
+    280,
+    280
+  ],
+  "adjacency_is_symmetric": true,
+  "adjacency_has_self_loops_raw": false,
+  "adjacency_normalized_has_self_loops": true,
+  "raw_missing_rate": 0.4927536231884058,
+  "features_without_train_observation": [
+    "flores_presential_unit_loc_total",
+    "flores_productive_unit_loc_total"
+  ],
+  "horizon_framing": "h=1 is the first temporal attribution setting: features observed at year t are aligned to the target proxy at year t+1. This does not establish causality by itself; it only enforces temporal order.",
+  "zero_imputation_meaning": "In x_scaled_imputed, zero means the train-period mean after standardization. Missing values are set to zero only after scaling, and x_mask must be used to distinguish imputed values from observed values that are close to the train mean.",
+  "required_baselines_before_stgnn": [
+    {
+      "name": "persistence",
+      "definition": "predict y(t+1) from y(t) for the same node",
+      "purpose": "minimum temporal inertia benchmark"
+    },
+    {
+      "name": "autoregressive_tabular",
+      "definition": "predict y(t+1) using y(t), optional lagged features and masks, without graph propagation",
+      "purpose": "tests whether temporal/tabular signal beats persistence before adding graph structure"
+    },
+    {
+      "name": "spatial_neighbor_average",
+      "definition": "predict y_i(t+1) using the row-normalized adjacency times y(t), with optional blend against node persistence",
+      "purpose": "tests whether neighboring zones add signal before training a learned graph model"
+    }
+  ],
+  "leakage_controls": [
+    "Feature scaling is fitted only on train samples.",
+    "Validation, test and forecast_holdout years do not influence feature means or standard deviations.",
+    "Missing values are imputed only after scaling and masks are stored explicitly."
+  ],
+  "readiness_note": "This package is ready for baseline and STGNN input experiments, but the train split has only 3 annual samples. Deep model results must be treated as exploratory."
+}

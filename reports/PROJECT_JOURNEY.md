@@ -1325,3 +1325,49 @@ Decisao:
 - a URL historica atual retorna `404`
 - o candidato `data.gouv.fr` foi rejeitado porque contem apenas anos `2011` e `2012`
 - `BPE 2020` segue como lacuna aberta, nao por falta de nome correto, mas por ausencia de arquivo vivo validado
+
+### 2026-04-12 - Camada tensorial antes da arquitetura STGNN
+
+O que foi feito:
+
+- revisao da prontidao real antes da escolha de arquitetura `STGNN`
+- criacao do pacote tensorial auditavel `stgnn_tensor_package_core_v0`
+- preservacao de valores brutos, mascaras, adjacencia e normalizacao sem vazamento temporal
+
+Artefatos:
+
+- [build_stgnn_tensor_package_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_stgnn_tensor_package_core_v0.py)
+- [stgnn_tensor_package_core_v0.npz](/home/jpdark/Downloads/project_recomm/dataset/data/processed/stgnn_tensor_package_core_v0.npz)
+- [stgnn_tensor_sample_index_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/stgnn_tensor_sample_index_core_v0.csv)
+- [stgnn_tensor_feature_registry_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/stgnn_tensor_feature_registry_core_v0.csv)
+- [STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md)
+- [STGNN_TENSOR_PACKAGE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_TENSOR_PACKAGE_CORE_V0.md)
+
+Decisao:
+
+- a arquitetura `STGNN` ainda nao foi escolhida
+- o projeto passa primeiro por baselines fortes usando o pacote tensorial
+- `FLORES` foi identificado como sem observacao no treino nesta versao, entao nao deve ser interpretado como sinal causal nos primeiros experimentos
+- `0` no tensor padronizado passa a ser definido como media do treino, com `x_mask` obrigatoria para separar imputacao de observacao real
+- o primeiro baseline espacial sera a media dos vizinhos via adjacencia normalizada, antes de qualquer modelo neural com grafo
+
+### 2026-04-12 - Baseline espacial antes do STGNN
+
+O que foi feito:
+
+- implementacao do baseline espacial minimo sobre o pacote tensorial
+- comparacao entre persistencia local, media espacial dos vizinhos e mistura validada por `alpha`
+
+Artefatos:
+
+- [evaluate_spatial_baseline_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_spatial_baseline_core_v0.py)
+- [spatial_baseline_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/spatial_baseline_predictions_core_v0.csv)
+- [spatial_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/spatial_baseline_metrics_core_v0.json)
+- [SPATIAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SPATIAL_BASELINE_CORE_V0.md)
+
+Decisao:
+
+- a media espacial dos vizinhos nao superou a persistencia local
+- a validacao escolheu `alpha = 1.0`, equivalente a peso zero para o componente espacial simples
+- o grafo espacial estatico ainda nao deve ser tratado como sinal preditivo confirmado
+- qualquer `STGNN` futuro precisa superar esse piso antes de ser interpretado

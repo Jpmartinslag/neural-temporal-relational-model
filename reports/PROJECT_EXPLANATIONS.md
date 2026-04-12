@@ -1107,3 +1107,54 @@ Resultado esperado:
 - evitar integracao falsa de `BPE 2020`
 - manter a lacuna documentada e verificavel
 - permitir uma decisao metodologica posterior: recuperar o arquivo correto ou seguir sem `BPE 2020`
+
+### 2026-04-12 - Preparacao tensorial antes do STGNN
+
+O que foi feito:
+
+- consolidacao da leitura de prontidao para `STGNN`
+- criacao de uma camada tensorial neutra, ainda sem escolher arquitetura
+- geracao de `X`, `Y`, mascara de observacao e adjacencia normalizada
+
+Por que isso foi necessario:
+
+- o projeto esta criando uma arquitetura de recomendacao territorial, nao apenas aplicando um modelo pronto
+- escolher `Graph WaveNet`, `DCRNN`, `T-GCN` ou uma arquitetura propria antes de validar os tensores criaria risco metodologico
+- o baseline mostrou que persistencia e um adversario forte, entao o modelo com grafo precisa superar baselines simples antes de ser interpretado
+
+Resultado esperado:
+
+- permitir baselines autoregressivos e espaciais controlados
+- evitar vazamento temporal na normalizacao
+- manter mascaras explicitas para auditar missingness e cobertura de fonte
+- adiar a decisao arquitetural ate que a camada de entrada esteja verificavel
+
+Complemento metodologico:
+
+- `h = 1` foi mantido como primeira configuracao de atribuicao temporal: dados em `t` sao alinhados ao target em `t+1`
+- esse alinhamento preserva ordem temporal, mas nao deve ser vendido como prova causal
+- em dados padronizados, `0` significa media do treino; por isso a mascara e obrigatoria para diferenciar dado imputado de dado observado proximo da media
+- o baseline espacial minimo sera a media dos vizinhos via adjacencia normalizada, com uma variante misturada com persistencia local
+
+### 2026-04-12 - Resultado do baseline espacial
+
+O que foi feito:
+
+- avaliacao de um baseline espacial simples antes de qualquer modelo neural com grafo
+- teste de media dos vizinhos e de mistura entre persistencia local e media espacial
+
+Por que isso foi necessario:
+
+- a existencia de uma matriz de adjacencia nao prova que o grafo adiciona sinal preditivo
+- antes de treinar `STGNN`, era preciso saber se um uso simples do grafo ja melhora a persistencia
+
+Resultado observado:
+
+- a media dos vizinhos ficou muito pior que a persistencia local
+- a validacao escolheu `alpha = 1.0`, ou seja, modelo puramente persistente
+
+Resultado esperado:
+
+- manter o grafo como estrutura tecnica, mas nao como sinal preditivo confirmado
+- exigir que qualquer `STGNN` futuro supere persistencia e baseline espacial simples
+- considerar futuramente pesos de mobilidade, pesos economicos ou grafo adaptativo se o grafo espacial puro continuar fraco
