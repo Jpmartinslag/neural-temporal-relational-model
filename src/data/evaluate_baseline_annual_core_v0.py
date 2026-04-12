@@ -14,7 +14,7 @@ PRED_OUT = ROOT / "data" / "processed" / "baseline_annual_predictions_core_v0.cs
 METRICS_OUT = ROOT / "reports" / "baseline_annual_metrics_core_v0.json"
 REPORT_OUT = ROOT / "reports" / "BASELINE_ANNUAL_EVALUATION_V0.md"
 
-TRAIN_YEARS = [2021, 2022]
+TRAIN_YEARS = [2020, 2021, 2022]
 VAL_YEARS = [2023]
 TEST_YEARS = [2024]
 RIDGE_ALPHA = 1.0
@@ -123,7 +123,7 @@ def write_report(metrics: dict, used_features: list[str]) -> None:
         "",
         "## Split temporal",
         "",
-        "- treino: `2021-2022`",
+        "- treino: `2020-2022`",
         "- validacao: `2023`",
         "- teste: `2024`",
         "",

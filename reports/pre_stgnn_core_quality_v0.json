@@ -1,14 +1,16 @@
 {
   "node_count": 280,
   "edge_count_directed": 1486,
-  "dataset_rows": 1120,
+  "dataset_rows": 1680,
   "years": [
+    2019,
+    2020,
     2021,
     2022,
     2023,
     2024
   ],
-  "dynamic_feature_count": 16,
+  "dynamic_feature_count": 17,
   "static_context_feature_count": 6,
   "target_status": "not_defined_yet",
   "notes": [

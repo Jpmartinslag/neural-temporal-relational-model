@@ -1,0 +1,23 @@
+# Keep graphify focused on project structure, code, metadata and reports.
+# Raw/interim/processed datasets are large and already summarized in reports.
+
+.git/
+.venv/
+tools/external/
+scan_output/
+graphify-out/
+
+data/raw/
+data/interim/
+data/processed/
+
+*.zip
+*.parquet
+*.csv
+*.xlsx
+*.xls
+*.pdf
+*.tar.gz
+*.dbf
+*.shp
+*.shx

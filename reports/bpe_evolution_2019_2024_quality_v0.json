@@ -1,0 +1,25 @@
+{
+  "source_zip": "/home/jpdark/Downloads/project_recomm/dataset/data/raw/temporal_depth/bpe/ds_bpe_evolution_com_2019_2024_geo_2025.zip",
+  "source_member": "ds_bpe_evolution_com_2019_2024_geo_2025.csv",
+  "total_rows": 1235060,
+  "retained_mapped_rows_obs_value_1": 1235060,
+  "retained_core_rows_obs_value_1": 1210550,
+  "source_year_counts": {
+    "2019": 603716,
+    "2024": 631344
+  },
+  "obs_value_counts": {
+    "1": 1235060
+  },
+  "geo_object_counts": {
+    "ARM": 9890,
+    "COM": 1225170
+  },
+  "unmatched_geo_count": 0,
+  "unmatched_geo_sample": [],
+  "commune_year_rows_out": 69742,
+  "ze_year_rows_out": 560,
+  "core_zone_count": 280,
+  "method_note": "Official BPE evolution source is harmonized for 2019 and 2024 in geography 2025. The metric is presence of facility types, not physical facility counts.",
+  "future_update_note": "When INSEE publishes the planned 2015-2025 count/presence table, this integration can be extended by changing YEARS and raw file location without changing downstream semantics."
+}

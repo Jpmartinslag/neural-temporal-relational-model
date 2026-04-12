@@ -1,0 +1,30 @@
+{
+  "side_et": {
+    "source_file": "DS_SIDE_STOCKS_ET_COM_2023_CSV_FR.zip",
+    "rows_seen_2021": 418050,
+    "rows_selected_commune_total_activity": 34868,
+    "invalid_values": 0,
+    "communes_selected": 34868
+  },
+  "side_ul": {
+    "source_file": "DS_SIDE_STOCKS_UL_COM_2023_CSV_FR.zip",
+    "rows_seen_2021": 418050,
+    "rows_selected_commune_total_activity": 34868,
+    "invalid_values": 0,
+    "communes_selected": 34868
+  },
+  "bpe_2023": {
+    "source_file": "BPE23.zip",
+    "rows_seen": 2773455,
+    "rows_selected_mapped_communes": 2577716,
+    "unexpected_years": [],
+    "communes_with_bpe_2023": 34861,
+    "zones_with_bpe_2023": 306,
+    "aggregation_rule": "Count one row per geolocated BPE equipment in BPE23.csv."
+  },
+  "side_interim_rows": 34868,
+  "bpe_interim_rows": 34861,
+  "zones_with_side_et_2021": 306,
+  "zones_with_side_ul_2021": 306,
+  "zones_with_bpe_2023": 306
+}

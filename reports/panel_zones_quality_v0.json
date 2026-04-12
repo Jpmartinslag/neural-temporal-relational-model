@@ -1,6 +1,8 @@
 {
-  "panel_rows": 1224,
+  "panel_rows": 1836,
   "panel_years": [
+    2019,
+    2020,
     2021,
     2022,
     2023,
@@ -8,12 +10,14 @@
   ],
   "zones_count": 306,
   "years_with_any_feature_rows": {
-    "2021": 297,
+    "2019": 306,
+    "2020": 297,
+    "2021": 306,
     "2022": 305,
     "2023": 306,
     "2024": 306
   },
-  "training_eligible_panel_rows_v0": 1220,
+  "training_eligible_panel_rows_v0": 1830,
   "structural_anomaly_zones_v0": 1,
   "panel_rule": "No temporal imputation. Each feature is populated only on its observed source year."
 }

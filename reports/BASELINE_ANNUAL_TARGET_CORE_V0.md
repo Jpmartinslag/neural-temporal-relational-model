@@ -17,9 +17,9 @@ Objetivo:
 - linhas do target anual: `7560`
 - anos do target anual: `2000 -> 2026`
 - zonas no target anual: `280`
-- linhas do baseline anual: `1120`
-- linhas com `target_tplus1`: `1120`
-- anos de feature no baseline: `2021 -> 2024`
+- linhas do baseline anual: `1400`
+- linhas com `target_tplus1`: `1400`
+- anos de feature no baseline: `2020 -> 2024`
 
 ## Totais anuais do target proxy
 

@@ -784,6 +784,114 @@ Resultado esperado:
 - um commit de fundacao com escopo claro
 - melhor rastreabilidade da transicao para o modelo com grafo
 
+### 2026-04-09 - Pacote anual para o modelo com grafo
+
+O que foi feito:
+
+- montagem do formato anual especifico para a fase de modelagem com grafo
+
+Por que isso foi necessario:
+
+- antes de instalar ou treinar qualquer modelo com grafo, era preciso saber se o pacote anual estava minimamente pronto
+- isso tambem permite separar prontidao estrutural de prontidao estatistica
+
+Resultado esperado:
+
+- confirmar que o grafo, os nos e o target ja conversam entre si
+- explicitar que o gargalo restante agora e profundidade temporal, nao integracao de dados
+
+### 2026-04-09 - Aprofundamento temporal antes do modelo com grafo
+
+O que foi feito:
+
+- transformacao do diagnostico de profundidade rasa em plano de coleta priorizado
+
+Por que isso foi necessario:
+
+- sem uma ordem clara, o projeto poderia voltar a mineracao difusa de dados
+- era preciso ligar diretamente a lacuna metodologica atual ao que deve ser baixado em seguida
+
+Resultado esperado:
+
+- aumentar a profundidade anual das features com menor risco
+- preparar um Graph WaveNet futuro em base mais defensavel
+
+### 2026-04-10 - Efeito dos novos downloads sobre as lacunas
+
+O que foi feito:
+
+- confrontacao entre os arquivos novos e as lacunas temporais que bloqueiam a modelagem com grafo principal
+
+Por que isso foi necessario:
+
+- baixar mais arquivos nao significa automaticamente fechar a lacuna certa
+- era preciso distinguir ganho tematico de ganho de profundidade temporal
+
+Resultado esperado:
+
+- manter a coleta focada
+- evitar falsa sensacao de prontidao para o modelo com grafo
+
+Complemento:
+
+- a checagem fina mostrou que nem toda serie temporal adicional ajuda o mesmo problema
+- `RP_SERIE_HISTORIQUE_2022` reforca o eixo comunal e pode virar feature util
+- ja os `SIDE` em serie que apareceram nesta rodada sao agregados macro e servem mais para contexto do que para fechar a profundidade do painel em `ZE2020`
+
+### 2026-04-10 - Download oficial de RP 2021 e Filosofi 2020
+
+O que foi feito:
+
+- download dos arquivos oficiais que ja tinham link direto confirmado
+- organizacao desses brutos em `data/raw/temporal_depth/`
+- validacao imediata da integridade dos zips
+
+Por que isso foi necessario:
+
+- a profundidade temporal do painel anual so melhora de verdade quando as fontes faltantes entram no acervo
+- `RP 2021` e `Filosofi 2020` eram lacunas prioritarias e ja estavam suficientemente confirmadas para download
+
+Resultado esperado:
+
+- preparar a proxima rodada de integracao sem depender de nova busca para esses dois blocos
+- reduzir o conjunto de lacunas abertas antes da modelagem com grafo
+
+### 2026-04-10 - Integracao de RP 2021 e Filosofi 2020
+
+O que foi feito:
+
+- transformacao dos brutos baixados em tabelas comunais utilizaveis
+- agregacao dessas tabelas para `ZE2020`
+- injecao das colunas novas no `zones_master_annual_v0`
+- reconstrucao do painel e dos artefatos derivados
+
+Por que isso foi necessario:
+
+- baixar os dados era apenas metade do trabalho
+- o ganho metodologico real so aparece quando os novos anos entram no painel, no baseline e no pacote anual com grafo
+
+Resultado esperado:
+
+- ampliar a profundidade temporal efetiva do projeto de `2021-2024` para `2020-2024`
+- reduzir a dependencia de features de um unico ano no bloco socioeconomico
+- deixar o proximo gargalo concentrado nas familias que ainda faltam
+
+### 2026-04-10 - Busca de links em data.gouv
+
+O que foi feito:
+
+- exploracao de `data.gouv.fr` como rota alternativa para os datasets ainda nao fechados por link bruto no Insee
+
+Por que isso foi necessario:
+
+- algumas paginas de metadados do Insee expõem a existencia do dataset, mas nao o link final de forma simples
+- `data.gouv` frequentemente republica esses recursos com um endpoint direto e estavel por `resource id`
+
+Resultado esperado:
+
+- destravar a coleta dos blocos restantes sem depender de navegação manual repetitiva
+- reduzir o conjunto de lacunas abertas antes da proxima rodada de integracao
+
 Complemento:
 
 - o commit de fundacao deve congelar apenas a camada analitica viva
@@ -852,3 +960,150 @@ A partir desta rodada, sempre que uma acao relevante for executada:
 1. o codigo e os artefatos entram no `git`
 2. a linha do tempo entra no [PROJECT_JOURNEY.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_JOURNEY.md)
 3. a explicacao do que foi feito e por que entra neste arquivo
+
+### 2026-04-10 - Correcao metodologica da busca em data.gouv
+
+O que foi feito:
+
+- confirmacao da metadata oficial via API do `data.gouv`
+- revisao dos links de `SIDE`, `FLORES` e `BPE`
+- correcao da leitura sobre quais anos estavam realmente fechados por recurso bruto
+
+Por que isso foi necessario:
+
+- a primeira leitura do `data.gouv` sugeria que algumas familias multi-anuais ja fechariam `SIDE 2021` e `FLORES 2023`
+- a verificacao pela API mostrou que os recursos expostos hoje apontam para `2022` em `SIDE` e `2024` em `FLORES`
+- sem essa correcao, o projeto carregaria uma falsa sensacao de cobertura temporal resolvida
+
+Resultado esperado:
+
+- manter as lacunas abertas de forma honesta
+- preservar a rastreabilidade da busca
+- evitar integrar anos errados por inferencia otimista
+
+### 2026-04-10 - Inspecao semantica do recurso BPE baixado
+
+O que foi feito:
+
+- download do recurso oficial associado a `BPE 2023`
+- leitura amostral do zip, do shapefile e do csv do recurso
+- verificacao do campo temporal presente no proprio conteudo
+
+Por que isso foi necessario:
+
+- um link oficial baixavel nao basta por si so
+- para ampliar profundidade temporal, o ano do conteudo precisa bater com o ano que estamos tentando integrar
+- neste caso, o recurso observado traz `2024` no proprio conteudo, apesar de a rota sugerir `2023`
+
+Resultado esperado:
+
+- impedir que uma camada temporal seja incorporada com ano errado
+- manter `BPE 2023` como lacuna metodologicamente aberta
+- documentar que a familia `BPE` esta acessivel, mas ainda nao com seguranca temporal suficiente para integracao
+
+### 2026-04-10 - Busca ampliada em fontes oficiais confiaveis
+
+O que foi feito:
+
+- ampliacao da busca para alem do `data.gouv`
+- leitura direta das paginas oficiais do `Insee` para `BPE 2021` e `BPE 2020`
+- separacao entre tres situacoes: existencia oficial, link bruto fechado e adequacao ao nosso pipeline
+
+Por que isso foi necessario:
+
+- em projetos como este, um portal oficial sozinho nao resolve a coleta
+- alguns anos aparecem documentados, mas sem link bruto evidente
+- em outros casos, o link existe, mas o conteudo nao confirma o ano correto
+
+Resultado esperado:
+
+- reduzir buscas cegas
+- evitar assumir que uma lacuna esta resolvida apenas porque a familia estatistica existe
+- melhorar a estrategia de coleta futura com uma tipologia mais honesta das lacunas
+
+Complemento importante:
+
+- a leitura da propria pagina oficial do `Insee` para `BPE 2021` mostra que os arquivos da base sao publicos em `csv`
+- isso muda a interpretacao do bloqueio: nao estamos diante de um dado fechado, mas de um endpoint publico ainda nao isolado com precisao
+
+### 2026-04-10 - Integracao efetiva de BPE 2021
+
+O que foi feito:
+
+- validacao do arquivo bruto `bpe21-ensemble-csv.zip`
+- confirmacao do ano correto no conteudo
+- agregacao do `NB_EQUIP` por comuna e depois por `ZE2020`
+- incorporacao da camada ao `zones_master` e ao painel temporal
+
+Por que isso foi necessario:
+
+- entre os downloads novos, este foi o primeiro caso em que a familia oficial veio acompanhada do ano correto no conteudo
+- isso permitiu fechar uma lacuna temporal real sem introduzir ambiguidade
+
+Resultado esperado:
+
+- reforcar o eixo de servicos/acessibilidade em `2021`
+- melhorar a densidade do painel anual sem inventar serie
+- reduzir o numero de lacunas abertas na familia `BPE`
+
+### 2026-04-10 - Verificacao dos downloads de FLORES
+
+O que foi feito:
+
+- leitura dos novos pacotes `FLORES` baixados localmente
+- validacao do pacote nacional `2023`
+- validacao dos arquivos detalhados `A17` de `2021` e `2020`
+
+Por que isso foi necessario:
+
+- a familia `FLORES` era uma das lacunas importantes para profundidade temporal
+- os nomes dos arquivos sugeriam que parte dessa lacuna ja poderia estar resolvida localmente
+- era necessario verificar o conteudo real antes de marcar a familia como fechada
+
+Resultado esperado:
+
+- confirmar que `FLORES 2023` ja esta disponivel localmente
+- confirmar que `FLORES 2021` tambem pode entrar como reforco temporal
+- reduzir o numero de lacunas abertas sem depender de nova coleta externa
+
+### 2026-04-11 - Fechamento de SIDE 2021 e BPE 2023
+
+O que foi feito:
+
+- os arquivos `SIDE` atuais foram tratados como series multi-ano, nao como arquivos isolados de `2021`
+- a integracao reteve apenas `TIME_PERIOD = 2021`, `GEO_OBJECT = COM` e `ACTIVITY = _T`
+- o arquivo `BPE23.zip` foi validado como fonte real de `AN = 2023`
+- os totais foram agregados de comuna para `ZE2020` e propagados ao painel anual
+
+Por que isso foi necessario:
+
+- o objetivo era aumentar a profundidade temporal sem introduzir dados rotulados incorretamente
+- `DS_BPE_2023_CSV_FR.zip` foi rejeitado porque contem `DS_BPE_2024_data.csv`
+- `BPE 2020` ainda nao foi aceito porque os candidatos locais nao possuem conteudo nacional valido de 2020
+
+Resultado esperado:
+
+- fortalecer `2021` com estoques economicos `SIDE`
+- fortalecer `2023` com equipamentos `BPE`
+- manter `BPE 2020` como unica lacuna principal antes de uma nova decisao de modelagem
+
+### 2026-04-11 - Por que BPE 2020 ainda nao foi fechado
+
+O que foi feito:
+
+- busca especifica por `BPE 2020 Ensemble` fora da pagina dinamica do Insee
+- validacao do historico `DoReMIFaSol`, que confirma o antigo arquivo `bpe20_ensemble_csv.zip`
+- teste de candidatos locais e externos
+- rejeicao explicita do candidato `data.gouv.fr` apos verificar que continha somente `2011` e `2012`
+
+Por que isso foi necessario:
+
+- marcar um arquivo errado como `BPE 2020` contaminaria o painel anual
+- o ano do recurso ou da pagina nao basta; o ano precisa aparecer no conteudo
+- o projeto precisa preservar rastreabilidade mesmo quando uma fonte historica deixa de estar diretamente disponivel
+
+Resultado esperado:
+
+- evitar integracao falsa de `BPE 2020`
+- manter a lacuna documentada e verificavel
+- permitir uma decisao metodologica posterior: recuperar o arquivo correto ou seguir sem `BPE 2020`

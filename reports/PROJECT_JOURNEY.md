@@ -1029,6 +1029,225 @@ Decisao:
 - a etapa seguinte passa a ser explicitamente a modelagem com grafo
 - `data/raw/` fica fora desse commit
 
+### 2026-04-09 - Preparacao do pacote anual para modelo com grafo
+
+O que foi feito:
+
+- construcao do pacote anual de modelagem com grafo no `core_v0`
+- organizacao de features, targets e adjacencia em artefatos dedicados
+
+Artefatos:
+
+- [build_graph_model_annual_package_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_graph_model_annual_package_core_v0.py)
+- [graph_model_feature_panel_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_model_feature_panel_core_v0.csv)
+- [graph_model_target_panel_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_model_target_panel_core_v0.csv)
+- [graph_adjacency_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_adjacency_core_v0.csv)
+- [graph_model_annual_package_core_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_model_annual_package_core_quality_v0.json)
+- [GRAPH_MODEL_ANNUAL_PACKAGE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_MODEL_ANNUAL_PACKAGE_CORE_V0.md)
+
+Decisao:
+
+- o pacote anual com grafo esta estruturalmente pronto
+- mas a profundidade temporal observada ainda e curta para um Graph WaveNet anual forte
+- a decisao de treinar o modelo com grafo precisa reconhecer esse limite explicitamente
+
+### 2026-04-09 - Plano de aprofundamento temporal das features
+
+O que foi feito:
+
+- traducao do problema de profundidade temporal em uma ordem concreta de coleta
+
+Artefatos:
+
+- [TEMPORAL_DEPTH_EXPANSION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_DEPTH_EXPANSION_V0.md)
+- [temporal_depth_priorities_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/temporal_depth_priorities_v0.csv)
+- [DOWNLOAD_PRIORITY_AND_API_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/DOWNLOAD_PRIORITY_AND_API_V0.md)
+
+Decisao:
+
+- antes do Graph WaveNet principal, a prioridade de coleta passa a ser `RP 2021`, `SIDE 2020-2021`, `BPE 2023/2021/2020`, `Filosofi 2020` e `Flores 2023`
+- a verificacao de API passa a ser feita junto com a lista de coleta
+
+### 2026-04-10 - Revisao dos novos downloads para lacunas temporais
+
+O que foi feito:
+
+- verificacao dos novos datasets baixados
+- comparacao deles com as lacunas de profundidade temporal ja identificadas
+
+Artefato:
+
+- [NEW_DOWNLOADS_GAP_REVIEW_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/NEW_DOWNLOADS_GAP_REVIEW_V0.md)
+
+Decisao:
+
+- os novos downloads ampliam largura tematica e reforcam o eixo demografico
+- mas as lacunas principais continuam sendo `RP 2021`, `SIDE 2021`, `BPE 2023/2021/2020`, `Filosofi 2020` e `Flores 2023`
+- `DS_SIDE_CREA_DEP_REG_NAT_2024_CSV_FR.zip` foi identificado como arquivo invalido
+
+Complemento da verificacao:
+
+- `DS_RP_SERIE_HISTORIQUE_2022_CSV_FR.zip` foi confirmado como serie longa comunal e passa a ser considerado reforco real do eixo temporal do `RP`
+- `DS_SIDE_EQDEMO_A21_2022_CSV_FR.zip` e `DS_SIDE_CREA_ENT_SERIES_CSV_FR.zip` foram verificados como series agregadas acima de comuna, entao nao fecham a lacuna do painel anual em `ZE2020`
+
+### 2026-04-10 - Download oficial de RP 2021 e Filosofi 2020
+
+O que foi feito:
+
+- download dos arquivos oficiais confirmados para `RP 2021`
+- download dos arquivos oficiais confirmados para `Filosofi 2020`
+- validacao de integridade por `unzip -t`
+
+Artefato:
+
+- [TEMPORAL_DEPTH_DOWNLOADS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_DEPTH_DOWNLOADS_V0.md)
+
+Decisao:
+
+- `RP 2021` e `Filosofi 2020` deixam de ser lacunas abertas
+- as principais lacunas restantes passam a ser `SIDE 2021`, `BPE 2023/2021/2020` e `Flores 2023`
+
+### 2026-04-10 - Integracao de RP 2021 e Filosofi 2020 no pipeline
+
+O que foi feito:
+
+- extracao comunal de `RP 2021`
+- extracao comunal de `Filosofi 2020`
+- integracao dessas camadas no `zones_master_annual_v0`
+- reconstrucao de `panel_zones`, `core views`, `pre_stgnn`, `baseline annual` e `graph annual package`
+
+Artefatos:
+
+- [integrate_temporal_depth_rp_filosofi_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/integrate_temporal_depth_rp_filosofi_v0.py)
+- [TEMPORAL_DEPTH_INTEGRATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_DEPTH_INTEGRATION_V0.md)
+- [temporal_depth_integration_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/temporal_depth_integration_quality_v0.json)
+
+Decisao:
+
+- o painel anual passa a cobrir `2020-2024`
+- `pre_stgnn_core_v0` passa de `1120` para `1400` linhas
+- o baseline anual passa a usar treino `2020-2022`, validacao `2023` e teste `2024`
+- as lacunas centrais restantes ficam concentradas em `SIDE 2021`, `BPE 2023/2021/2020` e `Flores 2023`
+
+### 2026-04-10 - Busca de links exatos em data.gouv
+
+O que foi feito:
+
+- busca orientada em `data.gouv.fr` para fechar links baixaveis diretos
+- cruzamento com o que ainda faltava em `SIDE`, `BPE` e `FLORES`
+
+Artefato:
+
+- [DATAGOUV_LINK_SEARCH_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/DATAGOUV_LINK_SEARCH_V0.md)
+
+Decisao:
+
+- `data.gouv` passa a ser rota valida para baixar `SIDE 2021` por meio dos datasets multi-anuais `A10`
+- `data.gouv` fecha tambem um caminho direto para `FLORES 2023` em `A17`
+- `data.gouv` fecha um caminho direto para `BPE 2023`
+- `BPE 2021` e `BPE 2020` continuam abertos
+
+### 2026-04-10 - Correcao da leitura dos links do data.gouv
+
+O que foi feito:
+
+- validacao pela API oficial do `data.gouv` dos recursos publicados para `SIDE`, `FLORES` e `BPE`
+- revisao da interpretacao inicial dos anos cobertos pelos links brutos
+- correcao do relatorio de busca para evitar fechar lacunas com falsa precisao
+
+Artefato:
+
+- [DATAGOUV_LINK_SEARCH_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/DATAGOUV_LINK_SEARCH_V0.md)
+
+Decisao:
+
+- `BPE 2023` permanece como lacuna efetivamente fechada por `data.gouv`
+- `SIDE 2021` continua aberto, porque o recurso bruto hoje exposto aponta para `2022`
+- `FLORES 2023` continua aberto, porque o recurso bruto hoje exposto aponta para `2024`
+- `BPE 2021` e `BPE 2020` continuam abertos
+
+### 2026-04-10 - Inspecao do recurso baixado como BPE 2023
+
+O que foi feito:
+
+- download do recurso zip oficial a partir do `data.gouv`
+- validacao tecnica do arquivo comprimido
+- leitura amostral do shapefile e do csv associados ao mesmo recurso
+
+Artefato:
+
+- [BPE_TEMPORAL_MISMATCH_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BPE_TEMPORAL_MISMATCH_V0.md)
+
+Decisao:
+
+- o download do recurso foi bem-sucedido
+- a integracao ao pipeline foi suspensa
+- o motivo e que o conteudo observado traz `Millésime = 2024` / `an = 2024`, apesar de a rota ter sido tratada inicialmente como `BPE 2023`
+- `BPE 2023` volta a ficar em observacao metodologica
+
+### 2026-04-10 - Busca ampliada em fontes oficiais alem do data.gouv
+
+O que foi feito:
+
+- ampliacao da busca para paginas oficiais do `Insee` e para o `catalogue-donnees.insee.fr`
+- verificacao do que as paginas publicas realmente prometem em `BPE 2021` e `BPE 2020`
+- consolidacao da diferenca entre existencia oficial da base e fechamento do link bruto utilizavel
+
+Artefato:
+
+- [OFFICIAL_SOURCE_SEARCH_V1.md](/home/jpdark/Downloads/project_recomm/dataset/reports/OFFICIAL_SOURCE_SEARCH_V1.md)
+
+Decisao:
+
+- `BPE 2021` e `BPE 2020` passam a ter status de existencia oficial confirmada
+- `SIDE 2021` e `FLORES 2023` passam a ter status de familia oficial confirmada, mas recurso anual alvo ainda nao fechado
+- a estrategia de busca fica mais precisa: nao basta achar um portal oficial, e preciso fechar o ano certo e o formato certo
+
+Complemento:
+
+- a propria pagina oficial do `Insee` para `BPE 2021` afirma que os arquivos do telechargement da base estao disponiveis em `csv`
+- isso reforca que o problema restante em `BPE 2021` nao e ausencia de diffusion, mas isolamento do endpoint bruto correto
+
+### 2026-04-10 - Integracao de BPE 2021 ao pipeline
+
+O que foi feito:
+
+- validacao do arquivo `bpe21-ensemble-csv.zip`
+- confirmacao de que o conteudo traz `AN = 2021`, `DEPCOM` e `NB_EQUIP`
+- agregacao comunal e por `ZE2020`
+- injecao de `BPE 2021` no `zones_master`
+- rebuild sequencial do painel, visoes core, pre-STGNN, baseline anual e pacote do modelo com grafo
+
+Artefatos:
+
+- [integrate_bpe_2021_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/integrate_bpe_2021_v0.py)
+- [bpe_commune_2021.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/bpe_commune_2021.csv)
+- [BPE_2021_INTEGRATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BPE_2021_INTEGRATION_V0.md)
+
+Decisao:
+
+- `BPE 2021` deixa de ser lacuna aberta
+- `BPE 2023` continua suspenso por mismatch temporal
+- `BPE 2020` continua aberto
+
+### 2026-04-10 - Verificacao dos novos downloads de FLORES
+
+O que foi feito:
+
+- inspecao dos novos arquivos `FLORES` baixados localmente
+- verificacao do pacote nacional `DS_FLORES_2023_CSV_FR.zip`
+- verificacao dos arquivos detalhados `A17` para `2021` e `2020`
+
+Artefato:
+
+- [FLORES_DOWNLOAD_VERIFICATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FLORES_DOWNLOAD_VERIFICATION_V0.md)
+
+Decisao:
+
+- `FLORES 2023` deixa de ser lacuna aberta
+- `FLORES 2021` tambem passa a estar fechado em formato detalhado `A17`
+- `FLORES 2020` fica parcialmente fechado
+
 ### 2026-04-09 - Criacao do workflow de scan completo do repositorio
 
 O que foi feito:
@@ -1062,3 +1281,47 @@ Decisao:
 - o acervo foi confirmado como estruturalmente saudavel
 - `SIRENE` permanece como principal candidato para derivacao do target proxy
 - o suporte a `parquet` foi fechado com `pyarrow` e o schema leve dos arquivos `SIRENE` foi confirmado
+
+### 2026-04-11 - Integracao de SIDE 2021 e BPE 2023
+
+O que foi feito:
+
+- validacao dos arquivos `SIDE` multi-ano `2014-2023`
+- extracao de `TIME_PERIOD = 2021` em nivel comunal
+- validacao do arquivo `BPE23.zip` com `AN = 2023`
+- agregacao de `SIDE 2021` e `BPE 2023` para `ZE2020`
+- reconstrução dos datasets `core_v0`, `pre_stgnn`, pacote anual com grafo e baseline anual
+
+Artefatos:
+
+- [integrate_side_2021_bpe_2023_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/integrate_side_2021_bpe_2023_v0.py)
+- [side_stocks_commune_2021.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/side_stocks_commune_2021.csv)
+- [bpe_commune_2023.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/bpe_commune_2023.csv)
+- [SIDE_2021_BPE_2023_INTEGRATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_2021_BPE_2023_INTEGRATION_V0.md)
+
+Decisao:
+
+- `SIDE 2021` passa a estar fechado via arquivos multi-ano `SIDE 2023`
+- `BPE 2023` passa a estar fechado via `BPE23.zip`
+- `BPE 2020` permanece como unica lacuna principal de profundidade temporal
+
+### 2026-04-11 - Busca dura por BPE 2020 Ensemble
+
+O que foi feito:
+
+- busca paralela com agentes por fontes oficiais e institucionais fora da pagina dinamica do Insee
+- consulta ao historico do catalogo `DoReMIFaSol`
+- teste do link historico oficial
+- consulta ao `Internet Archive`
+- download e validacao do candidato `data.gouv.fr`
+
+Artefato:
+
+- [BPE_2020_HARD_SEARCH_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BPE_2020_HARD_SEARCH_V0.md)
+
+Decisao:
+
+- o identificador historico correto foi confirmado: `bpe20_ensemble_csv.zip`
+- a URL historica atual retorna `404`
+- o candidato `data.gouv.fr` foi rejeitado porque contem apenas anos `2011` e `2012`
+- `BPE 2020` segue como lacuna aberta, nao por falta de nome correto, mas por ausencia de arquivo vivo validado

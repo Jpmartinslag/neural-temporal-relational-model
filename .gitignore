@@ -14,9 +14,15 @@
 .venv/
 .env
 
+# External tools cloned for local analysis
+tools/external/
+
 # Scan outputs
 scan_output/
 scan_output_bundle.tar.gz
+graphify-out/
+.graphify_*.json
+.graphify_*.txt
 
 # Raw acquisition cache
 data/raw/

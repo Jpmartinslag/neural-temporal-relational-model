@@ -8,7 +8,7 @@ Objetivo:
 
 ## Split temporal
 
-- treino: `2021-2022`
+- treino: `2020-2022`
 - validacao: `2023`
 - teste: `2024`
 
@@ -52,19 +52,12 @@ Objetivo:
 
 ### persistence
 
-- `train`: MAE=`159.205`, RMSE=`334.425`, MAPE=`3.587`, WMAPE=`2.859`
+- `train`: MAE=`383.177`, RMSE=`898.687`, MAPE=`7.670`, WMAPE=`6.877`
 - `validation`: MAE=`236.075`, RMSE=`506.711`, MAPE=`4.264`, WMAPE=`4.114`
 - `test`: MAE=`157.404`, RMSE=`263.403`, MAPE=`3.569`, WMAPE=`2.694`
 
 ### ridge_linear
 
-- `train`: MAE=`2757.152`, RMSE=`30228.719`, MAPE=`27.326`, WMAPE=`49.508`
-- `validation`: MAE=`3568.638`, RMSE=`31137.152`, MAPE=`30.290`, WMAPE=`62.183`
-- `test`: MAE=`3954.226`, RMSE=`36891.679`, MAPE=`29.845`, WMAPE=`67.677`
-
-## Leitura
-
-- a `persistence` venceu com folga a regressao linear simples
-- isso indica que o target anual tem forte componente autoregressivo de curto prazo
-- para o projeto, esse e um resultado util: o benchmark minimo a ser batido pelo modelo com grafo fica claramente definido
-- a regressao linear simples nao deve ser tratada como candidato forte para o nucleo principal
+- `train`: MAE=`2603.104`, RMSE=`32042.316`, MAPE=`26.248`, WMAPE=`46.721`
+- `validation`: MAE=`5974.786`, RMSE=`71955.610`, MAPE=`31.741`, WMAPE=`104.109`
+- `test`: MAE=`6604.790`, RMSE=`82810.309`, MAPE=`32.629`, WMAPE=`113.042`

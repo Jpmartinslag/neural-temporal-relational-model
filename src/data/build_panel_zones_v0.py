@@ -11,26 +11,64 @@ PANEL_PATH = ROOT / "data" / "processed" / "panel_zones_v0.csv"
 PANEL_QUALITY_PATH = ROOT / "reports" / "panel_zones_quality_v0.json"
 PANEL_FEATURE_REGISTRY_PATH = ROOT / "metadata" / "panel_feature_registry_v0.csv"
 
-YEARS = [2021, 2022, 2023, 2024]
+YEARS = [2019, 2020, 2021, 2022, 2023, 2024]
 
-FEATURE_SPECS = [
-    ("filosofi_s_hh_tax_weighted_proxy", "filosofi_s_hh_tax_weighted_proxy_2021", 2021, "income"),
-    ("filosofi_s_dir_tax_di_weighted_proxy", "filosofi_s_dir_tax_di_weighted_proxy_2021", 2021, "income"),
-    ("population_total", "population_2022_total", 2022, "population"),
-    ("active_lr_total", "active_15_64_2022_total", 2022, "labour"),
-    ("employed_lr_total", "employed_15_64_2022_total", 2022, "labour"),
-    ("unemployed_lr_total", "unemployed_15_64_2022_total", 2022, "labour"),
-    ("unemployment_rate_est", "unemployment_rate_est_2022", 2022, "labour"),
-    ("jobs_lt_total", "jobs_lt_2022_total", 2022, "labour"),
-    ("jobs_lt_per_1000_pop", "jobs_lt_per_1000_pop_2022", 2022, "labour"),
-    ("side_stocks_et_total", "side_stocks_et_2023_total", 2023, "economic_structure"),
-    ("side_stocks_ul_total", "side_stocks_ul_2023_total", 2023, "economic_structure"),
-    ("side_stocks_et_per_1000_pop", "side_stocks_et_per_1000_pop_2023", 2023, "economic_structure"),
-    ("bpe_facilities_total", "bpe_facilities_2024_total", 2024, "services"),
-    ("bpe_facilities_per_1000_pop", "bpe_facilities_per_1000_pop_2024", 2024, "services"),
-    ("flores_presential_unit_loc_total", "flores_presential_unit_loc_2024_total", 2024, "economic_structure"),
-    ("flores_productive_unit_loc_total", "flores_productive_unit_loc_2024_total", 2024, "economic_structure"),
-]
+FEATURE_SPECS = {
+    2019: [
+        (
+            "bpe_evolution_commune_type_presence_total",
+            "bpe_evolution_commune_type_presence_2019_total",
+            "services_harmonized",
+        ),
+    ],
+    2020: [
+        ("filosofi_s_hh_tax_weighted_proxy", "filosofi_s_hh_tax_weighted_proxy_2020", "income"),
+        ("filosofi_s_dir_tax_di_weighted_proxy", "filosofi_s_dir_tax_di_weighted_proxy_2020", "income"),
+    ],
+    2021: [
+        ("population_total", "population_2021_total", "population"),
+        ("active_lr_total", "active_15_64_2021_total", "labour"),
+        ("employed_lr_total", "employed_15_64_2021_total", "labour"),
+        ("unemployed_lr_total", "unemployed_15_64_2021_total", "labour"),
+        ("unemployment_rate_est", "unemployment_rate_est_2021", "labour"),
+        ("jobs_lt_total", "jobs_lt_2021_total", "labour"),
+        ("jobs_lt_per_1000_pop", "jobs_lt_per_1000_pop_2021", "labour"),
+        ("side_stocks_et_total", "side_stocks_et_2021_total", "economic_structure"),
+        ("side_stocks_ul_total", "side_stocks_ul_2021_total", "economic_structure"),
+        ("side_stocks_et_per_1000_pop", "side_stocks_et_per_1000_pop_2021", "economic_structure"),
+        ("bpe_facilities_total", "bpe_facilities_2021_total", "services"),
+        ("bpe_facilities_per_1000_pop", "bpe_facilities_per_1000_pop_2021", "services"),
+        ("filosofi_s_hh_tax_weighted_proxy", "filosofi_s_hh_tax_weighted_proxy_2021", "income"),
+        ("filosofi_s_dir_tax_di_weighted_proxy", "filosofi_s_dir_tax_di_weighted_proxy_2021", "income"),
+    ],
+    2022: [
+        ("population_total", "population_2022_total", "population"),
+        ("active_lr_total", "active_15_64_2022_total", "labour"),
+        ("employed_lr_total", "employed_15_64_2022_total", "labour"),
+        ("unemployed_lr_total", "unemployed_15_64_2022_total", "labour"),
+        ("unemployment_rate_est", "unemployment_rate_est_2022", "labour"),
+        ("jobs_lt_total", "jobs_lt_2022_total", "labour"),
+        ("jobs_lt_per_1000_pop", "jobs_lt_per_1000_pop_2022", "labour"),
+    ],
+    2023: [
+        ("side_stocks_et_total", "side_stocks_et_2023_total", "economic_structure"),
+        ("side_stocks_ul_total", "side_stocks_ul_2023_total", "economic_structure"),
+        ("side_stocks_et_per_1000_pop", "side_stocks_et_per_1000_pop_2023", "economic_structure"),
+        ("bpe_facilities_total", "bpe_facilities_2023_total", "services"),
+        ("bpe_facilities_per_1000_pop", "bpe_facilities_per_1000_pop_2023", "services"),
+    ],
+    2024: [
+        (
+            "bpe_evolution_commune_type_presence_total",
+            "bpe_evolution_commune_type_presence_2024_total",
+            "services_harmonized",
+        ),
+        ("bpe_facilities_total", "bpe_facilities_2024_total", "services"),
+        ("bpe_facilities_per_1000_pop", "bpe_facilities_per_1000_pop_2024", "services"),
+        ("flores_presential_unit_loc_total", "flores_presential_unit_loc_2024_total", "economic_structure"),
+        ("flores_productive_unit_loc_total", "flores_productive_unit_loc_2024_total", "economic_structure"),
+    ],
+}
 
 
 def has_value(value: str) -> bool:
@@ -45,16 +83,17 @@ def write_feature_registry() -> None:
             fieldnames=["panel_feature", "zones_master_column", "source_year", "domain", "panel_rule"],
         )
         writer.writeheader()
-        for feature_name, source_col, source_year, domain in FEATURE_SPECS:
-            writer.writerow(
-                {
-                    "panel_feature": feature_name,
-                    "zones_master_column": source_col,
-                    "source_year": source_year,
-                    "domain": domain,
-                    "panel_rule": "populate only on matching source year; keep blank otherwise",
-                }
-            )
+        for source_year in YEARS:
+            for feature_name, source_col, domain in FEATURE_SPECS.get(source_year, []):
+                writer.writerow(
+                    {
+                        "panel_feature": feature_name,
+                        "zones_master_column": source_col,
+                        "source_year": source_year,
+                        "domain": domain,
+                        "panel_rule": "populate only on matching source year; keep blank otherwise",
+                    }
+                )
 
 
 def main() -> None:
@@ -76,8 +115,11 @@ def main() -> None:
                 "anomaly_reason": zone["anomaly_reason"],
             }
             observed_count = 0
-            for panel_feature, source_col, source_year, _domain in FEATURE_SPECS:
-                value = zone[source_col] if year == source_year else ""
+            feature_values = {feature_name: "" for spec_year in YEARS for feature_name, _source_col, _domain in FEATURE_SPECS.get(spec_year, [])}
+            for panel_feature, source_col, _domain in FEATURE_SPECS.get(year, []):
+                value = zone.get(source_col, "")
+                feature_values[panel_feature] = value
+            for panel_feature, value in feature_values.items():
                 row[panel_feature] = value
                 if has_value(value):
                     observed_count += 1
@@ -102,7 +144,7 @@ def main() -> None:
         "year",
         "is_structural_anomaly",
         "anomaly_reason",
-        *[feature_name for feature_name, *_ in FEATURE_SPECS],
+        *list(dict.fromkeys(feature_name for spec_year in YEARS for feature_name, _source_col, _domain in FEATURE_SPECS.get(spec_year, []))),
         "observed_feature_count",
         "has_any_feature_value",
         "is_source_year_row",

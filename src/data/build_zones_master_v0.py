@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 MAPPING_PATH = ROOT / "data" / "interim" / "mappings" / "commune_to_ze2020_2026.csv"
 BASE_ZONES_PATH = ROOT / "data" / "processed" / "zones_master_annual_v0.csv"
-EMP_ZIP_PATH = ROOT / "DS_RP_EMPLOI_LR_COMP_2022_CSV_FR.zip"
+EMP_ZIP_PATH = ROOT / "data" / "raw" / "census" / "rp_2022" / "DS_RP_EMPLOI_LR_COMP_2022_CSV_FR.zip"
 EMP_INTERIM_V0_PATH = ROOT / "data" / "interim" / "tables" / "rp_emploi_lr_comp_commune_2022_v0.csv"
 V0_PATH = ROOT / "data" / "processed" / "zones_master_annual_v0.csv"
 QUALITY_V0_PATH = ROOT / "reports" / "data_quality_report_v0.json"

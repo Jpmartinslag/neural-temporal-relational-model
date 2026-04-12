@@ -1,0 +1,746 @@
+{
+  "summary": {
+    "bpe_related_year_unclear": 9,
+    "bpe_2020_related_not_observation_data": 4,
+    "documentation_or_nomenclature_only": 11,
+    "bpe_data_wrong_year_or_not_2020": 13,
+    "official_harmonized_bpe_evolution_not_bpe2020_raw": 3,
+    "invalid_download_html_error": 1,
+    "bpe_derived_article_table_wrong_year": 2
+  },
+  "records": [
+    {
+      "path": "data/interim/tables/bpe_commune_2021.csv",
+      "kind": "table",
+      "size_bytes": 582379,
+      "classification": "bpe_related_year_unclear",
+      "evidence": "BPE/equipment-related name or columns, but no confirmed 2020 observations.",
+      "columns": [
+        "codgeo",
+        "ze2020",
+        "bpe_facilities_2021_total"
+      ],
+      "years": [],
+      "row_sampled": 5000
+    },
+    {
+      "path": "data/interim/tables/bpe_commune_2023.csv",
+      "kind": "table",
+      "size_bytes": 584677,
+      "classification": "bpe_related_year_unclear",
+      "evidence": "BPE/equipment-related name or columns, but no confirmed 2020 observations.",
+      "columns": [
+        "codgeo",
+        "ze2020",
+        "bpe_facilities_2023_total"
+      ],
+      "years": [],
+      "row_sampled": 5000
+    },
+    {
+      "path": "data/interim/tables/bpe_commune_2024.csv",
+      "kind": "table",
+      "size_bytes": 515261,
+      "classification": "bpe_related_year_unclear",
+      "evidence": "BPE/equipment-related name or columns, but no confirmed 2020 observations.",
+      "columns": [
+        "codgeo",
+        "ze2020",
+        "bpe_facilities_2024_total"
+      ],
+      "years": [],
+      "row_sampled": 5000
+    },
+    {
+      "path": "data/interim/tables/bpe_evolution_commune_2019_2024_geo2025.csv",
+      "kind": "table",
+      "size_bytes": 6312991,
+      "classification": "bpe_related_year_unclear",
+      "evidence": "BPE/equipment-related name or columns, but no confirmed 2020 observations.",
+      "columns": [
+        "codgeo",
+        "ze2020",
+        "year",
+        "bpe_evolution_presence_type_count",
+        "source_geography_year",
+        "measure_definition"
+      ],
+      "years": [
+        "2019",
+        "2024"
+      ],
+      "row_sampled": 5000
+    },
+    {
+      "path": "data/processed/bpe_evolution_ze2020_core_v0.csv",
+      "kind": "table",
+      "size_bytes": 50345,
+      "classification": "bpe_2020_related_not_observation_data",
+      "evidence": "Mentions BPE 2020 but lacks required observation columns.",
+      "columns": [
+        "ze2020",
+        "libze2020",
+        "reg",
+        "year",
+        "bpe_evolution_commune_type_presence_total",
+        "bpe_evolution_communes_observed",
+        "bpe_evolution_facility_types_observed",
+        "source_geography_year",
+        "comparability_status"
+      ],
+      "years": [
+        "2019",
+        "2024"
+      ],
+      "row_sampled": 560
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/BPE20_table_passage.csv",
+      "kind": "table",
+      "size_bytes": 17324,
+      "classification": "documentation_or_nomenclature_only",
+      "evidence": "TYPEQU/LIB_EQUIP mapping only; no DEPCOM observations.",
+      "columns": [
+        "TYPEQU",
+        "LIB_EQUIP",
+        "SDOM",
+        "LIB_SDOM",
+        "DOM",
+        "LIB_DOM"
+      ],
+      "years": [],
+      "row_sampled": 188
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/BPE23.zip",
+      "kind": "zip",
+      "size_bytes": 147483044,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "BPE archive, but 2023 evidence.",
+      "members": [
+        "BPE23.csv"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/BPE24.zip",
+      "kind": "zip",
+      "size_bytes": 165084933,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "BPE archive, but 2024 evidence.",
+      "members": [
+        "BPE24.csv"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/DS_BPE_2023_CSV_FR.zip",
+      "kind": "zip",
+      "size_bytes": 13334421,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "BPE archive, but 2023 evidence.",
+      "members": [
+        "bpe23-nettoye.prj",
+        "bpe23-nettoye.cpg",
+        "bpe23-nettoye.dbf",
+        "bpe23-nettoye.shp",
+        "bpe23-nettoye.shx"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/DS_BPE_2023_CSV_FR__root_duplicate.zip",
+      "kind": "zip",
+      "size_bytes": 13448177,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "BPE archive, but 2024 evidence.",
+      "members": [
+        "DS_BPE_2024_metadata.csv",
+        "DS_BPE_2024_data.csv"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/DS_BPE_2024_CSV_FR.zip",
+      "kind": "zip",
+      "size_bytes": 13413554,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "BPE archive, but 2024 evidence.",
+      "members": [
+        "DS_BPE_2024_metadata.csv",
+        "DS_BPE_2024_data.csv"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/DS_BPE_EDUCATION_2024_CSV_FR.zip",
+      "kind": "zip",
+      "size_bytes": 10609825,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "BPE archive, but 2024 evidence.",
+      "members": [
+        "DS_BPE_EDUCATION_2024_metadata.csv",
+        "DS_BPE_EDUCATION_2024_data.csv"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/DS_BPE_EVOLUTION_2024_CSV_FR.zip",
+      "kind": "zip",
+      "size_bytes": 6616461,
+      "classification": "official_harmonized_bpe_evolution_not_bpe2020_raw",
+      "evidence": "Official BPE evolution archive; useful comparable layer, but not raw BPE 2020.",
+      "members": [
+        "DS_BPE_EVOLUTION_2024_metadata.csv",
+        "DS_BPE_EVOLUTION_2024_data.csv"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/DS_BPE_EVOLUTION_CSV_FR.zip",
+      "kind": "zip",
+      "size_bytes": 6767593,
+      "classification": "official_harmonized_bpe_evolution_not_bpe2020_raw",
+      "evidence": "Official BPE evolution archive; useful comparable layer, but not raw BPE 2020.",
+      "members": [
+        "DS_BPE_EVOLUTION_2024_metadata.csv",
+        "DS_BPE_EVOLUTION_2024_data.csv"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/DS_BPE_SPORT_CULTURE_2024_CSV_FR.zip",
+      "kind": "zip",
+      "size_bytes": 10224643,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "BPE archive, but 2024 evidence.",
+      "members": [
+        "DS_BPE_SPORT_CULTURE_2024_metadata.csv",
+        "DS_BPE_SPORT_CULTURE_2024_data.csv"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/bpe20_ensemble_csv.zip",
+      "kind": "zip",
+      "size_bytes": 44177,
+      "classification": "invalid_download_html_error",
+      "evidence": "Filename is BPE20, but file is HTML, not a ZIP archive.",
+      "members": []
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/bpe21-ensemble-csv.zip",
+      "kind": "zip",
+      "size_bytes": 6035385,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "BPE archive, but 2021 evidence.",
+      "members": [
+        "bpe21_ensemble.csv",
+        "Varmod_bpe21_ensemble.csv"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/data_gouv_bpe_2020_candidate.csv",
+      "kind": "table",
+      "size_bytes": 163163560,
+      "classification": "bpe_2020_related_not_observation_data",
+      "evidence": "Mentions BPE 2020 but lacks required observation columns.",
+      "columns": [
+        "Année",
+        "Région",
+        "Département",
+        "Commune",
+        "Type d'équipement",
+        "Coordonnées géo (commune)",
+        "Nombre",
+        "Code région",
+        "Code département",
+        "Code INSEE",
+        "Code d'équipement"
+      ],
+      "years": [
+        "2011",
+        "2012"
+      ],
+      "row_sampled": 5000
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/derived_article_tables/if113.xls",
+      "kind": "table",
+      "size_bytes": 29035520,
+      "classification": "bpe_derived_article_table_wrong_year",
+      "evidence": "Opaque XLS contains INSEE figure tables sourced from BPE 2016; not raw BPE 2020 observations."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/derived_article_tables/if125.xls",
+      "kind": "table",
+      "size_bytes": 659968,
+      "classification": "bpe_derived_article_table_wrong_year",
+      "evidence": "Opaque XLS contains INSEE figure tables sourced from BPE 2012/2017; not raw BPE 2020 observations."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/docs/BPE15_20_Liste_equipements_insee-fr.pdf",
+      "kind": "pdf",
+      "size_bytes": 461218,
+      "classification": "documentation_or_nomenclature_only",
+      "evidence": "BPE/equipment-related PDF documentation."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/docs/BPE15_20_Precautions_utilisation_insee-fr.pdf",
+      "kind": "pdf",
+      "size_bytes": 425054,
+      "classification": "documentation_or_nomenclature_only",
+      "evidence": "BPE 2020 methodological/documentation PDF; not data."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/docs/BPE20_Liste_equipements_insee-fr.pdf",
+      "kind": "pdf",
+      "size_bytes": 628499,
+      "classification": "documentation_or_nomenclature_only",
+      "evidence": "BPE 2020 equipment list; not row-level observations."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/docs/contenu_bpe1520.pdf",
+      "kind": "pdf",
+      "size_bytes": 531549,
+      "classification": "documentation_or_nomenclature_only",
+      "evidence": "BPE 2020 content/variable documentation; not row-level observations."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/docs/contenu_bpe20_enseignement.pdf",
+      "kind": "pdf",
+      "size_bytes": 464110,
+      "classification": "documentation_or_nomenclature_only",
+      "evidence": "BPE 2020 content/variable documentation; not row-level observations."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/docs/contenu_bpe20_enseignement_xy.pdf",
+      "kind": "pdf",
+      "size_bytes": 486639,
+      "classification": "documentation_or_nomenclature_only",
+      "evidence": "BPE 2020 content/variable documentation; not row-level observations."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/docs/contenu_bpe20_ensemble.pdf",
+      "kind": "pdf",
+      "size_bytes": 615361,
+      "classification": "documentation_or_nomenclature_only",
+      "evidence": "BPE 2020 content/variable documentation; not row-level observations."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/docs/contenu_bpe20_ensemble_xy.pdf",
+      "kind": "pdf",
+      "size_bytes": 636455,
+      "classification": "documentation_or_nomenclature_only",
+      "evidence": "BPE 2020 content/variable documentation; not row-level observations."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/docs/contenu_bpe20_sport_loisir.pdf",
+      "kind": "pdf",
+      "size_bytes": 436077,
+      "classification": "documentation_or_nomenclature_only",
+      "evidence": "BPE 2020 content/variable documentation; not row-level observations."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/docs/contenu_bpe20_sport_loisir_xy.pdf",
+      "kind": "pdf",
+      "size_bytes": 455506,
+      "classification": "documentation_or_nomenclature_only",
+      "evidence": "BPE 2020 content/variable documentation; not row-level observations."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/ds_bpe_evolution_com_2019_2024_geo_2025.zip",
+      "kind": "zip",
+      "size_bytes": 3462695,
+      "classification": "official_harmonized_bpe_evolution_not_bpe2020_raw",
+      "evidence": "Official BPE evolution archive; useful comparable layer, but not raw BPE 2020.",
+      "members": [
+        "ds_bpe_evolution_com_2019_2024_geo_2025.csv",
+        "DS_BPE_EVOLUTION_2024_metadata.csv"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/extracted_cache/BPE23-full.csv",
+      "kind": "table",
+      "size_bytes": 997034921,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "Has BPE-like columns but detected years=['2023'].",
+      "columns": [
+        "AN",
+        "NOMRS",
+        "CNOMRS",
+        "NUMVOIE",
+        "INDREP",
+        "TYPVOIE",
+        "LIBVOIE",
+        "CADR",
+        "LIBCOM",
+        "CODPOS",
+        "DEPCOM",
+        "DEP",
+        "REG",
+        "DOM",
+        "SDOM",
+        "TYPEQU",
+        "SIRET",
+        "STATUT_DIFFUSION",
+        "CANTINE",
+        "INTERNAT",
+        "RPI",
+        "EP",
+        "CL_PGE",
+        "SECT",
+        "ACCES_AIRE_PRATIQUE",
+        "ACCES_LIBRE",
+        "ACCES_SANITAIRE",
+        "ACCES_VESTIAIRE",
+        "CAPACITE_D_ACCUEIL",
+        "PRES_DOUCHE",
+        "PRES_SANITAIRE",
+        "SAISONNIER",
+        "COUVERT",
+        "ECLAIRE",
+        "CATEGORIE",
+        "MULTIPLEXE",
+        "ACCUEIL",
+        "ITINERANCE",
+        "MODE_GESTION",
+        "SSTYPHEB",
+        "TYPE",
+        "CAPACITE",
+        "INDIC_CAPA",
+        "NBEQUIDENT",
+        "INDIC_NBEQUIDENT",
+        "NBSALLES",
+        "INDIC_NBSALLES",
+        "NBLIEUX",
+        "INDIC_NBLIEUX",
+        "LAMBERT_X",
+        "LAMBERT_Y",
+        "LONGITUDE",
+        "LATITUDE",
+        "QUALITE_XY",
+        "EPSG",
+        "QUALITE_GEOLOC",
+        "TR_DIST_PRECISION",
+        "DCIRIS",
+        "QUALI_IRIS",
+        "IRISEE",
+        "QP2015",
+        "QUALI_QP2015",
+        "QP",
+        "QUALI_QP",
+        "QVA",
+        "QUALI_QVA",
+        "ZUS",
+        "QUALI_ZUS",
+        "EPCI",
+        "UU2020",
+        "BV2022",
+        "AAV2020",
+        "DENS3",
+        "DENS7",
+        "_infos_commune.nom_departement",
+        "_infos_commune.nom_epci"
+      ],
+      "years": [
+        "2023"
+      ],
+      "row_sampled": 5000
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/extracted_cache/BPE23.csv",
+      "kind": "table",
+      "size_bytes": 1276048989,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "Has BPE-like columns but detected years=['2023'].",
+      "columns": [
+        "AN",
+        "NOMRS",
+        "CNOMRS",
+        "NUMVOIE",
+        "INDREP",
+        "TYPVOIE",
+        "LIBVOIE",
+        "CADR",
+        "LIBCOM",
+        "CODPOS",
+        "DEPCOM",
+        "DEP",
+        "REG",
+        "DOM",
+        "SDOM",
+        "TYPEQU",
+        "SIRET",
+        "STATUT_DIFFUSION",
+        "CANTINE",
+        "INTERNAT",
+        "RPI",
+        "EP",
+        "CL_PGE",
+        "SECT",
+        "ACCES_AIRE_PRATIQUE",
+        "ACCES_LIBRE",
+        "ACCES_SANITAIRE",
+        "ACCES_VESTIAIRE",
+        "CAPACITE_D_ACCUEIL",
+        "PRES_DOUCHE",
+        "PRES_SANITAIRE",
+        "SAISONNIER",
+        "COUVERT",
+        "ECLAIRE",
+        "CATEGORIE",
+        "MULTIPLEXE",
+        "ACCUEIL",
+        "ITINERANCE",
+        "MODE_GESTION",
+        "SSTYPHEB",
+        "TYPE",
+        "CAPACITE",
+        "INDIC_CAPA",
+        "NBEQUIDENT",
+        "INDIC_NBEQUIDENT",
+        "NBSALLES",
+        "INDIC_NBSALLES",
+        "NBLIEUX",
+        "INDIC_NBLIEUX",
+        "LAMBERT_X",
+        "LAMBERT_Y",
+        "LONGITUDE",
+        "LATITUDE",
+        "QUALITE_XY",
+        "EPSG",
+        "QUALITE_GEOLOC",
+        "TR_DIST_PRECISION",
+        "DCIRIS",
+        "QUALI_IRIS",
+        "IRISEE",
+        "QP2015",
+        "QUALI_QP2015",
+        "QP",
+        "QUALI_QP",
+        "QVA",
+        "QUALI_QVA",
+        "ZUS",
+        "QUALI_ZUS",
+        "EPCI",
+        "UU2020",
+        "BV2022",
+        "AAV2020",
+        "DENS3",
+        "DENS7"
+      ],
+      "years": [
+        "2023"
+      ],
+      "row_sampled": 5000
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/parquet_cache/BPE24.parquet",
+      "kind": "table",
+      "size_bytes": 183528410,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "BPE24 parquet by filename."
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/regional_mirrors/bpe19_bfc.zip",
+      "kind": "zip",
+      "size_bytes": 4258482,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "BPE archive, but 2019 evidence.",
+      "members": [
+        "bpe19_bfc.cpg",
+        "bpe19_bfc.dbf",
+        "bpe19_bfc.prj",
+        "bpe19_bfc.qix",
+        "bpe19_bfc.shp",
+        "bpe19_bfc.shx"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/regional_mirrors/bpe_ens_xy_bfc.csv",
+      "kind": "table",
+      "size_bytes": 14971827,
+      "classification": "bpe_data_wrong_year_or_not_2020",
+      "evidence": "Has BPE-like columns but detected years=['2021'].",
+      "columns": [
+        "AAV2020",
+        "AN",
+        "BV2012",
+        "DEP",
+        "DEPCOM",
+        "DOM",
+        "EPCI",
+        "DCIRIS",
+        "LAMBERT_X",
+        "LAMBERT_Y",
+        "QP",
+        "QUALI_IRIS",
+        "QUALI_QP",
+        "QUALI_QVA",
+        "QUALI_ZFU",
+        "QUALI_ZUS",
+        "QUALITE_XY",
+        "QVA",
+        "REG",
+        "SDOM",
+        "TYPEQU",
+        "UU2020",
+        "ZFU",
+        "ZUS"
+      ],
+      "years": [
+        "2021"
+      ],
+      "row_sampled": 5000
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/regional_mirrors/bpe_ens_xy_bfc.zip",
+      "kind": "zip",
+      "size_bytes": 7043914,
+      "classification": "bpe_related_year_unclear",
+      "evidence": "BPE-related archive without confirmed 2020.",
+      "members": [
+        "bpe_ens_xy_bfc.dbf",
+        "bpe_ens_xy_bfc.prj",
+        "bpe_ens_xy_bfc.shp",
+        "bpe_ens_xy_bfc.shx"
+      ]
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/rejected/base_permanente_equipements_geolocalisee_pays_de_la_loire_2021_rejected.csv",
+      "kind": "table",
+      "size_bytes": 29937788,
+      "classification": "bpe_related_year_unclear",
+      "evidence": "BPE/equipment-related name or columns, but no confirmed 2020 observations.",
+      "columns": [
+        "Geo Point",
+        "Geo Shape",
+        "Code Officiel Région",
+        "Code Officiel Département",
+        "Code Officiel Commune / Arrondissement Municipal",
+        "Code Officiel IRIS",
+        "Année",
+        "Type",
+        "Qualité du géocodage",
+        "Description",
+        "Catégorie",
+        "Nom Officiel Région",
+        "Nom Officiel Département",
+        "Nom Officiel EPCI",
+        "Nom Officiel Commune / Arrondissement Municipal",
+        "Code Iso 3166-3 Zone",
+        "Code Officiel EPCI"
+      ],
+      "years": [
+        "2021"
+      ],
+      "row_sampled": 5000
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/third_party_mirrors/buildingref-france-bpe-all-geolocated-millesime.csv",
+      "kind": "table",
+      "size_bytes": 1033546247,
+      "classification": "bpe_related_year_unclear",
+      "evidence": "BPE/equipment-related name or columns, but no confirmed 2020 observations.",
+      "columns": [
+        "Geo Point",
+        "Geo Shape",
+        "Code Officiel Région",
+        "Code Officiel Département",
+        "Code Officiel Commune / Arrondissement Municipal",
+        "Code Officiel IRIS",
+        "Année",
+        "Type",
+        "Qualité du géocodage",
+        "Description",
+        "Catégorie",
+        "Nom Officiel Région",
+        "Nom Officiel Département",
+        "Nom Officiel EPCI",
+        "Nom Officiel Commune / Arrondissement Municipal",
+        "Code Iso 3166-3 Zone",
+        "Code Officiel EPCI"
+      ],
+      "years": [
+        "2016",
+        "2021"
+      ],
+      "row_sampled": 5000
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/third_party_mirrors/buildingref-france-bpe-all-geolocated.csv",
+      "kind": "table",
+      "size_bytes": 585372699,
+      "classification": "bpe_related_year_unclear",
+      "evidence": "BPE/equipment-related name or columns, but no confirmed 2020 observations.",
+      "columns": [
+        "Geo Point",
+        "Geo Shape",
+        "Code Officiel Région",
+        "Code Officiel Département",
+        "Code Officiel Commune / Arrondissement Municipal",
+        "Code Officiel IRIS",
+        "Année",
+        "Type",
+        "Qualité du géocodage",
+        "Description",
+        "Catégorie",
+        "Nom Officiel Région",
+        "Nom Officiel Département",
+        "Nom Officiel EPCI",
+        "Nom Officiel Commune / Arrondissement Municipal",
+        "Code Iso 3166-3 Zone",
+        "Code Officiel EPCI"
+      ],
+      "years": [
+        "2021"
+      ],
+      "row_sampled": 5000
+    },
+    {
+      "path": "data/raw/temporal_depth/bpe/third_party_mirrors/buildingref-france-bpe-all-geolocated.parquet",
+      "kind": "table",
+      "size_bytes": 129988763,
+      "classification": "bpe_related_year_unclear",
+      "evidence": "Parquet candidate by filename; not deeply read in this audit."
+    },
+    {
+      "path": "metadata/bpe_2020_source_candidates_v0.csv",
+      "kind": "table",
+      "size_bytes": 659994,
+      "classification": "bpe_2020_related_not_observation_data",
+      "evidence": "Mentions BPE 2020 but lacks required observation columns.",
+      "columns": [
+        "source_system",
+        "dataset_title",
+        "organization",
+        "dataset_page",
+        "resource_title",
+        "resource_format",
+        "resource_url",
+        "year_signal",
+        "coverage_signal",
+        "access_status",
+        "content_type",
+        "content_length",
+        "classification",
+        "usable_for_mosaic",
+        "notes"
+      ],
+      "years": [],
+      "row_sampled": 626
+    },
+    {
+      "path": "metadata/local_bpe_2020_file_audit_v0.csv",
+      "kind": "table",
+      "size_bytes": 13723,
+      "classification": "bpe_2020_related_not_observation_data",
+      "evidence": "Mentions BPE 2020 but lacks required observation columns.",
+      "columns": [
+        "path",
+        "kind",
+        "size_bytes",
+        "classification",
+        "evidence",
+        "columns",
+        "years",
+        "members",
+        "error"
+      ],
+      "years": [],
+      "row_sampled": 49
+    }
+  ]
+}

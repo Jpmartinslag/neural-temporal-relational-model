@@ -36,6 +36,7 @@ DYNAMIC_FEATURES = [
     "side_stocks_et_per_1000_pop",
     "bpe_facilities_total",
     "bpe_facilities_per_1000_pop",
+    "bpe_evolution_commune_type_presence_total",
     "flores_presential_unit_loc_total",
     "flores_productive_unit_loc_total",
 ]
