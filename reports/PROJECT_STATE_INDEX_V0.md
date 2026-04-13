@@ -156,6 +156,7 @@ Arquivos principais:
 - [ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md)
 - [SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md)
 - [SIDE_MODEL_DECISION_MATRIX_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md)
+- [SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md)
 
 Leitura:
 
@@ -178,8 +179,10 @@ Leitura:
 - no teste do pacote longo, ridge autoregressivo ainda e melhor: WMAPE `6.406`
 - matriz de decisao escolhe `segmented_by_size_volatility_group` como candidato da proxima etapa, com persistencia como referencia conservadora
 - `rich_lags_only` tem melhor teste numerico, mas vem de janela curta diferente e nao decide o baseline principal
+- backtest rolante corrige a leitura: segmentacao nao supera persistencia em media de teste rolante
+- no backtest rolante, ridge autoregressivo tem melhor WMAPE medio de teste (`7.554`) contra persistencia (`7.680`), mas ainda e instavel por fold
 - leitura atual: a dinamica local e forte; features externas amplas e rasas ainda nao adicionam sinal robusto sobre `y(t+1)=y(t)`
-- segmentacao territorial e promissora como camada de robustez, mas ainda nao justifica arquitetura complexa
+- nenhuma regra simples e estavel o suficiente para justificar salto imediato para STGNN
 
 ### 7. Inventario De Datasets Futuros
 
@@ -285,12 +288,12 @@ Objetivo:
 
 - manter persistencia local como baseline principal
 - avaliar erro por perfil de zona, nao apenas media global
-- validar se a regra segmentada se mantem em uma janela temporal adicional
+- investigar instabilidade temporal por ano/fold antes de escolher backbone
 - usar grafos apenas com operadores mais seletivos, porque media simples de vizinhos falhou
 
 Artefatos esperados:
 
-- backtest temporal adicional da regra segmentada
+- diagnostico de anos/folds dificeis, especialmente choques 2021 e 2024
 - criterio minimo para avancar para STGNN/grafo dinamico
 
 ## Regra De Higiene

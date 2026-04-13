@@ -1,0 +1,726 @@
+{
+  "fold_validation_years": [
+    2020,
+    2021,
+    2022,
+    2023
+  ],
+  "folds": [
+    {
+      "validation_year": 2020,
+      "test_year": 2021,
+      "train_target_years": [
+        2017,
+        2018,
+        2019
+      ],
+      "ridge": {
+        "selected_ridge_alpha": 10.0,
+        "ridge_alpha_selection": [
+          {
+            "alpha": 0.1,
+            "validation_wmape": 16.849950364568578,
+            "validation_mae": 570.6951813851643
+          },
+          {
+            "alpha": 1.0,
+            "validation_wmape": 14.940984861098656,
+            "validation_mae": 506.03995150676565
+          },
+          {
+            "alpha": 10.0,
+            "validation_wmape": 5.93678265154646,
+            "validation_mae": 201.07437582088994
+          },
+          {
+            "alpha": 100.0,
+            "validation_wmape": 50.2135648262014,
+            "validation_mae": 1700.6957804898218
+          }
+        ]
+      },
+      "spatial": {
+        "selected_spatial_alpha": 1.0,
+        "spatial_alpha_selection": [
+          {
+            "alpha": 0.0,
+            "validation_wmape": 89.68499083535478,
+            "validation_mae": 3037.56337585034
+          },
+          {
+            "alpha": 0.05,
+            "validation_wmape": 85.19809983309665,
+            "validation_mae": 2885.5957427721087
+          },
+          {
+            "alpha": 0.1,
+            "validation_wmape": 80.71253746964805,
+            "validation_mae": 2733.6731096938774
+          },
+          {
+            "alpha": 0.15000000000000002,
+            "validation_wmape": 76.22790421605482,
+            "validation_mae": 2581.7819448696146
+          },
+          {
+            "alpha": 0.2,
+            "validation_wmape": 71.74327096246157,
+            "validation_mae": 2429.8907800453517
+          },
+          {
+            "alpha": 0.25,
+            "validation_wmape": 67.25935826695284,
+            "validation_mae": 2278.024019982993
+          },
+          {
+            "alpha": 0.30000000000000004,
+            "validation_wmape": 62.775506496680556,
+            "validation_mae": 2126.159323412698
+          },
+          {
+            "alpha": 0.35000000000000003,
+            "validation_wmape": 58.295480965156834,
+            "validation_mae": 1974.424218679138
+          },
+          {
+            "alpha": 0.4,
+            "validation_wmape": 53.820306019763166,
+            "validation_mae": 1822.8533996598637
+          },
+          {
+            "alpha": 0.45,
+            "validation_wmape": 49.34846075570358,
+            "validation_mae": 1671.3953544501135
+          },
+          {
+            "alpha": 0.5,
+            "validation_wmape": 44.88016997705779,
+            "validation_mae": 1520.0576969954648
+          },
+          {
+            "alpha": 0.55,
+            "validation_wmape": 40.417014492858414,
+            "validation_mae": 1368.8939681122447
+          },
+          {
+            "alpha": 0.6000000000000001,
+            "validation_wmape": 35.959888799392395,
+            "validation_mae": 1217.9344637188208
+          },
+          {
+            "alpha": 0.65,
+            "validation_wmape": 31.52233510379726,
+            "validation_mae": 1067.6378482142854
+          },
+          {
+            "alpha": 0.7000000000000001,
+            "validation_wmape": 27.094087436786086,
+            "validation_mae": 917.6564209183671
+          },
+          {
+            "alpha": 0.75,
+            "validation_wmape": 22.676649584669818,
+            "validation_mae": 768.0411139455782
+          },
+          {
+            "alpha": 0.8,
+            "validation_wmape": 18.284261570317504,
+            "validation_mae": 619.2742261904762
+          },
+          {
+            "alpha": 0.8500000000000001,
+            "validation_wmape": 13.912210491938307,
+            "validation_mae": 471.19613520408143
+          },
+          {
+            "alpha": 0.9,
+            "validation_wmape": 9.621826060893737,
+            "validation_mae": 325.88403231292517
+          },
+          {
+            "alpha": 0.9500000000000001,
+            "validation_wmape": 5.705890936428747,
+            "validation_mae": 193.25424659863936
+          },
+          {
+            "alpha": 1.0,
+            "validation_wmape": 3.96366700093532,
+            "validation_mae": 134.24642857142857
+          }
+        ]
+      },
+      "segmentation": {
+        "size_group": {
+          "large": "pred_persistence",
+          "mid_high": "pred_ridge_autoregressive_fold",
+          "mid_low": "pred_ridge_autoregressive_fold",
+          "small": "pred_ridge_autoregressive_fold"
+        },
+        "volatility_group": {
+          "high_vol": "pred_persistence",
+          "low_vol": "pred_ridge_autoregressive_fold",
+          "mid_high_vol": "pred_ridge_autoregressive_fold",
+          "mid_low_vol": "pred_ridge_autoregressive_fold"
+        },
+        "size_volatility_group": {
+          "large__high_vol": "pred_persistence",
+          "large__low_vol": "pred_persistence",
+          "large__mid_high_vol": "pred_ridge_autoregressive_fold",
+          "large__mid_low_vol": "pred_ridge_autoregressive_fold",
+          "mid_high__high_vol": "pred_ridge_autoregressive_fold",
+          "mid_high__low_vol": "pred_ridge_autoregressive_fold",
+          "mid_high__mid_high_vol": "pred_persistence",
+          "mid_high__mid_low_vol": "pred_ridge_autoregressive_fold",
+          "mid_low__high_vol": "pred_persistence",
+          "mid_low__low_vol": "pred_ridge_autoregressive_fold",
+          "mid_low__mid_high_vol": "pred_ridge_autoregressive_fold",
+          "mid_low__mid_low_vol": "pred_ridge_autoregressive_fold",
+          "small__high_vol": "pred_persistence",
+          "small__low_vol": "pred_delta",
+          "small__mid_high_vol": "pred_ridge_autoregressive_fold",
+          "small__mid_low_vol": "pred_ridge_autoregressive_fold"
+        }
+      }
+    },
+    {
+      "validation_year": 2021,
+      "test_year": 2022,
+      "train_target_years": [
+        2017,
+        2018,
+        2019,
+        2020
+      ],
+      "ridge": {
+        "selected_ridge_alpha": 0.1,
+        "ridge_alpha_selection": [
+          {
+            "alpha": 0.1,
+            "validation_wmape": 7.436053337255884,
+            "validation_mae": 293.9349720483853
+          },
+          {
+            "alpha": 1.0,
+            "validation_wmape": 7.658832926700857,
+            "validation_mae": 302.7410832241053
+          },
+          {
+            "alpha": 10.0,
+            "validation_wmape": 11.026001576535217,
+            "validation_mae": 435.83972817499
+          },
+          {
+            "alpha": 100.0,
+            "validation_wmape": 49.854185326144076,
+            "validation_mae": 1970.6540426380109
+          }
+        ]
+      },
+      "spatial": {
+        "selected_spatial_alpha": 0.9500000000000001,
+        "spatial_alpha_selection": [
+          {
+            "alpha": 0.0,
+            "validation_wmape": 81.92194746324513,
+            "validation_mae": 3238.2399971655327
+          },
+          {
+            "alpha": 0.05,
+            "validation_wmape": 78.03267977757923,
+            "validation_mae": 3084.503635062358
+          },
+          {
+            "alpha": 0.1,
+            "validation_wmape": 74.14617012225013,
+            "validation_mae": 2930.876293367347
+          },
+          {
+            "alpha": 0.15000000000000002,
+            "validation_wmape": 70.26110653547579,
+            "validation_mae": 2777.3061123866214
+          },
+          {
+            "alpha": 0.2,
+            "validation_wmape": 66.38021264965755,
+            "validation_mae": 2623.9007528344673
+          },
+          {
+            "alpha": 0.25,
+            "validation_wmape": 62.50852327705496,
+            "validation_mae": 2470.8592325680274
+          },
+          {
+            "alpha": 0.30000000000000004,
+            "validation_wmape": 58.64980319533516,
+            "validation_mae": 2318.3303670634923
+          },
+          {
+            "alpha": 0.35000000000000003,
+            "validation_wmape": 54.80826046162617,
+            "validation_mae": 2166.4804939058954
+          },
+          {
+            "alpha": 0.4,
+            "validation_wmape": 50.97271252008267,
+            "validation_mae": 2014.8675850340137
+          },
+          {
+            "alpha": 0.45,
+            "validation_wmape": 47.14096271080227,
+            "validation_mae": 1863.4048100907032
+          },
+          {
+            "alpha": 0.5,
+            "validation_wmape": 43.319665872638694,
+            "validation_mae": 1712.3552239229025
+          },
+          {
+            "alpha": 0.55,
+            "validation_wmape": 39.53479915865101,
+            "validation_mae": 1562.7456607142853
+          },
+          {
+            "alpha": 0.6000000000000001,
+            "validation_wmape": 35.79521862817218,
+            "validation_mae": 1414.9261859410428
+          },
+          {
+            "alpha": 0.65,
+            "validation_wmape": 32.10348528171356,
+            "validation_mae": 1268.9980317460315
+          },
+          {
+            "alpha": 0.7000000000000001,
+            "validation_wmape": 28.477009486946294,
+            "validation_mae": 1125.6494013605443
+          },
+          {
+            "alpha": 0.75,
+            "validation_wmape": 24.961652235739596,
+            "validation_mae": 986.6931044501132
+          },
+          {
+            "alpha": 0.8,
+            "validation_wmape": 21.618814828850297,
+            "validation_mae": 854.5562335600906
+          },
+          {
+            "alpha": 0.8500000000000001,
+            "validation_wmape": 18.47164045109439,
+            "validation_mae": 730.1536007653059
+          },
+          {
+            "alpha": 0.9,
+            "validation_wmape": 15.83496631383004,
+            "validation_mae": 625.9302037981859
+          },
+          {
+            "alpha": 0.9500000000000001,
+            "validation_wmape": 14.274123242733028,
+            "validation_mae": 564.2326414399092
+          },
+          {
+            "alpha": 1.0,
+            "validation_wmape": 14.316937027125192,
+            "validation_mae": 565.925
+          }
+        ]
+      },
+      "segmentation": {
+        "size_group": {
+          "large": "pred_ridge_autoregressive_fold",
+          "mid_high": "pred_ridge_autoregressive_fold",
+          "mid_low": "pred_ridge_autoregressive_fold",
+          "small": "pred_ridge_autoregressive_fold"
+        },
+        "volatility_group": {
+          "high_vol": "pred_ridge_autoregressive_fold",
+          "low_vol": "pred_ridge_autoregressive_fold",
+          "mid_high_vol": "pred_ridge_autoregressive_fold",
+          "mid_low_vol": "pred_ridge_autoregressive_fold"
+        },
+        "size_volatility_group": {
+          "large__high_vol": "pred_ridge_autoregressive_fold",
+          "large__low_vol": "pred_ridge_autoregressive_fold",
+          "large__mid_high_vol": "pred_ridge_autoregressive_fold",
+          "large__mid_low_vol": "pred_ridge_autoregressive_fold",
+          "mid_high__high_vol": "pred_ridge_autoregressive_fold",
+          "mid_high__low_vol": "pred_ridge_autoregressive_fold",
+          "mid_high__mid_high_vol": "pred_ridge_autoregressive_fold",
+          "mid_high__mid_low_vol": "pred_ridge_autoregressive_fold",
+          "mid_low__high_vol": "pred_ridge_autoregressive_fold",
+          "mid_low__low_vol": "pred_ridge_autoregressive_fold",
+          "mid_low__mid_high_vol": "pred_ridge_autoregressive_fold",
+          "mid_low__mid_low_vol": "pred_ridge_autoregressive_fold",
+          "small__high_vol": "pred_ridge_autoregressive_fold",
+          "small__low_vol": "pred_spatial_blend_fold",
+          "small__mid_high_vol": "pred_spatial_blend_fold",
+          "small__mid_low_vol": "pred_ridge_autoregressive_fold"
+        }
+      }
+    },
+    {
+      "validation_year": 2022,
+      "test_year": 2023,
+      "train_target_years": [
+        2017,
+        2018,
+        2019,
+        2020,
+        2021
+      ],
+      "ridge": {
+        "selected_ridge_alpha": 10.0,
+        "ridge_alpha_selection": [
+          {
+            "alpha": 0.1,
+            "validation_wmape": 11.112142661832939,
+            "validation_mae": 444.15551709136594
+          },
+          {
+            "alpha": 1.0,
+            "validation_wmape": 10.319797707323453,
+            "validation_mae": 412.48526287534906
+          },
+          {
+            "alpha": 10.0,
+            "validation_wmape": 4.850262166082046,
+            "validation_mae": 193.86636456748968
+          },
+          {
+            "alpha": 100.0,
+            "validation_wmape": 35.766669745883014,
+            "validation_mae": 1429.6040087914432
+          }
+        ]
+      },
+      "spatial": {
+        "selected_spatial_alpha": 1.0,
+        "spatial_alpha_selection": [
+          {
+            "alpha": 0.0,
+            "validation_wmape": 88.54193872959823,
+            "validation_mae": 3539.0465887188207
+          },
+          {
+            "alpha": 0.05,
+            "validation_wmape": 84.11430568057756,
+            "validation_mae": 3362.072830711451
+          },
+          {
+            "alpha": 0.1,
+            "validation_wmape": 79.68789228758712,
+            "validation_mae": 3185.147822704082
+          },
+          {
+            "alpha": 0.15000000000000002,
+            "validation_wmape": 75.26156154528,
+            "validation_mae": 3008.2261182681405
+          },
+          {
+            "alpha": 0.2,
+            "validation_wmape": 70.8352308029729,
+            "validation_mae": 2831.3044138321993
+          },
+          {
+            "alpha": 0.25,
+            "validation_wmape": 66.40930852736354,
+            "validation_mae": 2654.399035926871
+          },
+          {
+            "alpha": 0.30000000000000004,
+            "validation_wmape": 61.98346283925995,
+            "validation_mae": 2477.4967192460313
+          },
+          {
+            "alpha": 0.35000000000000003,
+            "validation_wmape": 57.55761715115638,
+            "validation_mae": 2300.594402565192
+          },
+          {
+            "alpha": 0.4,
+            "validation_wmape": 53.133379800675065,
+            "validation_mae": 2123.75637159864
+          },
+          {
+            "alpha": 0.45,
+            "validation_wmape": 48.70967856273447,
+            "validation_mae": 1946.9397692035147
+          },
+          {
+            "alpha": 0.5,
+            "validation_wmape": 44.2863857914916,
+            "validation_mae": 1770.1394933390025
+          },
+          {
+            "alpha": 0.55,
+            "validation_wmape": 39.8647498632913,
+            "validation_mae": 1593.4054419642857
+          },
+          {
+            "alpha": 0.6000000000000001,
+            "validation_wmape": 35.44518179774816,
+            "validation_mae": 1416.7540436507934
+          },
+          {
+            "alpha": 0.65,
+            "validation_wmape": 31.02561373220503,
+            "validation_mae": 1240.1026453373015
+          },
+          {
+            "alpha": 0.7000000000000001,
+            "validation_wmape": 26.613024064900586,
+            "validation_mae": 1063.7301755952378
+          },
+          {
+            "alpha": 0.75,
+            "validation_wmape": 22.202842436424998,
+            "validation_mae": 887.4539558531746
+          },
+          {
+            "alpha": 0.8,
+            "validation_wmape": 17.80646289766502,
+            "validation_mae": 711.7294095804988
+          },
+          {
+            "alpha": 0.8500000000000001,
+            "validation_wmape": 13.43951721385035,
+            "validation_mae": 537.1813428996595
+          },
+          {
+            "alpha": 0.9,
+            "validation_wmape": 9.1345326092864,
+            "validation_mae": 365.1098782596372
+          },
+          {
+            "alpha": 0.9500000000000001,
+            "validation_wmape": 5.215870247731075,
+            "validation_mae": 208.4798240504533
+          },
+          {
+            "alpha": 1.0,
+            "validation_wmape": 3.3687525018585234,
+            "validation_mae": 134.65
+          }
+        ]
+      },
+      "segmentation": {
+        "size_group": {
+          "large": "pred_persistence",
+          "mid_high": "pred_persistence",
+          "mid_low": "pred_persistence",
+          "small": "pred_ridge_autoregressive_fold"
+        },
+        "volatility_group": {
+          "high_vol": "pred_persistence",
+          "low_vol": "pred_ridge_autoregressive_fold",
+          "mid_high_vol": "pred_persistence",
+          "mid_low_vol": "pred_persistence"
+        },
+        "size_volatility_group": {
+          "large__high_vol": "pred_persistence",
+          "large__low_vol": "pred_ridge_autoregressive_fold",
+          "large__mid_high_vol": "pred_persistence",
+          "large__mid_low_vol": "pred_persistence",
+          "mid_high__high_vol": "pred_persistence",
+          "mid_high__low_vol": "pred_ridge_autoregressive_fold",
+          "mid_high__mid_high_vol": "pred_persistence",
+          "mid_high__mid_low_vol": "pred_persistence",
+          "mid_low__high_vol": "pred_persistence",
+          "mid_low__low_vol": "pred_ridge_autoregressive_fold",
+          "mid_low__mid_high_vol": "pred_persistence",
+          "mid_low__mid_low_vol": "pred_persistence",
+          "small__high_vol": "pred_persistence",
+          "small__low_vol": "pred_ridge_autoregressive_fold",
+          "small__mid_high_vol": "pred_persistence",
+          "small__mid_low_vol": "pred_ridge_autoregressive_fold"
+        }
+      }
+    },
+    {
+      "validation_year": 2023,
+      "test_year": 2024,
+      "train_target_years": [
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022
+      ],
+      "ridge": {
+        "selected_ridge_alpha": 10.0,
+        "ridge_alpha_selection": [
+          {
+            "alpha": 0.1,
+            "validation_wmape": 17.83617530936582,
+            "validation_mae": 703.1956706155748
+          },
+          {
+            "alpha": 1.0,
+            "validation_wmape": 16.21248123644114,
+            "validation_mae": 639.181125867001
+          },
+          {
+            "alpha": 10.0,
+            "validation_wmape": 10.311432349116204,
+            "validation_mae": 406.5307982219937
+          },
+          {
+            "alpha": 100.0,
+            "validation_wmape": 26.443335950287782,
+            "validation_mae": 1042.5351306740836
+          }
+        ]
+      },
+      "spatial": {
+        "selected_spatial_alpha": 1.0,
+        "spatial_alpha_selection": [
+          {
+            "alpha": 0.0,
+            "validation_wmape": 89.55877285843941,
+            "validation_mae": 3530.877009637188
+          },
+          {
+            "alpha": 0.05,
+            "validation_wmape": 85.0454372119655,
+            "validation_mae": 3352.937623441043
+          },
+          {
+            "alpha": 0.1,
+            "validation_wmape": 80.53210156549162,
+            "validation_mae": 3174.998237244898
+          },
+          {
+            "alpha": 0.15000000000000002,
+            "validation_wmape": 76.01876591901771,
+            "validation_mae": 2997.058851048753
+          },
+          {
+            "alpha": 0.2,
+            "validation_wmape": 71.5054302725438,
+            "validation_mae": 2819.1194648526075
+          },
+          {
+            "alpha": 0.25,
+            "validation_wmape": 66.99209462606991,
+            "validation_mae": 2641.1800786564627
+          },
+          {
+            "alpha": 0.30000000000000004,
+            "validation_wmape": 62.48143130615974,
+            "validation_mae": 2463.3460496031744
+          },
+          {
+            "alpha": 0.35000000000000003,
+            "validation_wmape": 57.976497635576926,
+            "validation_mae": 2285.7379134070293
+          },
+          {
+            "alpha": 0.4,
+            "validation_wmape": 53.47156396499412,
+            "validation_mae": 2108.129777210884
+          },
+          {
+            "alpha": 0.45,
+            "validation_wmape": 48.96771633597901,
+            "validation_mae": 1930.5644584750564
+          },
+          {
+            "alpha": 0.5,
+            "validation_wmape": 44.465813315220466,
+            "validation_mae": 1753.0758064058957
+          },
+          {
+            "alpha": 0.55,
+            "validation_wmape": 39.963910294461904,
+            "validation_mae": 1575.5871543367343
+          },
+          {
+            "alpha": 0.6000000000000001,
+            "validation_wmape": 35.46259738552567,
+            "validation_mae": 1398.1217675736957
+          },
+          {
+            "alpha": 0.65,
+            "validation_wmape": 30.96247764128278,
+            "validation_mae": 1220.703421626984
+          },
+          {
+            "alpha": 0.7000000000000001,
+            "validation_wmape": 26.468859803450485,
+            "validation_mae": 1043.5414149659862
+          },
+          {
+            "alpha": 0.75,
+            "validation_wmape": 21.980575672775284,
+            "validation_mae": 866.5896910430838
+          },
+          {
+            "alpha": 0.8,
+            "validation_wmape": 17.654702221364087,
+            "validation_mae": 696.0410487528344
+          },
+          {
+            "alpha": 0.8500000000000001,
+            "validation_wmape": 13.39785101807445,
+            "validation_mae": 528.2136258503397
+          },
+          {
+            "alpha": 0.9,
+            "validation_wmape": 9.329540649854316,
+            "validation_mae": 367.8194725056689
+          },
+          {
+            "alpha": 0.9500000000000001,
+            "validation_wmape": 5.637273040785968,
+            "validation_mae": 222.25089895124697
+          },
+          {
+            "alpha": 1.0,
+            "validation_wmape": 3.5657895094423715,
+            "validation_mae": 140.58214285714286
+          }
+        ]
+      },
+      "segmentation": {
+        "size_group": {
+          "large": "pred_persistence",
+          "mid_high": "pred_persistence",
+          "mid_low": "pred_persistence",
+          "small": "pred_persistence"
+        },
+        "volatility_group": {
+          "high_vol": "pred_persistence",
+          "low_vol": "pred_persistence",
+          "mid_high_vol": "pred_persistence",
+          "mid_low_vol": "pred_persistence"
+        },
+        "size_volatility_group": {
+          "large__high_vol": "pred_persistence",
+          "large__low_vol": "pred_persistence",
+          "large__mid_high_vol": "pred_persistence",
+          "large__mid_low_vol": "pred_persistence",
+          "mid_high__high_vol": "pred_persistence",
+          "mid_high__low_vol": "pred_persistence",
+          "mid_high__mid_high_vol": "pred_persistence",
+          "mid_high__mid_low_vol": "pred_persistence",
+          "mid_low__high_vol": "pred_persistence",
+          "mid_low__low_vol": "pred_persistence",
+          "mid_low__mid_high_vol": "pred_persistence",
+          "mid_low__mid_low_vol": "pred_persistence",
+          "small__high_vol": "pred_moving_average_3",
+          "small__low_vol": "pred_persistence",
+          "small__mid_high_vol": "pred_persistence",
+          "small__mid_low_vol": "pred_persistence"
+        }
+      }
+    }
+  ],
+  "rows": 2240,
+  "best_test_mean_model": "ridge_autoregressive",
+  "best_test_mean_wmape": 7.553505004935383,
+  "persistence_test_wmape_mean": 7.680334317157283,
+  "segmented_size_volatility_test_wmape_mean": 8.70409529543658,
+  "main_conclusion": "a regra segmentada nao supera a persistencia no backtest rolante"
+}

@@ -1855,3 +1855,33 @@ Decisao:
 - nao avancar para STGNN ainda
 - proximo passo metodologico: backtest temporal adicional da regra segmentada
 - se a regra segmentada permanecer estavel, ela vira baseline forte para comparar contra modelos grafo-temporais
+
+### 2026-04-13 - Backtest rolante da regra segmentada
+
+O que foi feito:
+
+- testada validacao temporal rolante
+- regra escolhida no ano de validacao e aplicada ao ano seguinte
+- folds de validacao: `2020`, `2021`, `2022`, `2023`
+- candidatos por fold: persistencia, delta, media movel, ridge autoregressivo e blend espacial
+
+Artefatos:
+
+- [backtest_segmented_side_decision_rule_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/backtest_segmented_side_decision_rule_core_v0.py)
+- [SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md)
+- [segmented_decision_rule_backtest_metrics_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/segmented_decision_rule_backtest_metrics_core_v0.csv)
+- [segmented_decision_rule_backtest_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/segmented_decision_rule_backtest_predictions_core_v0.csv)
+
+Resultado:
+
+- melhor WMAPE medio no teste rolante: `ridge_autoregressive`, WMAPE `7.554`
+- persistencia no teste rolante: WMAPE medio `7.680`
+- segmentacao tamanho+volatilidade no teste rolante: WMAPE medio `8.704`
+- a regra segmentada melhora a validacao media, mas nao generaliza bem para o ano seguinte
+
+Decisao:
+
+- a matriz de decisao fixa foi util, mas nao e suficiente
+- segmentacao nao deve ser promovida a baseline principal
+- persistencia continua baseline conservador
+- ridge autoregressivo vira desafiante principal, mas precisa de diagnostico de instabilidade por fold antes de qualquer STGNN
