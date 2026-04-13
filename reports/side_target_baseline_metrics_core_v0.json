@@ -1,0 +1,331 @@
+{
+  "target_column": "side_establishment_creations_official",
+  "node_count": 280,
+  "row_count": 1400,
+  "sample_count": 5,
+  "sample_years": [
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "split_counts": {
+    "train": 3,
+    "validation": 1,
+    "test": 1
+  },
+  "models": {
+    "persistence": "y_hat(t+1) = y(t)",
+    "delta": "y_hat(t+1) = max(0, y(t) + y(t) - y(t-1))",
+    "moving_average_3": "y_hat(t+1) = mean(y(t), y(t-1), y(t-2))",
+    "ridge_autoregressive": "ridge regression on log lags and recent growth rates, trained only on train split",
+    "spatial_neighbor_average": "y_hat_i(t+1) = sum_j A_norm[i,j] * y_j(t)",
+    "spatial_blend": "alpha * local persistence + (1-alpha) * neighbor average"
+  },
+  "ridge_metadata": {
+    "selected_ridge_alpha": 10.0,
+    "ridge_alpha_grid": [
+      0.01,
+      0.1,
+      1.0,
+      10.0,
+      100.0
+    ],
+    "ridge_alpha_selection": [
+      {
+        "alpha": 0.01,
+        "validation_wmape": 18.749996579538593,
+        "validation_mae": 739.2233026474539
+      },
+      {
+        "alpha": 0.1,
+        "validation_wmape": 18.279796180765505,
+        "validation_mae": 720.6855343757252
+      },
+      {
+        "alpha": 1.0,
+        "validation_wmape": 17.076132063270965,
+        "validation_mae": 673.2307756274737
+      },
+      {
+        "alpha": 10.0,
+        "validation_wmape": 7.302223971496076,
+        "validation_mae": 287.8920056322257
+      },
+      {
+        "alpha": 100.0,
+        "validation_wmape": 49.905071244839085,
+        "validation_mae": 1967.5199100955922
+      }
+    ],
+    "used_features": [
+      "log_y_t_minus_0",
+      "log_y_t_minus_1",
+      "log_y_t_minus_2",
+      "log_y_t_minus_3",
+      "log_y_t_minus_4",
+      "growth_1y",
+      "growth_2y",
+      "growth_3y"
+    ],
+    "scaling_scope": "train_split_only"
+  },
+  "spatial_metadata": {
+    "selected_spatial_alpha": 1.0,
+    "spatial_alpha_grid": [
+      0.0,
+      0.05,
+      0.1,
+      0.15000000000000002,
+      0.2,
+      0.25,
+      0.30000000000000004,
+      0.35000000000000003,
+      0.4,
+      0.45,
+      0.5,
+      0.55,
+      0.6000000000000001,
+      0.65,
+      0.7000000000000001,
+      0.75,
+      0.8,
+      0.8500000000000001,
+      0.9,
+      0.9500000000000001,
+      1.0
+    ],
+    "spatial_alpha_selection": [
+      {
+        "alpha": 0.0,
+        "validation_wmape": 89.55877467840546,
+        "validation_mae": 3530.877081389805
+      },
+      {
+        "alpha": 0.05,
+        "validation_wmape": 85.04543894093327,
+        "validation_mae": 3352.937691606029
+      },
+      {
+        "alpha": 0.1,
+        "validation_wmape": 80.53210320346106,
+        "validation_mae": 3174.9983018222533
+      },
+      {
+        "alpha": 0.15000000000000002,
+        "validation_wmape": 76.01876746598886,
+        "validation_mae": 2997.058912038477
+      },
+      {
+        "alpha": 0.2,
+        "validation_wmape": 71.50543172851665,
+        "validation_mae": 2819.119522254701
+      },
+      {
+        "alpha": 0.25,
+        "validation_wmape": 66.99209599104445,
+        "validation_mae": 2641.1801324709254
+      },
+      {
+        "alpha": 0.30000000000000004,
+        "validation_wmape": 62.481432610374654,
+        "validation_mae": 2463.346101022173
+      },
+      {
+        "alpha": 0.35000000000000003,
+        "validation_wmape": 57.97649884663364,
+        "validation_mae": 2285.737961153243
+      },
+      {
+        "alpha": 0.4,
+        "validation_wmape": 53.471565082892624,
+        "validation_mae": 2108.1298212843126
+      },
+      {
+        "alpha": 0.45,
+        "validation_wmape": 48.96771736214063,
+        "validation_mae": 1930.564498931735
+      },
+      {
+        "alpha": 0.5,
+        "validation_wmape": 44.46581424809467,
+        "validation_mae": 1753.0758431846941
+      },
+      {
+        "alpha": 0.55,
+        "validation_wmape": 39.96391113404869,
+        "validation_mae": 1575.587187437653
+      },
+      {
+        "alpha": 0.6000000000000001,
+        "validation_wmape": 35.462598125595626,
+        "validation_mae": 1398.121796751139
+      },
+      {
+        "alpha": 0.65,
+        "validation_wmape": 30.962478288844004,
+        "validation_mae": 1220.703447157247
+      },
+      {
+        "alpha": 0.7000000000000001,
+        "validation_wmape": 26.468860358502948,
+        "validation_mae": 1043.5414368490685
+      },
+      {
+        "alpha": 0.75,
+        "validation_wmape": 21.98057613867109,
+        "validation_mae": 866.5897094111424
+      },
+      {
+        "alpha": 0.8,
+        "validation_wmape": 17.65470259275731,
+        "validation_mae": 696.0410633951051
+      },
+      {
+        "alpha": 0.8500000000000001,
+        "validation_wmape": 13.397851290635215,
+        "validation_mae": 528.213636596116
+      },
+      {
+        "alpha": 0.9,
+        "validation_wmape": 9.329540837030478,
+        "validation_mae": 367.8194798851359
+      },
+      {
+        "alpha": 0.9500000000000001,
+        "validation_wmape": 5.637273136009194,
+        "validation_mae": 222.25090270544646
+      },
+      {
+        "alpha": 1.0,
+        "validation_wmape": 3.5657895094423715,
+        "validation_mae": 140.58214285714286
+      }
+    ],
+    "alpha_selection_rule": "minimum validation WMAPE, then validation MAE, then lower alpha"
+  },
+  "metrics": {
+    "persistence": {
+      "train": {
+        "mae": 278.2738095238095,
+        "rmse": 768.7697066773391,
+        "mape": 8.790179401025105,
+        "wmape": 7.363825925770745
+      },
+      "validation": {
+        "mae": 140.58214285714286,
+        "rmse": 470.6559442492391,
+        "mape": 4.088999447238438,
+        "wmape": 3.5657895094423715
+      },
+      "test": {
+        "mae": 412.3071428571429,
+        "rmse": 1319.3677923265261,
+        "mape": 9.878610946282853,
+        "wmape": 9.469858230203045
+      }
+    },
+    "delta": {
+      "train": {
+        "mae": 441.00357142857143,
+        "rmse": 1125.3743456544328,
+        "mape": 12.736359632662014,
+        "wmape": 11.670065315167024
+      },
+      "validation": {
+        "mae": 195.66785714285714,
+        "rmse": 495.61042088087123,
+        "mape": 7.295023141796722,
+        "wmape": 4.96300865924394
+      },
+      "test": {
+        "mae": 475.9892857142857,
+        "rmse": 1217.217636661579,
+        "mape": 11.681224036070805,
+        "wmape": 10.932507798856358
+      }
+    },
+    "moving_average_3": {
+      "train": {
+        "mae": 586.7718253968254,
+        "rmse": 1480.9797893204557,
+        "mape": 17.190840997862086,
+        "wmape": 15.527460481325917
+      },
+      "validation": {
+        "mae": 191.1214285714286,
+        "rmse": 882.3565093111802,
+        "mape": 5.917475991763853,
+        "wmape": 4.847690973967916
+      },
+      "test": {
+        "mae": 396.6428571428571,
+        "rmse": 1592.1683338060086,
+        "mape": 9.741217840041704,
+        "wmape": 9.11008138044064
+      }
+    },
+    "ridge_autoregressive": {
+      "train": {
+        "mae": 303.7763513715292,
+        "rmse": 705.9282339007877,
+        "mape": 8.928075208878337,
+        "wmape": 8.038687419752712
+      },
+      "validation": {
+        "mae": 287.8920056322257,
+        "rmse": 667.5396970100159,
+        "mape": 7.36861520657468,
+        "wmape": 7.302223971496076
+      },
+      "test": {
+        "mae": 144.82489347149735,
+        "rmse": 451.95181861813114,
+        "mape": 3.8996131964554355,
+        "wmape": 3.326333858481149
+      }
+    },
+    "spatial_neighbor_average": {
+      "train": {
+        "mae": 3271.6167150257334,
+        "rmse": 10924.884939577645,
+        "mape": 115.9311429851702,
+        "wmape": 86.57521894179587
+      },
+      "validation": {
+        "mae": 3530.877081389805,
+        "rmse": 11617.122548371535,
+        "mape": 124.52886520982757,
+        "wmape": 89.55877467840546
+      },
+      "test": {
+        "mae": 3641.3013003975952,
+        "rmse": 12751.081275659004,
+        "mape": 105.7852354446112,
+        "wmape": 83.63330028499368
+      }
+    },
+    "spatial_blend": {
+      "train": {
+        "mae": 278.2738095238095,
+        "rmse": 768.7697066773391,
+        "mape": 8.790179401025105,
+        "wmape": 7.363825925770745
+      },
+      "validation": {
+        "mae": 140.58214285714286,
+        "rmse": 470.6559442492391,
+        "mape": 4.088999447238438,
+        "wmape": 3.5657895094423715
+      },
+      "test": {
+        "mae": 412.3071428571429,
+        "rmse": 1319.3677923265261,
+        "mape": 9.878610946282853,
+        "wmape": 9.469858230203045
+      }
+    }
+  },
+  "interpretation": "These are the first baselines after replacing the proxy target with official SIDE establishment creations."
+}

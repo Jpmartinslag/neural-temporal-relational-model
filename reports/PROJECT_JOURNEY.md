@@ -1371,3 +1371,108 @@ Decisao:
 - a validacao escolheu `alpha = 1.0`, equivalente a peso zero para o componente espacial simples
 - o grafo espacial estatico ainda nao deve ser tratado como sinal preditivo confirmado
 - qualquer `STGNN` futuro precisa superar esse piso antes de ser interpretado
+
+### 2026-04-13 - Baseline autoregressivo intra-zona
+
+O que foi feito:
+
+- implementacao de um baseline autoregressivo usando apenas historico anual da propria zona
+- comparacao entre persistencia, extrapolacao por delta, media movel de 3 anos e regressao ridge autoregressiva
+- atualizacao do indice do projeto para explicitar que o alvo atual e um grafo territorial dinamico anual, nao uma arquitetura nomeada
+
+Artefatos:
+
+- [evaluate_autoregressive_baseline_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_autoregressive_baseline_core_v0.py)
+- [autoregressive_baseline_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/autoregressive_baseline_predictions_core_v0.csv)
+- [autoregressive_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/autoregressive_baseline_metrics_core_v0.json)
+- [AUTOREGRESSIVE_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/AUTOREGRESSIVE_BASELINE_CORE_V0.md)
+- [PROJECT_STATE_INDEX_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_STATE_INDEX_V0.md)
+
+Decisao:
+
+- a persistencia local continua sendo o baseline mais forte na validacao
+- a media movel de 3 anos melhora levemente no teste, mas nao na validacao
+- a regressao autoregressiva nao superou a persistencia
+- o proximo teste deve verificar se features externas adicionam sinal sobre a persistencia local
+
+### 2026-04-13 - Baseline com features externas
+
+O que foi feito:
+
+- teste de regressao ridge com features externas do painel e mascaras de observacao
+- exclusao das features sem observacao no treino
+- comparacao contra persistencia local
+
+Artefatos:
+
+- [evaluate_feature_augmented_baseline_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_feature_augmented_baseline_core_v0.py)
+- [feature_augmented_baseline_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/feature_augmented_baseline_predictions_core_v0.csv)
+- [feature_augmented_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/feature_augmented_baseline_metrics_core_v0.json)
+- [FEATURE_AUGMENTED_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_AUGMENTED_BASELINE_CORE_V0.md)
+
+Decisao:
+
+- as features externas atuais nao superaram a persistencia
+- o modelo com `y(t)` mais features melhorou treino, mas piorou validacao e teste
+- isso indica sobreajuste e pouca profundidade/sinal das features atuais
+- antes de arquitetura, o proximo passo deve auditar melhor o target e inspecionar `SIDE` comunal de criacoes
+
+### 2026-04-13 - Auditoria do target com SIDE comunal oficial
+
+O que foi feito:
+
+- inspecao dos arquivos oficiais `SIDE` comunais de criacoes de empresas e estabelecimentos
+- selecao das linhas comunais totais anuais
+- agregacao de `COM` para `ZE2020`
+- comparacao com o target proxy anual atual
+
+Artefatos:
+
+- [inspect_side_communal_creations_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/inspect_side_communal_creations_v0.py)
+- [side_communal_creations_ze2020_official_2012_2024_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/side_communal_creations_ze2020_official_2012_2024_v0.csv)
+- [target_proxy_vs_side_official_ze2020_2012_2024_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/target_proxy_vs_side_official_ze2020_2012_2024_v0.csv)
+- [SIDE_COMMUNAL_CREATIONS_INSPECTION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_COMMUNAL_CREATIONS_INSPECTION_V0.md)
+- [TARGET_PROXY_SIDE_AUDIT_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_PROXY_SIDE_AUDIT_DECISION_V0.md)
+
+Decisao:
+
+- o `SIDE` comunal oficial cobre `2012-2024` e e adequado para auditar ou substituir o target proxy
+- o proxy atual tem alta correlacao com `SIDE`, mas esta inflado em nivel
+- `SIDE` estabelecimentos passa a ser o candidato principal para target formal
+- `SIDE` empresas fica como alvo de sensibilidade
+- o proxy atual deve permanecer como serie auxiliar/auditoria, nao como ground truth final
+
+Proximo passo:
+
+- reconstruir um pacote alternativo com target oficial `SIDE`
+- repetir persistencia, baselines autoregressivos, espaciais e com features antes de qualquer arquitetura complexa
+
+### 2026-04-13 - Rebuild com target oficial SIDE
+
+O que foi feito:
+
+- criacao do painel de target oficial `SIDE` estabelecimentos por `ZE2020`
+- criacao de novo pacote tensorial usando o mesmo painel de features, mas com alvo oficial
+- reexecucao dos baselines de persistencia, autoregressivo e espacial
+- reexecucao do baseline com features externas sobre o target oficial
+
+Artefatos:
+
+- [build_side_target_panel_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_side_target_panel_core_v0.py)
+- [target_side_establishments_annual_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/target_side_establishments_annual_core_v0.csv)
+- [TARGET_SIDE_ESTABLISHMENTS_ANNUAL_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_SIDE_ESTABLISHMENTS_ANNUAL_CORE_V0.md)
+- [build_stgnn_tensor_package_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_stgnn_tensor_package_side_target_core_v0.py)
+- [stgnn_tensor_package_side_target_core_v0.npz](/home/jpdark/Downloads/project_recomm/dataset/data/processed/stgnn_tensor_package_side_target_core_v0.npz)
+- [STGNN_TENSOR_PACKAGE_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_TENSOR_PACKAGE_SIDE_TARGET_CORE_V0.md)
+- [evaluate_side_target_baselines_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_side_target_baselines_core_v0.py)
+- [SIDE_TARGET_BASELINES_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_TARGET_BASELINES_CORE_V0.md)
+- [evaluate_feature_augmented_baseline_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_feature_augmented_baseline_side_target_core_v0.py)
+- [FEATURE_AUGMENTED_BASELINE_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_AUGMENTED_BASELINE_SIDE_TARGET_CORE_V0.md)
+
+Decisao:
+
+- o alvo oficial `SIDE` substitui o proxy como candidato principal de modelagem
+- a persistencia local continua sendo o baseline principal a ser batido
+- a media dos vizinhos geografica continua sem ganho, com `alpha = 1.0`
+- o baseline com features externas piora fortemente contra persistencia
+- nao ha justificativa tecnica para arquitetura complexa nesta etapa sem melhorar profundidade temporal, selecao de features ou construcao do grafo

@@ -1,0 +1,3 @@
+source_file,kind,rows_seen,rows_selected_commune_total,commune_year_pairs,years,status
+data/raw/business_demography/side/DS_SIDE_CREA_ENT_COM_2024_CSV_FR.zip,enterprise,27180400,453375,453375,2012;2013;2014;2015;2016;2017;2018;2019;2020;2021;2022;2023;2024,usable_for_official_commune_creation_audit
+data/raw/business_demography/side/DS_SIDE_CREA_ETAB_COM_2024_CSV_FR.zip,establishment,27180400,453375,453375,2012;2013;2014;2015;2016;2017;2018;2019;2020;2021;2022;2023;2024,usable_for_official_commune_creation_audit

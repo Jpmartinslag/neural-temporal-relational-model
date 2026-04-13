@@ -1,0 +1,284 @@
+{
+  "node_count": 280,
+  "row_count": 1680,
+  "sample_count": 6,
+  "models": {
+    "persistence": "y_hat(t+1) = y(t)",
+    "external_features": "ridge regression on observed external panel features and masks, excluding features with no train observation",
+    "target_lag_plus_external_features": "ridge regression on y(t), external panel features and masks"
+  },
+  "model_metadata": {
+    "external_features": {
+      "usable_feature_count": 21,
+      "excluded_no_train_observation": [
+        "flores_presential_unit_loc_total",
+        "flores_productive_unit_loc_total"
+      ],
+      "include_target_lag": false,
+      "include_masks": true,
+      "selected_alpha": 0.01,
+      "alpha_grid": [
+        0.01,
+        0.1,
+        1.0,
+        10.0,
+        100.0,
+        1000.0
+      ],
+      "alpha_selection": [
+        {
+          "alpha": 0.01,
+          "validation_wmape": 66.96411859011461,
+          "validation_mae": 3700.628519342848
+        },
+        {
+          "alpha": 0.1,
+          "validation_wmape": 68.86554539905778,
+          "validation_mae": 3805.7067974530732
+        },
+        {
+          "alpha": 1.0,
+          "validation_wmape": 69.37030400836186,
+          "validation_mae": 3833.601200370672
+        },
+        {
+          "alpha": 10.0,
+          "validation_wmape": 67.9694367519125,
+          "validation_mae": 3756.1852733014043
+        },
+        {
+          "alpha": 100.0,
+          "validation_wmape": 67.27990512911511,
+          "validation_mae": 3718.07978573527
+        },
+        {
+          "alpha": 1000.0,
+          "validation_wmape": 84.83891138287298,
+          "validation_mae": 4688.440639907227
+        }
+      ],
+      "feature_count": 42,
+      "feature_names": [
+        "x_filosofi_s_hh_tax_weighted_proxy",
+        "x_filosofi_s_dir_tax_di_weighted_proxy",
+        "x_population_total",
+        "x_active_lr_total",
+        "x_employed_lr_total",
+        "x_unemployed_lr_total",
+        "x_unemployment_rate_est",
+        "x_jobs_lt_total",
+        "x_jobs_lt_per_1000_pop",
+        "x_side_stocks_et_total",
+        "x_side_stocks_ul_total",
+        "x_side_stocks_et_per_1000_pop",
+        "x_bpe_facilities_total",
+        "x_bpe_facilities_per_1000_pop",
+        "x_bpe_evolution_commune_type_presence_total",
+        "x_static_nb_com",
+        "x_static_pop_growth_2021_2023",
+        "x_static_pop_growth_2018_2023",
+        "x_static_zan_artif_per_pop21",
+        "x_static_zan_artif_per_surface",
+        "x_static_zan_communes_count",
+        "mask_filosofi_s_hh_tax_weighted_proxy",
+        "mask_filosofi_s_dir_tax_di_weighted_proxy",
+        "mask_population_total",
+        "mask_active_lr_total",
+        "mask_employed_lr_total",
+        "mask_unemployed_lr_total",
+        "mask_unemployment_rate_est",
+        "mask_jobs_lt_total",
+        "mask_jobs_lt_per_1000_pop",
+        "mask_side_stocks_et_total",
+        "mask_side_stocks_ul_total",
+        "mask_side_stocks_et_per_1000_pop",
+        "mask_bpe_facilities_total",
+        "mask_bpe_facilities_per_1000_pop",
+        "mask_bpe_evolution_commune_type_presence_total",
+        "mask_static_nb_com",
+        "mask_static_pop_growth_2021_2023",
+        "mask_static_pop_growth_2018_2023",
+        "mask_static_zan_artif_per_pop21",
+        "mask_static_zan_artif_per_surface",
+        "mask_static_zan_communes_count"
+      ]
+    },
+    "target_lag_plus_external_features": {
+      "usable_feature_count": 21,
+      "excluded_no_train_observation": [
+        "flores_presential_unit_loc_total",
+        "flores_productive_unit_loc_total"
+      ],
+      "include_target_lag": true,
+      "include_masks": true,
+      "selected_alpha": 1.0,
+      "alpha_grid": [
+        0.01,
+        0.1,
+        1.0,
+        10.0,
+        100.0,
+        1000.0
+      ],
+      "alpha_selection": [
+        {
+          "alpha": 0.01,
+          "validation_wmape": 54.13376333757309,
+          "validation_mae": 2991.5864299295395
+        },
+        {
+          "alpha": 0.1,
+          "validation_wmape": 54.18020188148045,
+          "validation_mae": 2994.152756547414
+        },
+        {
+          "alpha": 1.0,
+          "validation_wmape": 53.24546821678211,
+          "validation_mae": 2942.49670356857
+        },
+        {
+          "alpha": 10.0,
+          "validation_wmape": 53.32259066221042,
+          "validation_mae": 2946.758710252783
+        },
+        {
+          "alpha": 100.0,
+          "validation_wmape": 59.57924785209548,
+          "validation_mae": 3292.5194627292303
+        },
+        {
+          "alpha": 1000.0,
+          "validation_wmape": 83.48037834270596,
+          "validation_mae": 4613.364222584625
+        }
+      ],
+      "feature_count": 43,
+      "feature_names": [
+        "log_y_t_scaled",
+        "x_filosofi_s_hh_tax_weighted_proxy",
+        "x_filosofi_s_dir_tax_di_weighted_proxy",
+        "x_population_total",
+        "x_active_lr_total",
+        "x_employed_lr_total",
+        "x_unemployed_lr_total",
+        "x_unemployment_rate_est",
+        "x_jobs_lt_total",
+        "x_jobs_lt_per_1000_pop",
+        "x_side_stocks_et_total",
+        "x_side_stocks_ul_total",
+        "x_side_stocks_et_per_1000_pop",
+        "x_bpe_facilities_total",
+        "x_bpe_facilities_per_1000_pop",
+        "x_bpe_evolution_commune_type_presence_total",
+        "x_static_nb_com",
+        "x_static_pop_growth_2021_2023",
+        "x_static_pop_growth_2018_2023",
+        "x_static_zan_artif_per_pop21",
+        "x_static_zan_artif_per_surface",
+        "x_static_zan_communes_count",
+        "mask_filosofi_s_hh_tax_weighted_proxy",
+        "mask_filosofi_s_dir_tax_di_weighted_proxy",
+        "mask_population_total",
+        "mask_active_lr_total",
+        "mask_employed_lr_total",
+        "mask_unemployed_lr_total",
+        "mask_unemployment_rate_est",
+        "mask_jobs_lt_total",
+        "mask_jobs_lt_per_1000_pop",
+        "mask_side_stocks_et_total",
+        "mask_side_stocks_ul_total",
+        "mask_side_stocks_et_per_1000_pop",
+        "mask_bpe_facilities_total",
+        "mask_bpe_facilities_per_1000_pop",
+        "mask_bpe_evolution_commune_type_presence_total",
+        "mask_static_nb_com",
+        "mask_static_pop_growth_2021_2023",
+        "mask_static_pop_growth_2018_2023",
+        "mask_static_zan_artif_per_pop21",
+        "mask_static_zan_artif_per_surface",
+        "mask_static_zan_communes_count"
+      ]
+    }
+  },
+  "metrics": {
+    "persistence": {
+      "train": {
+        "mae": 367.7416666666667,
+        "rmse": 875.8528788992992,
+        "mape": 7.745319847243182,
+        "wmape": 6.923845388828756
+      },
+      "validation": {
+        "mae": 173.275,
+        "rmse": 400.42281671110743,
+        "mape": 3.669561325861666,
+        "wmape": 3.135469444731672
+      },
+      "test": {
+        "mae": 236.075,
+        "rmse": 506.71124138197007,
+        "mape": 4.264226173293014,
+        "wmape": 4.113559917978972
+      },
+      "forecast_holdout": {
+        "mae": 157.40357142857144,
+        "rmse": 263.40337751386994,
+        "mape": 3.5686849948097144,
+        "wmape": 2.6939848824372943
+      }
+    },
+    "external_features": {
+      "train": {
+        "mae": 1892.862734747679,
+        "rmse": 6673.22138582673,
+        "mape": 30.57823851546279,
+        "wmape": 35.63884679281699
+      },
+      "validation": {
+        "mae": 3700.6285193428484,
+        "rmse": 11067.886078985523,
+        "mape": 50.80487768904052,
+        "wmape": 66.96411859011462
+      },
+      "test": {
+        "mae": 5500.407661001263,
+        "rmse": 44085.06649019865,
+        "mape": 50.20586566549148,
+        "wmape": 95.84350942217203
+      },
+      "forecast_holdout": {
+        "mae": 8526524.771208018,
+        "rmse": 142535784.33575436,
+        "mape": 5310.251195945331,
+        "wmape": 145932.70422574418
+      }
+    },
+    "target_lag_plus_external_features": {
+      "train": {
+        "mae": 147.55919888185974,
+        "rmse": 330.0959092113465,
+        "mape": 3.529909807830014,
+        "wmape": 2.778246718731256
+      },
+      "validation": {
+        "mae": 2942.49670356857,
+        "rmse": 7612.469000132917,
+        "mape": 50.660129770870455,
+        "wmape": 53.24546821678211
+      },
+      "test": {
+        "mae": 2871.180884635397,
+        "rmse": 5351.621299055685,
+        "mape": 51.66126727771775,
+        "wmape": 50.02975581617527
+      },
+      "forecast_holdout": {
+        "mae": 247.42269165160084,
+        "rmse": 1257.7120975644846,
+        "mape": 3.92193568383892,
+        "wmape": 4.234675140035394
+      }
+    }
+  },
+  "interpretation": "This baseline tests whether current panel features add predictive signal over local persistence. It is still annual and non-neural; it should be beaten before any graph-temporal architecture is interpreted."
+}

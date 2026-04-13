@@ -1158,3 +1158,108 @@ Resultado esperado:
 - manter o grafo como estrutura tecnica, mas nao como sinal preditivo confirmado
 - exigir que qualquer `STGNN` futuro supere persistencia e baseline espacial simples
 - considerar futuramente pesos de mobilidade, pesos economicos ou grafo adaptativo se o grafo espacial puro continuar fraco
+
+### 2026-04-13 - Baseline autoregressivo e ajuste de linguagem
+
+O que foi feito:
+
+- teste de modelos simples baseados apenas no historico anual da propria zona
+- comparacao entre persistencia, delta, media movel e ridge autoregressivo
+- criacao do indice de estado do projeto para reduzir confusao entre artefatos
+- ajuste conceitual: o objetivo atual e um grafo territorial dinamico anual; `STGNN` e apenas uma familia candidata de modelos
+
+Por que isso foi necessario:
+
+- o projeto nao deve ser guiado pelo nome de uma arquitetura antes dos dados justificarem essa escolha
+- como as fontes oficiais principais sao anuais, a dinamica observada defensavel hoje tambem e anual
+- antes de usar grafo ou modelos neurais, era necessario medir a forca da dinamica intra-zona
+
+Resultado observado:
+
+- persistencia local continua sendo o melhor baseline na validacao
+- delta e ridge autoregressivo pioraram
+- media movel de 3 anos melhorou levemente no teste, mas perdeu na validacao
+
+Resultado esperado:
+
+- manter persistencia como baseline principal a ser batido
+- testar em seguida se features externas adicionam sinal sobre o historico local
+- manter a arquitetura final sem nome ate que os mecanismos preditivos e decisorios estejam melhor definidos
+
+### 2026-04-13 - O que o baseline com features externas mostrou
+
+O que foi feito:
+
+- treino de modelos ridge usando as features externas ja presentes no pacote tensorial
+- uso de mascaras de observacao
+- exclusao das features sem observacao no treino, como `FLORES`
+
+Por que isso foi necessario:
+
+- era preciso saber se as features socioeconomicas atuais adicionavam sinal ao historico local da propria zona
+- sem esse teste, uma arquitetura grafo-temporal poderia estar apenas amplificando features rasas ou instaveis
+
+Resultado observado:
+
+- features externas isoladas tiveram erro muito maior que persistencia
+- `y(t)` mais features melhorou treino, mas degradou fortemente validacao e teste
+- isso caracteriza sobreajuste e falta de robustez temporal
+
+Resultado esperado:
+
+- nao avançar para arquitetura complexa ainda
+- priorizar auditoria do target e inspeção dos `SIDE` comunais de criacoes
+- usar persistencia local como baseline principal ate que uma fonte externa prove ganho robusto
+
+### 2026-04-13 - Auditoria do target com SIDE comunal oficial
+
+O que foi feito:
+
+- os arquivos oficiais `SIDE` de criacoes comunais foram usados para construir uma serie anual `2012-2024`
+- as criacoes de empresas e estabelecimentos foram agregadas de `COM` para `ZE2020`
+- o resultado foi comparado ao target proxy que vinha sendo usado nos baselines
+
+Por que isso foi necessario:
+
+- o projeto nao possui ground truth economico perfeito
+- em politicas publicas, usar um proxy sem auditoria contra fonte oficial cria risco alto de interpretacao
+- antes de modelar, era preciso saber se o alvo atual mede o mesmo fenomeno que a fonte oficial
+
+Resultado observado:
+
+- a correlacao entre proxy e `SIDE` e alta, acima de `0.95`
+- o proxy e sistematicamente maior que o `SIDE` oficial
+- a diferenca de nivel e grande demais para tratar o proxy como ground truth final
+
+Resultado esperado:
+
+- usar `SIDE` estabelecimentos oficiais como candidato principal de target formal
+- manter `SIDE` empresas como alvo alternativo para sensibilidade
+- manter o proxy atual como auditoria auxiliar
+- reconstruir os baselines com target oficial antes de escolher arquitetura
+
+### 2026-04-13 - Rebuild e baselines com target oficial SIDE
+
+O que foi feito:
+
+- foi construido um painel anual de target com `side_establishment_creations_official`
+- foi criado um pacote tensorial paralelo usando o alvo oficial
+- os baselines foram reexecutados com esse target: persistencia, delta, media movel, ridge autoregressivo, media espacial de vizinhos e features externas
+
+Por que isso foi necessario:
+
+- depois da auditoria, continuar modelando o proxy como alvo principal criaria incoerencia metodologica
+- era preciso saber se as conclusoes dos baselines eram artefato do proxy ou tambem apareciam no alvo oficial
+
+Resultado observado:
+
+- a persistencia local continua muito forte
+- o baseline espacial simples continua pior que persistencia e a validacao escolhe peso zero para vizinhos
+- o ridge autoregressivo melhora no teste, mas nao na validacao
+- as features externas atuais degradam fortemente validacao e teste
+
+Resultado esperado:
+
+- manter arquitetura complexa bloqueada por enquanto
+- priorizar aumento de profundidade temporal das features ou uma selecao mais conservadora
+- tratar o grafo geografico atual como estrutura de auditoria/contexto, nao como sinal preditivo confirmado

@@ -1,0 +1,80 @@
+{
+  "source": "data/processed/side_communal_creations_ze2020_official_2012_2024_v0.csv",
+  "target_file": "data/processed/target_side_establishments_annual_core_v0.csv",
+  "target_column": "side_establishment_creations_official",
+  "sensitivity_column": "side_enterprise_creations_official",
+  "node_count": 280,
+  "year_min": 2012,
+  "year_max": 2024,
+  "year_count": 13,
+  "row_count": 3640,
+  "expected_rows": 3640,
+  "annual_totals": [
+    {
+      "year": 2012,
+      "side_establishment_creations_official": 615957.0,
+      "side_enterprise_creations_official": 542967.0
+    },
+    {
+      "year": 2013,
+      "side_establishment_creations_official": 602496.0,
+      "side_enterprise_creations_official": 543622.0
+    },
+    {
+      "year": 2014,
+      "side_establishment_creations_official": 621698.0,
+      "side_enterprise_creations_official": 560305.0
+    },
+    {
+      "year": 2015,
+      "side_establishment_creations_official": 608599.0,
+      "side_enterprise_creations_official": 543084.0
+    },
+    {
+      "year": 2016,
+      "side_establishment_creations_official": 649871.0,
+      "side_enterprise_creations_official": 581286.0
+    },
+    {
+      "year": 2017,
+      "side_establishment_creations_official": 702642.0,
+      "side_enterprise_creations_official": 633888.0
+    },
+    {
+      "year": 2018,
+      "side_establishment_creations_official": 795205.0,
+      "side_enterprise_creations_official": 723196.0
+    },
+    {
+      "year": 2019,
+      "side_establishment_creations_official": 915980.0,
+      "side_enterprise_creations_official": 836677.0
+    },
+    {
+      "year": 2020,
+      "side_establishment_creations_official": 948339.0,
+      "side_enterprise_creations_official": 870951.0
+    },
+    {
+      "year": 2021,
+      "side_establishment_creations_official": 1106794.0,
+      "side_enterprise_creations_official": 1013787.0
+    },
+    {
+      "year": 2022,
+      "side_establishment_creations_official": 1119168.0,
+      "side_enterprise_creations_official": 1021744.0
+    },
+    {
+      "year": 2023,
+      "side_establishment_creations_official": 1103907.0,
+      "side_enterprise_creations_official": 1010891.0
+    },
+    {
+      "year": 2024,
+      "side_establishment_creations_official": 1219089.0,
+      "side_enterprise_creations_official": 1071065.0
+    }
+  ],
+  "decision": "Use official SIDE establishment creations as the formal target candidate. Keep official SIDE enterprise creations as a sensitivity target and the old proxy as audit only."
+}

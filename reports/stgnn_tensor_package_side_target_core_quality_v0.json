@@ -1,0 +1,83 @@
+{
+  "target_column": "side_establishment_creations_official",
+  "target_source": "data/processed/target_side_establishments_annual_core_v0.csv",
+  "node_count": 280,
+  "feature_count": 23,
+  "feature_years": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "target_years_available": [
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "aligned_feature_years": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023
+  ],
+  "aligned_target_years": [
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "horizon_years": 1,
+  "sample_count": 5,
+  "split_counts": {
+    "test": 1,
+    "train": 3,
+    "validation": 1
+  },
+  "x_raw_shape": [
+    5,
+    280,
+    23
+  ],
+  "x_scaled_imputed_shape": [
+    5,
+    280,
+    23
+  ],
+  "x_mask_shape": [
+    5,
+    280,
+    23
+  ],
+  "y_raw_shape": [
+    5,
+    280
+  ],
+  "adjacency_shape": [
+    280,
+    280
+  ],
+  "raw_missing_rate": 0.48695652173913045,
+  "features_without_train_observation": [
+    "flores_presential_unit_loc_total",
+    "flores_productive_unit_loc_total"
+  ],
+  "leakage_controls": [
+    "Feature scaling is fitted only on train samples.",
+    "Validation and test years do not influence feature means or standard deviations.",
+    "Missing values are imputed only after scaling and masks are stored explicitly."
+  ]
+}
