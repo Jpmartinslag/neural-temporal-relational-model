@@ -21,8 +21,10 @@ tools/external/
 scan_output/
 scan_output_bundle.tar.gz
 graphify-out/
+**/graphify-out/
 .graphify_*.json
 .graphify_*.txt
+reports/scan_archives/
 
 # Raw acquisition cache
 data/raw/

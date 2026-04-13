@@ -1916,3 +1916,19 @@ Decisao:
 - ridge ajuda quando ha aceleracao agregada forte
 - persistencia domina quando o proximo ano e estavel ou negativo
 - proximo baseline deve ser uma regra de regime temporal entre persistencia e ridge
+
+### 2026-04-13 - Consolidacao e higiene dos artefatos
+
+O que foi feito:
+
+- removidos caches e saidas locais ignoradas que nao fazem parte do fluxo versionado
+- criada entrada principal do projeto em `README.md`
+- criado registro canonico de artefatos em `metadata/canonical_artifacts_v0.csv`
+- atualizado o indice do projeto para apontar apenas os arquivos que devem ser lidos primeiro
+- reforcado `.gitignore` para evitar retorno de `graphify-out` e `reports/scan_archives`
+
+Decisao:
+
+- nao mover dados processados ainda, porque varios scripts antigos escrevem caminhos historicos
+- separar agora o que e canonico do que e diagnostico
+- uma migracao fisica de pastas so deve ser feita em etapa propria, com atualizacao dos scripts e validacao

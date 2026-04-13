@@ -1,0 +1,25 @@
+layer,role,status,path,notes
+project,entrypoint,canonical,reports/PROJECT_STATE_INDEX_V0.md,Read first to understand current state and next step.
+project,journal,canonical,reports/PROJECT_JOURNEY.md,Chronological record of decisions and reversals.
+project,artifact_registry,canonical,metadata/canonical_artifacts_v0.csv,Defines which artifacts are canonical versus diagnostic.
+territory,node_index,canonical,data/processed/graph_node_index_core_v0.csv,Stable node order for ZE2020 arrays.
+territory,nodes,canonical,data/processed/graph_nodes_ze2020_core_v0.csv,Canonical ZE2020 node table.
+territory,spatial_edges,canonical,data/processed/graph_edges_ze2020_core_v0.csv,Canonical geographic adjacency edge list.
+territory,spatial_adjacency,canonical,data/processed/graph_adjacency_core_v0.csv,Canonical geographic adjacency matrix.
+territory,mobility_edges,canonical,data/processed/mobility_graph_edges_core_v0.csv,Observed commuting-flow graph between ZE2020 zones.
+territory,mobility_adjacency,canonical,data/processed/mobility_adjacency_row_normalized_core_v0.csv,Row-normalized mobility adjacency for future graph experiments.
+panel,zone_panel,canonical,data/processed/panel_zones_core_v0.csv,Core annual ZE2020 panel.
+panel,zone_master,canonical,data/processed/zones_master_annual_core_v0.csv,Core annual master table.
+target,official_side_target,canonical,data/processed/target_side_establishments_annual_core_v0.csv,Primary formal target: official SIDE establishment creations aggregated to ZE2020.
+target,official_side_communal_source,canonical,data/processed/side_communal_creations_ze2020_official_2012_2024_v0.csv,Aggregated official SIDE source panel.
+target,proxy_audit,diagnostic,data/processed/target_proxy_vs_side_official_ze2020_2012_2024_v0.csv,Proxy retained only for audit/comparison.
+model_data,long_history_dataset,canonical,data/processed/long_history_side_target_dataset_core_v0.csv,Main baseline dataset with longer target history.
+model_data,rich_tensor_candidate,diagnostic,data/processed/stgnn_tensor_package_side_target_core_v0.npz,Tensor package retained as candidate input, not final architecture.
+baseline,long_history_predictions,canonical,data/processed/long_history_side_target_baseline_predictions_core_v0.csv,Main persistence/ridge baseline predictions.
+baseline,rolling_backtest_predictions,canonical,data/processed/segmented_decision_rule_backtest_predictions_core_v0.csv,Rolling validation predictions for stability analysis.
+baseline,decision_matrix,canonical,metadata/side_model_decision_matrix_core_v0.csv,Decision matrix between persistence/ridge/segmentation.
+baseline,instability_fold_diagnostic,canonical,metadata/side_backtest_fold_instability_core_v0.csv,Explains year/fold instability.
+report,current_decision_matrix,canonical,reports/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md,Current model decision rules.
+report,rolling_backtest,canonical,reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md,Rolling validation of segmented rule.
+report,instability_diagnostic,canonical,reports/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md,Current explanation of temporal instability.
+future_data,candidates,canonical,metadata/future_dataset_candidates_v0.csv,Future datasets registered but not integrated into core.

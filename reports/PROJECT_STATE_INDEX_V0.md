@@ -273,14 +273,14 @@ Definicao operacional provisoria:
 
 Para entender o projeto rapidamente, ler nesta ordem:
 
-1. [PROJECT_STATE_INDEX_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_STATE_INDEX_V0.md)
-2. [PROJECT_JOURNEY.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_JOURNEY.md)
-3. [STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md)
-4. [SPATIAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SPATIAL_BASELINE_CORE_V0.md)
-5. [AUTOREGRESSIVE_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/AUTOREGRESSIVE_BASELINE_CORE_V0.md)
-6. [FEATURE_AUGMENTED_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_AUGMENTED_BASELINE_CORE_V0.md)
-7. [FUTURE_DATASET_CANDIDATES_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FUTURE_DATASET_CANDIDATES_V0.md)
-8. [EVALUATION_WITHOUT_GROUND_TRUTH_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/EVALUATION_WITHOUT_GROUND_TRUTH_v0.md)
+1. [README.md](/home/jpdark/Downloads/project_recomm/dataset/README.md)
+2. [canonical_artifacts_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/canonical_artifacts_v0.csv)
+3. [PROJECT_STATE_INDEX_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_STATE_INDEX_V0.md)
+4. [PROJECT_JOURNEY.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_JOURNEY.md)
+5. [SIDE_MODEL_DECISION_MATRIX_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md)
+6. [SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md)
+7. [SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md)
+8. [FUTURE_DATASET_CANDIDATES_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FUTURE_DATASET_CANDIDATES_V0.md)
 
 ## Proximo Passo
 
