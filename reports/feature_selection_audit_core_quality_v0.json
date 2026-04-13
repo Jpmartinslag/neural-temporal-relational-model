@@ -1,0 +1,56 @@
+{
+  "total_features": 23,
+  "include_count": 8,
+  "include_flagged_count": 13,
+  "exclude_count": 2,
+  "excluded_features": [
+    "flores_presential_unit_loc_total",
+    "flores_productive_unit_loc_total"
+  ],
+  "flagged_features": [
+    "side_stocks_ul_total",
+    "side_stocks_et_total",
+    "jobs_lt_total",
+    "active_lr_total",
+    "employed_lr_total",
+    "unemployed_lr_total",
+    "population_total",
+    "bpe_facilities_total",
+    "bpe_evolution_commune_type_presence_total",
+    "jobs_lt_per_1000_pop",
+    "side_stocks_et_per_1000_pop",
+    "bpe_facilities_per_1000_pop",
+    "unemployment_rate_est"
+  ],
+  "top5_by_abs_corr_with_target_train": [
+    {
+      "feature_name": "side_stocks_ul_total",
+      "corr_with_target_train": 0.9984317261069282,
+      "train_obs_rate": 0.3333333333333333
+    },
+    {
+      "feature_name": "side_stocks_et_total",
+      "corr_with_target_train": 0.9982240294009578,
+      "train_obs_rate": 0.3333333333333333
+    },
+    {
+      "feature_name": "jobs_lt_total",
+      "corr_with_target_train": 0.9935133629007102,
+      "train_obs_rate": 0.3333333333333333
+    },
+    {
+      "feature_name": "active_lr_total",
+      "corr_with_target_train": 0.9871707349225952,
+      "train_obs_rate": 0.3333333333333333
+    },
+    {
+      "feature_name": "employed_lr_total",
+      "corr_with_target_train": 0.9867633887854613,
+      "train_obs_rate": 0.3333333333333333
+    }
+  ],
+  "mean_train_obs_rate_included": 0.917,
+  "mean_abs_corr_included": 0.191,
+  "static_features_count": 6,
+  "dynamic_features_count": 17
+}

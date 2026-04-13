@@ -1476,3 +1476,115 @@ Decisao:
 - a media dos vizinhos geografica continua sem ganho, com `alpha = 1.0`
 - o baseline com features externas piora fortemente contra persistencia
 - nao ha justificativa tecnica para arquitetura complexa nesta etapa sem melhorar profundidade temporal, selecao de features ou construcao do grafo
+
+### 2026-04-13 - Auditoria de selecao de features Phase 1
+
+Motivacao:
+
+- os baselines com features externas pioraram contra persistencia
+- antes de qualquer experimento com grafo ou STGNN, e necessario saber quais features tem sinal real no treino
+- a selecao deve usar apenas o split de treino, com mascara de observacao, para evitar decisao contaminada pelo futuro
+
+O que foi feito:
+
+- calculo de taxa de observacao por feature e por ano no treino
+- calculo de correlacao de Pearson com o target usando apenas celulas observadas no treino
+- classificacao de cada feature em: `include`, `include_flagged`, `exclude`
+- producao de recomendacao auditavel para o subconjunto Phase 1
+
+Artefatos:
+
+- [evaluate_feature_selection_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_feature_selection_core_v0.py)
+- [feature_selection_audit_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/feature_selection_audit_core_v0.csv)
+- [feature_selection_audit_core_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/feature_selection_audit_core_quality_v0.json)
+- [FEATURE_SELECTION_AUDIT_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_SELECTION_AUDIT_CORE_V0.md)
+
+Resultados principais:
+
+- `flores_presential_unit_loc_total` e `flores_productive_unit_loc_total`: excluidas — `train_obs_rate = 0.0`, sem observacao real no treino
+- `13` features sinalizadas com `train_obs_rate = 0.33`: apenas o ano de feature `2021` tem observacao no treino
+- `8` features incluidas diretamente: `filosofi` (2 anos de treino observados) e `6` features estaticas
+- top correlacoes com target: `side_stocks_ul_total` (`0.998`), `side_stocks_et_total` (`0.998`), `jobs_lt_total` (`0.994`)
+
+Achado estrutural:
+
+- a esparsidade das features de alto sinal nao e um problema de qualidade de dado
+- e um problema de cobertura temporal: `RP 2022` e `SIDE stocks 2021` so cobrem o ano de feature `2021`
+- os anos de feature `2019` e `2020` ficam praticamente vazios de sinal dinamico
+- isso valida diretamente a necessidade de extensao temporal como proximo passo estrategico
+
+Alerta metodologico:
+
+- `side_stocks_et_total` e `side_stocks_ul_total` tem correlacao `0.998` com o target `SIDE` de criacoes
+- isso e esperado (estoque de estabelecimentos prediz volume de criacoes), mas cria risco de colinearidade
+- qualquer modelo que use essas features precisa documentar explicitamente que o ganho pode ser trivial (predicao por escala, nao por dinamica)
+- isso nao e vazamento temporal, mas e um risco de interpretacao que deve aparecer na tese
+
+Decisao:
+
+- `FLORES` excluido dos experimentos Phase 1 formalmente
+- features dinamicas esparsas incluidas com sinalizacao, nao excluidas, porque tem sinal real quando observadas
+- o subconjunto efetivo Phase 1 passa a ser `21` features (23 - 2 FLORES)
+- a sparsidade confirma que extensao temporal e a proxima alavanca de melhoria mais direta
+- proximo passo tecnico: construir grafo de mobilidade a partir de fluxos domicilio-trabalho RP 2021, que ja esta disponivel localmente
+
+### 2026-04-13 - Grafo de mobilidade e baseline espacial comparativo
+
+Motivacao:
+
+- o baseline espacial com grafo geografico escolheu `alpha = 1.0` (ignorar vizinhos) em todos os experimentos anteriores
+- a hipotese era que a adjacencia geografica captura a unidade errada de relacao economica
+- fluxos domicilio-trabalho capturam interdependencia funcional real entre zonas
+- a fonte `base-flux-mobilite-domicile-lieu-travail-2021` estava disponivel localmente com pares origem-destino em nivel comunal
+
+O que foi feito:
+
+- construcao do grafo de mobilidade ZE2020 a partir de pares (CODGEO=residencia, DCLT=trabalho) do RP 2021
+- agregacao de fluxos comunais para ZE2020 via mapeamento `commune_to_ze2020_2026`
+- geracao de tres variantes de adjacencia: dirigida bruta, simetrica, normalizada por linha com self-loop
+- baseline espacial comparativo com target oficial SIDE: persistencia vs. vizinhos-geo vs. vizinhos-mobilidade
+- selecao de alpha em validacao para cada grafo
+
+Artefatos:
+
+- [build_mobility_graph_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_mobility_graph_core_v0.py)
+- [mobility_graph_edges_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/mobility_graph_edges_core_v0.csv)
+- [mobility_adjacency_raw_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/mobility_adjacency_raw_core_v0.csv)
+- [mobility_adjacency_row_normalized_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/mobility_adjacency_row_normalized_core_v0.csv)
+- [mobility_graph_core_v0.npz](/home/jpdark/Downloads/project_recomm/dataset/data/processed/mobility_graph_core_v0.npz)
+- [MOBILITY_GRAPH_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/MOBILITY_GRAPH_CORE_V0.md)
+- [evaluate_mobility_spatial_baseline_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_mobility_spatial_baseline_core_v0.py)
+- [mobility_spatial_baseline_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/mobility_spatial_baseline_predictions_core_v0.csv)
+- [MOBILITY_SPATIAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/MOBILITY_SPATIAL_BASELINE_CORE_V0.md)
+- [mobility_spatial_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/mobility_spatial_baseline_metrics_core_v0.json)
+
+Resultados do grafo de mobilidade:
+
+- `27.571` pares inter-zona com fluxo (vs. `1.486` arestas no grafo geografico)
+- grau medio de saida: `98.5` zonas conectadas por trabalhadores
+- cobertura de fluxo no core: `17.1%` do total nacional
+
+Resultados do baseline comparativo:
+
+- persistencia (validacao): WMAPE = `3.566`
+- media de vizinhos geograficos (validacao): WMAPE = `89.559`
+- media de vizinhos de mobilidade (validacao): WMAPE = `255.938`
+- ambos os grafos escolheram `alpha = 1.0` na validacao
+
+Leitura estrutural:
+
+- o grafo de mobilidade e muito mais denso que o geografico (grau medio `98` vs. ~`10`)
+- isso faz a media ponderada colapsar para algo proximo da media nacional
+- predicao pela media de ~100 zonas vizinhas e essencialmente predicao macroeconomica, nao local
+- isso explica o WMAPE altissimo da media de vizinhos de mobilidade (`256` vs. `89` do geografico)
+
+Decisao:
+
+- o grafo de mobilidade nao agrega sinal preditivo com media simples de vizinhos
+- a falha nao e do dado de mobilidade, e da operacao de suavizacao espacial com grafo denso
+- um STGNN pode usar o grafo de mobilidade de forma diferente (passagem de mensagem seletiva, atencao, etc.)
+- porem, antes de qualquer STGNN, a conclusao de baseline se fortalece:
+  *nenhum grafo simples — geografico ou de mobilidade — supera persistencia local com os dados atuais*
+- isso nao invalida o uso do grafo: ele pode capturar relacoes que so aparecem com profundidade temporal adequada
+- a alavanca prioritaria passa a ser extensao temporal das features (FLORES historico, SIDE stocks 2019-2020)
+- o grafo de mobilidade fica como alternativa disponivel para experimentos STGNN futuros
