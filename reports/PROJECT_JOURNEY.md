@@ -1960,3 +1960,41 @@ Decisao:
 - nao mover dados processados ainda, porque varios scripts antigos escrevem caminhos historicos
 - separar agora o que e canonico do que e diagnostico
 - uma migracao fisica de pastas so deve ser feita em etapa propria, com atualizacao dos scripts e validacao
+
+### 2026-04-13 - Perfil Setorial A17 e Auditoria de Sinais Antecipadores
+
+Motivacao:
+
+- os baselines de regime temporal falharam por usar apenas crescimento defasado (lags)
+- o modelo Oracle provou que conhecer o regime (aceleracao/desaceleracao) reduz o WMAPE de 7.6 para 4.3
+- a auditoria busca sinais externos (Leading Indicators) para antecipar esses regimes
+
+O que foi feito:
+
+- construcao do Perfil Setorial das zonas (A17) a partir do FLORES 2024 (830MB)
+- cruzamento dos pesos setoriais locais com os indices nacionais de faturamento (ICA - Insee) 2019-2024
+- analise de correlacao inicial (ICA linear) com resultado fraco (~-0.15)
+- descoberta e processamento das Séries Mensais de Criações SIDE (Nacional/Setorial)
+- construcao de um sinal antecipador (Leading Signal) ponderado pelo perfil da zona
+- verificacao do sinal contra o crescimento real das zonas (SIDE target)
+
+Artefatos:
+
+- [build_zone_sectoral_profile_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_zone_sectoral_profile_core_v0.py)
+- [zone_sectoral_profile_a17_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/zone_sectoral_profile_a17_v0.csv)
+- [build_leading_regime_signal_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_leading_regime_signal_v0.py)
+- [leading_regime_signal_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/leading_regime_signal_ze2020_v0.csv)
+- [verify_leading_signal_resolution_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/verify_leading_signal_resolution_v0.py)
+- [FORWARD_LOOKING_SIGNAL_AUDIT_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FORWARD_LOOKING_SIGNAL_AUDIT_V0.md)
+
+Resultado da Auditoria e Verificacao:
+
+- O sinal baseado no faturamento (ICA) falhou devido ao paradoxo inflacionario de 2022
+- O novo sinal baseado nas Séries SIDE Mensais obteve uma **Correlação Global de 0.6950**
+- O sinal antecipa corretamente os regimes de 2021 (+24% vs +19%) e 2023 (-0.2% vs -1.1%)
+- Sucesso técnico: o "ponto cego" dos regimes temporais foi resolvido com dados observáveis antecipadamente
+
+Decisao:
+
+- O sinal antecipador de regime passa a ser feature core para o STGNN e para os Agentes Decisores
+- O proximo passo sera a injecao deste sinal no pacote tensorial e nos baselines condicionados
