@@ -1631,3 +1631,50 @@ Decisao:
 - isso elimina o problema critico de `side_stocks_et_total` com `train_obs=0.33` (apenas 1 ano de treino com SIDE)
 - o tensor esta pronto para primeiros experimentos de modelos com features
 - o proximo passo e um ridge/linear baseline usando as features do tensor para verificar se o ganho sobre persistencia aparece quando se usam as features diretamente
+
+### 2026-04-13 - Revisao bibliografica: WMGCN como base metodologica
+
+Paper lido: **"Predicting Economic Growth by Region Embedding: A Multigraph Convolutional Network Approach"** (Hui et al., CIKM 2020, 27 citacoes)
+
+DOI: 10.1145/3340531.3411882
+
+O que o paper faz:
+
+- Aprende embeddings de ZIP code areas para representar o crescimento economico setorial
+- Constroi um multigrafo com 3 tipos de arestas: distrito escolar, condado, conexoes aereas
+- Usa 4 GCNs separados por categoria de feature (demografica, social, economica, habitacao)
+- Integracao por soma ponderada com apenas 4 pesos trenaveis — principio de Occam's Razor explicitamente invocado
+- Dados: US Census Bureau ACS (governamental, aberto) — equivalente estrutural ao INSEE/SIDE
+
+Alinhamento direto com a nossa arquitetura:
+
+| elemento WMGCN | equivalente no projeto |
+|---|---|
+| multigrafo (escola, condado, voos) | grafo geografico + grafo de mobilidade (Stage 2) |
+| features ACS por categoria | features INSEE por dominio (labour, economic, income, services) |
+| embeddings regionais h_i | saida do STGNN para os agentes |
+| dados governamentais abertos | INSEE, SIDE, FLORES, BPE |
+| Occam's Razor — frugalidade | titulo da tese "recommandation territoriale frugale" |
+
+O que o WMGCN NAO tem (lacuna que a tese preenche):
+
+- Sem dimensao temporal — o target e crescimento estatico 2011-2016
+- Sem backbone STGNN — nao ha previsao de serie temporal no grafo
+- Sem camada de agentes — nao ha orquestracao decisional
+- Sem multi-step forecasting — nao ha horizonte temporal futuro
+
+Avanco sobre o WMGCN na literatura (citacoes relevantes, 2022-2023):
+
+- "Learning Economic Indicators by Aggregating Multi-Level Geospatial Information" (2022, 19 cit) — avanca na agregacao geografica multi-nivel mas sem dimensao temporal
+- "Heterogeneous Region Embedding with Prompt Learning" (2023, 42 cit) — adiciona prompt learning mas ainda sem STGNN
+- "HUGAT — Heterogeneous Urban Graph Attention Network" (2022, 16 cit) — adiciona atencao mas sem agentes
+- Survey STGNN para urban computing (2023, 435 cit) — posiciona o problema no panorama espaço-temporal mas sem orchestracao agente
+
+Conclusao da revisao:
+
+Nenhum paper combina: (1) embedding regional multigrafo + (2) backbone STGNN temporal + (3) camada de agentes analiticos orquestrados. A lacuna esta confirmada e e exatamente o que a tese propoe. O WMGCN serve como referencia metodologica para o Stage 2 (GRAPH HYBRID) e justifica o design do multigrafo geografico + mobilidade ja construido.
+
+Acao no documento da tese:
+
+- A citacao Wu2019 (Graph WaveNet) no `.tex` pode ser complementada ou substituida por Hui2020 (WMGCN) como referencia para a construcao do multigrafo no Stage 2
+- O STGNN no Stage 3 e a extensao temporal natural dos embeddings do WMGCN
