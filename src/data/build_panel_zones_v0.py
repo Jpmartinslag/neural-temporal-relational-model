@@ -20,10 +20,16 @@ FEATURE_SPECS = {
             "bpe_evolution_commune_type_presence_2019_total",
             "services_harmonized",
         ),
+        ("side_stocks_et_total", "side_stocks_et_2019_total", "economic_structure"),
+        ("side_stocks_ul_total", "side_stocks_ul_2019_total", "economic_structure"),
+        ("flores_et_total", "flores_et_total_2019", "economic_structure"),
     ],
     2020: [
         ("filosofi_s_hh_tax_weighted_proxy", "filosofi_s_hh_tax_weighted_proxy_2020", "income"),
         ("filosofi_s_dir_tax_di_weighted_proxy", "filosofi_s_dir_tax_di_weighted_proxy_2020", "income"),
+        ("side_stocks_et_total", "side_stocks_et_2020_total", "economic_structure"),
+        ("side_stocks_ul_total", "side_stocks_ul_2020_total", "economic_structure"),
+        ("flores_et_total", "flores_et_total_2020", "economic_structure"),
     ],
     2021: [
         ("population_total", "population_2021_total", "population"),
@@ -40,6 +46,7 @@ FEATURE_SPECS = {
         ("bpe_facilities_per_1000_pop", "bpe_facilities_per_1000_pop_2021", "services"),
         ("filosofi_s_hh_tax_weighted_proxy", "filosofi_s_hh_tax_weighted_proxy_2021", "income"),
         ("filosofi_s_dir_tax_di_weighted_proxy", "filosofi_s_dir_tax_di_weighted_proxy_2021", "income"),
+        ("flores_et_total", "flores_et_total_2021", "economic_structure"),
     ],
     2022: [
         ("population_total", "population_2022_total", "population"),

@@ -17,12 +17,12 @@ Objetivo:
 
 ## Sumario
 
-- total de features: `23`
-- incluidas diretamente: `8`
-- incluidas com sinalizacao: `13`
+- total de features: `24`
+- incluidas diretamente: `11`
+- incluidas com sinalizacao: `11`
 - excluidas (sem observacao no treino): `2`
 - features estaticas: `6`
-- features dinamicas: `17`
+- features dinamicas: `18`
 
 ## Features Excluidas
 
@@ -34,8 +34,6 @@ Qualquer peso aprendido sobre elas reflete imputacao, nao sinal economico.
 
 ## Features Sinalizadas (esparsas, mas com alguma observacao)
 
-- `side_stocks_ul_total`: train_obs_rate=`0.333`, corr_target=`0.998`, n_pares=`280`
-- `side_stocks_et_total`: train_obs_rate=`0.333`, corr_target=`0.998`, n_pares=`280`
 - `jobs_lt_total`: train_obs_rate=`0.333`, corr_target=`0.994`, n_pares=`280`
 - `active_lr_total`: train_obs_rate=`0.333`, corr_target=`0.987`, n_pares=`280`
 - `employed_lr_total`: train_obs_rate=`0.333`, corr_target=`0.987`, n_pares=`280`
@@ -50,8 +48,8 @@ Qualquer peso aprendido sobre elas reflete imputacao, nao sinal economico.
 
 ## Top 5 por Correlacao Absoluta com Target (treino, observado)
 
-- `side_stocks_ul_total`: corr=`0.998`, train_obs_rate=`0.333`
-- `side_stocks_et_total`: corr=`0.998`, train_obs_rate=`0.333`
+- `side_stocks_ul_total`: corr=`0.998`, train_obs_rate=`1.000`
+- `side_stocks_et_total`: corr=`0.998`, train_obs_rate=`1.000`
 - `jobs_lt_total`: corr=`0.994`, train_obs_rate=`0.333`
 - `active_lr_total`: corr=`0.987`, train_obs_rate=`0.333`
 - `employed_lr_total`: corr=`0.987`, train_obs_rate=`0.333`
@@ -62,6 +60,9 @@ Qualquer peso aprendido sobre elas reflete imputacao, nao sinal economico.
 |---|---|---|---|---|---|---|
 | `flores_presential_unit_loc_total` | dynamic | 0.00 | 0.00 | n/a | useless_no_train_obs | **exclude** |
 | `flores_productive_unit_loc_total` | dynamic | 0.00 | 0.00 | n/a | useless_no_train_obs | **exclude** |
+| `side_stocks_ul_total` | dynamic | 1.00 | 0.80 | 0.998 | well_covered | **include** |
+| `side_stocks_et_total` | dynamic | 1.00 | 0.80 | 0.998 | well_covered | **include** |
+| `flores_et_total` | dynamic | 1.00 | 0.60 | 0.937 | well_covered | **include** |
 | `filosofi_s_dir_tax_di_weighted_proxy` | dynamic | 0.67 | 0.40 | -0.439 | moderate_train_coverage | **include** |
 | `static_zan_artif_per_pop21` | static | 1.00 | 1.00 | -0.261 | well_covered | **include** |
 | `filosofi_s_hh_tax_weighted_proxy` | dynamic | 0.67 | 0.40 | 0.204 | moderate_train_coverage | **include** |
@@ -70,8 +71,6 @@ Qualquer peso aprendido sobre elas reflete imputacao, nao sinal economico.
 | `static_zan_artif_per_surface` | static | 1.00 | 1.00 | 0.159 | well_covered | **include** |
 | `static_zan_communes_count` | static | 1.00 | 1.00 | 0.062 | well_covered | **include** |
 | `static_nb_com` | static | 1.00 | 1.00 | 0.062 | well_covered | **include** |
-| `side_stocks_ul_total` | dynamic | 0.33 | 0.40 | 0.998 | sparse_low_train_coverage | **include_flagged** |
-| `side_stocks_et_total` | dynamic | 0.33 | 0.40 | 0.998 | sparse_low_train_coverage | **include_flagged** |
 | `jobs_lt_total` | dynamic | 0.33 | 0.40 | 0.994 | sparse_low_train_coverage | **include_flagged** |
 | `active_lr_total` | dynamic | 0.33 | 0.40 | 0.987 | sparse_low_train_coverage | **include_flagged** |
 | `employed_lr_total` | dynamic | 0.33 | 0.40 | 0.987 | sparse_low_train_coverage | **include_flagged** |

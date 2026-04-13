@@ -1,0 +1,22 @@
+{
+  "zones_count": 306,
+  "new_columns": {
+    "side_stocks_et_2019_total": 306,
+    "side_stocks_ul_2019_total": 306,
+    "side_stocks_et_2020_total": 306,
+    "side_stocks_ul_2020_total": 306,
+    "flores_et_total_2019": 305,
+    "flores_et_total_2020": 305,
+    "flores_et_total_2021": 305
+  },
+  "side_years_added": [
+    2019,
+    2020
+  ],
+  "flores_years_added": [
+    2019,
+    2020,
+    2021
+  ],
+  "notes": "SIDE stocks extraidos diretamente no nivel ZE2020 do arquivo multi-anual. FLORES ET_TOT agregado de nivel comunal via mapeamento commune_to_ze2020_2026. Nenhuma imputacao temporal aplicada."
+}

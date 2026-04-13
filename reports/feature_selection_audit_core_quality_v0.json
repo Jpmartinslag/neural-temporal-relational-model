@@ -1,15 +1,13 @@
 {
-  "total_features": 23,
-  "include_count": 8,
-  "include_flagged_count": 13,
+  "total_features": 24,
+  "include_count": 11,
+  "include_flagged_count": 11,
   "exclude_count": 2,
   "excluded_features": [
     "flores_presential_unit_loc_total",
     "flores_productive_unit_loc_total"
   ],
   "flagged_features": [
-    "side_stocks_ul_total",
-    "side_stocks_et_total",
     "jobs_lt_total",
     "active_lr_total",
     "employed_lr_total",
@@ -25,13 +23,13 @@
   "top5_by_abs_corr_with_target_train": [
     {
       "feature_name": "side_stocks_ul_total",
-      "corr_with_target_train": 0.9984317261069282,
-      "train_obs_rate": 0.3333333333333333
+      "corr_with_target_train": 0.9981583857253548,
+      "train_obs_rate": 1.0
     },
     {
       "feature_name": "side_stocks_et_total",
-      "corr_with_target_train": 0.9982240294009578,
-      "train_obs_rate": 0.3333333333333333
+      "corr_with_target_train": 0.9979957255774068,
+      "train_obs_rate": 1.0
     },
     {
       "feature_name": "jobs_lt_total",
@@ -49,8 +47,8 @@
       "train_obs_rate": 0.3333333333333333
     }
   ],
-  "mean_train_obs_rate_included": 0.917,
-  "mean_abs_corr_included": 0.191,
+  "mean_train_obs_rate_included": 0.939,
+  "mean_abs_corr_included": 0.406,
   "static_features_count": 6,
-  "dynamic_features_count": 17
+  "dynamic_features_count": 18
 }

@@ -39,6 +39,7 @@ DYNAMIC_FEATURES = [
     "bpe_evolution_commune_type_presence_total",
     "flores_presential_unit_loc_total",
     "flores_productive_unit_loc_total",
+    "flores_et_total",
 ]
 
 STATIC_CONTEXT_FEATURES = [

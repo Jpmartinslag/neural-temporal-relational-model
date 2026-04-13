@@ -16,6 +16,7 @@ bpe_facilities_per_1000_pop,dynamic_panel,year_specific,1,Observed only in sourc
 bpe_evolution_commune_type_presence_total,dynamic_panel,year_specific,1,Observed only in source year rows; no temporal imputation applied.
 flores_presential_unit_loc_total,dynamic_panel,year_specific,1,Observed only in source year rows; no temporal imputation applied.
 flores_productive_unit_loc_total,dynamic_panel,year_specific,1,Observed only in source year rows; no temporal imputation applied.
+flores_et_total,dynamic_panel,year_specific,1,Observed only in source year rows; no temporal imputation applied.
 static_nb_com,static_context,repeated_static,1,Repeated across years as structural context.
 static_pop_growth_2021_2023,static_context,repeated_static,1,Repeated across years as structural context.
 static_pop_growth_2018_2023,static_context,repeated_static,1,Repeated across years as structural context.

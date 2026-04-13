@@ -18,13 +18,13 @@ Objetivo:
 
 - target: `side_establishment_creations_official`
 - nos: `280`
-- features: `23`
+- features: `24`
 - horizonte: `1` ano
 - amostras anuais: `5`
 - splits: `{'test': 1, 'train': 3, 'validation': 1}`
 - anos de feature alinhados: `[2019, 2020, 2021, 2022, 2023]`
 - anos de target alinhados: `[2020, 2021, 2022, 2023, 2024]`
-- `x_raw`: `[5, 280, 23]`
+- `x_raw`: `[5, 280, 24]`
 - `y_raw`: `[5, 280]`
 
 ## Decisoes
@@ -36,6 +36,6 @@ Objetivo:
 
 ## Limites
 
-- missingness bruto das features nas amostras: `0.487`
+- missingness bruto das features nas amostras: `0.450`
 - features sem observacao no treino: `['flores_presential_unit_loc_total', 'flores_productive_unit_loc_total']`
 - os baselines devem ser reexecutados antes de qualquer modelo complexo

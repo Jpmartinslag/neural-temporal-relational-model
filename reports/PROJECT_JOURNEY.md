@@ -1588,3 +1588,46 @@ Decisao:
 - isso nao invalida o uso do grafo: ele pode capturar relacoes que so aparecem com profundidade temporal adequada
 - a alavanca prioritaria passa a ser extensao temporal das features (FLORES historico, SIDE stocks 2019-2020)
 - o grafo de mobilidade fica como alternativa disponivel para experimentos STGNN futuros
+
+### 2026-04-13 - Extensao temporal das features (SIDE stocks 2019-2020 + FLORES historico 2019-2021)
+
+O que foi feito:
+
+- adicionadas 7 novas colunas ao `zones_master_annual_v0.csv`:
+  `side_stocks_et_2019_total`, `side_stocks_ul_2019_total`,
+  `side_stocks_et_2020_total`, `side_stocks_ul_2020_total`,
+  `flores_et_total_2019`, `flores_et_total_2020`, `flores_et_total_2021`
+- atualizado `build_panel_zones_v0.py`: FEATURE_SPECS expandido para mapear os novos anos
+- adicionado `flores_et_total` como nova feature dinamica em `build_pre_stgnn_core_v0.py` e `build_graph_model_annual_package_core_v0.py`
+- reconstruida a cadeia completa: panel → core views → pre_stgnn → tensor package
+
+Fontes usadas:
+
+- SIDE ET 2019-2020: `DS_SIDE_STOCKS_ET_COM_2023_CSV_FR.zip` (nivel ZE2020 direto, sem agregar)
+- SIDE UL 2019-2020: `DS_SIDE_STOCKS_UL_COM_2023_CSV_FR.zip` (nivel ZE2020 direto)
+- FLORES 2019-2021: `TD_FLORES{ano}_NA17_TREF_NBETAB_CSV.zip` (nivel comunal, `ET_TOT`, mapeado para ZE2020)
+
+Artefatos:
+
+- [enrich_zones_master_temporal_depth_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/enrich_zones_master_temporal_depth_core_v0.py)
+- [temporal_depth_enrichment_core_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/temporal_depth_enrichment_core_quality_v0.json)
+- [TEMPORAL_DEPTH_ENRICHMENT_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_DEPTH_ENRICHMENT_CORE_V0.md)
+
+Resultado na auditoria de features (tensor STGNN SIDE target, re-executado):
+
+| feature | train_obs antes | train_obs depois | corr target |
+|---|---|---|---|
+| `side_stocks_et_total` | 0.33 | **1.00** | 0.998 |
+| `side_stocks_ul_total` | 0.33 | **1.00** | 0.998 |
+| `flores_et_total` | n/a (nova) | **1.00** | 0.937 |
+
+- `flores_presential_unit_loc_total` e `flores_productive_unit_loc_total` permanecem excluidas (2024 only, nao disponivel para anos de treino)
+- tensor atual: `24 features`, `5 amostras anuais`, `train=3, val=1, test=1`
+- baselines de persistencia e grafos nao mudam (nao usam features)
+
+Decisao:
+
+- as tres features de maior cobertura e correlacao estao agora completamente observadas no treino
+- isso elimina o problema critico de `side_stocks_et_total` com `train_obs=0.33` (apenas 1 ano de treino com SIDE)
+- o tensor esta pronto para primeiros experimentos de modelos com features
+- o proximo passo e um ridge/linear baseline usando as features do tensor para verificar se o ganho sobre persistencia aparece quando se usam as features diretamente

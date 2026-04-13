@@ -1,6 +1,9 @@
 feature_name,train_obs_rate,global_obs_rate,corr_with_target_train,n_valid_pairs_train,feature_type,coverage_class,abs_corr,recommendation
 flores_presential_unit_loc_total,0.0,0.0,,0,dynamic,useless_no_train_obs,,exclude
 flores_productive_unit_loc_total,0.0,0.0,,0,dynamic,useless_no_train_obs,,exclude
+side_stocks_ul_total,1.0,0.8,0.9981583857253548,840,dynamic,well_covered,0.9981583857253548,include
+side_stocks_et_total,1.0,0.8,0.9979957255774068,840,dynamic,well_covered,0.9979957255774068,include
+flores_et_total,1.0,0.6,0.9372240660257878,840,dynamic,well_covered,0.9372240660257878,include
 filosofi_s_dir_tax_di_weighted_proxy,0.6666666666666666,0.4,-0.4389948387178575,560,dynamic,moderate_train_coverage,0.4389948387178575,include
 static_zan_artif_per_pop21,1.0,1.0,-0.26070616661792645,840,static,well_covered,0.26070616661792645,include
 filosofi_s_hh_tax_weighted_proxy,0.6666666666666666,0.4,0.20441569641956384,560,dynamic,moderate_train_coverage,0.20441569641956384,include
@@ -9,8 +12,6 @@ static_pop_growth_2021_2023,1.0,1.0,0.16073129650596196,840,static,well_covered,
 static_zan_artif_per_surface,1.0,1.0,0.1588942241428093,840,static,well_covered,0.1588942241428093,include
 static_zan_communes_count,1.0,1.0,0.06199796327875961,840,static,well_covered,0.06199796327875961,include
 static_nb_com,1.0,1.0,0.061986673249757374,840,static,well_covered,0.061986673249757374,include
-side_stocks_ul_total,0.3333333333333333,0.4,0.9984317261069282,280,dynamic,sparse_low_train_coverage,0.9984317261069282,include_flagged
-side_stocks_et_total,0.3333333333333333,0.4,0.9982240294009578,280,dynamic,sparse_low_train_coverage,0.9982240294009578,include_flagged
 jobs_lt_total,0.3333333333333333,0.4,0.9935133629007102,280,dynamic,sparse_low_train_coverage,0.9935133629007102,include_flagged
 active_lr_total,0.3333333333333333,0.4,0.9871707349225952,280,dynamic,sparse_low_train_coverage,0.9871707349225952,include_flagged
 employed_lr_total,0.3333333333333333,0.4,0.9867633887854613,280,dynamic,sparse_low_train_coverage,0.9867633887854613,include_flagged

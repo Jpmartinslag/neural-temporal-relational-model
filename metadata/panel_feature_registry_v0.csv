@@ -1,7 +1,13 @@
 panel_feature,zones_master_column,source_year,domain,panel_rule
 bpe_evolution_commune_type_presence_total,bpe_evolution_commune_type_presence_2019_total,2019,services_harmonized,populate only on matching source year; keep blank otherwise
+side_stocks_et_total,side_stocks_et_2019_total,2019,economic_structure,populate only on matching source year; keep blank otherwise
+side_stocks_ul_total,side_stocks_ul_2019_total,2019,economic_structure,populate only on matching source year; keep blank otherwise
+flores_et_total,flores_et_total_2019,2019,economic_structure,populate only on matching source year; keep blank otherwise
 filosofi_s_hh_tax_weighted_proxy,filosofi_s_hh_tax_weighted_proxy_2020,2020,income,populate only on matching source year; keep blank otherwise
 filosofi_s_dir_tax_di_weighted_proxy,filosofi_s_dir_tax_di_weighted_proxy_2020,2020,income,populate only on matching source year; keep blank otherwise
+side_stocks_et_total,side_stocks_et_2020_total,2020,economic_structure,populate only on matching source year; keep blank otherwise
+side_stocks_ul_total,side_stocks_ul_2020_total,2020,economic_structure,populate only on matching source year; keep blank otherwise
+flores_et_total,flores_et_total_2020,2020,economic_structure,populate only on matching source year; keep blank otherwise
 population_total,population_2021_total,2021,population,populate only on matching source year; keep blank otherwise
 active_lr_total,active_15_64_2021_total,2021,labour,populate only on matching source year; keep blank otherwise
 employed_lr_total,employed_15_64_2021_total,2021,labour,populate only on matching source year; keep blank otherwise
@@ -16,6 +22,7 @@ bpe_facilities_total,bpe_facilities_2021_total,2021,services,populate only on ma
 bpe_facilities_per_1000_pop,bpe_facilities_per_1000_pop_2021,2021,services,populate only on matching source year; keep blank otherwise
 filosofi_s_hh_tax_weighted_proxy,filosofi_s_hh_tax_weighted_proxy_2021,2021,income,populate only on matching source year; keep blank otherwise
 filosofi_s_dir_tax_di_weighted_proxy,filosofi_s_dir_tax_di_weighted_proxy_2021,2021,income,populate only on matching source year; keep blank otherwise
+flores_et_total,flores_et_total_2021,2021,economic_structure,populate only on matching source year; keep blank otherwise
 population_total,population_2022_total,2022,population,populate only on matching source year; keep blank otherwise
 active_lr_total,active_15_64_2022_total,2022,labour,populate only on matching source year; keep blank otherwise
 employed_lr_total,employed_15_64_2022_total,2022,labour,populate only on matching source year; keep blank otherwise
