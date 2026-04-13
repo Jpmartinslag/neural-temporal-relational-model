@@ -1885,3 +1885,34 @@ Decisao:
 - segmentacao nao deve ser promovida a baseline principal
 - persistencia continua baseline conservador
 - ridge autoregressivo vira desafiante principal, mas precisa de diagnostico de instabilidade por fold antes de qualquer STGNN
+
+### 2026-04-13 - Diagnostico da instabilidade por fold
+
+O que foi feito:
+
+- comparados folds de teste do backtest rolante
+- calculado crescimento agregado real contra `y_lag_0`
+- identificado quando ridge melhora ou piora contra persistencia
+- listadas piores zonas por erro absoluto da persistencia
+
+Artefatos:
+
+- [diagnose_backtest_instability_side_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/diagnose_backtest_instability_side_core_v0.py)
+- [SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md)
+- [side_backtest_fold_instability_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/side_backtest_fold_instability_core_v0.csv)
+- [side_backtest_group_instability_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/side_backtest_group_instability_core_v0.csv)
+- [side_backtest_worst_zones_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/side_backtest_worst_zones_core_v0.csv)
+
+Resultado:
+
+- fold `2020 -> 2021`: crescimento agregado `+16.7%`; ridge reduz WMAPE de `14.317` para `8.358`
+- fold `2021 -> 2022`: crescimento agregado `+1.1%`; persistencia vence, ridge piora para `8.338`
+- fold `2022 -> 2023`: crescimento agregado `-1.4%`; persistencia vence, ridge piora para `10.406`
+- fold `2023 -> 2024`: crescimento agregado `+10.4%`; ridge reduz WMAPE de `9.470` para `3.113`
+
+Decisao:
+
+- o problema principal nao e apenas tipo de zona; e regime temporal agregado
+- ridge ajuda quando ha aceleracao agregada forte
+- persistencia domina quando o proximo ano e estavel ou negativo
+- proximo baseline deve ser uma regra de regime temporal entre persistencia e ridge

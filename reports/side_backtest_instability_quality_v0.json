@@ -1,0 +1,10 @@
+{
+  "fold_count": 4,
+  "worst_persistence_fold": 2020,
+  "worst_persistence_test_year": 2021,
+  "best_ridge_gain_fold": 2023,
+  "best_ridge_gain_delta_wmape": -6.35683252502562,
+  "worst_ridge_loss_fold": 2022,
+  "worst_ridge_loss_delta_wmape": 6.839967039821866,
+  "main_conclusion": "a instabilidade e temporal: ridge ajuda em anos de choque agregado, mas perde forte quando a persistencia ja captura bem o ano seguinte."
+}

@@ -157,6 +157,7 @@ Arquivos principais:
 - [SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md)
 - [SIDE_MODEL_DECISION_MATRIX_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md)
 - [SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md)
+- [SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md)
 
 Leitura:
 
@@ -181,6 +182,7 @@ Leitura:
 - `rich_lags_only` tem melhor teste numerico, mas vem de janela curta diferente e nao decide o baseline principal
 - backtest rolante corrige a leitura: segmentacao nao supera persistencia em media de teste rolante
 - no backtest rolante, ridge autoregressivo tem melhor WMAPE medio de teste (`7.554`) contra persistencia (`7.680`), mas ainda e instavel por fold
+- diagnostico de instabilidade mostra que ridge ajuda em anos de aceleracao agregada forte (`2021`, `2024`) e piora em anos estaveis ou levemente negativos (`2022`, `2023`)
 - leitura atual: a dinamica local e forte; features externas amplas e rasas ainda nao adicionam sinal robusto sobre `y(t+1)=y(t)`
 - nenhuma regra simples e estavel o suficiente para justificar salto imediato para STGNN
 
@@ -288,12 +290,12 @@ Objetivo:
 
 - manter persistencia local como baseline principal
 - avaliar erro por perfil de zona, nao apenas media global
-- investigar instabilidade temporal por ano/fold antes de escolher backbone
+- construir regra simples de regime temporal entre persistencia e ridge
 - usar grafos apenas com operadores mais seletivos, porque media simples de vizinhos falhou
 
 Artefatos esperados:
 
-- diagnostico de anos/folds dificeis, especialmente choques 2021 e 2024
+- baseline de regime temporal: persistencia em anos estaveis, ridge em anos de aceleracao detectavel
 - criterio minimo para avancar para STGNN/grafo dinamico
 
 ## Regra De Higiene
