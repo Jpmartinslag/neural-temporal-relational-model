@@ -158,6 +158,7 @@ Arquivos principais:
 - [SIDE_MODEL_DECISION_MATRIX_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md)
 - [SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md)
 - [SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md)
+- [TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md)
 
 Leitura:
 
@@ -183,6 +184,8 @@ Leitura:
 - backtest rolante corrige a leitura: segmentacao nao supera persistencia em media de teste rolante
 - no backtest rolante, ridge autoregressivo tem melhor WMAPE medio de teste (`7.554`) contra persistencia (`7.680`), mas ainda e instavel por fold
 - diagnostico de instabilidade mostra que ridge ajuda em anos de aceleracao agregada forte (`2021`, `2024`) e piora em anos estaveis ou levemente negativos (`2022`, `2023`)
+- regra simples de regime usando crescimento agregado ja observado falhou: WMAPE medio de teste `9.143`, pior que ridge (`7.554`) e persistencia (`7.680`)
+- oracle nao utilizavel mostra teto diagnostico WMAPE `4.302`, ou seja, escolher corretamente o regime teria valor, mas falta sinal antecipador
 - leitura atual: a dinamica local e forte; features externas amplas e rasas ainda nao adicionam sinal robusto sobre `y(t+1)=y(t)`
 - nenhuma regra simples e estavel o suficiente para justificar salto imediato para STGNN
 
@@ -290,12 +293,12 @@ Objetivo:
 
 - manter persistencia local como baseline principal
 - avaliar erro por perfil de zona, nao apenas media global
-- construir regra simples de regime temporal entre persistencia e ridge
+- procurar sinal antecipador externo de regime temporal antes de escolher backbone
 - usar grafos apenas com operadores mais seletivos, porque media simples de vizinhos falhou
 
 Artefatos esperados:
 
-- baseline de regime temporal: persistencia em anos estaveis, ridge em anos de aceleracao detectavel
+- auditoria de possiveis sinais antecipadores: `DS_ICA`, macro regional, ou indicadores anuais adiantados
 - criterio minimo para avancar para STGNN/grafo dinamico
 
 ## Regra De Higiene

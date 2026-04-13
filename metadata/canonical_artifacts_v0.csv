@@ -19,7 +19,9 @@ baseline,long_history_predictions,canonical,data/processed/long_history_side_tar
 baseline,rolling_backtest_predictions,canonical,data/processed/segmented_decision_rule_backtest_predictions_core_v0.csv,Rolling validation predictions for stability analysis.
 baseline,decision_matrix,canonical,metadata/side_model_decision_matrix_core_v0.csv,Decision matrix between persistence/ridge/segmentation.
 baseline,instability_fold_diagnostic,canonical,metadata/side_backtest_fold_instability_core_v0.csv,Explains year/fold instability.
+baseline,temporal_regime_metrics,canonical,metadata/temporal_regime_side_baseline_metrics_core_v0.csv,Tests whether observed aggregate growth can choose persistence versus ridge.
 report,current_decision_matrix,canonical,reports/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md,Current model decision rules.
 report,rolling_backtest,canonical,reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md,Rolling validation of segmented rule.
 report,instability_diagnostic,canonical,reports/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md,Current explanation of temporal instability.
+report,temporal_regime_baseline,canonical,reports/TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md,Shows that simple observed-growth regime rule is insufficient.
 future_data,candidates,canonical,metadata/future_dataset_candidates_v0.csv,Future datasets registered but not integrated into core.

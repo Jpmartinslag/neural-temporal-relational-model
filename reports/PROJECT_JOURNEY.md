@@ -1917,6 +1917,34 @@ Decisao:
 - persistencia domina quando o proximo ano e estavel ou negativo
 - proximo baseline deve ser uma regra de regime temporal entre persistencia e ridge
 
+### 2026-04-13 - Regra simples de regime temporal
+
+O que foi feito:
+
+- testada regra entre persistencia e ridge usando apenas crescimento agregado ja observado no ano de feature
+- threshold escolhido na validacao de cada fold
+- incluido `oracle_regime_not_usable` apenas como teto diagnostico
+
+Artefatos:
+
+- [evaluate_temporal_regime_side_baseline_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_temporal_regime_side_baseline_core_v0.py)
+- [TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md)
+- [temporal_regime_side_baseline_metrics_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/temporal_regime_side_baseline_metrics_core_v0.csv)
+
+Resultado:
+
+- regra temporal simples: WMAPE medio de teste `9.143`
+- persistencia: WMAPE medio de teste `7.680`
+- ridge: WMAPE medio de teste `7.554`
+- oracle nao utilizavel: WMAPE medio de teste `4.302`
+
+Decisao:
+
+- a regra com crescimento observado nao e suficiente
+- o oracle mostra que escolher o regime correto teria grande valor
+- falta um sinal antecipador externo de regime; sem isso, o modelo so descobre o choque tarde demais
+- proximo passo deve ser auditar sinais candidatos de regime, como `DS_ICA`, contas regionais ou outros indicadores macro/setoriais
+
 ### 2026-04-13 - Consolidacao e higiene dos artefatos
 
 O que foi feito:
