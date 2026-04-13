@@ -1,0 +1,106 @@
+{
+  "comparison_file": "metadata/rich_vs_long_side_target_comparison_core_v0.csv",
+  "packages": {
+    "rich_temporal_baselines": {
+      "sample_count": 5,
+      "split_counts": {
+        "train": 3,
+        "validation": 1,
+        "test": 1
+      },
+      "purpose": "shorter annual window, official SIDE target, temporal/spatial baselines"
+    },
+    "rich_feature_augmented": {
+      "sample_count": 5,
+      "purpose": "same rich window plus current external features and masks"
+    },
+    "long_history_side_lags": {
+      "sample_count": 8,
+      "split_counts": {
+        "test": 2,
+        "train": 5,
+        "validation": 1
+      },
+      "purpose": "longer supervised window using only official SIDE target history"
+    }
+  },
+  "best_by_package_split": [
+    {
+      "package": "rich_temporal_baselines",
+      "split": "validation",
+      "model": "persistence",
+      "wmape": 3.5657895094423715,
+      "mae": 140.58214285714286
+    },
+    {
+      "package": "rich_temporal_baselines",
+      "split": "test",
+      "model": "ridge_autoregressive",
+      "wmape": 3.326333858481149,
+      "mae": 144.82489347149735
+    },
+    {
+      "package": "rich_feature_augmented",
+      "split": "validation",
+      "model": "persistence",
+      "wmape": 3.5657895094423715,
+      "mae": 140.58214285714286
+    },
+    {
+      "package": "rich_feature_augmented",
+      "split": "test",
+      "model": "persistence",
+      "wmape": 9.469858230203045,
+      "mae": 412.3071428571429
+    },
+    {
+      "package": "long_history_side_lags",
+      "split": "validation",
+      "model": "persistence",
+      "wmape": 3.3687525018585234,
+      "mae": 134.65
+    },
+    {
+      "package": "long_history_side_lags",
+      "split": "test",
+      "model": "ridge_autoregressive",
+      "wmape": 6.406123847280343,
+      "mae": 265.739287013158
+    }
+  ],
+  "feature_depth_highlights": [
+    {
+      "feature_name": "side_creations_et_total",
+      "role": "target_history_lag",
+      "observed_years_core": "2019,2020,2021,2022,2023",
+      "observed_year_count_core": 5,
+      "train_observed_count_tensor": 840,
+      "notes": "target history lag; valid for t->t+1 if timing is explicit; not an independent external covariate"
+    },
+    {
+      "feature_name": "side_stocks_et_total",
+      "role": "economic_stock",
+      "observed_years_core": "2019,2020,2021,2023",
+      "observed_year_count_core": 4,
+      "train_observed_count_tensor": 840,
+      "notes": "usable in current rich annual package"
+    },
+    {
+      "feature_name": "side_stocks_ul_total",
+      "role": "economic_stock",
+      "observed_years_core": "2019,2020,2021,2023",
+      "observed_year_count_core": 4,
+      "train_observed_count_tensor": 840,
+      "notes": "usable in current rich annual package"
+    },
+    {
+      "feature_name": "flores_et_total",
+      "role": "employment_establishment_stock",
+      "observed_years_core": "2019,2020,2021",
+      "observed_year_count_core": 3,
+      "train_observed_count_tensor": 840,
+      "notes": "usable in current rich annual package"
+    }
+  ],
+  "main_conclusion": "Persistence remains the validation winner in both rich and long packages. The long package improves test stability but uses only target history. Current feature augmentation is not robust and should be replaced by a controlled hybrid feature set."
+}

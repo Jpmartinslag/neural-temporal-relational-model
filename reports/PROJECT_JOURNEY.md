@@ -1714,3 +1714,88 @@ Decisao:
 - nao fundir pacote rico e pacote longo sem nome explicito
 - usar o pacote longo para testar memoria temporal do alvo
 - usar o pacote rico para testar covariaveis e arquitetura com mais contexto
+
+### 2026-04-13 - Comparacao pacote rico vs pacote longo SIDE
+
+O que foi feito:
+
+- consolidada comparacao entre baselines do pacote rico, pacote rico com features e pacote longo
+- criado registro unico de metricas por pacote/modelo/split
+- identificadas features candidatas para um hibrido controlado
+
+Artefatos:
+
+- [compare_rich_vs_long_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/compare_rich_vs_long_side_target_core_v0.py)
+- [RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md)
+- [rich_vs_long_side_target_comparison_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/rich_vs_long_side_target_comparison_core_v0.csv)
+
+Resultado:
+
+- pacote rico temporal: persistencia vence na validacao, ridge vence no teste
+- pacote rico com todas as features: persistencia continua vencendo; features externas amplas pioram muito
+- pacote longo SIDE: persistencia vence na validacao, ridge melhora no teste
+
+Decisao:
+
+- proximo baseline deve ser hibrido e controlado
+- base temporal: lags oficiais `SIDE`
+- features candidatas: `side_stocks_et_total`, `side_stocks_ul_total`, `flores_et_total`
+- manter `side_creations_et_total` rotulado como historico do target
+
+### 2026-04-13 - Baseline hibrido controlado
+
+O que foi feito:
+
+- testado baseline hibrido com poucos grupos de features
+- base comum: 5 lags oficiais `SIDE` e taxas recentes de crescimento
+- grupos testados:
+  - `lags_only`
+  - `lags_plus_side_stocks`
+  - `lags_plus_side_stocks_flores`
+
+Artefatos:
+
+- [evaluate_controlled_hybrid_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_controlled_hybrid_side_target_core_v0.py)
+- [CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md)
+- [controlled_hybrid_side_target_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/controlled_hybrid_side_target_metrics_core_v0.json)
+
+Resultado:
+
+- persistencia continua vencendo na validacao: WMAPE `3.566`
+- `lags_only`: validacao WMAPE `7.302`, teste WMAPE `3.326`
+- `lags_plus_side_stocks`: validacao WMAPE `9.971`, teste WMAPE `3.497`
+- `lags_plus_side_stocks_flores`: validacao WMAPE `10.716`, teste WMAPE `6.506`
+
+Decisao:
+
+- o hibrido controlado ainda nao supera persistencia em validacao
+- `SIDE stocks` e `FLORES` nao devem ser tratados como ganho preditivo confirmado nesta janela
+- proximo ganho provavel nao vira de mais features tabulares rasas, mas de melhor grafo de mobilidade ou validacao por grupos de zonas
+
+### 2026-04-13 - Diagnostico de erro por grupos de zonas
+
+O que foi feito:
+
+- criado diagnostico dos erros por tamanho e volatilidade das zonas `ZE2020`
+- comparados pacotes `rich_temporal`, `long_history` e `controlled_hybrid`
+- identificado onde a persistencia falha no teste do pacote longo
+
+Artefatos:
+
+- [evaluate_zone_group_errors_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_zone_group_errors_side_target_core_v0.py)
+- [ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md)
+- [zone_group_error_metrics_side_target_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/zone_group_error_metrics_side_target_core_v0.csv)
+- [zone_error_profile_side_target_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/zone_error_profile_side_target_core_v0.csv)
+
+Resultado:
+
+- no teste do pacote longo, zonas pequenas tem WMAPE mais alto: `8.550`
+- zonas grandes concentram os maiores erros absolutos: Paris, Marseille, Lyon, Bordeaux e Toulouse
+- por volatilidade, nao ha uma separacao extrema; o problema principal combina escala urbana e choques locais
+- persistencia continua forte globalmente, mas esconde perfis territoriais diferentes
+
+Decisao:
+
+- antes de STGNN, testar baseline segmentado por perfil de zona
+- nao tratar erro medio global como criterio suficiente
+- manter grafos geografico e de mobilidade como estruturas disponiveis, mas nao usar media simples de vizinhos como solucao

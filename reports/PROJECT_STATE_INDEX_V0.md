@@ -53,21 +53,28 @@ Leitura:
 - unidade territorial principal: `ZE2020`
 - periodo efetivo de features: `2019-2024`
 
-### 3. Grafo Espacial
+### 3. Grafos Territoriais
 
-Status: fechado como grafo espacial estatico inicial.
+Status: fechado para grafos observados iniciais.
 
 Arquivos principais:
 
 - [graph_nodes_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_nodes_ze2020_core_v0.csv)
 - [graph_edges_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_edges_ze2020_core_v0.csv)
 - [graph_adjacency_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_adjacency_core_v0.csv)
+- [mobility_adjacency_raw_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/mobility_adjacency_raw_core_v0.csv)
+- [mobility_adjacency_row_normalized_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/mobility_adjacency_row_normalized_core_v0.csv)
 - [GRAPH_CORE_V0_INSPECTION.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_CORE_V0_INSPECTION.md)
+- [MOBILITY_GRAPH_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/MOBILITY_GRAPH_CORE_V0.md)
+- [MOBILITY_SPATIAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/MOBILITY_SPATIAL_BASELINE_CORE_V0.md)
 
 Leitura:
 
-- grafo atual: adjacencia geografica entre zonas `ZE2020`
-- ainda nao ha grafo de mobilidade nem grafo adaptativo
+- grafo geografico: adjacencia espacial entre zonas `ZE2020`
+- grafo de mobilidade: fluxos domicilio-trabalho entre zonas `ZE2020`
+- ambos estao disponiveis para experimentos futuros
+- media simples dos vizinhos nao supera persistencia local em nenhum dos dois grafos
+- ainda nao ha grafo adaptativo aprendido
 
 ### 4. Target Proxy
 
@@ -144,6 +151,9 @@ Arquivos principais:
 - [FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md)
 - [LONG_HISTORY_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/LONG_HISTORY_SIDE_TARGET_CORE_V0.md)
 - [long_history_side_target_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/long_history_side_target_baseline_metrics_core_v0.json)
+- [RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md)
+- [CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md)
+- [ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md)
 
 Leitura:
 
@@ -158,7 +168,12 @@ Leitura:
 - no alvo oficial `SIDE`, features externas continuam muito piores que persistencia
 - pacote longo `SIDE` aumenta amostras anuais para `8`, com `train=5`, `validation=1`, `test=2`
 - no pacote longo, persistencia ainda vence a validacao com WMAPE `3.369`
+- comparacao rico vs longo confirma que o proximo passo deve ser um baseline hibrido controlado, nao arquitetura complexa
+- baseline hibrido controlado tambem nao supera persistencia na validacao
+- diagnostico por grupos mostra que grandes zonas urbanas concentram os maiores erros absolutos
+- zonas pequenas tem WMAPE mais alto, mas impacto agregado menor
 - leitura atual: a dinamica local e forte; features externas amplas e rasas ainda nao adicionam sinal robusto sobre `y(t+1)=y(t)`
+- proximo ganho metodologico deve testar robustez por perfil de zona antes de aumentar complexidade
 
 ### 7. Inventario De Datasets Futuros
 
@@ -187,7 +202,8 @@ Decisao atual:
 - nao escolher arquitetura ainda
 - testar primeiro baselines fortes
 - reconstruir os baselines com target oficial `SIDE` antes de qualquer arquitetura complexa
-- se o grafo espacial puro continuar fraco, considerar grafo de mobilidade, pesos economicos ou grafo adaptativo
+- grafos geografico e de mobilidade ja foram testados com vizinhos simples e nao superaram persistencia
+- proximo uso de grafo deve ser mais seletivo: pesos economicos, atencao, ou grafo adaptativo
 - `STGNN` permanece como familia candidata, nao como objetivo obrigatorio
 
 ### 9. Grafo Dinamico Mais Rico
@@ -196,13 +212,15 @@ Status: conceitual.
 
 Estado atual:
 
-- implementado apenas grafo espacial estatico
+- implementados grafo geografico estatico e grafo de mobilidade observado
+- nenhum dos dois ainda e dinamico no tempo
+- nenhum grafo adaptativo foi aprendido
 
 Opcoes futuras:
 
-- adicionar grafo de mobilidade
 - adicionar grafo adaptativo aprendido
 - manter grafo espacial apenas como contexto/auditoria
+- manter grafo de mobilidade como visao complementar, nao como media simples de vizinhos
 - inferir dinamica intra-anual ou mensal apenas como produto futuro de modelo, nao como dado observado hoje
 
 Fonte futura registrada:
@@ -255,19 +273,20 @@ Para entender o projeto rapidamente, ler nesta ordem:
 
 ## Proximo Passo
 
-Inspecionar `SIDE` comunal de criacoes para validar o target proxy.
+Formalizar a proxima rodada de validacao antes de qualquer modelo grafo-temporal.
 
 Objetivo:
 
-- verificar se a serie oficial de criacoes locais pode substituir ou auditar o target derivado de SIRENE
-- separar validacao de target de uso como feature para evitar vazamento
-- manter persistencia local como baseline principal ate que outro sinal seja demonstrado
+- manter persistencia local como baseline principal
+- avaliar erro por perfil de zona, nao apenas media global
+- testar se segmentacao territorial melhora onde a persistencia falha
+- usar grafos apenas com operadores mais seletivos, porque media simples de vizinhos falhou
 
 Artefatos esperados:
 
-- `src/data/inspect_side_communal_creations_v0.py`
-- `metadata/side_communal_creations_inventory_v0.csv`
-- `reports/SIDE_COMMUNAL_CREATIONS_INSPECTION_V0.md`
+- baseline segmentado por perfil de zona
+- matriz de decisao: quando usar persistencia, lags, ou modelo segmentado
+- criterio minimo para avancar para STGNN/grafo dinamico
 
 ## Regra De Higiene
 

@@ -1,0 +1,323 @@
+{
+  "target_column": "side_establishment_creations_official",
+  "node_count": 280,
+  "row_count": 1400,
+  "sample_count": 5,
+  "feature_years": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023
+  ],
+  "target_years": [
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "split_counts": {
+    "test": 1,
+    "train": 3,
+    "validation": 1
+  },
+  "models": {
+    "persistence": "y_hat(t+1) = y(t)",
+    "lags_only": "ridge on official SIDE target lags and growth",
+    "lags_plus_side_stocks": "lags plus SIDE stock ET/UL features and masks",
+    "lags_plus_side_stocks_flores": "lags plus SIDE stock ET/UL and FLORES ET features and masks"
+  },
+  "model_metadata": {
+    "lags_only": {
+      "feature_group": [],
+      "design_feature_names": [
+        "log_y_lag_0",
+        "log_y_lag_1",
+        "log_y_lag_2",
+        "log_y_lag_3",
+        "log_y_lag_4",
+        "growth_1y",
+        "growth_2y",
+        "growth_3y"
+      ],
+      "coverage": {},
+      "scaling_scope": "train_split_only",
+      "selected_alpha": 10.0,
+      "alpha_grid": [
+        0.01,
+        0.1,
+        1.0,
+        10.0,
+        100.0,
+        1000.0
+      ],
+      "alpha_selection": [
+        {
+          "alpha": 0.01,
+          "validation_wmape": 18.749996579535217,
+          "validation_mae": 739.2233026473209
+        },
+        {
+          "alpha": 0.1,
+          "validation_wmape": 18.279796180915497,
+          "validation_mae": 720.6855343816387
+        },
+        {
+          "alpha": 1.0,
+          "validation_wmape": 17.076132063311835,
+          "validation_mae": 673.230775629085
+        },
+        {
+          "alpha": 10.0,
+          "validation_wmape": 7.302223971493062,
+          "validation_mae": 287.8920056321068
+        },
+        {
+          "alpha": 100.0,
+          "validation_wmape": 49.905071244839036,
+          "validation_mae": 1967.5199100955901
+        },
+        {
+          "alpha": 1000.0,
+          "validation_wmape": 98.64771570409428,
+          "validation_mae": 3889.210853562843
+        }
+      ]
+    },
+    "lags_plus_side_stocks": {
+      "feature_group": [
+        "side_stocks_et_total",
+        "side_stocks_ul_total"
+      ],
+      "design_feature_names": [
+        "log_y_lag_0",
+        "log_y_lag_1",
+        "log_y_lag_2",
+        "log_y_lag_3",
+        "log_y_lag_4",
+        "growth_1y",
+        "growth_2y",
+        "growth_3y",
+        "log_side_stocks_et_total",
+        "mask_side_stocks_et_total",
+        "log_side_stocks_ul_total",
+        "mask_side_stocks_ul_total"
+      ],
+      "coverage": {
+        "side_stocks_et_total": {
+          "train_observed_count": 840,
+          "all_observed_count": 1120
+        },
+        "side_stocks_ul_total": {
+          "train_observed_count": 840,
+          "all_observed_count": 1120
+        }
+      },
+      "scaling_scope": "train_split_only",
+      "selected_alpha": 10.0,
+      "alpha_grid": [
+        0.01,
+        0.1,
+        1.0,
+        10.0,
+        100.0,
+        1000.0
+      ],
+      "alpha_selection": [
+        {
+          "alpha": 0.01,
+          "validation_wmape": 28.24779222992923,
+          "validation_mae": 1113.6762706130173
+        },
+        {
+          "alpha": 0.1,
+          "validation_wmape": 26.634895280746395,
+          "validation_mae": 1050.087405167247
+        },
+        {
+          "alpha": 1.0,
+          "validation_wmape": 22.45114772654479,
+          "validation_mae": 885.1421119059601
+        },
+        {
+          "alpha": 10.0,
+          "validation_wmape": 9.970507801428898,
+          "validation_mae": 393.08976269828463
+        },
+        {
+          "alpha": 100.0,
+          "validation_wmape": 65.80718509541245,
+          "validation_mae": 2594.46472418291
+        },
+        {
+          "alpha": 1000.0,
+          "validation_wmape": 98.9643182283536,
+          "validation_mae": 3901.6929872323985
+        }
+      ]
+    },
+    "lags_plus_side_stocks_flores": {
+      "feature_group": [
+        "side_stocks_et_total",
+        "side_stocks_ul_total",
+        "flores_et_total"
+      ],
+      "design_feature_names": [
+        "log_y_lag_0",
+        "log_y_lag_1",
+        "log_y_lag_2",
+        "log_y_lag_3",
+        "log_y_lag_4",
+        "growth_1y",
+        "growth_2y",
+        "growth_3y",
+        "log_side_stocks_et_total",
+        "mask_side_stocks_et_total",
+        "log_side_stocks_ul_total",
+        "mask_side_stocks_ul_total",
+        "log_flores_et_total",
+        "mask_flores_et_total"
+      ],
+      "coverage": {
+        "side_stocks_et_total": {
+          "train_observed_count": 840,
+          "all_observed_count": 1120
+        },
+        "side_stocks_ul_total": {
+          "train_observed_count": 840,
+          "all_observed_count": 1120
+        },
+        "flores_et_total": {
+          "train_observed_count": 840,
+          "all_observed_count": 840
+        }
+      },
+      "scaling_scope": "train_split_only",
+      "selected_alpha": 10.0,
+      "alpha_grid": [
+        0.01,
+        0.1,
+        1.0,
+        10.0,
+        100.0,
+        1000.0
+      ],
+      "alpha_selection": [
+        {
+          "alpha": 0.01,
+          "validation_wmape": 28.64715932545014,
+          "validation_mae": 1129.4214181957032
+        },
+        {
+          "alpha": 0.1,
+          "validation_wmape": 26.892869211158416,
+          "validation_mae": 1060.2580918672234
+        },
+        {
+          "alpha": 1.0,
+          "validation_wmape": 22.420881538621433,
+          "validation_mae": 883.9488598805347
+        },
+        {
+          "alpha": 10.0,
+          "validation_wmape": 10.715501615127208,
+          "validation_mae": 422.46133005179394
+        },
+        {
+          "alpha": 100.0,
+          "validation_wmape": 67.860464857782,
+          "validation_mae": 2675.4157921342703
+        },
+        {
+          "alpha": 1000.0,
+          "validation_wmape": 99.02991820833826,
+          "validation_mae": 3904.2792828432885
+        }
+      ]
+    }
+  },
+  "metrics": {
+    "persistence": {
+      "train": {
+        "mae": 278.2738095238095,
+        "rmse": 768.7697066773391,
+        "mape": 8.790179401025105,
+        "wmape": 7.363825925770745
+      },
+      "validation": {
+        "mae": 140.58214285714286,
+        "rmse": 470.6559442492391,
+        "mape": 4.088999447238438,
+        "wmape": 3.5657895094423715
+      },
+      "test": {
+        "mae": 412.3071428571429,
+        "rmse": 1319.3677923265261,
+        "mape": 9.878610946282853,
+        "wmape": 9.469858230203045
+      }
+    },
+    "lags_only": {
+      "train": {
+        "mae": 303.7763513716134,
+        "rmse": 705.9282339012734,
+        "mape": 8.928075208878584,
+        "wmape": 8.03868741975494
+      },
+      "validation": {
+        "mae": 287.89200563210693,
+        "rmse": 667.5396970095593,
+        "mape": 7.368615206573738,
+        "wmape": 7.302223971493064
+      },
+      "test": {
+        "mae": 144.8248934715293,
+        "rmse": 451.95181861863597,
+        "mape": 3.8996131964553795,
+        "wmape": 3.326333858481883
+      }
+    },
+    "lags_plus_side_stocks": {
+      "train": {
+        "mae": 299.153263900076,
+        "rmse": 660.7834227572329,
+        "mape": 8.949752524245943,
+        "wmape": 7.916348880464199
+      },
+      "validation": {
+        "mae": 393.0897626982857,
+        "rmse": 3476.089115957279,
+        "mape": 6.723032363859353,
+        "wmape": 9.970507801428925
+      },
+      "test": {
+        "mae": 152.27142423642414,
+        "rmse": 466.5250724513795,
+        "mape": 4.1061914871100775,
+        "wmape": 3.497365556263633
+      }
+    },
+    "lags_plus_side_stocks_flores": {
+      "train": {
+        "mae": 308.2978185860165,
+        "rmse": 744.815653178328,
+        "mape": 8.938283498256085,
+        "wmape": 8.158336831077264
+      },
+      "validation": {
+        "mae": 422.4613300517939,
+        "rmse": 3707.6684741019494,
+        "mape": 6.920942692668628,
+        "wmape": 10.715501615127206
+      },
+      "test": {
+        "mae": 283.28136861889,
+        "rmse": 1828.4481763241088,
+        "mape": 4.474299824246638,
+        "wmape": 6.506398073749266
+      }
+    }
+  },
+  "interpretation": "This controlled hybrid tests a small, high-coverage feature set instead of all available external features."
+}
