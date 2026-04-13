@@ -154,6 +154,7 @@ Arquivos principais:
 - [RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md)
 - [CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md)
 - [ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md)
+- [SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md)
 
 Leitura:
 
@@ -172,8 +173,10 @@ Leitura:
 - baseline hibrido controlado tambem nao supera persistencia na validacao
 - diagnostico por grupos mostra que grandes zonas urbanas concentram os maiores erros absolutos
 - zonas pequenas tem WMAPE mais alto, mas impacto agregado menor
+- baseline segmentado por tamanho+volatilidade melhora a persistencia no pacote longo: validacao WMAPE `3.259` vs. `3.369`; teste WMAPE `6.564` vs. `6.664`
+- no teste do pacote longo, ridge autoregressivo ainda e melhor: WMAPE `6.406`
 - leitura atual: a dinamica local e forte; features externas amplas e rasas ainda nao adicionam sinal robusto sobre `y(t+1)=y(t)`
-- proximo ganho metodologico deve testar robustez por perfil de zona antes de aumentar complexidade
+- segmentacao territorial e promissora como camada de robustez, mas ainda nao justifica arquitetura complexa
 
 ### 7. Inventario De Datasets Futuros
 
@@ -279,12 +282,11 @@ Objetivo:
 
 - manter persistencia local como baseline principal
 - avaliar erro por perfil de zona, nao apenas media global
-- testar se segmentacao territorial melhora onde a persistencia falha
+- consolidar criterio de escolha entre persistencia, ridge e segmentacao
 - usar grafos apenas com operadores mais seletivos, porque media simples de vizinhos falhou
 
 Artefatos esperados:
 
-- baseline segmentado por perfil de zona
 - matriz de decisao: quando usar persistencia, lags, ou modelo segmentado
 - criterio minimo para avancar para STGNN/grafo dinamico
 

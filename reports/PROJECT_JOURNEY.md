@@ -1799,3 +1799,31 @@ Decisao:
 - antes de STGNN, testar baseline segmentado por perfil de zona
 - nao tratar erro medio global como criterio suficiente
 - manter grafos geografico e de mobilidade como estruturas disponiveis, mas nao usar media simples de vizinhos como solucao
+
+### 2026-04-13 - Baseline segmentado por perfil de zona
+
+O que foi feito:
+
+- criado baseline segmentado usando perfis calculados apenas com historico ate `2021`
+- grupos usados: tamanho, volatilidade e tamanho+volatilidade
+- para cada grupo, o modelo foi escolhido na validacao entre persistencia, delta, media movel, ridge autoregressivo e blend espacial
+
+Artefatos:
+
+- [evaluate_segmented_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_segmented_side_target_core_v0.py)
+- [SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md)
+- [segmented_side_target_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/segmented_side_target_predictions_core_v0.csv)
+- [segmented_zone_profile_side_target_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/segmented_zone_profile_side_target_core_v0.csv)
+
+Resultado:
+
+- persistencia longa: validacao WMAPE `3.369`, teste WMAPE `6.664`
+- segmentado por tamanho+volatilidade: validacao WMAPE `3.259`, teste WMAPE `6.564`
+- ridge autoregressivo: validacao WMAPE `4.850`, teste WMAPE `6.406`
+
+Decisao:
+
+- segmentacao e o primeiro ganho metodologico limpo sobre persistencia na validacao
+- o ganho ainda e pequeno, entao nao substitui sozinho o baseline principal
+- o ridge vence no teste, mas perde na validacao; deve ser tratado como candidato, nao como modelo final
+- proximo passo: criar uma matriz de decisao simples entre persistencia, ridge e segmentacao antes de qualquer STGNN

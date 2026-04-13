@@ -39,6 +39,8 @@ Thumbs.db
 *.swp
 *.swo
 .codex
+AGENTS.md
+CLAUDE.md
 
 # Temporary outputs
 tmp/
