@@ -1,0 +1,20 @@
+{
+  "baseline_model": "persistence",
+  "validation_tolerance_wmape": 0.25,
+  "min_validation_improvement_wmape": 0.05,
+  "rows": 7,
+  "conservative_default": "persistence",
+  "best_validation_model": "segmented_by_size_volatility_group",
+  "best_validation_wmape": 3.2591145938771446,
+  "best_test_model": "rich_lags_only",
+  "best_test_wmape": 3.326333858481883,
+  "recommended_next_candidate": "segmented_by_size_volatility_group",
+  "recommendation_reason": "candidate beats persistence in both validation and test",
+  "decision_counts": {
+    "candidate_for_next_stage": 2,
+    "conservative_default": 1,
+    "diagnostic_only": 3,
+    "marginal_candidate": 1
+  },
+  "main_conclusion": "Do not advance to STGNN until the segmented/ridge/persistence decision rule is stable under an additional temporal validation."
+}

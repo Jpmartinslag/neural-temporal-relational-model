@@ -1827,3 +1827,31 @@ Decisao:
 - o ganho ainda e pequeno, entao nao substitui sozinho o baseline principal
 - o ridge vence no teste, mas perde na validacao; deve ser tratado como candidato, nao como modelo final
 - proximo passo: criar uma matriz de decisao simples entre persistencia, ridge e segmentacao antes de qualquer STGNN
+
+### 2026-04-13 - Matriz de decisao dos baselines SIDE
+
+O que foi feito:
+
+- criada matriz de decisao auditavel entre persistencia, ridge, segmentacao e baseline rico de lags
+- definida persistencia como baseline conservador obrigatorio
+- definida margem minima de `0.050` ponto de WMAPE na validacao para candidato forte
+- documentada a restricao de comparabilidade entre pacote longo e pacote rico
+
+Artefatos:
+
+- [build_side_model_decision_matrix_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_side_model_decision_matrix_core_v0.py)
+- [SIDE_MODEL_DECISION_MATRIX_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md)
+- [side_model_decision_matrix_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/side_model_decision_matrix_core_v0.csv)
+
+Resultado:
+
+- candidato recomendado: `segmented_by_size_volatility_group`
+- melhor validacao: `segmented_by_size_volatility_group`, WMAPE `3.259`
+- melhor teste numerico: `rich_lags_only`, WMAPE `3.326`, mas em janela curta diferente
+- persistencia permanece baseline conservador e referencia obrigatoria
+
+Decisao:
+
+- nao avancar para STGNN ainda
+- proximo passo metodologico: backtest temporal adicional da regra segmentada
+- se a regra segmentada permanecer estavel, ela vira baseline forte para comparar contra modelos grafo-temporais

@@ -155,6 +155,7 @@ Arquivos principais:
 - [CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md)
 - [ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md)
 - [SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md)
+- [SIDE_MODEL_DECISION_MATRIX_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md)
 
 Leitura:
 
@@ -175,6 +176,8 @@ Leitura:
 - zonas pequenas tem WMAPE mais alto, mas impacto agregado menor
 - baseline segmentado por tamanho+volatilidade melhora a persistencia no pacote longo: validacao WMAPE `3.259` vs. `3.369`; teste WMAPE `6.564` vs. `6.664`
 - no teste do pacote longo, ridge autoregressivo ainda e melhor: WMAPE `6.406`
+- matriz de decisao escolhe `segmented_by_size_volatility_group` como candidato da proxima etapa, com persistencia como referencia conservadora
+- `rich_lags_only` tem melhor teste numerico, mas vem de janela curta diferente e nao decide o baseline principal
 - leitura atual: a dinamica local e forte; features externas amplas e rasas ainda nao adicionam sinal robusto sobre `y(t+1)=y(t)`
 - segmentacao territorial e promissora como camada de robustez, mas ainda nao justifica arquitetura complexa
 
@@ -282,12 +285,12 @@ Objetivo:
 
 - manter persistencia local como baseline principal
 - avaliar erro por perfil de zona, nao apenas media global
-- consolidar criterio de escolha entre persistencia, ridge e segmentacao
+- validar se a regra segmentada se mantem em uma janela temporal adicional
 - usar grafos apenas com operadores mais seletivos, porque media simples de vizinhos falhou
 
 Artefatos esperados:
 
-- matriz de decisao: quando usar persistencia, lags, ou modelo segmentado
+- backtest temporal adicional da regra segmentada
 - criterio minimo para avancar para STGNN/grafo dinamico
 
 ## Regra De Higiene
