@@ -49,6 +49,11 @@ def main():
         & (df["ACTIVITY"] == "_T")
         & (df["LEGAL_FORM"] == "_T")
     ].copy()
+    if "SIDE_MEASURE" in total.columns:
+        total = total[total["SIDE_MEASURE"] == "UNIT_LOC_BURE"].copy()
+    duplicated = int(total.duplicated(["GEO", "TIME_PERIOD"]).sum())
+    if duplicated:
+        raise ValueError(f"SIDE creations has {duplicated} duplicated GEO/TIME_PERIOD rows after filtering.")
 
     pivot = total.pivot(index="GEO", columns="TIME_PERIOD", values="OBS_VALUE")
     pivot.index.name = "ze2020"

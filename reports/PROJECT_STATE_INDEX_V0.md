@@ -141,6 +141,9 @@ Arquivos principais:
 - [side_target_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/side_target_baseline_metrics_core_v0.json)
 - [FEATURE_AUGMENTED_BASELINE_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_AUGMENTED_BASELINE_SIDE_TARGET_CORE_V0.md)
 - [feature_augmented_baseline_side_target_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/feature_augmented_baseline_side_target_metrics_core_v0.json)
+- [FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md)
+- [LONG_HISTORY_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/LONG_HISTORY_SIDE_TARGET_CORE_V0.md)
+- [long_history_side_target_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/long_history_side_target_baseline_metrics_core_v0.json)
 
 Leitura:
 
@@ -153,6 +156,8 @@ Leitura:
 - no alvo oficial `SIDE`, persistencia tem WMAPE `3.566` na validacao e `9.470` no teste
 - no alvo oficial `SIDE`, o ridge autoregressivo melhora no teste, mas perde na validacao
 - no alvo oficial `SIDE`, features externas continuam muito piores que persistencia
+- pacote longo `SIDE` aumenta amostras anuais para `8`, com `train=5`, `validation=1`, `test=2`
+- no pacote longo, persistencia ainda vence a validacao com WMAPE `3.369`
 - leitura atual: a dinamica local e forte; features externas amplas e rasas ainda nao adicionam sinal robusto sobre `y(t+1)=y(t)`
 
 ### 7. Inventario De Datasets Futuros

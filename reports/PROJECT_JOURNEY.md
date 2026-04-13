@@ -1622,7 +1622,7 @@ Resultado na auditoria de features (tensor STGNN SIDE target, re-executado):
 | `flores_et_total` | n/a (nova) | **1.00** | 0.937 |
 
 - `flores_presential_unit_loc_total` e `flores_productive_unit_loc_total` permanecem excluidas (2024 only, nao disponivel para anos de treino)
-- tensor atual: `24 features`, `5 amostras anuais`, `train=3, val=1, test=1`
+- tensor atual: `25 features`, `5 amostras anuais`, `train=3, val=1, test=1`
 - baselines de persistencia e grafos nao mudam (nao usam features)
 
 Decisao:
@@ -1678,3 +1678,39 @@ Acao no documento da tese:
 
 - A citacao Wu2019 (Graph WaveNet) no `.tex` pode ser complementada ou substituida por Hui2020 (WMGCN) como referencia para a construcao do multigrafo no Stage 2
 - O STGNN no Stage 3 e a extensao temporal natural dos embeddings do WMGCN
+
+### 2026-04-13 - Inventario temporal e pacote longo SIDE
+
+O que foi feito:
+
+- criada auditoria de disponibilidade temporal das features atuais
+- preservadas explicitamente as adicoes recentes: `SIDE stocks`, `FLORES historico` e `SIDE creations`
+- separado o problema em dois pacotes:
+  - pacote rico: mais features, janela `2019-2023 -> 2020-2024`
+  - pacote longo: mais anos supervisionados, usando historico oficial `SIDE`
+- criado baseline longo com 5 lags do target `SIDE`
+
+Artefatos:
+
+- [audit_feature_temporal_availability_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/audit_feature_temporal_availability_core_v0.py)
+- [FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md)
+- [feature_temporal_availability_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/feature_temporal_availability_core_v0.csv)
+- [supervised_year_availability_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/supervised_year_availability_core_v0.csv)
+- [build_long_history_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_long_history_side_target_core_v0.py)
+- [long_history_side_target_dataset_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/long_history_side_target_dataset_core_v0.csv)
+- [LONG_HISTORY_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/LONG_HISTORY_SIDE_TARGET_CORE_V0.md)
+
+Resultado:
+
+- pacote rico atual: `5` amostras anuais, `train=3`, `validation=1`, `test=1`
+- pacote longo SIDE: `8` amostras anuais, `train=5`, `validation=1`, `test=2`
+- no pacote longo, persistencia continua vencendo na validacao: WMAPE `3.369`
+- ridge autoregressivo melhora no treino/teste, mas perde para persistencia na validacao
+- media dos vizinhos geograficos continua muito pior, com `alpha=1.0`
+
+Decisao:
+
+- nao descartar as features adicionadas; elas permanecem no pacote rico
+- nao fundir pacote rico e pacote longo sem nome explicito
+- usar o pacote longo para testar memoria temporal do alvo
+- usar o pacote rico para testar covariaveis e arquitetura com mais contexto

@@ -4,9 +4,9 @@ Data: 2026-04-13
 
 ## Objetivo
 
-- Adicionar profundidade temporal ao zones_master para expandir amostras de treino
-- Anos de treino efetivos: 3 (2019-2021) → 5 (2017-2021, com SIDE e FLORES historicos)
-- Amostras de treino efetivas: 280 zonas × 3 anos → ~1400 observacoes adicionais
+- Adicionar profundidade temporal ao zones_master
+- Melhorar a cobertura observada das features nos anos ja alinhados do tensor
+- Nao aumenta, por si so, o numero de anos supervisionados de treino
 
 ## Fontes
 
@@ -21,7 +21,7 @@ Data: 2026-04-13
 
 ## Colunas Adicionadas
 
-| coluna | cobertura (de 280) |
+| coluna | cobertura (de 306) |
 |---|---|
 | `side_stocks_et_2019_total` | `306` |
 | `side_stocks_ul_2019_total` | `306` |
@@ -35,6 +35,6 @@ Data: 2026-04-13
 
 - `flores_et_total` e uma feature nova (distinta de `flores_presential_unit_loc_total`)
   e captura o estoque total de estabelecimentos FLORES por ano
-- `side_stocks_et_total` e `side_stocks_ul_total` ganham cobertura em 2019 e 2020
-  aumentando a profundidade temporal de 2 para 4 pontos anuais no treino
+- `side_stocks_et_total` e `side_stocks_ul_total` ganham cobertura observada em 2019 e 2020
+  dentro da janela anual ja usada pelo tensor
 - o proximo passo e atualizar build_panel_zones_v0.py e reconstruir o tensor STGNN

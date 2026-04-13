@@ -60,11 +60,17 @@ def load_side_ze2020(zip_path, measure_filter, years):
     df["GEO"] = df["GEO"].astype(str).str.zfill(4)
     result = {}
     for yr in years:
-        sub = df[
+        mask = (
             (df["GEO_OBJECT"] == "ZE2020")
             & (df["ACTIVITY"] == "_T")
             & (df["TIME_PERIOD"] == yr)
-        ]
+        )
+        if "SIDE_MEASURE" in df.columns:
+            mask &= df["SIDE_MEASURE"] == measure_filter
+        sub = df[mask]
+        if sub["GEO"].duplicated().any():
+            duplicated = int(sub["GEO"].duplicated().sum())
+            raise ValueError(f"{zip_path.name} {yr} has {duplicated} duplicated ZE2020 rows after filtering.")
         result[yr] = sub.set_index("GEO")["OBS_VALUE"].astype(float).to_dict()
         print(f"  {zip_path.name} [{yr}]: {len(result[yr])} ZE2020 rows")
     return result
@@ -166,8 +172,8 @@ def main():
         "## Objetivo",
         "",
         "- Adicionar profundidade temporal ao zones_master para expandir amostras de treino",
-        "- Anos de treino efetivos: 3 (2019-2021) → 5 (2017-2021, com SIDE e FLORES historicos)",
-        "- Amostras de treino efetivas: 280 zonas × 3 anos → ~1400 observacoes adicionais",
+        "- Melhorar a cobertura observada das features nos anos ja alinhados do tensor",
+        "- Nao aumenta, por si so, o numero de anos supervisionados de treino",
         "",
         "## Fontes",
         "",
@@ -182,7 +188,7 @@ def main():
         "",
         "## Colunas Adicionadas",
         "",
-        "| coluna | cobertura (de 280) |",
+        f"| coluna | cobertura (de {n_zones}) |",
         "|---|---|",
     ]
     for col, n in quality_cols.items():
@@ -194,8 +200,8 @@ def main():
         "",
         "- `flores_et_total` e uma feature nova (distinta de `flores_presential_unit_loc_total`)",
         "  e captura o estoque total de estabelecimentos FLORES por ano",
-        "- `side_stocks_et_total` e `side_stocks_ul_total` ganham cobertura em 2019 e 2020",
-        "  aumentando a profundidade temporal de 2 para 4 pontos anuais no treino",
+        "- `side_stocks_et_total` e `side_stocks_ul_total` ganham cobertura observada em 2019 e 2020",
+        "  dentro da janela anual ja usada pelo tensor",
         "- o proximo passo e atualizar build_panel_zones_v0.py e reconstruir o tensor STGNN",
     ]
     OUT_MD.write_text("\n".join(lines), encoding="utf-8")
