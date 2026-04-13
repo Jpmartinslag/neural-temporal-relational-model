@@ -17,12 +17,12 @@ Objetivo:
 
 ## Sumario
 
-- total de features: `24`
-- incluidas diretamente: `11`
+- total de features: `25`
+- incluidas diretamente: `12`
 - incluidas com sinalizacao: `11`
 - excluidas (sem observacao no treino): `2`
 - features estaticas: `6`
-- features dinamicas: `18`
+- features dinamicas: `19`
 
 ## Features Excluidas
 
@@ -48,11 +48,11 @@ Qualquer peso aprendido sobre elas reflete imputacao, nao sinal economico.
 
 ## Top 5 por Correlacao Absoluta com Target (treino, observado)
 
+- `side_creations_et_total`: corr=`0.999`, train_obs_rate=`1.000`
 - `side_stocks_ul_total`: corr=`0.998`, train_obs_rate=`1.000`
 - `side_stocks_et_total`: corr=`0.998`, train_obs_rate=`1.000`
 - `jobs_lt_total`: corr=`0.994`, train_obs_rate=`0.333`
 - `active_lr_total`: corr=`0.987`, train_obs_rate=`0.333`
-- `employed_lr_total`: corr=`0.987`, train_obs_rate=`0.333`
 
 ## Tabela Completa
 
@@ -60,6 +60,7 @@ Qualquer peso aprendido sobre elas reflete imputacao, nao sinal economico.
 |---|---|---|---|---|---|---|
 | `flores_presential_unit_loc_total` | dynamic | 0.00 | 0.00 | n/a | useless_no_train_obs | **exclude** |
 | `flores_productive_unit_loc_total` | dynamic | 0.00 | 0.00 | n/a | useless_no_train_obs | **exclude** |
+| `side_creations_et_total` | dynamic | 1.00 | 1.00 | 0.999 | well_covered | **include** |
 | `side_stocks_ul_total` | dynamic | 1.00 | 0.80 | 0.998 | well_covered | **include** |
 | `side_stocks_et_total` | dynamic | 1.00 | 0.80 | 0.998 | well_covered | **include** |
 | `flores_et_total` | dynamic | 1.00 | 0.60 | 0.937 | well_covered | **include** |

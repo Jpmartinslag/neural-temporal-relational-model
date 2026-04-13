@@ -1,6 +1,6 @@
 {
-  "total_features": 24,
-  "include_count": 11,
+  "total_features": 25,
+  "include_count": 12,
   "include_flagged_count": 11,
   "exclude_count": 2,
   "excluded_features": [
@@ -22,6 +22,11 @@
   ],
   "top5_by_abs_corr_with_target_train": [
     {
+      "feature_name": "side_creations_et_total",
+      "corr_with_target_train": 0.9989453603115969,
+      "train_obs_rate": 1.0
+    },
+    {
       "feature_name": "side_stocks_ul_total",
       "corr_with_target_train": 0.9981583857253548,
       "train_obs_rate": 1.0
@@ -40,15 +45,10 @@
       "feature_name": "active_lr_total",
       "corr_with_target_train": 0.9871707349225952,
       "train_obs_rate": 0.3333333333333333
-    },
-    {
-      "feature_name": "employed_lr_total",
-      "corr_with_target_train": 0.9867633887854613,
-      "train_obs_rate": 0.3333333333333333
     }
   ],
-  "mean_train_obs_rate_included": 0.939,
-  "mean_abs_corr_included": 0.406,
+  "mean_train_obs_rate_included": 0.944,
+  "mean_abs_corr_included": 0.455,
   "static_features_count": 6,
-  "dynamic_features_count": 18
+  "dynamic_features_count": 19
 }

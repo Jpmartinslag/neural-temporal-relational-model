@@ -2,7 +2,7 @@
   "target_column": "side_establishment_creations_official",
   "target_source": "data/processed/target_side_establishments_annual_core_v0.csv",
   "node_count": 280,
-  "feature_count": 24,
+  "feature_count": 25,
   "feature_years": [
     2019,
     2020,
@@ -50,17 +50,17 @@
   "x_raw_shape": [
     5,
     280,
-    24
+    25
   ],
   "x_scaled_imputed_shape": [
     5,
     280,
-    24
+    25
   ],
   "x_mask_shape": [
     5,
     280,
-    24
+    25
   ],
   "y_raw_shape": [
     5,
@@ -70,7 +70,7 @@
     280,
     280
   ],
-  "raw_missing_rate": 0.45,
+  "raw_missing_rate": 0.432,
   "features_without_train_observation": [
     "flores_presential_unit_loc_total",
     "flores_productive_unit_loc_total"

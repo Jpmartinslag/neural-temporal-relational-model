@@ -1,6 +1,7 @@
 feature_name,train_obs_rate,global_obs_rate,corr_with_target_train,n_valid_pairs_train,feature_type,coverage_class,abs_corr,recommendation
 flores_presential_unit_loc_total,0.0,0.0,,0,dynamic,useless_no_train_obs,,exclude
 flores_productive_unit_loc_total,0.0,0.0,,0,dynamic,useless_no_train_obs,,exclude
+side_creations_et_total,1.0,1.0,0.9989453603115969,840,dynamic,well_covered,0.9989453603115969,include
 side_stocks_ul_total,1.0,0.8,0.9981583857253548,840,dynamic,well_covered,0.9981583857253548,include
 side_stocks_et_total,1.0,0.8,0.9979957255774068,840,dynamic,well_covered,0.9979957255774068,include
 flores_et_total,1.0,0.6,0.9372240660257878,840,dynamic,well_covered,0.9372240660257878,include

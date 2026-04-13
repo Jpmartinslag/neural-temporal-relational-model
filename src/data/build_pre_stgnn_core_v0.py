@@ -40,6 +40,7 @@ DYNAMIC_FEATURES = [
     "flores_presential_unit_loc_total",
     "flores_productive_unit_loc_total",
     "flores_et_total",
+    "side_creations_et_total",
 ]
 
 STATIC_CONTEXT_FEATURES = [

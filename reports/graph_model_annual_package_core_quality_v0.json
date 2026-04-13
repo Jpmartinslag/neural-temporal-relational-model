@@ -40,7 +40,7 @@
   ],
   "feature_row_count":1680,
   "target_row_count":7560,
-  "feature_count":24,
+  "feature_count":25,
   "adjacency_density_directed":0.0189540816,
   "gwn_readiness_note":"Annual package is structurally ready, but the observed feature timeline is only 6 years (2019-2024), which is still shallow for Graph WaveNet."
 }

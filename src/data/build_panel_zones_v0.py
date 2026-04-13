@@ -23,6 +23,7 @@ FEATURE_SPECS = {
         ("side_stocks_et_total", "side_stocks_et_2019_total", "economic_structure"),
         ("side_stocks_ul_total", "side_stocks_ul_2019_total", "economic_structure"),
         ("flores_et_total", "flores_et_total_2019", "economic_structure"),
+        ("side_creations_et_total", "side_creations_et_total_2019", "business_demography"),
     ],
     2020: [
         ("filosofi_s_hh_tax_weighted_proxy", "filosofi_s_hh_tax_weighted_proxy_2020", "income"),
@@ -30,6 +31,7 @@ FEATURE_SPECS = {
         ("side_stocks_et_total", "side_stocks_et_2020_total", "economic_structure"),
         ("side_stocks_ul_total", "side_stocks_ul_2020_total", "economic_structure"),
         ("flores_et_total", "flores_et_total_2020", "economic_structure"),
+        ("side_creations_et_total", "side_creations_et_total_2020", "business_demography"),
     ],
     2021: [
         ("population_total", "population_2021_total", "population"),
@@ -47,6 +49,7 @@ FEATURE_SPECS = {
         ("filosofi_s_hh_tax_weighted_proxy", "filosofi_s_hh_tax_weighted_proxy_2021", "income"),
         ("filosofi_s_dir_tax_di_weighted_proxy", "filosofi_s_dir_tax_di_weighted_proxy_2021", "income"),
         ("flores_et_total", "flores_et_total_2021", "economic_structure"),
+        ("side_creations_et_total", "side_creations_et_total_2021", "business_demography"),
     ],
     2022: [
         ("population_total", "population_2022_total", "population"),
@@ -56,6 +59,7 @@ FEATURE_SPECS = {
         ("unemployment_rate_est", "unemployment_rate_est_2022", "labour"),
         ("jobs_lt_total", "jobs_lt_2022_total", "labour"),
         ("jobs_lt_per_1000_pop", "jobs_lt_per_1000_pop_2022", "labour"),
+        ("side_creations_et_total", "side_creations_et_total_2022", "business_demography"),
     ],
     2023: [
         ("side_stocks_et_total", "side_stocks_et_2023_total", "economic_structure"),
@@ -63,6 +67,7 @@ FEATURE_SPECS = {
         ("side_stocks_et_per_1000_pop", "side_stocks_et_per_1000_pop_2023", "economic_structure"),
         ("bpe_facilities_total", "bpe_facilities_2023_total", "services"),
         ("bpe_facilities_per_1000_pop", "bpe_facilities_per_1000_pop_2023", "services"),
+        ("side_creations_et_total", "side_creations_et_total_2023", "business_demography"),
     ],
     2024: [
         (
