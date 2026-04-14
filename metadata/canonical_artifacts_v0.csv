@@ -24,4 +24,5 @@ report,current_decision_matrix,canonical,reports/SIDE_MODEL_DECISION_MATRIX_CORE
 report,rolling_backtest,canonical,reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md,Rolling validation of segmented rule.
 report,instability_diagnostic,canonical,reports/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md,Current explanation of temporal instability.
 report,temporal_regime_baseline,canonical,reports/TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md,Shows that simple observed-growth regime rule is insufficient.
+report,extended_core_verification_plan,canonical,reports/EXTENDED_CORE_VERIFICATION_PLAN_V0.md,Verification checklist before accepting the extended core package or STGNN claim.
 future_data,candidates,canonical,metadata/future_dataset_candidates_v0.csv,Future datasets registered but not integrated into core.
