@@ -1,0 +1,43 @@
+{
+  "source_file": "data/raw/external/sitadel/Donnees-mensuelles-communales-Locaux.2026-03.csv",
+  "rows_seen": 61986177,
+  "rows_selected_nonres_total": 5635107,
+  "monthly_rows": 48348,
+  "annual_rows": 4284,
+  "years_available": [
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "months_available": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "zones_count": 306,
+  "outputs": [
+    "data/interim/tables/sitadel_monthly_surface_ze2020_v0.csv",
+    "data/interim/tables/sitadel_monthly_derived_annual_ze2020_v0.csv"
+  ],
+  "methodological_status": "candidate monthly local construction signal; evaluate lag/nowcast variants before canonical inclusion"
+}

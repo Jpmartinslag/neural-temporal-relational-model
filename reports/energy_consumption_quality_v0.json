@@ -1,0 +1,37 @@
+{
+  "years_available": [
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "zones_count": 306,
+  "total_rows": 2142,
+  "features": [
+    "energy_electricity_conso_nonres",
+    "energy_gas_conso_nonres",
+    "energy_electricity_pdl_nonres",
+    "energy_gas_pdl_nonres"
+  ],
+  "processed_files": [
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-gaz-naturel-.2020-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-gaz-naturel-.2021-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-gaz-naturel-.2024-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-gaz-naturel-.2022-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-gaz-naturel-.2018-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-gaz-naturel-.2019-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-gaz-naturel-.2023-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-electricite-.2018-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-electricite-.2020-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-electricite-.2021-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-electricite-.2024-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-electricite-.2019-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-electricite-.2023-09.csv",
+    "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-electricite-.2022-09.csv"
+  ],
+  "skipped_files_count": 6,
+  "methodological_status": "candidate_lagged_feature_source; non-residential electricity/gas only"
+}

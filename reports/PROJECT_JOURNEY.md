@@ -1992,3 +1992,198 @@ Decisao:
 
 - Encerrar a fase de estruturacao de dados e baselines lineares.
 - Iniciar a implementacao do STGNN como proximo passo logico para capturar as relacoes nao-lineares expostas.
+
+### 2026-04-14 - Saneamento do Extended Core e benchmark exploratorio
+
+O que foi feito:
+- Correção de múltiplos vazamentos (escala, estrutural e temporal) no `extended core`.
+- Remoção da injeção de regime no tensor original SIDE, restaurando sua reprodutibilidade canônica.
+- Criação de perfis setoriais dinâmicos (Target T usa Perfil T-1) a partir de históricos FLORES (2017-2021) para evitar vazamento estrutural.
+- Remoção da população contemporânea, utilizando apenas `pop_lag_1` e `pop_lag_2`.
+- Implementação de um backtest rolante rigoroso (2018-2024), escalonando e imputando dados estritamente dentro de cada fold.
+- Construcao e integracao de um grafo economico de mobilidade (Censo RP 2021) superando marginalmente o grafo geografico linear.
+- Download massivo de novos datasets externos para investigação de variação local: Energia (SDES), Construção (SITADEL) e Fiscalidade (REI).
+
+Artefatos:
+- `stgnn_tensor_package_side_target_core_v0.npz` (restaurado)
+- `stgnn_tensor_package_extended_forecast_core_v1.npz` (forecast-safe)
+- `stgnn_tensor_package_extended_nowcast_q1_core_v1.npz` (forecast-safe + choque Q1)
+- `stgnn_tensor_package_extended_diagnostic_core_v1.npz` (diagnostico, nao usar como forecast)
+- `metadata/extended_core_feature_classification_v0.csv`
+- `reports/EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md`
+
+Decisão:
+- A previsão de volume bruto provou ser superior à previsão de taxa de criação (WMAPE 7.66% vs >80%).
+- O benchmark linear a ser batido foi consolidado em 7.66% (`ridge_lag_only`), empatando virtualmente com a persistência (7.68%).
+- O STGNN passa a ser formalmente um experimento exploratorio para testar valor nao-linear das novas features. Nao ha ainda evidencia de necessidade do STGNN.
+- Início da exploração de variáveis de calor local (Energia, SITADEL, REI) para dar ao modelo sensores físicos de crise e expansão.
+
+
+### 2026-04-14 - Inicio da fase "Calor Local" com dados SITADEL
+
+Motivacao:
+- Responder a lacuna estrutural do "Extended Core" em relacao a "ondas locais".
+- Modelos lineares baseados apenas em historico nao captam bem choques em anos anomalos (ex. 2020-2022).
+- Os novos datasets externos serao usados como proxies de "intenção de expansao fisica" (SITADEL) e "peso imobiliario estrutural" (REI).
+
+O que foi feito:
+- Escrita e execucao do script de extracao e agregacao `build_sitadel_surface_ze2020_v0.py`.
+- Lida a tabela de permissoes de construcao "Locais Nao Residenciais" da base SITADEL a nivel comunal.
+- Agregadas as metragens quadradas (SDP_AUT e SDP_COM) por ano e por Zone d'Emploi (ZE2020).
+
+Artefatos:
+- `src/data/build_sitadel_surface_ze2020_v0.py`
+- `data/interim/tables/sitadel_surface_ze2020_v0.csv`
+- `reports/sitadel_surface_quality_v0.json`
+
+Decisao:
+- O indicador de metragem aprovada (`sitadel_surface_autorisee_lag_1`) e iniciada (`sitadel_surface_commencee_lag_1`) sera tratado como proxy local defasada de expansao fisica. No primeiro teste linear, SITADEL nao superou o baseline temporal; por isso fica como feature exploratoria, nao como evidencia conclusiva.
+
+### 2026-04-15 - Protocolo conservador para REI e Energia
+
+Motivacao:
+- Evitar adicionar novas fontes diretamente ao tensor principal sem demonstrar ganho incremental.
+- Tratar REI e Energia como fontes candidatas de "calor local", sempre defasadas em `T-1`.
+- Manter a comparacao contra `ridge_lag_only` como filtro metodologico minimo.
+
+O que foi feito:
+- Criado `src/data/build_rei_cfe_ze2020_v0.py` para extrair proxies CFE do REI comunal e agregar por ZE2020.
+- Criado `src/data/build_energy_consumption_ze2020_v0.py` para extrair consumo eletrico/gas nao residencial na malha IRIS e agregar por ZE2020.
+- Criado `src/data/evaluate_local_candidate_features_v0.py` para testar fontes candidatas como lags contra o baseline temporal.
+- Executada avaliacao leve com SITADEL ja processado.
+
+Resultado atual:
+- `ridge_lag_only`: WMAPE medio `7.66%`.
+- `persistence`: WMAPE medio `7.68%`.
+- `ridge_sitadel_only`: WMAPE medio `8.43%`.
+
+Decisao:
+- SITADEL permanece como feature candidata, nao como evidencia de ganho.
+- REI e Energia devem ser processados e avaliados pelo mesmo protocolo antes de entrar em qualquer tensor canonico.
+
+### 2026-04-16 - Auditoria incremental de REI e Energia
+
+Motivacao:
+- Verificar se as novas fontes de "calor local" realmente melhoram o baseline temporal.
+- Evitar inflar o tensor com variaveis plausiveis, mas sem ganho preditivo demonstrado.
+
+O que foi feito:
+- Corrigido o leitor REI para lidar com CSV em encoding `cp1252/latin1`.
+- Processado REI CFE para `2023-2024`, agregado por ZE2020.
+- Processada Energia SDES eletricidade/gas nao residencial na malha IRIS para `2018-2024`, agregada por ZE2020.
+- Reexecutada avaliacao incremental de candidatos locais.
+
+Artefatos:
+- `data/interim/tables/rei_cfe_ze2020_v0.csv`
+- `data/interim/tables/energy_consumption_ze2020_v0.csv`
+- `reports/rei_cfe_quality_v0.json`
+- `reports/energy_consumption_quality_v0.json`
+- `reports/local_candidate_feature_metrics_v0.json`
+- `reports/LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md`
+
+Resultado:
+- `ridge_lag_only`: WMAPE medio `7.66%`.
+- `ridge_rei_only`: WMAPE medio `7.66%`, sem ganho real por cobertura temporal curta.
+- `persistence`: WMAPE medio `7.68%`.
+- `ridge_sitadel_only`: WMAPE medio `8.43%`.
+- `ridge_energy_only`: WMAPE medio `8.66%`.
+- `ridge_local_all`: WMAPE medio `8.84%`.
+
+Decisao:
+- Nao adicionar REI, Energia ou SITADEL ao tensor canonico neste momento.
+- Manter as fontes como familias candidatas para ablacoees e possiveis transformacoes.
+- Para REI, proximo passo util seria converter anos XLSX historicos antes de nova conclusao.
+- Para Energia, proximo passo util seria testar variacoes ano-a-ano e nao apenas niveis defasados.
+
+### 2026-04-16 - Inventario bruto externo e fila de prioridade
+
+Motivacao:
+- Afirmar que uma familia de dados "nao ajuda" seria incorreto enquanto arquivos grandes ainda nao foram processados.
+- Separar conclusoes sobre subconjuntos ja testados de potencial ainda nao explorado.
+
+O que foi feito:
+- Criado `src/data/build_raw_external_inventory_v0.py`.
+- Gerado inventario completo dos arquivos em `data/raw/external`.
+- Classificados arquivos por familia, tamanho, status de processamento e prioridade.
+- Identificados arquivos ainda nao processados que podem mudar a avaliacao metodologica.
+
+Artefatos:
+- `metadata/raw_external_inventory_v0.csv`
+- `reports/RAW_EXTERNAL_INVENTORY_V0.md`
+
+Resultado:
+- Total inventariado: `72` arquivos.
+- Volume bruto externo: `7702.78 MB`.
+- Processado integralmente: SITADEL anual comunal.
+- Processado parcialmente: Energia IRIS 2018-2024 e REI 2023-2024.
+- Pendente de alta prioridade: SITADEL mensal comunal `3.35 GB`, REI historico `2018-2022`, Energia historica `2008-2017`.
+
+Decisao:
+- As conclusoes negativas atuais valem somente para subconjuntos processados e em forma bruta defasada.
+- Proxima etapa deve atacar primeiro `SITADEL mensal comunal`, depois `Energia historica 2008-2017`, depois `REI historico convertido`.
+
+### 2026-04-16 - Preparacao do processamento SITADEL mensal
+
+Motivacao:
+- O arquivo SITADEL mensal comunal tem `3.35 GB` e cerca de `62M` linhas.
+- Rodar esse processamento dentro do agente queimaria contexto sem necessidade.
+- A forma correta e deixar um script reprodutivel e o usuario executar localmente.
+
+O que foi feito:
+- Criado `src/data/build_sitadel_monthly_ze2020_v0.py`.
+- O script le o CSV em chunks, filtra `Ensemble des locaux non-residentiels`, agrega por `ZE2020`, ano e mes.
+- O script tambem gera derivacoes anuais `total`, `q1` e `h1` para separar uso forecast e nowcast.
+
+Artefatos esperados apos execucao:
+- `data/interim/tables/sitadel_monthly_surface_ze2020_v0.csv`
+- `data/interim/tables/sitadel_monthly_derived_annual_ze2020_v0.csv`
+- `reports/sitadel_monthly_surface_quality_v0.json`
+
+Decisao:
+- Nao incluir SITADEL mensal no tensor canonico antes de avaliar `T-1`, `Q1 nowcast`, transformacoes log/YoY e ablacoees contra `ridge_lag_only`.
+
+### 2026-04-16 - Avaliacao incremental do SITADEL mensal
+
+Motivacao:
+- Verificar se a granularidade mensal resolve a fraqueza do SITADEL anual bruto.
+- Separar corretamente previsao pura (`T-1`) de nowcast (`Q1/H1` do proprio ano).
+
+O que foi feito:
+- Integrado `sitadel_monthly_derived_annual_ze2020_v0.csv` ao avaliador de candidatos locais.
+- Testados sinais mensais em forma bruta e `log1p`.
+- Mantida a regra de escala/imputacao por fold, sem usar futuro.
+
+Resultado:
+- `ridge_lag_only`: WMAPE medio `7.66%`.
+- `persistence`: WMAPE medio `7.68%`.
+- Melhor variante SITADEL mensal: `ridge_sitadel_monthly_q1_nowcast_log`, WMAPE medio `7.89%`.
+- Melhor variante forecast-safe: `ridge_sitadel_monthly_lag_log`, WMAPE medio `7.93%`.
+
+Decisao:
+- SITADEL mensal melhora a leitura em relacao ao SITADEL anual bruto, especialmente com `log1p`.
+- Ainda nao bate o baseline temporal, portanto fica como familia experimental, nao canonica.
+- A conclusao defensavel e: `SITADEL mensal e promissor, mas ainda nao provou ganho linear causal sobre o baseline temporal`.
+
+### 2026-04-16 - Auditoria de consistencia antes de commit
+
+Motivacao:
+- Reduzir ambiguidades geradas por muitos artefatos.
+- Separar explicitamente arquivos canonicos, candidatos e diagnosticos.
+- Corrigir qualquer incoerencia tecnica antes de consolidar commit.
+
+O que foi feito:
+- Criado `reports/PROJECT_CONSISTENCY_AUDIT_V0.md`.
+- Atualizado `metadata/canonical_artifacts_v0.csv` com tensors extended, candidatos locais e relatorios atuais.
+- Atualizado `reports/PROJECT_STATE_INDEX_V0.md` para refletir target oficial `SIDE`, tensores extended e candidatos locais.
+- Corrigido `src/data/build_stgnn_tensor_package_extended_v1.py`.
+
+Correcao importante:
+- `adjacency_mobility` nos tensors extended estava sendo carregada com uma coluna extra do CSV.
+- Shape anterior: `280 x 281`.
+- Shape corrigido: `280 x 280`.
+- O script agora falha explicitamente se `A_geo` ou `A_mobility` nao tiverem shape esperado.
+
+Decisao:
+- O projeto esta consistente para consolidar a fase atual em commit.
+- STGNN continua como experimento futuro, nao como obrigacao imediata.
+- Antes de nova arquitetura, o benchmark a bater permanece `ridge_lag_only = 7.66%` e `persistence = 7.68%`.

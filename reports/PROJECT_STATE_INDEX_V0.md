@@ -1,6 +1,6 @@
 # Project State Index v0
 
-Data: 2026-04-13
+Data: 2026-04-16
 
 Objetivo:
 
@@ -18,7 +18,27 @@ O foco atual e consolidar um grafo territorial dinamico anual e validar se exist
 
 ## Estado Atual Em Uma Linha
 
-Temos dados organizados, painel `ZE2020`, target proxy, grafo espacial anual, pacote tensorial grafo-temporal e baselines iniciais; ainda nao temos arquitetura final nem camada decisional.
+Temos target oficial `SIDE`, painel anual `ZE2020`, grafo geografico, grafo de mobilidade, tensores extended separados por `forecast`/`nowcast`/`diagnostic`, baselines causais e auditoria de candidatos locais; ainda nao temos arquitetura final nem camada decisional.
+
+## Leitura Atual Obrigatoria
+
+Arquivos de entrada para entender o estado atual:
+
+- [PROJECT_CONSISTENCY_AUDIT_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_CONSISTENCY_AUDIT_V0.md)
+- [EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md)
+- [LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md)
+- [RAW_EXTERNAL_INVENTORY_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RAW_EXTERNAL_INVENTORY_V0.md)
+- [canonical_artifacts_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/canonical_artifacts_v0.csv)
+
+Resumo operacional:
+
+- artefato canonico de target: `target_side_establishments_annual_core_v0.csv`
+- benchmark atual a bater: `ridge_lag_only = 7.66%` WMAPE e `persistence = 7.68%`
+- tensor forecast-safe atual: `stgnn_tensor_package_extended_forecast_core_v1.npz`
+- tensor nowcast atual: `stgnn_tensor_package_extended_nowcast_q1_core_v1.npz`
+- tensor diagnostico atual: `stgnn_tensor_package_extended_diagnostic_core_v1.npz`
+- candidatos locais: SITADEL mensal/anual, REI e Energia permanecem fora do tensor canonico
+- correcao importante: `adjacency_mobility` dos tensores extended agora tem shape correto `280 x 280`
 
 ## O Que Esta Fechado
 
@@ -39,7 +59,7 @@ Leitura:
 
 ### 2. Painel Territorial Anual
 
-Status: fechado em `core_v0`.
+Status: fechado em `core_v0`; estendido em `extended_panel_core_v0` para os baselines causais atuais.
 
 Arquivos principais:
 
@@ -52,6 +72,7 @@ Leitura:
 
 - unidade territorial principal: `ZE2020`
 - periodo efetivo de features: `2019-2024`
+- painel extended atual: `2018-2024`, `280` zonas, target oficial `SIDE`
 
 ### 3. Grafos Territoriais
 
@@ -102,7 +123,7 @@ Auditoria:
 
 ### 5. Pacote Tensorial Grafo-Temporal
 
-Status: fechado como input tecnico inicial para proxy e reconstruido em paralelo para target oficial `SIDE`.
+Status: pacote antigo mantido para rastreabilidade; pacote extended atual separado por forecast/nowcast/diagnostic.
 
 Arquivos principais:
 
@@ -127,6 +148,9 @@ Leitura:
 - `x_mask` e obrigatoria para diferenciar imputacao de observacao real
 - a frequencia dinamica observada hoje e anual, porque as fontes oficiais principais nao oferecem granularidade mensal consistente
 - pacote `SIDE`: `X=[5, 280, 23]`, `Y=[5, 280]`, targets `2020-2024`, sem `forecast_holdout`
+- pacote `extended_forecast_core`: `X=[7, 280, 28]`, `Y=[7, 280]`, `A_geo=[280, 280]`, `A_mobility=[280, 280]`
+- pacote `extended_nowcast_q1_core`: `X=[7, 280, 29]`, `Y=[7, 280]`, adiciona apenas sinal Q1 do ano corrente
+- pacote `extended_diagnostic_core`: `X=[7, 280, 32]`, inclui sinais intra-ano posteriores apenas para auditoria
 
 ## O Que Esta Em Teste
 
@@ -188,6 +212,29 @@ Leitura:
 - oracle nao utilizavel mostra teto diagnostico WMAPE `4.302`, ou seja, escolher corretamente o regime teria valor, mas falta sinal antecipador
 - leitura atual: a dinamica local e forte; features externas amplas e rasas ainda nao adicionam sinal robusto sobre `y(t+1)=y(t)`
 - nenhuma regra simples e estavel o suficiente para justificar salto imediato para STGNN
+- baseline extended atual: `ridge_lag_only` WMAPE medio `7.66%`; persistencia WMAPE medio `7.68%`
+- grafo de mobilidade supera geografia marginalmente em modelo linear, mas nao supera `ridge_lag_only`
+- SITADEL mensal melhora sobre SITADEL anual bruto, mas ainda nao supera o baseline temporal
+
+### 6.1 Candidatos Locais Recentes
+
+Status: testados, nao canonicos.
+
+Arquivos principais:
+
+- [LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md)
+- [local_candidate_feature_metrics_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/local_candidate_feature_metrics_v0.json)
+- [sitadel_monthly_derived_annual_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/sitadel_monthly_derived_annual_ze2020_v0.csv)
+- [energy_consumption_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/energy_consumption_ze2020_v0.csv)
+- [rei_cfe_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/rei_cfe_ze2020_v0.csv)
+
+Leitura:
+
+- SITADEL mensal `log1p` e promissor, mas nao canonico
+- melhor variante SITADEL mensal: `ridge_sitadel_monthly_q1_nowcast_log = 7.89%`
+- melhor variante forecast-safe mensal: `ridge_sitadel_monthly_lag_log = 7.93%`
+- Energia e REI ainda nao trouxeram ganho nas formas testadas
+- conclusao correta: candidatos locais ainda nao provaram ganho linear causal, nao que sejam irrelevantes
 
 ### 7. Inventario De Datasets Futuros
 

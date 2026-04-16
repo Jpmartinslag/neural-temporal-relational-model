@@ -1,0 +1,61 @@
+{
+    "name": "extended_forecast_core",
+    "years": [
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024
+    ],
+    "nodes": 280,
+    "features": [
+        "nb_com",
+        "total_establishments",
+        "stock_lag_1",
+        "side_creations_lag_1",
+        "side_creations_spatial_lag_1",
+        "side_creations_mobility_lag_1",
+        "pop_lag_1",
+        "pop_lag_2",
+        "regime_signal_lag_1",
+        "sitadel_surface_autorisee_lag_1",
+        "sitadel_surface_commencee_lag_1",
+        "weight_a17_AZ",
+        "weight_a17_C1",
+        "weight_a17_C2",
+        "weight_a17_C3",
+        "weight_a17_C4",
+        "weight_a17_C5",
+        "weight_a17_DE",
+        "weight_a17_FZ",
+        "weight_a17_GZ",
+        "weight_a17_HZ",
+        "weight_a17_IZ",
+        "weight_a17_JZ",
+        "weight_a17_KZ",
+        "weight_a17_LZ",
+        "weight_a17_MN",
+        "weight_a17_OQ",
+        "weight_a17_RU"
+    ],
+    "x_shape": [
+        7,
+        280,
+        28
+    ],
+    "y_shape": [
+        7,
+        280
+    ],
+    "adjacency_geo_shape": [
+        280,
+        280
+    ],
+    "adjacency_mobility_shape": [
+        280,
+        280
+    ],
+    "train_years_count": 5
+}

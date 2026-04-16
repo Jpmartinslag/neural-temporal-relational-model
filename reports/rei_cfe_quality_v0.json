@@ -1,0 +1,226 @@
+{
+  "years_available": [
+    2023,
+    2024
+  ],
+  "zones_count": 287,
+  "total_rows": 574,
+  "features": [
+    "rei_cfe_commune_base",
+    "rei_cfe_commune_product",
+    "rei_cfe_commune_articles",
+    "rei_cfe_microentrepreneurs",
+    "rei_cfe_microentrepreneurs_created_n_1",
+    "rei_cfe_epci_base",
+    "rei_cfe_epci_product",
+    "rei_cfe_epci_articles"
+  ],
+  "skipped_files": [
+    {
+      "year": 1982,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1982-fichier-trace.zip"
+    },
+    {
+      "year": 1983,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1983-fichier-trace.zip"
+    },
+    {
+      "year": 1984,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1984-fichier-trace.zip"
+    },
+    {
+      "year": 1985,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1985-fichier-trace.zip"
+    },
+    {
+      "year": 1986,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1986-fichier-trace.zip"
+    },
+    {
+      "year": 1987,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1987-fichier-trace.zip"
+    },
+    {
+      "year": 1988,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1988-fichier-trace.zip"
+    },
+    {
+      "year": 1989,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1989-fichier-trace.zip"
+    },
+    {
+      "year": 1990,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1990-fichier-trace.zip"
+    },
+    {
+      "year": 1991,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1991-fichier-trace.zip"
+    },
+    {
+      "year": 1992,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1992-fichier-trace.zip"
+    },
+    {
+      "year": 1993,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1993-fichier-trace.zip"
+    },
+    {
+      "year": 1994,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1994-fichier-trace.zip"
+    },
+    {
+      "year": 1995,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1995-fichier-trace.zip"
+    },
+    {
+      "year": 1996,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1996-fichier-trace.zip"
+    },
+    {
+      "year": 1997,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1997-fichier-trace.zip"
+    },
+    {
+      "year": 1998,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1998-fichier-trace.zip"
+    },
+    {
+      "year": 1999,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-1999-fichier-trace.zip"
+    },
+    {
+      "year": 2000,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2000-fichier-trace.zip"
+    },
+    {
+      "year": 2001,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2001-fichier-trace.zip"
+    },
+    {
+      "year": 2002,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2002-fichier-trace.zip"
+    },
+    {
+      "year": 2003,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2003-fichier-trace.zip"
+    },
+    {
+      "year": 2004,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2004-fichier-trace.zip"
+    },
+    {
+      "year": 2005,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2005-fichier-trace.zip"
+    },
+    {
+      "year": 2006,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2006-fichier-trace.zip"
+    },
+    {
+      "year": 2007,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2007-fichier-trace.zip"
+    },
+    {
+      "year": 2008,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2008-fichier-trace.zip"
+    },
+    {
+      "year": 2009,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2009-fichier-trace.zip"
+    },
+    {
+      "year": 2010,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2010-fichier-trace.zip"
+    },
+    {
+      "year": 2011,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2011-fichier-notice-trace.zip"
+    },
+    {
+      "year": 2012,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2012-fichier-notice-trace.zip"
+    },
+    {
+      "year": 2013,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2013-fichier-notice-trace.zip"
+    },
+    {
+      "year": 2014,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2014-fichier-notice-trace.zip"
+    },
+    {
+      "year": 2015,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2015-fichier-notice-trace.zip"
+    },
+    {
+      "year": 2016,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2016-fichier-notice-trace.zip"
+    },
+    {
+      "year": 2017,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2017-fichier-notice-trace.zip"
+    },
+    {
+      "year": 2018,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2018-fichier-notice-trace.zip"
+    },
+    {
+      "year": 2019,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2019-fichier-notice-trace.zip"
+    },
+    {
+      "year": 2020,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2020-fichier-notice-trace.zip"
+    },
+    {
+      "year": 2021,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2021-fichier-notice-trace.zip"
+    },
+    {
+      "year": 2022,
+      "reason": "xlsx_only_or_no_csv",
+      "file": "REI-2022-fichier-notice-trace.zip"
+    }
+  ],
+  "methodological_status": "candidate_lagged_feature_source; not included in canonical tensor before incremental validation"
+}

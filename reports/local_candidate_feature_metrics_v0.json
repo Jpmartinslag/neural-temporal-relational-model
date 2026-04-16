@@ -1,0 +1,1527 @@
+{
+  "summary_mean_wmape": {
+    "ridge_lag_only": 7.6641140786752935,
+    "ridge_rei_only": 7.6641140786752935,
+    "persistence": 7.680334317157283,
+    "ridge_sitadel_monthly_q1_nowcast_log": 7.89068073284506,
+    "ridge_sitadel_monthly_lag_log": 7.933585181405781,
+    "ridge_sitadel_monthly_h1_nowcast_log": 7.963176923877505,
+    "ridge_sitadel_only": 8.427874797556516,
+    "ridge_sitadel_monthly_lag": 8.448737549211103,
+    "ridge_sitadel_monthly_q1_nowcast": 8.56093035799364,
+    "ridge_energy_only": 8.661839131948689,
+    "ridge_local_all": 8.838691147279873,
+    "ridge_sitadel_monthly_h1_nowcast": 9.1065490898815
+  },
+  "within_year_correlations": [
+    {
+      "feature": "sitadel_surface_autorisee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.057657526210833934,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_surface_autorisee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": -0.04390432006117264,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_surface_autorisee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.13037008865423128,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_surface_autorisee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.1462200467095298,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_surface_autorisee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.03454003017986263,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_surface_autorisee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": 0.018543920063747315,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_surface_commencee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.06722865429687781,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_surface_commencee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": -0.028684693390577432,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_surface_commencee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.12175356954744153,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_surface_commencee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.12566171284339656,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_surface_commencee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.02651354651680162,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_surface_commencee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.019691975042494342,
+      "n": 280
+    },
+    {
+      "feature": "rei_rei_cfe_commune_base_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.021336024106665703,
+      "n": 280
+    },
+    {
+      "feature": "rei_rei_cfe_commune_product_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.01619022670358626,
+      "n": 280
+    },
+    {
+      "feature": "rei_rei_cfe_commune_articles_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.021629095169927323,
+      "n": 280
+    },
+    {
+      "feature": "rei_rei_cfe_microentrepreneurs_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.0346112036993744,
+      "n": 280
+    },
+    {
+      "feature": "rei_rei_cfe_microentrepreneurs_created_n_1_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.018367153510707755,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_electricity_conso_nonres_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.021650375965406067,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_electricity_conso_nonres_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": -0.001373064049836304,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_electricity_conso_nonres_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.1535243346738316,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_electricity_conso_nonres_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.14830564466667367,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_electricity_conso_nonres_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.016299068884528957,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_electricity_conso_nonres_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.02211082909578187,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_gas_conso_nonres_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.03809609674922832,
+      "n": 275
+    },
+    {
+      "feature": "energy_energy_gas_conso_nonres_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": 0.05738829287094376,
+      "n": 275
+    },
+    {
+      "feature": "energy_energy_gas_conso_nonres_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.08904456206030555,
+      "n": 275
+    },
+    {
+      "feature": "energy_energy_gas_conso_nonres_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.12235264612587926,
+      "n": 275
+    },
+    {
+      "feature": "energy_energy_gas_conso_nonres_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": 0.03746717665961936,
+      "n": 276
+    },
+    {
+      "feature": "energy_energy_gas_conso_nonres_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.061184999068747636,
+      "n": 276
+    },
+    {
+      "feature": "energy_energy_electricity_pdl_nonres_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.001649901019552071,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_electricity_pdl_nonres_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": -0.0615345846808495,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_electricity_pdl_nonres_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.1302984546818676,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_electricity_pdl_nonres_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.13868322682529965,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_electricity_pdl_nonres_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.050000903414048004,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_electricity_pdl_nonres_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.011952652571845043,
+      "n": 280
+    },
+    {
+      "feature": "energy_energy_gas_pdl_nonres_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.03833732764570753,
+      "n": 275
+    },
+    {
+      "feature": "energy_energy_gas_pdl_nonres_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": 0.002711189000014048,
+      "n": 275
+    },
+    {
+      "feature": "energy_energy_gas_pdl_nonres_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.16053461847551495,
+      "n": 275
+    },
+    {
+      "feature": "energy_energy_gas_pdl_nonres_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.1649923607277029,
+      "n": 275
+    },
+    {
+      "feature": "energy_energy_gas_pdl_nonres_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.004832480759237855,
+      "n": 276
+    },
+    {
+      "feature": "energy_energy_gas_pdl_nonres_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.04897808661995938,
+      "n": 276
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.05389967519868575,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": -0.02546748829038405,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.1281916419200058,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.16519127002319658,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.032340338048646805,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.01781996634842744,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.06739646715739672,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": -0.03412874821792909,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.11201407822498181,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.13598039631227982,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.01882038626846917,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.01149860456950075,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.0859428013485571,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": 0.029746254738581727,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.1212287580794926,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.14934469885623688,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.0581903325845585,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.031921401097562134,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.04773184512206748,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": -0.02839204785572678,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.06155643864838622,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.15728734459883315,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.018543079507984495,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.009105171055595137,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.0692405044242356,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": -0.006219542815737892,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.13815016750410558,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.17010185051781865,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.03163972573506657,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.025383669696384954,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.04944158298080924,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": -0.0497028861491257,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.07092997724545962,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.13109938074444286,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.015392083598949804,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.024878116231449768,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.14640465471772182,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": 0.05476941437242517,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.0781977011125499,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.24707499051280102,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.054020122654627925,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.02063810703969721,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.1625833922089342,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": 0.04759828270583026,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.06693331934375452,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.24458492984148206,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.05466640560876616,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.00827818740708083,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.18075357509750703,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": 0.04633243092078787,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.04246296659089099,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.21271687779614143,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.09801401352865834,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.04574840622224336,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.07278881585459482,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": 0.015607693973682531,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.011285334604489206,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.2487106149338567,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.04574856675568436,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.049031963605609255,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.15177008897474997,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": 0.04585714208707113,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.06917329501787245,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.22132184836757265,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.09584869483095756,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.004735964549050421,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+      "year": 2019,
+      "corr_with_target_growth": 0.10662202090657316,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+      "year": 2020,
+      "corr_with_target_growth": 0.018297036142690144,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+      "year": 2021,
+      "corr_with_target_growth": -0.0277214871652487,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+      "year": 2022,
+      "corr_with_target_growth": -0.24598451802964605,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+      "year": 2023,
+      "corr_with_target_growth": -0.03480386345118483,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+      "year": 2024,
+      "corr_with_target_growth": -0.041492570236506446,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+      "year": 2019,
+      "corr_with_target_growth": 0.05296068219201826,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+      "year": 2020,
+      "corr_with_target_growth": -0.06317212523107688,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+      "year": 2021,
+      "corr_with_target_growth": -0.12508583479067462,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+      "year": 2022,
+      "corr_with_target_growth": -0.14550330521378732,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+      "year": 2023,
+      "corr_with_target_growth": -0.07017874403803077,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+      "year": 2024,
+      "corr_with_target_growth": -0.004233878157799341,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_commencee_current",
+      "year": 2019,
+      "corr_with_target_growth": 0.06874002672194378,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_commencee_current",
+      "year": 2020,
+      "corr_with_target_growth": -0.0721634666116712,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_commencee_current",
+      "year": 2021,
+      "corr_with_target_growth": -0.08827059149603579,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_commencee_current",
+      "year": 2022,
+      "corr_with_target_growth": -0.1393552351623385,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_commencee_current",
+      "year": 2023,
+      "corr_with_target_growth": -0.03993603079282835,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_q1_commencee_current",
+      "year": 2024,
+      "corr_with_target_growth": -0.01735881881413908,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+      "year": 2019,
+      "corr_with_target_growth": 0.05109191507662781,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+      "year": 2020,
+      "corr_with_target_growth": -0.022671174139281585,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+      "year": 2021,
+      "corr_with_target_growth": -0.07737496146818455,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+      "year": 2022,
+      "corr_with_target_growth": -0.17228288017611568,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+      "year": 2023,
+      "corr_with_target_growth": -0.06723413233831083,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+      "year": 2024,
+      "corr_with_target_growth": 0.040540522396500925,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_current",
+      "year": 2019,
+      "corr_with_target_growth": 0.10171531020714453,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_current",
+      "year": 2020,
+      "corr_with_target_growth": -0.04439124793430775,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_current",
+      "year": 2021,
+      "corr_with_target_growth": -0.0468612230687819,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_current",
+      "year": 2022,
+      "corr_with_target_growth": -0.17244802897092823,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_current",
+      "year": 2023,
+      "corr_with_target_growth": -0.0744414933820223,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_current",
+      "year": 2024,
+      "corr_with_target_growth": 0.03189441133880372,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+      "year": 2019,
+      "corr_with_target_growth": 0.08939679213397955,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+      "year": 2020,
+      "corr_with_target_growth": -0.047249437675669005,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+      "year": 2021,
+      "corr_with_target_growth": -0.12013132399961657,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+      "year": 2022,
+      "corr_with_target_growth": -0.13490513995437978,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+      "year": 2023,
+      "corr_with_target_growth": -0.06720765559176368,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+      "year": 2024,
+      "corr_with_target_growth": -0.01849327819374122,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_commencee_current",
+      "year": 2019,
+      "corr_with_target_growth": 0.058161896808677525,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_commencee_current",
+      "year": 2020,
+      "corr_with_target_growth": -0.05340652259930003,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_commencee_current",
+      "year": 2021,
+      "corr_with_target_growth": -0.082338103714169,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_commencee_current",
+      "year": 2022,
+      "corr_with_target_growth": -0.14896470021921507,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_commencee_current",
+      "year": 2023,
+      "corr_with_target_growth": -0.03819246308004537,
+      "n": 280
+    },
+    {
+      "feature": "sitadel_monthly_sitadel_monthly_h1_commencee_current",
+      "year": 2024,
+      "corr_with_target_growth": -0.030993071341554976,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+      "year": 2019,
+      "corr_with_target_growth": 0.11040526042776044,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+      "year": 2020,
+      "corr_with_target_growth": 0.014066766476916449,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+      "year": 2021,
+      "corr_with_target_growth": -0.07601297338435947,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+      "year": 2022,
+      "corr_with_target_growth": -0.158086328320192,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+      "year": 2023,
+      "corr_with_target_growth": -0.08761739496415691,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+      "year": 2024,
+      "corr_with_target_growth": 0.0018553916652972863,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_current",
+      "year": 2019,
+      "corr_with_target_growth": 0.12821305580514378,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_current",
+      "year": 2020,
+      "corr_with_target_growth": -0.011437901566194952,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_current",
+      "year": 2021,
+      "corr_with_target_growth": -0.03122304775086122,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_current",
+      "year": 2022,
+      "corr_with_target_growth": -0.18973758498707166,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_current",
+      "year": 2023,
+      "corr_with_target_growth": -0.0324193740667706,
+      "n": 280
+    },
+    {
+      "feature": "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_current",
+      "year": 2024,
+      "corr_with_target_growth": -0.006934233605192596,
+      "n": 280
+    }
+  ],
+  "all_runs": [
+    {
+      "test_year": 2021,
+      "model": "persistence",
+      "wmape": 14.316937027125192,
+      "features": []
+    },
+    {
+      "test_year": 2021,
+      "model": "ridge_lag_only",
+      "wmape": 6.509510197436008,
+      "features": [
+        "side_creations_lag_1"
+      ]
+    },
+    {
+      "test_year": 2021,
+      "model": "ridge_sitadel_only",
+      "wmape": 8.488860796587277,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_surface_autorisee_lag_1",
+        "sitadel_surface_commencee_lag_1"
+      ]
+    },
+    {
+      "test_year": 2021,
+      "model": "ridge_sitadel_monthly_lag",
+      "wmape": 9.57899339672294,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+        "sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+        "sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+        "sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+        "sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+        "sitadel_monthly_sitadel_monthly_h1_commencee_lag_1"
+      ]
+    },
+    {
+      "test_year": 2021,
+      "model": "ridge_sitadel_monthly_lag_log",
+      "wmape": 7.00914745043432,
+      "features": [
+        "side_creations_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_lag_1"
+      ]
+    },
+    {
+      "test_year": 2021,
+      "model": "ridge_sitadel_monthly_q1_nowcast",
+      "wmape": 9.483856087463352,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+        "sitadel_monthly_sitadel_monthly_q1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2021,
+      "model": "ridge_sitadel_monthly_q1_nowcast_log",
+      "wmape": 6.990842761581338,
+      "features": [
+        "side_creations_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2021,
+      "model": "ridge_sitadel_monthly_h1_nowcast",
+      "wmape": 10.299038794593075,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+        "sitadel_monthly_sitadel_monthly_h1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2021,
+      "model": "ridge_sitadel_monthly_h1_nowcast_log",
+      "wmape": 6.7220272613030625,
+      "features": [
+        "side_creations_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2021,
+      "model": "ridge_rei_only",
+      "wmape": 6.509510197436008,
+      "features": [
+        "side_creations_lag_1"
+      ]
+    },
+    {
+      "test_year": 2021,
+      "model": "ridge_energy_only",
+      "wmape": 8.323749414833735,
+      "features": [
+        "side_creations_lag_1",
+        "energy_energy_electricity_conso_nonres_lag_1",
+        "energy_energy_gas_conso_nonres_lag_1",
+        "energy_energy_electricity_pdl_nonres_lag_1",
+        "energy_energy_gas_pdl_nonres_lag_1"
+      ]
+    },
+    {
+      "test_year": 2021,
+      "model": "ridge_local_all",
+      "wmape": 8.720737647128864,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_surface_autorisee_lag_1",
+        "sitadel_surface_commencee_lag_1",
+        "energy_energy_electricity_conso_nonres_lag_1",
+        "energy_energy_gas_conso_nonres_lag_1",
+        "energy_energy_electricity_pdl_nonres_lag_1",
+        "energy_energy_gas_pdl_nonres_lag_1"
+      ]
+    },
+    {
+      "test_year": 2022,
+      "model": "persistence",
+      "wmape": 3.3687525018585234,
+      "features": []
+    },
+    {
+      "test_year": 2022,
+      "model": "ridge_lag_only",
+      "wmape": 9.806575441096669,
+      "features": [
+        "side_creations_lag_1"
+      ]
+    },
+    {
+      "test_year": 2022,
+      "model": "ridge_sitadel_only",
+      "wmape": 9.29125948452993,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_surface_autorisee_lag_1",
+        "sitadel_surface_commencee_lag_1"
+      ]
+    },
+    {
+      "test_year": 2022,
+      "model": "ridge_sitadel_monthly_lag",
+      "wmape": 8.482950572159714,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+        "sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+        "sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+        "sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+        "sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+        "sitadel_monthly_sitadel_monthly_h1_commencee_lag_1"
+      ]
+    },
+    {
+      "test_year": 2022,
+      "model": "ridge_sitadel_monthly_lag_log",
+      "wmape": 10.064040974191242,
+      "features": [
+        "side_creations_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_lag_1"
+      ]
+    },
+    {
+      "test_year": 2022,
+      "model": "ridge_sitadel_monthly_q1_nowcast",
+      "wmape": 9.916572166410182,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+        "sitadel_monthly_sitadel_monthly_q1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2022,
+      "model": "ridge_sitadel_monthly_q1_nowcast_log",
+      "wmape": 10.134449848635747,
+      "features": [
+        "side_creations_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2022,
+      "model": "ridge_sitadel_monthly_h1_nowcast",
+      "wmape": 11.132239291288922,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+        "sitadel_monthly_sitadel_monthly_h1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2022,
+      "model": "ridge_sitadel_monthly_h1_nowcast_log",
+      "wmape": 10.65394884766528,
+      "features": [
+        "side_creations_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2022,
+      "model": "ridge_rei_only",
+      "wmape": 9.806575441096669,
+      "features": [
+        "side_creations_lag_1"
+      ]
+    },
+    {
+      "test_year": 2022,
+      "model": "ridge_energy_only",
+      "wmape": 10.336938536814758,
+      "features": [
+        "side_creations_lag_1",
+        "energy_energy_electricity_conso_nonres_lag_1",
+        "energy_energy_gas_conso_nonres_lag_1",
+        "energy_energy_electricity_pdl_nonres_lag_1",
+        "energy_energy_gas_pdl_nonres_lag_1"
+      ]
+    },
+    {
+      "test_year": 2022,
+      "model": "ridge_local_all",
+      "wmape": 9.75292669760605,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_surface_autorisee_lag_1",
+        "sitadel_surface_commencee_lag_1",
+        "energy_energy_electricity_conso_nonres_lag_1",
+        "energy_energy_gas_conso_nonres_lag_1",
+        "energy_energy_electricity_pdl_nonres_lag_1",
+        "energy_energy_gas_pdl_nonres_lag_1"
+      ]
+    },
+    {
+      "test_year": 2023,
+      "model": "persistence",
+      "wmape": 3.5657895094423715,
+      "features": []
+    },
+    {
+      "test_year": 2023,
+      "model": "ridge_lag_only",
+      "wmape": 10.237013148975912,
+      "features": [
+        "side_creations_lag_1"
+      ]
+    },
+    {
+      "test_year": 2023,
+      "model": "ridge_sitadel_only",
+      "wmape": 9.314427590140163,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_surface_autorisee_lag_1",
+        "sitadel_surface_commencee_lag_1"
+      ]
+    },
+    {
+      "test_year": 2023,
+      "model": "ridge_sitadel_monthly_lag",
+      "wmape": 10.414398566827094,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+        "sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+        "sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+        "sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+        "sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+        "sitadel_monthly_sitadel_monthly_h1_commencee_lag_1"
+      ]
+    },
+    {
+      "test_year": 2023,
+      "model": "ridge_sitadel_monthly_lag_log",
+      "wmape": 10.328113218988157,
+      "features": [
+        "side_creations_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_lag_1"
+      ]
+    },
+    {
+      "test_year": 2023,
+      "model": "ridge_sitadel_monthly_q1_nowcast",
+      "wmape": 9.629111627679206,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+        "sitadel_monthly_sitadel_monthly_q1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2023,
+      "model": "ridge_sitadel_monthly_q1_nowcast_log",
+      "wmape": 10.31262439443575,
+      "features": [
+        "side_creations_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2023,
+      "model": "ridge_sitadel_monthly_h1_nowcast",
+      "wmape": 9.485293113105666,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+        "sitadel_monthly_sitadel_monthly_h1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2023,
+      "model": "ridge_sitadel_monthly_h1_nowcast_log",
+      "wmape": 10.24393454474321,
+      "features": [
+        "side_creations_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2023,
+      "model": "ridge_rei_only",
+      "wmape": 10.237013148975912,
+      "features": [
+        "side_creations_lag_1"
+      ]
+    },
+    {
+      "test_year": 2023,
+      "model": "ridge_energy_only",
+      "wmape": 10.221310808423011,
+      "features": [
+        "side_creations_lag_1",
+        "energy_energy_electricity_conso_nonres_lag_1",
+        "energy_energy_gas_conso_nonres_lag_1",
+        "energy_energy_electricity_pdl_nonres_lag_1",
+        "energy_energy_gas_pdl_nonres_lag_1"
+      ]
+    },
+    {
+      "test_year": 2023,
+      "model": "ridge_local_all",
+      "wmape": 9.72547119340765,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_surface_autorisee_lag_1",
+        "sitadel_surface_commencee_lag_1",
+        "energy_energy_electricity_conso_nonres_lag_1",
+        "energy_energy_gas_conso_nonres_lag_1",
+        "energy_energy_electricity_pdl_nonres_lag_1",
+        "energy_energy_gas_pdl_nonres_lag_1"
+      ]
+    },
+    {
+      "test_year": 2024,
+      "model": "persistence",
+      "wmape": 9.469858230203045,
+      "features": []
+    },
+    {
+      "test_year": 2024,
+      "model": "ridge_lag_only",
+      "wmape": 4.103357527192584,
+      "features": [
+        "side_creations_lag_1"
+      ]
+    },
+    {
+      "test_year": 2024,
+      "model": "ridge_sitadel_only",
+      "wmape": 6.616951318968694,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_surface_autorisee_lag_1",
+        "sitadel_surface_commencee_lag_1"
+      ]
+    },
+    {
+      "test_year": 2024,
+      "model": "ridge_sitadel_monthly_lag",
+      "wmape": 5.318607661134664,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+        "sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+        "sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+        "sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+        "sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+        "sitadel_monthly_sitadel_monthly_h1_commencee_lag_1"
+      ]
+    },
+    {
+      "test_year": 2024,
+      "model": "ridge_sitadel_monthly_lag_log",
+      "wmape": 4.333039082009405,
+      "features": [
+        "side_creations_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_lag_1"
+      ]
+    },
+    {
+      "test_year": 2024,
+      "model": "ridge_sitadel_monthly_q1_nowcast",
+      "wmape": 5.214181550421826,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+        "sitadel_monthly_sitadel_monthly_q1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2024,
+      "model": "ridge_sitadel_monthly_q1_nowcast_log",
+      "wmape": 4.124805926727406,
+      "features": [
+        "side_creations_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+        "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2024,
+      "model": "ridge_sitadel_monthly_h1_nowcast",
+      "wmape": 5.5096251605383415,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+        "sitadel_monthly_sitadel_monthly_h1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2024,
+      "model": "ridge_sitadel_monthly_h1_nowcast_log",
+      "wmape": 4.232797041798469,
+      "features": [
+        "side_creations_lag_1",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+        "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_current"
+      ]
+    },
+    {
+      "test_year": 2024,
+      "model": "ridge_rei_only",
+      "wmape": 4.103357527192584,
+      "features": [
+        "side_creations_lag_1"
+      ]
+    },
+    {
+      "test_year": 2024,
+      "model": "ridge_energy_only",
+      "wmape": 5.765357767723249,
+      "features": [
+        "side_creations_lag_1",
+        "energy_energy_electricity_conso_nonres_lag_1",
+        "energy_energy_gas_conso_nonres_lag_1",
+        "energy_energy_electricity_pdl_nonres_lag_1",
+        "energy_energy_gas_pdl_nonres_lag_1"
+      ]
+    },
+    {
+      "test_year": 2024,
+      "model": "ridge_local_all",
+      "wmape": 7.155629050976925,
+      "features": [
+        "side_creations_lag_1",
+        "sitadel_surface_autorisee_lag_1",
+        "sitadel_surface_commencee_lag_1",
+        "energy_energy_electricity_conso_nonres_lag_1",
+        "energy_energy_gas_conso_nonres_lag_1",
+        "energy_energy_electricity_pdl_nonres_lag_1",
+        "energy_energy_gas_pdl_nonres_lag_1"
+      ]
+    }
+  ],
+  "available_candidate_features": [
+    "sitadel_surface_autorisee_lag_1",
+    "sitadel_surface_commencee_lag_1",
+    "rei_rei_cfe_commune_base_lag_1",
+    "rei_rei_cfe_commune_product_lag_1",
+    "rei_rei_cfe_commune_articles_lag_1",
+    "rei_rei_cfe_microentrepreneurs_lag_1",
+    "rei_rei_cfe_microentrepreneurs_created_n_1_lag_1",
+    "rei_rei_cfe_epci_base_lag_1",
+    "rei_rei_cfe_epci_product_lag_1",
+    "rei_rei_cfe_epci_articles_lag_1",
+    "energy_energy_electricity_conso_nonres_lag_1",
+    "energy_energy_gas_conso_nonres_lag_1",
+    "energy_energy_electricity_pdl_nonres_lag_1",
+    "energy_energy_gas_pdl_nonres_lag_1",
+    "sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+    "sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+    "sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+    "sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+    "sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+    "sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+    "log1p_sitadel_monthly_sitadel_monthly_total_autorisee_lag_1",
+    "log1p_sitadel_monthly_sitadel_monthly_total_commencee_lag_1",
+    "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_lag_1",
+    "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_lag_1",
+    "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_lag_1",
+    "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_lag_1",
+    "sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+    "sitadel_monthly_sitadel_monthly_q1_commencee_current",
+    "log1p_sitadel_monthly_sitadel_monthly_q1_autorisee_current",
+    "log1p_sitadel_monthly_sitadel_monthly_q1_commencee_current",
+    "sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+    "sitadel_monthly_sitadel_monthly_h1_commencee_current",
+    "log1p_sitadel_monthly_sitadel_monthly_h1_autorisee_current",
+    "log1p_sitadel_monthly_sitadel_monthly_h1_commencee_current"
+  ],
+  "methodology": "Candidate sources are evaluated incrementally against ridge_lag_only. Lagged sources are forecast-safe T-1. SITADEL monthly Q1/H1 current-year features are nowcast variants, not pure forecast features."
+}

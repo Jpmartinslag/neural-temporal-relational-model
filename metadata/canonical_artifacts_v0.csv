@@ -14,7 +14,7 @@ target,official_side_target,canonical,data/processed/target_side_establishments_
 target,official_side_communal_source,canonical,data/processed/side_communal_creations_ze2020_official_2012_2024_v0.csv,Aggregated official SIDE source panel.
 target,proxy_audit,diagnostic,data/processed/target_proxy_vs_side_official_ze2020_2012_2024_v0.csv,Proxy retained only for audit/comparison.
 model_data,long_history_dataset,canonical,data/processed/long_history_side_target_dataset_core_v0.csv,Main baseline dataset with longer target history.
-model_data,rich_tensor_candidate,diagnostic,data/processed/stgnn_tensor_package_side_target_core_v0.npz,Tensor package retained as candidate input, not final architecture.
+model_data,rich_tensor_candidate,diagnostic,data/processed/stgnn_tensor_package_side_target_core_v0.npz,"Tensor package retained as candidate input, not final architecture."
 baseline,long_history_predictions,canonical,data/processed/long_history_side_target_baseline_predictions_core_v0.csv,Main persistence/ridge baseline predictions.
 baseline,rolling_backtest_predictions,canonical,data/processed/segmented_decision_rule_backtest_predictions_core_v0.csv,Rolling validation predictions for stability analysis.
 baseline,decision_matrix,canonical,metadata/side_model_decision_matrix_core_v0.csv,Decision matrix between persistence/ridge/segmentation.
@@ -25,4 +25,19 @@ report,rolling_backtest,canonical,reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_
 report,instability_diagnostic,canonical,reports/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md,Current explanation of temporal instability.
 report,temporal_regime_baseline,canonical,reports/TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md,Shows that simple observed-growth regime rule is insufficient.
 report,extended_core_verification_plan,canonical,reports/EXTENDED_CORE_VERIFICATION_PLAN_V0.md,Verification checklist before accepting the extended core package or STGNN claim.
+report,project_consistency_audit,canonical,reports/PROJECT_CONSISTENCY_AUDIT_V0.md,Current audit separating canonical candidate diagnostic and proxy artifacts.
+model_data,extended_panel,canonical,data/processed/extended_panel_core_v0.csv,Current 2018-2024 SIDE target panel used for extended causal baselines.
+model_data,extended_forecast_tensor,canonical,data/processed/stgnn_tensor_package_extended_forecast_core_v1.npz,Forecast-safe experimental tensor with official SIDE target.
+model_data,extended_nowcast_q1_tensor,candidate,data/processed/stgnn_tensor_package_extended_nowcast_q1_core_v1.npz,Q1 nowcast tensor; valid for nowcast experiments not pure forecast.
+model_data,extended_diagnostic_tensor,diagnostic,data/processed/stgnn_tensor_package_extended_diagnostic_core_v1.npz,Diagnostic tensor with current-year information not valid for pure forecasting.
+metadata,extended_feature_classification,canonical,metadata/extended_core_feature_classification_v0.csv,Feature availability classes separating forecast nowcast diagnostic and excluded variables.
+baseline,extended_rolling_metrics,canonical,reports/extended_rolling_backtest_metrics_v0.json,Current rolling benchmark metrics with ridge_lag_only and persistence.
+report,extended_core_summary,canonical,reports/EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md,Current extended core benchmark summary.
+report,local_candidate_audit,canonical,reports/LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md,Audit of SITADEL REI and Energy candidate features before canonical inclusion.
+metadata,raw_external_inventory,canonical,metadata/raw_external_inventory_v0.csv,Inventory of processed partial and pending external raw sources.
+report,raw_external_inventory,canonical,reports/RAW_EXTERNAL_INVENTORY_V0.md,Readable external raw source inventory and priority queue.
+candidate_data,sitadel_monthly_surface,candidate,data/interim/tables/sitadel_monthly_surface_ze2020_v0.csv,Monthly SITADEL aggregation; candidate source not canonical model input.
+candidate_data,sitadel_monthly_annual_derived,candidate,data/interim/tables/sitadel_monthly_derived_annual_ze2020_v0.csv,Derived total Q1 H1 SITADEL features for candidate testing.
+candidate_data,energy_consumption,candidate,data/interim/tables/energy_consumption_ze2020_v0.csv,SDES non-residential energy features; candidate source only.
+candidate_data,rei_cfe,candidate,data/interim/tables/rei_cfe_ze2020_v0.csv,REI CFE features with shallow 2023-2024 coverage; candidate source only.
 future_data,candidates,canonical,metadata/future_dataset_candidates_v0.csv,Future datasets registered but not integrated into core.
