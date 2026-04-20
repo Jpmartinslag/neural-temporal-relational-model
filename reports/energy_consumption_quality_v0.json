@@ -1,5 +1,15 @@
 {
   "years_available": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
     2018,
     2019,
     2020,
@@ -9,14 +19,19 @@
     2024
   ],
   "zones_count": 306,
-  "total_rows": 2142,
+  "total_rows": 4850,
   "features": [
     "energy_electricity_conso_nonres",
     "energy_gas_conso_nonres",
+    "energy_heat_cold_conso_nonres",
     "energy_electricity_pdl_nonres",
-    "energy_gas_pdl_nonres"
+    "energy_gas_pdl_nonres",
+    "energy_heat_cold_pdl_nonres"
   ],
   "processed_files": [
+    "data/raw/external/energy/Donnees-locales-de-consommation-denergie-periode-2008-2017-electricite.2017-12.csv",
+    "data/raw/external/energy/Donnees-locales-de-consommation-denergie-periode-2008-2017-gaz.2017-12.csv",
+    "data/raw/external/energy/Donnees-locales-de-consommation-denergie-periode-2008-2017-chaleur-et-froid.2017-12.csv",
     "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-gaz-naturel-.2020-09.csv",
     "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-gaz-naturel-.2021-09.csv",
     "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-gaz-naturel-.2024-09.csv",
@@ -33,5 +48,247 @@
     "Donnees-de-consommation-et-de-points-de-livraison-denergie-a-la-maille-IRIS-electricite-.2022-09.csv"
   ],
   "skipped_files_count": 6,
-  "methodological_status": "candidate_lagged_feature_source; non-residential electricity/gas only"
+  "historical_selected_levels": [
+    {
+      "fuel": "electricity",
+      "year": 2008,
+      "type": [
+        "Commune"
+      ],
+      "rows": 56
+    },
+    {
+      "fuel": "electricity",
+      "year": 2009,
+      "type": [
+        "Commune"
+      ],
+      "rows": 63
+    },
+    {
+      "fuel": "electricity",
+      "year": 2010,
+      "type": [
+        "Commune"
+      ],
+      "rows": 65
+    },
+    {
+      "fuel": "electricity",
+      "year": 2011,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 48628
+    },
+    {
+      "fuel": "electricity",
+      "year": 2012,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 49601
+    },
+    {
+      "fuel": "electricity",
+      "year": 2013,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 49611
+    },
+    {
+      "fuel": "electricity",
+      "year": 2014,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 49630
+    },
+    {
+      "fuel": "electricity",
+      "year": 2015,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 49630
+    },
+    {
+      "fuel": "electricity",
+      "year": 2016,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 49489
+    },
+    {
+      "fuel": "electricity",
+      "year": 2017,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 50273
+    },
+    {
+      "fuel": "gas",
+      "year": 2008,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 800
+    },
+    {
+      "fuel": "gas",
+      "year": 2009,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 794
+    },
+    {
+      "fuel": "gas",
+      "year": 2010,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 24627
+    },
+    {
+      "fuel": "gas",
+      "year": 2011,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 24656
+    },
+    {
+      "fuel": "gas",
+      "year": 2012,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 24672
+    },
+    {
+      "fuel": "gas",
+      "year": 2013,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 24676
+    },
+    {
+      "fuel": "gas",
+      "year": 2014,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 24683
+    },
+    {
+      "fuel": "gas",
+      "year": 2015,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 24615
+    },
+    {
+      "fuel": "gas",
+      "year": 2016,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 24629
+    },
+    {
+      "fuel": "gas",
+      "year": 2017,
+      "type": [
+        "IRIS"
+      ],
+      "rows": 25213
+    },
+    {
+      "fuel": "heat_cold",
+      "year": 2008,
+      "type": [
+        "Commune"
+      ],
+      "rows": 425
+    },
+    {
+      "fuel": "heat_cold",
+      "year": 2009,
+      "type": [
+        "Commune"
+      ],
+      "rows": 430
+    },
+    {
+      "fuel": "heat_cold",
+      "year": 2010,
+      "type": [
+        "Commune"
+      ],
+      "rows": 448
+    },
+    {
+      "fuel": "heat_cold",
+      "year": 2011,
+      "type": [
+        "Commune"
+      ],
+      "rows": 471
+    },
+    {
+      "fuel": "heat_cold",
+      "year": 2012,
+      "type": [
+        "Commune"
+      ],
+      "rows": 399
+    },
+    {
+      "fuel": "heat_cold",
+      "year": 2013,
+      "type": [
+        "Commune"
+      ],
+      "rows": 426
+    },
+    {
+      "fuel": "heat_cold",
+      "year": 2014,
+      "type": [
+        "Commune"
+      ],
+      "rows": 554
+    },
+    {
+      "fuel": "heat_cold",
+      "year": 2015,
+      "type": [
+        "Commune"
+      ],
+      "rows": 651
+    },
+    {
+      "fuel": "heat_cold",
+      "year": 2016,
+      "type": [
+        "Commune"
+      ],
+      "rows": 658
+    },
+    {
+      "fuel": "heat_cold",
+      "year": 2017,
+      "type": [
+        "Commune"
+      ],
+      "rows": 751
+    }
+  ],
+  "methodological_status": "candidate_lagged_feature_source; non-residential electricity/gas 2008-2024 plus heat/cold 2008-2017; historical files use best available IRIS-or-Commune level per fuel/year to avoid double counting"
 }

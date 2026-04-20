@@ -1,19 +1,297 @@
 {
   "years_available": [
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
     2023,
     2024
   ],
-  "zones_count": 287,
-  "total_rows": 574,
+  "zones_count": 306,
+  "total_rows": 2104,
   "features": [
     "rei_cfe_commune_base",
     "rei_cfe_commune_product",
     "rei_cfe_commune_articles",
-    "rei_cfe_microentrepreneurs",
-    "rei_cfe_microentrepreneurs_created_n_1",
     "rei_cfe_epci_base",
     "rei_cfe_epci_product",
-    "rei_cfe_epci_articles"
+    "rei_cfe_epci_articles",
+    "rei_cfe_microentrepreneurs",
+    "rei_cfe_microentrepreneurs_created_n_1"
+  ],
+  "processed_sources": [
+    {
+      "year": 2018,
+      "source_kind": "converted_csv",
+      "file": "REI-2018-fichier-notice-trace.zip",
+      "source_columns": {
+        "rei_cfe_commune_base": [
+          "P11"
+        ],
+        "rei_cfe_commune_product": [
+          "P13"
+        ],
+        "rei_cfe_commune_articles": [
+          "P14"
+        ],
+        "rei_cfe_epci_base": [
+          "P31_1",
+          "P31_2",
+          "P31_3"
+        ],
+        "rei_cfe_epci_product": [
+          "P33_1",
+          "P33_2",
+          "P33_3"
+        ],
+        "rei_cfe_epci_articles": [
+          "P34_1",
+          "P34_2",
+          "P34_3"
+        ],
+        "rei_cfe_microentrepreneurs": [
+          "NBCFEAE",
+          "NBCFEMICRO"
+        ],
+        "rei_cfe_microentrepreneurs_created_n_1": []
+      }
+    },
+    {
+      "year": 2019,
+      "source_kind": "converted_csv",
+      "file": "REI-2019-fichier-notice-trace.zip",
+      "source_columns": {
+        "rei_cfe_commune_base": [
+          "CFE - COMMUNE / BASE"
+        ],
+        "rei_cfe_commune_product": [
+          "CFE - COMMUNE / PRODUIT REEL NET"
+        ],
+        "rei_cfe_commune_articles": [
+          "CFE - COMMUNE / NOMBRE ARTICLES COMPORTANT UNE BASE TAXABLE DE CFE"
+        ],
+        "rei_cfe_epci_base": [
+          "CFE - INTERCOMMUNALITE / BASE / FISCALITE ADDITIONNELLE OU FP DE ZONE (HORS ZONE)",
+          "CFE - INTERCOMMUNALITE / BASE / FP UNIQUE OU EN ZAE",
+          "CFE - INTERCOMMUNALITE / BASE / FPE EN ZONE EOLIENNE"
+        ],
+        "rei_cfe_epci_product": [
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FISCALITE ADDITIONNELLE OU FP DE ZONE (HORS ZONE)",
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FP UNIQUE OU EN ZAE",
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FPE EN ZONE EOLIENNE"
+        ],
+        "rei_cfe_epci_articles": [
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FISCALITE ADDITIONNELLE OU FP DE ZONE (HORS ZONE)",
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FP UNIQUE OU EN ZAE",
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FPE EN ZONE EOLIENNE"
+        ],
+        "rei_cfe_microentrepreneurs": [],
+        "rei_cfe_microentrepreneurs_created_n_1": []
+      }
+    },
+    {
+      "year": 2020,
+      "source_kind": "converted_csv",
+      "file": "REI-2020-fichier-notice-trace.zip",
+      "source_columns": {
+        "rei_cfe_commune_base": [
+          "CFE - COMMUNE / BASE"
+        ],
+        "rei_cfe_commune_product": [
+          "CFE - COMMUNE / PRODUIT REEL NET"
+        ],
+        "rei_cfe_commune_articles": [
+          "CFE - COMMUNE / NOMBRE ARTICLES COMPORTANT UNE BASE TAXABLE DE CFE"
+        ],
+        "rei_cfe_epci_base": [
+          "CFE - INTERCOMMUNALITE / BASE / FISCALITE ADDITIONNELLE OU FP DE ZONE (HORS ZONE)",
+          "CFE - INTERCOMMUNALITE / BASE / FP UNIQUE OU EN ZAE",
+          "CFE - INTERCOMMUNALITE / BASE / FPE EN ZONE EOLIENNE"
+        ],
+        "rei_cfe_epci_product": [
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FISCALITE ADDITIONNELLE OU FP DE ZONE (HORS ZONE)",
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FP UNIQUE OU EN ZAE",
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FPE EN ZONE EOLIENNE"
+        ],
+        "rei_cfe_epci_articles": [
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FISCALITE ADDITIONNELLE OU FP DE ZONE (HORS ZONE)",
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FP UNIQUE OU EN ZAE",
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FPE EN ZONE EOLIENNE"
+        ],
+        "rei_cfe_microentrepreneurs": [
+          "CFE - NOMBRE DE MICRO-ENTREPRISES OU SP\u00c9CIAL BNC",
+          "CFE - NOMBRE TOTAL MICRO-ENTREPRENEURS"
+        ],
+        "rei_cfe_microentrepreneurs_created_n_1": []
+      }
+    },
+    {
+      "year": 2021,
+      "source_kind": "converted_csv",
+      "file": "REI-2021-fichier-notice-trace.zip",
+      "source_columns": {
+        "rei_cfe_commune_base": [
+          "CFE - COMMUNE / BASE"
+        ],
+        "rei_cfe_commune_product": [
+          "CFE - COMMUNE / PRODUIT REEL NET"
+        ],
+        "rei_cfe_commune_articles": [
+          "CFE - COMMUNE / NOMBRE ARTICLES COMPORTANT UNE BASE TAXABLE DE CFE"
+        ],
+        "rei_cfe_epci_base": [
+          "CFE - INTERCOMMUNALITE / BASE / FISCALITE ADDITIONNELLE OU FP DE ZONE (HORS ZONE)",
+          "CFE - INTERCOMMUNALITE / BASE / FP UNIQUE",
+          "CFE - INTERCOMMUNALITE / BASE / FP UNIQUE OU EN ZAE",
+          "CFE - INTERCOMMUNALITE / BASE / FPE EN ZONE EOLIENNE",
+          "CFE - INTERCOMMUNALITE / BASE / FPZ EN ZAE"
+        ],
+        "rei_cfe_epci_product": [
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FISCALITE ADDITIONNELLE OU FP DE ZONE (HORS ZONE)",
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FP UNIQUE",
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FP UNIQUE OU EN ZAE",
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FPE EN ZONE EOLIENNE",
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FPZ EN ZAE"
+        ],
+        "rei_cfe_epci_articles": [
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FISCALITE ADDITIONNELLE OU FP DE ZONE (HORS ZONE)",
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FP UNIQUE",
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FP UNIQUE OU EN ZAE",
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FPE EN ZONE EOLIENNE",
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FPZ EN ZAE"
+        ],
+        "rei_cfe_microentrepreneurs": [
+          "CFE - NOMBRE DE MICRO-ENTREPRISES OU SP\u00c9CIAL BNC",
+          "CFE - NOMBRE TOTAL MICRO-ENTREPRENEURS"
+        ],
+        "rei_cfe_microentrepreneurs_created_n_1": [
+          "CFE - NOMBRE DE MICRO-ENTREPRISES OU SPECIAL BNC CREEES EN N-1",
+          "CFE - NOMBRE MICRO-ENTREPRENEURS CREES EN N-1"
+        ]
+      }
+    },
+    {
+      "year": 2022,
+      "source_kind": "converted_csv",
+      "file": "REI-2022-fichier-notice-trace.zip",
+      "source_columns": {
+        "rei_cfe_commune_base": [
+          "CFE - COMMUNE / BASE"
+        ],
+        "rei_cfe_commune_product": [
+          "CFE - COMMUNE / PRODUIT REEL NET"
+        ],
+        "rei_cfe_commune_articles": [
+          "CFE - COMMUNE / NOMBRE ARTICLES COMPORTANT UNE BASE TAXABLE DE CFE"
+        ],
+        "rei_cfe_epci_base": [
+          "CFE - INTERCOMMUNALITE / BASE / FISCALITE ADDITIONNELLE OU FP DE ZONE (HORS ZONE)",
+          "CFE - INTERCOMMUNALITE / BASE / FP UNIQUE",
+          "CFE - INTERCOMMUNALITE / BASE / FP UNIQUE OU EN ZAE",
+          "CFE - INTERCOMMUNALITE / BASE / FPE EN ZONE EOLIENNE",
+          "CFE - INTERCOMMUNALITE / BASE / FPZ EN ZAE"
+        ],
+        "rei_cfe_epci_product": [
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FISCALITE ADDITIONNELLE OU FP DE ZONE (HORS ZONE)",
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FP UNIQUE",
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FP UNIQUE OU EN ZAE",
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FPE EN ZONE EOLIENNE",
+          "CFE - INTERCOMMUNALITE / PRODUIT REEL NET / FPZ EN ZAE"
+        ],
+        "rei_cfe_epci_articles": [
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FISCALITE ADDITIONNELLE OU FP DE ZONE (HORS ZONE)",
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FP UNIQUE",
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FP UNIQUE OU EN ZAE",
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FPE EN ZONE EOLIENNE",
+          "CFE - INTERCOMMUNALITE /NB ARTICLES / FPZ EN ZAE"
+        ],
+        "rei_cfe_microentrepreneurs": [
+          "CFE - NOMBRE DE MICRO-ENTREPRISES OU SP\u00c9CIAL BNC",
+          "CFE - NOMBRE TOTAL MICRO-ENTREPRENEURS"
+        ],
+        "rei_cfe_microentrepreneurs_created_n_1": [
+          "CFE - NOMBRE DE MICRO-ENTREPRISES OU SPECIAL BNC CREEES EN N-1",
+          "CFE - NOMBRE MICRO-ENTREPRENEURS CREES EN N-1"
+        ]
+      }
+    },
+    {
+      "year": 2023,
+      "source_kind": "raw_zip_csv",
+      "file": "REI-2023-fichier-notice-trace.zip",
+      "source_columns": {
+        "rei_cfe_commune_base": [
+          "P11"
+        ],
+        "rei_cfe_commune_product": [
+          "P13"
+        ],
+        "rei_cfe_commune_articles": [
+          "P14"
+        ],
+        "rei_cfe_epci_base": [
+          "P31_1",
+          "P31_2",
+          "P31_2U",
+          "P31_2Z",
+          "P31_3"
+        ],
+        "rei_cfe_epci_product": [
+          "P33_1",
+          "P33_2",
+          "P33_2U",
+          "P33_2Z",
+          "P33_3"
+        ],
+        "rei_cfe_epci_articles": [
+          "P34_1",
+          "P34_2",
+          "P34_2U",
+          "P34_2Z",
+          "P34_3"
+        ],
+        "rei_cfe_microentrepreneurs": [
+          "NBCFEAE",
+          "NBCFEMICRO"
+        ],
+        "rei_cfe_microentrepreneurs_created_n_1": [
+          "NBCFEAECREE"
+        ]
+      }
+    },
+    {
+      "year": 2024,
+      "source_kind": "raw_zip_csv",
+      "file": "REI-2024-fichier-notice-trace.zip",
+      "source_columns": {
+        "rei_cfe_commune_base": [
+          "P11"
+        ],
+        "rei_cfe_commune_product": [
+          "P13"
+        ],
+        "rei_cfe_commune_articles": [
+          "P14"
+        ],
+        "rei_cfe_epci_base": [
+          "P31"
+        ],
+        "rei_cfe_epci_product": [
+          "P33"
+        ],
+        "rei_cfe_epci_articles": [
+          "P34"
+        ],
+        "rei_cfe_microentrepreneurs": [
+          "NBCFEAE",
+          "NBCFEMICRO"
+        ],
+        "rei_cfe_microentrepreneurs_created_n_1": [
+          "NBCFEAECREE"
+        ]
+      }
+    }
   ],
   "skipped_files": [
     {
@@ -195,32 +473,7 @@
       "year": 2017,
       "reason": "xlsx_only_or_no_csv",
       "file": "REI-2017-fichier-notice-trace.zip"
-    },
-    {
-      "year": 2018,
-      "reason": "xlsx_only_or_no_csv",
-      "file": "REI-2018-fichier-notice-trace.zip"
-    },
-    {
-      "year": 2019,
-      "reason": "xlsx_only_or_no_csv",
-      "file": "REI-2019-fichier-notice-trace.zip"
-    },
-    {
-      "year": 2020,
-      "reason": "xlsx_only_or_no_csv",
-      "file": "REI-2020-fichier-notice-trace.zip"
-    },
-    {
-      "year": 2021,
-      "reason": "xlsx_only_or_no_csv",
-      "file": "REI-2021-fichier-notice-trace.zip"
-    },
-    {
-      "year": 2022,
-      "reason": "xlsx_only_or_no_csv",
-      "file": "REI-2022-fichier-notice-trace.zip"
     }
   ],
-  "methodological_status": "candidate_lagged_feature_source; not included in canonical tensor before incremental validation"
+  "methodological_status": "diagnostic_lagged_feature_source_under_quarantine; aggregate/component double-counting fixed, but publication-lag and vintage safety remain unresolved"
 }

@@ -44,6 +44,11 @@ Thumbs.db
 .codex
 AGENTS.md
 CLAUDE.md
+data/interim/tables/rei_converted_csv_v0/
+
+# Regenerable model prediction dumps
+data/processed/residual_baseline_predictions_core_v0.csv
+data/processed/residual_activation_rules_predictions_core_v0.csv
 
 # Temporary outputs
 tmp/
@@ -62,3 +67,6 @@ tmp/
 # - data/interim/policy/
 # - data/interim/population_history/
 # - data/processed/
+
+# Large regenerable residual metric dumps
+reports/residual_baseline_metrics_core_v0.json

@@ -1990,8 +1990,10 @@ Veredito Tecnico Seguro:
 
 Decisao:
 
-- Encerrar a fase de estruturacao de dados e baselines lineares.
-- Iniciar a implementacao do STGNN como proximo passo logico para capturar as relacoes nao-lineares expostas.
+- Decisao historica superada por auditorias posteriores.
+- Naquele momento, `STGNN` parecia um proximo experimento logico.
+- Apos os testes locais, engenharia de features e selecao causal, a decisao atual mudou: nao iniciar `STGNN` ainda.
+- Manter este bloco apenas como rastreabilidade da evolucao metodologica.
 
 ### 2026-04-14 - Saneamento do Extended Core e benchmark exploratorio
 
@@ -2187,3 +2189,392 @@ Decisao:
 - O projeto esta consistente para consolidar a fase atual em commit.
 - STGNN continua como experimento futuro, nao como obrigacao imediata.
 - Antes de nova arquitetura, o benchmark a bater permanece `ridge_lag_only = 7.66%` e `persistence = 7.68%`.
+
+### 2026-04-16 - Conversao REI historico e reteste local
+
+Motivacao:
+- Fechar a lacuna REI `2018-2022`, que estava presa em XLSX.
+- Testar se proxies fiscais CFE com cobertura mais longa superam o baseline temporal.
+
+O que foi feito:
+- Criado `src/data/convert_rei_xlsx_to_csv_v0.py`.
+- Convertidos localmente os anos REI `2018-2022` usando `python-calamine`.
+- Atualizado `src/data/build_rei_cfe_ze2020_v0.py` para normalizar schemas diferentes:
+  - `2018`: colunas curtas `P11`, `P13`, `P14`, `P31_*`, `P33_*`, `P34_*`.
+  - `2019-2022`: colunas longas `CFE - ...`.
+  - `2023-2024`: CSVs diretos dos ZIPs.
+- Agregado REI CFE por `ZE2020` para `2018-2024`.
+- Reexecutada avaliacao de candidatos locais.
+
+Resultado:
+- `ridge_lag_only`: WMAPE medio `7.66%`.
+- `persistence`: WMAPE medio `7.68%`.
+- `ridge_rei_only`: WMAPE medio `7.77%`.
+- `ridge_local_all`: WMAPE medio `7.91%`.
+- REI melhora 2023, mas piora 2022 e 2024.
+
+Decisao:
+- REI historico e metodologicamente utilizavel como candidato.
+- Ainda nao entra no tensor canonico porque nao supera o baseline temporal em media.
+- Leitura correta: REI parece sinal local sensivel a regime, nao preditor linear estavel.
+- CSVs convertidos em `data/interim/tables/rei_converted_csv_v0/` sao intermediarios grandes e reprodutiveis; ficam ignorados no Git.
+
+### 2026-04-16 - Integracao historica de energia SDES
+
+Motivacao:
+- Testar a hipotese de que consumo de energia nao-residencial representa atividade economica local.
+- Aumentar profundidade temporal dos candidatos locais antes de decidir qualquer inclusao no tensor canonico.
+
+O que foi feito:
+- Atualizado `src/data/build_energy_consumption_ze2020_v0.py`.
+- Integrados arquivos historicos SDES `2008-2017` de eletricidade, gas, calor e frio.
+- Mantida a integracao dos arquivos `2018-2024` de eletricidade e gas.
+- Para os historicos, escolhido um unico nivel territorial por combustivel/ano (`IRIS` quando disponivel, senao `Commune`) para evitar dupla contagem.
+- Agregadas as variaveis para `ZE2020`.
+
+Resultado:
+- Cobertura de energia: `2008-2024`.
+- `306` zonas com pelo menos algum dado energetico.
+- Variaveis finais:
+  - consumo nao-residencial de eletricidade
+  - consumo nao-residencial de gas
+  - consumo nao-residencial de calor/frio
+  - pontos de entrega nao-residenciais correspondentes
+- Primeiros anos sao esparsos, especialmente eletricidade `2008-2010` e gas `2008-2009`.
+
+Reteste:
+- `ridge_local_all`: WMAPE medio `7.65%`.
+- `ridge_lag_only`: WMAPE medio `7.66%`.
+- `persistence`: WMAPE medio `7.68%`.
+- `ridge_energy_log`: WMAPE medio `7.99%`.
+- `ridge_energy_only`: WMAPE medio `8.01%`.
+- Selecao causal de modelo usando apenas anos anteriores: WMAPE medio `9.95%`.
+
+Decisao:
+- A hipotese economica e plausivel e recebeu o primeiro sinal quantitativo positivo no modelo combinado.
+- O ganho medio ainda e muito pequeno e instavel por ano.
+- A selecao causal piora, entao ainda nao sabemos escolher esse ganho sem olhar o futuro.
+- Energia fica como familia candidata para modelos locais/nao-lineares e ablation studies.
+- Nao entra no tensor canonico enquanto nao houver estabilidade superior ao baseline temporal.
+
+### 2026-04-17 - Primeiro passe de engenharia conservadora de features locais
+
+Motivacao:
+- Testar a proposta de substituir niveis absolutos por dinamicas mais invariantes a escala.
+- Manter apenas features `forecast-safe`: valores ate `T` para prever `T+1`.
+- Evitar denominadores potencialmente arriscados, como estoque contemporaneo ainda nao auditado como fonte historica segura.
+
+O que foi feito:
+- Atualizado `src/data/evaluate_local_candidate_features_v0.py`.
+- Adicionadas features autoregressivas do alvo oficial SIDE:
+  - `target_side_log_diff_1y`
+  - `target_side_log_diff_2y`
+  - `target_side_roll_mean_3y_log`
+  - `target_side_acceleration`
+- Adicionadas features de energia:
+  - log-diff `1y` e `2y`
+  - volatilidade `3y`
+  - share eletricidade/gas
+  - log-diff de pontos de entrega
+- Adicionadas features REI:
+  - log-diff de base, produto e artigos CFE
+  - volatilidade `3y` da base CFE
+- Adicionadas features SITADEL:
+  - media movel `2y` log de superficie autorizada/começada
+  - volatilidade `3y` de superficie autorizada/começada
+
+Resultado:
+- Melhor resultado geral continua `ridge_local_all`: WMAPE medio `7.65%`.
+- `ridge_lag_only`: WMAPE medio `7.66%`.
+- Melhor familia engenheirada: `ridge_engineered_sitadel`, WMAPE medio `7.97%`.
+- `ridge_engineered_energy`: WMAPE medio `8.04%`.
+- `ridge_engineered_target`: WMAPE medio `8.77%`.
+- `ridge_engineered_rei`: WMAPE medio `15.35%`.
+- `ridge_engineered_all`: WMAPE medio `16.89%`.
+- Selecao causal com modelos engenheirados: WMAPE medio `10.44%`.
+
+Decisao:
+- A proposta do Gemini e metodologicamente correta como direcao, mas este primeiro passe nao melhorou o baseline.
+- As features engenheiradas ficam como diagnostico experimental, nao canonico.
+- Proximo passo metodologico deve focar estabilidade/seleção conservadora, nao adicionar mais features cegamente.
+
+### 2026-04-16 - Plano de Engenharia de Features Locais
+
+Motivacao:
+- As features locais candidatas (SITADEL, Energia, REI) estao causando instabilidade devido ao uso de niveis absolutos e lags simples.
+- Necessidade de focar em transformacoes invariantes a escala, dinamicas estruturais e prevencao estrita de data leakage.
+
+O que foi feito:
+- Criado o plano detalhado em `reports/LOCAL_FEATURE_ENGINEERING_PLAN_v0.md`.
+- Definidas as transformacoes metodologicamente validas: diferenca logaritmica (momentum), medias moveis, intensidade por estabelecimento, volatidade historica e proxy estrutural de mix de energia.
+- Elaborada tabela compacta com as top 10 features a serem testadas para prevencao de vazamento temporal.
+- Sugerido novo protocolo de validacao cruzada rolante com imputacao e padronizacao restritas por fold.
+
+Decisao:
+- Substituir variaveis brutas pelas formulacoes baseadas em razoes estruturais, momentum e suavizacao temporal (`log_diff`, `roll_mean`, etc.).
+- Isolar explicitamente `sitadel_q1_nowcast` do loop de predicao `forecast`.
+- Este plano foi implementado em primeiro passe em `2026-04-17` e nao superou o baseline temporal.
+- O plano fica como registro de experimento concluido/diagnostico, nao como plano ativo.
+
+### 2026-04-17 - Correcao de direcao atual antes de modelos grafo-temporais
+
+Motivacao:
+- Alguns registros anteriores no journal sugeriam que `STGNN` seria o proximo passo obrigatorio.
+- Experimentos posteriores mostraram que o ganho de features locais ainda e marginal e instavel.
+- Para evitar inferencia errada por agentes externos, a decisao atual precisa ficar explicita.
+
+Decisao atual:
+- Nao iniciar `STGNN` ainda.
+- `STGNN` permanece como familia candidata futura, nao como objetivo imediato.
+- O proximo passo pratico e testar modelos residuais: prever a correcao sobre persistencia.
+- Baselines residuais devem usar validacao causal, escolha de `shrinkage` sem olhar o ano de teste e comparacao por ano/perfil de zona.
+- Criterio minimo para retomar grafo/STGNN: residual ou baseline tabular precisa demonstrar ganho robusto e explicavel sobre `ridge_lag_only` e persistencia.
+
+### 2026-04-17 - Primeiro baseline residual com shrinkage
+
+Motivacao:
+- A persistencia local e muito forte, entao prever o volume completo e menos eficiente do que prever a correcao sobre persistencia.
+- O objetivo era testar residual absoluto/log e `lambda` de shrinkage sem mudar o tensor canonico.
+
+O que foi feito:
+- Criado `src/data/evaluate_residual_baselines_core_v0.py`.
+- Testados `RidgeCV`, `HuberRegressor` e `ElasticNetCV`.
+- Testados residual absoluto e residual log.
+- Testados `lambda = 0.0, 0.1, 0.25, 0.5, 0.75, 1.0`.
+- Gerados:
+  - `reports/residual_baseline_metrics_core_v0.json`
+  - `data/processed/residual_baseline_predictions_core_v0.csv`
+  - `reports/RESIDUAL_BASELINE_CORE_V0.md`
+
+Resultado:
+- Resultado inicialmente observado: `HuberRegressor`, residual absoluto, `local_all`, `lambda=0.5`, WMAPE medio `5.17%`.
+- Este resultado foi depois superado pela ablation `REI only`.
+- Selecao causal ingenua falhou: `12.21%` WMAPE.
+- Selecao causal conservadora foi reavaliada apos ablations e ficou em `7.02%` WMAPE.
+
+Decisao:
+- Baseline residual passa a ser o caminho pratico mais promissor.
+- Ainda e experimento, nao conclusao final.
+- Proxima auditoria deve verificar erro por zona/perfil e se o ganho vem de `local_all` real ou de algum subconjunto especifico.
+
+### 2026-04-17 - Diagnostico por zona do baseline residual
+
+Motivacao:
+- Verificar se o ganho residual e amplo ou concentrado em poucas zonas grandes.
+- Avaliar se o novo baseline melhora apenas WMAPE global ou tambem grupos de volume/volatilidade.
+
+O que foi feito:
+- Criado `src/data/diagnose_residual_baseline_core_v0.py`.
+- Gerados:
+  - `data/processed/residual_baseline_zone_diagnostics_core_v0.csv`
+  - `reports/residual_baseline_diagnostics_core_v0.json`
+  - `reports/RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md`
+- Grupos de volume e volatilidade foram definidos usando historico ate `2020`, sem olhar anos de teste.
+
+Resultado inicial (`local_all`, antes da ablation):
+- Modelo fixo residual melhora `2021` e `2024`, mas piora contra persistencia em `2022` e `2023`.
+- O ganho por contagem e amplo: `269` zonas melhoram e `11` pioram.
+- O ganho por magnitude e concentrado: Paris representa `29.0%` da reducao total de erro absoluto; top 10 zonas representam `46.4%`.
+- O modelo melhora todos os grupos de volume e volatilidade no agregado.
+
+Decisao:
+- O residual e forte como benchmark experimental, mas ainda nao deve ser tratado como modelo final.
+- Proximo passo executado depois: ablation de `local_all` para identificar se o ganho vem de SITADEL, REI, energia ou interacao entre fontes.
+
+### 2026-04-17 - Regras de ativacao do residual
+
+Motivacao:
+- O residual fixo melhora anos de choque/aceleracao, mas piora contra persistencia em anos estaveis.
+- Precisamos de uma regra forecast-safe para escolher entre modelo estavel e residual antes de observar o ano de teste.
+
+O que foi feito:
+- Criado `src/data/evaluate_residual_activation_rules_core_v0.py`.
+- Testados gatilhos:
+  - aceleracao nacional absoluta
+  - `regime_signal_lag_1`
+  - volatilidade local historica `3y`
+  - crescimento local absoluto
+- O lado estavel da regra usa `ridge_level_lag_only`.
+- O lado residual usa `HuberRegressor`, residual absoluto, `local_all`, `lambda=0.5`.
+
+Resultado inicial (`local_all`, antes da ablation):
+- Melhor regra numerica: `national_acceleration_abs`, `min_prior_years=1`.
+- WMAPE medio: `4.86%`.
+- Pior ano: `6.51%`.
+- Variante mais conservadora `min_prior_years=2`: WMAPE medio `6.03%`, mas com erro alto em `2022` por default para `ridge_level`.
+
+Decisao:
+- Gatilho de aceleracao nacional e a melhor familia atual para ativar residual.
+- `min_prior_years=1` e forte, mas fragil por usar so um ano anterior para calibrar.
+- `min_prior_years=2` e mais defensavel, mas ainda tem problema no ano inicial.
+- Proximo passo executado depois: testar variantes de default inicial e ablation de `local_all` antes de promover qualquer regra operacional.
+
+### 2026-04-17 - Ablation residual e reavaliacao das regras de ativacao
+
+Motivacao:
+- O resultado `local_all` podia estar escondendo qual fonte realmente explicava o ganho.
+- Era necessario comparar `REI`, SITADEL e energia separadamente antes de promover qualquer baseline.
+
+O que foi feito:
+- `src/data/evaluate_residual_baselines_core_v0.py` passou a testar ablations:
+  - `sitadel_only`
+  - `energy_only`
+  - `rei_only`
+  - `sitadel_energy`
+  - `sitadel_rei`
+  - `rei_energy`
+  - `local_all`
+- `src/data/evaluate_residual_activation_rules_core_v0.py` passou a comparar residual sides:
+  - `REI only`
+  - `local_all`
+  - `SITADEL+REI`
+  - `REI+energy`
+- Tambem foram comparados defaults estaveis `ridge_level_lag_only` e `persistence`.
+
+Resultado:
+- Melhor residual fixo: `HuberRegressor`, residual absoluto, `REI only`, `lambda=0.5`.
+- WMAPE medio fixo: `5.02%`; pior ano: `6.33%`.
+- `local_all` ficou abaixo: WMAPE medio `5.17%`.
+- Melhor regra de ativacao: `ridge_level_lag_only` como lado estavel, `SITADEL+REI` como lado residual e gatilho `national_acceleration_abs`.
+- WMAPE medio da regra: `4.83%`; pior ano: `6.51%`.
+
+Decisao:
+- `REI` e a principal fonte candidata para explicar a correcao residual.
+- A regra de ativacao e numericamente forte, mas ainda fragil porque `min_prior_years=1` calibra threshold com pouco historico.
+- Proximo passo metodologico: auditar temporalidade/vintage do `REI` e evitar qualquer afirmacao de resultado final.
+- `STGNN` continua adiado.
+
+### 2026-04-17 - Banimento temporario do REI nos residuais
+
+Motivacao:
+- Auditoria externa apontou dois problemas metodologicos no uso de `REI`:
+  - risco de publication lag/vintage fiscal ao usar registros definitivos `t` para prever `t+1`
+  - dupla contagem em 2024 quando `P31/P33/P34` agregados aparecem junto com subcomponentes `P31_*`, `P33_*`, `P34_*`
+
+O que foi feito:
+- Corrigido `src/data/build_rei_cfe_ze2020_v0.py` para preferir `P31`, `P33`, `P34` quando o agregado existe, evitando somar agregado + componentes.
+- Removidos grupos `REI` do avaliador residual candidato:
+  - `rei_only`
+  - `sitadel_rei`
+  - `rei_energy`
+  - `engineered_rei`
+- Reexecutados:
+  - `src/data/evaluate_residual_baselines_core_v0.py`
+  - `src/data/diagnose_residual_baseline_core_v0.py`
+  - `src/data/evaluate_residual_activation_rules_core_v0.py`
+
+Resultado sem `REI`:
+- Melhor residual fixo: `RidgeCV`, residual log, `engineered_target`, `lambda=0.5`.
+- WMAPE medio fixo: `6.62%`; pior ano: `9.28%`.
+- Selecao causal conservadora piorou para `9.47%`.
+- Melhor regra de ativacao sem `REI`: `national_acceleration_abs` com lado residual `SITADEL only`.
+- WMAPE medio da regra: `5.49%`; pior ano: `6.51%`.
+
+Decisao:
+- O resultado forte com `REI` (`5.02%` fixo; `4.83%` ativado) fica invalidado temporariamente.
+- O baseline residual sem `REI` ainda e util como diagnostico, mas nao deve ser promovido como operacional.
+- `REI` permanece apenas como fonte candidata sob quarentena metodologica ate prova de disponibilidade temporal e correcao de vintage.
+- `STGNN` continua adiado.
+
+### 2026-04-17 - Teste de fallback nas regras de ativacao sem REI
+
+Motivacao:
+- Auditoria externa sugeriu trocar o fallback inicial de `ridge_level_lag_only` por `persistence` nas regras mais conservadoras (`min_prior_years=2`).
+- A hipotese era reduzir o erro de `2022`, onde `persistence` e muito melhor que o ridge estavel.
+
+O que foi feito:
+- `src/data/evaluate_residual_activation_rules_core_v0.py` passou a testar dois modos de fallback:
+  - `stable`: usa o modelo estavel configurado
+  - `persistence`: usa persistencia quando nao ha historico suficiente para calibrar o gatilho
+- Reexecutado `src/data/evaluate_residual_activation_rules_core_v0.py`.
+- Atualizados:
+  - `reports/residual_activation_rules_metrics_core_v0.json`
+  - `reports/RESIDUAL_ACTIVATION_RULES_CORE_V0.md`
+
+Resultado:
+- Melhor regra numerica continua sendo `national_acceleration_abs`, `ridge_level_lag_only` como lado estavel, `SITADEL only` como lado residual, `min_prior_years=1`.
+- WMAPE medio: `5.49%`; pior ano: `6.51%`.
+- Fallback por `persistence` nao virou solucao robusta: melhora a intuicao para anos estaveis, mas falha fortemente em `2021`, onde persistencia tem WMAPE `14.32%`.
+
+Decisao:
+- O fallback por persistencia fica registrado como experimento testado e rejeitado como baseline operacional.
+- A regra `5.49%` permanece diagnostica: mostra que SITADEL pode ajudar em anos de choque se houver gatilho seguro, mas ainda depende de `min_prior_years=1` e threshold fragil.
+- Proximo passo deve focar em diagnostico/robustez do gatilho antes de qualquer arquitetura complexa.
+
+### 2026-04-17 - Auditoria metodologica do gatilho no-REI
+
+Motivacao:
+- Auditoria externa revisou a regra no-REI de melhor WMAPE (`5.49%`) e apontou risco de overfit por threshold.
+- O objetivo foi separar ganho preditivo real de simples escape de anos em que `ridge_level_lag_only` falha.
+
+Conclusao metodologica:
+- A regra `national_acceleration_abs`, `min_prior_years=1`, nao e robusta como seletor operacional.
+- O threshold usado apos `2021` fica estaticamente ancorado em `0.11655188465700994`, sugerindo memorizacao do choque pos-COVID.
+- O comportamento economico e problemático: ativa residual em `2022`/`2023`, anos em que persistencia era forte, e nao ativa em `2024`, ano de choque/desaceleracao.
+- O ganho numerico vem em parte de evitar falhas do ridge estavel, nao necessariamente de capturar sinal estrutural robusto.
+
+Decisao:
+- Rebaixar formalmente a regra `5.49%` para diagnostico de stress-test.
+- O relatorio de ativacao passa a exigir trace de threshold por ano.
+- Nao promover regra de ativacao, residual no-REI ou STGNN enquanto nao houver diagnostico de robustez por ano, zona e volume.
+
+### 2026-04-20 - Diagnostico LOYO e estratificacao da regra de ativacao
+
+Motivacao:
+- A regra de ativacao no-REI tinha bom WMAPE medio (`5.49%`), mas suspeita de threshold overfitado.
+- Era necessario testar estabilidade temporal e verificar se o ganho era amplo por volume territorial.
+
+O que foi feito:
+- Criado `src/data/diagnose_activation_rules_core_v0.py`.
+- O diagnostico audita apenas predicoes ja geradas, sem treinar modelo novo.
+- Saidas:
+  - `reports/activation_rule_diagnostics_core_v0.json`
+  - `reports/ACTIVATION_RULE_DIAGNOSTICS_CORE_V0.md`
+- Medidas adicionadas:
+  - trace de threshold por ano
+  - LOYO threshold audit
+  - WMAPE por estrato de volume
+  - reducao absoluta de erro vs. persistencia e vs. ridge estavel
+  - zonas melhoradas/pioradas
+  - risco de concentracao top-1/top-10
+
+Resultado:
+- LOYO falhou no criterio de estabilidade: range de threshold `0.0917`, acima do limite metodologico `0.05`.
+- Estratificacao por volume foi positiva no agregado:
+  - `bottom_50pct`: WMAPE regra `5.64` vs persistencia `8.95`
+  - `middle_40pct`: WMAPE regra `6.32` vs persistencia `8.52`
+  - `top_10pct`: WMAPE regra `4.89` vs persistencia `6.93`
+- A regra ainda piora contra persistencia em `2022` e `2023`.
+- Risco de concentracao esta no limite: top-1 representa `29.43%` do ganho positivo vs. persistencia.
+
+Decisao:
+- A regra de ativacao permanece rebaixada a diagnostico de stress-test.
+- Ela mostra que residual com SITADEL pode ser util em anos de ruptura, mas o gatilho atual nao e robusto.
+- Baselines operacionais atuais:
+  - `ridge_lag_only` como benchmark principal
+  - `persistence` como baseline conservador
+- Nao avancar para arquitetura complexa com base nesse gatilho.
+
+### 2026-04-20 - Fechamento da fase de baselines
+
+Motivacao:
+- Encerrar a etapa de data mining, limpeza, auditoria de target e validacao de baselines antes da limpeza/arquivamento do projeto.
+- Evitar que resultados exploratorios fortes sejam confundidos com baselines operacionais.
+
+O que foi feito:
+- Criado `reports/BASELINE_PHASE_CLOSURE_DECISION_V0.md`.
+- Adicionado o relatorio como leitura obrigatoria em `reports/PROJECT_STATE_INDEX_V0.md`.
+
+Decisao congelada:
+- Target operacional: `SIDE` official establishment creations agregadas para `ZE2020`.
+- Benchmark principal: `ridge_lag_only`.
+- Baseline conservador: `persistence`.
+- `REI`: quarentena metodologica.
+- SITADEL e energia: sinais diagnosticos, nao promovidos.
+- Residual fixo no-REI: exploratorio.
+- Regra de ativacao no-REI: stress-test diagnostic.
+- STGNN: proxima familia experimental, nao conclusao.
+
+Proximo passo:
+- Limpeza e arquivamento dos artefatos.
+- Depois, iniciar experimentos de modelagem do micro para o macro: temporal sem grafo, grafo estatico, mobilidade, e apenas entao modelos grafo-temporais.

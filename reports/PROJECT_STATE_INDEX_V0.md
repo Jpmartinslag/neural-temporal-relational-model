@@ -24,6 +24,7 @@ Temos target oficial `SIDE`, painel anual `ZE2020`, grafo geografico, grafo de m
 
 Arquivos de entrada para entender o estado atual:
 
+- [BASELINE_PHASE_CLOSURE_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BASELINE_PHASE_CLOSURE_DECISION_V0.md)
 - [PROJECT_CONSISTENCY_AUDIT_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_CONSISTENCY_AUDIT_V0.md)
 - [EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md)
 - [LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md)
@@ -34,11 +35,20 @@ Resumo operacional:
 
 - artefato canonico de target: `target_side_establishments_annual_core_v0.csv`
 - benchmark atual a bater: `ridge_lag_only = 7.66%` WMAPE e `persistence = 7.68%`
+- decisao atual: nao iniciar `STGNN` ainda; testar primeiro modelos residuais e correcao de persistencia com validacao causal
 - tensor forecast-safe atual: `stgnn_tensor_package_extended_forecast_core_v1.npz`
 - tensor nowcast atual: `stgnn_tensor_package_extended_nowcast_q1_core_v1.npz`
 - tensor diagnostico atual: `stgnn_tensor_package_extended_diagnostic_core_v1.npz`
 - candidatos locais: SITADEL mensal/anual, REI e Energia permanecem fora do tensor canonico
 - correcao importante: `adjacency_mobility` dos tensores extended agora tem shape correto `280 x 280`
+- resultado `REI` residual foi invalidado temporariamente por risco de vintage/publication lag e dupla contagem `P31/P33/P34` em 2024
+- melhor novo experimento fixo sem `REI`: residual `RidgeCV` log com `engineered_target`, WMAPE medio `6.62%`
+- melhor regra experimental de ativacao sem `REI`: aceleracao nacional absoluta + residual `SITADEL only`, WMAPE medio `5.49%` (`min_prior_years=1`), rebaixada para diagnostico de stress-test por threshold fragil calibrado em `2021`
+- fallback por `persistence` foi testado nas regras de ativacao; nao resolve a robustez porque reduz o dano em `2022`, mas colapsa em `2021` com WMAPE `14.32%`
+- diagnostico LOYO da regra de ativacao falhou no criterio de estabilidade: range de threshold `0.0917` contra limite metodologico `0.05`
+- regra de ativacao melhora os 3 grupos de volume no agregado, mas piora contra persistencia em `2022` e `2023`; nao e baseline operacional
+- referencias operacionais atuais: `ridge_lag_only` como benchmark principal e `persistence` como baseline conservador
+- dumps linha-a-linha de predicao residual sao regeneraveis e ficam fora do Git; metricas, diagnosticos agregados e scripts ficam versionados
 
 ## O Que Esta Fechado
 
@@ -183,6 +193,9 @@ Arquivos principais:
 - [SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md)
 - [SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md)
 - [TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md)
+- [RESIDUAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RESIDUAL_BASELINE_CORE_V0.md)
+- [RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md)
+- [RESIDUAL_ACTIVATION_RULES_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RESIDUAL_ACTIVATION_RULES_CORE_V0.md)
 
 Leitura:
 
@@ -215,6 +228,11 @@ Leitura:
 - baseline extended atual: `ridge_lag_only` WMAPE medio `7.66%`; persistencia WMAPE medio `7.68%`
 - grafo de mobilidade supera geografia marginalmente em modelo linear, mas nao supera `ridge_lag_only`
 - SITADEL mensal melhora sobre SITADEL anual bruto, mas ainda nao supera o baseline temporal
+- baseline residual sem `REI` tem melhor resultado fixo WMAPE medio `6.62%`, mas vem de engenharia do historico do proprio target, nao de fonte externa local
+- selecao causal conservadora do baseline residual sem `REI` tem WMAPE medio `9.47%`; portanto nao e operacionalmente aceitavel
+- diagnostico residual sem `REI`: ganho existe no agregado, mas Paris responde por `54.4%` da reducao total de erro absoluto
+- regra experimental de ativacao sem `REI` com aceleracao nacional absoluta e residual `SITADEL only` chega a WMAPE medio `5.49%`, mas usa apenas um ano previo para calibrar threshold
+- `residual_baseline_predictions_core_v0.csv` e `residual_activation_rules_predictions_core_v0.csv` sao grandes e regeneraveis; nao sao artefatos canonicos
 
 ### 6.1 Candidatos Locais Recentes
 
@@ -266,6 +284,7 @@ Decisao atual:
 - grafos geografico e de mobilidade ja foram testados com vizinhos simples e nao superaram persistencia
 - proximo uso de grafo deve ser mais seletivo: pesos economicos, atencao, ou grafo adaptativo
 - `STGNN` permanece como familia candidata, nao como objetivo obrigatorio
+- a decisao operacional atual e priorizar baselines residuais e `shrinkage` sobre persistencia antes de qualquer modelo grafo-temporal
 
 ### 9. Grafo Dinamico Mais Rico
 
@@ -335,19 +354,21 @@ Para entender o projeto rapidamente, ler nesta ordem:
 
 ## Proximo Passo
 
-Formalizar a proxima rodada de validacao antes de qualquer modelo grafo-temporal.
+Implementar e auditar a proxima rodada de baselines residuais antes de qualquer modelo grafo-temporal.
 
 Objetivo:
 
 - manter persistencia local como baseline principal
-- avaliar erro por perfil de zona, nao apenas media global
-- procurar sinal antecipador externo de regime temporal antes de escolher backbone
-- usar grafos apenas com operadores mais seletivos, porque media simples de vizinhos falhou
+- prever apenas a correcao de persistencia, nao o volume inteiro
+- testar residual absoluto, residual log e correcao com `shrinkage` causal
+- avaliar erro por perfil de zona e por ano, nao apenas media global
+- usar grafos apenas depois que baselines residuais estiverem fechados
 
 Artefatos esperados:
 
-- auditoria de possiveis sinais antecipadores: `DS_ICA`, macro regional, ou indicadores anuais adiantados
-- criterio minimo para avancar para STGNN/grafo dinamico
+- avaliacao residual sobre `SIDE`: persistencia vs. residual Ridge/Huber/ElasticNet
+- pesos de `shrinkage` escolhidos apenas por historico anterior
+- criterio minimo para decidir se grafos ou `STGNN` merecem novo experimento
 
 ## Regra De Higiene
 
