@@ -219,7 +219,7 @@ O que foi feito:
 Artefatos:
 
 - [.gitignore](/home/jpdark/Downloads/project_recomm/dataset/.gitignore)
-- [VERSIONING_POLICY.md](/home/jpdark/Downloads/project_recomm/dataset/reports/VERSIONING_POLICY.md)
+- [VERSIONING_POLICY.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/process/VERSIONING_POLICY.md)
 - [PHASE1_GRAPH_ROADMAP.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PHASE1_GRAPH_ROADMAP.md)
 - [PROJECT_EXPLANATIONS.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_EXPLANATIONS.md)
 
@@ -361,7 +361,7 @@ O que foi feito:
 Artefatos:
 
 - [source_time_coverage_matrix_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/source_time_coverage_matrix_v0.csv)
-- [DATA_COLLECTION_GUIDE.md](/home/jpdark/Downloads/project_recomm/dataset/reports/DATA_COLLECTION_GUIDE.md)
+- [DATA_COLLECTION_GUIDE.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/process/DATA_COLLECTION_GUIDE.md)
 
 Decisoes:
 
@@ -555,7 +555,7 @@ O que foi feito:
 
 Artefatos:
 
-- [RAW_DOWNLOAD_ORGANIZATION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RAW_DOWNLOAD_ORGANIZATION_v0.md)
+- [RAW_DOWNLOAD_ORGANIZATION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/process/RAW_DOWNLOAD_ORGANIZATION_v0.md)
 - [update_business_registry_inventory_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/update_business_registry_inventory_v0.py)
 
 Decisao:
@@ -586,7 +586,7 @@ O que foi feito:
 
 Artefatos:
 
-- [NAMING_CONVENTIONS_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/NAMING_CONVENTIONS_v0.md)
+- [NAMING_CONVENTIONS_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/process/NAMING_CONVENTIONS_v0.md)
 - [integrate_qpv_policy_commune_status_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/integrate_qpv_policy_commune_status_v0.py)
 
 Decisao:
@@ -759,7 +759,7 @@ O que foi feito:
 Artefatos:
 
 - [requirements.txt](/home/jpdark/Downloads/project_recomm/dataset/requirements.txt)
-- [ENVIRONMENT_SETUP_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ENVIRONMENT_SETUP_v0.md)
+- [ENVIRONMENT_SETUP_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/process/ENVIRONMENT_SETUP_v0.md)
 
 Decisao:
 
@@ -1020,8 +1020,8 @@ O que foi feito:
 
 Artefato:
 
-- [FOUNDATION_COMMIT_READINESS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FOUNDATION_COMMIT_READINESS_V0.md)
-- [FOUNDATION_COMMIT_SCOPE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FOUNDATION_COMMIT_SCOPE_V0.md)
+- [FOUNDATION_COMMIT_READINESS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/process/FOUNDATION_COMMIT_READINESS_V0.md)
+- [FOUNDATION_COMMIT_SCOPE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/process/FOUNDATION_COMMIT_SCOPE_V0.md)
 
 Decisao:
 
@@ -1258,7 +1258,7 @@ O que foi feito:
 Artefatos:
 
 - [scan_full_repository_v0.sh](/home/jpdark/Downloads/project_recomm/dataset/src/data/scan_full_repository_v0.sh)
-- [SCAN_WORKFLOW_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SCAN_WORKFLOW_V0.md)
+- [SCAN_WORKFLOW_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/process/SCAN_WORKFLOW_V0.md)
 
 Decisao:
 
@@ -1274,7 +1274,7 @@ O que foi feito:
 
 Artefato:
 
-- [SCAN_REVIEW_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SCAN_REVIEW_V0.md)
+- [SCAN_REVIEW_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/process/SCAN_REVIEW_V0.md)
 
 Decisao:
 

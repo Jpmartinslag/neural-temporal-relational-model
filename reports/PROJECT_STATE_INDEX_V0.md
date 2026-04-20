@@ -59,7 +59,7 @@ Status: fechado para a etapa atual.
 
 Arquivos principais:
 
-- [RAW_DOWNLOAD_ORGANIZATION_2026_04_12_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RAW_DOWNLOAD_ORGANIZATION_2026_04_12_V0.md)
+- [RAW_DOWNLOAD_ORGANIZATION_2026_04_12_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/process/RAW_DOWNLOAD_ORGANIZATION_2026_04_12_V0.md)
 - [raw_download_organization_2026_04_12_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/raw_download_organization_2026_04_12_v0.csv)
 - [organize_raw_downloads_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/organize_raw_downloads_v0.py)
 

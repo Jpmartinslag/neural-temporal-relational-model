@@ -17,7 +17,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-REPORT = ROOT / "reports" / "RAW_DOWNLOAD_ORGANIZATION_2026_04_12_V0.md"
+REPORT = ROOT / "reports" / "archive" / "process" / "RAW_DOWNLOAD_ORGANIZATION_2026_04_12_V0.md"
 MANIFEST = ROOT / "metadata" / "raw_download_organization_2026_04_12_v0.csv"
 
 KEEP_ROOT = {
