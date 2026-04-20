@@ -984,7 +984,7 @@ Artefatos:
 - [target_proxy_annual_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/target_proxy_annual_core_v0.csv)
 - [baseline_annual_dataset_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/baseline_annual_dataset_core_v0.csv)
 - [baseline_annual_target_core_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/baseline_annual_target_core_quality_v0.json)
-- [BASELINE_ANNUAL_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BASELINE_ANNUAL_TARGET_CORE_V0.md)
+- [BASELINE_ANNUAL_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/BASELINE_ANNUAL_TARGET_CORE_V0.md)
 
 Decisao:
 
@@ -1004,7 +1004,7 @@ Artefatos:
 - [evaluate_baseline_annual_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_baseline_annual_core_v0.py)
 - [baseline_annual_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/baseline_annual_predictions_core_v0.csv)
 - [baseline_annual_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/baseline_annual_metrics_core_v0.json)
-- [BASELINE_ANNUAL_EVALUATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BASELINE_ANNUAL_EVALUATION_V0.md)
+- [BASELINE_ANNUAL_EVALUATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/BASELINE_ANNUAL_EVALUATION_V0.md)
 
 Decisao:
 
@@ -1363,7 +1363,7 @@ Artefatos:
 - [evaluate_spatial_baseline_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_spatial_baseline_core_v0.py)
 - [spatial_baseline_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/spatial_baseline_predictions_core_v0.csv)
 - [spatial_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/spatial_baseline_metrics_core_v0.json)
-- [SPATIAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SPATIAL_BASELINE_CORE_V0.md)
+- [SPATIAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/SPATIAL_BASELINE_CORE_V0.md)
 
 Decisao:
 
@@ -1385,7 +1385,7 @@ Artefatos:
 - [evaluate_autoregressive_baseline_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_autoregressive_baseline_core_v0.py)
 - [autoregressive_baseline_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/autoregressive_baseline_predictions_core_v0.csv)
 - [autoregressive_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/autoregressive_baseline_metrics_core_v0.json)
-- [AUTOREGRESSIVE_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/AUTOREGRESSIVE_BASELINE_CORE_V0.md)
+- [AUTOREGRESSIVE_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/AUTOREGRESSIVE_BASELINE_CORE_V0.md)
 - [PROJECT_STATE_INDEX_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_STATE_INDEX_V0.md)
 
 Decisao:
@@ -1408,7 +1408,7 @@ Artefatos:
 - [evaluate_feature_augmented_baseline_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_feature_augmented_baseline_core_v0.py)
 - [feature_augmented_baseline_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/feature_augmented_baseline_predictions_core_v0.csv)
 - [feature_augmented_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/feature_augmented_baseline_metrics_core_v0.json)
-- [FEATURE_AUGMENTED_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_AUGMENTED_BASELINE_CORE_V0.md)
+- [FEATURE_AUGMENTED_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/FEATURE_AUGMENTED_BASELINE_CORE_V0.md)
 
 Decisao:
 
@@ -1467,7 +1467,7 @@ Artefatos:
 - [evaluate_side_target_baselines_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_side_target_baselines_core_v0.py)
 - [SIDE_TARGET_BASELINES_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_TARGET_BASELINES_CORE_V0.md)
 - [evaluate_feature_augmented_baseline_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_feature_augmented_baseline_side_target_core_v0.py)
-- [FEATURE_AUGMENTED_BASELINE_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_AUGMENTED_BASELINE_SIDE_TARGET_CORE_V0.md)
+- [FEATURE_AUGMENTED_BASELINE_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/FEATURE_AUGMENTED_BASELINE_SIDE_TARGET_CORE_V0.md)
 
 Decisao:
 
@@ -1698,7 +1698,7 @@ Artefatos:
 - [supervised_year_availability_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/supervised_year_availability_core_v0.csv)
 - [build_long_history_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_long_history_side_target_core_v0.py)
 - [long_history_side_target_dataset_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/long_history_side_target_dataset_core_v0.csv)
-- [LONG_HISTORY_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/LONG_HISTORY_SIDE_TARGET_CORE_V0.md)
+- [LONG_HISTORY_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/LONG_HISTORY_SIDE_TARGET_CORE_V0.md)
 
 Resultado:
 
@@ -1726,7 +1726,7 @@ O que foi feito:
 Artefatos:
 
 - [compare_rich_vs_long_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/compare_rich_vs_long_side_target_core_v0.py)
-- [RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md)
+- [RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md)
 - [rich_vs_long_side_target_comparison_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/rich_vs_long_side_target_comparison_core_v0.csv)
 
 Resultado:
@@ -1756,7 +1756,7 @@ O que foi feito:
 Artefatos:
 
 - [evaluate_controlled_hybrid_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_controlled_hybrid_side_target_core_v0.py)
-- [CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md)
+- [CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md)
 - [controlled_hybrid_side_target_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/controlled_hybrid_side_target_metrics_core_v0.json)
 
 Resultado:
@@ -1783,7 +1783,7 @@ O que foi feito:
 Artefatos:
 
 - [evaluate_zone_group_errors_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_zone_group_errors_side_target_core_v0.py)
-- [ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md)
+- [ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md)
 - [zone_group_error_metrics_side_target_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/zone_group_error_metrics_side_target_core_v0.csv)
 - [zone_error_profile_side_target_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/zone_error_profile_side_target_core_v0.csv)
 
@@ -1811,7 +1811,7 @@ O que foi feito:
 Artefatos:
 
 - [evaluate_segmented_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_segmented_side_target_core_v0.py)
-- [SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md)
+- [SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md)
 - [segmented_side_target_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/segmented_side_target_predictions_core_v0.csv)
 - [segmented_zone_profile_side_target_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/segmented_zone_profile_side_target_core_v0.csv)
 
@@ -1840,7 +1840,7 @@ O que foi feito:
 Artefatos:
 
 - [build_side_model_decision_matrix_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_side_model_decision_matrix_core_v0.py)
-- [SIDE_MODEL_DECISION_MATRIX_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md)
+- [SIDE_MODEL_DECISION_MATRIX_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md)
 - [side_model_decision_matrix_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/side_model_decision_matrix_core_v0.csv)
 
 Resultado:
@@ -1868,7 +1868,7 @@ O que foi feito:
 Artefatos:
 
 - [backtest_segmented_side_decision_rule_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/backtest_segmented_side_decision_rule_core_v0.py)
-- [SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md)
+- [SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md)
 - [segmented_decision_rule_backtest_metrics_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/segmented_decision_rule_backtest_metrics_core_v0.csv)
 - [segmented_decision_rule_backtest_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/segmented_decision_rule_backtest_predictions_core_v0.csv)
 
@@ -1898,7 +1898,7 @@ O que foi feito:
 Artefatos:
 
 - [diagnose_backtest_instability_side_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/diagnose_backtest_instability_side_core_v0.py)
-- [SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md)
+- [SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md)
 - [side_backtest_fold_instability_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/side_backtest_fold_instability_core_v0.csv)
 - [side_backtest_group_instability_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/side_backtest_group_instability_core_v0.csv)
 - [side_backtest_worst_zones_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/side_backtest_worst_zones_core_v0.csv)
@@ -1928,7 +1928,7 @@ O que foi feito:
 Artefatos:
 
 - [evaluate_temporal_regime_side_baseline_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_temporal_regime_side_baseline_core_v0.py)
-- [TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md)
+- [TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md)
 - [temporal_regime_side_baseline_metrics_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/temporal_regime_side_baseline_metrics_core_v0.csv)
 
 Resultado:

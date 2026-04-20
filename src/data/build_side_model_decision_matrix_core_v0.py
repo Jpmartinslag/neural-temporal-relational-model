@@ -13,7 +13,7 @@ CONTROLLED_METRICS_PATH = ROOT / "reports" / "controlled_hybrid_side_target_metr
 
 MATRIX_OUT = ROOT / "metadata" / "side_model_decision_matrix_core_v0.csv"
 QUALITY_OUT = ROOT / "reports" / "side_model_decision_matrix_quality_v0.json"
-REPORT_OUT = ROOT / "reports" / "SIDE_MODEL_DECISION_MATRIX_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "SIDE_MODEL_DECISION_MATRIX_CORE_V0.md"
 
 BASELINE_MODEL = "persistence"
 VALIDATION_TOLERANCE_WMAPE = 0.25

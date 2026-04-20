@@ -16,7 +16,7 @@ FOLD_DIAG_OUT = ROOT / "metadata" / "side_backtest_fold_instability_core_v0.csv"
 GROUP_DIAG_OUT = ROOT / "metadata" / "side_backtest_group_instability_core_v0.csv"
 WORST_ZONE_OUT = ROOT / "metadata" / "side_backtest_worst_zones_core_v0.csv"
 QUALITY_OUT = ROOT / "reports" / "side_backtest_instability_quality_v0.json"
-REPORT_OUT = ROOT / "reports" / "SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md"
 
 MODEL_COLUMNS = {
     "persistence": "pred_persistence",

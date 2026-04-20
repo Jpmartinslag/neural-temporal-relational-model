@@ -17,7 +17,7 @@ TARGET_PANEL = ROOT / "data" / "processed" / "target_side_establishments_annual_
 GROUP_METRICS_OUT = ROOT / "metadata" / "zone_group_error_metrics_side_target_core_v0.csv"
 ZONE_PROFILE_OUT = ROOT / "metadata" / "zone_error_profile_side_target_core_v0.csv"
 QUALITY_OUT = ROOT / "reports" / "zone_group_error_diagnostics_side_target_quality_v0.json"
-REPORT_OUT = ROOT / "reports" / "ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "ZONE_GROUP_ERROR_DIAGNOSTICS_SIDE_TARGET_CORE_V0.md"
 
 
 def wmape(y_true: np.ndarray, y_pred: np.ndarray) -> float:

@@ -16,7 +16,7 @@ NODE_INDEX_PATH = ROOT / "data" / "processed" / "graph_node_index_core_v0.csv"
 PRED_OUT = ROOT / "data" / "processed" / "controlled_hybrid_side_target_predictions_core_v0.csv"
 METRICS_OUT = ROOT / "reports" / "controlled_hybrid_side_target_metrics_core_v0.json"
 QUALITY_OUT = ROOT / "reports" / "controlled_hybrid_side_target_quality_core_v0.json"
-REPORT_OUT = ROOT / "reports" / "CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "CONTROLLED_HYBRID_SIDE_TARGET_CORE_V0.md"
 
 TARGET_COL = "side_establishment_creations_official"
 LAG_COUNT = 5

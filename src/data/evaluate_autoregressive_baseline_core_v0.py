@@ -15,7 +15,7 @@ TARGET_PANEL_PATH = ROOT / "data" / "processed" / "graph_model_target_panel_core
 
 PRED_OUT = ROOT / "data" / "processed" / "autoregressive_baseline_predictions_core_v0.csv"
 METRICS_OUT = ROOT / "reports" / "autoregressive_baseline_metrics_core_v0.json"
-REPORT_OUT = ROOT / "reports" / "AUTOREGRESSIVE_BASELINE_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "AUTOREGRESSIVE_BASELINE_CORE_V0.md"
 
 TARGET_COL = "target_proxy_establishment_creations_year"
 RIDGE_ALPHA_GRID = [0.01, 0.1, 1.0, 10.0, 100.0]

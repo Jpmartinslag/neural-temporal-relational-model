@@ -12,7 +12,7 @@ TARGET_ANNUAL_PATH = ROOT / "data" / "processed" / "target_proxy_annual_core_v0.
 
 PRED_OUT = ROOT / "data" / "processed" / "baseline_annual_predictions_core_v0.csv"
 METRICS_OUT = ROOT / "reports" / "baseline_annual_metrics_core_v0.json"
-REPORT_OUT = ROOT / "reports" / "BASELINE_ANNUAL_EVALUATION_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "BASELINE_ANNUAL_EVALUATION_V0.md"
 
 TRAIN_YEARS = [2020, 2021, 2022]
 VAL_YEARS = [2023]

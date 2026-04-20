@@ -15,7 +15,7 @@ AVAILABILITY = ROOT / "metadata" / "feature_temporal_availability_core_v0.csv"
 
 COMPARISON_CSV = ROOT / "metadata" / "rich_vs_long_side_target_comparison_core_v0.csv"
 QUALITY_OUT = ROOT / "reports" / "rich_vs_long_side_target_comparison_core_quality_v0.json"
-REPORT_OUT = ROOT / "reports" / "RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md"
 
 
 def load_json(path: Path) -> dict:

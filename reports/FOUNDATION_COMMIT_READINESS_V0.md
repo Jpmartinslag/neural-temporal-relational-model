@@ -39,8 +39,8 @@ Objetivo:
 ### 5. Evidencia metodologica
 
 - [TARGET_PROXY_CANDIDATE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_PROXY_CANDIDATE_CORE_V0.md)
-- [BASELINE_ANNUAL_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BASELINE_ANNUAL_TARGET_CORE_V0.md)
-- [BASELINE_ANNUAL_EVALUATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BASELINE_ANNUAL_EVALUATION_V0.md)
+- [BASELINE_ANNUAL_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/BASELINE_ANNUAL_TARGET_CORE_V0.md)
+- [BASELINE_ANNUAL_EVALUATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/BASELINE_ANNUAL_EVALUATION_V0.md)
 - [CONSISTENCY_REVIEW_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/CONSISTENCY_REVIEW_v0.md)
 - [SCAN_REVIEW_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SCAN_REVIEW_V0.md)
 

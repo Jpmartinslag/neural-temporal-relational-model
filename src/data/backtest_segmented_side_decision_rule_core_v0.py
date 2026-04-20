@@ -16,7 +16,7 @@ ADJACENCY_PATH = ROOT / "data" / "processed" / "graph_adjacency_core_v0.csv"
 PRED_OUT = ROOT / "data" / "processed" / "segmented_decision_rule_backtest_predictions_core_v0.csv"
 METRICS_OUT = ROOT / "metadata" / "segmented_decision_rule_backtest_metrics_core_v0.csv"
 QUALITY_OUT = ROOT / "reports" / "segmented_decision_rule_backtest_quality_v0.json"
-REPORT_OUT = ROOT / "reports" / "SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md"
 
 TARGET_COL = "side_establishment_creations_official"
 LAG_COUNT = 5

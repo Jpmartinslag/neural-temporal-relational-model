@@ -17,7 +17,7 @@ DATASET_OUT = ROOT / "data" / "processed" / "long_history_side_target_dataset_co
 PRED_OUT = ROOT / "data" / "processed" / "long_history_side_target_baseline_predictions_core_v0.csv"
 METRICS_OUT = ROOT / "reports" / "long_history_side_target_baseline_metrics_core_v0.json"
 QUALITY_OUT = ROOT / "reports" / "long_history_side_target_core_quality_v0.json"
-REPORT_OUT = ROOT / "reports" / "LONG_HISTORY_SIDE_TARGET_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "LONG_HISTORY_SIDE_TARGET_CORE_V0.md"
 
 TARGET_COL = "side_establishment_creations_official"
 LAG_COUNT = 5

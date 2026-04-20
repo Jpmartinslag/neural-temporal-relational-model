@@ -14,7 +14,7 @@ PRED_PATH = ROOT / "data" / "processed" / "segmented_decision_rule_backtest_pred
 PRED_OUT = ROOT / "data" / "processed" / "temporal_regime_side_baseline_predictions_core_v0.csv"
 METRICS_OUT = ROOT / "metadata" / "temporal_regime_side_baseline_metrics_core_v0.csv"
 QUALITY_OUT = ROOT / "reports" / "temporal_regime_side_baseline_quality_v0.json"
-REPORT_OUT = ROOT / "reports" / "TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md"
 
 THRESHOLD_GRID = [-0.05, -0.025, 0.0, 0.025, 0.05, 0.075, 0.10, 0.125, 0.15]
 

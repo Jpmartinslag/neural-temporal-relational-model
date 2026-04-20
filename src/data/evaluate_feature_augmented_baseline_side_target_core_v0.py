@@ -15,8 +15,8 @@ def main() -> None:
     baseline.TARGET_PANEL_PATH = ROOT / "data" / "processed" / "target_side_establishments_annual_core_v0.csv"
     baseline.FEATURE_REGISTRY_PATH = ROOT / "metadata" / "stgnn_tensor_feature_registry_side_target_core_v0.csv"
     baseline.PRED_OUT = ROOT / "data" / "processed" / "feature_augmented_baseline_side_target_predictions_core_v0.csv"
-    baseline.METRICS_OUT = ROOT / "reports" / "feature_augmented_baseline_side_target_metrics_core_v0.json"
-    baseline.REPORT_OUT = ROOT / "reports" / "FEATURE_AUGMENTED_BASELINE_SIDE_TARGET_CORE_V0.md"
+    baseline.METRICS_OUT = ROOT / "reports" / "archive" / "benchmarks" / "feature_augmented_baseline_side_target_metrics_core_v0.json"
+    baseline.REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "FEATURE_AUGMENTED_BASELINE_SIDE_TARGET_CORE_V0.md"
     baseline.TARGET_COL = "side_establishment_creations_official"
 
     pred, quality = baseline.evaluate()

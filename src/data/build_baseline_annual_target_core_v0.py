@@ -12,7 +12,7 @@ PRE_STGNN_PATH = ROOT / "data" / "processed" / "pre_stgnn_dataset_core_v0.csv"
 TARGET_ANNUAL_OUT = ROOT / "data" / "processed" / "target_proxy_annual_core_v0.csv"
 BASELINE_OUT = ROOT / "data" / "processed" / "baseline_annual_dataset_core_v0.csv"
 QUALITY_OUT = ROOT / "reports" / "baseline_annual_target_core_quality_v0.json"
-REPORT_OUT = ROOT / "reports" / "BASELINE_ANNUAL_TARGET_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "BASELINE_ANNUAL_TARGET_CORE_V0.md"
 
 
 def build_target_annual() -> pd.DataFrame:

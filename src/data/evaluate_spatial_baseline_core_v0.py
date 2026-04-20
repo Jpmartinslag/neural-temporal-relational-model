@@ -16,7 +16,7 @@ TARGET_PANEL_PATH = ROOT / "data" / "processed" / "graph_model_target_panel_core
 
 PRED_OUT = ROOT / "data" / "processed" / "spatial_baseline_predictions_core_v0.csv"
 METRICS_OUT = ROOT / "reports" / "spatial_baseline_metrics_core_v0.json"
-REPORT_OUT = ROOT / "reports" / "SPATIAL_BASELINE_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "SPATIAL_BASELINE_CORE_V0.md"
 
 TARGET_COL = "target_proxy_establishment_creations_year"
 ALPHA_GRID = np.linspace(0.0, 1.0, 21)

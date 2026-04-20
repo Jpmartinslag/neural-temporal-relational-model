@@ -17,7 +17,7 @@ FEATURE_REGISTRY_PATH = ROOT / "metadata" / "stgnn_tensor_feature_registry_core_
 
 PRED_OUT = ROOT / "data" / "processed" / "feature_augmented_baseline_predictions_core_v0.csv"
 METRICS_OUT = ROOT / "reports" / "feature_augmented_baseline_metrics_core_v0.json"
-REPORT_OUT = ROOT / "reports" / "FEATURE_AUGMENTED_BASELINE_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "FEATURE_AUGMENTED_BASELINE_CORE_V0.md"
 
 TARGET_COL = "target_proxy_establishment_creations_year"
 RIDGE_ALPHA_GRID = [0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]

@@ -16,7 +16,7 @@ PRED_OUT = ROOT / "data" / "processed" / "segmented_side_target_predictions_core
 PROFILE_OUT = ROOT / "metadata" / "segmented_zone_profile_side_target_core_v0.csv"
 METRICS_OUT = ROOT / "reports" / "segmented_side_target_metrics_core_v0.json"
 QUALITY_OUT = ROOT / "reports" / "segmented_side_target_quality_core_v0.json"
-REPORT_OUT = ROOT / "reports" / "SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "benchmarks" / "SEGMENTED_SIDE_TARGET_BASELINE_CORE_V0.md"
 
 TARGET_COL = "side_establishment_creations_official"
 PROFILE_HISTORY_MAX_YEAR = 2021

@@ -20,10 +20,10 @@ baseline,rolling_backtest_predictions,canonical,data/processed/segmented_decisio
 baseline,decision_matrix,canonical,metadata/side_model_decision_matrix_core_v0.csv,Decision matrix between persistence/ridge/segmentation.
 baseline,instability_fold_diagnostic,canonical,metadata/side_backtest_fold_instability_core_v0.csv,Explains year/fold instability.
 baseline,temporal_regime_metrics,canonical,metadata/temporal_regime_side_baseline_metrics_core_v0.csv,Tests whether observed aggregate growth can choose persistence versus ridge.
-report,current_decision_matrix,canonical,reports/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md,Current model decision rules.
-report,rolling_backtest,canonical,reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md,Rolling validation of segmented rule.
-report,instability_diagnostic,canonical,reports/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md,Current explanation of temporal instability.
-report,temporal_regime_baseline,canonical,reports/TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md,Shows that simple observed-growth regime rule is insufficient.
+report,current_decision_matrix,canonical,reports/archive/benchmarks/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md,Current model decision rules.
+report,rolling_backtest,canonical,reports/archive/benchmarks/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md,Rolling validation of segmented rule.
+report,instability_diagnostic,canonical,reports/archive/benchmarks/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md,Current explanation of temporal instability.
+report,temporal_regime_baseline,canonical,reports/archive/benchmarks/TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md,Shows that simple observed-growth regime rule is insufficient.
 report,extended_core_verification_plan,canonical,reports/EXTENDED_CORE_VERIFICATION_PLAN_V0.md,Verification checklist before accepting the extended core package or STGNN claim.
 report,project_consistency_audit,canonical,reports/PROJECT_CONSISTENCY_AUDIT_V0.md,Current audit separating canonical candidate diagnostic and proxy artifacts.
 model_data,extended_panel,canonical,data/processed/extended_panel_core_v0.csv,Current 2018-2024 SIDE target panel used for extended causal baselines.
