@@ -18,8 +18,9 @@ CORE_NODES_PATH = ROOT / "data" / "processed" / "graph_nodes_ze2020_core_v0.csv"
 ZONES_MASTER_PATH = ROOT / "data" / "processed" / "zones_master_annual_v0.csv"
 COMMUNE_OUT = ROOT / "data" / "interim" / "tables" / "bpe_evolution_commune_2019_2024_geo2025.csv"
 ZE_CORE_OUT = ROOT / "data" / "processed" / "bpe_evolution_ze2020_core_v0.csv"
-QUALITY_OUT = ROOT / "reports" / "bpe_evolution_2019_2024_quality_v0.json"
-REPORT_OUT = ROOT / "reports" / "BPE_EVOLUTION_2019_2024_INTEGRATION_V0.md"
+ARCHIVE_REPORTS = ROOT / "reports" / "archive" / "source_search"
+QUALITY_OUT = ARCHIVE_REPORTS / "bpe_evolution_2019_2024_quality_v0.json"
+REPORT_OUT = ARCHIVE_REPORTS / "BPE_EVOLUTION_2019_2024_INTEGRATION_V0.md"
 
 YEARS = {"2019", "2024"}
 PLM_PARENT_COMMUNES = {

@@ -25,7 +25,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 METADATA_DIR = ROOT / "metadata"
-REPORTS_DIR = ROOT / "reports"
+REPORTS_DIR = ROOT / "reports" / "archive" / "source_search"
 
 OUT_CSV = METADATA_DIR / "bpe_2020_source_candidates_v0.csv"
 OUT_JSON = REPORTS_DIR / "bpe_2020_source_candidates_v0.json"

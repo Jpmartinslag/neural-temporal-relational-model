@@ -378,7 +378,7 @@ O que foi feito:
 
 Artefato:
 
-- [DOWNLOAD_INBOX_REVIEW_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/DOWNLOAD_INBOX_REVIEW_v0.md)
+- [DOWNLOAD_INBOX_REVIEW_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/DOWNLOAD_INBOX_REVIEW_v0.md)
 
 Achados principais:
 
@@ -1061,7 +1061,7 @@ Artefatos:
 
 - [TEMPORAL_DEPTH_EXPANSION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_DEPTH_EXPANSION_V0.md)
 - [temporal_depth_priorities_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/temporal_depth_priorities_v0.csv)
-- [DOWNLOAD_PRIORITY_AND_API_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/DOWNLOAD_PRIORITY_AND_API_V0.md)
+- [DOWNLOAD_PRIORITY_AND_API_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/DOWNLOAD_PRIORITY_AND_API_V0.md)
 
 Decisao:
 
@@ -1077,7 +1077,7 @@ O que foi feito:
 
 Artefato:
 
-- [NEW_DOWNLOADS_GAP_REVIEW_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/NEW_DOWNLOADS_GAP_REVIEW_V0.md)
+- [NEW_DOWNLOADS_GAP_REVIEW_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/NEW_DOWNLOADS_GAP_REVIEW_V0.md)
 
 Decisao:
 
@@ -1100,7 +1100,7 @@ O que foi feito:
 
 Artefato:
 
-- [TEMPORAL_DEPTH_DOWNLOADS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_DEPTH_DOWNLOADS_V0.md)
+- [TEMPORAL_DEPTH_DOWNLOADS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/TEMPORAL_DEPTH_DOWNLOADS_V0.md)
 
 Decisao:
 
@@ -1138,7 +1138,7 @@ O que foi feito:
 
 Artefato:
 
-- [DATAGOUV_LINK_SEARCH_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/DATAGOUV_LINK_SEARCH_V0.md)
+- [DATAGOUV_LINK_SEARCH_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/DATAGOUV_LINK_SEARCH_V0.md)
 
 Decisao:
 
@@ -1157,7 +1157,7 @@ O que foi feito:
 
 Artefato:
 
-- [DATAGOUV_LINK_SEARCH_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/DATAGOUV_LINK_SEARCH_V0.md)
+- [DATAGOUV_LINK_SEARCH_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/DATAGOUV_LINK_SEARCH_V0.md)
 
 Decisao:
 
@@ -1176,7 +1176,7 @@ O que foi feito:
 
 Artefato:
 
-- [BPE_TEMPORAL_MISMATCH_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BPE_TEMPORAL_MISMATCH_V0.md)
+- [BPE_TEMPORAL_MISMATCH_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/BPE_TEMPORAL_MISMATCH_V0.md)
 
 Decisao:
 
@@ -1195,7 +1195,7 @@ O que foi feito:
 
 Artefato:
 
-- [OFFICIAL_SOURCE_SEARCH_V1.md](/home/jpdark/Downloads/project_recomm/dataset/reports/OFFICIAL_SOURCE_SEARCH_V1.md)
+- [OFFICIAL_SOURCE_SEARCH_V1.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/OFFICIAL_SOURCE_SEARCH_V1.md)
 
 Decisao:
 
@@ -1222,7 +1222,7 @@ Artefatos:
 
 - [integrate_bpe_2021_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/integrate_bpe_2021_v0.py)
 - [bpe_commune_2021.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/bpe_commune_2021.csv)
-- [BPE_2021_INTEGRATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BPE_2021_INTEGRATION_V0.md)
+- [BPE_2021_INTEGRATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/BPE_2021_INTEGRATION_V0.md)
 
 Decisao:
 
@@ -1240,7 +1240,7 @@ O que foi feito:
 
 Artefato:
 
-- [FLORES_DOWNLOAD_VERIFICATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FLORES_DOWNLOAD_VERIFICATION_V0.md)
+- [FLORES_DOWNLOAD_VERIFICATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/FLORES_DOWNLOAD_VERIFICATION_V0.md)
 
 Decisao:
 
@@ -1317,7 +1317,7 @@ O que foi feito:
 
 Artefato:
 
-- [BPE_2020_HARD_SEARCH_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BPE_2020_HARD_SEARCH_V0.md)
+- [BPE_2020_HARD_SEARCH_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/BPE_2020_HARD_SEARCH_V0.md)
 
 Decisao:
 

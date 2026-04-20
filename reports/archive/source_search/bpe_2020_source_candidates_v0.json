@@ -15,8 +15,8 @@
   },
   "outputs": {
     "csv": "/home/jpdark/Downloads/project_recomm/dataset/metadata/bpe_2020_source_candidates_v0.csv",
-    "json": "/home/jpdark/Downloads/project_recomm/dataset/reports/bpe_2020_source_candidates_v0.json",
-    "markdown": "/home/jpdark/Downloads/project_recomm/dataset/reports/BPE_2020_SOURCE_CANDIDATES_V0.md"
+    "json": "/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/bpe_2020_source_candidates_v0.json",
+    "markdown": "/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/BPE_2020_SOURCE_CANDIDATES_V0.md"
   },
   "candidates": [
     {

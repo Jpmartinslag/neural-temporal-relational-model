@@ -17,7 +17,7 @@ Do not treat it as a raw BPE 2020 replacement.
 
 - Commune interim: `data/interim/tables/bpe_evolution_commune_2019_2024_geo2025.csv`
 - ZE2020 core panel: `data/processed/bpe_evolution_ze2020_core_v0.csv`
-- Quality JSON: `reports/bpe_evolution_2019_2024_quality_v0.json`
+- Quality JSON: `reports/archive/source_search/bpe_evolution_2019_2024_quality_v0.json`
 
 ## Method
 

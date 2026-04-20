@@ -21,7 +21,7 @@ import pandas as pd
 
 
 ROOT = Path(__file__).resolve().parents[2]
-REPORTS = ROOT / "reports"
+REPORTS = ROOT / "reports" / "archive" / "source_search"
 METADATA = ROOT / "metadata"
 
 SKIP_PARTS = {".git", ".venv", "__pycache__", "scan_output"}

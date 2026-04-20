@@ -29,4 +29,4 @@ No local usable BPE 2020 observation file was found. Local BPE 2020 materials ar
 ## Outputs
 
 - CSV: `metadata/local_bpe_2020_file_audit_v0.csv`
-- JSON: `reports/local_bpe_2020_file_audit_v0.json`
+- JSON: `reports/archive/source_search/local_bpe_2020_file_audit_v0.json`
