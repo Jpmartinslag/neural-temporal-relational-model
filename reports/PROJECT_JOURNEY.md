@@ -163,7 +163,7 @@ O que foi feito:
 
 Artefato:
 
-- [mayotte_investigation_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/mayotte_investigation_v0.md)
+- [mayotte_investigation_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_diagnostics/mayotte_investigation_v0.md)
 
 Conclusao:
 
@@ -401,7 +401,7 @@ O que foi feito:
 
 Artefato:
 
-- [FRR_LAYER_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FRR_LAYER_INSPECTION_v0.md)
+- [FRR_LAYER_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_diagnostics/FRR_LAYER_INSPECTION_v0.md)
 
 Achado principal:
 
@@ -427,7 +427,7 @@ Artefatos:
 - [zrr_historique_communes_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/policy/zrr_historique_communes_v0.csv)
 - [zrr_cog2021_communes_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/policy/zrr_cog2021_communes_v0.csv)
 - [zrr_tables_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/zrr_tables_quality_v0.json)
-- [ZRR_TABLES_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ZRR_TABLES_INSPECTION_v0.md)
+- [ZRR_TABLES_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_diagnostics/ZRR_TABLES_INSPECTION_v0.md)
 
 Achado principal:
 
@@ -469,7 +469,7 @@ Artefatos:
 - [extract_population_history_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/extract_population_history_v0.py)
 - [population_history_communes_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/population_history/population_history_communes_v0.csv)
 - [population_history_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/population_history_quality_v0.json)
-- [POPULATION_HISTORY_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/POPULATION_HISTORY_INSPECTION_v0.md)
+- [POPULATION_HISTORY_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_diagnostics/POPULATION_HISTORY_INSPECTION_v0.md)
 
 Achado principal:
 
@@ -493,7 +493,7 @@ Artefatos:
 - [build_population_history_ze2020_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_population_history_ze2020_v0.py)
 - [population_history_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/population_history_ze2020_v0.csv)
 - [population_history_ze2020_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/population_history_ze2020_quality_v0.json)
-- [POPULATION_HISTORY_ZE2020_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/POPULATION_HISTORY_ZE2020_INSPECTION_v0.md)
+- [POPULATION_HISTORY_ZE2020_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_diagnostics/POPULATION_HISTORY_ZE2020_INSPECTION_v0.md)
 
 Resultado:
 
@@ -520,7 +520,7 @@ Artefatos:
 - [policy_commune_status_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/policy/policy_commune_status_v0.csv)
 - [policy_layers_registry_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/policy_layers_registry_v0.csv)
 - [policy_commune_status_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/policy_commune_status_quality_v0.json)
-- [POLICY_LAYERS_DESIGN.md](/home/jpdark/Downloads/project_recomm/dataset/reports/POLICY_LAYERS_DESIGN.md)
+- [POLICY_LAYERS_DESIGN.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_diagnostics/POLICY_LAYERS_DESIGN.md)
 
 Decisao:
 
@@ -538,7 +538,7 @@ O que foi feito:
 
 Artefatos:
 
-- [POLICY_DOWNLOAD_ORGANIZATION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/POLICY_DOWNLOAD_ORGANIZATION_v0.md)
+- [POLICY_DOWNLOAD_ORGANIZATION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_diagnostics/POLICY_DOWNLOAD_ORGANIZATION_v0.md)
 - [update_policy_inventory_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/update_policy_inventory_v0.py)
 
 Decisao:
@@ -611,7 +611,7 @@ Artefatos:
 - [policy_commune_status_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/policy/policy_commune_status_v0.csv)
 - [policy_layers_registry_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/policy_layers_registry_v0.csv)
 - [policy_commune_status_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/policy_commune_status_quality_v0.json)
-- [QPV_TABLES_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/QPV_TABLES_INSPECTION_v0.md)
+- [QPV_TABLES_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_diagnostics/QPV_TABLES_INSPECTION_v0.md)
 
 Resultado:
 
@@ -637,7 +637,7 @@ Artefatos:
 - [extract_zan_consumption_communes_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/extract_zan_consumption_communes_v0.py)
 - [zan_consumption_communes_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/policy/zan_consumption_communes_v0.csv)
 - [zan_consumption_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/zan_consumption_quality_v0.json)
-- [ZAN_CONSUMPTION_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ZAN_CONSUMPTION_INSPECTION_v0.md)
+- [ZAN_CONSUMPTION_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_diagnostics/ZAN_CONSUMPTION_INSPECTION_v0.md)
 - [policy_layers_registry_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/policy_layers_registry_v0.csv)
 
 Resultado:
@@ -663,7 +663,7 @@ Artefatos:
 - [build_zan_consumption_ze2020_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_zan_consumption_ze2020_v0.py)
 - [zan_consumption_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zan_consumption_ze2020_v0.csv)
 - [zan_consumption_ze2020_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/zan_consumption_ze2020_quality_v0.json)
-- [ZAN_CONSUMPTION_ZE2020_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/ZAN_CONSUMPTION_ZE2020_INSPECTION_v0.md)
+- [ZAN_CONSUMPTION_ZE2020_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_diagnostics/ZAN_CONSUMPTION_ZE2020_INSPECTION_v0.md)
 
 Resultado:
 

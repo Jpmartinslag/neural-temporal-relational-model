@@ -353,7 +353,7 @@ Cobertura:
 
 Artefato:
 
-- [mayotte_investigation_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/mayotte_investigation_v0.md)
+- [mayotte_investigation_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_diagnostics/mayotte_investigation_v0.md)
 
 Conclusao operacional:
 
