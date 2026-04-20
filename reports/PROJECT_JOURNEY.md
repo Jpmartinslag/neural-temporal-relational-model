@@ -2305,7 +2305,7 @@ Motivacao:
 - Necessidade de focar em transformacoes invariantes a escala, dinamicas estruturais e prevencao estrita de data leakage.
 
 O que foi feito:
-- Criado o plano detalhado em `reports/LOCAL_FEATURE_ENGINEERING_PLAN_v0.md`.
+- Criado o plano detalhado em `reports/archive/diagnostics/LOCAL_FEATURE_ENGINEERING_PLAN_v0.md`.
 - Definidas as transformacoes metodologicamente validas: diferenca logaritmica (momentum), medias moveis, intensidade por estabelecimento, volatidade historica e proxy estrutural de mix de energia.
 - Elaborada tabela compacta com as top 10 features a serem testadas para prevencao de vazamento temporal.
 - Sugerido novo protocolo de validacao cruzada rolante com imputacao e padronizacao restritas por fold.
@@ -2344,7 +2344,7 @@ O que foi feito:
 - Gerados:
   - `reports/residual_baseline_metrics_core_v0.json`
   - `data/processed/residual_baseline_predictions_core_v0.csv`
-  - `reports/RESIDUAL_BASELINE_CORE_V0.md`
+  - `reports/archive/diagnostics/RESIDUAL_BASELINE_CORE_V0.md`
 
 Resultado:
 - Resultado inicialmente observado: `HuberRegressor`, residual absoluto, `local_all`, `lambda=0.5`, WMAPE medio `5.17%`.
@@ -2367,8 +2367,8 @@ O que foi feito:
 - Criado `src/data/diagnose_residual_baseline_core_v0.py`.
 - Gerados:
   - `data/processed/residual_baseline_zone_diagnostics_core_v0.csv`
-  - `reports/residual_baseline_diagnostics_core_v0.json`
-  - `reports/RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md`
+  - `reports/archive/diagnostics/residual_baseline_diagnostics_core_v0.json`
+  - `reports/archive/diagnostics/RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md`
 - Grupos de volume e volatilidade foram definidos usando historico ate `2020`, sem olhar anos de teste.
 
 Resultado inicial (`local_all`, antes da ablation):
@@ -2488,8 +2488,8 @@ O que foi feito:
   - `persistence`: usa persistencia quando nao ha historico suficiente para calibrar o gatilho
 - Reexecutado `src/data/evaluate_residual_activation_rules_core_v0.py`.
 - Atualizados:
-  - `reports/residual_activation_rules_metrics_core_v0.json`
-  - `reports/RESIDUAL_ACTIVATION_RULES_CORE_V0.md`
+  - `reports/archive/diagnostics/residual_activation_rules_metrics_core_v0.json`
+  - `reports/archive/diagnostics/RESIDUAL_ACTIVATION_RULES_CORE_V0.md`
 
 Resultado:
 - Melhor regra numerica continua sendo `national_acceleration_abs`, `ridge_level_lag_only` como lado estavel, `SITADEL only` como lado residual, `min_prior_years=1`.
@@ -2528,7 +2528,7 @@ O que foi feito:
 - Criado `src/data/diagnose_activation_rules_core_v0.py`.
 - O diagnostico audita apenas predicoes ja geradas, sem treinar modelo novo.
 - Saidas:
-  - `reports/activation_rule_diagnostics_core_v0.json`
+  - `reports/archive/diagnostics/activation_rule_diagnostics_core_v0.json`
   - `reports/ACTIVATION_RULE_DIAGNOSTICS_CORE_V0.md`
 - Medidas adicionadas:
   - trace de threshold por ano

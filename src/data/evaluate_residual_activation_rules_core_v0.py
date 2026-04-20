@@ -12,9 +12,9 @@ ROOT = Path(__file__).resolve().parents[2]
 PANEL_PATH = ROOT / "data" / "processed" / "extended_panel_core_v0.csv"
 TARGET_HISTORY_PATH = ROOT / "data" / "processed" / "target_side_establishments_annual_core_v0.csv"
 PREDICTIONS_PATH = ROOT / "data" / "processed" / "residual_baseline_predictions_core_v0.csv"
-METRICS_PATH = ROOT / "reports" / "residual_activation_rules_metrics_core_v0.json"
+METRICS_PATH = ROOT / "reports" / "archive" / "diagnostics" / "residual_activation_rules_metrics_core_v0.json"
 PREDICTIONS_OUT_PATH = ROOT / "data" / "processed" / "residual_activation_rules_predictions_core_v0.csv"
-REPORT_PATH = ROOT / "reports" / "RESIDUAL_ACTIVATION_RULES_CORE_V0.md"
+REPORT_PATH = ROOT / "reports" / "archive" / "diagnostics" / "RESIDUAL_ACTIVATION_RULES_CORE_V0.md"
 
 
 STABLE_CONFIGS = [

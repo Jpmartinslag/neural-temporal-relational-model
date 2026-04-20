@@ -11,7 +11,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT / "data" / "raw" / "external" / "rei"
 OUTPUT_DIR = ROOT / "data" / "interim" / "tables" / "rei_converted_csv_v0"
-QUALITY_PATH = ROOT / "reports" / "rei_xlsx_conversion_quality_v0.json"
+QUALITY_PATH = ROOT / "reports" / "archive" / "diagnostics" / "rei_xlsx_conversion_quality_v0.json"
 
 DEFAULT_YEARS = [2018, 2019, 2020, 2021, 2022]
 

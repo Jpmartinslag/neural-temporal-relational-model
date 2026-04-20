@@ -13,8 +13,8 @@ PREDICTIONS_PATH = ROOT / "data" / "processed" / "residual_baseline_predictions_
 METRICS_PATH = ROOT / "reports" / "residual_baseline_metrics_core_v0.json"
 TARGET_HISTORY_PATH = ROOT / "data" / "processed" / "target_side_establishments_annual_core_v0.csv"
 ZONE_DIAGNOSTICS_PATH = ROOT / "data" / "processed" / "residual_baseline_zone_diagnostics_core_v0.csv"
-QUALITY_PATH = ROOT / "reports" / "residual_baseline_diagnostics_core_v0.json"
-REPORT_PATH = ROOT / "reports" / "RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md"
+QUALITY_PATH = ROOT / "reports" / "archive" / "diagnostics" / "residual_baseline_diagnostics_core_v0.json"
+REPORT_PATH = ROOT / "reports" / "archive" / "diagnostics" / "RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md"
 
 
 BEST_FIXED_LAMBDA = 0.5

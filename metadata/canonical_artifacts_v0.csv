@@ -34,12 +34,12 @@ metadata,extended_feature_classification,canonical,metadata/extended_core_featur
 baseline,extended_rolling_metrics,canonical,reports/extended_rolling_backtest_metrics_v0.json,Current rolling benchmark metrics with ridge_lag_only and persistence.
 report,extended_core_summary,canonical,reports/EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md,Current extended core benchmark summary.
 report,local_candidate_audit,canonical,reports/LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md,Audit of SITADEL REI and Energy candidate features before canonical inclusion.
-baseline,residual_baseline_metrics,candidate,reports/residual_baseline_metrics_core_v0.json,Residual correction benchmark metrics; candidate baseline not final operational model.
-baseline,residual_activation_metrics,candidate,reports/residual_activation_rules_metrics_core_v0.json,Experimental residual activation rules; threshold selection still fragile.
+baseline,residual_baseline_metrics,regenerable,reports/residual_baseline_metrics_core_v0.json,Large residual correction metrics dump; ignored and regenerable from script.
+baseline,residual_activation_metrics,diagnostic,reports/archive/diagnostics/residual_activation_rules_metrics_core_v0.json,Experimental residual activation rules; archived diagnostic because threshold selection is fragile.
 baseline,residual_zone_diagnostics,diagnostic,data/processed/residual_baseline_zone_diagnostics_core_v0.csv,Per-zone residual diagnostic retained for audit; large row-level prediction dumps are regenerable.
-report,residual_baseline,candidate,reports/RESIDUAL_BASELINE_CORE_V0.md,Residual correction experiment summary and ablation status.
-report,residual_diagnostics,diagnostic,reports/RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md,Zone volume and volatility diagnostics for residual models.
-report,residual_activation_rules,candidate,reports/RESIDUAL_ACTIVATION_RULES_CORE_V0.md,Experimental rules for activating residual correction before observing the test year.
+report,residual_baseline,diagnostic,reports/archive/diagnostics/RESIDUAL_BASELINE_CORE_V0.md,Residual correction experiment summary and ablation status; archived because not operational.
+report,residual_diagnostics,diagnostic,reports/archive/diagnostics/RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md,Zone volume and volatility diagnostics for residual models.
+report,residual_activation_rules,diagnostic,reports/archive/diagnostics/RESIDUAL_ACTIVATION_RULES_CORE_V0.md,Experimental activation rules archived as stress-test diagnostic.
 metadata,raw_external_inventory,canonical,metadata/raw_external_inventory_v0.csv,Inventory of processed partial and pending external raw sources.
 report,raw_external_inventory,canonical,reports/RAW_EXTERNAL_INVENTORY_V0.md,Readable external raw source inventory and priority queue.
 candidate_data,sitadel_monthly_surface,candidate,data/interim/tables/sitadel_monthly_surface_ze2020_v0.csv,Monthly SITADEL aggregation; candidate source not canonical model input.

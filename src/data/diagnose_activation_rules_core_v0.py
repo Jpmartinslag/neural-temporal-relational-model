@@ -17,10 +17,10 @@ from evaluate_residual_activation_rules_core_v0 import (
 
 
 ROOT = Path(__file__).resolve().parents[2]
-ACTIVATION_METRICS_PATH = ROOT / "reports" / "residual_activation_rules_metrics_core_v0.json"
+ACTIVATION_METRICS_PATH = ROOT / "reports" / "archive" / "diagnostics" / "residual_activation_rules_metrics_core_v0.json"
 ACTIVATION_PREDICTIONS_PATH = ROOT / "data" / "processed" / "residual_activation_rules_predictions_core_v0.csv"
 TARGET_HISTORY_PATH = ROOT / "data" / "processed" / "target_side_establishments_annual_core_v0.csv"
-QUALITY_PATH = ROOT / "reports" / "activation_rule_diagnostics_core_v0.json"
+QUALITY_PATH = ROOT / "reports" / "archive" / "diagnostics" / "activation_rule_diagnostics_core_v0.json"
 REPORT_PATH = ROOT / "reports" / "ACTIVATION_RULE_DIAGNOSTICS_CORE_V0.md"
 
 

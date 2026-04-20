@@ -25,6 +25,7 @@ Temos target oficial `SIDE`, painel anual `ZE2020`, grafo geografico, grafo de m
 Arquivos de entrada para entender o estado atual:
 
 - [BASELINE_PHASE_CLOSURE_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BASELINE_PHASE_CLOSURE_DECISION_V0.md)
+- [CLEANUP_AND_ARCHIVE_PLAN_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/CLEANUP_AND_ARCHIVE_PLAN_V0.md)
 - [PROJECT_CONSISTENCY_AUDIT_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_CONSISTENCY_AUDIT_V0.md)
 - [EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md)
 - [LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md)
@@ -193,9 +194,9 @@ Arquivos principais:
 - [SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md)
 - [SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md)
 - [TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_REGIME_SIDE_BASELINE_CORE_V0.md)
-- [RESIDUAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RESIDUAL_BASELINE_CORE_V0.md)
-- [RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md)
-- [RESIDUAL_ACTIVATION_RULES_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RESIDUAL_ACTIVATION_RULES_CORE_V0.md)
+- [RESIDUAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/diagnostics/RESIDUAL_BASELINE_CORE_V0.md)
+- [RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/diagnostics/RESIDUAL_BASELINE_DIAGNOSTICS_CORE_V0.md)
+- [RESIDUAL_ACTIVATION_RULES_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/diagnostics/RESIDUAL_ACTIVATION_RULES_CORE_V0.md)
 
 Leitura:
 
