@@ -7,7 +7,7 @@ from pathlib import Path
 def audit_robust_correlations():
     # Paths
     panel_path = 'data/processed/extended_panel_core_v0.csv'
-    output_report_path = 'reports/FORWARD_LOOKING_SIGNAL_AUDIT_V0.md'
+    output_report_path = 'reports/archive/technical/FORWARD_LOOKING_SIGNAL_AUDIT_V0.md'
 
     # 1. Load Extended Panel
     df = pd.read_csv(panel_path, dtype={'ze2020': str})

@@ -21,7 +21,7 @@ Arquivos analisados:
 - [StockEtablissement_utf8.zip](/home/jpdark/Downloads/project_recomm/dataset/data/raw/business_registry/sirene/StockEtablissement_utf8.zip)
 - [StockEtablissementHistorique_utf8.zip](/home/jpdark/Downloads/project_recomm/dataset/data/raw/business_registry/sirene/StockEtablissementHistorique_utf8.zip)
 - [StockUniteLegale_utf8.zip](/home/jpdark/Downloads/project_recomm/dataset/data/raw/business_registry/sirene/StockUniteLegale_utf8.zip)
-- [TARGET_READINESS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_READINESS_V0.md)
+- [TARGET_READINESS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/TARGET_READINESS_V0.md)
 
 ## Resultado da inspeção
 

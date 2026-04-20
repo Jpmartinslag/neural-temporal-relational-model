@@ -35,7 +35,7 @@ FLORES_DIR = ROOT / "data/raw/employment/flores"
 MAPPING_CSV = ROOT / "data/interim/mappings/commune_to_ze2020_2026.csv"
 
 OUT_JSON = ROOT / "reports/temporal_depth_enrichment_core_quality_v0.json"
-OUT_MD = ROOT / "reports/TEMPORAL_DEPTH_ENRICHMENT_CORE_V0.md"
+OUT_MD = ROOT / "reports/archive/technical/TEMPORAL_DEPTH_ENRICHMENT_CORE_V0.md"
 
 SIDE_YEARS = [2019, 2020]
 FLORES_YEARS = [2019, 2020, 2021]

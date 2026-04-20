@@ -76,7 +76,7 @@ Arquivos principais:
 
 - [zones_master_annual_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zones_master_annual_core_v0.csv)
 - [panel_zones_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/panel_zones_core_v0.csv)
-- [PANEL_ZONES_DESIGN.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PANEL_ZONES_DESIGN.md)
+- [PANEL_ZONES_DESIGN.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/PANEL_ZONES_DESIGN.md)
 - [panel_zones_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/panel_zones_quality_v0.json)
 
 Leitura:
@@ -117,7 +117,7 @@ Arquivos principais:
 - [target_proxy_annual_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/target_proxy_annual_core_v0.csv)
 - [graph_model_target_panel_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_model_target_panel_core_v0.csv)
 - [BASELINE_ANNUAL_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/BASELINE_ANNUAL_TARGET_CORE_V0.md)
-- [TARGET_PROXY_CANDIDATE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_PROXY_CANDIDATE_CORE_V0.md)
+- [TARGET_PROXY_CANDIDATE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/TARGET_PROXY_CANDIDATE_CORE_V0.md)
 
 Leitura:
 
@@ -183,7 +183,7 @@ Arquivos principais:
 - [side_target_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/side_target_baseline_metrics_core_v0.json)
 - [FEATURE_AUGMENTED_BASELINE_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/FEATURE_AUGMENTED_BASELINE_SIDE_TARGET_CORE_V0.md)
 - [feature_augmented_baseline_side_target_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/feature_augmented_baseline_side_target_metrics_core_v0.json)
-- [FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md)
+- [FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md)
 - [LONG_HISTORY_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/LONG_HISTORY_SIDE_TARGET_CORE_V0.md)
 - [long_history_side_target_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/long_history_side_target_baseline_metrics_core_v0.json)
 - [RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/RICH_VS_LONG_SIDE_TARGET_COMPARISON_CORE_V0.md)

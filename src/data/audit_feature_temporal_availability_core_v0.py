@@ -17,7 +17,7 @@ SAMPLE_INDEX_PATH = ROOT / "metadata" / "stgnn_tensor_sample_index_side_target_c
 AVAILABILITY_OUT = ROOT / "metadata" / "feature_temporal_availability_core_v0.csv"
 YEAR_PLAN_OUT = ROOT / "metadata" / "supervised_year_availability_core_v0.csv"
 QUALITY_OUT = ROOT / "reports" / "feature_temporal_availability_core_quality_v0.json"
-REPORT_OUT = ROOT / "reports" / "FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "technical" / "FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md"
 
 
 def classify_role(feature: str) -> str:

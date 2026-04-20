@@ -333,7 +333,7 @@ Artefatos:
 - [panel_zones_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/panel_zones_v0.csv)
 - [panel_feature_registry_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/panel_feature_registry_v0.csv)
 - [panel_zones_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/panel_zones_quality_v0.json)
-- [PANEL_ZONES_DESIGN.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PANEL_ZONES_DESIGN.md)
+- [PANEL_ZONES_DESIGN.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/PANEL_ZONES_DESIGN.md)
 
 Resultado:
 
@@ -688,7 +688,7 @@ O que foi feito:
 
 Artefatos:
 
-- [CONSISTENCY_REVIEW_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/CONSISTENCY_REVIEW_v0.md)
+- [CONSISTENCY_REVIEW_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/CONSISTENCY_REVIEW_v0.md)
 - [consistency_review_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/consistency_review_v0.json)
 - [extract_qpv_tables_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/extract_qpv_tables_v0.py)
 - [sanitize_zrr_historical_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/sanitize_zrr_historical_v0.py)
@@ -719,7 +719,7 @@ O que foi feito:
 
 Artefatos:
 
-- [DIAGNOSTICS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/DIAGNOSTICS_V0.md)
+- [DIAGNOSTICS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/DIAGNOSTICS_V0.md)
 - [diagnostics_summary_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/diagnostics_summary_v0.json)
 - [coverage_count_hist_v0.png](/home/jpdark/Downloads/project_recomm/dataset/reports/diagnostics_v0/coverage_count_hist_v0.png)
 - [zones_master_distributions_v0.png](/home/jpdark/Downloads/project_recomm/dataset/reports/diagnostics_v0/zones_master_distributions_v0.png)
@@ -741,7 +741,7 @@ O que foi feito:
 Artefatos:
 
 - [PRE_GRAPH_READINESS_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/PRE_GRAPH_READINESS_v0.md)
-- [EVALUATION_WITHOUT_GROUND_TRUTH_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/EVALUATION_WITHOUT_GROUND_TRUTH_v0.md)
+- [EVALUATION_WITHOUT_GROUND_TRUTH_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/EVALUATION_WITHOUT_GROUND_TRUTH_v0.md)
 
 Decisao:
 
@@ -912,7 +912,7 @@ O que foi feito:
 
 Artefato:
 
-- [AUDITABILITY_RATIONALE_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/AUDITABILITY_RATIONALE_v0.md)
+- [AUDITABILITY_RATIONALE_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/AUDITABILITY_RATIONALE_v0.md)
 
 Decisao:
 
@@ -927,7 +927,7 @@ O que foi feito:
 
 Artefato:
 
-- [TARGET_READINESS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_READINESS_V0.md)
+- [TARGET_READINESS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/TARGET_READINESS_V0.md)
 
 Decisao:
 
@@ -943,7 +943,7 @@ O que foi feito:
 
 Artefato:
 
-- [TARGET_DERIVATION_OPTIONS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_DERIVATION_OPTIONS_V0.md)
+- [TARGET_DERIVATION_OPTIONS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/TARGET_DERIVATION_OPTIONS_V0.md)
 
 Decisao:
 
@@ -963,7 +963,7 @@ Artefatos:
 - [build_target_proxy_candidate_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_target_proxy_candidate_core_v0.py)
 - [target_proxy_candidate_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/target_proxy_candidate_core_v0.csv)
 - [target_proxy_candidate_core_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/target_proxy_candidate_core_quality_v0.json)
-- [TARGET_PROXY_CANDIDATE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_PROXY_CANDIDATE_CORE_V0.md)
+- [TARGET_PROXY_CANDIDATE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/TARGET_PROXY_CANDIDATE_CORE_V0.md)
 
 Decisao:
 
@@ -1059,7 +1059,7 @@ O que foi feito:
 
 Artefatos:
 
-- [TEMPORAL_DEPTH_EXPANSION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_DEPTH_EXPANSION_V0.md)
+- [TEMPORAL_DEPTH_EXPANSION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/TEMPORAL_DEPTH_EXPANSION_V0.md)
 - [temporal_depth_priorities_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/temporal_depth_priorities_v0.csv)
 - [DOWNLOAD_PRIORITY_AND_API_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/source_search/DOWNLOAD_PRIORITY_AND_API_V0.md)
 
@@ -1119,7 +1119,7 @@ O que foi feito:
 Artefatos:
 
 - [integrate_temporal_depth_rp_filosofi_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/integrate_temporal_depth_rp_filosofi_v0.py)
-- [TEMPORAL_DEPTH_INTEGRATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_DEPTH_INTEGRATION_V0.md)
+- [TEMPORAL_DEPTH_INTEGRATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/TEMPORAL_DEPTH_INTEGRATION_V0.md)
 - [temporal_depth_integration_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/temporal_depth_integration_quality_v0.json)
 
 Decisao:
@@ -1497,7 +1497,7 @@ Artefatos:
 - [evaluate_feature_selection_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_feature_selection_core_v0.py)
 - [feature_selection_audit_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/feature_selection_audit_core_v0.csv)
 - [feature_selection_audit_core_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/feature_selection_audit_core_quality_v0.json)
-- [FEATURE_SELECTION_AUDIT_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_SELECTION_AUDIT_CORE_V0.md)
+- [FEATURE_SELECTION_AUDIT_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/FEATURE_SELECTION_AUDIT_CORE_V0.md)
 
 Resultados principais:
 
@@ -1611,7 +1611,7 @@ Artefatos:
 
 - [enrich_zones_master_temporal_depth_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/enrich_zones_master_temporal_depth_core_v0.py)
 - [temporal_depth_enrichment_core_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/temporal_depth_enrichment_core_quality_v0.json)
-- [TEMPORAL_DEPTH_ENRICHMENT_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_DEPTH_ENRICHMENT_CORE_V0.md)
+- [TEMPORAL_DEPTH_ENRICHMENT_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/TEMPORAL_DEPTH_ENRICHMENT_CORE_V0.md)
 
 Resultado na auditoria de features (tensor STGNN SIDE target, re-executado):
 
@@ -1693,7 +1693,7 @@ O que foi feito:
 Artefatos:
 
 - [audit_feature_temporal_availability_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/audit_feature_temporal_availability_core_v0.py)
-- [FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md)
+- [FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/technical/FEATURE_TEMPORAL_AVAILABILITY_CORE_V0.md)
 - [feature_temporal_availability_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/feature_temporal_availability_core_v0.csv)
 - [supervised_year_availability_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/supervised_year_availability_core_v0.csv)
 - [build_long_history_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_long_history_side_target_core_v0.py)

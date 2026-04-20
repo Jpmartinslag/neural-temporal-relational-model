@@ -25,7 +25,7 @@ SAMPLE_INDEX_PATH = ROOT / "metadata/stgnn_tensor_sample_index_side_target_core_
 FEATURE_REGISTRY_PATH = ROOT / "metadata/stgnn_tensor_feature_registry_side_target_core_v0.csv"
 OUT_CSV = ROOT / "metadata/feature_selection_audit_core_v0.csv"
 OUT_JSON = ROOT / "reports/feature_selection_audit_core_quality_v0.json"
-OUT_MD = ROOT / "reports/FEATURE_SELECTION_AUDIT_CORE_V0.md"
+OUT_MD = ROOT / "reports/archive/technical/FEATURE_SELECTION_AUDIT_CORE_V0.md"
 
 
 def load_tensor():

@@ -14,7 +14,7 @@ CORE_NODES_PATH = ROOT / "data" / "processed" / "graph_nodes_ze2020_core_v0.csv"
 
 OUT_CSV = ROOT / "data" / "processed" / "target_proxy_candidate_core_v0.csv"
 OUT_QUALITY = ROOT / "reports" / "target_proxy_candidate_core_quality_v0.json"
-OUT_REPORT = ROOT / "reports" / "TARGET_PROXY_CANDIDATE_CORE_V0.md"
+OUT_REPORT = ROOT / "reports" / "archive" / "technical" / "TARGET_PROXY_CANDIDATE_CORE_V0.md"
 
 MIN_YEAR = 2000
 MAX_YEAR = 2026

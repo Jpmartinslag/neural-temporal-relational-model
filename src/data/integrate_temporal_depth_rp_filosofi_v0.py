@@ -24,7 +24,7 @@ RP_EMP_2021_INTERIM = ROOT / "data" / "interim" / "tables" / "rp_emploi_lr_commu
 FILOSOFI_2020_INTERIM = ROOT / "data" / "interim" / "tables" / "filosofi_commune_2020.csv"
 
 QUALITY_OUT = ROOT / "reports" / "temporal_depth_integration_quality_v0.json"
-REPORT_OUT = ROOT / "reports" / "TEMPORAL_DEPTH_INTEGRATION_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "technical" / "TEMPORAL_DEPTH_INTEGRATION_V0.md"
 
 
 def parse_number(value: str | None) -> float | None:
