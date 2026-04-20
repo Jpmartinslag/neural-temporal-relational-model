@@ -17,7 +17,7 @@ TENSOR_OUT = ROOT / "data" / "processed" / "stgnn_tensor_package_core_v0.npz"
 FEATURE_REGISTRY_OUT = ROOT / "metadata" / "stgnn_tensor_feature_registry_core_v0.csv"
 SAMPLE_INDEX_OUT = ROOT / "metadata" / "stgnn_tensor_sample_index_core_v0.csv"
 QUALITY_OUT = ROOT / "reports" / "stgnn_tensor_package_core_quality_v0.json"
-REPORT_OUT = ROOT / "reports" / "STGNN_TENSOR_PACKAGE_CORE_V0.md"
+REPORT_OUT = ROOT / "reports" / "archive" / "graph_tensor" / "STGNN_TENSOR_PACKAGE_CORE_V0.md"
 
 INDEX_COLS = {"feature_year", "node_idx", "ze2020", "libze2020", "reg"}
 TARGET_COL = "target_proxy_establishment_creations_year"

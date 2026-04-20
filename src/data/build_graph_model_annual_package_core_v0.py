@@ -16,7 +16,7 @@ FEATURE_PANEL_OUT = ROOT / "data" / "processed" / "graph_model_feature_panel_cor
 TARGET_PANEL_OUT = ROOT / "data" / "processed" / "graph_model_target_panel_core_v0.csv"
 ADJACENCY_OUT = ROOT / "data" / "processed" / "graph_adjacency_core_v0.csv"
 PACKAGE_SUMMARY_OUT = ROOT / "reports" / "graph_model_annual_package_core_quality_v0.json"
-PACKAGE_REPORT_OUT = ROOT / "reports" / "GRAPH_MODEL_ANNUAL_PACKAGE_CORE_V0.md"
+PACKAGE_REPORT_OUT = ROOT / "reports" / "archive" / "graph_tensor" / "GRAPH_MODEL_ANNUAL_PACKAGE_CORE_V0.md"
 
 
 def feature_columns(frame: pd.DataFrame) -> list[str]:

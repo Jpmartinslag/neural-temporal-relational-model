@@ -220,7 +220,7 @@ Artefatos:
 
 - [.gitignore](/home/jpdark/Downloads/project_recomm/dataset/.gitignore)
 - [VERSIONING_POLICY.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/process/VERSIONING_POLICY.md)
-- [PHASE1_GRAPH_ROADMAP.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PHASE1_GRAPH_ROADMAP.md)
+- [PHASE1_GRAPH_ROADMAP.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/PHASE1_GRAPH_ROADMAP.md)
 - [PROJECT_EXPLANATIONS.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_EXPLANATIONS.md)
 
 Decisoes:
@@ -740,7 +740,7 @@ O que foi feito:
 
 Artefatos:
 
-- [PRE_GRAPH_READINESS_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PRE_GRAPH_READINESS_v0.md)
+- [PRE_GRAPH_READINESS_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/PRE_GRAPH_READINESS_v0.md)
 - [EVALUATION_WITHOUT_GROUND_TRUTH_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/EVALUATION_WITHOUT_GROUND_TRUTH_v0.md)
 
 Decisao:
@@ -781,7 +781,7 @@ Artefatos:
 - [graph_nodes_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_nodes_ze2020_v0.csv)
 - [graph_edges_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_edges_ze2020_v0.csv)
 - [graph_ze2020_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_ze2020_quality_v0.json)
-- [GRAPH_ZE2020_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_ZE2020_INSPECTION_v0.md)
+- [GRAPH_ZE2020_INSPECTION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/GRAPH_ZE2020_INSPECTION_v0.md)
 
 Resultado:
 
@@ -806,7 +806,7 @@ O que foi feito:
 
 Artefatos:
 
-- [GRAPH_VISUALS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_VISUALS_V0.md)
+- [GRAPH_VISUALS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/GRAPH_VISUALS_V0.md)
 - [ze2020_boundaries_v0.png](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_visuals_v0/ze2020_boundaries_v0.png)
 - [ze2020_graph_components_v0.png](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_visuals_v0/ze2020_graph_components_v0.png)
 - [ze2020_isolated_nodes_v0.png](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_visuals_v0/ze2020_isolated_nodes_v0.png)
@@ -839,8 +839,8 @@ O que foi feito:
 
 Artefatos:
 
-- [GRAPH_SCOPE_DECISION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_SCOPE_DECISION_v0.md)
-- [GRAPH_CORE_V0_INSPECTION.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_CORE_V0_INSPECTION.md)
+- [GRAPH_SCOPE_DECISION_v0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/GRAPH_SCOPE_DECISION_v0.md)
+- [GRAPH_CORE_V0_INSPECTION.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/GRAPH_CORE_V0_INSPECTION.md)
 - [graph_nodes_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_nodes_ze2020_core_v0.csv)
 - [graph_edges_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_edges_ze2020_core_v0.csv)
 - [graph_excluded_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_excluded_ze2020_core_v0.csv)
@@ -864,7 +864,7 @@ Artefatos:
 - [panel_zones_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/panel_zones_core_v0.csv)
 - [population_history_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/population_history_ze2020_core_v0.csv)
 - [zan_consumption_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zan_consumption_ze2020_core_v0.csv)
-- [GRAPH_CORE_VISUALS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_CORE_VISUALS_V0.md)
+- [GRAPH_CORE_VISUALS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/GRAPH_CORE_VISUALS_V0.md)
 - [ze2020_graph_core_interactive_v0.html](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_visuals_v0/ze2020_graph_core_interactive_v0.html)
 
 Decisao:
@@ -883,7 +883,7 @@ O que foi feito:
 
 Artefatos:
 
-- [PRE_STGNN_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PRE_STGNN_CORE_V0.md)
+- [PRE_STGNN_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/PRE_STGNN_CORE_V0.md)
 - [graph_node_index_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_node_index_core_v0.csv)
 - [graph_edge_index_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_edge_index_core_v0.csv)
 - [pre_stgnn_dataset_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/pre_stgnn_dataset_core_v0.csv)
@@ -1043,7 +1043,7 @@ Artefatos:
 - [graph_model_target_panel_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_model_target_panel_core_v0.csv)
 - [graph_adjacency_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_adjacency_core_v0.csv)
 - [graph_model_annual_package_core_quality_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/graph_model_annual_package_core_quality_v0.json)
-- [GRAPH_MODEL_ANNUAL_PACKAGE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_MODEL_ANNUAL_PACKAGE_CORE_V0.md)
+- [GRAPH_MODEL_ANNUAL_PACKAGE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/GRAPH_MODEL_ANNUAL_PACKAGE_CORE_V0.md)
 
 Decisao:
 
@@ -1341,7 +1341,7 @@ Artefatos:
 - [stgnn_tensor_sample_index_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/stgnn_tensor_sample_index_core_v0.csv)
 - [stgnn_tensor_feature_registry_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/stgnn_tensor_feature_registry_core_v0.csv)
 - [STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md)
-- [STGNN_TENSOR_PACKAGE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_TENSOR_PACKAGE_CORE_V0.md)
+- [STGNN_TENSOR_PACKAGE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/STGNN_TENSOR_PACKAGE_CORE_V0.md)
 
 Decisao:
 

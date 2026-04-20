@@ -96,7 +96,7 @@ Arquivos principais:
 - [graph_adjacency_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/graph_adjacency_core_v0.csv)
 - [mobility_adjacency_raw_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/mobility_adjacency_raw_core_v0.csv)
 - [mobility_adjacency_row_normalized_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/mobility_adjacency_row_normalized_core_v0.csv)
-- [GRAPH_CORE_V0_INSPECTION.md](/home/jpdark/Downloads/project_recomm/dataset/reports/GRAPH_CORE_V0_INSPECTION.md)
+- [GRAPH_CORE_V0_INSPECTION.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/GRAPH_CORE_V0_INSPECTION.md)
 - [MOBILITY_GRAPH_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/MOBILITY_GRAPH_CORE_V0.md)
 - [MOBILITY_SPATIAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/MOBILITY_SPATIAL_BASELINE_CORE_V0.md)
 
@@ -145,7 +145,7 @@ Arquivos principais:
 - [stgnn_tensor_package_side_target_core_v0.npz](/home/jpdark/Downloads/project_recomm/dataset/data/processed/stgnn_tensor_package_side_target_core_v0.npz)
 - [stgnn_tensor_sample_index_side_target_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/stgnn_tensor_sample_index_side_target_core_v0.csv)
 - [stgnn_tensor_feature_registry_side_target_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/stgnn_tensor_feature_registry_side_target_core_v0.csv)
-- [STGNN_TENSOR_PACKAGE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_TENSOR_PACKAGE_CORE_V0.md)
+- [STGNN_TENSOR_PACKAGE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/STGNN_TENSOR_PACKAGE_CORE_V0.md)
 - [STGNN_TENSOR_PACKAGE_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_TENSOR_PACKAGE_SIDE_TARGET_CORE_V0.md)
 - [STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md)
 
@@ -351,7 +351,7 @@ Para entender o projeto rapidamente, ler nesta ordem:
 6. [SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md)
 7. [SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md)
 8. [FUTURE_DATASET_CANDIDATES_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FUTURE_DATASET_CANDIDATES_V0.md)
-9. [EXTENDED_CORE_VERIFICATION_PLAN_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/EXTENDED_CORE_VERIFICATION_PLAN_V0.md)
+9. [EXTENDED_CORE_VERIFICATION_PLAN_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/EXTENDED_CORE_VERIFICATION_PLAN_V0.md)
 
 ## Proximo Passo
 
