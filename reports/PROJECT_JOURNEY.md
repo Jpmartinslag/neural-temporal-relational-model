@@ -2668,3 +2668,464 @@ Decisao:
   - `ridge_lag_only + nb_com`
 - Tratar os demais acrescimos como rejeitados nesta rodada.
 - O proximo retorno ao bloco espacial/grafo deve usar esses dois referenciais como ponto de comparacao, e nao reabrir agora a busca por complexidade temporal.
+
+### 2026-04-21 - Baselines espaciais lineares contra referencias temporais
+
+Motivacao:
+- Depois de congelar `ridge_lag_only + nb_com` como melhor baseline temporal curto, era necessario verificar se um uso linear e causal dos grafos geografico e de mobilidade agregava valor incremental.
+
+O que foi feito:
+- Criado `src/data/evaluate_spatial_vs_temporal_baselines_v0.py`.
+- Gerados:
+  - `reports/SPATIAL_VS_TEMPORAL_BASELINES_V0.md`
+  - `reports/spatial_vs_temporal_baselines_metrics_v0.json`
+- A matriz `adjacency_geo` foi explicitamente renormalizada por linha nesta etapa, porque a versao crua do tensor tinha somas de linha entre `1.0` e `9.0`.
+- Os blends causais foram avaliados a partir de tres bases:
+  - `persistence`
+  - `ridge_lag_only`
+  - `ridge_lag_nbcom`
+
+Resultado:
+- `ridge_lag_nbcom`: WMAPE medio `7.649%`
+- `geo_blend_from_ridge_lag_nbcom`: `7.649%`
+- `mobility_blend_from_ridge_lag_nbcom`: `7.649%`
+- `ridge_lag_only`: `7.664%`
+- `persistence`: `7.680%`
+- `geo_neighbor_average`: `103.358%`
+- `mobility_neighbor_average`: `301.255%`
+- Em todos os anos e para todas as bases, o `alpha` causal escolhido foi `1.0`.
+
+Leitura:
+- Apos corrigir a normalizacao geografica, os dois grafos passaram a ser comparaveis no mesmo regime.
+- O melhor blend causal com grafo colapsa exatamente para a baseline temporal de origem.
+- Logo, nem o grafo geografico nem o de mobilidade agregaram ganho incremental sobre `ridge_lag_nbcom`.
+- Os vizinhos medios puros permanecem muito piores que as referencias temporais.
+
+Decisao:
+- Fechar a etapa de baseline espacial linear com resultado negativo.
+- Rejeitar, nesta rodada, a afirmacao de que um uso linear simples do grafo melhora a previsao anual.
+- O proximo teste espacial util nao deve ser outro blend linear; deve verificar se as features derivadas do grafo ja presentes no tensor ajudam como covariaveis tabulares sobre `ridge_lag_nbcom`.
+
+### 2026-04-21 - Encerramento da linha espacial linear
+
+Motivacao:
+- Depois do blend linear, das covariaveis espaciais tabulares e da mistura geografica aprendida minima, ainda restava uma ultima verificacao defensavel: um gate estrutural por grau para reduzir o oversmoothing nos hubs.
+
+O que foi feito:
+- Criado `src/data/diagnose_geo_oversmoothing_v0.py`.
+- Criado `src/data/evaluate_gated_geo_linear_mixing_v0.py`.
+- Gerados:
+  - `reports/GEO_OVERSMOOTHING_DIAGNOSTIC_V0.md`
+  - `reports/geo_oversmoothing_diagnostic_v0.json`
+  - `reports/GATED_GEO_LINEAR_MIXING_V0.md`
+  - `reports/gated_geo_linear_mixing_metrics_v0.json`
+
+Resultado:
+- O diagnostico regional confirmou padrao heterogeneo:
+  - zonas grandes pioram quase sempre;
+  - zonas muito conectadas e grandes concentram a maior degradacao;
+  - algumas zonas pequenas ou perifericas ainda melhoram.
+- Mesmo assim, o ultimo teste linear com gate por grau falhou:
+  - `gated_geo_linear_mixing`: WMAPE medio `7.703%`
+  - delta vs `ridge_lag_nbcom`: `+0.054`
+  - anos piorados: `2022`, `2023`, `2024`
+
+Leitura:
+- O problema espacial linear nao era apenas um detalhe de blending.
+- O mecanismo dominante observado e compatível com oversmoothing em hubs e zonas grandes/conectadas.
+- A linha espacial linear fica esgotada de forma suficientemente defensavel.
+
+Decisao:
+- Encerrar a linha espacial linear.
+- Nao insistir em novos blends, gates ou agregacoes lineares do grafo.
+- Se a exploracao espacial continuar, ela deve subir apenas um degrau: um unico teste nao linear minimo, leve e explicitamente comparado contra `ridge_lag_nbcom`.
+
+### 2026-04-21 - Falha do espacial minimo e pivot para regime temporal nos hubs
+
+Motivacao:
+- Depois do encerramento da linha espacial linear, ainda faltava verificar duas hipoteses antes de abandonar de vez esse eixo:
+  - um teste nao linear geografico minimo;
+  - a possibilidade de que o verdadeiro problema estivesse nos grandes hubs, por mudanca de regime temporal, e nao no grafo.
+
+O que foi feito:
+- Criado `src/data/evaluate_minimal_nonlinear_geo_mixing_v0.py`.
+- Criados diagnosticos para os anos fracos da baseline temporal e para o comportamento dos hubs:
+  - `src/data/diagnose_ridge_nbcom_weak_years_v0.py`
+  - `src/data/evaluate_hub_shrinkage_baseline_v0.py`
+  - `src/data/diagnose_hub_regime_shift_v0.py`
+  - `src/data/evaluate_regime_hub_adjusted_baseline_v0.py`
+  - `src/data/diagnose_problematic_hubs_v0.py`
+  - `src/data/diagnose_hub_segments_v0.py`
+- Gerados os respectivos relatórios e JSONs em `reports/`.
+
+Resultado:
+- O nao linear minimo tambem falhou:
+  - `minimal_nonlinear_geo_mixing`: WMAPE medio `8.761%`
+  - delta vs `ridge_lag_nbcom`: `+1.112`
+- O erro de `ridge_lag_nbcom` em `2022–2023` vem sobretudo de sobrepredicao em hubs grandes:
+  - `Paris`, `Lyon`, `Marseille`, `Toulouse`, `Bordeaux`, `Nantes`, `Lille`, `Strasbourg`, etc.
+- O shrinkage simples em hubs ajuda muito `2023`, mas quebra `2024`:
+  - melhora `2023` para `7.240%`
+  - piora `2024` para `7.203%`
+- O diagnostico de regime mostrou anos opostos:
+  - `2023`: crescimento agregado vs lag negativo
+  - `2024`: crescimento agregado vs lag fortemente positivo
+- O ajuste causal simples de regime nao ativou e colapsou de volta para `ridge_lag_nbcom`.
+- O diagnostico de segmentos dos hubs mostrou o padrao mais forte:
+  - hubs `declining` sao o grupo mais problematico;
+  - eles concentram o maior erro e sao sistematicamente sobrepreditos.
+
+Leitura:
+- O eixo espacial pode ser considerado encerrado nesta rodada:
+  - linear falhou;
+  - linear com gate falhou;
+  - nao linear minimo falhou.
+- O bloqueio atual nao e o grafo.
+- O bloqueio atual e de regime temporal em hubs grandes, especialmente nos hubs em desaceleracao.
+- Um teste diagnostico de teto, nao causal, mostrou que contrair apenas hubs em desaceleracao derruba muito `2022–2023` sem tocar `2024`; isso confirma que a segmentacao e a direcao correta, mas ainda nao constitui baseline valida porque usa informacao do proprio ano-alvo.
+
+Decisao:
+- Congelar `ridge_lag_nbcom` como melhor baseline curta valida.
+- Encerrar o eixo espacial por enquanto.
+- Tratar a contração seletiva de hubs em desaceleracao como prova diagnostica de que a proxima etapa deve ser uma baseline temporal segmentada e causal, e nao um modelo de grafo.
+
+### 2026-04-21 - Teste causal de baseline segmentada para hubs
+
+Motivacao:
+- Depois da prova diagnostica de teto, faltava testar a versao causal mais simples dessa intuicao:
+  - identificar hubs com momentum recente fraco antes do ano-alvo;
+  - aplicar shrinkage apenas nesse subconjunto.
+
+O que foi feito:
+- Criado `src/data/evaluate_causal_segmented_hub_baseline_v0.py`.
+- Gerados:
+  - `reports/CAUSAL_SEGMENTED_HUB_BASELINE_V0.md`
+  - `reports/causal_segmented_hub_baseline_metrics_v0.json`
+
+Resultado:
+- A regra causal escolhida pelo historico anterior nao melhorou `2022–2023`.
+- Ela so ativou de fato um shrinkage forte em `2024`, justamente quando isso nao deveria acontecer.
+- Resultado final:
+  - `causal_segmented_hub_baseline`: WMAPE medio `8.250%`
+  - delta vs `ridge_lag_nbcom`: `+0.600`
+  - ano piorado: `2024`
+
+Leitura:
+- A segmentacao diagnostica tinha sinal real, mas a proxy causal simples de momentum recente nao foi suficiente para prever corretamente quando aplicar a correcao.
+- Ou seja, o problema de regime nos hubs existe, mas ainda nao foi capturado por uma regra causal leve e robusta.
+
+Decisao:
+- Manter `ridge_lag_nbcom` como melhor baseline curta valida.
+- Nao promover esta baseline segmentada causal.
+- O proximo passo deve sair da familia de correcoes manuais e passar para um diagnostico mais estrutural:
+  - ou buscar novas covariaveis exogenas para explicar regime dos hubs;
+  - ou encerrar a baseline curta aqui e usar `ridge_lag_nbcom` como referencia oficial para a fase seguinte do projeto.
+
+### 2026-04-21 - Ultima verificacao de covariaveis exogenas do painel
+
+Motivacao:
+- Antes de encerrar de vez a fase de baseline curta, faltava uma ultima checagem pragmatica:
+  - verificar se o painel bruto ainda continha alguma covariavel exogena leve capaz de ajudar onde `ridge_lag_nbcom` falha.
+
+O que foi feito:
+- Criado `src/data/diagnose_panel_exogenous_candidates_v0.py` para varrer cobertura e correlacao causal simples das variaveis do painel.
+- Criado `src/data/evaluate_panel_exogenous_feature_addition_v0.py`.
+- Testados, como lags causais sobre `ridge_lag_nbcom`, apenas os candidatos com alguma chance de sinal menos redundante:
+  - `bpe_evolution_commune_type_presence_total_lag_1`
+  - `filosofi_s_dir_tax_di_weighted_proxy_lag_1`
+  - `jobs_lt_per_1000_pop_lag_1`
+
+Resultado:
+- Nenhum candidato bateu `ridge_lag_nbcom`.
+- Resultados:
+  - `+ bpe_evolution_commune_type_presence_total_lag_1`: WMAPE medio `7.988%`
+  - `+ filosofi_s_dir_tax_di_weighted_proxy_lag_1`: `7.876%`
+  - `+ jobs_lt_per_1000_pop_lag_1`: `7.719%`
+- Todos pioraram pelo menos um ano; nenhum passou o criterio estrito.
+
+Leitura:
+- As covariaveis exogenas leves hoje acessiveis no painel nao resolvem o problema de regime dos hubs.
+- Isso reforca que o melhor baseline curto valido continua sendo `ridge_lag_nbcom`.
+- Tambem indica que, se houver proxima melhora relevante, ela provavelmente dependera de:
+  - nova fonte exogena ainda nao integrada;
+  - ou de mudar de fase do projeto em vez de insistir em mais ajustes locais.
+
+Decisao:
+- Encerrar a fase de exploracao de baseline curta nesta rodada.
+- Fixar `ridge_lag_nbcom` como referencia oficial para a proxima etapa.
+
+### 2026-04-21 - Reabertura focal via source externe REI/CFE
+
+Motivacao:
+- Apesar do encerramento provisoire da baseline curta, as novas fontes externas ainda precisavam de uma ultima verificacao concreta.
+- O inventario mostrou duas familias plausiveis:
+  - energia SDES;
+  - REI/CFE.
+
+O que foi feito:
+- Criado `src/data/evaluate_external_source_feature_addition_v0.py`.
+- Gerados:
+  - `reports/EXTERNAL_SOURCE_FEATURE_ADDITION_V0.md`
+  - `reports/external_source_feature_addition_metrics_v0.json`
+- Testados dois candidatos leves, causais, com cobertura completa nas 280 zonas:
+  - `energy_electricity_pdl_nonres_lag_1`
+  - `rei_cfe_microentrepreneurs_created_n_1_lag_1`
+- Em seguida, foi feita uma checagem comparativa curta entre:
+  - `rei_cfe_microentrepreneurs_lag_1`
+  - `rei_cfe_microentrepreneurs_created_n_1_lag_1`
+
+Resultado:
+- Energia falhou:
+  - `energy_electricity_pdl_nonres_lag_1`: WMAPE medio `8.163%`
+  - piorou `2021` e `2024`
+- O estoque total de microentrepreneurs tambem falhou:
+  - `rei_cfe_microentrepreneurs_lag_1`: WMAPE medio `8.139%`
+  - piorou `2022` e `2023`
+- O fluxo de criacao de microentrepreneurs do ano anterior foi o primeiro novo signal exogene realmente competitivo:
+  - `rei_cfe_microentrepreneurs_created_n_1_lag_1`: WMAPE medio `6.699%`
+  - melhora forte em `2023` (`10.231% -> 6.580%`)
+  - melhora em `2024` (`4.088% -> 3.937%`)
+  - `2021` fica identico na pratica porque o lag e nul partout
+  - `2022` fica identico a precisao numerica
+
+Leitura:
+- A auditoria sobre energia estava conceitualmente util, mas o teste empirico local a contradisse: energia nao e o melhor proximo candidato.
+- A auditoria sobre REI estava na direcao correta, mas o sinal relevante nao e o estoque total de microentrepreneurs; e o fluxo `created_n_1`.
+- Isso reabre a baseline curta de forma focal e justificada: existe pelo menos uma nova fonte externa exogena com ganho potencial real sobre `ridge_lag_nbcom`.
+
+Decisao:
+- Reabrir a baseline curta apenas para a linha REI/CFE.
+- Tratar `rei_cfe_microentrepreneurs_created_n_1_lag_1` como candidato prioritario formal da proxima rodada.
+- Manter energia fora da fila imediata.
+
+### 2026-04-21 - Consolidation des familles de donnees
+
+Motivacao:
+- Depois dos testes sur energie, RP employment e REI, era necessario consolidar o inventario em uma leitura operacional:
+  - qual familia ainda merece teste imediato;
+  - qual familia fica apenas documentada para uso futuro.
+
+O que foi feito:
+- Criado `src/data/build_source_inventory_extended_v0.py`.
+- Criado `reports/DATASET_CANDIDATE_MATRIX_V0.md`.
+- Rodado um test court adicional dentro de `REI/CFE` para distinguir:
+  - estoque total de microentrepreneurs;
+  - fluxo `microentrepreneurs_created_n_1`.
+
+Resultado:
+- `REI/CFE` tornou-se a familia lider.
+- Distincao importante:
+  - `rei_cfe_microentrepreneurs_lag_1` falhou (`8.139%`)
+  - `rei_cfe_microentrepreneurs_created_n_1_lag_1` foi o melhor novo signal (`6.699%`)
+- `RP employment` nao entrou:
+  - `unemployment_rate_est_lag_1` falhou (`7.687%`)
+- Energia continua fora da frente imediata.
+
+Leitura:
+- Ja nao estamos no escuro sobre as fontes novas.
+- O repositorio passa a ter uma hierarquia clara:
+  - prioridade 1: `REI/CFE created_n_1`
+  - depois, apenas como opcoes secundarias ou futuras: `BPE`, `FILOSOFI`
+  - `RP employment`, energia, espacial e proxies de taille ficam atras ou fechados nesta rodada.
+
+Decisao:
+- Considerar `rei_cfe_microentrepreneurs_created_n_1_lag_1` o melhor candidato atual entre as fontes novas.
+- Manter a matriz de candidatos como referencia para futuras etapas, mesmo quando um dataset nao tenha ganho imediato na baseline curta.
+
+### 2026-04-21 - Validation finale du candidat REI/CFE
+
+Motivacao:
+- Depois de identificar `rei_cfe_microentrepreneurs_created_n_1_lag_1` como melhor signal novo, faltava verificar se ele realmente podia ser promovido de "candidato promissor" para "novo candidato baseline" com criterio estrito e tolerancia numerica.
+
+O que foi feito:
+- Criado `src/data/validate_rei_created_candidate_v0.py`.
+- Gerados:
+  - `reports/REI_CREATED_CANDIDATE_VALIDATION_V0.md`
+  - `reports/rei_created_candidate_validation_v0.json`
+
+Resultado:
+- `rei_cfe_microentrepreneurs_created_n_1_lag_1` passa a validacao com tolerancia numerica:
+  - baseline `ridge_lag_nbcom`: `7.649%`
+  - candidato REI: `6.699%`
+- Comparacao por ano:
+  - `2021`: igual na pratica
+  - `2022`: igual na pratica
+  - `2023`: melhora forte (`10.231% -> 6.580%`)
+  - `2024`: melhora (`4.088% -> 3.937%`)
+- Nenhum ano piora acima da tolerancia definida.
+- O ganho concentra-se especialmente nos hubs:
+  - hubs 2023: `9.074% -> 5.391%`
+  - hubs 2024: `4.074% -> 3.838%`
+- Principais melhoras em 2023: `Paris`, `Lyon`, `Toulouse`, `Bordeaux`, `Lille`, `Nantes`, `Rennes`, `Montpellier`, etc.
+
+Leitura:
+- O problema dos anos fracos estava de facto ligado ao regime recente de criacao empresarial nos hubs.
+- O signal REI/CFE de flux de microentrepreneurs criados no ano anterior capta esse regime melhor do que:
+  - o grafo;
+  - energia;
+  - RP employment;
+  - BPE/FILOSOFI leves;
+  - correcoes manuais de shrinkage.
+
+Decisao:
+- Promover `side_creations_lag_1 + nb_com + rei_cfe_microentrepreneurs_created_n_1_lag_1` como novo candidato principal de baseline curta.
+- Tratar este signal como o melhor uso atual das fontes novas.
+
+### 2026-04-21 - REI simple reste devant les variantes structurelles legeres
+
+Motivacao:
+- Depois da promocao do signal REI/CFE, ainda faltava verificar se pequenas variantes estruturais poderiam melhorar a baseline sem abrir uma nova fase pesada.
+
+O que foi feito:
+- Rodado `src/data/evaluate_rei_hub_interaction_baseline_v0.py`.
+- Gerados:
+  - `reports/REI_HUB_INTERACTION_BASELINE_V0.md`
+  - `reports/rei_hub_interaction_baseline_metrics_v0.json`
+  - `data/processed/rei_hub_interaction_baseline_predictions_v0.csv`
+- Tambem foi rechecado o historico local em `reports/local_candidate_feature_metrics_v0.json` para ver se variantes `log1p` do bloco REI tinham mostrado vantagem anterior.
+
+Resultado:
+- A interacao leve `hub_flag + rei_x_hub` falhou contra a baseline REI:
+  - baseline REI: `6.699%`
+  - REI + interacao hub: `6.830%`
+- Melhorou `2021` e `2024`, mas piorou `2022` e `2023`.
+- As variantes `log1p` do bloco REI, ja presentes na triagem local antiga, tambem apareciam piores do que o uso bruto do signal REI.
+
+Leitura:
+- O ganho principal esta no proprio flux `rei_cfe_microentrepreneurs_created_n_1_lag_1`.
+- Variantes leves por interacao de hub ou compressao `log1p` nao mostraram ganho adicional robusto.
+- Isto reforca que, nesta etapa, o candidato mais forte continua a ser a baseline REI simples, sem ornamentacao estrutural extra.
+
+Decisao:
+- Manter `side_creations_lag_1 + nb_com + rei_cfe_microentrepreneurs_created_n_1_lag_1` como melhor baseline curta operacional.
+- Nao abrir novas variantes leves do mesmo bloco REI sem uma nova hipotese causal forte.
+
+### 2026-04-21 - Modeles tabulaires flexibles simples ne battent pas la baseline REI
+
+Motivacao:
+- Depois de validar a baseline REI simples, ainda faltava verificar se um modelo tabular mais flexivel, mas leve, conseguiria extrair ganho adicional sem passar para uma fase pesada.
+
+O que foi feito:
+- Ja havia sido testado `MLP` leve com o mesmo bloco de features REI.
+- Agora foi criado e rodado `src/data/evaluate_hgb_with_rei_v0.py`.
+- Gerados:
+  - `reports/HGB_WITH_REI_V0.md`
+  - `reports/hgb_with_rei_metrics_v0.json`
+  - `data/processed/hgb_with_rei_predictions_v0.csv`
+
+Resultado:
+- `MLP` leve falhou de forma extrema.
+- `HistGradientBoostingRegressor` leve tambem falhou de forma extrema:
+  - baseline REI: `6.699%`
+  - HGB com as mesmas features: `32.038%` de media
+- Piorou todos os anos (`2021` a `2024`).
+
+Leitura:
+- A baseline REI nao esta apenas "ganhando por simplicidade"; ela segue forte contra modelos tabulares mais flexiveis leves.
+- Aumentar apenas a flexibilidade do estimador, mantendo o mesmo bloco de informacao tabular curta, nao esta resolvendo o problema.
+- Isto reforca que o proximo salto, se houver, precisa ser uma hipotese estrutural realmente diferente, e nao apenas "mais nao-linearidade tabular".
+
+Decisao:
+- Considerar esgotada a frente de modelos tabulares leves sobre o mesmo bloco REI.
+- Se a proxima fase continuar, ela deve entrar como experimento estrutural real e nao como mais uma variacao leve de baseline.
+
+### 2026-04-21 - Premier candidat structurel lourd prepare pour machine externe
+
+Motivacao:
+- Depois do fracasso de `MLP` e `HistGradientBoosting`, a proxima tentativa so faria sentido se mudasse a estrutura do modelo de verdade.
+
+O que foi feito:
+- Verificado o ambiente local: `torch` nao esta instalado.
+- Preparado, sem executar localmente, o script:
+  - `src/data/train_minimal_gcn_with_rei_v0.py`
+- O script foi deixado com:
+  - features da baseline REI
+  - grafo geografico do tensor
+  - validacao causal por ano
+  - comparacao direta contra `rei_created_baseline`
+- A sintaxe foi validada com `py_compile`.
+
+Leitura:
+- O experimento estrutural pesado seguinte ja esta definido.
+- A execucao fica para a maquina externa com `PyTorch`.
+
+Decisao:
+- O proximo teste pesado priorizado passa a ser o `minimal_gcn_with_rei_geo`.
+
+### 2026-04-21 - Deux essais GCN geographiques ne justifient pas le graphe contre la baseline REI
+
+Motivacao:
+- Depois de esgotar as variacoes leves, faltava verificar se um salto estrutural com grafo geografico realmente conseguia bater a baseline REI.
+
+O que foi feito:
+- Executado em maquina externa com `PyTorch`:
+  - `src/data/train_minimal_gcn_with_rei_v0.py`
+  - `src/data/train_residual_gcn_with_rei_v0.py`
+- Gerados:
+  - `reports/MINIMAL_GCN_WITH_REI_V0.md`
+  - `reports/minimal_gcn_with_rei_metrics_v0.json`
+  - `data/processed/minimal_gcn_with_rei_predictions_v0.csv`
+  - `reports/RESIDUAL_GCN_WITH_REI_V0.md`
+  - `reports/residual_gcn_with_rei_metrics_v0.json`
+  - `data/processed/residual_gcn_with_rei_predictions_v0.csv`
+
+Resultado:
+- `minimal_gcn_with_rei_geo` falhou de forma estrutural:
+  - `mean_wmape = 76.161%`
+  - colapso de escala, com forte subpredicao dos hubs
+- `residual_gcn_with_rei_geo` corrigiu o bug de `NaN`, mas tambem falhou:
+  - melhora apenas `2023`
+  - piora `2021`, `2022` e `2024`
+  - `mean_delta vs rei_created_baseline = +8.350`
+
+Leitura:
+- O primeiro GCN minimo nao era interpretavel como evidencia contra grafos em geral, porque sofria de oversmoothing severo e perda de escala.
+- A versao residual era o teste correto seguinte: baseline REI carrega a escala, GCN aprende apenas a correcao.
+- Mesmo assim, o grafo geografico nao mostrou ganho estavel contra a baseline REI.
+- O problema dominante passa a ser instabilidade interanual da correcao grafica, nao falta de uma variante simples.
+
+Decisao:
+- Encerrar, por agora, a linha de modelos geograficos simples contra a baseline REI.
+- Nao reabrir grafo com novas variantes pequenas sem uma hipotese estrutural mais forte do que as ja testadas.
+
+### 2026-04-21 - Baseline REI transformee en artefact operationnel final
+
+Motivacao:
+- Depois de fechar a comparacao metodologica, faltava deixar a melhor baseline curta pronta para uso operacional e para comparacoes futuras sem retrabalho.
+
+O que foi feito:
+- Criado e executado `src/data/fit_final_rei_created_baseline_v0.py`.
+- Criado `src/data/predict_with_final_rei_created_baseline_v0.py`.
+- Gerados:
+  - `data/processed/final_rei_created_baseline_artifact_v0.json`
+  - `data/processed/final_rei_created_baseline_fitted_values_v0.csv`
+  - `reports/FINAL_REI_CREATED_BASELINE_V0.md`
+
+Resultado:
+- A baseline final foi ajustada em todos os anos observados disponiveis (`2018` a `2024`).
+- Artefacto exportado com:
+  - features oficiais
+  - medias e desvios de normalizacao
+  - coeficientes
+  - intercepto
+  - `alpha` escolhido
+- Um preditor simples passou a existir para aplicar o artefacto em qualquer CSV compativel.
+
+Decisao:
+- Considerar a baseline REI nao apenas como referencia experimental, mas como baseline operacional final da fase atual.
+
+### 2026-04-21 - Fermeture explicite de la phase
+
+Motivacao:
+- Com a baseline REI operacional pronta e a linha de grafo fechada, faltava marcar explicitamente o fim da fase para evitar reabertura difusa do mesmo ciclo.
+
+O que foi feito:
+- Criado `reports/PHASE_CLOSURE_FINAL_V0.md`.
+
+Decisao:
+- Encerrar formalmente a fase de:
+  - busca de baseline curta
+  - triagem de fontes exogenas leves
+  - variantes leves tabulares
+  - primeiras tentativas de grafo contra a baseline REI
+- Tratar novas correlacoes e novas familias como tema de fase futura, nao extensao informal desta.

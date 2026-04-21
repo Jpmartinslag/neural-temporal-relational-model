@@ -1,0 +1,55 @@
+{
+  "official_next_phase_baseline": "rei_created_baseline",
+  "references": {
+    "persistence": {
+      "model": "persistence",
+      "mean_wmape": 7.680334317157283,
+      "max_wmape": 14.316937027125192,
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024
+      ]
+    },
+    "ridge_lag_only": {
+      "model": "ridge_lag_only",
+      "mean_wmape": 7.664114078669242,
+      "max_wmape": 10.237013148970945,
+      "years": [
+        2021,
+        2022,
+        2023,
+        2024
+      ]
+    },
+    "ridge_lag_nbcom": {
+      "mean_wmape": 7.649301375083828,
+      "max_wmape": 10.231233066836614,
+      "per_year_wmape": {
+        "2021": 6.473127372758018,
+        "2022": 9.804837270723612,
+        "2023": 10.231233066836614,
+        "2024": 4.088007790017064
+      }
+    },
+    "rei_created_baseline": {
+      "mean_wmape": 6.698823444184458,
+      "max_wmape": 9.804837270724866,
+      "per_year_wmape": {
+        "2021": 6.473127372757115,
+        "2022": 9.804837270724866,
+        "2023": 6.580320712043326,
+        "2024": 3.937008421212529
+      }
+    }
+  },
+  "prediction_artifact": "data/processed/rei_created_baseline_predictions_v0.csv",
+  "prediction_rows": 1120,
+  "target_years": [
+    2021,
+    2022,
+    2023,
+    2024
+  ]
+}

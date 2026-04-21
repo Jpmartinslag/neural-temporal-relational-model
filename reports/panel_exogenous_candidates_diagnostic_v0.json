@@ -1,0 +1,118 @@
+{
+  "source_panel": "data/processed/panel_zones_core_v0.csv",
+  "candidate_count": 14,
+  "top_candidates_by_abs_corr": [
+    {
+      "feature": "jobs_lt_total",
+      "usable_rows": 280,
+      "coverage_share": 0.16666666666666666,
+      "lag1_to_next_target_corr": 0.9934766743036588,
+      "lag1_mean": 94987.73586184644,
+      "lag1_std": 251962.91458489606
+    },
+    {
+      "feature": "active_lr_total",
+      "usable_rows": 280,
+      "coverage_share": 0.16666666666666666,
+      "lag1_to_next_target_corr": 0.9857626824773962,
+      "lag1_mean": 107701.19445668928,
+      "lag1_std": 228095.16605145036
+    },
+    {
+      "feature": "employed_lr_total",
+      "usable_rows": 280,
+      "coverage_share": 0.16666666666666666,
+      "lag1_to_next_target_corr": 0.9853648402328978,
+      "lag1_mean": 95090.60699379643,
+      "lag1_std": 201354.32090073833
+    },
+    {
+      "feature": "unemployed_lr_total",
+      "usable_rows": 280,
+      "coverage_share": 0.16666666666666666,
+      "lag1_to_next_target_corr": 0.9831215771772938,
+      "lag1_mean": 12610.587462932142,
+      "lag1_std": 26894.165600909862
+    },
+    {
+      "feature": "population_total",
+      "usable_rows": 280,
+      "coverage_share": 0.16666666666666666,
+      "lag1_to_next_target_corr": 0.9810501928646406,
+      "lag1_mean": 232425.09285714285,
+      "lag1_std": 448296.9889339527
+    },
+    {
+      "feature": "bpe_facilities_total",
+      "usable_rows": 280,
+      "coverage_share": 0.16666666666666666,
+      "lag1_to_next_target_corr": 0.9243379534731961,
+      "lag1_mean": 7622.689285714286,
+      "lag1_std": 10828.655608082501
+    },
+    {
+      "feature": "bpe_evolution_commune_type_presence_total",
+      "usable_rows": 280,
+      "coverage_share": 0.16666666666666666,
+      "lag1_to_next_target_corr": 0.6923831535098687,
+      "lag1_mean": 2113.707142857143,
+      "lag1_std": 1403.2785488502504
+    },
+    {
+      "feature": "filosofi_s_dir_tax_di_weighted_proxy",
+      "usable_rows": 560,
+      "coverage_share": 0.3333333333333333,
+      "lag1_to_next_target_corr": -0.43272881063643925,
+      "lag1_mean": -14.527207364285713,
+      "lag1_std": 1.8668849614753114
+    },
+    {
+      "feature": "jobs_lt_per_1000_pop",
+      "usable_rows": 280,
+      "coverage_share": 0.16666666666666666,
+      "lag1_to_next_target_corr": 0.3371124108881243,
+      "lag1_mean": 371.5742066142857,
+      "lag1_std": 52.3179528714015
+    },
+    {
+      "feature": "side_stocks_et_per_1000_pop",
+      "usable_rows": 280,
+      "coverage_share": 0.16666666666666666,
+      "lag1_to_next_target_corr": 0.2084590346446314,
+      "lag1_mean": 79.90041848571428,
+      "lag1_std": 24.407043095174593
+    },
+    {
+      "feature": "filosofi_s_hh_tax_weighted_proxy",
+      "usable_rows": 560,
+      "coverage_share": 0.3333333333333333,
+      "lag1_to_next_target_corr": 0.20366027602178205,
+      "lag1_mean": 56.7833048125,
+      "lag1_std": 10.89099372527196
+    },
+    {
+      "feature": "bpe_facilities_per_1000_pop",
+      "usable_rows": 280,
+      "coverage_share": 0.16666666666666666,
+      "lag1_to_next_target_corr": -0.14184361314017524,
+      "lag1_mean": 36.178495628571426,
+      "lag1_std": 8.393522036688356
+    },
+    {
+      "feature": "unemployment_rate_est",
+      "usable_rows": 280,
+      "coverage_share": 0.16666666666666666,
+      "lag1_to_next_target_corr": 0.0318467599546447,
+      "lag1_mean": 0.11501315357142856,
+      "lag1_std": 0.024340505665042936
+    },
+    {
+      "feature": "observed_feature_count",
+      "usable_rows": 840,
+      "coverage_share": 0.5,
+      "lag1_to_next_target_corr": -0.0010760151318334802,
+      "lag1_mean": 9.0,
+      "lag1_std": 4.96655480858378
+    }
+  ]
+}

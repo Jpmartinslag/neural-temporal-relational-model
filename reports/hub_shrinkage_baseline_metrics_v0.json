@@ -1,0 +1,137 @@
+{
+  "tensor_path": "data/processed/stgnn_tensor_package_extended_forecast_core_v1.npz",
+  "hub_quantile": 0.67,
+  "gamma_grid": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "gamma_trace": [
+    {
+      "target_year": 2021,
+      "selected_gamma": 1.0,
+      "reason": "default_no_prior_years"
+    },
+    {
+      "target_year": 2022,
+      "selected_gamma": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021
+      ],
+      "prior_mean_wmape": 6.473127372758018
+    },
+    {
+      "target_year": 2023,
+      "selected_gamma": 0.5,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022
+      ],
+      "prior_mean_wmape": 7.760924231415112
+    },
+    {
+      "target_year": 2024,
+      "selected_gamma": 0.25,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "prior_mean_wmape": 7.4443406317617615
+    }
+  ],
+  "rows": [
+    {
+      "target_year": 2021,
+      "model": "ridge_lag_nbcom",
+      "wmape": 6.473127372758018
+    },
+    {
+      "target_year": 2022,
+      "model": "ridge_lag_nbcom",
+      "wmape": 9.804837270723612
+    },
+    {
+      "target_year": 2023,
+      "model": "ridge_lag_nbcom",
+      "wmape": 10.231233066836614
+    },
+    {
+      "target_year": 2024,
+      "model": "ridge_lag_nbcom",
+      "wmape": 4.088007790017064
+    },
+    {
+      "target_year": 2021,
+      "model": "hub_shrinkage_baseline",
+      "wmape": 6.473127372758018,
+      "selected_gamma": 1.0,
+      "hub_threshold": 1917.9899999999998,
+      "hub_share": 0.3535714285714286
+    },
+    {
+      "target_year": 2022,
+      "model": "hub_shrinkage_baseline",
+      "wmape": 9.804837270723612,
+      "selected_gamma": 1.0,
+      "hub_threshold": 2079.46,
+      "hub_share": 0.4107142857142857
+    },
+    {
+      "target_year": 2023,
+      "model": "hub_shrinkage_baseline",
+      "wmape": 7.23975294879875,
+      "selected_gamma": 0.5,
+      "hub_threshold": 2187.33,
+      "hub_share": 0.39285714285714285
+    },
+    {
+      "target_year": 2024,
+      "model": "hub_shrinkage_baseline",
+      "wmape": 7.203377432667262,
+      "selected_gamma": 0.25,
+      "hub_threshold": 2243.86,
+      "hub_share": 0.375
+    }
+  ],
+  "summary": {
+    "hub_shrinkage_baseline": {
+      "mean_wmape": 7.680273756236911,
+      "max_wmape": 9.804837270723612,
+      "per_year_wmape": {
+        "2021": 6.473127372758018,
+        "2022": 9.804837270723612,
+        "2023": 7.23975294879875,
+        "2024": 7.203377432667262
+      }
+    },
+    "ridge_lag_nbcom": {
+      "mean_wmape": 7.649301375083828,
+      "max_wmape": 10.231233066836614,
+      "per_year_wmape": {
+        "2021": 6.473127372758018,
+        "2022": 9.804837270723612,
+        "2023": 10.231233066836614,
+        "2024": 4.088007790017064
+      }
+    }
+  },
+  "comparison_vs_ridge_lag_nbcom": {
+    "mean_delta": 0.03097238115308265,
+    "per_year_delta": {
+      "2021": 0.0,
+      "2022": 0.0,
+      "2023": -2.991480118037864,
+      "2024": 3.1153696426501973
+    },
+    "worsened_years": [
+      2024
+    ],
+    "strictly_better": false
+  }
+}

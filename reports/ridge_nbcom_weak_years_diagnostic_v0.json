@@ -1,0 +1,585 @@
+{
+  "source_tensor": "data/processed/stgnn_tensor_package_extended_forecast_core_v1.npz",
+  "target_years": [
+    2022,
+    2023
+  ],
+  "overall_by_year": [
+    {
+      "target_year": 2022,
+      "zones": 280,
+      "mean_abs_error": 391.9021470929001,
+      "median_abs_error": 230.8029874574404,
+      "mean_target": 3997.0285714285715,
+      "mean_prediction": 4385.946930327697,
+      "mean_growth_vs_lag": 0.022729822624860358,
+      "mean_nb_com": 122.80714285714286
+    },
+    {
+      "target_year": 2023,
+      "zones": 280,
+      "mean_abs_error": 403.3689214683003,
+      "median_abs_error": 219.6311252857156,
+      "mean_target": 3942.525,
+      "mean_prediction": 4345.566691473113,
+      "mean_growth_vs_lag": -0.0111484631915217,
+      "mean_nb_com": 122.80714285714286
+    }
+  ],
+  "by_year_and_target_band": [
+    {
+      "target_year": 2022,
+      "target_band": "large",
+      "zones": 94,
+      "mean_abs_error": 776.213891341407,
+      "median_abs_error": 477.1674118463434,
+      "mean_target": 9308.234042553191,
+      "mean_prediction": 10084.447933894598,
+      "mean_growth_vs_lag": 0.004392758454554312,
+      "mean_nb_com": 147.0531914893617
+    },
+    {
+      "target_year": 2022,
+      "target_band": "medium",
+      "zones": 93,
+      "mean_abs_error": 229.01963337122424,
+      "median_abs_error": 227.7247362076755,
+      "mean_target": 1779.989247311828,
+      "mean_prediction": 2000.3820326725777,
+      "mean_growth_vs_lag": 0.03243104810562053,
+      "mean_nb_com": 130.80645161290323
+    },
+    {
+      "target_year": 2022,
+      "target_band": "small",
+      "zones": 93,
+      "mean_abs_error": 166.3405322193109,
+      "median_abs_error": 175.25193037647114,
+      "mean_target": 845.752688172043,
+      "mean_prediction": 1011.7366200764875,
+      "mean_growth_vs_lag": 0.03156283404742028,
+      "mean_nb_com": 90.3010752688172
+    },
+    {
+      "target_year": 2023,
+      "target_band": "large",
+      "zones": 94,
+      "mean_abs_error": 820.0531579613278,
+      "median_abs_error": 469.9108489757573,
+      "mean_target": 9176.297872340425,
+      "mean_prediction": 9995.376302656516,
+      "mean_growth_vs_lag": -0.018012995946758887,
+      "mean_nb_com": 148.11702127659575
+    },
+    {
+      "target_year": 2023,
+      "target_band": "medium",
+      "zones": 93,
+      "mean_abs_error": 230.9777223277029,
+      "median_abs_error": 219.0211119941764,
+      "mean_target": 1752.3870967741937,
+      "mean_prediction": 1983.3648191018963,
+      "mean_growth_vs_lag": -0.011018892960165007,
+      "mean_nb_com": 127.18279569892474
+    },
+    {
+      "target_year": 2023,
+      "target_band": "small",
+      "zones": 93,
+      "mean_abs_error": 154.59540845465506,
+      "median_abs_error": 141.71712022709426,
+      "mean_target": 842.6129032258065,
+      "mean_prediction": 997.2083116804615,
+      "mean_growth_vs_lag": -0.00433968848747737,
+      "mean_nb_com": 92.84946236559139
+    }
+  ],
+  "by_year_and_region": [
+    {
+      "target_year": 2022,
+      "reg": 11,
+      "zones": 15,
+      "mean_abs_error": 1106.0688877225955,
+      "median_abs_error": 564.185229346178,
+      "mean_target": 20459.933333333334,
+      "mean_prediction": 21566.00222105593,
+      "mean_growth_vs_lag": 0.013553606352908476,
+      "mean_nb_com": 84.4
+    },
+    {
+      "target_year": 2022,
+      "reg": 24,
+      "zones": 18,
+      "mean_abs_error": 243.95165538537665,
+      "median_abs_error": 173.70858133285833,
+      "mean_target": 1900.1666666666667,
+      "mean_prediction": 2144.1183220520434,
+      "mean_growth_vs_lag": 0.031328105606588344,
+      "mean_nb_com": 107.11111111111111
+    },
+    {
+      "target_year": 2022,
+      "reg": 27,
+      "zones": 18,
+      "mean_abs_error": 310.8511132573815,
+      "median_abs_error": 270.97579554571405,
+      "mean_target": 1699.111111111111,
+      "mean_prediction": 2009.9622243684926,
+      "mean_growth_vs_lag": -0.00023063677741071384,
+      "mean_nb_com": 184.77777777777777
+    },
+    {
+      "target_year": 2022,
+      "reg": 28,
+      "zones": 21,
+      "mean_abs_error": 300.0066334273969,
+      "median_abs_error": 193.94164607308858,
+      "mean_target": 1910.6190476190477,
+      "mean_prediction": 2209.0464510806078,
+      "mean_growth_vs_lag": 0.007156820307104608,
+      "mean_nb_com": 124.0952380952381
+    },
+    {
+      "target_year": 2022,
+      "reg": 32,
+      "zones": 23,
+      "mean_abs_error": 437.6955560740589,
+      "median_abs_error": 329.57801822597776,
+      "mean_target": 3123.695652173913,
+      "mean_prediction": 3561.391208247972,
+      "mean_growth_vs_lag": -0.008294413440197199,
+      "mean_nb_com": 163.8695652173913
+    },
+    {
+      "target_year": 2022,
+      "reg": 44,
+      "zones": 27,
+      "mean_abs_error": 387.0666010523989,
+      "median_abs_error": 262.1465525252909,
+      "mean_target": 2593.925925925926,
+      "mean_prediction": 2955.714214856641,
+      "mean_growth_vs_lag": 0.02724281757303876,
+      "mean_nb_com": 189.44444444444446
+    },
+    {
+      "target_year": 2022,
+      "reg": 52,
+      "zones": 22,
+      "mean_abs_error": 286.9576050765056,
+      "median_abs_error": 177.22532379598908,
+      "mean_target": 2404.5,
+      "mean_prediction": 2686.0129488179305,
+      "mean_growth_vs_lag": 0.033522229743644265,
+      "mean_nb_com": 60.59090909090909
+    },
+    {
+      "target_year": 2022,
+      "reg": 53,
+      "zones": 20,
+      "mean_abs_error": 215.53799897005675,
+      "median_abs_error": 178.5399488730011,
+      "mean_target": 2185.8,
+      "mean_prediction": 2401.3379989700566,
+      "mean_growth_vs_lag": 0.04450242827923474,
+      "mean_nb_com": 60.45
+    },
+    {
+      "target_year": 2022,
+      "reg": 75,
+      "zones": 32,
+      "mean_abs_error": 362.81278391174186,
+      "median_abs_error": 245.281357029216,
+      "mean_target": 3113.09375,
+      "mean_prediction": 3475.906533911742,
+      "mean_growth_vs_lag": 0.024232320538273157,
+      "mean_nb_com": 131.3125
+    },
+    {
+      "target_year": 2022,
+      "reg": 76,
+      "zones": 25,
+      "mean_abs_error": 519.8264998823269,
+      "median_abs_error": 285.08912979963907,
+      "mean_target": 4208.48,
+      "mean_prediction": 4728.306499882327,
+      "mean_growth_vs_lag": 0.016689783030986012,
+      "mean_nb_com": 177.04
+    },
+    {
+      "target_year": 2022,
+      "reg": 84,
+      "zones": 39,
+      "mean_abs_error": 367.67679817130653,
+      "median_abs_error": 187.7600300996794,
+      "mean_target": 3629.974358974359,
+      "mean_prediction": 3997.6511571456654,
+      "mean_growth_vs_lag": 0.03569124077261019,
+      "mean_nb_com": 109.41025641025641
+    },
+    {
+      "target_year": 2022,
+      "reg": 93,
+      "zones": 20,
+      "mean_abs_error": 338.41443562554326,
+      "median_abs_error": 269.6109361837091,
+      "mean_target": 6123.15,
+      "mean_prediction": 6461.564435625543,
+      "mean_growth_vs_lag": 0.03470195829346555,
+      "mean_nb_com": 46.95
+    },
+    {
+      "target_year": 2023,
+      "reg": 11,
+      "zones": 15,
+      "mean_abs_error": 1009.1011875646878,
+      "median_abs_error": 372.8398249819693,
+      "mean_target": 20839.6,
+      "mean_prediction": 21848.70118756469,
+      "mean_growth_vs_lag": 0.007879160383577865,
+      "mean_nb_com": 84.4
+    },
+    {
+      "target_year": 2023,
+      "reg": 24,
+      "zones": 18,
+      "mean_abs_error": 262.9576010009594,
+      "median_abs_error": 180.10085911137185,
+      "mean_target": 1851.5,
+      "mean_prediction": 2114.4576010009596,
+      "mean_growth_vs_lag": -0.017910812457163115,
+      "mean_nb_com": 107.11111111111111
+    },
+    {
+      "target_year": 2023,
+      "reg": 27,
+      "zones": 18,
+      "mean_abs_error": 181.94270650967715,
+      "median_abs_error": 174.1111004977613,
+      "mean_target": 1725.3333333333333,
+      "mean_prediction": 1907.2760398430105,
+      "mean_growth_vs_lag": 0.023900089541208907,
+      "mean_nb_com": 184.77777777777777
+    },
+    {
+      "target_year": 2023,
+      "reg": 28,
+      "zones": 21,
+      "mean_abs_error": 220.92447271935848,
+      "median_abs_error": 166.23320175833396,
+      "mean_target": 1906.095238095238,
+      "mean_prediction": 2127.0197108145967,
+      "mean_growth_vs_lag": -0.010385154215047836,
+      "mean_nb_com": 124.0952380952381
+    },
+    {
+      "target_year": 2023,
+      "reg": 32,
+      "zones": 23,
+      "mean_abs_error": 327.2024870278353,
+      "median_abs_error": 233.17481905650493,
+      "mean_target": 3093.1739130434785,
+      "mean_prediction": 3420.376400071314,
+      "mean_growth_vs_lag": -0.004334118695435682,
+      "mean_nb_com": 163.8695652173913
+    },
+    {
+      "target_year": 2023,
+      "reg": 44,
+      "zones": 27,
+      "mean_abs_error": 312.22952346732524,
+      "median_abs_error": 176.69311101664516,
+      "mean_target": 2550.3703703703704,
+      "mean_prediction": 2859.206397591313,
+      "mean_growth_vs_lag": -0.004382050447502438,
+      "mean_nb_com": 189.44444444444446
+    },
+    {
+      "target_year": 2023,
+      "reg": 52,
+      "zones": 22,
+      "mean_abs_error": 305.7487341613479,
+      "median_abs_error": 198.84578542040367,
+      "mean_target": 2341.0454545454545,
+      "mean_prediction": 2646.7941887068027,
+      "mean_growth_vs_lag": -0.005240654374910864,
+      "mean_nb_com": 60.59090909090909
+    },
+    {
+      "target_year": 2023,
+      "reg": 53,
+      "zones": 20,
+      "mean_abs_error": 251.26986707228053,
+      "median_abs_error": 171.4979956019822,
+      "mean_target": 2162.95,
+      "mean_prediction": 2414.2198670722805,
+      "mean_growth_vs_lag": 0.0048811609434633,
+      "mean_nb_com": 60.45
+    },
+    {
+      "target_year": 2023,
+      "reg": 75,
+      "zones": 32,
+      "mean_abs_error": 361.57833393529614,
+      "median_abs_error": 226.82654750193637,
+      "mean_target": 3044.75,
+      "mean_prediction": 3406.328333935296,
+      "mean_growth_vs_lag": -0.01430987250312764,
+      "mean_nb_com": 131.3125
+    },
+    {
+      "target_year": 2023,
+      "reg": 76,
+      "zones": 25,
+      "mean_abs_error": 370.36212236425536,
+      "median_abs_error": 229.8416956173346,
+      "mean_target": 4204.68,
+      "mean_prediction": 4575.042122364255,
+      "mean_growth_vs_lag": -0.003154600103676164,
+      "mean_nb_com": 177.04
+    },
+    {
+      "target_year": 2023,
+      "reg": 84,
+      "zones": 39,
+      "mean_abs_error": 460.7205685152955,
+      "median_abs_error": 272.1534097048461,
+      "mean_target": 3493.3846153846152,
+      "mean_prediction": 3954.105183899911,
+      "mean_growth_vs_lag": -0.0354765725694952,
+      "mean_nb_com": 109.41025641025641
+    },
+    {
+      "target_year": 2023,
+      "reg": 93,
+      "zones": 20,
+      "mean_abs_error": 932.6887494985073,
+      "median_abs_error": 377.71599246085543,
+      "mean_target": 5667.3,
+      "mean_prediction": 6599.988749498507,
+      "mean_growth_vs_lag": -0.04867186630089515,
+      "mean_nb_com": 46.95
+    }
+  ],
+  "worst_zones": [
+    {
+      "target_year": 2022,
+      "ze2020": 1109,
+      "libze2020": "Paris",
+      "reg": 11,
+      "y_true": 202584.0,
+      "y_pred": 210527.72354997208,
+      "abs_error": 7943.723549972085,
+      "growth_vs_lag": 0.03604451354226332,
+      "nb_com": 122.0
+    },
+    {
+      "target_year": 2022,
+      "ze2020": 7625,
+      "libze2020": "Toulouse",
+      "reg": 76,
+      "y_true": 26019.0,
+      "y_pred": 29984.013437909514,
+      "abs_error": 3965.0134379095143,
+      "growth_vs_lag": -0.06021093693563534,
+      "nb_com": 335.0
+    },
+    {
+      "target_year": 2022,
+      "ze2020": 8421,
+      "libze2020": "Lyon",
+      "reg": 84,
+      "y_true": 42303.0,
+      "y_pred": 45885.160299241434,
+      "abs_error": 3582.1602992414337,
+      "growth_vs_lag": -0.004424466357581605,
+      "nb_com": 235.0
+    },
+    {
+      "target_year": 2022,
+      "ze2020": 7505,
+      "libze2020": "Bordeaux",
+      "reg": 75,
+      "y_true": 27507.0,
+      "y_pred": 30268.1192614882,
+      "abs_error": 2761.1192614881984,
+      "growth_vs_lag": -0.017466780968709815,
+      "nb_com": 164.0
+    },
+    {
+      "target_year": 2022,
+      "ze2020": 3216,
+      "libze2020": "Lille",
+      "reg": 32,
+      "y_true": 17228.0,
+      "y_pred": 19404.543970575385,
+      "abs_error": 2176.543970575385,
+      "growth_vs_lag": -0.037971856153674335,
+      "nb_com": 133.0
+    },
+    {
+      "target_year": 2022,
+      "ze2020": 7616,
+      "libze2020": "Montpellier",
+      "reg": 76,
+      "y_true": 18066.0,
+      "y_pred": 20165.789083798292,
+      "abs_error": 2099.7890837982923,
+      "growth_vs_lag": -0.028970706799247514,
+      "nb_com": 172.0
+    },
+    {
+      "target_year": 2022,
+      "ze2020": 5216,
+      "libze2020": "Nantes",
+      "reg": 52,
+      "y_true": 16639.0,
+      "y_pred": 18730.7434256013,
+      "abs_error": 2091.7434256013003,
+      "growth_vs_lag": -0.03776312745778394,
+      "nb_com": 95.0
+    },
+    {
+      "target_year": 2022,
+      "ze2020": 4423,
+      "libze2020": "Strasbourg",
+      "reg": 44,
+      "y_true": 12452.0,
+      "y_pred": 13836.823307790128,
+      "abs_error": 1384.8233077901277,
+      "growth_vs_lag": -0.020453115166771556,
+      "nb_com": 213.0
+    },
+    {
+      "target_year": 2022,
+      "ze2020": 2804,
+      "libze2020": "Caen",
+      "reg": 28,
+      "y_true": 7436.0,
+      "y_pred": 8727.308842070774,
+      "abs_error": 1291.3088420707736,
+      "growth_vs_lag": -0.06099254956433893,
+      "nb_com": 378.0
+    },
+    {
+      "target_year": 2022,
+      "ze2020": 8409,
+      "libze2020": "Grenoble",
+      "reg": 84,
+      "y_true": 10207.0,
+      "y_pred": 11427.191894428117,
+      "abs_error": 1220.191894428117,
+      "growth_vs_lag": -0.02595667525527245,
+      "nb_com": 189.0
+    },
+    {
+      "target_year": 2023,
+      "ze2020": 1109,
+      "libze2020": "Paris",
+      "reg": 11,
+      "y_true": 207701.0,
+      "y_pred": 215519.9184962314,
+      "abs_error": 7818.918496231403,
+      "growth_vs_lag": 0.025258658136871618,
+      "nb_com": 122.0
+    },
+    {
+      "target_year": 2023,
+      "ze2020": 9312,
+      "libze2020": "Marseille",
+      "reg": 93,
+      "y_true": 27883.0,
+      "y_pred": 34905.86593651651,
+      "abs_error": 7022.865936516508,
+      "growth_vs_lag": -0.14842867177717375,
+      "nb_com": 32.0
+    },
+    {
+      "target_year": 2023,
+      "ze2020": 8421,
+      "libze2020": "Lyon",
+      "reg": 84,
+      "y_true": 40654.0,
+      "y_pred": 45089.1246775791,
+      "abs_error": 4435.1246775791005,
+      "growth_vs_lag": -0.038980686948916154,
+      "nb_com": 235.0
+    },
+    {
+      "target_year": 2023,
+      "ze2020": 7505,
+      "libze2020": "Bordeaux",
+      "reg": 75,
+      "y_true": 26580.0,
+      "y_pred": 29349.229323298627,
+      "abs_error": 2769.2293232986267,
+      "growth_vs_lag": -0.03370051259679354,
+      "nb_com": 164.0
+    },
+    {
+      "target_year": 2023,
+      "ze2020": 9315,
+      "libze2020": "Nice",
+      "reg": 93,
+      "y_true": 16201.0,
+      "y_pred": 18769.774756944218,
+      "abs_error": 2568.774756944218,
+      "growth_vs_lag": -0.07749686823824166,
+      "nb_com": 116.0
+    },
+    {
+      "target_year": 2023,
+      "ze2020": 4423,
+      "libze2020": "Strasbourg",
+      "reg": 44,
+      "y_true": 11435.0,
+      "y_pred": 13344.142340410921,
+      "abs_error": 1909.142340410921,
+      "growth_vs_lag": -0.08167362672663026,
+      "nb_com": 213.0
+    },
+    {
+      "target_year": 2023,
+      "ze2020": 7625,
+      "libze2020": "Toulouse",
+      "reg": 76,
+      "y_true": 25940.0,
+      "y_pred": 27781.483112705497,
+      "abs_error": 1841.4831127054968,
+      "growth_vs_lag": -0.003036242745685845,
+      "nb_com": 335.0
+    },
+    {
+      "target_year": 2023,
+      "ze2020": 5216,
+      "libze2020": "Nantes",
+      "reg": 52,
+      "y_true": 15978.0,
+      "y_pred": 17786.480943715553,
+      "abs_error": 1808.4809437155527,
+      "growth_vs_lag": -0.03972594506881423,
+      "nb_com": 95.0
+    },
+    {
+      "target_year": 2023,
+      "ze2020": 3216,
+      "libze2020": "Lille",
+      "reg": 32,
+      "y_true": 16913.0,
+      "y_pred": 18416.052699937823,
+      "abs_error": 1503.0526999378235,
+      "growth_vs_lag": -0.018284188530299512,
+      "nb_com": 133.0
+    },
+    {
+      "target_year": 2023,
+      "ze2020": 9304,
+      "libze2020": "Cannes",
+      "reg": 93,
+      "y_true": 12063.0,
+      "y_pred": 13535.486558557172,
+      "abs_error": 1472.4865585571715,
+      "growth_vs_lag": -0.04602609727164887,
+      "nb_com": 50.0
+    }
+  ]
+}

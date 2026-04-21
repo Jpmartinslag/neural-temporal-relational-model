@@ -1,0 +1,37 @@
+{
+  "model": "final_rei_created_baseline_v0",
+  "feature_set": [
+    "side_creations_lag_1",
+    "nb_com",
+    "rei_cfe_microentrepreneurs_created_n_1_lag_1"
+  ],
+  "train_years": [
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "n_rows": 1960,
+  "alpha": 6.158482110660261,
+  "intercept": 3677.7969387755106,
+  "feature_means": {
+    "side_creations_lag_1": 3414.3035714285716,
+    "nb_com": 122.80714285714286,
+    "rei_cfe_microentrepreneurs_created_n_1_lag_1": 576.8363095238095
+  },
+  "feature_stds": {
+    "side_creations_lag_1": 11550.249756827307,
+    "nb_com": 87.19660842262252,
+    "rei_cfe_microentrepreneurs_created_n_1_lag_1": 2730.093948974877
+  },
+  "coefficients": {
+    "side_creations_lag_1": 12511.277490415556,
+    "nb_com": 11.015025328719503,
+    "rei_cfe_microentrepreneurs_created_n_1_lag_1": -448.82066840949847
+  },
+  "in_sample_wmape": 5.306544749057691,
+  "prediction_output": "data/processed/final_rei_created_baseline_fitted_values_v0.csv"
+}

@@ -1,0 +1,46 @@
+{
+  "feature_set": [
+    "side_creations_lag_1",
+    "nb_com",
+    "rei_cfe_microentrepreneurs_created_n_1_lag_1"
+  ],
+  "summary_by_year": [
+    {
+      "target_year": 2021,
+      "rei_created_baseline_wmape": 6.473127372757115,
+      "temporal_mlp_with_rei_wmape": 62.308656414546114
+    },
+    {
+      "target_year": 2022,
+      "rei_created_baseline_wmape": 9.804837270724866,
+      "temporal_mlp_with_rei_wmape": 95.00847182057025
+    },
+    {
+      "target_year": 2023,
+      "rei_created_baseline_wmape": 6.580320712043326,
+      "temporal_mlp_with_rei_wmape": 65.33708562068685
+    },
+    {
+      "target_year": 2024,
+      "rei_created_baseline_wmape": 3.937008421212529,
+      "temporal_mlp_with_rei_wmape": 59.416394208658275
+    }
+  ],
+  "comparison_vs_rei_created_baseline": {
+    "mean_delta": 63.81882857193092,
+    "per_year_delta": {
+      "2021": 55.835529041789,
+      "2022": 85.20363454984539,
+      "2023": 58.756764908643525,
+      "2024": 55.47938578744574
+    },
+    "worsened_years": [
+      2021,
+      2022,
+      2023,
+      2024
+    ],
+    "strictly_better_with_tolerance": false
+  },
+  "prediction_output": "data/processed/temporal_mlp_with_rei_predictions_v0.csv"
+}

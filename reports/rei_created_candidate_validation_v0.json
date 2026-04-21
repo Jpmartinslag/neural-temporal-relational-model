@@ -1,0 +1,180 @@
+{
+  "candidate_feature": "rei_cfe_microentrepreneurs_created_n_1_lag_1",
+  "baseline_mean_wmape": 7.649301375083828,
+  "candidate_mean_wmape": 6.698823444184458,
+  "year_comparison": [
+    {
+      "target_year": 2021,
+      "baseline_wmape": 6.473127372758018,
+      "candidate_wmape": 6.473127372757115,
+      "delta": -9.032774528350274e-13,
+      "worse_beyond_tol": false
+    },
+    {
+      "target_year": 2022,
+      "baseline_wmape": 9.804837270723612,
+      "candidate_wmape": 9.804837270724866,
+      "delta": 1.2541079286165768e-12,
+      "worse_beyond_tol": false
+    },
+    {
+      "target_year": 2023,
+      "baseline_wmape": 10.231233066836614,
+      "candidate_wmape": 6.580320712043326,
+      "delta": -3.650912354793288,
+      "worse_beyond_tol": false
+    },
+    {
+      "target_year": 2024,
+      "baseline_wmape": 4.088007790017064,
+      "candidate_wmape": 3.937008421212529,
+      "delta": -0.15099936880453546,
+      "worse_beyond_tol": false
+    }
+  ],
+  "strictly_better_with_tolerance": true,
+  "subsets": [
+    {
+      "subset": "all",
+      "rows": 1120,
+      "baseline_wmape": 7.56561256134747,
+      "candidate_wmape": 6.639169764038955,
+      "mean_abs_error_delta": -37.62811941391917
+    },
+    {
+      "subset": "hubs",
+      "rows": 429,
+      "baseline_wmape": 6.981774089263677,
+      "candidate_wmape": 6.01973460133339,
+      "mean_abs_error_delta": -82.56927035532448
+    },
+    {
+      "subset": "non_hubs",
+      "rows": 691,
+      "baseline_wmape": 10.045166065757961,
+      "candidate_wmape": 9.269901896095565,
+      "mean_abs_error_delta": -9.72688388010894
+    },
+    {
+      "subset": "2023_hubs",
+      "rows": 110,
+      "baseline_wmape": 9.074170459392299,
+      "candidate_wmape": 5.391432295459124,
+      "mean_abs_error_delta": -301.01463012789173
+    },
+    {
+      "subset": "2024_hubs",
+      "rows": 105,
+      "baseline_wmape": 4.07358149669184,
+      "candidate_wmape": 3.837846577882324,
+      "mean_abs_error_delta": -22.00578731803445
+    }
+  ],
+  "top_improved_2023": [
+    {
+      "ze2020": 1109,
+      "libze2020": "Paris",
+      "baseline_abs_error": 7818.918496231403,
+      "candidate_abs_error": 1160.1234654443106,
+      "delta": -6658.795030787092
+    },
+    {
+      "ze2020": 8421,
+      "libze2020": "Lyon",
+      "baseline_abs_error": 4435.1246775791005,
+      "candidate_abs_error": 2768.3765755228524,
+      "delta": -1666.7481020562482
+    },
+    {
+      "ze2020": 7625,
+      "libze2020": "Toulouse",
+      "baseline_abs_error": 1841.4831127054968,
+      "candidate_abs_error": 543.1909557463987,
+      "delta": -1298.292156959098
+    },
+    {
+      "ze2020": 7505,
+      "libze2020": "Bordeaux",
+      "baseline_abs_error": 2769.2293232986267,
+      "candidate_abs_error": 1532.7860511581093,
+      "delta": -1236.4432721405174
+    },
+    {
+      "ze2020": 3216,
+      "libze2020": "Lille",
+      "baseline_abs_error": 1503.0526999378235,
+      "candidate_abs_error": 711.3221850366899,
+      "delta": -791.7305149011336
+    },
+    {
+      "ze2020": 1112,
+      "libze2020": "Roissy",
+      "baseline_abs_error": 1309.5377478710143,
+      "candidate_abs_error": 531.3393088184384,
+      "delta": -778.1984390525758
+    },
+    {
+      "ze2020": 5216,
+      "libze2020": "Nantes",
+      "baseline_abs_error": 1808.4809437155527,
+      "candidate_abs_error": 1081.1605372087688,
+      "delta": -727.3204065067839
+    },
+    {
+      "ze2020": 5315,
+      "libze2020": "Rennes",
+      "baseline_abs_error": 1184.7833255857204,
+      "candidate_abs_error": 480.0384497024752,
+      "delta": -704.7448758832452
+    },
+    {
+      "ze2020": 7616,
+      "libze2020": "Montpellier",
+      "baseline_abs_error": 1117.492547879312,
+      "candidate_abs_error": 417.2189747480261,
+      "delta": -700.273573131286
+    },
+    {
+      "ze2020": 9312,
+      "libze2020": "Marseille",
+      "baseline_abs_error": 7022.865936516508,
+      "candidate_abs_error": 6369.154239481693,
+      "delta": -653.7116970348143
+    },
+    {
+      "ze2020": 1114,
+      "libze2020": "Seine-Yvelinoise",
+      "baseline_abs_error": 849.3598566668406,
+      "candidate_abs_error": 339.4988155715728,
+      "delta": -509.86104109526786
+    },
+    {
+      "ze2020": 4423,
+      "libze2020": "Strasbourg",
+      "baseline_abs_error": 1909.142340410921,
+      "candidate_abs_error": 1409.3969938212776,
+      "delta": -499.7453465896433
+    },
+    {
+      "ze2020": 9315,
+      "libze2020": "Nice",
+      "baseline_abs_error": 2568.774756944218,
+      "candidate_abs_error": 2083.227224886974,
+      "delta": -485.5475320572441
+    },
+    {
+      "ze2020": 7503,
+      "libze2020": "Bayonne",
+      "baseline_abs_error": 726.9289018828313,
+      "candidate_abs_error": 253.27728828728505,
+      "delta": -473.6516135955462
+    },
+    {
+      "ze2020": 8428,
+      "libze2020": "Saint-Étienne",
+      "baseline_abs_error": 880.2211600528572,
+      "candidate_abs_error": 429.952677026502,
+      "delta": -450.26848302635517
+    }
+  ]
+}

@@ -1,0 +1,673 @@
+{
+  "tensor_path": "data/processed/stgnn_tensor_package_extended_forecast_core_v1.npz",
+  "adjacency_checks": {
+    "geo_raw_row_sum_min": 1.0,
+    "geo_raw_row_sum_max": 9.0,
+    "geo_norm_row_sum_min": 0.9999999999999998,
+    "geo_norm_row_sum_max": 1.0000000000000002,
+    "mobility_raw_row_sum_min": 0.9999999667925294,
+    "mobility_raw_row_sum_max": 1.0000000324216671,
+    "mobility_norm_row_sum_min": 0.9999999999999992,
+    "mobility_norm_row_sum_max": 1.0000000000000007
+  },
+  "summary": [
+    {
+      "model": "geo_blend_from_ridge_lag_nbcom",
+      "mean_wmape": 7.649301375083828,
+      "max_wmape": 10.231233066836614,
+      "per_year_wmape": {
+        "2021": 6.473127372758018,
+        "2022": 9.804837270723612,
+        "2023": 10.231233066836614,
+        "2024": 4.088007790017064
+      }
+    },
+    {
+      "model": "mobility_blend_from_ridge_lag_nbcom",
+      "mean_wmape": 7.649301375083828,
+      "max_wmape": 10.231233066836614,
+      "per_year_wmape": {
+        "2021": 6.473127372758018,
+        "2022": 9.804837270723612,
+        "2023": 10.231233066836614,
+        "2024": 4.088007790017064
+      }
+    },
+    {
+      "model": "ridge_lag_nbcom",
+      "mean_wmape": 7.649301375083828,
+      "max_wmape": 10.231233066836614,
+      "per_year_wmape": {
+        "2021": 6.473127372758018,
+        "2022": 9.804837270723612,
+        "2023": 10.231233066836614,
+        "2024": 4.088007790017064
+      }
+    },
+    {
+      "model": "geo_blend_from_ridge_lag_only",
+      "mean_wmape": 7.664114078669242,
+      "max_wmape": 10.237013148970945,
+      "per_year_wmape": {
+        "2021": 6.509510197438359,
+        "2022": 9.806575441095019,
+        "2023": 10.237013148970945,
+        "2024": 4.103357527172649
+      }
+    },
+    {
+      "model": "mobility_blend_from_ridge_lag_only",
+      "mean_wmape": 7.664114078669242,
+      "max_wmape": 10.237013148970945,
+      "per_year_wmape": {
+        "2021": 6.509510197438359,
+        "2022": 9.806575441095019,
+        "2023": 10.237013148970945,
+        "2024": 4.103357527172649
+      }
+    },
+    {
+      "model": "ridge_lag_only",
+      "mean_wmape": 7.664114078669242,
+      "max_wmape": 10.237013148970945,
+      "per_year_wmape": {
+        "2021": 6.509510197438359,
+        "2022": 9.806575441095019,
+        "2023": 10.237013148970945,
+        "2024": 4.103357527172649
+      }
+    },
+    {
+      "model": "geo_blend_from_persistence",
+      "mean_wmape": 7.680334317157283,
+      "max_wmape": 14.316937027125192,
+      "per_year_wmape": {
+        "2021": 14.316937027125192,
+        "2022": 3.3687525018585234,
+        "2023": 3.5657895094423715,
+        "2024": 9.469858230203045
+      }
+    },
+    {
+      "model": "mobility_blend_from_persistence",
+      "mean_wmape": 7.680334317157283,
+      "max_wmape": 14.316937027125192,
+      "per_year_wmape": {
+        "2021": 14.316937027125192,
+        "2022": 3.3687525018585234,
+        "2023": 3.5657895094423715,
+        "2024": 9.469858230203045
+      }
+    },
+    {
+      "model": "persistence",
+      "mean_wmape": 7.680334317157283,
+      "max_wmape": 14.316937027125192,
+      "per_year_wmape": {
+        "2021": 14.316937027125192,
+        "2022": 3.3687525018585234,
+        "2023": 3.5657895094423715,
+        "2024": 9.469858230203045
+      }
+    },
+    {
+      "model": "geo_neighbor_average",
+      "mean_wmape": 103.35802361219503,
+      "max_wmape": 108.31169820047958,
+      "per_year_wmape": {
+        "2021": 97.92971188828503,
+        "2022": 106.97132360967015,
+        "2023": 108.31169820047958,
+        "2024": 100.21936075034536
+      }
+    },
+    {
+      "model": "mobility_neighbor_average",
+      "mean_wmape": 301.2547265589558,
+      "max_wmape": 322.2696494419021,
+      "per_year_wmape": {
+        "2021": 280.3949811587412,
+        "2022": 311.7257187474051,
+        "2023": 322.2696494419021,
+        "2024": 290.6285568877748
+      }
+    }
+  ],
+  "alpha_trace": [
+    {
+      "graph": "geo",
+      "base": "persistence",
+      "target_year": 2021,
+      "selected_alpha": 1.0,
+      "reason": "default_base_no_prior_years"
+    },
+    {
+      "graph": "geo",
+      "base": "persistence",
+      "target_year": 2022,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021
+      ],
+      "prior_mean_wmape": 14.316937027125192
+    },
+    {
+      "graph": "geo",
+      "base": "persistence",
+      "target_year": 2023,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022
+      ],
+      "prior_mean_wmape": 8.842844764491858
+    },
+    {
+      "graph": "geo",
+      "base": "persistence",
+      "target_year": 2024,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "prior_mean_wmape": 7.083826346142029
+    },
+    {
+      "graph": "geo",
+      "base": "ridge_lag_only",
+      "target_year": 2021,
+      "selected_alpha": 1.0,
+      "reason": "default_base_no_prior_years"
+    },
+    {
+      "graph": "geo",
+      "base": "ridge_lag_only",
+      "target_year": 2022,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021
+      ],
+      "prior_mean_wmape": 6.509510197438359
+    },
+    {
+      "graph": "geo",
+      "base": "ridge_lag_only",
+      "target_year": 2023,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022
+      ],
+      "prior_mean_wmape": 8.158042819266688
+    },
+    {
+      "graph": "geo",
+      "base": "ridge_lag_only",
+      "target_year": 2024,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "prior_mean_wmape": 8.851032929168108
+    },
+    {
+      "graph": "geo",
+      "base": "ridge_lag_nbcom",
+      "target_year": 2021,
+      "selected_alpha": 1.0,
+      "reason": "default_base_no_prior_years"
+    },
+    {
+      "graph": "geo",
+      "base": "ridge_lag_nbcom",
+      "target_year": 2022,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021
+      ],
+      "prior_mean_wmape": 6.473127372758018
+    },
+    {
+      "graph": "geo",
+      "base": "ridge_lag_nbcom",
+      "target_year": 2023,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022
+      ],
+      "prior_mean_wmape": 8.138982321740816
+    },
+    {
+      "graph": "geo",
+      "base": "ridge_lag_nbcom",
+      "target_year": 2024,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "prior_mean_wmape": 8.836399236772749
+    },
+    {
+      "graph": "mobility",
+      "base": "persistence",
+      "target_year": 2021,
+      "selected_alpha": 1.0,
+      "reason": "default_base_no_prior_years"
+    },
+    {
+      "graph": "mobility",
+      "base": "persistence",
+      "target_year": 2022,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021
+      ],
+      "prior_mean_wmape": 14.316937027125192
+    },
+    {
+      "graph": "mobility",
+      "base": "persistence",
+      "target_year": 2023,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022
+      ],
+      "prior_mean_wmape": 8.842844764491858
+    },
+    {
+      "graph": "mobility",
+      "base": "persistence",
+      "target_year": 2024,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "prior_mean_wmape": 7.083826346142029
+    },
+    {
+      "graph": "mobility",
+      "base": "ridge_lag_only",
+      "target_year": 2021,
+      "selected_alpha": 1.0,
+      "reason": "default_base_no_prior_years"
+    },
+    {
+      "graph": "mobility",
+      "base": "ridge_lag_only",
+      "target_year": 2022,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021
+      ],
+      "prior_mean_wmape": 6.509510197438359
+    },
+    {
+      "graph": "mobility",
+      "base": "ridge_lag_only",
+      "target_year": 2023,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022
+      ],
+      "prior_mean_wmape": 8.158042819266688
+    },
+    {
+      "graph": "mobility",
+      "base": "ridge_lag_only",
+      "target_year": 2024,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "prior_mean_wmape": 8.851032929168108
+    },
+    {
+      "graph": "mobility",
+      "base": "ridge_lag_nbcom",
+      "target_year": 2021,
+      "selected_alpha": 1.0,
+      "reason": "default_base_no_prior_years"
+    },
+    {
+      "graph": "mobility",
+      "base": "ridge_lag_nbcom",
+      "target_year": 2022,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021
+      ],
+      "prior_mean_wmape": 6.473127372758018
+    },
+    {
+      "graph": "mobility",
+      "base": "ridge_lag_nbcom",
+      "target_year": 2023,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022
+      ],
+      "prior_mean_wmape": 8.138982321740816
+    },
+    {
+      "graph": "mobility",
+      "base": "ridge_lag_nbcom",
+      "target_year": 2024,
+      "selected_alpha": 1.0,
+      "reason": "best_prior_year_mean_wmape",
+      "prior_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "prior_mean_wmape": 8.836399236772749
+    }
+  ],
+  "comparisons_vs_ridge_lag_only": {
+    "geo_blend_from_ridge_lag_nbcom": {
+      "mean_delta": -0.014812703585413978,
+      "worsened_years": [],
+      "strictly_better": true,
+      "per_year_delta": {
+        "2021": -0.0363828246803406,
+        "2022": -0.0017381703714072216,
+        "2023": -0.0057800821343310105,
+        "2024": -0.015349737155584187
+      }
+    },
+    "mobility_blend_from_ridge_lag_nbcom": {
+      "mean_delta": -0.014812703585413978,
+      "worsened_years": [],
+      "strictly_better": true,
+      "per_year_delta": {
+        "2021": -0.0363828246803406,
+        "2022": -0.0017381703714072216,
+        "2023": -0.0057800821343310105,
+        "2024": -0.015349737155584187
+      }
+    },
+    "ridge_lag_nbcom": {
+      "mean_delta": -0.014812703585413978,
+      "worsened_years": [],
+      "strictly_better": true,
+      "per_year_delta": {
+        "2021": -0.0363828246803406,
+        "2022": -0.0017381703714072216,
+        "2023": -0.0057800821343310105,
+        "2024": -0.015349737155584187
+      }
+    },
+    "geo_blend_from_ridge_lag_only": {
+      "mean_delta": 0.0,
+      "worsened_years": [],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 0.0,
+        "2022": 0.0,
+        "2023": 0.0,
+        "2024": 0.0
+      }
+    },
+    "mobility_blend_from_ridge_lag_only": {
+      "mean_delta": 0.0,
+      "worsened_years": [],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 0.0,
+        "2022": 0.0,
+        "2023": 0.0,
+        "2024": 0.0
+      }
+    },
+    "geo_blend_from_persistence": {
+      "mean_delta": 0.01622023848804055,
+      "worsened_years": [
+        2021,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 7.807426829686833,
+        "2022": -6.437822939236495,
+        "2023": -6.671223639528574,
+        "2024": 5.366500703030396
+      }
+    },
+    "mobility_blend_from_persistence": {
+      "mean_delta": 0.01622023848804055,
+      "worsened_years": [
+        2021,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 7.807426829686833,
+        "2022": -6.437822939236495,
+        "2023": -6.671223639528574,
+        "2024": 5.366500703030396
+      }
+    },
+    "persistence": {
+      "mean_delta": 0.01622023848804055,
+      "worsened_years": [
+        2021,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 7.807426829686833,
+        "2022": -6.437822939236495,
+        "2023": -6.671223639528574,
+        "2024": 5.366500703030396
+      }
+    },
+    "geo_neighbor_average": {
+      "mean_delta": 95.69390953352578,
+      "worsened_years": [
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 91.42020169084667,
+        "2022": 97.16474816857513,
+        "2023": 98.07468505150864,
+        "2024": 96.11600322317271
+      }
+    },
+    "mobility_neighbor_average": {
+      "mean_delta": 293.59061248028655,
+      "worsened_years": [
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 273.8854709613028,
+        "2022": 301.9191433063101,
+        "2023": 312.03263629293116,
+        "2024": 286.52519936060213
+      }
+    }
+  },
+  "comparisons_vs_ridge_lag_nbcom": {
+    "geo_blend_from_ridge_lag_nbcom": {
+      "mean_delta": 0.0,
+      "worsened_years": [],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 0.0,
+        "2022": 0.0,
+        "2023": 0.0,
+        "2024": 0.0
+      }
+    },
+    "mobility_blend_from_ridge_lag_nbcom": {
+      "mean_delta": 0.0,
+      "worsened_years": [],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 0.0,
+        "2022": 0.0,
+        "2023": 0.0,
+        "2024": 0.0
+      }
+    },
+    "geo_blend_from_ridge_lag_only": {
+      "mean_delta": 0.014812703585413978,
+      "worsened_years": [
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 0.0363828246803406,
+        "2022": 0.0017381703714072216,
+        "2023": 0.0057800821343310105,
+        "2024": 0.015349737155584187
+      }
+    },
+    "mobility_blend_from_ridge_lag_only": {
+      "mean_delta": 0.014812703585413978,
+      "worsened_years": [
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 0.0363828246803406,
+        "2022": 0.0017381703714072216,
+        "2023": 0.0057800821343310105,
+        "2024": 0.015349737155584187
+      }
+    },
+    "ridge_lag_only": {
+      "mean_delta": 0.014812703585413978,
+      "worsened_years": [
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 0.0363828246803406,
+        "2022": 0.0017381703714072216,
+        "2023": 0.0057800821343310105,
+        "2024": 0.015349737155584187
+      }
+    },
+    "geo_blend_from_persistence": {
+      "mean_delta": 0.031032942073454528,
+      "worsened_years": [
+        2021,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 7.843809654367174,
+        "2022": -6.436084768865088,
+        "2023": -6.6654435573942425,
+        "2024": 5.38185044018598
+      }
+    },
+    "mobility_blend_from_persistence": {
+      "mean_delta": 0.031032942073454528,
+      "worsened_years": [
+        2021,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 7.843809654367174,
+        "2022": -6.436084768865088,
+        "2023": -6.6654435573942425,
+        "2024": 5.38185044018598
+      }
+    },
+    "persistence": {
+      "mean_delta": 0.031032942073454528,
+      "worsened_years": [
+        2021,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 7.843809654367174,
+        "2022": -6.436084768865088,
+        "2023": -6.6654435573942425,
+        "2024": 5.38185044018598
+      }
+    },
+    "geo_neighbor_average": {
+      "mean_delta": 95.7087222371112,
+      "worsened_years": [
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 91.45658451552701,
+        "2022": 97.16648633894654,
+        "2023": 98.08046513364297,
+        "2024": 96.1313529603283
+      }
+    },
+    "mobility_neighbor_average": {
+      "mean_delta": 293.60542518387194,
+      "worsened_years": [
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "strictly_better": false,
+      "per_year_delta": {
+        "2021": 273.92185378598316,
+        "2022": 301.9208814766815,
+        "2023": 312.0384163750655,
+        "2024": 286.5405490977577
+      }
+    }
+  }
+}

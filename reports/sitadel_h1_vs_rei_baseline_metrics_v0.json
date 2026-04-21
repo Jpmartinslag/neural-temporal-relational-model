@@ -1,0 +1,132 @@
+{
+  "baseline_rei_created": {
+    "feature_set": [
+      "side_creations_lag_1",
+      "nb_com",
+      "rei_cfe_microentrepreneurs_created_n_1_lag_1"
+    ],
+    "summary": {
+      "mean_wmape": 6.698823444184458,
+      "max_wmape": 9.804837270724866,
+      "per_year_wmape": {
+        "2021": 6.473127372757115,
+        "2022": 9.804837270724866,
+        "2023": 6.580320712043326,
+        "2024": 3.937008421212529
+      }
+    },
+    "rows": [
+      {
+        "target_year": 2021,
+        "features": [
+          "side_creations_lag_1",
+          "nb_com",
+          "rei_cfe_microentrepreneurs_created_n_1_lag_1"
+        ],
+        "wmape": 6.473127372757115
+      },
+      {
+        "target_year": 2022,
+        "features": [
+          "side_creations_lag_1",
+          "nb_com",
+          "rei_cfe_microentrepreneurs_created_n_1_lag_1"
+        ],
+        "wmape": 9.804837270724866
+      },
+      {
+        "target_year": 2023,
+        "features": [
+          "side_creations_lag_1",
+          "nb_com",
+          "rei_cfe_microentrepreneurs_created_n_1_lag_1"
+        ],
+        "wmape": 6.580320712043326
+      },
+      {
+        "target_year": 2024,
+        "features": [
+          "side_creations_lag_1",
+          "nb_com",
+          "rei_cfe_microentrepreneurs_created_n_1_lag_1"
+        ],
+        "wmape": 3.937008421212529
+      }
+    ]
+  },
+  "candidate": {
+    "feature_set": [
+      "side_creations_lag_1",
+      "nb_com",
+      "rei_cfe_microentrepreneurs_created_n_1_lag_1",
+      "log1p_sitadel_monthly_h1_commencee_lag_1"
+    ],
+    "summary": {
+      "mean_wmape": 6.945540744146669,
+      "max_wmape": 9.960328223162405,
+      "per_year_wmape": {
+        "2021": 6.968406368475054,
+        "2022": 9.960328223162405,
+        "2023": 6.96710222765949,
+        "2024": 3.8863261572897314
+      }
+    },
+    "rows": [
+      {
+        "target_year": 2021,
+        "features": [
+          "side_creations_lag_1",
+          "nb_com",
+          "rei_cfe_microentrepreneurs_created_n_1_lag_1",
+          "log1p_sitadel_monthly_h1_commencee_lag_1"
+        ],
+        "wmape": 6.968406368475054
+      },
+      {
+        "target_year": 2022,
+        "features": [
+          "side_creations_lag_1",
+          "nb_com",
+          "rei_cfe_microentrepreneurs_created_n_1_lag_1",
+          "log1p_sitadel_monthly_h1_commencee_lag_1"
+        ],
+        "wmape": 9.960328223162405
+      },
+      {
+        "target_year": 2023,
+        "features": [
+          "side_creations_lag_1",
+          "nb_com",
+          "rei_cfe_microentrepreneurs_created_n_1_lag_1",
+          "log1p_sitadel_monthly_h1_commencee_lag_1"
+        ],
+        "wmape": 6.96710222765949
+      },
+      {
+        "target_year": 2024,
+        "features": [
+          "side_creations_lag_1",
+          "nb_com",
+          "rei_cfe_microentrepreneurs_created_n_1_lag_1",
+          "log1p_sitadel_monthly_h1_commencee_lag_1"
+        ],
+        "wmape": 3.8863261572897314
+      }
+    ]
+  },
+  "comparison_vs_rei_created": {
+    "mean_delta": 0.24671729996221092,
+    "per_year_delta": {
+      "2021": 0.4952789957179391,
+      "2022": 0.15549095243753897,
+      "2023": 0.38678151561616403,
+      "2024": -0.05068226392279751
+    },
+    "worsened_years": [
+      2021,
+      2022,
+      2023
+    ],
+    "strictly_better_with_tolerance": false
+  }
+}
