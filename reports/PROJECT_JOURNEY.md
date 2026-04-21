@@ -2578,3 +2578,93 @@ Decisao congelada:
 Proximo passo:
 - Limpeza e arquivamento dos artefatos.
 - Depois, iniciar experimentos de modelagem do micro para o macro: temporal sem grafo, grafo estatico, mobilidade, e apenas entao modelos grafo-temporais.
+
+### 2026-04-21 - Micro-baselines no tensor forecast-safe
+
+Motivacao:
+- Antes de qualquer modelo neural ou uso de grafo, era necessario verificar se o tensor forecast-safe reproduzia corretamente os baselines operacionais no mesmo formato de entrada dos futuros modelos.
+
+O que foi feito:
+- Criado `src/data/evaluate_stgnn_micro_baselines_v0.py`.
+- Gerados:
+  - `reports/STGNN_MICRO_BASELINES_V0.md`
+  - `reports/stgnn_micro_baselines_metrics_v0.json`
+
+Resultado:
+- O tensor `extended_forecast_core_v1` reproduziu corretamente os benchmarks:
+  - `ridge_lag_only`: WMAPE medio `7.664%`
+  - `persistence`: WMAPE medio `7.680%`
+- Os lags espaciais brutos e de mobilidade, usados apenas como diagnostico de escala, ficaram muito piores que os baselines temporais simples.
+
+Decisao:
+- O tensor forecast-safe fica validado como ponto de partida metodologico para os primeiros experimentos sem grafo.
+- A leitura correta do pacote passa a ser:
+  - `years` representa o ano-alvo do painel
+  - as defasagens causais estao no nome das features, por exemplo `side_creations_lag_1`
+
+### 2026-04-21 - Primeiro baseline temporal sem grafo
+
+Motivacao:
+- Isolar a pergunta minima antes de qualquer experimento espacial:
+  - uma nao linearidade temporal simples, sem grafo, consegue bater `ridge_lag_only`?
+
+O que foi feito:
+- Criado `src/data/evaluate_temporal_non_graph_baseline_v0.py`.
+- Gerados:
+  - `reports/TEMPORAL_NON_GRAPH_BASELINE_V0.md`
+  - `reports/temporal_non_graph_baseline_metrics_v0.json`
+- O protocolo removeu `side_creations_spatial_lag_1` e `side_creations_mobility_lag_1` desta etapa para manter o experimento explicitamente sem grafo.
+
+Resultado:
+- `ridge_lag_only`: WMAPE medio `7.664%`
+- `persistence`: WMAPE medio `7.680%`
+- `mlp_lag_only`: WMAPE medio `8.405%`
+- `ridge_no_graph_core`: WMAPE medio `9.704%`
+- `mlp_no_graph_core`: WMAPE medio `42.458%`
+
+Leitura:
+- O primeiro MLP temporal nao bate o benchmark linear.
+- Abrir o bloco completo `no_graph_core` piora o ridge e desestabiliza fortemente o MLP.
+- A primeira conclusao da fase sem grafo e negativa:
+  - complexidade temporal adicional ainda nao se justifica.
+
+Decisao:
+- Rebaixar MLP, GRU e LSTM nesta fase inicial.
+- Manter `ridge_lag_only` como referencia operacional do bloco temporal sem grafo.
+- Antes de voltar a modelos mais complexos, testar adicao sequencial e conservadora de features com `Ridge`.
+
+### 2026-04-21 - Adicao sequencial de features no baseline temporal
+
+Motivacao:
+- Depois da falha do bloco `no_graph_core`, era necessario separar sinal real de ruido, adicionando apenas uma feature por vez ao baseline `side_creations_lag_1`.
+
+O que foi feito:
+- Criado `src/data/evaluate_temporal_feature_addition_v0.py`.
+- Gerados:
+  - `reports/TEMPORAL_FEATURE_ADDITION_V0.md`
+  - `reports/temporal_feature_addition_metrics_v0.json`
+- Testadas adicoes unitarias e combinacoes curtas sobre `ridge_lag_only`.
+
+Resultado:
+- Unico candidato que melhorou a media e todos os anos:
+  - `side_creations_lag_1 + nb_com`: WMAPE medio `7.649%`
+- Candidatos rejeitados nesta rodada:
+  - `total_establishments`: `7.712%`
+  - `sitadel_surface_commencee_lag_1`: `8.084%`
+  - `sitadel_surface_autorisee_lag_1`: `8.148%`
+  - `pop_lag_1`: `8.817%`
+  - `pop_lag_2`: `8.843%`
+  - `regime_signal_lag_1`: `10.826%`
+  - `stock_lag_1`: `12.637%`
+- As pequenas combinacoes entre os melhores candidatos tambem nao superaram o baseline.
+
+Leitura:
+- A auditoria externa que priorizava `pop_lag_1`, `stock_lag_1` e `regime_signal_lag_1` ficou contradita pelos resultados do proprio repositorio.
+- `nb_com`, apesar de ser estrutural/descritiva, foi o unico acrescimo estavel e consistentemente melhor nesta janela.
+
+Decisao:
+- Congelar dois referenciais temporais sem grafo:
+  - `ridge_lag_only`
+  - `ridge_lag_only + nb_com`
+- Tratar os demais acrescimos como rejeitados nesta rodada.
+- O proximo retorno ao bloco espacial/grafo deve usar esses dois referenciais como ponto de comparacao, e nao reabrir agora a busca por complexidade temporal.

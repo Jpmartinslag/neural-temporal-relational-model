@@ -1,0 +1,1136 @@
+{
+  "tensor_path": "data/processed/stgnn_tensor_package_extended_forecast_core_v1.npz",
+  "baseline": {
+    "name": "ridge_lag_only",
+    "feature_set": [
+      "side_creations_lag_1"
+    ],
+    "rows": [
+      {
+        "target_year": 2021,
+        "forecast_origin_year": 2020,
+        "features": [
+          "side_creations_lag_1"
+        ],
+        "wmape": 6.509510197438359,
+        "actual_sum": 1106794.0,
+        "prediction_sum": 1040738.5902941173,
+        "rows": 280
+      },
+      {
+        "target_year": 2022,
+        "forecast_origin_year": 2021,
+        "features": [
+          "side_creations_lag_1"
+        ],
+        "wmape": 9.806575441095019,
+        "actual_sum": 1119168.0,
+        "prediction_sum": 1228102.9178063078,
+        "rows": 280
+      },
+      {
+        "target_year": 2023,
+        "forecast_origin_year": 2022,
+        "features": [
+          "side_creations_lag_1"
+        ],
+        "wmape": 10.237013148970945,
+        "actual_sum": 1103907.0,
+        "prediction_sum": 1216767.8877887488,
+        "rows": 280
+      },
+      {
+        "target_year": 2024,
+        "forecast_origin_year": 2023,
+        "features": [
+          "side_creations_lag_1"
+        ],
+        "wmape": 4.103357527172649,
+        "actual_sum": 1219089.0,
+        "prediction_sum": 1180288.0077133216,
+        "rows": 280
+      }
+    ],
+    "summary": {
+      "mean_wmape": 7.664114078669242,
+      "max_wmape": 10.237013148970945,
+      "per_year_wmape": {
+        "2021": 6.509510197438359,
+        "2022": 9.806575441095019,
+        "2023": 10.237013148970945,
+        "2024": 4.103357527172649
+      }
+    }
+  },
+  "single_feature_additions": [
+    {
+      "name": "side_creations_lag_1+nb_com",
+      "feature_set": [
+        "side_creations_lag_1",
+        "nb_com"
+      ],
+      "rows": [
+        {
+          "target_year": 2021,
+          "forecast_origin_year": 2020,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com"
+          ],
+          "wmape": 6.473127372758018,
+          "actual_sum": 1106794.0,
+          "prediction_sum": 1040716.7445005911,
+          "rows": 280
+        },
+        {
+          "target_year": 2022,
+          "forecast_origin_year": 2021,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com"
+          ],
+          "wmape": 9.804837270723612,
+          "actual_sum": 1119168.0,
+          "prediction_sum": 1228065.1404917552,
+          "rows": 280
+        },
+        {
+          "target_year": 2023,
+          "forecast_origin_year": 2022,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com"
+          ],
+          "wmape": 10.231233066836614,
+          "actual_sum": 1103907.0,
+          "prediction_sum": 1216758.673612472,
+          "rows": 280
+        },
+        {
+          "target_year": 2024,
+          "forecast_origin_year": 2023,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com"
+          ],
+          "wmape": 4.088007790017064,
+          "actual_sum": 1219089.0,
+          "prediction_sum": 1180282.551152376,
+          "rows": 280
+        }
+      ],
+      "summary": {
+        "mean_wmape": 7.649301375083828,
+        "max_wmape": 10.231233066836614,
+        "per_year_wmape": {
+          "2021": 6.473127372758018,
+          "2022": 9.804837270723612,
+          "2023": 10.231233066836614,
+          "2024": 4.088007790017064
+        }
+      },
+      "comparison": {
+        "mean_delta_vs_ridge_lag_only": -0.014812703585413978,
+        "per_year_delta_vs_ridge_lag_only": {
+          "2021": -0.0363828246803406,
+          "2022": -0.0017381703714072216,
+          "2023": -0.0057800821343310105,
+          "2024": -0.015349737155584187
+        },
+        "improved_years": [
+          2021,
+          2022,
+          2023,
+          2024
+        ],
+        "worsened_years": [],
+        "max_yearly_degradation": -0.0017381703714072216,
+        "accepted_strict": true,
+        "accepted_soft": true
+      }
+    },
+    {
+      "name": "side_creations_lag_1+total_establishments",
+      "feature_set": [
+        "side_creations_lag_1",
+        "total_establishments"
+      ],
+      "rows": [
+        {
+          "target_year": 2021,
+          "forecast_origin_year": 2020,
+          "features": [
+            "side_creations_lag_1",
+            "total_establishments"
+          ],
+          "wmape": 6.847406213957761,
+          "actual_sum": 1106794.0,
+          "prediction_sum": 1034322.2112668615,
+          "rows": 280
+        },
+        {
+          "target_year": 2022,
+          "forecast_origin_year": 2021,
+          "features": [
+            "side_creations_lag_1",
+            "total_establishments"
+          ],
+          "wmape": 9.753754860156775,
+          "actual_sum": 1119168.0,
+          "prediction_sum": 1221220.4454934201,
+          "rows": 280
+        },
+        {
+          "target_year": 2023,
+          "forecast_origin_year": 2022,
+          "features": [
+            "side_creations_lag_1",
+            "total_establishments"
+          ],
+          "wmape": 10.057089938283067,
+          "actual_sum": 1103907.0,
+          "prediction_sum": 1212286.730011016,
+          "rows": 280
+        },
+        {
+          "target_year": 2024,
+          "forecast_origin_year": 2023,
+          "features": [
+            "side_creations_lag_1",
+            "total_establishments"
+          ],
+          "wmape": 4.189441534055582,
+          "actual_sum": 1219089.0,
+          "prediction_sum": 1177170.996165882,
+          "rows": 280
+        }
+      ],
+      "summary": {
+        "mean_wmape": 7.711923136613296,
+        "max_wmape": 10.057089938283067,
+        "per_year_wmape": {
+          "2021": 6.847406213957761,
+          "2022": 9.753754860156775,
+          "2023": 10.057089938283067,
+          "2024": 4.189441534055582
+        }
+      },
+      "comparison": {
+        "mean_delta_vs_ridge_lag_only": 0.04780905794405399,
+        "per_year_delta_vs_ridge_lag_only": {
+          "2021": 0.3378960165194025,
+          "2022": -0.05282058093824382,
+          "2023": -0.1799232106878783,
+          "2024": 0.08608400688293383
+        },
+        "improved_years": [
+          2022,
+          2023
+        ],
+        "worsened_years": [
+          2021,
+          2024
+        ],
+        "max_yearly_degradation": 0.3378960165194025,
+        "accepted_strict": false,
+        "accepted_soft": false
+      }
+    },
+    {
+      "name": "side_creations_lag_1+sitadel_surface_commencee_lag_1",
+      "feature_set": [
+        "side_creations_lag_1",
+        "sitadel_surface_commencee_lag_1"
+      ],
+      "rows": [
+        {
+          "target_year": 2021,
+          "forecast_origin_year": 2020,
+          "features": [
+            "side_creations_lag_1",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 8.497009358983364,
+          "actual_sum": 1106794.0,
+          "prediction_sum": 1022934.7029907231,
+          "rows": 280
+        },
+        {
+          "target_year": 2022,
+          "forecast_origin_year": 2021,
+          "features": [
+            "side_creations_lag_1",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 9.26773547289545,
+          "actual_sum": 1119168.0,
+          "prediction_sum": 1220053.083202577,
+          "rows": 280
+        },
+        {
+          "target_year": 2023,
+          "forecast_origin_year": 2022,
+          "features": [
+            "side_creations_lag_1",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 9.490234483399828,
+          "actual_sum": 1103907.0,
+          "prediction_sum": 1207435.2555886619,
+          "rows": 280
+        },
+        {
+          "target_year": 2024,
+          "forecast_origin_year": 2023,
+          "features": [
+            "side_creations_lag_1",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 5.080383510809393,
+          "actual_sum": 1219089.0,
+          "prediction_sum": 1166320.1770357625,
+          "rows": 280
+        }
+      ],
+      "summary": {
+        "mean_wmape": 8.08384070652201,
+        "max_wmape": 9.490234483399828,
+        "per_year_wmape": {
+          "2021": 8.497009358983364,
+          "2022": 9.26773547289545,
+          "2023": 9.490234483399828,
+          "2024": 5.080383510809393
+        }
+      },
+      "comparison": {
+        "mean_delta_vs_ridge_lag_only": 0.41972662785276693,
+        "per_year_delta_vs_ridge_lag_only": {
+          "2021": 1.9874991615450055,
+          "2022": -0.5388399681995679,
+          "2023": -0.7467786655711173,
+          "2024": 0.9770259836367448
+        },
+        "improved_years": [
+          2022,
+          2023
+        ],
+        "worsened_years": [
+          2021,
+          2024
+        ],
+        "max_yearly_degradation": 1.9874991615450055,
+        "accepted_strict": false,
+        "accepted_soft": false
+      }
+    },
+    {
+      "name": "side_creations_lag_1+sitadel_surface_autorisee_lag_1",
+      "feature_set": [
+        "side_creations_lag_1",
+        "sitadel_surface_autorisee_lag_1"
+      ],
+      "rows": [
+        {
+          "target_year": 2021,
+          "forecast_origin_year": 2020,
+          "features": [
+            "side_creations_lag_1",
+            "sitadel_surface_autorisee_lag_1"
+          ],
+          "wmape": 7.068944421237579,
+          "actual_sum": 1106794.0,
+          "prediction_sum": 1036936.4822158382,
+          "rows": 280
+        },
+        {
+          "target_year": 2022,
+          "forecast_origin_year": 2021,
+          "features": [
+            "side_creations_lag_1",
+            "sitadel_surface_autorisee_lag_1"
+          ],
+          "wmape": 10.201900892613239,
+          "actual_sum": 1119168.0,
+          "prediction_sum": 1232235.6771590663,
+          "rows": 280
+        },
+        {
+          "target_year": 2023,
+          "forecast_origin_year": 2022,
+          "features": [
+            "side_creations_lag_1",
+            "sitadel_surface_autorisee_lag_1"
+          ],
+          "wmape": 11.069645584040302,
+          "actual_sum": 1103907.0,
+          "prediction_sum": 1226067.672635981,
+          "rows": 280
+        },
+        {
+          "target_year": 2024,
+          "forecast_origin_year": 2023,
+          "features": [
+            "side_creations_lag_1",
+            "sitadel_surface_autorisee_lag_1"
+          ],
+          "wmape": 4.249757842194736,
+          "actual_sum": 1219089.0,
+          "prediction_sum": 1178340.7554337012,
+          "rows": 280
+        }
+      ],
+      "summary": {
+        "mean_wmape": 8.147562185021464,
+        "max_wmape": 11.069645584040302,
+        "per_year_wmape": {
+          "2021": 7.068944421237579,
+          "2022": 10.201900892613239,
+          "2023": 11.069645584040302,
+          "2024": 4.249757842194736
+        }
+      },
+      "comparison": {
+        "mean_delta_vs_ridge_lag_only": 0.48344810635222135,
+        "per_year_delta_vs_ridge_lag_only": {
+          "2021": 0.5594342237992205,
+          "2022": 0.39532545151821985,
+          "2023": 0.8326324350693568,
+          "2024": 0.1464003150220874
+        },
+        "improved_years": [],
+        "worsened_years": [
+          2021,
+          2022,
+          2023,
+          2024
+        ],
+        "max_yearly_degradation": 0.8326324350693568,
+        "accepted_strict": false,
+        "accepted_soft": false
+      }
+    },
+    {
+      "name": "side_creations_lag_1+pop_lag_1",
+      "feature_set": [
+        "side_creations_lag_1",
+        "pop_lag_1"
+      ],
+      "rows": [
+        {
+          "target_year": 2021,
+          "forecast_origin_year": 2020,
+          "features": [
+            "side_creations_lag_1",
+            "pop_lag_1"
+          ],
+          "wmape": 10.181427312108084,
+          "actual_sum": 1106794.0,
+          "prediction_sum": 1008957.3376645341,
+          "rows": 280
+        },
+        {
+          "target_year": 2022,
+          "forecast_origin_year": 2021,
+          "features": [
+            "side_creations_lag_1",
+            "pop_lag_1"
+          ],
+          "wmape": 8.964170950197055,
+          "actual_sum": 1119168.0,
+          "prediction_sum": 1186179.9810417395,
+          "rows": 280
+        },
+        {
+          "target_year": 2023,
+          "forecast_origin_year": 2022,
+          "features": [
+            "side_creations_lag_1",
+            "pop_lag_1"
+          ],
+          "wmape": 9.624936418550254,
+          "actual_sum": 1103907.0,
+          "prediction_sum": 1185250.6068868502,
+          "rows": 280
+        },
+        {
+          "target_year": 2024,
+          "forecast_origin_year": 2023,
+          "features": [
+            "side_creations_lag_1",
+            "pop_lag_1"
+          ],
+          "wmape": 6.496001764638194,
+          "actual_sum": 1219089.0,
+          "prediction_sum": 1158673.9764020222,
+          "rows": 280
+        }
+      ],
+      "summary": {
+        "mean_wmape": 8.816634111373396,
+        "max_wmape": 10.181427312108084,
+        "per_year_wmape": {
+          "2021": 10.181427312108084,
+          "2022": 8.964170950197055,
+          "2023": 9.624936418550254,
+          "2024": 6.496001764638194
+        }
+      },
+      "comparison": {
+        "mean_delta_vs_ridge_lag_only": 1.152520032704154,
+        "per_year_delta_vs_ridge_lag_only": {
+          "2021": 3.671917114669726,
+          "2022": -0.8424044908979642,
+          "2023": -0.6120767304206911,
+          "2024": 2.3926442374655457
+        },
+        "improved_years": [
+          2022,
+          2023
+        ],
+        "worsened_years": [
+          2021,
+          2024
+        ],
+        "max_yearly_degradation": 3.671917114669726,
+        "accepted_strict": false,
+        "accepted_soft": false
+      }
+    },
+    {
+      "name": "side_creations_lag_1+pop_lag_2",
+      "feature_set": [
+        "side_creations_lag_1",
+        "pop_lag_2"
+      ],
+      "rows": [
+        {
+          "target_year": 2021,
+          "forecast_origin_year": 2020,
+          "features": [
+            "side_creations_lag_1",
+            "pop_lag_2"
+          ],
+          "wmape": 10.228530791886822,
+          "actual_sum": 1106794.0,
+          "prediction_sum": 1008925.724260501,
+          "rows": 280
+        },
+        {
+          "target_year": 2022,
+          "forecast_origin_year": 2021,
+          "features": [
+            "side_creations_lag_1",
+            "pop_lag_2"
+          ],
+          "wmape": 8.970307290900285,
+          "actual_sum": 1119168.0,
+          "prediction_sum": 1185531.6817788747,
+          "rows": 280
+        },
+        {
+          "target_year": 2023,
+          "forecast_origin_year": 2022,
+          "features": [
+            "side_creations_lag_1",
+            "pop_lag_2"
+          ],
+          "wmape": 9.603721785012436,
+          "actual_sum": 1103907.0,
+          "prediction_sum": 1184336.8982956468,
+          "rows": 280
+        },
+        {
+          "target_year": 2024,
+          "forecast_origin_year": 2023,
+          "features": [
+            "side_creations_lag_1",
+            "pop_lag_2"
+          ],
+          "wmape": 6.568218018664148,
+          "actual_sum": 1219089.0,
+          "prediction_sum": 1158014.4840840257,
+          "rows": 280
+        }
+      ],
+      "summary": {
+        "mean_wmape": 8.842694471615923,
+        "max_wmape": 10.228530791886822,
+        "per_year_wmape": {
+          "2021": 10.228530791886822,
+          "2022": 8.970307290900285,
+          "2023": 9.603721785012436,
+          "2024": 6.568218018664148
+        }
+      },
+      "comparison": {
+        "mean_delta_vs_ridge_lag_only": 1.1785803929466807,
+        "per_year_delta_vs_ridge_lag_only": {
+          "2021": 3.7190205944484633,
+          "2022": -0.8362681501947336,
+          "2023": -0.6332913639585094,
+          "2024": 2.4648604914914998
+        },
+        "improved_years": [
+          2022,
+          2023
+        ],
+        "worsened_years": [
+          2021,
+          2024
+        ],
+        "max_yearly_degradation": 3.7190205944484633,
+        "accepted_strict": false,
+        "accepted_soft": false
+      }
+    },
+    {
+      "name": "side_creations_lag_1+regime_signal_lag_1",
+      "feature_set": [
+        "side_creations_lag_1",
+        "regime_signal_lag_1"
+      ],
+      "rows": [
+        {
+          "target_year": 2021,
+          "forecast_origin_year": 2020,
+          "features": [
+            "side_creations_lag_1",
+            "regime_signal_lag_1"
+          ],
+          "wmape": 12.231224856391437,
+          "actual_sum": 1106794.0,
+          "prediction_sum": 1200314.5307226304,
+          "rows": 280
+        },
+        {
+          "target_year": 2022,
+          "forecast_origin_year": 2021,
+          "features": [
+            "side_creations_lag_1",
+            "regime_signal_lag_1"
+          ],
+          "wmape": 8.131902510909791,
+          "actual_sum": 1119168.0,
+          "prediction_sum": 1099450.9360897713,
+          "rows": 280
+        },
+        {
+          "target_year": 2023,
+          "forecast_origin_year": 2022,
+          "features": [
+            "side_creations_lag_1",
+            "regime_signal_lag_1"
+          ],
+          "wmape": 18.620825522311804,
+          "actual_sum": 1103907.0,
+          "prediction_sum": 1309463.5963985869,
+          "rows": 280
+        },
+        {
+          "target_year": 2024,
+          "forecast_origin_year": 2023,
+          "features": [
+            "side_creations_lag_1",
+            "regime_signal_lag_1"
+          ],
+          "wmape": 4.3201667416573555,
+          "actual_sum": 1219089.0,
+          "prediction_sum": 1210119.5382862254,
+          "rows": 280
+        }
+      ],
+      "summary": {
+        "mean_wmape": 10.826029907817597,
+        "max_wmape": 18.620825522311804,
+        "per_year_wmape": {
+          "2021": 12.231224856391437,
+          "2022": 8.131902510909791,
+          "2023": 18.620825522311804,
+          "2024": 4.3201667416573555
+        }
+      },
+      "comparison": {
+        "mean_delta_vs_ridge_lag_only": 3.161915829148355,
+        "per_year_delta_vs_ridge_lag_only": {
+          "2021": 5.721714658953078,
+          "2022": -1.6746729301852277,
+          "2023": 8.38381237334086,
+          "2024": 0.2168092144847069
+        },
+        "improved_years": [
+          2022
+        ],
+        "worsened_years": [
+          2021,
+          2023,
+          2024
+        ],
+        "max_yearly_degradation": 8.38381237334086,
+        "accepted_strict": false,
+        "accepted_soft": false
+      }
+    },
+    {
+      "name": "side_creations_lag_1+stock_lag_1",
+      "feature_set": [
+        "side_creations_lag_1",
+        "stock_lag_1"
+      ],
+      "rows": [
+        {
+          "target_year": 2021,
+          "forecast_origin_year": 2020,
+          "features": [
+            "side_creations_lag_1",
+            "stock_lag_1"
+          ],
+          "wmape": 6.847406213957761,
+          "actual_sum": 1106794.0,
+          "prediction_sum": 1034322.2112668615,
+          "rows": 280
+        },
+        {
+          "target_year": 2022,
+          "forecast_origin_year": 2021,
+          "features": [
+            "side_creations_lag_1",
+            "stock_lag_1"
+          ],
+          "wmape": 9.753754860156775,
+          "actual_sum": 1119168.0,
+          "prediction_sum": 1221220.4454934201,
+          "rows": 280
+        },
+        {
+          "target_year": 2023,
+          "forecast_origin_year": 2022,
+          "features": [
+            "side_creations_lag_1",
+            "stock_lag_1"
+          ],
+          "wmape": 27.334962823635266,
+          "actual_sum": 1103907.0,
+          "prediction_sum": 1405565.186146859,
+          "rows": 280
+        },
+        {
+          "target_year": 2024,
+          "forecast_origin_year": 2023,
+          "features": [
+            "side_creations_lag_1",
+            "stock_lag_1"
+          ],
+          "wmape": 6.613289846816796,
+          "actual_sum": 1219089.0,
+          "prediction_sum": 1146554.7050570836,
+          "rows": 280
+        }
+      ],
+      "summary": {
+        "mean_wmape": 12.63735343614165,
+        "max_wmape": 27.334962823635266,
+        "per_year_wmape": {
+          "2021": 6.847406213957761,
+          "2022": 9.753754860156775,
+          "2023": 27.334962823635266,
+          "2024": 6.613289846816796
+        }
+      },
+      "comparison": {
+        "mean_delta_vs_ridge_lag_only": 4.973239357472408,
+        "per_year_delta_vs_ridge_lag_only": {
+          "2021": 0.3378960165194025,
+          "2022": -0.05282058093824382,
+          "2023": 17.09794967466432,
+          "2024": 2.5099323196441476
+        },
+        "improved_years": [
+          2022
+        ],
+        "worsened_years": [
+          2021,
+          2023,
+          2024
+        ],
+        "max_yearly_degradation": 17.09794967466432,
+        "accepted_strict": false,
+        "accepted_soft": false
+      }
+    }
+  ],
+  "combination_results": [
+    {
+      "name": "side_creations_lag_1+nb_com+total_establishments",
+      "feature_set": [
+        "side_creations_lag_1",
+        "nb_com",
+        "total_establishments"
+      ],
+      "rows": [
+        {
+          "target_year": 2021,
+          "forecast_origin_year": 2020,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com",
+            "total_establishments"
+          ],
+          "wmape": 6.7826683429079315,
+          "actual_sum": 1106794.0,
+          "prediction_sum": 1033797.4490851066,
+          "rows": 280
+        },
+        {
+          "target_year": 2022,
+          "forecast_origin_year": 2021,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com",
+            "total_establishments"
+          ],
+          "wmape": 9.678831782851024,
+          "actual_sum": 1119168.0,
+          "prediction_sum": 1220586.9588763723,
+          "rows": 280
+        },
+        {
+          "target_year": 2023,
+          "forecast_origin_year": 2022,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com",
+            "total_establishments"
+          ],
+          "wmape": 10.036477494881442,
+          "actual_sum": 1103907.0,
+          "prediction_sum": 1211761.1791165194,
+          "rows": 280
+        },
+        {
+          "target_year": 2024,
+          "forecast_origin_year": 2023,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com",
+            "total_establishments"
+          ],
+          "wmape": 4.176580968291647,
+          "actual_sum": 1219089.0,
+          "prediction_sum": 1176863.7325118743,
+          "rows": 280
+        }
+      ],
+      "summary": {
+        "mean_wmape": 7.668639647233011,
+        "max_wmape": 10.036477494881442,
+        "per_year_wmape": {
+          "2021": 6.7826683429079315,
+          "2022": 9.678831782851024,
+          "2023": 10.036477494881442,
+          "2024": 4.176580968291647
+        }
+      },
+      "comparison": {
+        "mean_delta_vs_ridge_lag_only": 0.004525568563768623,
+        "per_year_delta_vs_ridge_lag_only": {
+          "2021": 0.27315814546957284,
+          "2022": -0.12774365824399503,
+          "2023": -0.2005356540895029,
+          "2024": 0.0732234411189987
+        },
+        "improved_years": [
+          2022,
+          2023
+        ],
+        "worsened_years": [
+          2021,
+          2024
+        ],
+        "max_yearly_degradation": 0.27315814546957284,
+        "accepted_strict": false,
+        "accepted_soft": false
+      }
+    },
+    {
+      "name": "side_creations_lag_1+nb_com+total_establishments+sitadel_surface_commencee_lag_1",
+      "feature_set": [
+        "side_creations_lag_1",
+        "nb_com",
+        "total_establishments",
+        "sitadel_surface_commencee_lag_1"
+      ],
+      "rows": [
+        {
+          "target_year": 2021,
+          "forecast_origin_year": 2020,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com",
+            "total_establishments",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 7.625998571079792,
+          "actual_sum": 1106794.0,
+          "prediction_sum": 1026838.8466077773,
+          "rows": 280
+        },
+        {
+          "target_year": 2022,
+          "forecast_origin_year": 2021,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com",
+            "total_establishments",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 9.567539004383887,
+          "actual_sum": 1119168.0,
+          "prediction_sum": 1218697.351896295,
+          "rows": 280
+        },
+        {
+          "target_year": 2023,
+          "forecast_origin_year": 2022,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com",
+            "total_establishments",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 9.76184106912219,
+          "actual_sum": 1103907.0,
+          "prediction_sum": 1208031.2858458464,
+          "rows": 280
+        },
+        {
+          "target_year": 2024,
+          "forecast_origin_year": 2023,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com",
+            "total_establishments",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 4.722257701021526,
+          "actual_sum": 1219089.0,
+          "prediction_sum": 1169202.3133873455,
+          "rows": 280
+        }
+      ],
+      "summary": {
+        "mean_wmape": 7.919409086401849,
+        "max_wmape": 9.76184106912219,
+        "per_year_wmape": {
+          "2021": 7.625998571079792,
+          "2022": 9.567539004383887,
+          "2023": 9.76184106912219,
+          "2024": 4.722257701021526
+        }
+      },
+      "comparison": {
+        "mean_delta_vs_ridge_lag_only": 0.2552950077326068,
+        "per_year_delta_vs_ridge_lag_only": {
+          "2021": 1.1164883736414337,
+          "2022": -0.23903643671113173,
+          "2023": -0.47517207984875576,
+          "2024": 0.6189001738488775
+        },
+        "improved_years": [
+          2022,
+          2023
+        ],
+        "worsened_years": [
+          2021,
+          2024
+        ],
+        "max_yearly_degradation": 1.1164883736414337,
+        "accepted_strict": false,
+        "accepted_soft": false
+      }
+    },
+    {
+      "name": "side_creations_lag_1+total_establishments+sitadel_surface_commencee_lag_1",
+      "feature_set": [
+        "side_creations_lag_1",
+        "total_establishments",
+        "sitadel_surface_commencee_lag_1"
+      ],
+      "rows": [
+        {
+          "target_year": 2021,
+          "forecast_origin_year": 2020,
+          "features": [
+            "side_creations_lag_1",
+            "total_establishments",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 7.683478466184765,
+          "actual_sum": 1106794.0,
+          "prediction_sum": 1026886.6142206027,
+          "rows": 280
+        },
+        {
+          "target_year": 2022,
+          "forecast_origin_year": 2021,
+          "features": [
+            "side_creations_lag_1",
+            "total_establishments",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 9.626586901001707,
+          "actual_sum": 1119168.0,
+          "prediction_sum": 1219098.3892972902,
+          "rows": 280
+        },
+        {
+          "target_year": 2023,
+          "forecast_origin_year": 2022,
+          "features": [
+            "side_creations_lag_1",
+            "total_establishments",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 9.773346764821715,
+          "actual_sum": 1103907.0,
+          "prediction_sum": 1208347.7919449154,
+          "rows": 280
+        },
+        {
+          "target_year": 2024,
+          "forecast_origin_year": 2023,
+          "features": [
+            "side_creations_lag_1",
+            "total_establishments",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 4.745629736676811,
+          "actual_sum": 1219089.0,
+          "prediction_sum": 1169228.9316177275,
+          "rows": 280
+        }
+      ],
+      "summary": {
+        "mean_wmape": 7.957260467171249,
+        "max_wmape": 9.773346764821715,
+        "per_year_wmape": {
+          "2021": 7.683478466184765,
+          "2022": 9.626586901001707,
+          "2023": 9.773346764821715,
+          "2024": 4.745629736676811
+        }
+      },
+      "comparison": {
+        "mean_delta_vs_ridge_lag_only": 0.2931463885020067,
+        "per_year_delta_vs_ridge_lag_only": {
+          "2021": 1.173968268746406,
+          "2022": -0.1799885400933121,
+          "2023": -0.46366638414922967,
+          "2024": 0.6422722095041626
+        },
+        "improved_years": [
+          2022,
+          2023
+        ],
+        "worsened_years": [
+          2021,
+          2024
+        ],
+        "max_yearly_degradation": 1.173968268746406,
+        "accepted_strict": false,
+        "accepted_soft": false
+      }
+    },
+    {
+      "name": "side_creations_lag_1+nb_com+sitadel_surface_commencee_lag_1",
+      "feature_set": [
+        "side_creations_lag_1",
+        "nb_com",
+        "sitadel_surface_commencee_lag_1"
+      ],
+      "rows": [
+        {
+          "target_year": 2021,
+          "forecast_origin_year": 2020,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 8.525887473922413,
+          "actual_sum": 1106794.0,
+          "prediction_sum": 1022832.1098032207,
+          "rows": 280
+        },
+        {
+          "target_year": 2022,
+          "forecast_origin_year": 2021,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 9.260242748733114,
+          "actual_sum": 1119168.0,
+          "prediction_sum": 1220029.6817339514,
+          "rows": 280
+        },
+        {
+          "target_year": 2023,
+          "forecast_origin_year": 2022,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 9.482971115986642,
+          "actual_sum": 1103907.0,
+          "prediction_sum": 1207246.3891281597,
+          "rows": 280
+        },
+        {
+          "target_year": 2024,
+          "forecast_origin_year": 2023,
+          "features": [
+            "side_creations_lag_1",
+            "nb_com",
+            "sitadel_surface_commencee_lag_1"
+          ],
+          "wmape": 5.099980955455699,
+          "actual_sum": 1219089.0,
+          "prediction_sum": 1166026.9745620422,
+          "rows": 280
+        }
+      ],
+      "summary": {
+        "mean_wmape": 8.092270573524468,
+        "max_wmape": 9.482971115986642,
+        "per_year_wmape": {
+          "2021": 8.525887473922413,
+          "2022": 9.260242748733114,
+          "2023": 9.482971115986642,
+          "2024": 5.099980955455699
+        }
+      },
+      "comparison": {
+        "mean_delta_vs_ridge_lag_only": 0.42815649485522567,
+        "per_year_delta_vs_ridge_lag_only": {
+          "2021": 2.0163772764840546,
+          "2022": -0.5463326923619043,
+          "2023": -0.7540420329843034,
+          "2024": 0.9966234282830504
+        },
+        "improved_years": [
+          2022,
+          2023
+        ],
+        "worsened_years": [
+          2021,
+          2024
+        ],
+        "max_yearly_degradation": 2.0163772764840546,
+        "accepted_strict": false,
+        "accepted_soft": false
+      }
+    }
+  ]
+}
