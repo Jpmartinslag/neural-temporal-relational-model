@@ -1,5 +1,8 @@
 # REI Created Candidate Validation v0
 
+> Methodological precedence note: use [METHODOLOGICAL_POSITIONING_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/METHODOLOGICAL_POSITIONING_V0.md) as the current canonical framing. If this report conflicts with it, the methodological positioning document prevails.
+
+
 - candidate: `rei_cfe_microentrepreneurs_created_n_1_lag_1`
 - baseline mean WMAPE: `7.649`
 - candidate mean WMAPE: `6.699`

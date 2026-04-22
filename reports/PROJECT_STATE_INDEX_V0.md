@@ -1,6 +1,15 @@
 # Project State Index v0
 
+> Methodological precedence note: use [METHODOLOGICAL_POSITIONING_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/METHODOLOGICAL_POSITIONING_V0.md) as the current canonical framing. If this report conflicts with it, the methodological positioning document prevails.
+
+
 Data: 2026-04-16
+
+## Canonical Methodological Note
+
+Current methodological precedence is defined in [METHODOLOGICAL_POSITIONING_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/METHODOLOGICAL_POSITIONING_V0.md).
+
+If this index conflicts with older baseline-framing language, the methodological positioning document prevails.
 
 Objetivo:
 
@@ -10,37 +19,46 @@ Objetivo:
 
 ## Pergunta Do Projeto
 
-Construir uma base territorial, temporal e auditavel para recomendacoes economicas em zonas de emprego francesas.
+Construir uma base territorial, temporal e auditavel para recomendacao economica territorial em zonas de emprego francesas.
 
-No estado atual, o projeto ainda nao esta na camada final de recomendacao.
+No estado atual, o projeto ainda nao esta na camada final de recomendacao. A previsao de criacoes de estabelecimentos e a tarefa supervisionada atual, mas ela deve ser lida como etapa intermediaria de um backbone representacional `STGNN`.
 
-O foco atual e consolidar um grafo territorial dinamico anual e validar se existe um backbone preditivo defensavel antes de avançar para modelos grafo-temporais e depois para decisao multiagente.
+O foco atual e consolidar o benchmark oficial, o tensor com `REI` e a proxima iteracao de backbone `STGNN` antes da camada final de decisao multiagente.
 
 ## Estado Atual Em Uma Linha
 
-Temos target oficial `SIDE`, painel anual `ZE2020`, grafo geografico, grafo de mobilidade, tensores extended separados por `forecast`/`nowcast`/`diagnostic`, baselines causais e auditoria de candidatos locais; ainda nao temos arquitetura final nem camada decisional.
+Temos target oficial `SIDE`, painel anual `ZE2020`, grafo geografico, grafo de mobilidade, tensor `forecast` com `REI`, benchmark oficial `Ridge + REI` e base suficiente para iniciar a proxima iteracao `STGNN`; ainda nao temos a camada final de recomendacao multiagente.
 
 ## Leitura Atual Obrigatoria
 
 Arquivos de entrada para entender o estado atual:
 
-- [BASELINE_PHASE_CLOSURE_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BASELINE_PHASE_CLOSURE_DECISION_V0.md)
-- [CLEANUP_AND_ARCHIVE_PLAN_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/CLEANUP_AND_ARCHIVE_PLAN_V0.md)
-- [PROJECT_CONSISTENCY_AUDIT_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/PROJECT_CONSISTENCY_AUDIT_V0.md)
-- [EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md)
-- [LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md)
-- [RAW_EXTERNAL_INVENTORY_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RAW_EXTERNAL_INVENTORY_V0.md)
+- [BASELINE_PHASE_CLOSURE_DECISION_V1.md](/home/jpdark/Downloads/project_recomm/dataset/reports/BASELINE_PHASE_CLOSURE_DECISION_V1.md)
+- [METHODOLOGICAL_POSITIONING_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/METHODOLOGICAL_POSITIONING_V0.md)
+- [NEXT_PHASE_KICKOFF_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/NEXT_PHASE_KICKOFF_V0.md)
+- [STGNN_EXPERIMENT_PROTOCOL_V1.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_EXPERIMENT_PROTOCOL_V1.md)
+- [STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md)
+- [TEMPORAL_MLP_WITH_REI_TENSOR_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TEMPORAL_MLP_WITH_REI_TENSOR_V0.md)
+- [RESIDUAL_GCN_WITH_REI_TENSOR_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RESIDUAL_GCN_WITH_REI_TENSOR_V0.md)
+- [RESIDUAL_GCN_WITH_REI_TENSOR_MOBILITY_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/RESIDUAL_GCN_WITH_REI_TENSOR_MOBILITY_V0.md)
+- [MINIMAL_RESIDUAL_STGNN_WITH_REI_TENSOR_GEO_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/MINIMAL_RESIDUAL_STGNN_WITH_REI_TENSOR_GEO_V0.md)
+- [README.md](/home/jpdark/Downloads/project_recomm/dataset/README.md)
 - [canonical_artifacts_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/canonical_artifacts_v0.csv)
+
+Historico consolidado:
+
+- [top_level_cleanup bundle](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/README.md)
 
 Resumo operacional:
 
 - artefato canonico de target: `target_side_establishments_annual_core_v0.csv`
-- benchmark atual a bater: `ridge_lag_only = 7.66%` WMAPE e `persistence = 7.68%`
-- decisao atual: nao iniciar `STGNN` ainda; testar primeiro modelos residuais e correcao de persistencia com validacao causal
-- tensor forecast-safe atual: `stgnn_tensor_package_extended_forecast_core_v1.npz`
+- benchmark oficial atual: `side_creations_lag_1 + nb_com + rei_cfe_microentrepreneurs_created_n_1_lag_1`
+- melhor baseline validada: `Ridge + REI`, mean WMAPE `6.699%`
+- decisao atual: interpretar a baseline como benchmark e desenvolver a proxima iteracao `STGNN` a partir do tensor com `REI`
+- tensor forecast-safe atual: `stgnn_tensor_package_extended_forecast_with_rei_core_v0.npz`
 - tensor nowcast atual: `stgnn_tensor_package_extended_nowcast_q1_core_v1.npz`
 - tensor diagnostico atual: `stgnn_tensor_package_extended_diagnostic_core_v1.npz`
-- candidatos locais: SITADEL mensal/anual, REI e Energia permanecem fora do tensor canonico
+- candidatos locais: `SITADEL` mensal/anual e Energia permanecem fora do tensor canonico principal; `REI` ja entra no benchmark oficial e no novo tensor forecast-safe
 - correcao importante: `adjacency_mobility` dos tensores extended agora tem shape correto `280 x 280`
 - resultado `REI` residual foi invalidado temporariamente por risco de vintage/publication lag e dupla contagem `P31/P33/P34` em 2024
 - melhor novo experimento fixo sem `REI`: residual `RidgeCV` log com `engineered_target`, WMAPE medio `6.62%`
@@ -48,7 +66,7 @@ Resumo operacional:
 - fallback por `persistence` foi testado nas regras de ativacao; nao resolve a robustez porque reduz o dano em `2022`, mas colapsa em `2021` com WMAPE `14.32%`
 - diagnostico LOYO da regra de ativacao falhou no criterio de estabilidade: range de threshold `0.0917` contra limite metodologico `0.05`
 - regra de ativacao melhora os 3 grupos de volume no agregado, mas piora contra persistencia em `2022` e `2023`; nao e baseline operacional
-- referencias operacionais atuais: `ridge_lag_only` como benchmark principal e `persistence` como baseline conservador
+- referencias operacionais atuais: `Ridge + REI` como benchmark principal, `ridge_lag_nbcom` como referencia curta historica e `persistence` como baseline conservador
 - dumps linha-a-linha de predicao residual sao regeneraveis e ficam fora do Git; metricas, diagnosticos agregados e scripts ficam versionados
 
 ## O Que Esta Fechado
@@ -98,7 +116,7 @@ Arquivos principais:
 - [mobility_adjacency_row_normalized_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/mobility_adjacency_row_normalized_core_v0.csv)
 - [GRAPH_CORE_V0_INSPECTION.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/GRAPH_CORE_V0_INSPECTION.md)
 - [MOBILITY_GRAPH_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/MOBILITY_GRAPH_CORE_V0.md)
-- [MOBILITY_SPATIAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/MOBILITY_SPATIAL_BASELINE_CORE_V0.md)
+- [MOBILITY_SPATIAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/MOBILITY_SPATIAL_BASELINE_CORE_V0.md)
 
 Leitura:
 
@@ -129,8 +147,8 @@ Leitura:
 
 Auditoria:
 
-- [SIDE_COMMUNAL_CREATIONS_INSPECTION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_COMMUNAL_CREATIONS_INSPECTION_V0.md)
-- [TARGET_PROXY_SIDE_AUDIT_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_PROXY_SIDE_AUDIT_DECISION_V0.md)
+- [SIDE_COMMUNAL_CREATIONS_INSPECTION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/SIDE_COMMUNAL_CREATIONS_INSPECTION_V0.md)
+- [TARGET_PROXY_SIDE_AUDIT_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/TARGET_PROXY_SIDE_AUDIT_DECISION_V0.md)
 
 ### 5. Pacote Tensorial Grafo-Temporal
 
@@ -146,7 +164,7 @@ Arquivos principais:
 - [stgnn_tensor_sample_index_side_target_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/stgnn_tensor_sample_index_side_target_core_v0.csv)
 - [stgnn_tensor_feature_registry_side_target_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/stgnn_tensor_feature_registry_side_target_core_v0.csv)
 - [STGNN_TENSOR_PACKAGE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/STGNN_TENSOR_PACKAGE_CORE_V0.md)
-- [STGNN_TENSOR_PACKAGE_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_TENSOR_PACKAGE_SIDE_TARGET_CORE_V0.md)
+- [STGNN_TENSOR_PACKAGE_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/STGNN_TENSOR_PACKAGE_SIDE_TARGET_CORE_V0.md)
 - [STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md)
 
 Leitura:
@@ -241,7 +259,7 @@ Status: testados, nao canonicos.
 
 Arquivos principais:
 
-- [LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md)
+- [LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md)
 - [local_candidate_feature_metrics_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/local_candidate_feature_metrics_v0.json)
 - [sitadel_monthly_derived_annual_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/sitadel_monthly_derived_annual_ze2020_v0.csv)
 - [energy_consumption_ze2020_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/energy_consumption_ze2020_v0.csv)
@@ -261,7 +279,7 @@ Status: registrado, nao integrado.
 
 Arquivos principais:
 
-- [FUTURE_DATASET_CANDIDATES_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FUTURE_DATASET_CANDIDATES_V0.md)
+- [FUTURE_DATASET_CANDIDATES_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/FUTURE_DATASET_CANDIDATES_V0.md)
 - [future_dataset_candidates_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/metadata/future_dataset_candidates_v0.csv)
 
 Leitura:
@@ -350,7 +368,7 @@ Para entender o projeto rapidamente, ler nesta ordem:
 5. [SIDE_MODEL_DECISION_MATRIX_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/SIDE_MODEL_DECISION_MATRIX_CORE_V0.md)
 6. [SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/SEGMENTED_DECISION_RULE_BACKTEST_CORE_V0.md)
 7. [SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/benchmarks/SIDE_BACKTEST_INSTABILITY_DIAGNOSTIC_CORE_V0.md)
-8. [FUTURE_DATASET_CANDIDATES_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/FUTURE_DATASET_CANDIDATES_V0.md)
+8. [FUTURE_DATASET_CANDIDATES_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/FUTURE_DATASET_CANDIDATES_V0.md)
 9. [EXTENDED_CORE_VERIFICATION_PLAN_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/graph_tensor/EXTENDED_CORE_VERIFICATION_PLAN_V0.md)
 
 ## Proximo Passo

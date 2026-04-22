@@ -1,5 +1,8 @@
 # Project Explanations
 
+> Methodological precedence note: use [METHODOLOGICAL_POSITIONING_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/METHODOLOGICAL_POSITIONING_V0.md) as the current canonical framing. If this report conflicts with it, the methodological positioning document prevails.
+
+
 Data de inicio: 2026-04-08
 
 Objetivo:
@@ -7,6 +10,13 @@ Objetivo:
 - registrar o que foi feito
 - explicar por que cada acao foi necessaria
 - manter uma base de texto reutilizavel para documentacao, relatorio e redacao futura
+
+Nota metodologica canonica:
+
+- o enquadramento oficial atual esta em [METHODOLOGICAL_POSITIONING_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/METHODOLOGICAL_POSITIONING_V0.md)
+- baseline deve ser lida como benchmark
+- `STGNN` deve ser lida como backbone-alvo
+- previsao de criacoes deve ser lida como tarefa intermediaria, nao como produto final
 
 Regra:
 

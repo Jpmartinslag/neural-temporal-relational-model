@@ -1,5 +1,8 @@
 # SIDE Target Baselines Core v0
 
+> Methodological precedence note: use [METHODOLOGICAL_POSITIONING_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/METHODOLOGICAL_POSITIONING_V0.md) as the current canonical framing. If this report conflicts with it, the methodological positioning document prevails.
+
+
 Data: 2026-04-13
 
 Objetivo:

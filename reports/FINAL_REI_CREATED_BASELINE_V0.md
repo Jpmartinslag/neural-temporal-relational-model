@@ -1,5 +1,8 @@
 # Final REI Created Baseline v0
 
+> Methodological precedence note: use [METHODOLOGICAL_POSITIONING_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/METHODOLOGICAL_POSITIONING_V0.md) as the current canonical framing. If this report conflicts with it, the methodological positioning document prevails.
+
+
 Final operational artifact fitted on all available observed years.
 
 - model: `final_rei_created_baseline_v0`

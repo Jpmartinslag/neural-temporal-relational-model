@@ -1,5 +1,8 @@
 # Project Journey
 
+> Methodological precedence note: use [METHODOLOGICAL_POSITIONING_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/METHODOLOGICAL_POSITIONING_V0.md) as the current canonical framing. If this report conflicts with it, the methodological positioning document prevails.
+
+
 Data de inicio do journal: 2026-04-08
 
 Objetivo:
@@ -9,6 +12,13 @@ Objetivo:
 - registrar anomalias confirmadas
 - registrar o que falta fazer
 - manter rastreabilidade do caminho ate o primeiro dataset pronto para modelagem
+
+Nota metodologica canonica:
+
+- o enquadramento oficial atual esta em [METHODOLOGICAL_POSITIONING_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/METHODOLOGICAL_POSITIONING_V0.md)
+- baseline deve ser interpretada como benchmark
+- `STGNN` permanece como backbone-alvo central do projeto
+- recomendacao territorial multiagente continua sendo o objetivo de sistema a jusante
 
 ## Estado atual do projeto
 
@@ -859,7 +869,7 @@ O que foi feito:
 
 Artefatos:
 
-- [CORE_DATASETS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/CORE_DATASETS_V0.md)
+- [CORE_DATASETS_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/CORE_DATASETS_V0.md)
 - [zones_master_annual_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/zones_master_annual_core_v0.csv)
 - [panel_zones_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/panel_zones_core_v0.csv)
 - [population_history_ze2020_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/population_history_ze2020_core_v0.csv)
@@ -1297,7 +1307,7 @@ Artefatos:
 - [integrate_side_2021_bpe_2023_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/integrate_side_2021_bpe_2023_v0.py)
 - [side_stocks_commune_2021.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/side_stocks_commune_2021.csv)
 - [bpe_commune_2023.csv](/home/jpdark/Downloads/project_recomm/dataset/data/interim/tables/bpe_commune_2023.csv)
-- [SIDE_2021_BPE_2023_INTEGRATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_2021_BPE_2023_INTEGRATION_V0.md)
+- [SIDE_2021_BPE_2023_INTEGRATION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/SIDE_2021_BPE_2023_INTEGRATION_V0.md)
 
 Decisao:
 
@@ -1431,8 +1441,8 @@ Artefatos:
 - [inspect_side_communal_creations_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/inspect_side_communal_creations_v0.py)
 - [side_communal_creations_ze2020_official_2012_2024_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/side_communal_creations_ze2020_official_2012_2024_v0.csv)
 - [target_proxy_vs_side_official_ze2020_2012_2024_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/target_proxy_vs_side_official_ze2020_2012_2024_v0.csv)
-- [SIDE_COMMUNAL_CREATIONS_INSPECTION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_COMMUNAL_CREATIONS_INSPECTION_V0.md)
-- [TARGET_PROXY_SIDE_AUDIT_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_PROXY_SIDE_AUDIT_DECISION_V0.md)
+- [SIDE_COMMUNAL_CREATIONS_INSPECTION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/SIDE_COMMUNAL_CREATIONS_INSPECTION_V0.md)
+- [TARGET_PROXY_SIDE_AUDIT_DECISION_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/TARGET_PROXY_SIDE_AUDIT_DECISION_V0.md)
 
 Decisao:
 
@@ -1463,7 +1473,7 @@ Artefatos:
 - [TARGET_SIDE_ESTABLISHMENTS_ANNUAL_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/TARGET_SIDE_ESTABLISHMENTS_ANNUAL_CORE_V0.md)
 - [build_stgnn_tensor_package_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/build_stgnn_tensor_package_side_target_core_v0.py)
 - [stgnn_tensor_package_side_target_core_v0.npz](/home/jpdark/Downloads/project_recomm/dataset/data/processed/stgnn_tensor_package_side_target_core_v0.npz)
-- [STGNN_TENSOR_PACKAGE_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/STGNN_TENSOR_PACKAGE_SIDE_TARGET_CORE_V0.md)
+- [STGNN_TENSOR_PACKAGE_SIDE_TARGET_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/STGNN_TENSOR_PACKAGE_SIDE_TARGET_CORE_V0.md)
 - [evaluate_side_target_baselines_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_side_target_baselines_core_v0.py)
 - [SIDE_TARGET_BASELINES_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/SIDE_TARGET_BASELINES_CORE_V0.md)
 - [evaluate_feature_augmented_baseline_side_target_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_feature_augmented_baseline_side_target_core_v0.py)
@@ -1555,7 +1565,7 @@ Artefatos:
 - [MOBILITY_GRAPH_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/MOBILITY_GRAPH_CORE_V0.md)
 - [evaluate_mobility_spatial_baseline_core_v0.py](/home/jpdark/Downloads/project_recomm/dataset/src/data/evaluate_mobility_spatial_baseline_core_v0.py)
 - [mobility_spatial_baseline_predictions_core_v0.csv](/home/jpdark/Downloads/project_recomm/dataset/data/processed/mobility_spatial_baseline_predictions_core_v0.csv)
-- [MOBILITY_SPATIAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/MOBILITY_SPATIAL_BASELINE_CORE_V0.md)
+- [MOBILITY_SPATIAL_BASELINE_CORE_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/archive/2026_04_22_top_level_cleanup/MOBILITY_SPATIAL_BASELINE_CORE_V0.md)
 - [mobility_spatial_baseline_metrics_core_v0.json](/home/jpdark/Downloads/project_recomm/dataset/reports/mobility_spatial_baseline_metrics_core_v0.json)
 
 Resultados do grafo de mobilidade:
@@ -2012,7 +2022,7 @@ Artefatos:
 - `stgnn_tensor_package_extended_nowcast_q1_core_v1.npz` (forecast-safe + choque Q1)
 - `stgnn_tensor_package_extended_diagnostic_core_v1.npz` (diagnostico, nao usar como forecast)
 - `metadata/extended_core_feature_classification_v0.csv`
-- `reports/EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md`
+- `reports/archive/2026_04_22_top_level_cleanup/EXTENDED_CORE_VERIFICATION_SUMMARY_V0.md`
 
 Decisão:
 - A previsão de volume bruto provou ser superior à previsão de taxa de criação (WMAPE 7.66% vs >80%).
@@ -2081,7 +2091,7 @@ Artefatos:
 - `reports/rei_cfe_quality_v0.json`
 - `reports/energy_consumption_quality_v0.json`
 - `reports/local_candidate_feature_metrics_v0.json`
-- `reports/LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md`
+- `reports/archive/2026_04_22_top_level_cleanup/LOCAL_CANDIDATE_FEATURES_AUDIT_V0.md`
 
 Resultado:
 - `ridge_lag_only`: WMAPE medio `7.66%`.
@@ -2111,7 +2121,7 @@ O que foi feito:
 
 Artefatos:
 - `metadata/raw_external_inventory_v0.csv`
-- `reports/RAW_EXTERNAL_INVENTORY_V0.md`
+- `reports/archive/2026_04_22_top_level_cleanup/RAW_EXTERNAL_INVENTORY_V0.md`
 
 Resultado:
 - Total inventariado: `72` arquivos.
@@ -2174,7 +2184,7 @@ Motivacao:
 - Corrigir qualquer incoerencia tecnica antes de consolidar commit.
 
 O que foi feito:
-- Criado `reports/PROJECT_CONSISTENCY_AUDIT_V0.md`.
+- Criado `reports/archive/2026_04_22_top_level_cleanup/PROJECT_CONSISTENCY_AUDIT_V0.md`.
 - Atualizado `metadata/canonical_artifacts_v0.csv` com tensors extended, candidatos locais e relatorios atuais.
 - Atualizado `reports/PROJECT_STATE_INDEX_V0.md` para refletir target oficial `SIDE`, tensores extended e candidatos locais.
 - Corrigido `src/data/build_stgnn_tensor_package_extended_v1.py`.
@@ -2529,7 +2539,7 @@ O que foi feito:
 - O diagnostico audita apenas predicoes ja geradas, sem treinar modelo novo.
 - Saidas:
   - `reports/archive/diagnostics/activation_rule_diagnostics_core_v0.json`
-  - `reports/ACTIVATION_RULE_DIAGNOSTICS_CORE_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/ACTIVATION_RULE_DIAGNOSTICS_CORE_V0.md`
 - Medidas adicionadas:
   - trace de threshold por ano
   - LOYO threshold audit
@@ -2562,7 +2572,7 @@ Motivacao:
 - Evitar que resultados exploratorios fortes sejam confundidos com baselines operacionais.
 
 O que foi feito:
-- Criado `reports/BASELINE_PHASE_CLOSURE_DECISION_V0.md`.
+- Criado `reports/archive/2026_04_22_top_level_cleanup/BASELINE_PHASE_CLOSURE_DECISION_V0.md`.
 - Adicionado o relatorio como leitura obrigatoria em `reports/PROJECT_STATE_INDEX_V0.md`.
 
 Decisao congelada:
@@ -2587,7 +2597,7 @@ Motivacao:
 O que foi feito:
 - Criado `src/data/evaluate_stgnn_micro_baselines_v0.py`.
 - Gerados:
-  - `reports/STGNN_MICRO_BASELINES_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/STGNN_MICRO_BASELINES_V0.md`
   - `reports/stgnn_micro_baselines_metrics_v0.json`
 
 Resultado:
@@ -2611,7 +2621,7 @@ Motivacao:
 O que foi feito:
 - Criado `src/data/evaluate_temporal_non_graph_baseline_v0.py`.
 - Gerados:
-  - `reports/TEMPORAL_NON_GRAPH_BASELINE_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/TEMPORAL_NON_GRAPH_BASELINE_V0.md`
   - `reports/temporal_non_graph_baseline_metrics_v0.json`
 - O protocolo removeu `side_creations_spatial_lag_1` e `side_creations_mobility_lag_1` desta etapa para manter o experimento explicitamente sem grafo.
 
@@ -2641,7 +2651,7 @@ Motivacao:
 O que foi feito:
 - Criado `src/data/evaluate_temporal_feature_addition_v0.py`.
 - Gerados:
-  - `reports/TEMPORAL_FEATURE_ADDITION_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/TEMPORAL_FEATURE_ADDITION_V0.md`
   - `reports/temporal_feature_addition_metrics_v0.json`
 - Testadas adicoes unitarias e combinacoes curtas sobre `ridge_lag_only`.
 
@@ -2677,7 +2687,7 @@ Motivacao:
 O que foi feito:
 - Criado `src/data/evaluate_spatial_vs_temporal_baselines_v0.py`.
 - Gerados:
-  - `reports/SPATIAL_VS_TEMPORAL_BASELINES_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/SPATIAL_VS_TEMPORAL_BASELINES_V0.md`
   - `reports/spatial_vs_temporal_baselines_metrics_v0.json`
 - A matriz `adjacency_geo` foi explicitamente renormalizada por linha nesta etapa, porque a versao crua do tensor tinha somas de linha entre `1.0` e `9.0`.
 - Os blends causais foram avaliados a partir de tres bases:
@@ -2715,9 +2725,9 @@ O que foi feito:
 - Criado `src/data/diagnose_geo_oversmoothing_v0.py`.
 - Criado `src/data/evaluate_gated_geo_linear_mixing_v0.py`.
 - Gerados:
-  - `reports/GEO_OVERSMOOTHING_DIAGNOSTIC_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/GEO_OVERSMOOTHING_DIAGNOSTIC_V0.md`
   - `reports/geo_oversmoothing_diagnostic_v0.json`
-  - `reports/GATED_GEO_LINEAR_MIXING_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/GATED_GEO_LINEAR_MIXING_V0.md`
   - `reports/gated_geo_linear_mixing_metrics_v0.json`
 
 Resultado:
@@ -2799,7 +2809,7 @@ Motivacao:
 O que foi feito:
 - Criado `src/data/evaluate_causal_segmented_hub_baseline_v0.py`.
 - Gerados:
-  - `reports/CAUSAL_SEGMENTED_HUB_BASELINE_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/CAUSAL_SEGMENTED_HUB_BASELINE_V0.md`
   - `reports/causal_segmented_hub_baseline_metrics_v0.json`
 
 Resultado:
@@ -2865,7 +2875,7 @@ Motivacao:
 O que foi feito:
 - Criado `src/data/evaluate_external_source_feature_addition_v0.py`.
 - Gerados:
-  - `reports/EXTERNAL_SOURCE_FEATURE_ADDITION_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/EXTERNAL_SOURCE_FEATURE_ADDITION_V0.md`
   - `reports/external_source_feature_addition_metrics_v0.json`
 - Testados dois candidatos leves, causais, com cobertura completa nas 280 zonas:
   - `energy_electricity_pdl_nonres_lag_1`
@@ -2907,7 +2917,7 @@ Motivacao:
 
 O que foi feito:
 - Criado `src/data/build_source_inventory_extended_v0.py`.
-- Criado `reports/DATASET_CANDIDATE_MATRIX_V0.md`.
+- Criado `reports/archive/2026_04_22_top_level_cleanup/DATASET_CANDIDATE_MATRIX_V0.md`.
 - Rodado um test court adicional dentro de `REI/CFE` para distinguir:
   - estoque total de microentrepreneurs;
   - fluxo `microentrepreneurs_created_n_1`.
@@ -2979,7 +2989,7 @@ Motivacao:
 O que foi feito:
 - Rodado `src/data/evaluate_rei_hub_interaction_baseline_v0.py`.
 - Gerados:
-  - `reports/REI_HUB_INTERACTION_BASELINE_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/REI_HUB_INTERACTION_BASELINE_V0.md`
   - `reports/rei_hub_interaction_baseline_metrics_v0.json`
   - `data/processed/rei_hub_interaction_baseline_predictions_v0.csv`
 - Tambem foi rechecado o historico local em `reports/local_candidate_feature_metrics_v0.json` para ver se variantes `log1p` do bloco REI tinham mostrado vantagem anterior.
@@ -3009,7 +3019,7 @@ O que foi feito:
 - Ja havia sido testado `MLP` leve com o mesmo bloco de features REI.
 - Agora foi criado e rodado `src/data/evaluate_hgb_with_rei_v0.py`.
 - Gerados:
-  - `reports/HGB_WITH_REI_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/HGB_WITH_REI_V0.md`
   - `reports/hgb_with_rei_metrics_v0.json`
   - `data/processed/hgb_with_rei_predictions_v0.csv`
 
@@ -3062,10 +3072,10 @@ O que foi feito:
   - `src/data/train_minimal_gcn_with_rei_v0.py`
   - `src/data/train_residual_gcn_with_rei_v0.py`
 - Gerados:
-  - `reports/MINIMAL_GCN_WITH_REI_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/MINIMAL_GCN_WITH_REI_V0.md`
   - `reports/minimal_gcn_with_rei_metrics_v0.json`
   - `data/processed/minimal_gcn_with_rei_predictions_v0.csv`
-  - `reports/RESIDUAL_GCN_WITH_REI_V0.md`
+  - `reports/archive/2026_04_22_top_level_cleanup/RESIDUAL_GCN_WITH_REI_V0.md`
   - `reports/residual_gcn_with_rei_metrics_v0.json`
   - `data/processed/residual_gcn_with_rei_predictions_v0.csv`
 
@@ -3120,7 +3130,7 @@ Motivacao:
 - Com a baseline REI operacional pronta e a linha de grafo fechada, faltava marcar explicitamente o fim da fase para evitar reabertura difusa do mesmo ciclo.
 
 O que foi feito:
-- Criado `reports/PHASE_CLOSURE_FINAL_V0.md`.
+- Criado `reports/archive/2026_04_22_top_level_cleanup/PHASE_CLOSURE_FINAL_V0.md`.
 
 Decisao:
 - Encerrar formalmente a fase de:
@@ -3129,3 +3139,26 @@ Decisao:
   - variantes leves tabulares
   - primeiras tentativas de grafo contra a baseline REI
 - Tratar novas correlacoes e novas familias como tema de fase futura, nao extensao informal desta.
+
+### 2026-04-21 - Ouverture propre de la phase suivante avec tensor STGNN incluant REI
+
+Motivacao:
+- Para a fase seguinte, qualquer modelo neural ou grafico precisa partir com o mesmo signal REI que define a baseline oficial. Caso contrario, a comparacao ja nasce injusta.
+
+O que foi feito:
+- Criado `src/data/build_stgnn_tensor_package_extended_with_rei_v0.py`.
+- Gerados:
+  - `data/processed/stgnn_tensor_package_extended_forecast_with_rei_core_v0.npz`
+  - `reports/stgnn_tensor_package_extended_forecast_with_rei_core_quality_v0.json`
+  - `reports/NEXT_PHASE_KICKOFF_V0.md`
+
+Resultado:
+- Novo tensor forecast-safe com `29` features, incluindo:
+  - `rei_cfe_microentrepreneurs_created_n_1_lag_1`
+- Shape:
+  - `x`: `[7, 280, 29]`
+  - `y`: `[7, 280]`
+- Adjacencias geo e mobilidade mantidas alinhadas em `280 x 280`.
+
+Decisao:
+- Toda nova experiencia STGNN / GNN deve partir deste tensor com REI embutido.

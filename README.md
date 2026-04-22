@@ -1,26 +1,24 @@
 # Dataset graphe-temporel ZE2020
 
-Ce dépôt construit un dataset territorial, temporel et auditable pour étudier la dynamique économique des zones d'emploi françaises (`ZE2020`).
+Ce dépôt construit un socle territorial, temporel et auditable pour un système de recommandation territoriale multi-agent centré sur les zones d'emploi françaises (`ZE2020`).
 
-L'objectif immédiat n'est pas de présenter une architecture finale, mais de construire un socle de données robuste pour entraîner et évaluer ensuite des modèles graphe-temporels, notamment des `STGNN`.
+La position méthodologique canonique du projet est définie dans [reports/METHODOLOGICAL_POSITIONING_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/METHODOLOGICAL_POSITIONING_V0.md).
+
+Le rôle immédiat du dépôt est de fournir le backbone de données et d'expérimentation d'une architecture `STGNN`. La prévision de créations d'établissements n'est pas le produit final : c'est la tâche supervisée intermédiaire utilisée pour apprendre des représentations territoriales spatio-temporelles qui alimenteront ensuite la recommandation territoriale multi-agent.
 
 ## Question du projet
 
-La question centrale est :
+La question centrale n'est pas seulement prédictive. Elle est :
 
 ```text
-Peut-on prédire la dynamique future de création d'établissements dans les zones d'emploi françaises à partir de leur historique local, de signaux territoriaux et de relations entre zones ?
+Peut-on apprendre une représentation spatio-temporelle des dynamiques économiques territoriales en ZE2020, suffisamment utile pour servir de backbone à un système de recommandation territoriale multi-agent ?
 ```
 
-Le projet est donc structuré autour de trois éléments :
-
-- une cible économique officielle ;
-- un panel annuel par zone d'emploi ;
-- des graphes représentant les relations territoriales.
+La prévision de créations d'établissements fournit aujourd'hui l'interface supervisée la plus propre pour tester ce backbone.
 
 ## Dataset principal
 
-La cible principale est issue de `SIDE`, la source officielle Insee des créations d'établissements.
+La cible supervisée principale est issue de `SIDE`, la source officielle Insee des créations d'établissements.
 
 Dans le projet, elle est agrégée au niveau `ZE2020` :
 
@@ -28,7 +26,7 @@ Dans le projet, elle est agrégée au niveau `ZE2020` :
 Y(i, t+1) = créations d'établissements SIDE dans la zone d'emploi i à l'année t+1
 ```
 
-Les variables explicatives utilisées pour prédire `t+1` doivent être disponibles à l'année `t` ou avant. Cette contrainte préserve l'ordre temporel et limite le risque de fuite d'information.
+Les variables explicatives utilisées pour prédire `t+1` doivent être disponibles à l'année `t` ou avant. Cette contrainte préserve l'ordre temporel, limite la fuite d'information et garde la tâche de backbone causalement défendable.
 
 ## Pourquoi ZE2020
 
@@ -48,24 +46,32 @@ Dans la phase STGNN, chaque zone d'emploi devient un nœud du graphe.
 Le dataset combine plusieurs familles de signaux :
 
 - `SIDE` : cible officielle et historique autorégressif ;
+- `REI CFE` : signal exogène retenu dans le benchmark actuel ;
 - `SITADEL` : construction et surfaces autorisées ou commencées ;
 - `SDES Énergie` : consommation énergétique non résidentielle ;
-- `REI CFE` : fiscalité locale, conservée comme diagnostic mais non promue à cause des risques de délai de publication et de révision ;
 - graphes territoriaux : adjacence géographique et mobilité domicile-travail.
 
-L'hypothèse testée est que les créations futures d'établissements dépendent à la fois de l'inertie locale, de signaux physiques d'activité et des interactions entre zones.
+L'hypothèse de travail est que les créations futures d'établissements dépendent à la fois de l'inertie locale, de signaux d'activité et des interactions entre zones, et qu'une `STGNN` peut mieux intégrer ces dimensions qu'un benchmark tabulaire simple.
 
 ## État méthodologique actuel
 
-Les résultats actuels montrent que la persistance locale est une référence très forte.
+Le benchmark opérationnel officiel n'est plus la baseline temporelle courte historique. Le benchmark actuel à battre est :
 
-Le benchmark opérationnel actuel reste `ridge_lag_only`, avec `persistence` comme référence conservatrice. Les signaux locaux comme `SITADEL` et l'énergie contiennent du signal, mais ce signal n'est pas encore assez stable pour être présenté comme une conclusion définitive.
+- `side_creations_lag_1`
+- `nb_com`
+- `rei_cfe_microentrepreneurs_created_n_1_lag_1`
 
-Les règles résiduelles et d'activation sont conservées comme diagnostics de stress-test, pas comme baseline finale.
+La meilleure baseline validée à ce stade est `Ridge + REI`, avec un `mean WMAPE ~= 6.699`.
+
+Lecture correcte :
+
+- cette baseline est un benchmark de comparaison ;
+- elle n'est pas le produit final du projet ;
+- les premiers essais graphe simples ayant échoué ne suffisent pas à invalider le choix méthodologique `STGNN`.
 
 ## Passage vers STGNN
 
-Le passage vers les `STGNN` est justifié par la forme naturelle des données :
+Le passage vers les `STGNN` reste l'axe central du projet parce que la structure naturelle des données est :
 
 ```text
 zones x années x variables
@@ -78,7 +84,7 @@ A_geo
 A_mobility
 ```
 
-Le premier objectif STGNN sera de vérifier si une architecture graphe-temporelle apprend mieux que les références causales :
+La prochaine étape correcte n'est pas de chercher "encore un meilleur modèle simple". C'est de construire une `STGNN` petite mais méthodologiquement sérieuse comme backbone, puis de vérifier si elle apprend mieux que les baselines tabulaires :
 
 - l'inertie temporelle ;
 - les effets locaux non linéaires ;
@@ -87,10 +93,11 @@ Le premier objectif STGNN sera de vérifier si une architecture graphe-temporell
 
 ## Fichiers à lire en premier
 
+- `reports/METHODOLOGICAL_POSITIONING_V0.md`
 - `reports/PROJECT_STATE_INDEX_V0.md`
 - `reports/PROJECT_JOURNEY.md`
 - `reports/PRESENTATION_DATASET_STGNN_STORYLINE_V0.md`
-- `reports/BASELINE_PHASE_CLOSURE_DECISION_V0.md`
+- `reports/BASELINE_PHASE_CLOSURE_DECISION_V1.md`
 - `reports/STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md`
 - `metadata/canonical_artifacts_v0.csv`
 
@@ -100,7 +107,7 @@ Le premier objectif STGNN sera de vérifier si une architecture graphe-temporell
 - Panel et variables explicatives : `data/processed/extended_panel_core_v0.csv`
 - Graphe géographique : `data/processed/graph_adjacency_core_v0.csv`
 - Graphe de mobilité : `data/processed/mobility_adjacency_row_normalized_core_v0.csv`
-- Tensor forecast-safe : `data/processed/stgnn_tensor_package_extended_forecast_core_v1.npz`
+- Tensor forecast-safe : `data/processed/stgnn_tensor_package_extended_forecast_with_rei_core_v0.npz`
 - Tensor nowcast Q1 : `data/processed/stgnn_tensor_package_extended_nowcast_q1_core_v1.npz`
 - Tensor diagnostic : `data/processed/stgnn_tensor_package_extended_diagnostic_core_v1.npz`
 
