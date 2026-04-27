@@ -1,9 +1,0 @@
-{
-  "html_out": "ze2020_graph_core_interactive_v0.html",
-  "node_count": 280,
-  "undirected_edge_count": 743,
-  "notes": [
-    "Interactive HTML restricted to the core_v0 graph only.",
-    "No external basemap is used, so the visual focuses on metropolitan France graph structure only."
-  ]
-}

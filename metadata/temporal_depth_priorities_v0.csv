@@ -1,9 +1,0 @@
-priority_rank,source_family,current_local_years,target_years_for_next_cycle,why_it_matters,action_type,status
-1,population_census,2022,2021;2023,Core annual structural features for panel depth and direct continuity with existing RP pipeline,download_first,missing_years_confirmed
-2,business_demography_SIDE,2022;2023;2024,2020;2021,Directly improves annual business structure features and reduces feature timeline shallowness,download_first,missing_years_in_local_repo
-3,accessibility_services_BPE,2019;2021;2023;2024,2015-2025 official evolution table when released,Official BPE evolution 2019-2024 is now integrated as harmonized presence/absence; raw BPE 2020 remains unavailable and non-comparable without caution,hold_until_insee_2026_release,integrated_harmonized_2019_2024_wait_for_2015_2025
-4,income_poverty_Filosofi,2021,2020,Adds one more annual point on income/deprivation with same semantics,download_first,availability_confirmed_on_insee_pages
-5,employment_establishments_Flores,2024,2023,Potentially adds one more annual labor-structure point,investigate_then_download,public_commune_tables_confirmed_but exact dataset path still to confirm
-6,policy_layers_context,1995;2018;2021;2024,keep_as_is,Not the main bottleneck for Graph WaveNet readiness,hold,already_sufficient_for_context
-7,monthly_activity_turnover_ICA,none,1999-01_2026-01,Official monthly sectoral activity and turnover indices can later provide intra-annual macro-sectoral context,register_future_source,not_territorial_do_not_integrate_now
-8,regional_accounts,none,1990_2024,Official annual regional accounts can later provide macro-regional GDP value-added and household-income context,register_future_source,regional_not_ze2020_do_not_integrate_now

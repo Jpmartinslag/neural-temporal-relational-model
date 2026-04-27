@@ -47,3 +47,13 @@ candidate_data,sitadel_monthly_annual_derived,candidate,data/interim/tables/sita
 candidate_data,energy_consumption,candidate,data/interim/tables/energy_consumption_ze2020_v0.csv,SDES non-residential energy features; candidate source only.
 candidate_data,rei_cfe,diagnostic,data/interim/tables/rei_cfe_ze2020_v0.csv,REI CFE features under timing/vintage quarantine; diagnostic source only until publication-lag safety is resolved.
 future_data,candidates,canonical,metadata/future_dataset_candidates_v0.csv,Future datasets registered but not integrated into core.
+metadata,dynamic_stgnn_data_catalog,canonical,metadata/data_catalog_dynamic_stgnn_v1.csv,Working catalogue for the cleanup and Dynamic STGNN phase.
+metadata,report_consolidation_inventory,canonical,metadata/report_consolidation_inventory_v1.csv,Inventory used to classify canonical supporting archived and legacy reports.
+report,dynamic_stgnn_cleanup_roadmap,canonical,reports/CLEANUP_AND_DYNAMIC_STGNN_ROADMAP_V1.md,Publication-oriented cleanup and Dynamic STGNN roadmap.
+report,graph_augmented_rnn_archive,archived,reports/archive/graph_augmented_rnn_fixed_2026_04_24/README.md,Fixed-graph recurrent prototypes archived as Graph-Augmented RNN historical comparators.
+report,sitadel_monthly_side_signal_audit,canonical,reports/SITADEL_MONTHLY_TO_SIDE_SIGNAL_AUDIT_V1.md,Leakage-aware audit of monthly SITADEL windows against annual SIDE and Ridge residuals.
+metadata,sitadel_monthly_side_signal_audit_detail,canonical,metadata/sitadel_monthly_to_side_signal_audit_v1.csv,Detailed correlation table for monthly SITADEL to annual SIDE signal audit.
+report,sitadel_monthly_side_signal_audit_summary,canonical,reports/sitadel_monthly_to_side_signal_audit_v1.json,Machine-readable summary of monthly SITADEL to annual SIDE signal audit.
+baseline,sitadel_monthly_baseline_predictions,diagnostic,data/processed/sitadel_monthly_baseline_predictions_v1.csv,Walk-forward tabular baseline predictions testing monthly SITADEL before Dynamic STGNN.
+baseline,sitadel_monthly_baseline_metrics,diagnostic,reports/sitadel_monthly_baseline_metrics_v1.json,Machine-readable metrics for forecast-safe and nowcast SITADEL monthly tabular baselines.
+report,sitadel_monthly_baseline,supporting,reports/SITADEL_MONTHLY_BASELINE_V1.md,Readable non-graph monthly SITADEL baseline report; informs whether monthly tensor work is justified.

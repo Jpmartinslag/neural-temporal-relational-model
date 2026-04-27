@@ -1,6 +1,0 @@
-sample_idx,feature_year,target_year,horizon_years,split
-0,2019,2020,1,train
-1,2020,2021,1,train
-2,2021,2022,1,train
-3,2022,2023,1,validation
-4,2023,2024,1,test

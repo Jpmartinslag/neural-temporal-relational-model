@@ -1,9 +1,0 @@
-{
-  "qpv_2024_rows": 1373,
-  "qpv_correspondance_rows": 1584,
-  "notes": [
-    "QPV 2024 commune list extracted from semicolon-separated source file.",
-    "Rows with multi-commune coding in the raw file were excluded from the commune table until a dedicated explode rule is defined.",
-    "Correspondence file links QP2024 units to QP2015 units with status change."
-  ]
-}

@@ -1,124 +1,250 @@
-# Dataset graphe-temporel ZE2020
+# HERALD Territorial Forecasting
 
-Ce dépôt construit un socle territorial, temporel et auditable pour un système de recommandation territoriale multi-agent centré sur les zones d'emploi françaises (`ZE2020`).
-
-La position méthodologique canonique du projet est définie dans [reports/METHODOLOGICAL_POSITIONING_V0.md](/home/jpdark/Downloads/project_recomm/dataset/reports/METHODOLOGICAL_POSITIONING_V0.md).
-
-Le rôle immédiat du dépôt est de fournir le backbone de données et d'expérimentation d'une architecture `STGNN`. La prévision de créations d'établissements n'est pas le produit final : c'est la tâche supervisée intermédiaire utilisée pour apprendre des représentations territoriales spatio-temporelles qui alimenteront ensuite la recommandation territoriale multi-agent.
-
-## Question du projet
-
-La question centrale n'est pas seulement prédictive. Elle est :
+This repository is now focused on **HERALD**:
 
 ```text
-Peut-on apprendre une représentation spatio-temporelle des dynamiques économiques territoriales en ZE2020, suffisamment utile pour servir de backbone à un système de recommandation territoriale multi-agent ?
+Heterogeneous Economic Relational Adaptive Learning for territorial Dynamics
 ```
 
-La prévision de créations d'établissements fournit aujourd'hui l'interface supervisée la plus propre pour tester ce backbone.
+The active task is annual forecasting of establishment creations by French employment zone (`ZE2020`, 280 zones), with forecast horizon `t+1`.
 
-## Dataset principal
-
-La cible supervisée principale est issue de `SIDE`, la source officielle Insee des créations d'établissements.
-
-Dans le projet, elle est agrégée au niveau `ZE2020` :
+The supervised target is:
 
 ```text
-Y(i, t+1) = créations d'établissements SIDE dans la zone d'emploi i à l'année t+1
+side_establishment_creations_official
 ```
 
-Les variables explicatives utilisées pour prédire `t+1` doivent être disponibles à l'année `t` ou avant. Cette contrainte préserve l'ordre temporel, limite la fuite d'information et garde la tâche de backbone causalement défendable.
-
-## Pourquoi ZE2020
-
-La zone d'emploi est l'unité territoriale retenue parce qu'elle représente un bassin économique fonctionnel.
-
-Elle est plus pertinente qu'une commune isolée pour analyser :
-
-- les dynamiques locales d'emploi et d'activité ;
-- les effets de taille territoriale ;
-- les relations entre zones voisines ;
-- les flux domicile-travail.
-
-Dans la phase STGNN, chaque zone d'emploi devient un nœud du graphe.
-
-## Sources et signaux testés
-
-Le dataset combine plusieurs familles de signaux :
-
-- `SIDE` : cible officielle et historique autorégressif ;
-- `REI CFE` : signal exogène retenu dans le benchmark actuel ;
-- `SITADEL` : construction et surfaces autorisées ou commencées ;
-- `SDES Énergie` : consommation énergétique non résidentielle ;
-- graphes territoriaux : adjacence géographique et mobilité domicile-travail.
-
-L'hypothèse de travail est que les créations futures d'établissements dépendent à la fois de l'inertie locale, de signaux d'activité et des interactions entre zones, et qu'une `STGNN` peut mieux intégrer ces dimensions qu'un benchmark tabulaire simple.
-
-## État méthodologique actuel
-
-Le benchmark opérationnel officiel n'est plus la baseline temporelle courte historique. Le benchmark actuel à battre est :
-
-- `side_creations_lag_1`
-- `nb_com`
-- `rei_cfe_microentrepreneurs_created_n_1_lag_1`
-
-La meilleure baseline validée à ce stade est `Ridge + REI`, avec un `mean WMAPE ~= 6.699`.
-
-Lecture correcte :
-
-- cette baseline est un benchmark de comparaison ;
-- elle n'est pas le produit final du projet ;
-- les premiers essais graphe simples ayant échoué ne suffisent pas à invalider le choix méthodologique `STGNN`.
-
-## Passage vers STGNN
-
-Le passage vers les `STGNN` reste l'axe central du projet parce que la structure naturelle des données est :
+Legacy prototypes, old fixed-graph experiments, REI/SITADEL exploratory baselines, and obsolete reports were moved to:
 
 ```text
-zones x années x variables
+old/legacy_before_herald_focus_2026_04_27/
 ```
 
-avec plusieurs matrices de relation entre zones :
+The move manifest is:
 
 ```text
-A_geo
-A_mobility
+old/legacy_before_herald_focus_2026_04_27/MANIFEST.csv
 ```
 
-La prochaine étape correcte n'est pas de chercher "encore un meilleur modèle simple". C'est de construire une `STGNN` petite mais méthodologiquement sérieuse comme backbone, puis de vérifier si elle apprend mieux que les baselines tabulaires :
+No legacy file was deleted. This cleanup is the transition point from exploratory modeling to HERALD-focused training and publication work.
 
-- l'inertie temporelle ;
-- les effets locaux non linéaires ;
-- les interactions entre zones ;
-- les régimes de rupture économique.
+## Current Status
 
-## Fichiers à lire en premier
+Completed:
 
-- `reports/METHODOLOGICAL_POSITIONING_V0.md`
-- `reports/PROJECT_STATE_INDEX_V0.md`
-- `reports/PROJECT_JOURNEY.md`
-- `reports/PRESENTATION_DATASET_STGNN_STORYLINE_V0.md`
-- `reports/BASELINE_PHASE_CLOSURE_DECISION_V1.md`
-- `reports/STGNN_READINESS_AND_ARCHITECTURE_DECISION_V0.md`
-- `metadata/canonical_artifacts_v0.csv`
+- Repository active surface reduced to HERALD + paper comparators.
+- Legacy reports, fixed-graph prototypes, REI/SITADEL exploratory runs, old tensors, and obsolete predictions moved to `old/`.
+- HERALD V3 training script implemented with dynamic adaptive graph `A_t`.
+- Learning-curve logging added to future HERALD V3 runs.
+- French validation dashboard generated.
+- Statistical evidence package generated.
+- Ridge AR, DCRNN, and Dynamic STGNN comparator artifacts retained.
 
-## Artefacts principaux
+Next phase:
 
-- Cible officielle : `data/processed/target_side_establishments_annual_core_v0.csv`
-- Panel et variables explicatives : `data/processed/extended_panel_core_v0.csv`
-- Graphe géographique : `data/processed/graph_adjacency_core_v0.csv`
-- Graphe de mobilité : `data/processed/mobility_adjacency_row_normalized_core_v0.csv`
-- Tensor forecast-safe : `data/processed/stgnn_tensor_package_extended_forecast_with_rei_core_v0.npz`
-- Tensor nowcast Q1 : `data/processed/stgnn_tensor_package_extended_nowcast_q1_core_v1.npz`
-- Tensor diagnostic : `data/processed/stgnn_tensor_package_extended_diagnostic_core_v1.npz`
+- Train HERALD V4 / stress-test variants on stronger hardware.
+- Use the current dashboard and statistical package as the validation baseline.
+- Avoid reintroducing legacy prototype files into the active surface unless explicitly needed.
 
-## Hygiène du dépôt
+## Active Scientific Frame
 
-Les dossiers et fichiers suivants ne font pas partie du flux scientifique principal :
+HERALD is the proposed architecture. The article should compare HERALD against:
 
-- `data/raw/` : sources brutes locales ;
-- `scan_output/` : sorties de scan régénérables ;
-- `.venv/` : environnement Python local ;
-- `.codex/`, `AGENTS.md`, `CLAUDE.md` : fichiers locaux d'agents ;
-- PDFs posés à la racine : documentation locale non versionnée.
+- `Ridge AR`: autoregressive tabular baseline.
+- `DCRNN`: graph recurrent baseline.
+- `Dynamic STGNN`: graph-aware neural baseline.
+- `HERALD`: proposed dynamic adaptive graph model.
 
-Les rapports historiques ne sont pas supprimés. Ils sont classés dans `reports/archive/` afin de garder la traçabilité sans encombrer la lecture principale.
+Internal HERALD development versions (`HERALD V1/V2`) are not part of the article narrative. They remain in `old/` only for traceability.
+
+The article framing should be:
+
+```text
+Ridge AR / DCRNN / Dynamic STGNN are baselines.
+HERALD is the proposed model.
+HERALD ablations validate the contribution of quarterly signals, dynamic graph learning, temporal smoothing, and message passing.
+```
+
+## Active Files
+
+### Training
+
+```bash
+python3 src/data/train_herald_v3.py
+```
+
+Main script:
+
+```text
+src/data/train_herald_v3.py
+```
+
+Comparator scripts retained for paper baselines:
+
+```text
+src/data/evaluate_dynamic_feature_panel_baselines_v1.py
+src/data/train_dynamic_stgnn_models_v1.py
+```
+
+Feature-panel builder retained for reproducibility:
+
+```text
+src/data/build_dynamic_stgnn_feature_panel_v1.py
+```
+
+### Visualization And Evidence
+
+```text
+src/data/plot_herald_v3_dashboard.py
+src/data/analyze_herald_v3_statistical_evidence.py
+src/data/herald_map_utils.py
+```
+
+Main dashboard, in French:
+
+```text
+reports/figures/herald_v3_finetuning_dashboard_v1.html
+```
+
+Main statistical report:
+
+```text
+reports/HERALD_V3_STATISTICAL_EVIDENCE_V1.md
+```
+
+Statistical evidence outputs:
+
+```text
+reports/herald_v3_dm_tests_v1.csv
+reports/herald_v3_zone_strata_v1.csv
+reports/herald_v3_gamma_stability_v1.csv
+reports/herald_v3_top_neighbors_v1.csv
+reports/herald_v3_statistical_evidence_v1.json
+```
+
+## Active Data
+
+The active training/evaluation surface is intentionally small:
+
+```text
+data/processed/dynamic_stgnn_feature_panel_v1.csv
+metadata/dynamic_stgnn_walk_forward_splits_v1.csv
+data/processed/graph_adjacency_core_v0.csv
+data/processed/graph_adjacency_mobility_v0.csv
+data/processed/graph_node_index_core_v0.csv
+data/raw/employment/urssaf/urssaf_emploi_ze_quarterly_raw.csv
+```
+
+Current HERALD outputs are kept in:
+
+```text
+data/processed/herald_v3_predictions_*_v1.csv
+data/processed/herald_v3_internals_*_v1.npz
+reports/herald_v3_*_v1.*
+```
+
+Paper comparator outputs kept active:
+
+```text
+data/processed/dynamic_feature_panel_baseline_predictions_v1.csv
+data/processed/dynamic_stgnn_model_predictions_seed_*_v1.csv
+reports/dynamic_feature_panel_baseline_metrics_v1.json
+reports/dynamic_stgnn_model_metrics*_v1.json
+```
+
+## Regenerate Dashboard
+
+```bash
+python3 src/data/plot_herald_v3_dashboard.py
+```
+
+The dashboard contains:
+
+- predictive comparison against Ridge AR, DCRNN, and Dynamic STGNN;
+- HERALD ablations;
+- seed stability;
+- dynamic graph map on French ZE2020 boundaries;
+- graph movement over time;
+- gate/message-share diagnostics;
+- Diebold-Mariano validation;
+- zone-size stratification;
+- gamma stability;
+- top adaptive neighbors;
+- training curves when available.
+
+## Regenerate Statistical Evidence
+
+```bash
+python3 src/data/analyze_herald_v3_statistical_evidence.py
+```
+
+## Train HERALD Full
+
+Example:
+
+```bash
+python3 src/data/train_herald_v3.py \
+  --ablation full \
+  --seed 0 \
+  --epochs 800 \
+  --hidden-dim 32 \
+  --q-hidden 16 \
+  --attn-dim 8 \
+  --lr 0.001 \
+  --weight-decay 1e-4 \
+  --huber-delta 300 \
+  --smooth-lambda 0.1 \
+  --top-k 10
+```
+
+Training now writes learning curves to:
+
+```text
+reports/herald_v3_training_history_<ablation>_seed_<seed>_v1.csv
+```
+
+## Current Evidence Summary
+
+Using the existing 2021-2024 walk-forward artifacts:
+
+```text
+Ridge AR WMAPE:  0.06608
+HERALD WMAPE:    0.02250
+Relative gain:   65.96%
+DM p-value:      2.74e-33
+```
+
+The strongest economic finding so far:
+
+```text
+gamma_mob mean ~= 1.087
+gamma_geo mean ~= 0.056
+```
+
+Interpretation: the learned graph is anchored much more by commuting mobility than by simple geographic contiguity.
+
+Current validated claim:
+
+```text
+HERALD outperforms Ridge AR and neural graph baselines on the 2021-2024 walk-forward task.
+The ablation battery supports the value of message passing, quarterly labor-market signals, and temporal graph smoothing.
+The learned graph is economically coherent because it is anchored more strongly in commuting mobility than in geographic adjacency.
+```
+
+Claim not yet final:
+
+```text
+HERALD has not yet fully established a causal interpretation of regime/crisis shifts in A_t.
+The V4 phase should stress-test this claim on stronger hardware.
+```
+
+## Repository Hygiene Rule
+
+Active root-level files should support only:
+
+1. HERALD training.
+2. HERALD visualization.
+3. HERALD statistical evidence.
+4. Baseline comparison needed for the paper.
+
+Everything else belongs in `old/`.

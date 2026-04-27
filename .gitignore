@@ -26,8 +26,14 @@ graphify-out/
 .graphify_*.txt
 reports/scan_archives/
 
-# Raw acquisition cache
-data/raw/
+# Raw acquisition cache.
+# Exception: HERALD V3 training needs the compact URSSAF quarterly ZE file.
+data/raw/*
+!data/raw/employment/
+data/raw/employment/*
+!data/raw/employment/urssaf/
+data/raw/employment/urssaf/*
+!data/raw/employment/urssaf/urssaf_emploi_ze_quarterly_raw.csv
 
 # Python cache
 __pycache__/
@@ -49,6 +55,17 @@ data/interim/tables/rei_converted_csv_v0/
 # Regenerable model prediction dumps
 data/processed/residual_baseline_predictions_core_v0.csv
 data/processed/residual_activation_rules_predictions_core_v0.csv
+data/processed/dynamic_feature_panel_baseline_predictions_v1.csv
+data/processed/dynamic_stgnn_model_predictions*.csv
+data/processed/herald_v3_predictions_*.csv
+data/processed/herald_v3_internals_*.npz
+reports/herald_v3_training_history_*.csv
+reports/figures/*.html
+reports/figures/*.png
+reports/figures/*.jpg
+reports/figures/*.jpeg
+reports/figures/*.svg
+old/
 
 # Temporary outputs
 tmp/
