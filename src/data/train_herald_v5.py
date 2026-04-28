@@ -748,7 +748,8 @@ def write_report(total_rows, sector_rows, args, internals_by_year):
     stgnn_v1  = 0.0610
     herald_v3 = 0.0261
 
-    run_key = f"{args.ablation}_seed_{args.seed}"
+    tag     = f"_{args.run_tag}" if getattr(args, "run_tag", "") else ""
+    run_key = f"{args.ablation}{tag}_seed_{args.seed}"
     result  = {
         "ablation":             args.ablation,
         "seed":                 args.seed,
