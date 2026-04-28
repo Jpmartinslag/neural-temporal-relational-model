@@ -60,6 +60,10 @@ data/processed/dynamic_stgnn_model_predictions*.csv
 data/processed/herald_v3_predictions_*.csv
 data/processed/herald_v3_internals_*.npz
 reports/herald_v3_training_history_*.csv
+data/processed/herald_v4_predictions_*.csv
+data/processed/herald_v4_internals_*.npz
+data/processed/herald_v5_predictions_*.csv
+data/processed/herald_v5_internals_*.npz
 reports/figures/*.html
 reports/figures/*.png
 reports/figures/*.jpg
