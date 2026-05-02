@@ -1,4 +1,4 @@
-# Raw archives and large source files
+# ── Archives e ficheiros binários pesados ──────────────────────────
 *.zip
 *.7z
 *.rar
@@ -10,14 +10,14 @@
 *.xls
 *.ods
 
-# Local environment
+# ── Ambiente local ─────────────────────────────────────────────────
 .venv/
 .env
 
-# External tools cloned for local analysis
+# ── Ferramentas externas clonadas localmente ───────────────────────
 tools/external/
 
-# Scan outputs
+# ── Artefactos efémeros (não versionar) ────────────────────────────
 scan_output/
 scan_output_bundle.tar.gz
 graphify-out/
@@ -25,23 +25,16 @@ graphify-out/
 .graphify_*.json
 .graphify_*.txt
 reports/scan_archives/
+hpc/logs/
+logs/
 
-# Raw acquisition cache.
-# Exception: HERALD V3 training needs the compact URSSAF quarterly ZE file.
-data/raw/*
-!data/raw/employment/
-data/raw/employment/*
-!data/raw/employment/urssaf/
-data/raw/employment/urssaf/*
-!data/raw/employment/urssaf/urssaf_emploi_ze_quarterly_raw.csv
-
-# Python cache
+# ── Cache Python ───────────────────────────────────────────────────
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# OS/editor noise
+# ── Ruído de SO/editor ─────────────────────────────────────────────
 .DS_Store
 Thumbs.db
 *.swp
@@ -50,57 +43,66 @@ Thumbs.db
 .codex
 AGENTS.md
 CLAUDE.md
-data/interim/tables/rei_converted_csv_v0/
 
-# Regenerable model prediction dumps
+# ── data/raw — só o ficheiro URSSAF trimestral é necessário ────────
+data/raw/*
+!data/raw/employment/
+data/raw/employment/*
+!data/raw/employment/urssaf/
+data/raw/employment/urssaf/*
+!data/raw/employment/urssaf/urssaf_emploi_ze_quarterly_raw.csv
+
+# ── data/processed — ficheiros regeneráveis grandes ───────────────
 data/processed/residual_baseline_predictions_core_v0.csv
 data/processed/residual_activation_rules_predictions_core_v0.csv
 data/processed/dynamic_feature_panel_baseline_predictions_v1.csv
+
 data/processed/dynamic_stgnn_model_predictions*.csv
 data/processed/herald_v3_predictions_*.csv
 data/processed/herald_v3_internals_*.npz
-reports/herald_v3_training_history_*.csv
 data/processed/herald_v4_predictions_*.csv
 data/processed/herald_v4_internals_*.npz
 data/processed/herald_v5_predictions_*.csv
 data/processed/herald_v5_internals_*.npz
+data/processed/herald_v6_predictions_*.csv
+data/processed/herald_v6_internals_*.npz
+data/processed/gate2_validation/
+data/processed/PATCH_ROBUSTNESS_*.txt
+
+# ── reports — histórico de treino e figuras regeneráveis ──────────
+reports/archive/training_history/
 reports/figures/*.html
 reports/figures/*.png
 reports/figures/*.jpg
 reports/figures/*.jpeg
 reports/figures/*.svg
-old/
+reports/residual_baseline_metrics_core_v0.json
+reports/archive/gate2_validation/
+reports/archive/fixed_geo_mob_only/
+reports/archive/self_only/
 
-# Temporary outputs
+# ── hpc_results — só manter JSON de métricas, README e HTML ───────
+hpc_results/**/*.npz
+hpc_results/**/*.csv
+hpc_results/**/*.err
+hpc_results/**/*.out
+hpc_results/**/logs/
+
+# ── Arquivos legados ───────────────────────────────────────────────
+old/
+data/interim/tables/rei_converted_csv_v0/
+
+# ── Temporários ────────────────────────────────────────────────────
 tmp/
 .tmp/
 *.tmp
-
-# Notebook and ad-hoc outputs
 *.log
 
-# Keep processed and metadata artifacts versioned.
-# Do not ignore:
-# - metadata/
-# - reports/
-# - data/interim/mappings/
-# - data/interim/tables/
-# - data/interim/policy/
-# - data/interim/population_history/
-# - data/processed/
-
-# Large regenerable residual metric dumps
-reports/residual_baseline_metrics_core_v0.json
-
-# HERALD geo2025 — HPC results (large binary/data files)
-hpc_results/herald_semi_total_253_geo2025/**/*.npz
-hpc_results/herald_semi_total_253_geo2025/**/*.csv
-hpc_results/herald_semi_total_253_geo2025/**/logs/
-# Keep: JSON metrics, README, dashboard HTML
-
-# All HPC result binaries/predictions (all subdirs)
-hpc_results/**/*.npz
-hpc_results/**/*.csv
-hpc_results/**/logs/
-hpc_results/**/*.err
-hpc_results/**/*.out
+# Manter panels de features (não são predições)
+!data/processed/dynamic_stgnn_feature_panel_v1.csv
+!data/processed/dynamic_stgnn_feature_panel_through_2025_v1.csv
+reports/archive/PATCH_ROBUSTNESS_*.txt
+reports/PATCH_ROBUSTNESS_*.txt
+hpc_results/final_model_comparison_20260429_partial_failed_7248278/
+hpc_results/imported_from_vm_20260501_raw/
+hpc_results/patch_robustness_20260429/

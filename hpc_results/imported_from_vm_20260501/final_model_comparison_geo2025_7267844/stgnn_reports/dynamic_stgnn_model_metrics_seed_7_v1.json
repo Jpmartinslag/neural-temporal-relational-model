@@ -1,0 +1,108 @@
+{
+  "metrics_by_model_year": [
+    {
+      "model": "dcrnn_residual",
+      "target_year": 2021,
+      "wmape": 0.061776398988157885,
+      "n": 280
+    },
+    {
+      "model": "dcrnn_residual",
+      "target_year": 2022,
+      "wmape": 0.07959305953085098,
+      "n": 280
+    },
+    {
+      "model": "dcrnn_residual",
+      "target_year": 2023,
+      "wmape": 0.07263691606331693,
+      "n": 280
+    },
+    {
+      "model": "dcrnn_residual",
+      "target_year": 2024,
+      "wmape": 0.026119986436442026,
+      "n": 280
+    },
+    {
+      "model": "dcrnn_residual",
+      "target_year": 2025,
+      "wmape": 0.02874692984134429,
+      "n": 280
+    },
+    {
+      "model": "dynamic_stgnn_residual",
+      "target_year": 2021,
+      "wmape": 0.060988341595722154,
+      "n": 280
+    },
+    {
+      "model": "dynamic_stgnn_residual",
+      "target_year": 2022,
+      "wmape": 0.07888505072579237,
+      "n": 280
+    },
+    {
+      "model": "dynamic_stgnn_residual",
+      "target_year": 2023,
+      "wmape": 0.07248787207620244,
+      "n": 280
+    },
+    {
+      "model": "dynamic_stgnn_residual",
+      "target_year": 2024,
+      "wmape": 0.02625484312416215,
+      "n": 280
+    },
+    {
+      "model": "dynamic_stgnn_residual",
+      "target_year": 2025,
+      "wmape": 0.03235512606393052,
+      "n": 280
+    },
+    {
+      "model": "graph_wavenet_residual",
+      "target_year": 2021,
+      "wmape": 0.17155503656872279,
+      "n": 280
+    },
+    {
+      "model": "graph_wavenet_residual",
+      "target_year": 2022,
+      "wmape": 0.2387184216799332,
+      "n": 280
+    },
+    {
+      "model": "graph_wavenet_residual",
+      "target_year": 2023,
+      "wmape": 0.08910707229892602,
+      "n": 280
+    },
+    {
+      "model": "graph_wavenet_residual",
+      "target_year": 2024,
+      "wmape": 0.29072874841290497,
+      "n": 280
+    },
+    {
+      "model": "graph_wavenet_residual",
+      "target_year": 2025,
+      "wmape": 0.07379261511069485,
+      "n": 280
+    }
+  ],
+  "summary_mean_wmape": [
+    {
+      "model": "dcrnn_residual",
+      "wmape": 0.05377465817202243
+    },
+    {
+      "model": "dynamic_stgnn_residual",
+      "wmape": 0.05419424671716193
+    },
+    {
+      "model": "graph_wavenet_residual",
+      "wmape": 0.17278037881423636
+    }
+  ]
+}

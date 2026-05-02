@@ -1,0 +1,90 @@
+{
+  "metrics_by_model_year": [
+    {
+      "model": "dcrnn_residual",
+      "target_year": 2021,
+      "wmape": 0.061908352439374585,
+      "n": 280
+    },
+    {
+      "model": "dcrnn_residual",
+      "target_year": 2022,
+      "wmape": 0.07926725505480481,
+      "n": 280
+    },
+    {
+      "model": "dcrnn_residual",
+      "target_year": 2023,
+      "wmape": 0.07251959586369902,
+      "n": 280
+    },
+    {
+      "model": "dcrnn_residual",
+      "target_year": 2024,
+      "wmape": 0.03145320692372702,
+      "n": 280
+    },
+    {
+      "model": "dynamic_stgnn_residual",
+      "target_year": 2021,
+      "wmape": 0.060839871532506695,
+      "n": 280
+    },
+    {
+      "model": "dynamic_stgnn_residual",
+      "target_year": 2022,
+      "wmape": 0.07913646462401716,
+      "n": 280
+    },
+    {
+      "model": "dynamic_stgnn_residual",
+      "target_year": 2023,
+      "wmape": 0.07255263876300286,
+      "n": 280
+    },
+    {
+      "model": "dynamic_stgnn_residual",
+      "target_year": 2024,
+      "wmape": 0.031622466384021886,
+      "n": 280
+    },
+    {
+      "model": "graph_wavenet_residual",
+      "target_year": 2021,
+      "wmape": 0.13744478272564795,
+      "n": 280
+    },
+    {
+      "model": "graph_wavenet_residual",
+      "target_year": 2022,
+      "wmape": 0.06823974076447373,
+      "n": 280
+    },
+    {
+      "model": "graph_wavenet_residual",
+      "target_year": 2023,
+      "wmape": 0.1096235358029233,
+      "n": 280
+    },
+    {
+      "model": "graph_wavenet_residual",
+      "target_year": 2024,
+      "wmape": 0.07564259358584374,
+      "n": 280
+    }
+  ],
+  "summary_mean_wmape": [
+    {
+      "model": "dynamic_stgnn_residual",
+      "wmape": 0.06103786032588715
+    },
+    {
+      "model": "dcrnn_residual",
+      "wmape": 0.06128710257040136
+    },
+    {
+      "model": "graph_wavenet_residual",
+      "wmape": 0.09773766321972219
+    }
+  ]
+}

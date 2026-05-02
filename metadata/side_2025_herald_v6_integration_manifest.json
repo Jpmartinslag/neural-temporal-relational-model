@@ -1,0 +1,40 @@
+{
+  "created_for": "HERALD V6 2025 observed validation and future short-horizon forecasting",
+  "source_release": "INSEE SIDE creations 2012-2025 and stocks 2014-2023, geographie en vigueur au 1er janvier 2025",
+  "source_files": [
+    "data/raw/business_demography/side/DS_SIDE_CREA_ETAB_COM_2025_CSV.zip",
+    "data/raw/business_demography/side/DS_SIDE_CREA_ENT_COM_2025_CSV.zip",
+    "data/raw/business_demography/side/DS_SIDE_STOCKS_ET_COM_2023_GEO2025_CSV.zip",
+    "data/raw/business_demography/side/DS_SIDE_STOCKS_UL_COM_2023_GEO2025_CSV.zip"
+  ],
+  "outputs": [
+    "data/processed/target_side_establishments_annual_core_through_2025_v1.csv",
+    "data/processed/side_creations_a10_ze2020_through_2025_v1.csv",
+    "data/processed/dynamic_stgnn_feature_panel_through_2025_v1.csv",
+    "metadata/dynamic_stgnn_walk_forward_splits_through_2025_v1.csv"
+  ],
+  "coverage": {
+    "core_ze2020_zones": 280,
+    "side_2025_total_ze_codes": 306,
+    "note": "Training graph core keeps the same 280 ZE2020 nodes as previous HERALD runs; 26 SIDE ZE codes are outside this graph core."
+  },
+  "side_2025_core_totals": {
+    "enterprise_creations": 1120276.0,
+    "establishment_creations": 1268677.0
+  },
+  "side_2025_all_france_totals_from_source": {
+    "enterprise_creations": 1165795.0,
+    "establishment_creations": 1319602.0
+  },
+  "data_quality_checks": {
+    "target_rows": 3920,
+    "years": "2012-2025",
+    "zones_per_year": 280,
+    "missing_target_values": 0,
+    "a10_sector_sum_equals_total": true,
+    "processed_2025_matches_complete_side_zip": true,
+    "side_stock_t_minus_1_available_for_2025": false,
+    "side_stock_note": "SIDE stock files are available through 2023 only, so target_year=2025 has no 2024 stock t-1 features."
+  },
+  "v6_training_args_example": "--panel-path data/processed/dynamic_stgnn_feature_panel_through_2025_v1.csv --splits-path metadata/dynamic_stgnn_walk_forward_splits_through_2025_v1.csv --side-a10-path data/processed/side_creations_a10_ze2020_through_2025_v1.csv --run-tag observed2025_geo2025"
+}

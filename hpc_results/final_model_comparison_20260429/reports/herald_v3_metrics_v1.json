@@ -1,0 +1,7877 @@
+{
+  "full_seed_0": {
+    "ablation": "full",
+    "seed": 0,
+    "mean_wmape": 0.024431,
+    "delta_vs_ridge_ar": -0.042369,
+    "delta_vs_stgnn_v1": -0.036569,
+    "delta_vs_herald_v2_expanding": -0.002669,
+    "per_year": [
+      {
+        "model": "herald_v3",
+        "target_year": 2021,
+        "wmape": 0.02837895887353085,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2022,
+        "wmape": 0.022361452136255424,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2023,
+        "wmape": 0.021671057808963733,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2024,
+        "wmape": 0.025312083745590457,
+        "n": 280
+      }
+    ],
+    "adj_diagnostics": [
+      {
+        "target_year": 2021,
+        "smooth_mean": 0.000843,
+        "density_last": 0.0357,
+        "gamma_geo": 0.0951,
+        "gamma_mob": 1.0701
+      },
+      {
+        "target_year": 2022,
+        "smooth_mean": 0.000149,
+        "density_last": 0.0357,
+        "gamma_geo": 0.0577,
+        "gamma_mob": 1.232
+      },
+      {
+        "target_year": 2023,
+        "smooth_mean": 0.000275,
+        "density_last": 0.0357,
+        "gamma_geo": 0.0966,
+        "gamma_mob": 1.1062
+      },
+      {
+        "target_year": 2024,
+        "smooth_mean": 0.000224,
+        "density_last": 0.0357,
+        "gamma_geo": 0.0053,
+        "gamma_mob": 1.1017
+      }
+    ],
+    "smooth_loss_by_fold": {
+      "2021": {
+        "mean_smooth": 0.000843,
+        "per_year": {
+          "2013": 0.000487,
+          "2014": 0.000767,
+          "2015": 0.000831,
+          "2016": 0.001224,
+          "2017": 0.000967,
+          "2018": 0.000833,
+          "2019": 0.000482,
+          "2020": 0.000672,
+          "2021": 0.001327
+        }
+      },
+      "2022": {
+        "mean_smooth": 0.000149,
+        "per_year": {
+          "2013": 2.2e-05,
+          "2014": 5.5e-05,
+          "2015": 7.3e-05,
+          "2016": 8.6e-05,
+          "2017": 7.4e-05,
+          "2018": 0.000134,
+          "2019": 0.0001,
+          "2020": 0.000148,
+          "2021": 0.000173,
+          "2022": 0.000626
+        }
+      },
+      "2023": {
+        "mean_smooth": 0.000275,
+        "per_year": {
+          "2013": 3.7e-05,
+          "2014": 9.1e-05,
+          "2015": 0.000135,
+          "2016": 0.00014,
+          "2017": 0.000132,
+          "2018": 0.000186,
+          "2019": 0.000108,
+          "2020": 0.000153,
+          "2021": 0.000234,
+          "2022": 0.000257,
+          "2023": 0.001551
+        }
+      },
+      "2024": {
+        "mean_smooth": 0.000224,
+        "per_year": {
+          "2013": 2.9e-05,
+          "2014": 9.2e-05,
+          "2015": 0.000304,
+          "2016": 0.000332,
+          "2017": 0.000315,
+          "2018": 0.000369,
+          "2019": 0.000153,
+          "2020": 0.000117,
+          "2021": 0.000132,
+          "2022": 0.000177,
+          "2023": 0.000202,
+          "2024": 0.000468
+        }
+      }
+    },
+    "gate_mean_by_year": {
+      "2019": 0.95152,
+      "2020": 0.95022,
+      "2021": 0.96422,
+      "2022": 0.938,
+      "2024": 0.91584
+    },
+    "key_zone_top10_neighbors": {
+      "Paris": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27877
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.18314
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.1704
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13852
+          },
+          {
+            "rank": 5,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08366
+          },
+          {
+            "rank": 6,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08334
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05552
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00294
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00236
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00135
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.28475
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.19132
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.18082
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13589
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.07693
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.07531
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.04874
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.0029
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00222
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00111
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.25932
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.19205
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.18272
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13727
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08483
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08216
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05559
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00277
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00212
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00117
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27063
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.18801
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17508
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13639
+          },
+          {
+            "rank": 5,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08044
+          },
+          {
+            "rank": 6,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08043
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05302
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00721
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00572
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00306
+          }
+        ]
+      },
+      "Lyon": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28544
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19732
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17688
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14887
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.1198
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04233
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01179
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.0085
+          },
+          {
+            "rank": 9,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00511
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00397
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.30192
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.1995
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17479
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14483
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.11356
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.03446
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01371
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.01001
+          },
+          {
+            "rank": 9,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00419
+          },
+          {
+            "rank": 10,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00304
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28831
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19894
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17698
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14912
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12011
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04156
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00875
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00799
+          },
+          {
+            "rank": 9,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00462
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00362
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.27338
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.18905
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.16912
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14348
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.11521
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.03913
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.03052
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.0227
+          },
+          {
+            "rank": 9,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.01033
+          },
+          {
+            "rank": 10,
+            "ze2020": 8435,
+            "name": "Voiron",
+            "weight": 0.00707
+          }
+        ]
+      },
+      "Marseille": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.63043
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.22591
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.11785
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01288
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00359
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00281
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00218
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00199
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00122
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.00115
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.67806
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.2051
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.09821
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.00758
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00314
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00249
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00187
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00168
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00096
+          },
+          {
+            "rank": 10,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.00091
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.64401
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.22064
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.11341
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01135
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00269
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00239
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00186
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00167
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00101
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.00096
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.62748
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.21606
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.11165
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01121
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00913
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00737
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00576
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00521
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00316
+          },
+          {
+            "rank": 10,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.00299
+          }
+        ]
+      },
+      "Toulouse": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.27105
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16427
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13315
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11984
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11452
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08314
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05876
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02937
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01661
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00926
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.29663
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16626
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13065
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.1145
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11014
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.07702
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05011
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02283
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.02058
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.01127
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.27871
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16661
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13287
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11776
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11425
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08246
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.0567
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02804
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01385
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00875
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.26564
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.15826
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.12638
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11221
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.10852
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.07982
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05446
+          },
+          {
+            "rank": 8,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.04357
+          },
+          {
+            "rank": 9,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02656
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.02457
+          }
+        ]
+      }
+    }
+  },
+  "full_seed_1": {
+    "ablation": "full",
+    "seed": 1,
+    "mean_wmape": 0.031943,
+    "delta_vs_ridge_ar": -0.034857,
+    "delta_vs_stgnn_v1": -0.029057,
+    "delta_vs_herald_v2_expanding": 0.004843,
+    "per_year": [
+      {
+        "model": "herald_v3",
+        "target_year": 2021,
+        "wmape": 0.029455689249266913,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2022,
+        "wmape": 0.021050359683741138,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2023,
+        "wmape": 0.04212456266163383,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2024,
+        "wmape": 0.03514335607547707,
+        "n": 280
+      }
+    ],
+    "adj_diagnostics": [
+      {
+        "target_year": 2021,
+        "smooth_mean": 0.000312,
+        "density_last": 0.0224,
+        "gamma_geo": 0.4763,
+        "gamma_mob": 1.0487
+      },
+      {
+        "target_year": 2022,
+        "smooth_mean": 0.000269,
+        "density_last": 0.0357,
+        "gamma_geo": 0.1406,
+        "gamma_mob": 1.1094
+      },
+      {
+        "target_year": 2023,
+        "smooth_mean": 0.000539,
+        "density_last": 0.0352,
+        "gamma_geo": 0.2733,
+        "gamma_mob": 1.004
+      },
+      {
+        "target_year": 2024,
+        "smooth_mean": 0.00025,
+        "density_last": 0.0357,
+        "gamma_geo": 0.0805,
+        "gamma_mob": 1.0916
+      }
+    ],
+    "smooth_loss_by_fold": {
+      "2021": {
+        "mean_smooth": 0.000312,
+        "per_year": {
+          "2013": 6.4e-05,
+          "2014": 0.000146,
+          "2015": 0.000197,
+          "2016": 0.000197,
+          "2017": 0.000162,
+          "2018": 0.000209,
+          "2019": 0.000239,
+          "2020": 0.000276,
+          "2021": 0.00132
+        }
+      },
+      "2022": {
+        "mean_smooth": 0.000269,
+        "per_year": {
+          "2013": 4.2e-05,
+          "2014": 0.000138,
+          "2015": 0.000151,
+          "2016": 0.000122,
+          "2017": 0.000152,
+          "2018": 0.000227,
+          "2019": 0.000173,
+          "2020": 0.000254,
+          "2021": 0.000321,
+          "2022": 0.001108
+        }
+      },
+      "2023": {
+        "mean_smooth": 0.000539,
+        "per_year": {
+          "2013": 6e-05,
+          "2014": 9.8e-05,
+          "2015": 0.000165,
+          "2016": 0.000167,
+          "2017": 0.000147,
+          "2018": 0.000309,
+          "2019": 0.000307,
+          "2020": 0.000326,
+          "2021": 0.000523,
+          "2022": 0.000585,
+          "2023": 0.003244
+        }
+      },
+      "2024": {
+        "mean_smooth": 0.00025,
+        "per_year": {
+          "2013": 4.6e-05,
+          "2014": 6.5e-05,
+          "2015": 8.4e-05,
+          "2016": 0.000152,
+          "2017": 0.000275,
+          "2018": 0.000323,
+          "2019": 0.000169,
+          "2020": 0.00021,
+          "2021": 0.000348,
+          "2022": 0.000318,
+          "2023": 0.00043,
+          "2024": 0.000586
+        }
+      }
+    },
+    "gate_mean_by_year": {
+      "2019": 0.7063,
+      "2020": 0.67916,
+      "2021": 0.72547,
+      "2022": 0.66132,
+      "2024": 0.6405
+    },
+    "key_zone_top10_neighbors": {
+      "Paris": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.26167
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.19058
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17998
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.14045
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08534
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08414
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05777
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 3e-05
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 3e-05
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 1e-05
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27187
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.19098
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17855
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13805
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08211
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08081
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05427
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00151
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00119
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00065
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27003
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.17999
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17509
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.14027
+          },
+          {
+            "rank": 5,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08927
+          },
+          {
+            "rank": 6,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08482
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.0595
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00044
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00037
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00021
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.26927
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.18974
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.1782
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13789
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08216
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08108
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05458
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00318
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00251
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.0014
+          }
+        ]
+      },
+      "Lyon": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28725
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.20126
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.18114
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.15365
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12541
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04534
+          },
+          {
+            "rank": 7,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00567
+          },
+          {
+            "rank": 8,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00013
+          },
+          {
+            "rank": 9,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.0001
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 5e-05
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.29022
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.2001
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17776
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.15074
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12106
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04218
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00643
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00474
+          },
+          {
+            "rank": 9,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00462
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00215
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28105
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.20037
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17778
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.15359
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12781
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04851
+          },
+          {
+            "rank": 7,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.0067
+          },
+          {
+            "rank": 8,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00237
+          },
+          {
+            "rank": 9,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00123
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00059
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28571
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19743
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17533
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14795
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.11976
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04206
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01263
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.0098
+          },
+          {
+            "rank": 9,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00482
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00452
+          }
+        ]
+      },
+      "Marseille": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.63301
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.2299
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.12311
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01386
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 3e-05
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 3e-05
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 2e-05
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 2e-05
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 1e-05
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 1e-05
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.64828
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.22047
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.11356
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01137
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00175
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00139
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00108
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00097
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00058
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.00055
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.61871
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.23443
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.12897
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01594
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00063
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00038
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00031
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00028
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00018
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.00017
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.63727
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.2218
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.11517
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01184
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00371
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00309
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00239
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00217
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00132
+          },
+          {
+            "rank": 10,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.00125
+          }
+        ]
+      },
+      "Toulouse": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.27521
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16993
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13623
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.12168
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11767
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08698
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.06087
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.03113
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00019
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00011
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.28151
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16911
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13357
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11875
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11473
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.083
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05688
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02803
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00918
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00524
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.26688
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16708
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13623
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.12231
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11888
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08844
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.06291
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.03321
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00272
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00134
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.27414
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16506
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13177
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.1171
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11466
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08256
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05708
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02851
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.0183
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.01082
+          }
+        ]
+      }
+    }
+  },
+  "full_seed_7": {
+    "ablation": "full",
+    "seed": 7,
+    "mean_wmape": 0.02812,
+    "delta_vs_ridge_ar": -0.03868,
+    "delta_vs_stgnn_v1": -0.03288,
+    "delta_vs_herald_v2_expanding": 0.00102,
+    "per_year": [
+      {
+        "model": "herald_v3",
+        "target_year": 2021,
+        "wmape": 0.04131192995590262,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2022,
+        "wmape": 0.017480514304077686,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2023,
+        "wmape": 0.022369196226298033,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2024,
+        "wmape": 0.031320004516355936,
+        "n": 280
+      }
+    ],
+    "adj_diagnostics": [
+      {
+        "target_year": 2021,
+        "smooth_mean": 0.000697,
+        "density_last": 0.033,
+        "gamma_geo": 0.3194,
+        "gamma_mob": 1.0382
+      },
+      {
+        "target_year": 2022,
+        "smooth_mean": 0.000218,
+        "density_last": 0.0356,
+        "gamma_geo": 0.1497,
+        "gamma_mob": 1.1829
+      },
+      {
+        "target_year": 2023,
+        "smooth_mean": 0.000156,
+        "density_last": 0.0357,
+        "gamma_geo": 0.0927,
+        "gamma_mob": 1.1001
+      },
+      {
+        "target_year": 2024,
+        "smooth_mean": 0.000303,
+        "density_last": 0.0357,
+        "gamma_geo": 0.0523,
+        "gamma_mob": 1.0797
+      }
+    ],
+    "smooth_loss_by_fold": {
+      "2021": {
+        "mean_smooth": 0.000697,
+        "per_year": {
+          "2013": 8.9e-05,
+          "2014": 0.00019,
+          "2015": 0.000438,
+          "2016": 0.000402,
+          "2017": 0.000428,
+          "2018": 0.000666,
+          "2019": 0.000594,
+          "2020": 0.000684,
+          "2021": 0.002781
+        }
+      },
+      "2022": {
+        "mean_smooth": 0.000218,
+        "per_year": {
+          "2013": 2.2e-05,
+          "2014": 4.4e-05,
+          "2015": 6.6e-05,
+          "2016": 0.000159,
+          "2017": 0.000161,
+          "2018": 0.000249,
+          "2019": 0.000232,
+          "2020": 0.000217,
+          "2021": 0.000256,
+          "2022": 0.000768
+        }
+      },
+      "2023": {
+        "mean_smooth": 0.000156,
+        "per_year": {
+          "2013": 2.2e-05,
+          "2014": 5.6e-05,
+          "2015": 0.000102,
+          "2016": 0.000129,
+          "2017": 7.6e-05,
+          "2018": 0.000131,
+          "2019": 0.000101,
+          "2020": 0.000126,
+          "2021": 0.000144,
+          "2022": 0.000178,
+          "2023": 0.00065
+        }
+      },
+      "2024": {
+        "mean_smooth": 0.000303,
+        "per_year": {
+          "2013": 8.5e-05,
+          "2014": 0.00038,
+          "2015": 0.000228,
+          "2016": 0.000453,
+          "2017": 0.000214,
+          "2018": 0.000246,
+          "2019": 0.000198,
+          "2020": 0.000285,
+          "2021": 0.000341,
+          "2022": 0.000366,
+          "2023": 0.000383,
+          "2024": 0.00046
+        }
+      }
+    },
+    "gate_mean_by_year": {
+      "2019": 0.98945,
+      "2020": 0.99348,
+      "2021": 0.99487,
+      "2022": 0.99278,
+      "2024": 0.97917
+    },
+    "key_zone_top10_neighbors": {
+      "Paris": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.24177
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.18568
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.18156
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.14497
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.09249
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.09014
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.06279
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00027
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00022
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00012
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.28349
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.19088
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.1813
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13697
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.07813
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.07704
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.04986
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00106
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00084
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00043
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.28566
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.18786
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17431
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.136
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.07966
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.0782
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05276
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00249
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00199
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00105
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.25928
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.19332
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.18176
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.1382
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08132
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08118
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05513
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00437
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00352
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00193
+          }
+        ]
+      },
+      "Lyon": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28457
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.20037
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.18118
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.15354
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12649
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.0462
+          },
+          {
+            "rank": 7,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00591
+          },
+          {
+            "rank": 8,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00077
+          },
+          {
+            "rank": 9,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00065
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00031
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.30073
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.20175
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17823
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14897
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.11891
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.03749
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00493
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00376
+          },
+          {
+            "rank": 9,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00361
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00161
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28522
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19785
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17693
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14985
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12048
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.0416
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01102
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.0085
+          },
+          {
+            "rank": 9,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00469
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00386
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28191
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19466
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17342
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14676
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.11946
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04111
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01751
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.01388
+          },
+          {
+            "rank": 9,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00639
+          },
+          {
+            "rank": 10,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00489
+          }
+        ]
+      },
+      "Marseille": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.63028
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.23128
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.12318
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01435
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00025
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00019
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00015
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00014
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 9e-05
+          },
+          {
+            "rank": 10,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 8e-05
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.66745
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.21456
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.1048
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.00898
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00112
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00096
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00073
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00066
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00039
+          },
+          {
+            "rank": 10,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.00036
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.64216
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.22083
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.11384
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01154
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.0031
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00259
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00199
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00181
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.0011
+          },
+          {
+            "rank": 10,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.00104
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.6309
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.2203
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.1164
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01213
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00529
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00446
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00351
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00318
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00194
+          },
+          {
+            "rank": 10,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.0019
+          }
+        ]
+      },
+      "Toulouse": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.27293
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16898
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13579
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.12147
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11886
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08681
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.06139
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.0318
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00124
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00073
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.29406
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.17118
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13277
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.1173
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11349
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08004
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.0536
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02521
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.008
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00435
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.27731
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16574
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13281
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11808
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11295
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08302
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05654
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02816
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01613
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00927
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.26894
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16409
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13036
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11545
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11311
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08252
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05698
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.0283
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.02507
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.01519
+          }
+        ]
+      }
+    }
+  },
+  "full_seed_13": {
+    "ablation": "full",
+    "seed": 13,
+    "mean_wmape": 0.034594,
+    "delta_vs_ridge_ar": -0.032206,
+    "delta_vs_stgnn_v1": -0.026406,
+    "delta_vs_herald_v2_expanding": 0.007494,
+    "per_year": [
+      {
+        "model": "herald_v3",
+        "target_year": 2021,
+        "wmape": 0.03228957237594504,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2022,
+        "wmape": 0.02575569825808589,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2023,
+        "wmape": 0.05077741752350349,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2024,
+        "wmape": 0.02955147638216715,
+        "n": 280
+      }
+    ],
+    "adj_diagnostics": [
+      {
+        "target_year": 2021,
+        "smooth_mean": 0.000814,
+        "density_last": 0.0356,
+        "gamma_geo": 0.201,
+        "gamma_mob": 1.0773
+      },
+      {
+        "target_year": 2022,
+        "smooth_mean": 0.000264,
+        "density_last": 0.0357,
+        "gamma_geo": 0.0514,
+        "gamma_mob": 1.1412
+      },
+      {
+        "target_year": 2023,
+        "smooth_mean": 0.000972,
+        "density_last": 0.0357,
+        "gamma_geo": 0.0808,
+        "gamma_mob": 1.0036
+      },
+      {
+        "target_year": 2024,
+        "smooth_mean": 0.000228,
+        "density_last": 0.0357,
+        "gamma_geo": 0.096,
+        "gamma_mob": 1.0914
+      }
+    ],
+    "smooth_loss_by_fold": {
+      "2021": {
+        "mean_smooth": 0.000814,
+        "per_year": {
+          "2013": 0.000118,
+          "2014": 0.000361,
+          "2015": 0.00145,
+          "2016": 0.000805,
+          "2017": 0.00055,
+          "2018": 0.000709,
+          "2019": 0.000681,
+          "2020": 0.000882,
+          "2021": 0.001772
+        }
+      },
+      "2022": {
+        "mean_smooth": 0.000264,
+        "per_year": {
+          "2013": 3e-05,
+          "2014": 8.9e-05,
+          "2015": 0.000124,
+          "2016": 0.000154,
+          "2017": 0.000156,
+          "2018": 0.0002,
+          "2019": 0.000175,
+          "2020": 0.000224,
+          "2021": 0.000332,
+          "2022": 0.00116
+        }
+      },
+      "2023": {
+        "mean_smooth": 0.000972,
+        "per_year": {
+          "2013": 8.3e-05,
+          "2014": 0.000184,
+          "2015": 0.000278,
+          "2016": 0.000286,
+          "2017": 0.000262,
+          "2018": 0.000486,
+          "2019": 0.000428,
+          "2020": 0.000659,
+          "2021": 0.001022,
+          "2022": 0.001111,
+          "2023": 0.005892
+        }
+      },
+      "2024": {
+        "mean_smooth": 0.000228,
+        "per_year": {
+          "2013": 5.2e-05,
+          "2014": 0.000107,
+          "2015": 0.00012,
+          "2016": 0.000107,
+          "2017": 0.000111,
+          "2018": 0.00017,
+          "2019": 0.0002,
+          "2020": 0.000268,
+          "2021": 0.000436,
+          "2022": 0.0004,
+          "2023": 0.000285,
+          "2024": 0.000477
+        }
+      }
+    },
+    "gate_mean_by_year": {
+      "2019": 0.9649,
+      "2020": 0.96035,
+      "2021": 0.96063,
+      "2022": 0.94957,
+      "2024": 0.94369
+    },
+    "key_zone_top10_neighbors": {
+      "Paris": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.25427
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.19851
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17764
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13592
+          },
+          {
+            "rank": 5,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.09277
+          },
+          {
+            "rank": 6,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08108
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05819
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00073
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00057
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00033
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27534
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.19392
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17823
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13804
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.07978
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.07439
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05251
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00354
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00277
+          },
+          {
+            "rank": 10,
+            "ze2020": 3216,
+            "name": "Lille",
+            "weight": 0.00147
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.25031
+          },
+          {
+            "rank": 2,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.18261
+          },
+          {
+            "rank": 3,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.17251
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.14617
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08865
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08552
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.06375
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00455
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00373
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00219
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.26419
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.19317
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17734
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.14155
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08215
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08075
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05457
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00282
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00228
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00117
+          }
+        ]
+      },
+      "Lyon": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28737
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.20054
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17813
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.15092
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12705
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04388
+          },
+          {
+            "rank": 7,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00512
+          },
+          {
+            "rank": 8,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00333
+          },
+          {
+            "rank": 9,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00254
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00113
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28611
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19357
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17492
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.1471
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.11928
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.03897
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01746
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.01295
+          },
+          {
+            "rank": 9,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00558
+          },
+          {
+            "rank": 10,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00404
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.27429
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19558
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17595
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.15023
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12275
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04708
+          },
+          {
+            "rank": 7,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.01123
+          },
+          {
+            "rank": 8,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01082
+          },
+          {
+            "rank": 9,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00646
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00562
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28686
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19826
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17629
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14967
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.11887
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04193
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01129
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00818
+          },
+          {
+            "rank": 9,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00485
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.0038
+          }
+        ]
+      },
+      "Marseille": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.63959
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.22619
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.11835
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01244
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.001
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00073
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00057
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00052
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00032
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.0003
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.64972
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.21491
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.10884
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.00997
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00458
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00365
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00283
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00255
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00151
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.00145
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.60761
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.23247
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.12535
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01604
+          },
+          {
+            "rank": 5,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00424
+          },
+          {
+            "rank": 6,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00416
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00332
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00307
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00194
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.00179
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.63875
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.2226
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.11502
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01199
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00318
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00255
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00198
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00181
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.0011
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.00103
+          }
+        ]
+      },
+      "Toulouse": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.27678
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16983
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13489
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.1207
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.1176
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08464
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05902
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02998
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.0038
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00276
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.27839
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16442
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13055
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11537
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11072
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08051
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05399
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02646
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.02545
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.01414
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.26069
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16383
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13343
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11926
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11631
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08649
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.06167
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.0323
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.0145
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.01153
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.27581
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16544
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13243
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11776
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.1147
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08307
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05741
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02862
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01574
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00903
+          }
+        ]
+      }
+    }
+  },
+  "full_seed_42": {
+    "ablation": "full",
+    "seed": 42,
+    "mean_wmape": 0.026,
+    "delta_vs_ridge_ar": -0.0408,
+    "delta_vs_stgnn_v1": -0.035,
+    "delta_vs_herald_v2_expanding": -0.0011,
+    "per_year": [
+      {
+        "model": "herald_v3",
+        "target_year": 2021,
+        "wmape": 0.025137066640144517,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2022,
+        "wmape": 0.02056898672352894,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2023,
+        "wmape": 0.026374368470882002,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2024,
+        "wmape": 0.03191958846593613,
+        "n": 280
+      }
+    ],
+    "adj_diagnostics": [
+      {
+        "target_year": 2021,
+        "smooth_mean": 0.00065,
+        "density_last": 0.0357,
+        "gamma_geo": 0.1432,
+        "gamma_mob": 0.9914
+      },
+      {
+        "target_year": 2022,
+        "smooth_mean": 0.000115,
+        "density_last": 0.0253,
+        "gamma_geo": 0.4338,
+        "gamma_mob": 0.9993
+      },
+      {
+        "target_year": 2023,
+        "smooth_mean": 0.000953,
+        "density_last": 0.0357,
+        "gamma_geo": 0.0409,
+        "gamma_mob": 1.0193
+      },
+      {
+        "target_year": 2024,
+        "smooth_mean": 0.000254,
+        "density_last": 0.0357,
+        "gamma_geo": 0.117,
+        "gamma_mob": 1.0812
+      }
+    ],
+    "smooth_loss_by_fold": {
+      "2021": {
+        "mean_smooth": 0.00065,
+        "per_year": {
+          "2013": 5.8e-05,
+          "2014": 0.000218,
+          "2015": 0.000395,
+          "2016": 0.00048,
+          "2017": 0.000385,
+          "2018": 0.000572,
+          "2019": 0.000554,
+          "2020": 0.000699,
+          "2021": 0.002492
+        }
+      },
+      "2022": {
+        "mean_smooth": 0.000115,
+        "per_year": {
+          "2013": 1.5e-05,
+          "2014": 3.3e-05,
+          "2015": 5.3e-05,
+          "2016": 8.3e-05,
+          "2017": 6.8e-05,
+          "2018": 9.6e-05,
+          "2019": 9.2e-05,
+          "2020": 0.000146,
+          "2021": 0.000158,
+          "2022": 0.000405
+        }
+      },
+      "2023": {
+        "mean_smooth": 0.000953,
+        "per_year": {
+          "2013": 6.3e-05,
+          "2014": 0.00022,
+          "2015": 0.000268,
+          "2016": 0.000421,
+          "2017": 0.000415,
+          "2018": 0.000575,
+          "2019": 0.000538,
+          "2020": 0.000942,
+          "2021": 0.00072,
+          "2022": 0.001042,
+          "2023": 0.005281
+        }
+      },
+      "2024": {
+        "mean_smooth": 0.000254,
+        "per_year": {
+          "2013": 1.7e-05,
+          "2014": 8.5e-05,
+          "2015": 0.000168,
+          "2016": 0.000116,
+          "2017": 0.000127,
+          "2018": 0.000233,
+          "2019": 0.000238,
+          "2020": 0.00025,
+          "2021": 0.000326,
+          "2022": 0.000424,
+          "2023": 0.000402,
+          "2024": 0.000661
+        }
+      }
+    },
+    "gate_mean_by_year": {
+      "2019": 0.9024,
+      "2020": 0.84286,
+      "2021": 0.92189,
+      "2022": 0.83188,
+      "2024": 0.87718
+    },
+    "key_zone_top10_neighbors": {
+      "Paris": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.25192
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.18265
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17484
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13786
+          },
+          {
+            "rank": 5,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.0943
+          },
+          {
+            "rank": 6,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08916
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.06418
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00217
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00181
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.0011
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.2632
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.18859
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17469
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13974
+          },
+          {
+            "rank": 5,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08741
+          },
+          {
+            "rank": 6,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08623
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.06001
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 6e-05
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 5e-05
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 3e-05
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27156
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.18837
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17071
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.1342
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08423
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08256
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05456
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00606
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00485
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.0029
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27547
+          },
+          {
+            "rank": 2,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.18086
+          },
+          {
+            "rank": 3,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.17935
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13628
+          },
+          {
+            "rank": 5,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08359
+          },
+          {
+            "rank": 6,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08281
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05715
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.0019
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00164
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00094
+          }
+        ]
+      },
+      "Lyon": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.27679
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19693
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.177
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.15213
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12617
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04821
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00754
+          },
+          {
+            "rank": 8,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00678
+          },
+          {
+            "rank": 9,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00567
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00277
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28105
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19998
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.18012
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.15487
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.1284
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04841
+          },
+          {
+            "rank": 7,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00665
+          },
+          {
+            "rank": 8,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00025
+          },
+          {
+            "rank": 9,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00018
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 9e-05
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.27207
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19171
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17339
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14833
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12055
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04523
+          },
+          {
+            "rank": 7,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.01783
+          },
+          {
+            "rank": 8,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01639
+          },
+          {
+            "rank": 9,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.0085
+          },
+          {
+            "rank": 10,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.006
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28729
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19734
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17634
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14952
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12326
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04308
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00847
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00662
+          },
+          {
+            "rank": 9,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00505
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00302
+          }
+        ]
+      },
+      "Marseille": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.61232
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.23292
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.12883
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01663
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00229
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00207
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00159
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.0015
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00095
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.00089
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.6192
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.23458
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.12991
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01605
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 7e-05
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 5e-05
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 4e-05
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 4e-05
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 2e-05
+          },
+          {
+            "rank": 10,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 2e-05
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.6058
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.22616
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.12453
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01474
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00706
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00638
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00504
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00461
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.0029
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.00279
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.63776
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.22408
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.11681
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01218
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00241
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00202
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00158
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00144
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00088
+          },
+          {
+            "rank": 10,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.00084
+          }
+        ]
+      },
+      "Toulouse": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.26218
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16511
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13459
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11981
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11749
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08792
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.06296
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.03311
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01068
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00615
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.26657
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16753
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13702
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.12292
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11956
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08877
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.06355
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.03353
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00035
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00021
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.25899
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16155
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13073
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11829
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11406
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08341
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.06019
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.03109
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.02351
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.01818
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.27518
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16702
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13351
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11848
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11538
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08407
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05767
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02918
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01221
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.0073
+          }
+        ]
+      }
+    }
+  },
+  "full_seed_99": {
+    "ablation": "full",
+    "seed": 99,
+    "mean_wmape": 0.027654,
+    "delta_vs_ridge_ar": -0.039146,
+    "delta_vs_stgnn_v1": -0.033346,
+    "delta_vs_herald_v2_expanding": 0.000554,
+    "per_year": [
+      {
+        "model": "herald_v3",
+        "target_year": 2021,
+        "wmape": 0.0330374969227703,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2022,
+        "wmape": 0.024498751964210242,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2023,
+        "wmape": 0.02223843812113369,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2024,
+        "wmape": 0.0308405739194967,
+        "n": 280
+      }
+    ],
+    "adj_diagnostics": [
+      {
+        "target_year": 2021,
+        "smooth_mean": 0.000431,
+        "density_last": 0.0357,
+        "gamma_geo": 0.1169,
+        "gamma_mob": 1.1178
+      },
+      {
+        "target_year": 2022,
+        "smooth_mean": 0.000418,
+        "density_last": 0.0352,
+        "gamma_geo": 0.261,
+        "gamma_mob": 1.0269
+      },
+      {
+        "target_year": 2023,
+        "smooth_mean": 0.000163,
+        "density_last": 0.019,
+        "gamma_geo": 0.9485,
+        "gamma_mob": 1.1663
+      },
+      {
+        "target_year": 2024,
+        "smooth_mean": 9.5e-05,
+        "density_last": 0.0357,
+        "gamma_geo": 0.1278,
+        "gamma_mob": 1.1049
+      }
+    ],
+    "smooth_loss_by_fold": {
+      "2021": {
+        "mean_smooth": 0.000431,
+        "per_year": {
+          "2013": 0.000141,
+          "2014": 0.000275,
+          "2015": 0.00031,
+          "2016": 0.000398,
+          "2017": 0.000278,
+          "2018": 0.000427,
+          "2019": 0.000418,
+          "2020": 0.000369,
+          "2021": 0.001264
+        }
+      },
+      "2022": {
+        "mean_smooth": 0.000418,
+        "per_year": {
+          "2013": 4.4e-05,
+          "2014": 6.6e-05,
+          "2015": 7.6e-05,
+          "2016": 0.00013,
+          "2017": 0.000175,
+          "2018": 0.000332,
+          "2019": 0.000317,
+          "2020": 0.000495,
+          "2021": 0.000584,
+          "2022": 0.001958
+        }
+      },
+      "2023": {
+        "mean_smooth": 0.000163,
+        "per_year": {
+          "2013": 1.7e-05,
+          "2014": 5.2e-05,
+          "2015": 6.9e-05,
+          "2016": 5.9e-05,
+          "2017": 6e-05,
+          "2018": 0.000105,
+          "2019": 0.000125,
+          "2020": 0.000166,
+          "2021": 0.00022,
+          "2022": 0.00023,
+          "2023": 0.000695
+        }
+      },
+      "2024": {
+        "mean_smooth": 9.5e-05,
+        "per_year": {
+          "2013": 1.6e-05,
+          "2014": 3.6e-05,
+          "2015": 7.2e-05,
+          "2016": 4.6e-05,
+          "2017": 6.4e-05,
+          "2018": 8.9e-05,
+          "2019": 8.5e-05,
+          "2020": 9.8e-05,
+          "2021": 0.000136,
+          "2022": 0.000148,
+          "2023": 0.000126,
+          "2024": 0.000227
+        }
+      }
+    },
+    "gate_mean_by_year": {
+      "2019": 0.92268,
+      "2020": 0.94394,
+      "2021": 0.92299,
+      "2022": 0.92371,
+      "2024": 0.90312
+    },
+    "key_zone_top10_neighbors": {
+      "Paris": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27621
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.19378
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17855
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13671
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.07836
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05219
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00189
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.0015
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.0008
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27734
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.18846
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17372
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.1385
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08322
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.0801
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05763
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00045
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00037
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00021
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27706
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.20555
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17665
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13558
+          },
+          {
+            "rank": 5,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.07893
+          },
+          {
+            "rank": 6,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.07684
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.04939
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.26825
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.19126
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17745
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13853
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08357
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08191
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05507
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00181
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.0014
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00076
+          }
+        ]
+      },
+      "Lyon": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.29045
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19947
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17803
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.149
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.11939
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04087
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.0094
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00617
+          },
+          {
+            "rank": 9,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00447
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00276
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.2849
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19994
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17912
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.15386
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12732
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04524
+          },
+          {
+            "rank": 7,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00598
+          },
+          {
+            "rank": 8,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00168
+          },
+          {
+            "rank": 9,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00133
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00063
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.30249
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.20344
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17974
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.1515
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12044
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.03854
+          },
+          {
+            "rank": 7,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00385
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28915
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.19912
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17817
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.15076
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12141
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04143
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00723
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00556
+          },
+          {
+            "rank": 9,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00465
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00252
+          }
+        ]
+      },
+      "Marseille": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.65143
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.21761
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.11183
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.0108
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00252
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00174
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00138
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00124
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00074
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.0007
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.62642
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.23222
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.12486
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01463
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00047
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00041
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00033
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.0003
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00019
+          },
+          {
+            "rank": 10,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.00018
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.66694
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.21596
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.10777
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.00934
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.64633
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.22097
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.11389
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01139
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.002
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00164
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00127
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00115
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.0007
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.00066
+          }
+        ]
+      },
+      "Toulouse": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.28052
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16841
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.1329
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11725
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11515
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08261
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05647
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02796
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01192
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00682
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.27129
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16933
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13537
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.12114
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11789
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08784
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.06155
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.03157
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.0025
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00151
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.29495
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.17305
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13479
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11912
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11529
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08201
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05485
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02593
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.28011
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16801
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13342
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11839
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11502
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.0833
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05702
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02823
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.01038
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00613
+          }
+        ]
+      }
+    }
+  },
+  "full_seed_123": {
+    "ablation": "full",
+    "seed": 123,
+    "mean_wmape": 0.027909,
+    "delta_vs_ridge_ar": -0.038891,
+    "delta_vs_stgnn_v1": -0.033091,
+    "delta_vs_herald_v2_expanding": 0.000809,
+    "per_year": [
+      {
+        "model": "herald_v3",
+        "target_year": 2021,
+        "wmape": 0.03627011874358507,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2022,
+        "wmape": 0.024083512407596153,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2023,
+        "wmape": 0.023261867475460704,
+        "n": 280
+      },
+      {
+        "model": "herald_v3",
+        "target_year": 2024,
+        "wmape": 0.028022122606127402,
+        "n": 280
+      }
+    ],
+    "adj_diagnostics": [
+      {
+        "target_year": 2021,
+        "smooth_mean": 0.001054,
+        "density_last": 0.032,
+        "gamma_geo": 0.2906,
+        "gamma_mob": 1.1783
+      },
+      {
+        "target_year": 2022,
+        "smooth_mean": 0.000372,
+        "density_last": 0.0353,
+        "gamma_geo": 0.2204,
+        "gamma_mob": 1.1087
+      },
+      {
+        "target_year": 2023,
+        "smooth_mean": 0.000384,
+        "density_last": 0.0357,
+        "gamma_geo": 0.006,
+        "gamma_mob": 1.1322
+      },
+      {
+        "target_year": 2024,
+        "smooth_mean": 0.000189,
+        "density_last": 0.0357,
+        "gamma_geo": 0.0526,
+        "gamma_mob": 1.1416
+      }
+    ],
+    "smooth_loss_by_fold": {
+      "2021": {
+        "mean_smooth": 0.001054,
+        "per_year": {
+          "2013": 0.000114,
+          "2014": 0.000327,
+          "2015": 0.000972,
+          "2016": 0.000989,
+          "2017": 0.000634,
+          "2018": 0.000911,
+          "2019": 0.000881,
+          "2020": 0.001116,
+          "2021": 0.003541
+        }
+      },
+      "2022": {
+        "mean_smooth": 0.000372,
+        "per_year": {
+          "2013": 2.2e-05,
+          "2014": 7.5e-05,
+          "2015": 0.000116,
+          "2016": 0.000196,
+          "2017": 0.000185,
+          "2018": 0.000333,
+          "2019": 0.00034,
+          "2020": 0.00034,
+          "2021": 0.000477,
+          "2022": 0.001639
+        }
+      },
+      "2023": {
+        "mean_smooth": 0.000384,
+        "per_year": {
+          "2013": 6.7e-05,
+          "2014": 0.00016,
+          "2015": 0.000121,
+          "2016": 0.000361,
+          "2017": 0.000357,
+          "2018": 0.00019,
+          "2019": 0.000204,
+          "2020": 0.00026,
+          "2021": 0.000314,
+          "2022": 0.000348,
+          "2023": 0.00184
+        }
+      },
+      "2024": {
+        "mean_smooth": 0.000189,
+        "per_year": {
+          "2013": 4.5e-05,
+          "2014": 7.6e-05,
+          "2015": 0.000141,
+          "2016": 0.000124,
+          "2017": 9.1e-05,
+          "2018": 0.000162,
+          "2019": 0.000127,
+          "2020": 0.000186,
+          "2021": 0.000216,
+          "2022": 0.000235,
+          "2023": 0.000248,
+          "2024": 0.00062
+        }
+      }
+    },
+    "gate_mean_by_year": {
+      "2019": 0.97341,
+      "2020": 0.9787,
+      "2021": 0.98229,
+      "2022": 0.96904,
+      "2024": 0.95822
+    },
+    "key_zone_top10_neighbors": {
+      "Paris": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27897
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.191
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17758
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13515
+          },
+          {
+            "rank": 5,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08236
+          },
+          {
+            "rank": 6,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08109
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05336
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00023
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00018
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 9e-05
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27373
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.1836
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.17539
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.14027
+          },
+          {
+            "rank": 5,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08598
+          },
+          {
+            "rank": 6,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08342
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05628
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00059
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00046
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00028
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.27983
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.18522
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.1748
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13501
+          },
+          {
+            "rank": 5,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.08014
+          },
+          {
+            "rank": 6,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.07938
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05151
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00638
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00513
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00261
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.26524
+          },
+          {
+            "rank": 2,
+            "ze2020": 1115,
+            "name": "Versailles-Saint-Quentin",
+            "weight": 0.19037
+          },
+          {
+            "rank": 3,
+            "ze2020": 1113,
+            "name": "Saclay",
+            "weight": 0.1787
+          },
+          {
+            "rank": 4,
+            "ze2020": 1106,
+            "name": "Marne-la-Vall\u00e9e",
+            "weight": 0.13955
+          },
+          {
+            "rank": 5,
+            "ze2020": 1114,
+            "name": "Seine-Yvelinoise",
+            "weight": 0.08316
+          },
+          {
+            "rank": 6,
+            "ze2020": 1104,
+            "name": "\u00c9vry-Courcouronnes",
+            "weight": 0.07996
+          },
+          {
+            "rank": 7,
+            "ze2020": 1101,
+            "name": "Cergy-Vexin",
+            "weight": 0.05349
+          },
+          {
+            "rank": 8,
+            "ze2020": 1108,
+            "name": "Melun",
+            "weight": 0.00431
+          },
+          {
+            "rank": 9,
+            "ze2020": 1107,
+            "name": "Meaux",
+            "weight": 0.00335
+          },
+          {
+            "rank": 10,
+            "ze2020": 1103,
+            "name": "\u00c9tampes",
+            "weight": 0.00187
+          }
+        ]
+      },
+      "Lyon": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.3017
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.20528
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.18009
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.15145
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.11848
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.03712
+          },
+          {
+            "rank": 7,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00371
+          },
+          {
+            "rank": 8,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00117
+          },
+          {
+            "rank": 9,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00069
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00031
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.2948
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.20158
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17953
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14934
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.12252
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.04246
+          },
+          {
+            "rank": 7,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00471
+          },
+          {
+            "rank": 8,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.0024
+          },
+          {
+            "rank": 9,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.00183
+          },
+          {
+            "rank": 10,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00083
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28128
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.18956
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17028
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14126
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.11417
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.03747
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.02851
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.02161
+          },
+          {
+            "rank": 9,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00951
+          },
+          {
+            "rank": 10,
+            "ze2020": 8435,
+            "name": "Voiron",
+            "weight": 0.00637
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 8406,
+            "name": "Bourgoin-Jallieu",
+            "weight": 0.28999
+          },
+          {
+            "rank": 2,
+            "ze2020": 8434,
+            "name": "Villefranche-sur-Sa\u00f4ne",
+            "weight": 0.1969
+          },
+          {
+            "rank": 3,
+            "ze2020": 8433,
+            "name": "Vienne-Annonay",
+            "weight": 0.17362
+          },
+          {
+            "rank": 4,
+            "ze2020": 8405,
+            "name": "Bourg-en-Bresse",
+            "weight": 0.14567
+          },
+          {
+            "rank": 5,
+            "ze2020": 8428,
+            "name": "Saint-\u00c9tienne",
+            "weight": 0.11626
+          },
+          {
+            "rank": 6,
+            "ze2020": 8430,
+            "name": "Tarare",
+            "weight": 0.03882
+          },
+          {
+            "rank": 7,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.0168
+          },
+          {
+            "rank": 8,
+            "ze2020": 8409,
+            "name": "Grenoble",
+            "weight": 0.01238
+          },
+          {
+            "rank": 9,
+            "ze2020": 59,
+            "name": "M\u00e2con",
+            "weight": 0.00551
+          },
+          {
+            "rank": 10,
+            "ze2020": 8412,
+            "name": "La Plaine du Forez",
+            "weight": 0.00405
+          }
+        ]
+      },
+      "Marseille": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.67263
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.21241
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.10525
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.00897
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.0002
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00017
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00013
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00011
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 7e-05
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 6e-05
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.65009
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.22023
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.11604
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01134
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00062
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00051
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.0004
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00035
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00021
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.00021
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.63907
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.21323
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.1082
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.0081
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00644
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.00511
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00452
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.0027
+          },
+          {
+            "rank": 10,
+            "ze2020": 1112,
+            "name": "Roissy",
+            "weight": 0.00262
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 9301,
+            "name": "Aix-en-Provence",
+            "weight": 0.64972
+          },
+          {
+            "rank": 2,
+            "ze2020": 9313,
+            "name": "Martigues-Salon",
+            "weight": 0.21518
+          },
+          {
+            "rank": 3,
+            "ze2020": 9318,
+            "name": "Toulon",
+            "weight": 0.1087
+          },
+          {
+            "rank": 4,
+            "ze2020": 9303,
+            "name": "Brignoles",
+            "weight": 0.01004
+          },
+          {
+            "rank": 5,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00452
+          },
+          {
+            "rank": 6,
+            "ze2020": 9311,
+            "name": "Manosque",
+            "weight": 0.00362
+          },
+          {
+            "rank": 7,
+            "ze2020": 53,
+            "name": "Avignon",
+            "weight": 0.0028
+          },
+          {
+            "rank": 8,
+            "ze2020": 52,
+            "name": "Arles",
+            "weight": 0.00251
+          },
+          {
+            "rank": 9,
+            "ze2020": 9306,
+            "name": "Cavaillon",
+            "weight": 0.00149
+          },
+          {
+            "rank": 10,
+            "ze2020": 9315,
+            "name": "Nice",
+            "weight": 0.00142
+          }
+        ]
+      },
+      "Toulouse": {
+        "2021": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.29851
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.17386
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13232
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11736
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11467
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08249
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05328
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.0249
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00182
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.0008
+          }
+        ],
+        "2022": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.28242
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.17017
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13504
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11965
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11722
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.08314
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05765
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.02904
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.00354
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.00213
+          }
+        ],
+        "2023": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.2713
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16029
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.12617
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11224
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.10871
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.0781
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.0531
+          },
+          {
+            "rank": 8,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.04073
+          },
+          {
+            "rank": 9,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.0256
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.02374
+          }
+        ],
+        "2024": [
+          {
+            "rank": 1,
+            "ze2020": 7615,
+            "name": "Montauban",
+            "weight": 0.28052
+          },
+          {
+            "rank": 2,
+            "ze2020": 7602,
+            "name": "Albi",
+            "weight": 0.16523
+          },
+          {
+            "rank": 3,
+            "ze2020": 7612,
+            "name": "Foix-Pamiers",
+            "weight": 0.13009
+          },
+          {
+            "rank": 4,
+            "ze2020": 7604,
+            "name": "Auch",
+            "weight": 0.11487
+          },
+          {
+            "rank": 5,
+            "ze2020": 7622,
+            "name": "Saint-Gaudens",
+            "weight": 0.11205
+          },
+          {
+            "rank": 6,
+            "ze2020": 7610,
+            "name": "Castres-Mazamet",
+            "weight": 0.07992
+          },
+          {
+            "rank": 7,
+            "ze2020": 7608,
+            "name": "Carcassonne-Limoux",
+            "weight": 0.05427
+          },
+          {
+            "rank": 8,
+            "ze2020": 7609,
+            "name": "Castelsarrasin-Moissac",
+            "weight": 0.0262
+          },
+          {
+            "rank": 9,
+            "ze2020": 1109,
+            "name": "Paris",
+            "weight": 0.02308
+          },
+          {
+            "rank": 10,
+            "ze2020": 7505,
+            "name": "Bordeaux",
+            "weight": 0.01378
+          }
+        ]
+      }
+    }
+  }
+}

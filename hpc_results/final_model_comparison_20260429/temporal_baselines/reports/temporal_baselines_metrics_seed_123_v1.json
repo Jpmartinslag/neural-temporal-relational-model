@@ -1,0 +1,39 @@
+{
+  "metrics_by_model_year": [
+    {
+      "model": "lstm_local",
+      "seed": 123,
+      "target_year": 2021,
+      "wmape": 0.09360687404367296,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 123,
+      "target_year": 2022,
+      "wmape": 0.10315662560076018,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 123,
+      "target_year": 2023,
+      "wmape": 0.13993221406763942,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 123,
+      "target_year": 2024,
+      "wmape": 0.06310148501334008,
+      "n": 280
+    }
+  ],
+  "summary_mean_wmape": [
+    {
+      "model": "lstm_local",
+      "seed": 123,
+      "mean_wmape": 0.09994929968135316
+    }
+  ]
+}

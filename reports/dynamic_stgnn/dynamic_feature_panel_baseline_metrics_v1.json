@@ -1,0 +1,243 @@
+{
+  "metrics_by_model_year": [
+    {
+      "model": "Ridge_AR",
+      "target_year": 2021,
+      "wmape": 0.067308,
+      "delta_vs_ar": 0.0,
+      "pct_improvement_vs_ar": -0.0
+    },
+    {
+      "model": "Ridge_AR",
+      "target_year": 2022,
+      "wmape": 0.086199,
+      "delta_vs_ar": 0.0,
+      "pct_improvement_vs_ar": -0.0
+    },
+    {
+      "model": "Ridge_AR",
+      "target_year": 2023,
+      "wmape": 0.077667,
+      "delta_vs_ar": 0.0,
+      "pct_improvement_vs_ar": -0.0
+    },
+    {
+      "model": "Ridge_AR",
+      "target_year": 2024,
+      "wmape": 0.036003,
+      "delta_vs_ar": 0.0,
+      "pct_improvement_vs_ar": -0.0
+    },
+    {
+      "model": "Ridge_AR_FLORES",
+      "target_year": 2021,
+      "wmape": 0.079655,
+      "delta_vs_ar": 0.012346999999999997,
+      "pct_improvement_vs_ar": -18.344030427289468
+    },
+    {
+      "model": "Ridge_AR_FLORES",
+      "target_year": 2022,
+      "wmape": 0.075871,
+      "delta_vs_ar": -0.010328000000000004,
+      "pct_improvement_vs_ar": 11.981577512500149
+    },
+    {
+      "model": "Ridge_AR_FLORES",
+      "target_year": 2023,
+      "wmape": 0.118832,
+      "delta_vs_ar": 0.04116499999999999,
+      "pct_improvement_vs_ar": -53.001918446701936
+    },
+    {
+      "model": "Ridge_AR_FLORES",
+      "target_year": 2024,
+      "wmape": 0.054522,
+      "delta_vs_ar": 0.018519,
+      "pct_improvement_vs_ar": -51.43738021831514
+    },
+    {
+      "model": "Ridge_AR_SIDE_stocks",
+      "target_year": 2021,
+      "wmape": 0.090758,
+      "delta_vs_ar": 0.02345,
+      "pct_improvement_vs_ar": -34.839840732156645
+    },
+    {
+      "model": "Ridge_AR_SIDE_stocks",
+      "target_year": 2022,
+      "wmape": 0.032399,
+      "delta_vs_ar": -0.0538,
+      "pct_improvement_vs_ar": 62.413717096486046
+    },
+    {
+      "model": "Ridge_AR_SIDE_stocks",
+      "target_year": 2023,
+      "wmape": 0.058856,
+      "delta_vs_ar": -0.018811,
+      "pct_improvement_vs_ar": 24.220067725031225
+    },
+    {
+      "model": "Ridge_AR_SIDE_stocks",
+      "target_year": 2024,
+      "wmape": 0.118047,
+      "delta_vs_ar": 0.082044,
+      "pct_improvement_vs_ar": -227.88100991584037
+    },
+    {
+      "model": "Ridge_AR_URSSAF",
+      "target_year": 2021,
+      "wmape": 0.06965,
+      "delta_vs_ar": 0.002341999999999997,
+      "pct_improvement_vs_ar": -3.4795269507339346
+    },
+    {
+      "model": "Ridge_AR_URSSAF",
+      "target_year": 2022,
+      "wmape": 0.133161,
+      "delta_vs_ar": 0.046962000000000004,
+      "pct_improvement_vs_ar": -54.48091045139736
+    },
+    {
+      "model": "Ridge_AR_URSSAF",
+      "target_year": 2023,
+      "wmape": 0.150742,
+      "delta_vs_ar": 0.07307499999999999,
+      "pct_improvement_vs_ar": -94.08757902326597
+    },
+    {
+      "model": "Ridge_AR_URSSAF",
+      "target_year": 2024,
+      "wmape": 0.083466,
+      "delta_vs_ar": 0.047463,
+      "pct_improvement_vs_ar": -131.83068077660195
+    },
+    {
+      "model": "Ridge_AR_FLORES_SIDE_URSSAF",
+      "target_year": 2021,
+      "wmape": 0.109947,
+      "delta_vs_ar": 0.042638999999999996,
+      "pct_improvement_vs_ar": -63.349081832768746
+    },
+    {
+      "model": "Ridge_AR_FLORES_SIDE_URSSAF",
+      "target_year": 2022,
+      "wmape": 0.063549,
+      "delta_vs_ar": -0.022650000000000003,
+      "pct_improvement_vs_ar": 26.276406918873775
+    },
+    {
+      "model": "Ridge_AR_FLORES_SIDE_URSSAF",
+      "target_year": 2023,
+      "wmape": 0.061855,
+      "delta_vs_ar": -0.015812,
+      "pct_improvement_vs_ar": 20.358710906820143
+    },
+    {
+      "model": "Ridge_AR_FLORES_SIDE_URSSAF",
+      "target_year": 2024,
+      "wmape": 0.093058,
+      "delta_vs_ar": 0.057055,
+      "pct_improvement_vs_ar": -158.47290503569147
+    }
+  ],
+  "approval_decisions": {
+    "Ridge_AR_FLORES": {
+      "approved_for_v1": false,
+      "rule1_improves_mean_2021_2024": false,
+      "rule2_no_strong_2022_2024_degradation": false,
+      "rule3_gain_without_2021": false,
+      "rule4_forecast_safe": true,
+      "mean_wmape_2021_2024": 0.08222,
+      "mean_wmape_2022_2024": 0.083075,
+      "delta_mean_vs_ar": 0.015426
+    },
+    "Ridge_AR_SIDE_stocks": {
+      "approved_for_v1": false,
+      "rule1_improves_mean_2021_2024": false,
+      "rule2_no_strong_2022_2024_degradation": false,
+      "rule3_gain_without_2021": false,
+      "rule4_forecast_safe": true,
+      "mean_wmape_2021_2024": 0.075015,
+      "mean_wmape_2022_2024": 0.069767,
+      "delta_mean_vs_ar": 0.008221
+    },
+    "Ridge_AR_URSSAF": {
+      "approved_for_v1": false,
+      "rule1_improves_mean_2021_2024": false,
+      "rule2_no_strong_2022_2024_degradation": false,
+      "rule3_gain_without_2021": false,
+      "rule4_forecast_safe": true,
+      "mean_wmape_2021_2024": 0.109255,
+      "mean_wmape_2022_2024": 0.122456,
+      "delta_mean_vs_ar": 0.04246
+    },
+    "Ridge_AR_FLORES_SIDE_URSSAF": {
+      "approved_for_v1": false,
+      "rule1_improves_mean_2021_2024": false,
+      "rule2_no_strong_2022_2024_degradation": false,
+      "rule3_gain_without_2021": false,
+      "rule4_forecast_safe": true,
+      "mean_wmape_2021_2024": 0.082102,
+      "mean_wmape_2022_2024": 0.072821,
+      "delta_mean_vs_ar": 0.015308
+    }
+  },
+  "improvement_share": {
+    "Ridge_AR_FLORES_year2021": 53.6,
+    "Ridge_AR_FLORES_year2022": 66.1,
+    "Ridge_AR_FLORES_year2023": 32.1,
+    "Ridge_AR_FLORES_year2024": 40.7,
+    "Ridge_AR_SIDE_stocks_year2021": 62.5,
+    "Ridge_AR_SIDE_stocks_year2022": 91.1,
+    "Ridge_AR_SIDE_stocks_year2023": 51.8,
+    "Ridge_AR_SIDE_stocks_year2024": 20.7,
+    "Ridge_AR_URSSAF_year2021": 48.6,
+    "Ridge_AR_URSSAF_year2022": 27.1,
+    "Ridge_AR_URSSAF_year2023": 10.4,
+    "Ridge_AR_URSSAF_year2024": 27.1,
+    "Ridge_AR_FLORES_SIDE_URSSAF_year2021": 41.1,
+    "Ridge_AR_FLORES_SIDE_URSSAF_year2022": 72.5,
+    "Ridge_AR_FLORES_SIDE_URSSAF_year2023": 47.1,
+    "Ridge_AR_FLORES_SIDE_URSSAF_year2024": 15.4
+  },
+  "residual_direction_sample": {
+    "Ridge_AR_year2021": {
+      "mean_residual": 68.13,
+      "pct_over": 79.3
+    },
+    "Ridge_AR_year2022": {
+      "mean_residual": 344.12,
+      "pct_over": 98.9
+    },
+    "Ridge_AR_year2023": {
+      "mean_residual": 295.29,
+      "pct_over": 88.6
+    },
+    "Ridge_AR_year2024": {
+      "mean_residual": 10.4,
+      "pct_over": 78.6
+    },
+    "Ridge_AR_FLORES_year2021": {
+      "mean_residual": -114.18,
+      "pct_over": 33.2
+    },
+    "Ridge_AR_FLORES_year2022": {
+      "mean_residual": 116.96,
+      "pct_over": 40.7
+    },
+    "Ridge_AR_FLORES_year2023": {
+      "mean_residual": 167.64,
+      "pct_over": 33.2
+    },
+    "Ridge_AR_FLORES_year2024": {
+      "mean_residual": -149.61,
+      "pct_over": 33.2
+    }
+  },
+  "approved_features_for_v1_neural": [
+    "side_lag_1",
+    "side_lag_2",
+    "growth_1y"
+  ]
+}

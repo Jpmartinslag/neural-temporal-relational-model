@@ -1,0 +1,303 @@
+{
+  "metrics_by_model_year": [
+    {
+      "model": "arima_local",
+      "seed": 0,
+      "target_year": 2021,
+      "wmape": 0.12533705158667666,
+      "n": 280
+    },
+    {
+      "model": "arima_local",
+      "seed": 0,
+      "target_year": 2022,
+      "wmape": 0.09701198540236486,
+      "n": 280
+    },
+    {
+      "model": "arima_local",
+      "seed": 0,
+      "target_year": 2023,
+      "wmape": 0.0378335198498562,
+      "n": 280
+    },
+    {
+      "model": "arima_local",
+      "seed": 0,
+      "target_year": 2024,
+      "wmape": 0.09804451484218892,
+      "n": 280
+    },
+    {
+      "model": "naive_lag1",
+      "seed": 0,
+      "target_year": 2021,
+      "wmape": 0.14316937027125193,
+      "n": 280
+    },
+    {
+      "model": "naive_lag1",
+      "seed": 0,
+      "target_year": 2022,
+      "wmape": 0.03368752501858523,
+      "n": 280
+    },
+    {
+      "model": "naive_lag1",
+      "seed": 0,
+      "target_year": 2023,
+      "wmape": 0.035657895094423714,
+      "n": 280
+    },
+    {
+      "model": "naive_lag1",
+      "seed": 0,
+      "target_year": 2024,
+      "wmape": 0.09469858230203045,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 0,
+      "target_year": 2021,
+      "wmape": 0.09318694680407937,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 0,
+      "target_year": 2022,
+      "wmape": 0.09434144653845605,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 0,
+      "target_year": 2023,
+      "wmape": 0.1386977650434505,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 0,
+      "target_year": 2024,
+      "wmape": 0.05469951741552279,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 123,
+      "target_year": 2021,
+      "wmape": 0.09360687404367296,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 123,
+      "target_year": 2022,
+      "wmape": 0.10315662560076018,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 123,
+      "target_year": 2023,
+      "wmape": 0.13993221406763942,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 123,
+      "target_year": 2024,
+      "wmape": 0.06310148501334008,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 13,
+      "target_year": 2021,
+      "wmape": 0.08754227014094665,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 13,
+      "target_year": 2022,
+      "wmape": 0.10603474989868311,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 13,
+      "target_year": 2023,
+      "wmape": 0.13726163621997822,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 13,
+      "target_year": 2024,
+      "wmape": 0.05424705012200228,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 1,
+      "target_year": 2021,
+      "wmape": 0.08832788184008977,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 1,
+      "target_year": 2022,
+      "wmape": 0.08205049402098744,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 1,
+      "target_year": 2023,
+      "wmape": 0.13313119471447493,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 1,
+      "target_year": 2024,
+      "wmape": 0.07631489819330992,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 42,
+      "target_year": 2021,
+      "wmape": 0.0790174619350056,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 42,
+      "target_year": 2022,
+      "wmape": 0.08666344063083092,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 42,
+      "target_year": 2023,
+      "wmape": 0.13749229302098281,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 42,
+      "target_year": 2024,
+      "wmape": 0.09482437110645961,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 7,
+      "target_year": 2021,
+      "wmape": 0.11012751894514168,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 7,
+      "target_year": 2022,
+      "wmape": 0.095579593281275,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 7,
+      "target_year": 2023,
+      "wmape": 0.14038685149760974,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 7,
+      "target_year": 2024,
+      "wmape": 0.07679491291254903,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 99,
+      "target_year": 2021,
+      "wmape": 0.08051722059755721,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 99,
+      "target_year": 2022,
+      "wmape": 0.0773140714284029,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 99,
+      "target_year": 2023,
+      "wmape": 0.12773829100052417,
+      "n": 280
+    },
+    {
+      "model": "lstm_local",
+      "seed": 99,
+      "target_year": 2024,
+      "wmape": 0.07062201369223152,
+      "n": 280
+    }
+  ],
+  "summary_mean_wmape": [
+    {
+      "model": "arima_local",
+      "seed": 0,
+      "mean_wmape": 0.08955676792027166
+    },
+    {
+      "model": "lstm_local",
+      "seed": 0,
+      "mean_wmape": 0.09523141895037718
+    },
+    {
+      "model": "lstm_local",
+      "seed": 1,
+      "mean_wmape": 0.09495611719221551
+    },
+    {
+      "model": "lstm_local",
+      "seed": 7,
+      "mean_wmape": 0.10572221915914386
+    },
+    {
+      "model": "lstm_local",
+      "seed": 13,
+      "mean_wmape": 0.09627142659540257
+    },
+    {
+      "model": "lstm_local",
+      "seed": 42,
+      "mean_wmape": 0.09949939167331973
+    },
+    {
+      "model": "lstm_local",
+      "seed": 99,
+      "mean_wmape": 0.08904789917967895
+    },
+    {
+      "model": "lstm_local",
+      "seed": 123,
+      "mean_wmape": 0.09994929968135316
+    },
+    {
+      "model": "naive_lag1",
+      "seed": 0,
+      "mean_wmape": 0.07680334317157284
+    }
+  ]
+}
