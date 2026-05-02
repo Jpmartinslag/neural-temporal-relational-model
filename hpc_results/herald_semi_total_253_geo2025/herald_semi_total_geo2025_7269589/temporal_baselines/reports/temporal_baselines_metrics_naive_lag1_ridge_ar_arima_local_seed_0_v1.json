@@ -1,0 +1,126 @@
+{
+  "metrics_by_model_year": [
+    {
+      "model": "arima_local",
+      "seed": 0,
+      "target_year": 2021,
+      "wmape": 0.12533705158489897,
+      "n": 280
+    },
+    {
+      "model": "arima_local",
+      "seed": 0,
+      "target_year": 2022,
+      "wmape": 0.09701198540236486,
+      "n": 280
+    },
+    {
+      "model": "arima_local",
+      "seed": 0,
+      "target_year": 2023,
+      "wmape": 0.0378335198498562,
+      "n": 280
+    },
+    {
+      "model": "arima_local",
+      "seed": 0,
+      "target_year": 2024,
+      "wmape": 0.08621006783175798,
+      "n": 280
+    },
+    {
+      "model": "arima_local",
+      "seed": 0,
+      "target_year": 2025,
+      "wmape": 0.03429158006752838,
+      "n": 280
+    },
+    {
+      "model": "naive_lag1",
+      "seed": 0,
+      "target_year": 2021,
+      "wmape": 0.14316937027125193,
+      "n": 280
+    },
+    {
+      "model": "naive_lag1",
+      "seed": 0,
+      "target_year": 2022,
+      "wmape": 0.03368752501858523,
+      "n": 280
+    },
+    {
+      "model": "naive_lag1",
+      "seed": 0,
+      "target_year": 2023,
+      "wmape": 0.035657895094423714,
+      "n": 280
+    },
+    {
+      "model": "naive_lag1",
+      "seed": 0,
+      "target_year": 2024,
+      "wmape": 0.08258631427267187,
+      "n": 280
+    },
+    {
+      "model": "naive_lag1",
+      "seed": 0,
+      "target_year": 2025,
+      "wmape": 0.05538052632782024,
+      "n": 280
+    },
+    {
+      "model": "ridge_ar",
+      "seed": 0,
+      "target_year": 2021,
+      "wmape": 0.06730807509543656,
+      "n": 280
+    },
+    {
+      "model": "ridge_ar",
+      "seed": 0,
+      "target_year": 2022,
+      "wmape": 0.0861987200036571,
+      "n": 280
+    },
+    {
+      "model": "ridge_ar",
+      "seed": 0,
+      "target_year": 2023,
+      "wmape": 0.07766651120883822,
+      "n": 280
+    },
+    {
+      "model": "ridge_ar",
+      "seed": 0,
+      "target_year": 2024,
+      "wmape": 0.030697174511398997,
+      "n": 280
+    },
+    {
+      "model": "ridge_ar",
+      "seed": 0,
+      "target_year": 2025,
+      "wmape": 0.03391056794957228,
+      "n": 280
+    }
+  ],
+  "summary_mean_wmape": [
+    {
+      "model": "arima_local",
+      "seed": 0,
+      "mean_wmape": 0.07613684094728128
+    },
+    {
+      "model": "naive_lag1",
+      "seed": 0,
+      "mean_wmape": 0.0700963261969506
+    },
+    {
+      "model": "ridge_ar",
+      "seed": 0,
+      "mean_wmape": 0.05915620975378063
+    }
+  ]
+}

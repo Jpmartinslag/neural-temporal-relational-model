@@ -91,3 +91,16 @@ tmp/
 
 # Large regenerable residual metric dumps
 reports/residual_baseline_metrics_core_v0.json
+
+# HERALD geo2025 — HPC results (large binary/data files)
+hpc_results/herald_semi_total_253_geo2025/**/*.npz
+hpc_results/herald_semi_total_253_geo2025/**/*.csv
+hpc_results/herald_semi_total_253_geo2025/**/logs/
+# Keep: JSON metrics, README, dashboard HTML
+
+# All HPC result binaries/predictions (all subdirs)
+hpc_results/**/*.npz
+hpc_results/**/*.csv
+hpc_results/**/logs/
+hpc_results/**/*.err
+hpc_results/**/*.out
