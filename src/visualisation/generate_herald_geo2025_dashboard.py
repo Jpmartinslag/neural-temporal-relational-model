@@ -439,22 +439,6 @@ hr{{border:none;border-top:1px solid var(--bdr);margin:28px 0}}
 </div>
 <div class="box"><div id="cGate" style="height:280px"></div></div>
 
-<h3 id="graphemap" style="color:var(--acc2);margin:28px 0 8px;font-size:.95rem;border-bottom:1px solid var(--bdr);padding-bottom:4px">Visualisation territoriale — connexions apprises par le modèle</h3>
-<div class="info">
-  <b>Comment lire :</b> chaque ligne = connexion de haut poids dans la matrice d'adjacence apprise (HERALD V6 h64, moyennée sur 10 seeds). L'épaisseur et la couleur représentent le poids de la connexion. Les connexions sont affichées pour les top-40 arêtes par dessus un seuil de 0.05.<br>
-  <b>Résultat clé :</b> les connexions les plus fortes sont des paires de zones économiquement liées — souvent des métropoles et leurs périphéries directes. Pendant COVID (2021–2022), les connexions changent légèrement, reflétant les perturbations des flux domicile-travail.
-</div>
-<div class="warn">⚠ Le <b>adj_delta</b> montre une variation structurelle pendant COVID, mais les connexions absolues restent similaires (le choc est relatif, pas une réorganisation totale). Le graphe détecte principalement un changement d'intensité des liens existants.</div>
-<div class="ctrl">
-  <label>Année :</label>
-  <select id="graphYrSel" onchange="updateGraphMap()">
-    <option value="2019">2019 — Avant COVID (référence)</option>
-    <option value="2021">2021 — COVID / rebond</option>
-    <option value="2022">2022 — Récupération</option>
-    <option value="2024">2024 — Post-COVID stable</option>
-  </select>
-</div>
-<div class="box"><div id="cGraphMap" style="height:600px"></div></div>
 
 <!-- ═══ H. CARTE ERREURS ═══ -->
 <h2 id="carte">H. Carte de France — Erreurs de prévision par zone d'emploi</h2>
