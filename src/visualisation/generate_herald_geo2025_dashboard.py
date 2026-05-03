@@ -232,6 +232,57 @@ SEC_FULL={'BE':'Agriculture / Énergie / Eau','FZ':'Construction',
           'MN':'Industrie Manufacturière','OQ':'Administration, Santé, Éducation',
           'RU':'Autres Services aux Ménages'}
 
+# ── ZONA INTERATIVIDADE ──────────────────────────────────────────────────────
+zone_sector_comp = {}
+zone_timeseries = {}
+zone_edges = {}
+SECS = list(SEC_COLORS.keys())
+
+for sec_item in SEC_MAP:
+    ze_str = sec_item['ze']
+    zone_sector_comp[ze_str] = {s: float(sec_item.get(s, 0.0)) for s in SECS}
+
+for ye in sorted(ZONE_V6.keys()):
+    for ze_str, wmape_val in ZONE_V6.get(ye, {}).items():
+        if ze_str not in zone_timeseries:
+            zone_timeseries[ze_str] = {"v6": {}, "semi": {}}
+        zone_timeseries[ze_str]["v6"][ye] = float(wmape_val)
+
+for ye in sorted(ZONE_SEMI.keys()):
+    for ze_str, wmape_val in ZONE_SEMI.get(ye, {}).items():
+        if ze_str not in zone_timeseries:
+            zone_timeseries[ze_str] = {"v6": {}, "semi": {}}
+        zone_timeseries[ze_str]["semi"][ye] = float(wmape_val)
+
+for ze_str in ZE_NAMES.keys():
+    zone_edges[ze_str] = {"in": [], "out": []}
+    edge_dict = defaultdict(lambda: {"weight": 0, "name": ""})
+    
+    for yr_data in GRAPH.values():
+        if isinstance(yr_data, list):
+            for edge in yr_data:
+                zi_str = str(int(float(edge.get("ze_i", "0").split()[-1]) if isinstance(edge.get("ze_i"), str) else edge.get("ze_i", 0))).zfill(4)
+                zj_str = str(int(float(edge.get("ze_j", "0").split()[-1]) if isinstance(edge.get("ze_j"), str) else edge.get("ze_j", 0))).zfill(4)
+                w = float(edge.get("weight", 0))
+                
+                if zi_str == ze_str and zj_str in ZE_NAMES:
+                    key = f"out_{zj_str}"
+                    edge_dict[key]["weight"] = max(edge_dict[key]["weight"], w)
+                    edge_dict[key]["name"] = ZE_NAMES.get(zj_str, f"ZE {zj_str}")
+                if zj_str == ze_str and zi_str in ZE_NAMES:
+                    key = f"in_{zi_str}"
+                    edge_dict[key]["weight"] = max(edge_dict[key]["weight"], w)
+                    edge_dict[key]["name"] = ZE_NAMES.get(zi_str, f"ZE {zi_str}")
+    
+    for key, val in sorted(edge_dict.items(), key=lambda x: x[1]["weight"], reverse=True):
+        if key.startswith("out_"):
+            zone_edges[ze_str]["out"].append({"to": key[4:], "name": val["name"], "weight": val["weight"]})
+        else:
+            zone_edges[ze_str]["in"].append({"from": key[3:], "name": val["name"], "weight": val["weight"]})
+    
+    zone_edges[ze_str]["in"] = zone_edges[ze_str]["in"][:10]
+    zone_edges[ze_str]["out"] = zone_edges[ze_str]["out"][:10]
+
 print("Génération HTML…")
 
 HTML = f"""<!DOCTYPE html>
@@ -301,6 +352,19 @@ hr{{border:none;border-top:1px solid var(--bdr);margin:28px 0}}
   <a class="nb" href="#secteurs">I. Secteurs A10</a>
   <a class="nb" href="#precovid">J. Pré-COVID</a>
   <a class="nb" href="#claims">K. Conclusions</a>
+</div>
+
+<!-- Painel Regional (oculto inicialmente) -->
+<div id="panel-regional" style="display:none; background:var(--bg2); border:1px solid var(--bdr); border-radius:10px; padding:20px; margin-bottom:20px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+    <h3 id="zone-breadcrumb">Zona selecionada</h3>
+    <button onclick="clearSelection()" style="background:var(--acc2); color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">✕ Fechar</button>
+  </div>
+  <div class="g3" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px;">
+    <div id="regional-timeseries" style="min-height:300px;"></div>
+    <div id="regional-sectors" style="min-height:300px;"></div>
+    <div id="regional-edges" style="min-height:300px;"></div>
+  </div>
 </div>
 
 <!-- ═══ A. RÉSUMÉ ═══ -->
@@ -523,6 +587,9 @@ const SEC_WMAPE = {J(sec_wmape_chart)};
 const SECS      = {J(SECS)};
 const SEC_COLORS= {J(SEC_COLORS)};
 const SEC_FULL  = {J(SEC_FULL)};
+const ZONE_SECTOR_COMP = {J(zone_sector_comp)};
+const ZONE_TIMESERIES = {J(zone_timeseries)};
+const ZONE_EDGES = {J(zone_edges)};
 
 const BL = {{
   paper_bgcolor:'#1a1d27',plot_bgcolor:'#1a1d27',
@@ -1115,6 +1182,63 @@ updateMap();
     ],
   }},CFG);
 }})();
+
+// ──── INTERATIVIDADE DE ZONAS ────
+let selectedZone = null;
+
+function onZoneClick(zeId) {{
+  selectedZone = zeId;
+  document.getElementById('zone-breadcrumb').textContent = 'Zone: ' + (ZE_NAMES[zeId] || zeId);
+  document.getElementById('panel-regional').style.display = 'block';
+  updateRegionalTimeseries(zeId);
+  updateRegionalSectors(zeId);
+  updateRegionalEdges(zeId);
+}}
+
+function clearSelection() {{
+  selectedZone = null;
+  document.getElementById('panel-regional').style.display = 'none';
+}}
+
+function updateRegionalTimeseries(zeId) {{
+  const data = ZONE_TIMESERIES[zeId];
+  if (!data) return;
+  const years = ['2021','2022','2023','2024','2025'];
+  const v6_wmapes = years.map(y => data.v6?.[y] ?? null);
+  const semi_wmapes = years.map(y => data.semi?.[y] ?? null);
+  Plotly.newPlot('regional-timeseries',[
+    {{type:'scatter',mode:'lines+markers',name:'V6',x:years,y:v6_wmapes,line:{{color:'#4f8ef7',width:2}},marker:{{size:6}}}},
+    {{type:'scatter',mode:'lines+markers',name:'Semi',x:years,y:semi_wmapes,line:{{color:'#f7834f',width:2}},marker:{{size:6}}}}
+  ],{{...BL,title:{{text:'WMAPE par année',font:{{size:11}}}},xaxis:{{...BL.xaxis,title:'Année'}},yaxis:{{...BL.yaxis,title:'WMAPE',tickformat:'.1%'}},margin:{{l:60,r:20,t:40,b:40}}}},CFG);
+}}
+
+function updateRegionalSectors(zeId) {{
+  const sectors = ZONE_SECTOR_COMP[zeId];
+  if (!sectors) return;
+  const secs = Object.keys(sectors);
+  Plotly.newPlot('regional-sectors',[{{type:'pie',labels:secs.map(s=>s+' '+SEC_FULL[s]),values:secs.map(s=>sectors[s]),marker:{{colors:secs.map(s=>SEC_COLORS[s])}}}}],{{...BL,title:{{text:'Composition sectorielle',font:{{size:11}}}}}},CFG);
+}}
+
+function updateRegionalEdges(zeId) {{
+  const edges = ZONE_EDGES[zeId];
+  if (!edges || (!edges.in.length && !edges.out.length)) return;
+  const allEdges = [...edges.out.map(e=>{{return{{name:'→ '+e.name,weight:e.weight,type:'out'}}}}),...edges.in.map(e=>{{return{{name:'← '+e.name,weight:e.weight,type:'in'}}}})].sort((a,b)=>b.weight-a.weight).slice(0,10);
+  if (!allEdges.length) return;
+  Plotly.newPlot('regional-edges',[{{type:'bar',orientation:'h',y:allEdges.map(e=>e.name),x:allEdges.map(e=>e.weight),marker:{{color:allEdges.map(e=>e.type==='out'?'#4f8ef7':'#f7834f')}}}}],{{...BL,title:{{text:'Top 10 connexions',font:{{size:11}}}},xaxis:{{...BL.xaxis,title:'Poids'}},yaxis:{{...BL.yaxis,automargin:true}},margin:{{l:160,r:20,t:40,b:40}}}},CFG);
+}}
+
+// Click listener para mapa H (zona errores)
+setTimeout(()=>{{
+  const m=document.getElementById('cMap');
+  if(m && m._fullLayout) {{
+    m.on('plotly_click',d=>{{
+      if(d.points && d.points[0]) {{
+        const location = d.points[0].location;
+        if(location) onZoneClick(location);
+      }}
+    }});
+  }}
+}},500);
 </script>
 </body>
 </html>"""
