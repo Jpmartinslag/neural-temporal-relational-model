@@ -599,6 +599,31 @@ const CFG = {{responsive:true,displayModeBar:false}};
 // ── B. COMPARAISON GLOBALE ────────────────────────────────
 
 (()=>{{
+  const d=CMP;
+  const c=d.map(x=>x.col);
+  const tr={{
+    type:'bar',orientation:'h',
+    x:d.map(x=>x.mean), y:d.map(x=>x.label),
+    error_x:{{type:'data',array:d.map(x=>x.std),visible:true,color:'#8b9abf',thickness:1.5}},
+    marker:{{color:c,opacity:.9}},
+    text:d.map(x=>`${{(x.mean*100).toFixed(2)}}%${{x.n>1?' ('+x.n+' seeds)':' (1 seed)'}}`),
+    textposition:'outside',textfont:{{size:10}},
+    hovertemplate:'<b>%{{y}}</b><br>WMAPE moyen: %{{x:.4f}}<br>±${{d[YEARS.indexOf]}}<extra></extra>',
+  }};
+  Plotly.newPlot('cGlobal',[tr],{{
+    ...BL,
+    title:{{text:"WMAPE moyen \u2014 \u00e9valuation 2021\u20132025 \u00b7 280 zones d'emploi",font:{{size:13}}}},
+    xaxis:{{...BL.xaxis,title:'WMAPE moyen (plus bas = meilleur pr\u00e9dicteur)',tickformat:'.3f'}},
+    yaxis:{{...BL.yaxis,automargin:true}},
+    margin:{{l:260,r:90,t:50,b:40}},
+    shapes:[{{type:'line',x0:V6REF,x1:V6REF,y0:-.5,y1:d.length-.5,
+              line:{{color:'#4f8ef7',width:2,dash:'dash'}}}}],
+    annotations:[{{x:V6REF,y:d.length,text:'HERALD V6 h64 (r\u00e9f\u00e9rence)',
+                   showarrow:false,font:{{color:'#4f8ef7',size:10}},xanchor:'left'}}],
+  }},CFG);
+}})();
+
+(()=>{{
   const rows=ABL;
   const c=rows.map(r=>
     r.tag==='total_h64_no_semi'?'#4f8ef7':
