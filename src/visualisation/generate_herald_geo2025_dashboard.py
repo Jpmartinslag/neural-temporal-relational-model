@@ -63,7 +63,9 @@ ZONE_SEMI = cache["zone_semi"]
 GRAPH     = cache["graph_data"]
 SEC_MAP   = cache["sector_map"]
 RIDGE_YR  = cache["ridge_per_yr"]
-ZE_INFO   = cache["ze_info"]
+ZE_INFO         = cache["ze_info"]
+ZONE_V6_PREDS   = cache.get("zone_v6_preds", {})
+ZONE_SEMI_PREDS = cache.get("zone_semi_preds", {})
 
 # Métriques agrégées
 semi_runs = {}
@@ -468,6 +470,7 @@ hr{{border:none;border-top:1px solid var(--bdr);margin:28px 0}}
     <option value="semi">Erreur WMAPE — HERALD Semi mask0.10</option>
     <option value="diff">Différence Semi − V6 h64 (rouge = Semi pire)</option>
     <option value="sector">Secteur A10 dominant</option>
+    <option value="graph">Graphe territorial — noeuds &amp; connexions</option>
   </select>
   <span id="mapYrGroup"><label>Année :</label>
   <select id="mapYr" onchange="updateMap()">
@@ -477,6 +480,10 @@ hr{{border:none;border-top:1px solid var(--bdr);margin:28px 0}}
     <option value="2023">2023</option>
     <option value="2024">2024</option>
     <option value="2025">2025</option>
+    <option value="graph_2019">Graphe 2019 — avant COVID</option>
+    <option value="graph_2021">Graphe 2021 — COVID/rebond</option>
+    <option value="graph_2022">Graphe 2022 — récupération</option>
+    <option value="graph_2024">Graphe 2024 — post-COVID stable</option>
   </select>
   </span>
 </div>
@@ -584,7 +591,9 @@ const SEC_COLORS= {J(SEC_COLORS)};
 const SEC_FULL  = {J(SEC_FULL)};
 const ZONE_SECTOR_COMP = {J(zone_sector_comp)};
 const ZONE_TIMESERIES = {J(zone_timeseries)};
-const ZONE_EDGES = {J(zone_edges)};
+const ZONE_EDGES     = {J(zone_edges)};
+const ZONE_V6_PREDS  = {J({str(k):v for k,v in ZONE_V6_PREDS.items()})};
+const ZONE_SEMI_PREDS= {J({str(k):v for k,v in ZONE_SEMI_PREDS.items()})};
 
 const BL = {{
   paper_bgcolor:'#1a1d27',plot_bgcolor:'#1a1d27',
@@ -1082,7 +1091,16 @@ function updateMap(){{
   const mdl=document.getElementById("mapMdl").value;
   const yr=document.getElementById("mapYr").value;
   const grpEl=document.getElementById("mapYrGroup");
-  if(grpEl) grpEl.style.display=(mdl==="sector")?"none":"inline";
+  const isGraph=(mdl==="graph");
+  if(grpEl){{
+    // For graph mode: show only graph year options; for others: hide graph options
+    Array.from(document.getElementById("mapYr").options).forEach(o=>{{
+      const isGraphOpt=o.value.startsWith("graph_");
+      if(isGraph) o.style.display=isGraphOpt?"":"none";
+      else o.style.display=isGraphOpt?"none":"";
+    }});
+    grpEl.style.display=(mdl==="sector")?"none":"inline";
+  }}
   const geo=GEOJSON;
   const zcs=geo.features.map(f=>f.properties.ze2020);
   const names=zcs.map(z=>ZE_NAMES[z]||z);
@@ -1093,7 +1111,47 @@ function updateMap(){{
   const regClick=gd=>gd.on("plotly_click",d=>{{
     if(d.points&&d.points[0]){{const loc=d.points[0].location;if(loc)onZoneClick(loc);}}
   }});
-  if(mdl==="sector"){{
+  if(isGraph){{
+    const graphYr=yr.startsWith("graph_")?yr.replace("graph_",""):yr==="2019"?"2019":"2024";
+    const edges=GRAPH_DATA[graphYr]||[];
+    if(!edges.length){{
+      document.getElementById("cMap").innerHTML="<p style=\"padding:60px;text-align:center;color:#8b9abf\">Donn\u00e9es non disponibles pour cette ann\u00e9e</p>";
+      return;
+    }}
+    // Compute centroids from GEOJSON
+    const centroids={{}};
+    GEOJSON.features.forEach(feat=>{{
+      const ze=feat.properties.ze2020;
+      const coords=feat.geometry.type==="Polygon"?feat.geometry.coordinates[0]:feat.geometry.coordinates[0][0];
+      if(!coords||!coords.length) return;
+      const lons=coords.map(c=>c[0]),lats=coords.map(c=>c[1]);
+      centroids[ze]={{lon:(Math.min(...lons)+Math.max(...lons))/2,lat:(Math.min(...lats)+Math.max(...lats))/2}};
+    }});
+    const sorted=[...edges].sort((a,b)=>b.weight-a.weight);
+    const wmax=sorted[0]?.weight||1;
+    const edgeTrs=sorted.map(e=>{{
+      const w=e.weight/wmax;
+      const alpha=0.3+0.6*w;
+      const r=Math.round(247-150*w),g=Math.round(131+80*w),b=Math.round(79+150*w);
+      return {{type:"scattergeo",mode:"lines",
+        lon:[e.lon0,e.lon1],lat:[e.lat0,e.lat1],
+        line:{{width:1+w*3.5,color:"rgba("+r+","+g+","+b+","+alpha+")"}},
+        text:"<b>"+e.name_i+"</b> \u2192 <b>"+e.name_j+"</b><br>Poids: "+e.weight.toFixed(4),
+        hovertemplate:"%{{text}}<extra></extra>",showlegend:false}};
+    }});
+    // Node markers (centroids)
+    const allC=Object.entries(centroids);
+    const nodeTr={{type:"scattergeo",mode:"markers",
+      lon:allC.map(([,c])=>c.lon),lat:allC.map(([,c])=>c.lat),
+      text:allC.map(([ze])=>ZE_NAMES[ze]||ze),
+      marker:{{size:4,color:"#8b9abf",opacity:.5}},
+      hovertemplate:"<b>%{{text}}</b><extra></extra>",showlegend:false}};
+    Plotly.newPlot("cMap",[...edgeTrs,nodeTr],{{
+      ...BL,
+      title:{{text:"Graphe territorial \u2014 top-40 connexions apprises (HERALD V6 h64) \u00b7 ann\u00e9e "+graphYr,font:{{size:13}}}},
+      geo:GEO,margin:{{l:0,r:0,t:50,b:0}},
+    }},CFG).then(regClick);
+  }} else if(mdl==="sector"){{
     const byZe={{}};SEC_MAP.forEach(r=>byZe[r.ze]=r);
     const secTrs=SECS.map(sec=>{{
       const secZes=zcs.filter(z=>byZe[z]&&byZe[z].dominant===sec);
@@ -1139,7 +1197,14 @@ function updateMap(){{
       colorscale:cs,zmin:zmn,zmax:zmx,
       colorbar:{{title:"WMAPE",thickness:14,len:.7,tickformat:".3f"}},
       marker:{{line:{{width:.5,color:"#0f1117"}}}},
-      text:zcs.map((z,i)=>"<b>"+names[i]+"</b> (ZE "+z+")<br>WMAPE: "+(vals[i]!==null?(vals[i]*100).toFixed(2)+"%":"N/D")),
+      text:zcs.map((z,i)=>{{
+        const predsrc=(mdl==="v6"?ZONE_V6_PREDS:ZONE_SEMI_PREDS)[yr]||{{}};
+        const p=predsrc[z]||{{}};
+        const wmapeStr=vals[i]!==null?(vals[i]*100).toFixed(2)+"%":"N/D";
+        const absStr=p.abs_error!==undefined?"\n\u00c9cart absolu moyen: "+Math.round(p.abs_error)+" \u00e9tabl.":"";
+        const trueStr=p.y_true!==undefined?"\nObserv\u00e9: "+Math.round(p.y_true)+" \u00b7 Pr\u00e9dit: "+Math.round(p.y_pred):"";
+        return "<b>"+names[i]+"</b> (ZE "+z+")<br>WMAPE: "+wmapeStr+trueStr+absStr;
+      }}),
       hovertemplate:"%{{text}}<extra></extra>",
     }}],{{
       ...BL,title:{{text:title,font:{{size:13}}}},
@@ -1222,13 +1287,31 @@ function clearSelection() {{
 function updateRegionalTimeseries(zeId) {{
   const data = ZONE_TIMESERIES[zeId];
   if (!data) return;
-  const years = ['2021','2022','2023','2024','2025'];
-  const v6_wmapes = years.map(y => data.v6?.[y] ?? null);
-  const semi_wmapes = years.map(y => data.semi?.[y] ?? null);
-  Plotly.newPlot('regional-timeseries',[
-    {{type:'scatter',mode:'lines+markers',name:'V6',x:years,y:v6_wmapes,line:{{color:'#4f8ef7',width:2}},marker:{{size:6}}}},
-    {{type:'scatter',mode:'lines+markers',name:'Semi',x:years,y:semi_wmapes,line:{{color:'#f7834f',width:2}},marker:{{size:6}}}}
-  ],{{...BL,title:{{text:'WMAPE par année',font:{{size:11}}}},xaxis:{{...BL.xaxis,title:'Année'}},yaxis:{{...BL.yaxis,title:'WMAPE',tickformat:'.1%'}},margin:{{l:60,r:20,t:40,b:40}}}},CFG);
+  const years = ["2021","2022","2023","2024","2025"];
+  const v6w = years.map(y => data.v6?.[y] ?? null);
+  const smw = years.map(y => data.semi?.[y] ?? null);
+  const v6p = years.map(y => (ZONE_V6_PREDS[y]||{{}})[zeId] || {{}});
+  const smp = years.map(y => (ZONE_SEMI_PREDS[y]||{{}})[zeId] || {{}});
+  const trueVals = v6p.map(p => p.y_true ?? null);
+  const v6pred  = v6p.map(p => p.y_pred ?? null);
+  const smpred  = smp.map(p => p.y_pred ?? null);
+  Plotly.newPlot("regional-timeseries",[
+    {{type:"bar",name:"Observ\u00e9 (r\u00e9el)",x:years,y:trueVals,
+      marker:{{color:"#4caf72",opacity:.7}},
+      hovertemplate:"Observ\u00e9 %{{x}}: <b>%{{y:.0f}}</b> \u00e9tabl.<extra></extra>"}},
+    {{type:"scatter",mode:"lines+markers",name:"V6 h64 pr\u00e9dit",x:years,y:v6pred,
+      line:{{color:"#4f8ef7",width:2}},marker:{{size:7}},
+      hovertemplate:"V6 %{{x}}: %{{y:.0f}} \u00e9tabl. | WMAPE %{{customdata:.1%}}<extra></extra>",
+      customdata:v6w}},
+    {{type:"scatter",mode:"lines+markers",name:"Semi pr\u00e9dit",x:years,y:smpred,
+      line:{{color:"#f7834f",width:2,dash:"dot"}},marker:{{size:7}},
+      hovertemplate:"Semi %{{x}}: %{{y:.0f}} \u00e9tabl. | WMAPE %{{customdata:.1%}}<extra></extra>",
+      customdata:smw}},
+  ],{{...BL,barmode:"overlay",
+    title:{{text:"R\u00e9el vs Pr\u00e9dit \u2014 cr\u00e9ations d'\u00e9tablissements",font:{{size:11}}}},
+    xaxis:{{...BL.xaxis,title:"Ann\u00e9e",type:"category"}},
+    yaxis:{{...BL.yaxis,title:"Nb \u00e9tablissements"}},
+    margin:{{l:55,r:20,t:45,b:40}}}},CFG);
 }}
 
 function updateRegionalSectors(zeId) {{
