@@ -1115,7 +1115,7 @@ function updateMap(){{
     const graphYr=yr.startsWith("graph_")?yr.replace("graph_",""):yr==="2019"?"2019":"2024";
     const edges=GRAPH_DATA[graphYr]||[];
     if(!edges.length){{
-      document.getElementById("cMap").innerHTML="<p style=\"padding:60px;text-align:center;color:#8b9abf\">Donn\u00e9es non disponibles pour cette ann\u00e9e</p>";
+      document.getElementById("cMap").innerHTML='<p style="padding:60px;text-align:center;color:#8b9abf">Donn\u00e9es non disponibles pour cette ann\u00e9e</p>';
       return;
     }}
     // Compute centroids from GEOJSON
@@ -1201,8 +1201,8 @@ function updateMap(){{
         const predsrc=(mdl==="v6"?ZONE_V6_PREDS:ZONE_SEMI_PREDS)[yr]||{{}};
         const p=predsrc[z]||{{}};
         const wmapeStr=vals[i]!==null?(vals[i]*100).toFixed(2)+"%":"N/D";
-        const absStr=p.abs_error!==undefined?"\n\u00c9cart absolu moyen: "+Math.round(p.abs_error)+" \u00e9tabl.":"";
-        const trueStr=p.y_true!==undefined?"\nObserv\u00e9: "+Math.round(p.y_true)+" \u00b7 Pr\u00e9dit: "+Math.round(p.y_pred):"";
+        const absStr=p.abs_error!==undefined?"<br>\u00c9cart absolu moyen: "+Math.round(p.abs_error)+" \u00e9tabl.":"";
+        const trueStr=p.y_true!==undefined?"<br>Observ\u00e9: "+Math.round(p.y_true)+" \u00b7 Pr\u00e9dit: "+Math.round(p.y_pred):"";
         return "<b>"+names[i]+"</b> (ZE "+z+")<br>WMAPE: "+wmapeStr+trueStr+absStr;
       }}),
       hovertemplate:"%{{text}}<extra></extra>",
