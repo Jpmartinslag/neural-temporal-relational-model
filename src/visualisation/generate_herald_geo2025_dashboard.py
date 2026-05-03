@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
 """Tableau de bord HERALD geo2025 — version 2 corrigée."""
-import json, glob, os, warnings
+import json, glob, os, warnings, base64
 import numpy as np, pandas as pd
 from collections import defaultdict
 warnings.filterwarnings("ignore")
+
+# Embedder Plotly localmente (funciona offline, sem internet)
+PLOTLY_JS_PATH = os.path.expanduser(
+    "~/.local/lib/python3.10/site-packages/plotly/package_data/plotly.min.js"
+)
+if os.path.exists(PLOTLY_JS_PATH):
+    with open(PLOTLY_JS_PATH, "r", encoding="utf-8") as _f:
+        PLOTLY_INLINE = "<script>" + _f.read() + "</script>"
+else:
+    PLOTLY_INLINE = '<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>'
 
 ROOT  = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BASE  = os.path.join(ROOT,"hpc_results","herald_semi_total_253_geo2025")
@@ -233,7 +243,7 @@ HTML = f"""<!DOCTYPE html>
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>HERALD geo2025 — Tableau de bord scientifique</title>
-<script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+{PLOTLY_INLINE}
 <style>
 :root{{--bg:#0f1117;--bg2:#1a1d27;--bg3:#242836;--acc:#4f8ef7;--acc2:#f7834f;
       --green:#4caf72;--red:#e05252;--text:#e8eaf0;--muted:#8b9abf;--bdr:#2e3347}}
