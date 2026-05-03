@@ -216,17 +216,13 @@ sec_wmape_chart={}
 for tag,lbl in [("total_h64_no_semi","HERALD V6 h64"),("total_h64_semi_mask0.10_random","Semi mask0.10"),("total_h64_semi_mask0.10_random_lam0.05_a10","Semi λ A10")]:
     sec_wmape_chart[lbl]={s:float(np.mean(sec_wmape_bt[tag][s])) for s in SECS if sec_wmape_bt[tag][s]}
 
-# GeoJSON for maps
-import zipfile, io, geopandas as gpd, tempfile, shutil
-GEO=os.path.join(ROOT,"data","raw","territorial","fonds_ze2020_2026.zip")
-outer=zipfile.ZipFile(GEO); inner=zipfile.ZipFile(io.BytesIO(outer.read("ze2020_2026.zip")))
-tmp=tempfile.mkdtemp(); inner.extractall(tmp)
-gdf=gpd.read_file(os.path.join(tmp,"ze2020_2026.shp")).to_crs("EPSG:4326")
-shutil.rmtree(tmp)
-geojson_obj=json.loads(gdf.to_json())
-for feat in geojson_obj["features"]: feat["id"]=feat["properties"]["ze2020"]
-GEOJSON=json.dumps(geojson_obj)
-ZE_NAMES={row['ze2020']: row['libze2020'] for _,row in gdf.iterrows()}
+# GeoJSON simplifié (235KB vs 14MB original) — chargé depuis le cache
+GEO_SIMP = os.path.join(BASE,"reports","figures","ze2020_simplified.json")
+with open(GEO_SIMP) as _gf:
+    geojson_obj = json.load(_gf)
+GEOJSON = json.dumps(geojson_obj, separators=(',',':'))
+ZE_NAMES = {feat['properties']['ze2020']: feat['properties']['libze2020']
+            for feat in geojson_obj['features']}
 
 SEC_COLORS={'BE':'#66c2a5','FZ':'#fc8d62','GI':'#8da0cb','JZ':'#e78ac3',
             'KZ':'#a6d854','LZ':'#ffd92f','MN':'#e5c494','OQ':'#b3b3b3','RU':'#e41a1c'}
