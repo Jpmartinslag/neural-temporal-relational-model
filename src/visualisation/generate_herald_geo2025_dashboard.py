@@ -347,24 +347,9 @@ hr{{border:none;border-top:1px solid var(--bdr);margin:28px 0}}
   <a class="nb" href="#seeds">D. Robustesse seeds</a>
   <a class="nb" href="#annee">E. Par année</a>
   <a class="nb" href="#graphe">F. Graphe dynamique</a>
-  <a class="nb" href="#graphemap">G. Grafo no mapa</a>
   <a class="nb" href="#carte">H. Carte erreurs</a>
-  <a class="nb" href="#secteurs">I. Secteurs A10</a>
   <a class="nb" href="#precovid">J. Pré-COVID</a>
   <a class="nb" href="#claims">K. Conclusions</a>
-</div>
-
-<!-- Painel Regional (oculto inicialmente) -->
-<div id="panel-regional" style="display:none; background:var(--bg2); border:1px solid var(--bdr); border-radius:10px; padding:20px; margin-bottom:20px;">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-    <h3 id="zone-breadcrumb">Zona selecionada</h3>
-    <button onclick="clearSelection()" style="background:var(--acc2); color:#fff; border:none; padding:6px 12px; border-radius:4px; cursor:pointer;">✕ Fechar</button>
-  </div>
-  <div class="g3" style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px;">
-    <div id="regional-timeseries" style="min-height:300px;"></div>
-    <div id="regional-sectors" style="min-height:300px;"></div>
-    <div id="regional-edges" style="min-height:300px;"></div>
-  </div>
 </div>
 
 <!-- ═══ A. RÉSUMÉ ═══ -->
@@ -381,7 +366,7 @@ hr{{border:none;border-top:1px solid var(--bdr);margin:28px 0}}
   <span class="pill pg">HERALD V6 h64 — meilleur modèle (WMAPE 0.0313 ± 0.0046)</span>
   <div class="warn" style="margin-top:10px">⚠ <b>Semi-supervision avec masquage : résultat négatif.</b> Le contrôle mask0.0 (sans masquage) est statistiquement identique à V6 h64 (Wilcoxon p=0.47 — même modèle, même entraînement). Le masquage actif (mask0.10) dégrade la performance (+9% WMAPE, Wilcoxon p=0.049 vs contrôle). Le gain vient de la capacité h64, pas du masquage.</div>
   <div class="ok">✓ <b>117 nouvelles connexions stables</b> révélées par le Semi (non présentes dans V6 h64) — valeur interprétative pour future recherche sur les bassins économiques.</div>
-  <div class="ok">✓ <b>Grafo dinâmico</b> capta o choque COVID : adj_delta ×10–20 em 2020–2022 · mobilidade domina geografia (γ_mob/γ_geo ≈ 3.5×).</div>
+  <div class="ok">✓ <b>Graphe dynamique</b> détecte le choc COVID : adj_delta ×10–20 en 2020–2022 · la mobilité domine la géographie (γ_mob/γ_geo ≈ 3.5×).</div>
 </div>
 
 <!-- ═══ B. COMPARAISON GLOBALE ═══ -->
@@ -423,8 +408,8 @@ hr{{border:none;border-top:1px solid var(--bdr);margin:28px 0}}
 <!-- ═══ D. ROBUSTESSE SEEDS ═══ -->
 <h2 id="seeds">D. Robustesse par seed</h2>
 <div class="info">
-  <b>Comment lire (boîtes) :</b> chaque boîte = distribution sur 10 seeds. La médiane (ligne centrale), les quartiles (boîte), et les valeurs extrêmes sont visibles. La ligne rouge = WMAPE de Ridge AR (0.059). Un modèle qui touche cette ligne est à peine meilleur qu'un simple AR.<br>
-  <b>Comment lire (lignes appariées) :</b> chaque ligne connecte la <i>même seed</i> entre V6 h64 et Semi mask0.10. <span style="color:#4caf72">Vert ↓</span> = Semi gagne sur cette seed. <span style="color:#e05252">Rouge ↑</span> = V6 gagne. Résultat : V6 gagne sur 7 des 10 seeds.
+  <b>Gauche — points individuels :</b> chaque point = 1 entraînement indépendant (seed). Le losange <b>◆</b> = moyenne sur 10 seeds. La dispersion verticale mesure la sensibilité au tirage aléatoire.<br>
+  <b>Droite — seed par seed :</b> chaque ligne relie la <i>même seed</i> entre V6 h64 et Semi mask0.10. <span style="color:#4caf72">Vert</span> = Semi gagne · <span style="color:#e05252">Rouge</span> = V6 gagne. V6 h64 gagne sur 7 des 10 seeds.
 </div>
 <div class="g2">
   <div class="box"><div id="cBox" style="height:380px"></div></div>
@@ -434,8 +419,8 @@ hr{{border:none;border-top:1px solid var(--bdr);margin:28px 0}}
 <!-- ═══ E. PAR ANNÉE ═══ -->
 <h2 id="annee">E. Performance par année de prévision</h2>
 <div class="info">
-  <b>Comment lire :</b> chaque point = WMAPE moyen sur 280 zones pour le fold correspondant (modèle entraîné sur données jusqu'à l'année t−1, prédit l'année t).<br>
-  2021 est difficile (rebond post-COVID brutal). 2025 montre une nouvelle perturbation. DCRNN s'effondre en 2021 car les résidus sont instables juste après COVID. HERALD est stable sur tous les folds.
+  <b>Lecture :</b> chaque barre = WMAPE moyen sur 280 zones pour l'année prévue. V6 h64 (bleu) = meilleur modèle, Semi mask0.10 (orange), Ridge AR (vert) = baseline simple.<br>
+  <b>2021</b> = fold le plus difficile (rebond COVID brutal). <b>⚠ 2025 :</b> Ridge AR revient au niveau de HERALD — signe de nouvelles dynamiques post-COVID où les patterns simples redeviennent compétitifs.
 </div>
 <div class="box"><div id="cYear" style="height:420px"></div></div>
 
@@ -452,8 +437,7 @@ hr{{border:none;border-top:1px solid var(--bdr);margin:28px 0}}
 </div>
 <div class="box"><div id="cGate" style="height:280px"></div></div>
 
-<!-- ═══ G. GRAFO NO MAPA ═══ -->
-<h2 id="graphemap">G. Graphe dynamique — visualisation territoriale</h2>
+<h3 id="graphemap" style="color:var(--acc2);margin:28px 0 8px;font-size:.95rem;border-bottom:1px solid var(--bdr);padding-bottom:4px">Visualisation territoriale — connexions apprises par le modèle</h3>
 <div class="info">
   <b>Comment lire :</b> chaque ligne = connexion de haut poids dans la matrice d'adjacence apprise (HERALD V6 h64, moyennée sur 10 seeds). L'épaisseur et la couleur représentent le poids de la connexion. Les connexions sont affichées pour les top-40 arêtes par dessus un seuil de 0.05.<br>
   <b>Résultat clé :</b> les connexions les plus fortes sont des paires de zones économiquement liées — souvent des métropoles et leurs périphéries directes. Pendant COVID (2021–2022), les connexions changent légèrement, reflétant les perturbations des flux domicile-travail.
@@ -474,16 +458,18 @@ hr{{border:none;border-top:1px solid var(--bdr);margin:28px 0}}
 <h2 id="carte">H. Carte de France — Erreurs de prévision par zone d'emploi</h2>
 <div class="info">
   <b>Comment lire :</b> intensité de couleur = WMAPE par zone. <span style="color:#fdae6b">Jaune clair</span> = faible erreur · <span style="color:#d94801">Rouge foncé</span> = erreur élevée. Les zones à fort volume de créations ont généralement des erreurs plus faibles (dénominateur plus grand dans le WMAPE).<br>
-  <b>Changer l'année</b> pour voir quels territoires sont difficiles à prédire par fold. 2021 montre les zones les plus perturbées par le rebond COVID.
+  <b>Changer l'année</b> pour voir quels territoires sont difficiles à prédire. 2021 = zones les plus perturbées par le rebond COVID.<br>
+  <b>&#x1F449; Cliquez sur une zone</b> pour afficher son profil : série temporelle, composition sectorielle et connexions.
 </div>
 <div class="ctrl">
   <label>Modèle :</label>
   <select id="mapMdl" onchange="updateMap()">
-    <option value="v6">HERALD V6 h64</option>
-    <option value="semi">HERALD Semi mask0.10</option>
+    <option value="v6">Erreur WMAPE — HERALD V6 h64</option>
+    <option value="semi">Erreur WMAPE — HERALD Semi mask0.10</option>
     <option value="diff">Différence Semi − V6 h64 (rouge = Semi pire)</option>
+    <option value="sector">Secteur A10 dominant</option>
   </select>
-  <label>Année :</label>
+  <span id="mapYrGroup"><label>Année :</label>
   <select id="mapYr" onchange="updateMap()">
     <option value="all">Moyenne 2021–2025</option>
     <option value="2021">2021 — rebond COVID</option>
@@ -492,24 +478,33 @@ hr{{border:none;border-top:1px solid var(--bdr);margin:28px 0}}
     <option value="2024">2024</option>
     <option value="2025">2025</option>
   </select>
+  </span>
 </div>
 <div class="box"><div id="cMap" style="height:600px"></div></div>
 
-<!-- ═══ I. SECTEURS A10 ═══ -->
-<h2 id="secteurs">I. Secteurs A10 — Géographie économique</h2>
-<div class="info">
-  <b>Carte gauche :</b> secteur économique <b>dominant</b> par zone d'emploi (secteur avec la plus grande part de créations). Passez la souris sur une zone pour voir la composition complète des 9 secteurs.<br>
-  <b>Graphique droite :</b> WMAPE sectoriel moyen pour V6 h64 et Semi. Les secteurs JZ (Information/Communication) et KZ (Finances) sont les plus difficiles à prédire (~0.40) car très concentrés spatialement et volatils.
+<div id="panel-regional" style="display:none; background:var(--bg2); border:2px solid var(--acc); border-radius:10px; padding:20px; margin-top:16px; margin-bottom:20px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+    <h3 id="zone-breadcrumb" style="color:var(--acc); font-size:1rem;">Zone sélectionnée</h3>
+    <button onclick="clearSelection()" style="background:var(--acc2); color:#fff; border:none; padding:6px 14px; border-radius:4px; cursor:pointer; font-size:.84rem;">&#x2715; Fermer</button>
+  </div>
+  <div class="g3">
+    <div id="regional-timeseries" style="min-height:300px;"></div>
+    <div id="regional-sectors" style="min-height:300px;"></div>
+    <div id="regional-edges" style="min-height:300px;"></div>
+  </div>
 </div>
-<div class="g2">
-  <div class="box"><div id="cSecMap" style="height:540px"></div></div>
-  <div class="box">
-    <div id="cSecWmape" style="height:300px"></div>
+
+<!-- ═══ I. SECTEURS A10 ═══ -->
+<h2 id="secteurs">I. Secteurs A10 — difficulté de prévision par secteur</h2>
+<div class="info">
+  <b>Chaque barre = WMAPE moyen sur 280 zones, 10 seeds.</b> JZ (Information/Communication) et KZ (Finance) sont les plus difficiles à prédire (∼0.40 vs 0.03 global). OQ (Administration) est le plus stable. Sélectionnez <b>"Secteur A10 dominant"</b> dans la carte H pour voir la répartition géographique.
+</div>
+<div class="box">
+    <div id="cSecWmape" style="height:320px"></div>
     <div style="margin-top:12px;padding:8px">
       <p style="font-size:.82rem;color:var(--muted);margin-bottom:8px"><b>Légende des secteurs A10 :</b></p>
       {chr(10).join(f'<div style="margin:3px 0;font-size:.8rem"><span class="legend-dot" style="background:{SEC_COLORS[s]}"></span><b>{s}</b> — {SEC_FULL[s]}</div>' for s in SECS)}
     </div>
-  </div>
 </div>
 
 <!-- ═══ J. PRÉ-COVID ═══ -->
@@ -602,32 +597,7 @@ const BL = {{
 const CFG = {{responsive:true,displayModeBar:false}};
 
 // ── B. COMPARAISON GLOBALE ────────────────────────────────
-(()=>{{
-  const d=CMP;
-  const c=d.map(x=>x.col);
-  const tr={{
-    type:'bar',orientation:'h',
-    x:d.map(x=>x.mean), y:d.map(x=>x.label),
-    error_x:{{type:'data',array:d.map(x=>x.std),visible:true,color:'#8b9abf',thickness:1.5}},
-    marker:{{color:c,opacity:.9}},
-    text:d.map(x=>`${{(x.mean*100).toFixed(2)}}%${{x.n>1?' ('+x.n+' seeds)':' (1 seed)'}}`),
-    textposition:'outside',textfont:{{size:10}},
-    hovertemplate:'<b>%{{y}}</b><br>WMAPE moyen: %{{x:.4f}}<br>±${{d[YEARS.indexOf]}}<extra></extra>',
-  }};
-  Plotly.newPlot('cGlobal',[tr],{{
-    ...BL,
-    title:{{text:'WMAPE moyen — évaluation 2021–2025 · 280 zones d\'emploi',font:{{size:13}}}},
-    xaxis:{{...BL.xaxis,title:'WMAPE moyen (plus bas = meilleur prédicteur)',tickformat:'.3f'}},
-    yaxis:{{...BL.yaxis,automargin:true}},
-    margin:{{l:260,r:90,t:50,b:40}},
-    shapes:[{{type:'line',x0:V6REF,x1:V6REF,y0:-.5,y1:d.length-.5,
-              line:{{color:'#4f8ef7',width:2,dash:'dash'}}}}],
-    annotations:[{{x:V6REF,y:d.length,text:'HERALD V6 h64 (référence)',
-                   showarrow:false,font:{{color:'#4f8ef7',size:10}},xanchor:'left'}}],
-  }},CFG);
-}})();
 
-// ── C. ABLATION ──────────────────────────────────────────
 (()=>{{
   const rows=ABL;
   const c=rows.map(r=>
@@ -759,35 +729,43 @@ const CFG = {{responsive:true,displayModeBar:false}};
 
 // ── D. SEEDS ─────────────────────────────────────────────
 (()=>{{
-  const configs=['HERALD V6 h64','Semi contrôle mask0.0','Semi mask0.10','HERALD V3'];
-  const cols={{'HERALD V6 h64':'#4f8ef7','Semi contrôle mask0.0':'#17c3d4',
-               'Semi mask0.10':'#f7834f','HERALD V3':'#7bb3f5'}};
-  const descr={{'HERALD V6 h64':'Meilleur modèle actuel (référence)',
-    'Semi contrôle mask0.0':'Statistiquement identique à V6 h64 (p=0.47) — même entraînement sans masquage',
-    'Semi mask0.10':'Configuration Semi principale — 9% pire que V6 h64',
-    'HERALD V3':'Architecture antérieure'}};
-  const trs=configs.map(cfg=>{{
-    if(!SD[cfg]) return null;
-    const pts=SD[cfg]; const vals=pts.map(([s,v])=>v);
-    const mn=vals.reduce((a,b)=>a+b)/vals.length;
-    return {{type:'box',name:cfg,y:vals,marker:{{color:cols[cfg]||'#aaa',size:7}},
-      boxpoints:'all',jitter:.3,pointpos:-1.5,line:{{width:1.5}},
-      text:pts.map(([s])=>`Seed ${{s}}`),
-      hovertemplate:`<b>${{cfg}}</b><br>%{{text}}<br>WMAPE: %{{y:.4f}}<extra></extra>`,
-      customdata:[descr[cfg]]}};
-  }}).filter(Boolean);
-  const ridgeLine={{type:'scatter',mode:'lines',x:configs,y:Array(configs.length).fill(0.059),
-    line:{{color:'#4caf72',width:1.5,dash:'dot'}},name:'Ridge AR (0.059)',showlegend:true}};
-  Plotly.newPlot('cBox',[...trs,ridgeLine],{{
-    ...BL,
-    title:{{text:'Distribution WMAPE par seed — 10 seeds chacun · ligne verte pointillée = Ridge AR',font:{{size:12}}}},
-    yaxis:{{...BL.yaxis,title:'WMAPE par seed',range:[.015,.065]}},
-    shapes:[{{type:'line',x0:-.5,x1:configs.length-.5,y0:V6REF,y1:V6REF,
-              line:{{color:'#4f8ef7',width:1.5,dash:'dash'}}}}],
-    annotations:[{{x:3.4,y:V6REF,text:'V6 h64 (0.031)',showarrow:false,
-                   font:{{color:'#4f8ef7',size:9}},yanchor:'bottom'}}],
+  const configs=["HERALD V6 h64","Semi contr\u00f4le mask0.0","Semi mask0.10","HERALD V3"];
+  const cols={{"HERALD V6 h64":"#4f8ef7","Semi contr\u00f4le mask0.0":"#17c3d4",
+               "Semi mask0.10":"#f7834f","HERALD V3":"#7bb3f5"}};
+  const trs=configs.flatMap(cfg=>{{
+    if(!SD[cfg]) return [];
+    const pts=SD[cfg];
+    const vals=pts.map(([s,v])=>v);
+    const mn=vals.reduce((a,b)=>a+b,0)/vals.length;
+    return [
+      {{type:"scatter",mode:"markers",name:cfg,
+        x:pts.map(()=>cfg),y:vals,
+        marker:{{size:11,color:cols[cfg]||"#aaa",opacity:.75}},
+        text:pts.map(([s])=>"Seed "+s),
+        hovertemplate:"<b>"+cfg+"</b><br>%{{text}}: %{{y:.4f}}<extra></extra>",
+        showlegend:true}},
+      {{type:"scatter",mode:"markers",name:cfg+" moy.",
+        x:[cfg],y:[mn],showlegend:false,
+        marker:{{size:18,color:cols[cfg]||"#aaa",symbol:"diamond",line:{{width:2.5,color:"white"}}}},
+        hovertemplate:"Moyenne: "+mn.toFixed(4)+"<extra></extra>"}}
+    ];
+  }});
+  Plotly.newPlot("cBox",trs,{{
+    ...BL,showlegend:false,
+    title:{{text:"Variabilit\u00e9 inter-seeds \u2014 chaque point = 1 seed \u00b7 \u25c6 = moyenne",font:{{size:12}}}},
+    xaxis:{{...BL.xaxis,type:"category"}},
+    yaxis:{{...BL.yaxis,title:"WMAPE",range:[.015,.065]}},
+    shapes:[
+      {{type:"line",x0:-.5,x1:3.5,y0:V6REF,y1:V6REF,line:{{color:"#4f8ef7",width:2,dash:"dash"}}}},
+      {{type:"line",x0:-.5,x1:3.5,y0:.059,y1:.059,line:{{color:"#4caf72",width:1.5,dash:"dot"}}}},
+    ],
+    annotations:[
+      {{x:3.4,y:V6REF,text:"V6 h64",showarrow:false,font:{{color:"#4f8ef7",size:9}},yanchor:"bottom"}},
+      {{x:3.4,y:.059,text:"Ridge AR",showarrow:false,font:{{color:"#4caf72",size:9}},yanchor:"bottom"}},
+    ],
   }},CFG);
 }})();
+
 
 (()=>{{
   const sA=Object.fromEntries(SD['HERALD V6 h64']||[]);
@@ -819,28 +797,63 @@ const CFG = {{responsive:true,displayModeBar:false}};
 
 // ── E. PAR ANNÉE ─────────────────────────────────────────
 (()=>{{
-  const pal={{'HERALD V6 h64':'#4f8ef7','Semi contrôle mask0.0':'#17c3d4',
-    'Semi mask0.10':'#f7834f','HERALD V3':'#7bb3f5','Ridge AR':'#4caf72','DCRNN résiduel':'#9467bd'}};
-  Plotly.newPlot('cYear',Object.entries(PY).map(([lbl,py])=>{{
-    return {{type:'scatter',mode:'lines+markers',name:lbl,
-      x:YEARS,y:YEARS.map(yr=>py[yr]||null),
-      line:{{color:pal[lbl]||'#aaa',width:2.5}},marker:{{size:8}},
-      hovertemplate:`<b>${{lbl}}</b><br>Fold %{{x}} : WMAPE = %{{y:.4f}}<extra></extra>`}};
-  }}),{{
-    ...BL,
-    title:{{text:'WMAPE par fold de prévision — modèles principaux (moyenne 280 zones)',font:{{size:12}}}},
-    xaxis:{{...BL.xaxis,title:'Année prévue (modèle entraîné jusqu\'à t−1)',dtick:1}},
-    yaxis:{{...BL.yaxis,title:'WMAPE moyen'}},
+  const cfgs=[
+    {{"lbl":"HERALD V6 h64","col":"#4f8ef7"}},
+    {{"lbl":"Semi mask0.10","col":"#f7834f"}},
+    {{"lbl":"Ridge AR","col":"#4caf72"}},
+  ];
+  const trs=cfgs.map(({{lbl,col}})=>{{
+    const py=PY[lbl]||{{}};
+    return {{type:"bar",name:lbl,
+      x:YEARS,y:YEARS.map(yr=>py[yr]||0),
+      marker:{{color:col,opacity:.88}},
+      hovertemplate:"<b>"+lbl+"</b><br>%{{x}} : WMAPE = %{{y:.4f}}<extra></extra>"}};
+  }});
+  Plotly.newPlot("cYear",trs,{{
+    ...BL,barmode:"group",
+    title:{{text:"WMAPE par ann\u00e9e \u2014 V6 h64 vs Semi vs Ridge AR (280 zones)",font:{{size:13}}}},
+    xaxis:{{...BL.xaxis,title:"Ann\u00e9e de pr\u00e9vision",type:"category"}},
+    yaxis:{{...BL.yaxis,title:"WMAPE moyen",range:[0,.15]}},
+    shapes:[
+      {{type:"rect",x0:-.5,x1:.5,y0:0,y1:.15,fillcolor:"rgba(255,200,0,.07)",line:{{width:0}}}},
+      {{type:"rect",x0:3.5,x1:4.5,y0:0,y1:.15,fillcolor:"rgba(139,154,191,.06)",line:{{width:0}}}},
+    ],
     annotations:[
-      {{x:2021,y:.1,text:'Rebond COVID',showarrow:true,arrowhead:2,arrowcolor:'#f7c04f',
-        font:{{color:'#f7c04f',size:10}},ax:30,ay:-20}},
-      {{x:2025,y:.08,text:'Nouvelles<br>dynamiques',showarrow:true,arrowhead:2,arrowcolor:'#8b9abf',
-        font:{{color:'#8b9abf',size:10}},ax:-20,ay:-30}},
+      {{x:0,y:.143,text:"Rebond COVID",showarrow:false,font:{{color:"#f7c04f",size:10}},xanchor:"center"}},
+      {{x:4,y:.143,text:"2025 : Ridge AR revient",showarrow:false,font:{{color:"#8b9abf",size:10}},xanchor:"center"}},
     ],
   }},CFG);
 }})();
 
+
 // ── F. GRAPHE DYNAMIQUE ───────────────────────────────────
+(()=>{{
+  const v6i=GTAGS.findIndex(t=>t.indexOf("V6 h64")>=0);
+  const gm=v6i>=0?GM[v6i]:(GM[0]||1.0);
+  const gg=v6i>=0?GG[v6i]:(GG[0]||0.28);
+  const ratio=(gm/Math.max(gg,0.001)).toFixed(1);
+  Plotly.newPlot("cGamma",[
+    {{type:"bar",orientation:"h",
+      x:[gm,gg],
+      y:["Mobilit\u00e9 domicile-travail (\u03b3_mob)","G\u00e9ographie zonale (\u03b3_geo)"],
+      marker:{{color:["#4f8ef7","#f7834f"],opacity:.9}},
+      text:[gm.toFixed(3)+" (\u00d7"+ratio+" vs g\u00e9o)",gg.toFixed(3)],
+      textposition:"outside",textfont:{{size:13,color:"#e8eaf0"}},
+      hovertemplate:"%{{y}}<br>\u03b3 = %{{x:.4f}}<extra></extra>"}},
+  ],{{
+    ...BL,showlegend:false,
+    title:{{text:"Poids relatifs appris \u2014 Mobilit\u00e9 vs G\u00e9ographie (V6 h64, moy. 10 seeds)",font:{{size:12}}}},
+    xaxis:{{...BL.xaxis,title:"Valeur gamma",range:[0,1.6]}},
+    yaxis:{{...BL.yaxis,automargin:true}},
+    margin:{{l:240,r:130,t:50,b:40}},
+    annotations:[{{
+      x:gm+.02,y:0,text:"<b>Ratio "+ratio+"\u00d7</b>",xanchor:"left",yanchor:"middle",
+      showarrow:false,font:{{color:"#4f8ef7",size:14}}
+    }}],
+  }},CFG);
+}})();
+
+
 (()=>{{
   Plotly.newPlot('cGamma',[
     {{type:'bar',name:'γ_mob — Mobilité',x:GTAGS,y:GM,
@@ -863,32 +876,25 @@ const CFG = {{responsive:true,displayModeBar:false}};
 }})();
 
 (()=>{{
-  const yr_labels = FOLD_YRS.map(y=>String(y));
-  Plotly.newPlot('cAdjDelta',[
-    {{type:'bar',name:'HERALD V6 h64',x:yr_labels,y:ADJ_V6,
-      marker:{{color:'#4f8ef7',opacity:.8}},
-      hovertemplate:'<b>→ %{{x}}</b><br>adj_delta V6: %{{y:.4f}}<extra></extra>'}},
-    {{type:'bar',name:'Semi mask0.10',x:yr_labels,y:ADJ_SEMI,
-      marker:{{color:'#f7834f',opacity:.8}},
-      hovertemplate:'<b>→ %{{x}}</b><br>adj_delta Semi: %{{y:.4f}}<extra></extra>'}},
+  const yr_labels=FOLD_YRS.map(y=>String(y));
+  const isCovid=yr_labels.map(y=>parseInt(y)>=2020&&parseInt(y)<=2022);
+  const preMean=ADJ_V6.slice(0,7).reduce((a,b)=>a+b,0)/Math.max(ADJ_V6.slice(0,7).length,1);
+  Plotly.newPlot("cAdjDelta",[
+    {{type:"bar",name:"HERALD V6 h64",x:yr_labels,y:ADJ_V6,
+      marker:{{color:isCovid.map(c=>c?"#f7c04f":"#4f8ef7"),opacity:.88}},
+      hovertemplate:"<b>Transition vers %{{x}}</b><br>adj_delta = %{{y:.4f}}<extra></extra>"}},
+    {{type:"scatter",mode:"lines",name:"Moy. pr\u00e9-COVID",
+      x:yr_labels,y:yr_labels.map(()=>preMean),
+      line:{{color:"#4caf72",width:1.5,dash:"dot"}},showlegend:true,
+      hovertemplate:"Moy. pr\u00e9-COVID: "+preMean.toFixed(4)+"<extra></extra>"}},
   ],{{
-    ...BL,barmode:'group',
-    title:{{text:'adj_delta — variation structurelle du graphe à chaque transition annuelle',font:{{size:12}}}},
-    xaxis:{{...BL.xaxis,title:'Année cible (transition depuis l\'année précédente)',tickangle:-35}},
-    yaxis:{{...BL.yaxis,title:'adj_delta (normalisé — plus élevé = graphe plus différent)',range:[0,.6]}},
-    shapes:[
-      {{type:'rect',x0:'2020',x1:'2023',y0:0,y1:.58,
-        fillcolor:'rgba(255,200,0,.06)',line:{{width:0}}}},
-      {{type:'line',x0:'2020',x1:'2020',y0:0,y1:.58,
-        line:{{color:'#f7c04f',width:1.5,dash:'dot'}}}},
-      {{type:'line',x0:'2023',x1:'2023',y0:0,y1:.58,
-        line:{{color:'#f7c04f',width:1.5,dash:'dot'}}}},
-    ],
+    ...BL,showlegend:true,
+    title:{{text:"Variation structurelle du graphe (adj_delta) \u2014 barres jaunes = p\u00e9riode COVID",font:{{size:12}}}},
+    xaxis:{{...BL.xaxis,title:"Transition vers l'ann\u00e9e",tickangle:-35}},
+    yaxis:{{...BL.yaxis,title:"adj_delta normalis\u00e9",range:[0,.6]}},
     annotations:[
-      {{x:'2021',y:.56,text:'← Zone COVID 2020–2022 →',showarrow:false,
-        font:{{color:'#f7c04f',size:11}}}},
-      {{x:'2021',y:.52,text:'adj_delta ×10–20 vs avant COVID',showarrow:false,
-        font:{{color:'#8b9abf',size:9}}}},
+      {{x:"2021",y:.56,text:"COVID : \u00d710\u201320 vs moy. pr\u00e9-2020",showarrow:false,font:{{color:"#f7c04f",size:10}}}},
+      {{x:"2015",y:preMean,text:"moy. pr\u00e9-COVID",xanchor:"left",yanchor:"bottom",showarrow:false,font:{{color:"#4caf72",size:9}}}},
     ],
   }},CFG);
 }})();
@@ -1048,94 +1054,78 @@ document.getElementById('graphYrSel').onchange=()=>{{
 
 // ── H. CARTE ERREURS ─────────────────────────────────────
 function updateMap(){{
-  const mdl=document.getElementById('mapMdl').value;
-  const yr=document.getElementById('mapYr').value;
-  const src_v6=ZONE_V6[yr]||{{}}, src_sm=ZONE_SEMI[yr]||{{}};
+  const mdl=document.getElementById("mapMdl").value;
+  const yr=document.getElementById("mapYr").value;
+  const grpEl=document.getElementById("mapYrGroup");
+  if(grpEl) grpEl.style.display=(mdl==="sector")?"none":"inline";
   const geo=GEOJSON;
   const zcs=geo.features.map(f=>f.properties.ze2020);
   const names=zcs.map(z=>ZE_NAMES[z]||z);
-  let vals,title,cs,zmn,zmx;
-  if(mdl==='diff'){{
-    vals=zcs.map(z=>{{const s=src_sm[z],v=src_v6[z];return(s&&v)?(s-v):null}});
-    const vv=vals.filter(x=>x!==null);
-    const ma=Math.max(...vv.map(Math.abs));
-    zmn=-ma; zmx=ma;
-    title=`Différence Semi − V6 h64 · ${{yr==='all'?'2021–2025':yr}}`;
-    cs=[[0,'#2166ac'],[.5,'#f7f7f7'],[1,'#d73027']];
+  const GEO={{scope:"europe",center:{{lon:2.5,lat:46.5}},projection:{{type:"mercator",scale:5.5}},
+    showframe:false,showcoastlines:true,coastlinecolor:"#3a4060",
+    showland:true,landcolor:"#181b28",showocean:true,oceancolor:"#0f1117",
+    lonaxis:{{range:[-5.5,10]}},lataxis:{{range:[41,52]}},bgcolor:"#0f1117"}};
+  const regClick=gd=>gd.on("plotly_click",d=>{{
+    if(d.points&&d.points[0]){{const loc=d.points[0].location;if(loc)onZoneClick(loc);}}
+  }});
+  if(mdl==="sector"){{
+    const byZe={{}};SEC_MAP.forEach(r=>byZe[r.ze]=r);
+    const secTrs=SECS.map(sec=>{{
+      const secZes=zcs.filter(z=>byZe[z]&&byZe[z].dominant===sec);
+      if(!secZes.length) return null;
+      return {{
+        type:"choropleth",geojson:geo,locations:secZes,z:secZes.map(()=>1),
+        featureidkey:"properties.ze2020",
+        colorscale:[[0,SEC_COLORS[sec]],[1,SEC_COLORS[sec]]],
+        zmin:0,zmax:1,showscale:false,
+        name:sec+" \u2014 "+SEC_FULL[sec],
+        marker:{{line:{{width:.5,color:"#0f1117"}}}},
+        text:secZes.map(z=>{{
+          const r=byZe[z];if(!r)return z;
+          return "<b>"+(ZE_NAMES[z]||z)+"</b> (ZE "+z+")<br>Dominant: "+sec+" \u2014 "+SEC_FULL[sec]+"<br>"+SECS.map(s=>s+": "+(r[s]*100).toFixed(1)+"%").join("<br>");
+        }}),
+        hovertemplate:"%{{text}}<extra></extra>",showlegend:true
+      }};
+    }}).filter(Boolean);
+    Plotly.newPlot("cMap",secTrs,{{
+      ...BL,
+      title:{{text:"Secteur A10 dominant par zone d'emploi \u2014 survolez pour la composition",font:{{size:13}}}},
+      geo:GEO,margin:{{l:0,r:0,t:50,b:0}},legend:{{x:1.01,y:.5,font:{{size:10}}}},
+    }},CFG).then(regClick);
   }} else {{
-    vals=zcs.map(z=>(mdl==='v6'?src_v6:src_sm)[z]||null);
-    const vv=vals.filter(x=>x!==null);
-    zmn=Math.min(...vv); zmx=Math.max(...vv);
-    title=`${{mdl==='v6'?'HERALD V6 h64':'HERALD Semi mask0.10'}} · ${{yr==='all'?'Moyenne 2021–2025':yr}}`;
-    cs=[[0,'#fff5eb'],[.25,'#fdd0a2'],[.5,'#fdae6b'],[.75,'#f16913'],[1,'#7f2704']];
+    const src_v6=ZONE_V6[yr]||{{}},src_sm=ZONE_SEMI[yr]||{{}};
+    let vals,title,cs,zmn,zmx;
+    if(mdl==="diff"){{
+      vals=zcs.map(z=>{{const s=src_sm[z],v=src_v6[z];return(s&&v)?(s-v):null}});
+      const vv=vals.filter(x=>x!==null);const ma=Math.max(...vv.map(Math.abs));
+      zmn=-ma;zmx=ma;
+      title="Diff\u00e9rence Semi \u2212 V6 h64 \u00b7 "+(yr==="all"?"2021\u20132025":yr)+" (rouge = Semi pire)";
+      cs=[[0,"#2166ac"],[.5,"#f7f7f7"],[1,"#d73027"]];
+    }} else {{
+      vals=zcs.map(z=>(mdl==="v6"?src_v6:src_sm)[z]||null);
+      const vv=vals.filter(x=>x!==null);
+      zmn=Math.min(...vv);zmx=Math.max(...vv);
+      title=(mdl==="v6"?"HERALD V6 h64":"HERALD Semi mask0.10")+" \u00b7 "+(yr==="all"?"Moyenne 2021\u20132025":yr);
+      cs=[[0,"#fff5eb"],[.25,"#fdd0a2"],[.5,"#fdae6b"],[.75,"#f16913"],[1,"#7f2704"]];
+    }}
+    Plotly.newPlot("cMap",[{{
+      type:"choropleth",geojson:geo,locations:zcs,z:vals,
+      featureidkey:"properties.ze2020",
+      colorscale:cs,zmin:zmn,zmax:zmx,
+      colorbar:{{title:"WMAPE",thickness:14,len:.7,tickformat:".3f"}},
+      marker:{{line:{{width:.5,color:"#0f1117"}}}},
+      text:zcs.map((z,i)=>"<b>"+names[i]+"</b> (ZE "+z+")<br>WMAPE: "+(vals[i]!==null?(vals[i]*100).toFixed(2)+"%":"N/D")),
+      hovertemplate:"%{{text}}<extra></extra>",
+    }}],{{
+      ...BL,title:{{text:title,font:{{size:13}}}},
+      geo:GEO,margin:{{l:0,r:0,t:50,b:0}},
+    }},CFG).then(regClick);
   }}
-  Plotly.newPlot('cMap',[{{
-    type:'choropleth',geojson:geo,locations:zcs,z:vals,
-    featureidkey:'properties.ze2020',
-    colorscale:cs,zmin:zmn,zmax:zmx,
-    colorbar:{{title:'WMAPE',thickness:14,len:.7,tickformat:'.3f'}},
-    marker:{{line:{{width:.5,color:'#0f1117'}}}},
-    text:zcs.map((z,i)=>`<b>${{names[i]}}</b> (ZE ${{z}})<br>WMAPE: ${{vals[i]!==null?(vals[i]*100).toFixed(2)+'%':'N/D'}}`),
-    hovertemplate:'%{{text}}<extra></extra>',
-  }}],{{
-    ...BL,
-    title:{{text:title,font:{{size:13}}}},
-    geo:{{scope:'europe',center:{{lon:2.5,lat:46.5}},
-      projection:{{type:'mercator',scale:5.5}},
-      showframe:false,showcoastlines:true,coastlinecolor:'#3a4060',
-      showland:true,landcolor:'#181b28',showocean:true,oceancolor:'#0f1117',
-      lonaxis:{{range:[-5.5,10]}},lataxis:{{range:[41,52]}},bgcolor:'#0f1117'}},
-    margin:{{l:0,r:0,t:50,b:0}},
-  }},CFG);
 }}
 updateMap();
 
 // ── I. SECTEURS A10 ───────────────────────────────────────
-(()=>{{
-  if(!GEOJSON||!SEC_MAP.length) return;
-  const geo=GEOJSON;
-  const zcs=geo.features.map(f=>f.properties.ze2020);
-  const byZe={{}};SEC_MAP.forEach(r=>byZe[r.ze]=r);
-
-  // Carte par secteur dominant
-  const domColors=zcs.map(z=>{{const r=byZe[z];return r?SEC_COLORS[r.dominant]:'#555'}});
-  const domText=zcs.map(z=>{{
-    const r=byZe[z]; if(!r) return z;
-    const breakdown=SECS.map(s=>`${{s}}: ${{(r[s]*100).toFixed(1)}}%`).join('<br>');
-    return `<b>${{ZE_NAMES[z]||z}}</b> (ZE ${{z}})<br><b>Secteur dominant : ${{r.dominant}} — ${{SEC_FULL[r.dominant]}}</b><br>${{breakdown}}`;
-  }});
-
-  // Trace unique avec couleurs personnalisées
-  const secTrs=SECS.map(sec=>{{
-    const secZes=zcs.filter(z=>byZe[z]?.dominant===sec);
-    if(!secZes.length) return null;
-    return {{
-      type:'choropleth',geojson:geo,
-      locations:secZes,z:secZes.map(z=>1),
-      featureidkey:'properties.ze2020',
-      colorscale:[[0,SEC_COLORS[sec]],[1,SEC_COLORS[sec]]],
-      zmin:0,zmax:1,showscale:false,
-      name:`${{sec}} — ${{SEC_FULL[sec]}}`,
-      marker:{{line:{{width:.5,color:'#0f1117'}}}},
-      text:secZes.map(z=>domText[zcs.indexOf(z)]),
-      hovertemplate:'%{{text}}<extra></extra>',
-      showlegend:true,
-    }};
-  }}).filter(Boolean);
-
-  Plotly.newPlot('cSecMap',secTrs,{{
-    ...BL,
-    title:{{text:'Secteur A10 dominant par zone d\'emploi · Survol = composition complète',font:{{size:12}}}},
-    geo:{{scope:'europe',center:{{lon:2.5,lat:46.5}},
-      projection:{{type:'mercator',scale:5.5}},
-      showframe:false,showcoastlines:true,coastlinecolor:'#3a4060',
-      showland:true,landcolor:'#181b28',showocean:true,oceancolor:'#0f1117',
-      lonaxis:{{range:[-5.5,10]}},lataxis:{{range:[41,52]}},bgcolor:'#0f1117'}},
-    legend:{{x:1.01,y:.5,font:{{size:10}}}},
-    margin:{{l:0,r:120,t:50,b:0}},
-  }},CFG);
-
-  // WMAPE sectoriel
+(()=>{{ // (carte sectorielle via option "Secteur A10" dans la carte H)
   const secTrsW=Object.entries(SEC_WMAPE).map(([lbl,sw])=>{{
     const pal2={{'HERALD V6 h64':'#4f8ef7','Semi mask0.10':'#f7834f','Semi λ A10':'#17c3d4'}};
     return {{type:'bar',name:lbl,x:SECS,y:SECS.map(s=>sw[s]||0),
@@ -1157,28 +1147,29 @@ updateMap();
 // ── J. PRÉ-COVID ─────────────────────────────────────────
 (()=>{{
   const yrs=Object.keys(PC_PY).map(Number).sort();
-  const heraldbars={{type:'bar',name:'HERALD Semi mask0.10 (2016–2019)',
-    x:yrs,y:yrs.map(y=>PC_PY[y]),marker:{{color:'#f7834f',opacity:.85}},
-    hovertemplate:'HERALD Semi · %{{x}} : WMAPE = %{{y:.4f}}<extra></extra>'}};
-  const ridgepts={{type:'scatter',mode:'markers+lines',name:'Ridge AR (référence)',
-    x:yrs,y:yrs.map(y=>RIDGE_YR[String(y)]||null),
-    marker:{{color:'#4caf72',size:11,symbol:'diamond'}},line:{{color:'#4caf72',width:1.5,dash:'dot'}},
-    hovertemplate:'Ridge AR · %{{x}} : WMAPE = %{{y:.4f}}<extra></extra>'}};
-  const mainLine={{type:'scatter',mode:'lines',name:'HERALD 2021–2025 (moyenne 0.031)',
-    x:yrs,y:Array(yrs.length).fill(.031),
-    line:{{color:'#4f8ef7',width:2,dash:'dash'}},
-    hovertemplate:'HERALD période principale : 0.031<extra></extra>'}};
-  Plotly.newPlot('cPrecovid',[heraldbars,ridgepts,mainLine],{{
-    ...BL,
-    title:{{text:'Robustesse pré-COVID 2016–2019 — HERALD Semi vs Ridge AR par année<br>(histogramme bleu = HERALD · diamant vert = Ridge AR · ligne bleue = performance HERALD sur 2021–2025)',font:{{size:11}}}},
-    xaxis:{{...BL.xaxis,title:'Année de prévision pré-COVID',dtick:1}},
-    yaxis:{{...BL.yaxis,title:'WMAPE moyen (280 zones, 10 seeds)',range:[0,.20]}},
+  const precBars={{type:"bar",name:"HERALD Semi pr\u00e9-COVID 2016\u20132019",
+    x:yrs,y:yrs.map(y=>PC_PY[y]),marker:{{color:"#f7c04f",opacity:.88}},
+    hovertemplate:"HERALD Semi %{{x}} : WMAPE = %{{y:.4f}}<extra></extra>"}};
+  const postYrs=YEARS;
+  const v6post={{type:"bar",name:"HERALD V6 h64 post-COVID 2021\u20132025",
+    x:postYrs,y:postYrs.map(yr=>(PY["HERALD V6 h64"]||{{}})[yr]||0),
+    marker:{{color:"#4f8ef7",opacity:.88}},
+    hovertemplate:"HERALD V6 %{{x}} : WMAPE = %{{y:.4f}}<extra></extra>"}};
+  const ridgePost={{type:"scatter",mode:"markers+lines",name:"Ridge AR post-COVID",
+    x:postYrs,y:postYrs.map(yr=>RIDGE_YR[String(yr)]||null),
+    marker:{{color:"#4caf72",size:9}},line:{{color:"#4caf72",width:2}},
+    hovertemplate:"Ridge AR %{{x}} : %{{y:.4f}}<extra></extra>"}};
+  Plotly.newPlot("cPrecovid",[precBars,v6post,ridgePost],{{
+    ...BL,barmode:"group",
+    title:{{text:"HERALD avant/apr\u00e8s COVID \u2014 avantage sur Ridge AR r\u00e9duit de 87% en pr\u00e9-COVID",font:{{size:12}}}},
+    xaxis:{{...BL.xaxis,title:"Ann\u00e9e de pr\u00e9vision",dtick:1}},
+    yaxis:{{...BL.yaxis,title:"WMAPE moyen (280 zones)",range:[0,.20]}},
+    shapes:[{{type:"rect",x0:2019.5,x1:2020.5,y0:0,y1:.20,fillcolor:"rgba(100,100,100,.12)",line:{{width:0}}}}],
     annotations:[
-      {{x:2016,y:.133,text:'2016 : historique court<br>(4 ans depuis 2012)',
-        showarrow:true,arrowhead:2,arrowcolor:'#8b9abf',font:{{color:'#8b9abf',size:9}},ax:35,ay:20}},
-      {{x:2019,y:.025,
-        text:'Avantage HERALD vs Ridge AR<br>pré-COVID : −0.004<br>vs 2021–2025 : −0.033 (−87%)',
-        showarrow:false,font:{{color:'#8b9abf',size:9}},xanchor:'right'}},
+      {{x:2016,y:.14,text:"Historique court",showarrow:true,arrowhead:2,arrowcolor:"#8b9abf",font:{{color:"#8b9abf",size:9}},ax:25,ay:18}},
+      {{x:2020,y:.19,text:"Rupture COVID",showarrow:false,font:{{color:"#8b9abf",size:9}},xanchor:"center"}},
+      {{x:2019,y:.008,text:"Avantage pr\u00e9-COVID: -0.004",showarrow:false,font:{{color:"#f7c04f",size:9}},xanchor:"right"}},
+      {{x:2024,y:.008,text:"Avantage post-COVID: -0.033 (x8)",showarrow:false,font:{{color:"#4f8ef7",size:9}},xanchor:"center"}},
     ],
   }},CFG);
 }})();
@@ -1188,8 +1179,11 @@ let selectedZone = null;
 
 function onZoneClick(zeId) {{
   selectedZone = zeId;
-  document.getElementById('zone-breadcrumb').textContent = 'Zone: ' + (ZE_NAMES[zeId] || zeId);
-  document.getElementById('panel-regional').style.display = 'block';
+  const name = ZE_NAMES[zeId] || ("ZE " + zeId);
+  document.getElementById("zone-breadcrumb").textContent = "Zone : " + name;
+  const panel = document.getElementById("panel-regional");
+  panel.style.display = "block";
+  panel.scrollIntoView({{behavior:"smooth", block:"nearest"}});
   updateRegionalTimeseries(zeId);
   updateRegionalSectors(zeId);
   updateRegionalEdges(zeId);
@@ -1227,18 +1221,7 @@ function updateRegionalEdges(zeId) {{
   Plotly.newPlot('regional-edges',[{{type:'bar',orientation:'h',y:allEdges.map(e=>e.name),x:allEdges.map(e=>e.weight),marker:{{color:allEdges.map(e=>e.type==='out'?'#4f8ef7':'#f7834f')}}}}],{{...BL,title:{{text:'Top 10 connexions',font:{{size:11}}}},xaxis:{{...BL.xaxis,title:'Poids'}},yaxis:{{...BL.yaxis,automargin:true}},margin:{{l:160,r:20,t:40,b:40}}}},CFG);
 }}
 
-// Click listener para mapa H (zona errores)
-setTimeout(()=>{{
-  const m=document.getElementById('cMap');
-  if(m && m._fullLayout) {{
-    m.on('plotly_click',d=>{{
-      if(d.points && d.points[0]) {{
-        const location = d.points[0].location;
-        if(location) onZoneClick(location);
-      }}
-    }});
-  }}
-}},500);
+
 </script>
 </body>
 </html>"""
