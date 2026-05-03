@@ -810,9 +810,11 @@ def write_report(rows, args, internals_by_year, zones_sorted, node_idx_df):
     )
     gate_by_year = compute_gate_diagnostics(internals_by_year)
 
-    run_key = f"{args.ablation}_seed_{args.seed}"
+    tag = f"_{args.run_tag}" if getattr(args, "run_tag", "") else ""
+    run_key = f"{args.ablation}{tag}_seed_{args.seed}"
     result  = {
         "ablation":                    args.ablation,
+        "run_tag":                     getattr(args, "run_tag", ""),
         "seed":                        args.seed,
         "mean_wmape":                  round(mean_wmape, 6),
         "delta_vs_ridge_ar":           round(mean_wmape - ridge_ar, 6),
@@ -935,6 +937,13 @@ def main():
                         help="Weight for temporal smoothness regularization ||A_t - A_{t-1}||_F^2")
     parser.add_argument("--sector-lambda",      type=float, default=0.1)
     parser.add_argument("--seed",               type=int,   default=0)
+    parser.add_argument("--panel-path", type=Path, default=PANEL_PATH)
+    parser.add_argument("--splits-path", type=Path, default=SPLITS_PATH)
+    parser.add_argument("--prediction-output-dir", type=Path, default=PROCESSED)
+    parser.add_argument("--metrics-path", type=Path, default=OUT_JSON)
+    parser.add_argument("--model-card-path", type=Path, default=OUT_MD)
+    parser.add_argument("--history-output-dir", type=Path, default=REPORTS)
+    parser.add_argument("--run-tag", default="")
     parser.add_argument("--device",
                         default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--ablation",           default="full",
@@ -951,10 +960,16 @@ def main():
 
     set_seed(args.seed)
     device = torch.device(args.device)
+    globals()["OUT_JSON"] = args.metrics_path
+    globals()["OUT_MD"] = args.model_card_path
+    args.prediction_output_dir.mkdir(parents=True, exist_ok=True)
+    args.metrics_path.parent.mkdir(parents=True, exist_ok=True)
+    args.model_card_path.parent.mkdir(parents=True, exist_ok=True)
+    args.history_output_dir.mkdir(parents=True, exist_ok=True)
 
     print("Loading data...")
-    panel      = pd.read_csv(PANEL_PATH).sort_values(["target_year","ZE2020"]).reset_index(drop=True)
-    splits     = pd.read_csv(SPLITS_PATH)
+    panel      = pd.read_csv(args.panel_path).sort_values(["target_year","ZE2020"]).reset_index(drop=True)
+    splits     = pd.read_csv(args.splits_path)
     node_idx_df= pd.read_csv(NODE_IDX_PATH)
     cols       = feature_columns(panel, ablation=args.ablation)
     adj_geo    = load_adjacency(GEO_ADJ_PATH)
@@ -979,11 +994,12 @@ def main():
     )
 
     pred   = pd.DataFrame(rows)
-    suffix = f"{args.ablation}_seed_{args.seed}"
+    tag = f"_{args.run_tag}" if getattr(args, "run_tag", "") else ""
+    suffix = f"{args.ablation}{tag}_seed_{args.seed}"
 
-    out_pred      = PROCESSED / f"herald_v3_predictions_{suffix}_v1.csv"
-    out_internals = PROCESSED / f"herald_v3_internals_{suffix}_v1.npz"
-    out_history   = REPORTS / f"herald_v3_training_history_{suffix}_v1.csv"
+    out_pred      = args.prediction_output_dir / f"herald_v3_predictions_{suffix}_v1.csv"
+    out_internals = args.prediction_output_dir / f"herald_v3_internals_{suffix}_v1.npz"
+    out_history   = args.history_output_dir / f"herald_v3_training_history_{suffix}_v1.csv"
 
     pred.to_csv(out_pred, index=False)
 

@@ -1,0 +1,144 @@
+{
+  "full_total_h64_semi_mask0.10_precovid_seed_0": {
+    "ablation": "full",
+    "seed": 0,
+    "run_tag": "total_h64_semi_mask0.10_precovid",
+    "hidden_dim": 64,
+    "top_k": 10,
+    "smooth_lambda": 0.01,
+    "contrast_lambda": 0.0,
+    "gate_bias_init": 2.0,
+    "gate_entropy_lambda": 0.001,
+    "mask_ratio": 0.1,
+    "mask_strategy": "random",
+    "mask_warmup_epochs": 100,
+    "semi_lambda": 0.0,
+    "semi_target": "total",
+    "total_wmape_mean": 0.07145,
+    "delta_vs_ridge_ar": 0.00465,
+    "delta_vs_v3": 0.04535,
+    "per_year_total": {
+      "2016": 0.154847,
+      "2017": 0.064934,
+      "2018": 0.02734,
+      "2019": 0.038679
+    },
+    "sector_wmape": {
+      "BE": 0.35119,
+      "FZ": 0.26579,
+      "GI": 0.13991,
+      "JZ": 0.32343,
+      "KZ": 0.26122,
+      "LZ": 0.3108,
+      "MN": 0.16517,
+      "OQ": 0.20602,
+      "RU": 0.11868
+    },
+    "sector_wmape_mean": 0.23802,
+    "gate_by_year": {
+      "2019": 0.96054
+    },
+    "gamma_geo": 1.0438,
+    "gamma_mob": 1.1299,
+    "regime_delta_by_year": [
+      0.0,
+      0.52464,
+      1.289755,
+      1.270932,
+      2.133833,
+      0.321391,
+      1.213145
+    ],
+    "adj_delta_by_year": [
+      0.403223,
+      1.094873,
+      3.048887,
+      2.734913,
+      1.999796,
+      0.893205,
+      0.954864
+    ],
+    "mean_sector_proportions": {
+      "BE": 0.0572,
+      "FZ": 0.0991,
+      "GI": 0.3575,
+      "JZ": 0.0299,
+      "KZ": 0.0283,
+      "LZ": 0.0348,
+      "MN": 0.1787,
+      "OQ": 0.1102,
+      "RU": 0.1043
+    }
+  },
+  "full_total_h64_semi_mask0.10_precovid_seed_1": {
+    "ablation": "full",
+    "seed": 1,
+    "run_tag": "total_h64_semi_mask0.10_precovid",
+    "hidden_dim": 64,
+    "top_k": 10,
+    "smooth_lambda": 0.01,
+    "contrast_lambda": 0.0,
+    "gate_bias_init": 2.0,
+    "gate_entropy_lambda": 0.001,
+    "mask_ratio": 0.1,
+    "mask_strategy": "random",
+    "mask_warmup_epochs": 100,
+    "semi_lambda": 0.0,
+    "semi_target": "total",
+    "total_wmape_mean": 0.056465,
+    "delta_vs_ridge_ar": -0.010335,
+    "delta_vs_v3": 0.030365,
+    "per_year_total": {
+      "2016": 0.111919,
+      "2017": 0.059419,
+      "2018": 0.019189,
+      "2019": 0.035334
+    },
+    "sector_wmape": {
+      "BE": 0.29051,
+      "FZ": 0.22952,
+      "GI": 0.1383,
+      "JZ": 0.2489,
+      "KZ": 0.23973,
+      "LZ": 0.28633,
+      "MN": 0.16016,
+      "OQ": 0.18179,
+      "RU": 0.12665
+    },
+    "sector_wmape_mean": 0.21132,
+    "gate_by_year": {
+      "2019": 0.94461
+    },
+    "gamma_geo": 0.9203,
+    "gamma_mob": 1.1158,
+    "regime_delta_by_year": [
+      0.0,
+      0.52464,
+      1.289755,
+      1.270932,
+      2.133833,
+      0.321391,
+      1.213145
+    ],
+    "adj_delta_by_year": [
+      0.391952,
+      1.072955,
+      2.248311,
+      1.502139,
+      1.01277,
+      0.707511,
+      1.010437
+    ],
+    "mean_sector_proportions": {
+      "BE": 0.0643,
+      "FZ": 0.1014,
+      "GI": 0.3438,
+      "JZ": 0.028,
+      "KZ": 0.0306,
+      "LZ": 0.0395,
+      "MN": 0.173,
+      "OQ": 0.1143,
+      "RU": 0.1051
+    }
+  }
+}

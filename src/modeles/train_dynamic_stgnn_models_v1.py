@@ -366,7 +366,7 @@ def evaluate_model(panel, splits, cols, adj_geo, adj_mob, model_name, args, devi
     return rows
 
 
-def write_report(pred):
+def write_report(pred, out_json=OUT_JSON, out_md=OUT_MD):
     metrics = []
     for (model, year), group in pred.groupby(["model", "target_year"]):
         metrics.append(
@@ -380,7 +380,9 @@ def write_report(pred):
     metrics_df = pd.DataFrame(metrics)
     summary = metrics_df.groupby("model", as_index=False)["wmape"].mean().sort_values("wmape")
 
-    OUT_JSON.write_text(
+    out_json.parent.mkdir(parents=True, exist_ok=True)
+    out_md.parent.mkdir(parents=True, exist_ok=True)
+    out_json.write_text(
         json.dumps(
             {
                 "metrics_by_model_year": metrics_df.to_dict(orient="records"),
@@ -411,7 +413,7 @@ def write_report(pred):
     lines += ["", "## Per-Year WMAPE", "", "| model | target_year | wmape | n |", "|---|---:|---:|---:|"]
     for row in metrics_df.sort_values(["model", "target_year"]).itertuples(index=False):
         lines.append(f"| {row.model} | {row.target_year} | {row.wmape:.6f} | {row.n} |")
-    OUT_MD.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    out_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def main():
@@ -430,12 +432,17 @@ def main():
     parser.add_argument("--grad-clip", type=float, default=5.0)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    parser.add_argument("--panel-path", type=Path, default=PANEL_PATH)
+    parser.add_argument("--splits-path", type=Path, default=SPLITS_PATH)
+    parser.add_argument("--out-pred", type=Path, default=OUT_PRED)
+    parser.add_argument("--out-json", type=Path, default=OUT_JSON)
+    parser.add_argument("--out-md", type=Path, default=OUT_MD)
     args = parser.parse_args()
 
     set_seed(args.seed)
     device = torch.device(args.device)
-    panel = pd.read_csv(PANEL_PATH).sort_values(["target_year", "ZE2020"]).reset_index(drop=True)
-    splits = pd.read_csv(SPLITS_PATH)
+    panel = pd.read_csv(args.panel_path).sort_values(["target_year", "ZE2020"]).reset_index(drop=True)
+    splits = pd.read_csv(args.splits_path)
     cols = feature_columns(panel)
     adj_geo = load_adjacency(GEO_ADJ_PATH)
     adj_mob = load_adjacency(MOB_ADJ_PATH)
@@ -445,11 +452,12 @@ def main():
         all_rows.extend(evaluate_model(panel, splits, cols, adj_geo, adj_mob, model_name, args, device))
 
     pred = pd.DataFrame(all_rows)
-    pred.to_csv(OUT_PRED, index=False)
-    write_report(pred)
-    print(f"Saved {OUT_PRED}")
-    print(f"Saved {OUT_JSON}")
-    print(f"Saved {OUT_MD}")
+    args.out_pred.parent.mkdir(parents=True, exist_ok=True)
+    pred.to_csv(args.out_pred, index=False)
+    write_report(pred, args.out_json, args.out_md)
+    print(f"Saved {args.out_pred}")
+    print(f"Saved {args.out_json}")
+    print(f"Saved {args.out_md}")
 
 
 if __name__ == "__main__":
