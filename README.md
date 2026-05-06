@@ -6,6 +6,25 @@ d'établissements par zone d'emploi** en France, à partir des données SIDE/INS
 
 ---
 
+## Phase actuelle — stabilisation méthodologique France
+
+Le projet entre maintenant dans la phase **HERALD-France robuste**, avant toute extension à d'autres
+pays ou transformation en application. L'objectif est de fermer proprement la validation scientifique
+sur la France, puis de construire des indicateurs économiques exploitables dans un dashboard/app.
+
+Priorités immédiates :
+
+1. **Leak audit final** — confirmer l'absence de fuite de données et séparer strictement forecast, nowcast et backtest rétrospectif.
+2. **Calendrier réel de disponibilité** — vérifier quelles variables sont réellement disponibles au moment opérationnel de la prévision.
+3. **Batterie finale de comparaison** — comparer HERALD aux baselines Ridge AR, ARIMA, LSTM, STGNN/DCRNN et variantes internes sur le même panel.
+4. **Forecast 2026/2027** — produire des prévisions prospectives France avec protocole ex-ante explicite.
+5. **Dashboard propre + indicateurs économiques dérivés** — cartes, erreurs territoriales, secteurs A10, accélération/décélération et zones d'incertitude.
+
+Les tests internationaux (Portugal, Espagne, Suisse, UE) viendront ensuite comme validation externe,
+pas comme étape de correction du modèle France.
+
+---
+
 ## Résultat principal (bateria geo2025 — 2026-05-02)
 
 | Modèle | WMAPE moyen | Vs Ridge AR |
