@@ -699,6 +699,8 @@ def make_sequences(panel, cols, q_tensor, sec_props_tensor,
         "test_ridge":     ridge[test_idx],
         "test_mask":      np.isfinite(y[test_idx]) & np.isfinite(ridge[test_idx]),
         "target_year":    target_year,
+        "train_y":        y[t_train_idx].astype(np.float32),
+        "train_ridge":    ridge[t_train_idx].astype(np.float32),
     }
 
 
