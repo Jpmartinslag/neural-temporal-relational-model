@@ -87,6 +87,14 @@ hpc_results/**/*.csv
 hpc_results/**/*.err
 hpc_results/**/*.out
 hpc_results/**/logs/
+hpc_results/herald_forecast_*/
+hpc_results/herald_leak_stress_*/
+hpc_results/herald_semi_v2_final_*/
+hpc_results/herald_semiv2_validation_*/
+hpc_results/herald_showdown_*/
+hpc_results/herald_strict_exante_*/
+hpc_results/project_recomm_herald_v7_*/
+hpc_results/archive/
 
 # ── Arquivos legados ───────────────────────────────────────────────
 old/
@@ -97,6 +105,9 @@ tmp/
 .tmp/
 *.tmp
 *.log
+docs/archive/agent_artifacts_*/
+data/processed/strict_exante_*/
+data/processed/leak_stress_*/
 
 # Manter panels de features (não são predições)
 !data/processed/dynamic_stgnn_feature_panel_v1.csv

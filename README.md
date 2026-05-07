@@ -1,133 +1,94 @@
-# HERALD — Prévision Économique Territoriale · France
+# HERALD — Prévision économique territoriale
 
-**HERALD** (*Heterogeneous Economic Relational Adaptive Learning for territorial Dynamics*)
-est un Spatio-Temporal Graph Neural Network (STGNN) pour la **prévision annuelle des créations
-d'établissements par zone d'emploi** en France, à partir des données SIDE/INSEE.
+HERALD (*Heterogeneous Economic Relational Adaptive Learning for territorial Dynamics*) est un modèle
+hybride de prévision territoriale pour la France. Il estime les créations d'établissements par zone
+d'emploi, puis transforme ces prévisions en cartes de dynamisme, ralentissement, incertitude et
+structure sectorielle.
 
----
+Le dépôt est maintenant organisé autour d'un seul nom public: **HERALD**. Les anciens noms V3, V6,
+V7 et Semi désignent des configurations de laboratoire et ne structurent plus la présentation finale.
 
-## Phase actuelle — stabilisation méthodologique France
+## État scientifique actuel
 
-Le projet entre maintenant dans la phase **HERALD-France robuste**, avant toute extension à d'autres
-pays ou transformation en application. L'objectif est de fermer proprement la validation scientifique
-sur la France, puis de construire des indicateurs économiques exploitables dans un dashboard/app.
+Le modèle principal pour la France est la configuration HERALD strict ex-ante / no-source-flags. Elle
+retire les indicateurs ambigus de disponibilité des sources et sépare clairement backtest, audit
+anti-fuite et forecast prospectif.
 
-Priorités immédiates :
+Conclusion actuelle:
 
-1. **Leak audit final** — confirmer l'absence de fuite de données et séparer strictement forecast, nowcast et backtest rétrospectif.
-2. **Calendrier réel de disponibilité** — vérifier quelles variables sont réellement disponibles au moment opérationnel de la prévision.
-3. **Batterie finale de comparaison** — comparer HERALD aux baselines Ridge AR, ARIMA, LSTM, STGNN/DCRNN et variantes internes sur le même panel.
-4. **Forecast 2026/2027** — produire des prévisions prospectives France avec protocole ex-ante explicite.
-5. **Dashboard propre + indicateurs économiques dérivés** — cartes, erreurs territoriales, secteurs A10, accélération/décélération et zones d'incertitude.
+- pas de fuite directe détectée dans les batteries strict ex-ante et target-shuffle;
+- les modèles HERALD battent fortement Ridge AR, ARIMA, LSTM et les STGNN de comparaison sur le panel
+  France geo2025;
+- le forecast 2026/2027 est une prévision prospective conditionnelle aux données disponibles le
+  2026-05-07, pas une prévision ex-ante au 2026-01-01;
+- le graphe est utile pour l'interprétation territoriale: mobilité, connexions économiques et
+  reconfiguration pendant les chocs.
 
-Les tests internationaux (Portugal, Espagne, Suisse, UE) viendront ensuite comme validation externe,
-pas comme étape de correction du modèle France.
+## Structure
 
----
-
-## Résultat principal (bateria geo2025 — 2026-05-02)
-
-| Modèle | WMAPE moyen | Vs Ridge AR |
-|---|---|---|
-| **HERALD V6 h64** ← meilleur | **0.0313 ± 0.0046** | −47% |
-| HERALD V3 | 0.0336 ± 0.0066 | −43% |
-| DCRNN résiduel | 0.0537 | −9% |
-| Ridge AR | 0.0592 | référence |
-| LSTM local | 0.0910 | +54% |
-
-**Semi-supervision par masquage :** résultat négatif. Le masquage dégrade la performance (+9%)
-par rapport à V6 h64. Le grafo dinâmico tem forte valor interpretativo (adj_delta COVID ×10–20),
-mas seu ganho preditivo isolado exige ablação `fixed_adj` ainda não rodada.
-
-→ Dashboard interactif complet :
-`hpc_results/herald_semi_total_253_geo2025/reports/figures/herald_geo2025_final_dashboard.html`
-
----
-
-## Structure du projet
-
-```
+```text
 dataset/
-├── data/
-│   ├── raw/           # Données brutes INSEE (non versionnées)
-│   ├── interim/       # Tables intermédiaires (versionnées)
-│   └── processed/     # Panneaux modèle, graphes, cibles
-├── docs/              # PDFs de référence méthodologique
-├── hpc/               # Scripts SLURM (.sbatch) et d'exécution (.sh)
-├── hpc_results/       # Sorties des runs HPC par batterie
-│   └── herald_semi_total_253_geo2025/   # Batterie principale (253 runs)
-│       ├── baselines_v3_v6_stgnn/       # V3, V6 h32/h64, STGNNs, baselines
-│       ├── semi_seeds_0_1/              # HERALD Semi seeds 0–1
-│       ├── semi_seeds_7_13/             # seeds 7–13
-│       ├── semi_seeds_17_42/            # seeds 17–42
-│       ├── semi_seeds_77_99/            # seeds 77–99
-│       ├── semi_seeds_123_2025/         # seeds 123–2025
-│       └── reports/figures/            # Dashboard HTML final
-├── metadata/          # Catalogues INSEE, manifests
-├── old/               # Archive héritage pré-HERALD
-├── reports/
-│   ├── herald_v3/     # Métriques V3
-│   ├── herald_v6/     # Métriques V6
-│   ├── dynamic_stgnn/ # Métriques STGNNs
-│   ├── archive/       # V4, V5, historiques
-│   └── figures/       # Dashboards antérieurs
-├── src/
-│   ├── modeles/       # Scripts d'entraînement (train_herald_v6.py, …)
-│   ├── analyse/       # Analyse statistique et évaluation
-│   └── visualisation/ # Génération de dashboards HTML
-└── tools/             # Outils externes
+├── data/          # données brutes, intermédiaires et panels/graphes canoniques
+├── hpc/           # batteries SLURM, audits et forecasts à lancer sur cluster
+├── hpc_results/   # sorties lourdes de calcul; non source principale du projet
+├── reports/       # rapports méthodologiques, métriques légères et dashboards finaux
+├── src/           # code modèle, baselines, analyses et génération de dashboard
+└── docs/          # documentation externe ou notes longues
 ```
 
----
+Voir les READMEs locaux dans chaque dossier pour savoir quoi versionner et quoi régénérer.
 
-## Données
+## Entrées du modèle
 
-| Jeu de données | Source | Couverture |
-|---|---|---|
-| Créations d'établissements | SIDE/INSEE | 2012–2025, annuel, 280 ZE, 9 secteurs A10 |
-| Graphe de mobilité | Flux domicile-travail INSEE | ZE→ZE, annuel |
-| Graphe géographique | Contiguïté ZE + distance | Statique geo2025 |
-| Covariables | BPE, Filosofi, population, stocks, SITADEL | par ZE, annuel |
+HERALD utilise, par zone d'emploi:
 
-**Protocole d'évaluation :** rolling-origin walk-forward — folds 2021, 2022, 2023, 2024, 2025.
+- historique SIDE/INSEE de créations d'établissements;
+- trajectoire récente de croissance;
+- secteurs A10;
+- emploi et masse salariale URSSAF;
+- caractéristiques FLORES;
+- graphes géographique et mobilité domicile-travail;
+- flags de régime économique prédéfinis.
 
----
+## Sorties
 
-## Architecture HERALD V6 h64
+Le pipeline produit:
 
-- Graphe **dynamique** appris année par année (adjacence adaptative)
-- **Gate de mobilité** : pondère mobilité vs géographie (γ_mob/γ_geo ≈ 3.5×)
-- Encodeur **GRU** + propagation de graphe (type Chebyshev)
-- Tête de prévision **totale** + tête **sectorielle A10** (9 secteurs NAF)
-- Hidden dim = 64, top_k = 10, gate_bias = 2.0
+- prévisions par zone d'emploi;
+- prévisions sectorielles A10;
+- cartes d'erreur et d'incertitude;
+- indicateurs d'accélération, ralentissement et dynamisme territorial;
+- diagnostics de graphe: connexions, poids mobilité/géographie, changements temporels;
+- forecast prospectif 2026/2027.
 
----
+## Commandes principales
 
-## Utilisation
+Les batteries longues sont prévues pour le cluster et vivent dans `hpc/`.
 
 ```bash
-# Environnement
-source .venv/bin/activate
+# Audit strict ex-ante
+bash hpc/audit/submit_herald_strict_exante.sh
 
-# Entraînement HERALD V6
-python3 src/modeles/train_herald_v6.py
+# Forecast 2026/2027
+bash hpc/forecast/submit_herald_forecast_2026_2027.sh
 
-# Générer le dashboard
-python3 src/visualisation/generate_herald_geo2025_dashboard.py
-
-# Ouvrir le dashboard
-xdg-open hpc_results/herald_semi_total_253_geo2025/reports/figures/herald_geo2025_final_dashboard.html
+# Dashboard HERALD stable
+python3 src/visualisation/generate_herald_semi_v2_dashboard.py
 ```
 
----
+## Documents clés
 
-## Observations méthodologiques pendantes
+- `reports/HERALD_LEAK_AUDIT_FINAL_20260507.md`
+- `reports/HERALD_DATA_AVAILABILITY_CALENDAR.md`
+- `reports/HERALD_REPOSITORY_AND_DASHBOARD_CLEANUP_PLAN.md`
+- `reports/HERALD_PREDICTION_INTERPRETATION_METHODS.md`
+- `metadata/HERALD_DATASETS_MAIN.md`
+- `metadata/HERALD_DATASETS_EXPLORATORY.md`
+- `metadata/HERALD_DATA_UPDATE_POLICY.md`
+- `reports/dashboards/herald_france_dashboard_offline.html`
 
-1. Ablation `fixed_adj` — isoler la valeur prédictive du graphe dynamique vs statique
-2. Précovid pour V6 h64 et V3 — comparer la robustesse hors COVID
-3. `spatial_block` catastrophique (+40% WMAPE) — vérifier l'implémentation
-4. Valider les 117 nouvelles connexions Semi avec les données de mobilité INSEE
+## Règle de présentation
 
----
-
-*Fichiers hérités archivés dans `old/legacy_before_herald_focus_2026_04_27/`*
+Pour le papier, l'application et le dashboard, dire **HERALD**. Les variantes internes restent des
+configurations expérimentales utilisées pour prouver la robustesse du modèle, pas une histoire de
+versions successives.
