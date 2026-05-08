@@ -130,15 +130,36 @@ run_panel() {
   local panel_path=$2
   local tag_prefix="strict_${panel_key}"
 
-  if [ "$RUN_GLOBAL" = "1" ]; then
-    run_cmd "${panel_key}: Ridge/naive/ARIMA 2024-2025" \
+  # Ridge / Naive / ARIMA — deterministic, one run covers all seeds
+  if [ "${SEED}" = "0" ]; then
+    run_cmd "${panel_key}: Ridge/Naive/ARIMA" \
       src/modeles/train_temporal_baselines_v1.py \
       --models naive_lag1 ridge_ar arima_local \
       --seed 0 \
       --panel-path "$panel_path" \
       --splits-path "$SPLITS_PATH" \
-      --out-dir "$OUT_ROOT/temporal_baselines/${panel_key}"
+      --out-dir "$OUT_ROOT/temporal_baselines/${panel_key}_deterministic"
   fi
+
+  # LSTM — stochastic, per seed
+  run_cmd "${panel_key}: LSTM seed=${SEED}" \
+    src/modeles/train_temporal_baselines_v1.py \
+    --models lstm_local \
+    --seed "$SEED" \
+    --hidden-dim 32 \
+    --lr 0.001 \
+    --panel-path "$panel_path" \
+    --splits-path "$SPLITS_PATH" \
+    --out-dir "$OUT_ROOT/temporal_baselines/${panel_key}_lstm_seed_${SEED}"
+
+  # DCRNN + Dynamic STGNN — stochastic, per seed
+  run_cmd "${panel_key}: DCRNN/STGNN seed=${SEED}" \
+    src/modeles/train_dynamic_stgnn_models_v1.py \
+    --models dcrnn_residual dynamic_stgnn_residual \
+    --seed "$SEED" \
+    --panel-path "$panel_path" \
+    --splits-path "$SPLITS_PATH" \
+    --out-json "$OUT_ROOT/reports/per_run/${tag_prefix}_stgnn_dcrnn_seed_${SEED}.json"
 
   run_cmd "${panel_key}: Semi V2 graph_only" \
     src/modeles/train_herald_semi_v2.py \
