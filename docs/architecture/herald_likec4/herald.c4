@@ -1,0 +1,144 @@
+specification {
+  element system
+  element component
+  element model
+  element dataset
+  element graph
+  element output
+}
+
+model {
+  france = system 'HERALD France' {
+    description 'Modele de prevision territoriale des creations d etablissements par zone d emploi.'
+
+    data = component 'Donnees observees' {
+      panel = dataset 'Panel ZE2020' {
+        description 'Historique annuel, lags, croissance, variables economiques forecast-safe.'
+      }
+      quarterly = dataset 'Signaux trimestriels' {
+        description 'Variables infra-annuelles disponibles dans le panel.'
+      }
+      a10 = dataset 'Secteurs A10 SIDE' {
+        description 'Repartition sectorielle observee des creations d etablissements.'
+      }
+      splits = dataset 'Walk-forward splits' {
+        description 'Chaque annee cible est predite avec les annees anterieures seulement.'
+      }
+    }
+
+    ridge = model 'Ridge AR' {
+      description 'Baseline mathematique lineaire: lags locaux + regression Ridge.'
+      features = component 'Features locales' {
+        description 'side_lag_1, side_lag_2, side_lag_3, growth_1y, growth_2y.'
+      }
+      preprocessing = component 'Imputation + standardisation'
+      linear = component 'Regression Ridge(alpha=1)'
+      ridgePred = output 'Prediction Ridge'
+    }
+
+    herald = model 'HERALD' {
+      description 'Modele hybride: Ridge AR + correction neurale territoriale.'
+      sequences = component 'Sequences forecast-safe'
+      local = component 'Encodeur local' {
+        description 'Projection annuelle, encodeur trimestriel et memoire GRU locale.'
+      }
+      dynamicGraph = graph 'Graphe dynamique' {
+        description 'Attention QK conditionnee par regime, prior geo et prior mobilite.'
+      }
+      graphMessages = component 'Messages territoriaux' {
+        description 'Aggregation A_t @ embeddings des zones connectees.'
+      }
+      mix = component 'Gate / Alpha' {
+        description 'Arbitrage entre signal local, signal graphe et correction residuelle.'
+      }
+      residual = component 'Tete residuelle'
+      sector = component 'Tete A10'
+      internals = output 'Internals graphe' {
+        description 'dynamic_adj, gate, alpha, gamma_geo, gamma_mob.'
+      }
+      heraldPred = output 'Prediction HERALD'
+      sectorPred = output 'Predictions A10'
+    }
+
+    priors = component 'Priors territoriaux' {
+      geo = graph 'Graphe geographique'
+      mobility = graph 'Graphe mobilite domicile-travail'
+    }
+
+    intelligence = component 'HERALD Intelligence v0' {
+      description 'Couche exploratoire de post-traitement: scores, alertes et contexte.'
+      scores = output 'Scores opportunite/risque'
+      alerts = output 'Alertes territoriales'
+      maps = output 'Cartes interpretatives'
+    }
+
+    dashboard = output 'Dashboard HERALD France'
+  }
+
+  france.data.panel -> france.ridge.features 'fournit l historique local'
+  france.data.splits -> france.ridge 'controle le protocole walk-forward'
+  france.ridge.features -> france.ridge.preprocessing
+  france.ridge.preprocessing -> france.ridge.linear
+  france.ridge.linear -> france.ridge.ridgePred
+
+  france.data.panel -> france.herald.sequences
+  france.data.quarterly -> france.herald.sequences
+  france.data.a10 -> france.herald.sequences
+  france.data.splits -> france.herald.sequences 'garantit train passe seulement'
+  france.herald.sequences -> france.ridge.linear 'reutilise la base Ridge'
+  france.ridge.ridgePred -> france.herald.heraldPred 'composante mathematique'
+
+  france.herald.sequences -> france.herald.local
+  france.priors.geo -> france.herald.dynamicGraph
+  france.priors.mobility -> france.herald.dynamicGraph
+  france.herald.local -> france.herald.dynamicGraph
+  france.herald.dynamicGraph -> france.herald.graphMessages
+  france.herald.local -> france.herald.mix
+  france.herald.graphMessages -> france.herald.mix
+  france.herald.mix -> france.herald.residual
+  france.herald.residual -> france.herald.heraldPred 'Ridge + residual * zone_std'
+  france.herald.mix -> france.herald.sector
+  france.herald.sector -> france.herald.sectorPred
+  france.herald.dynamicGraph -> france.herald.internals
+
+  france.herald.heraldPred -> france.intelligence.scores
+  france.herald.sectorPred -> france.intelligence.scores
+  france.herald.internals -> france.intelligence.maps
+  france.intelligence.scores -> france.intelligence.alerts
+  france.ridge.ridgePred -> france.dashboard
+  france.herald.heraldPred -> france.dashboard
+  france.herald.sectorPred -> france.dashboard
+  france.intelligence.maps -> france.dashboard
+}
+
+views {
+  view index {
+    title 'HERALD France - vue generale'
+    include france
+  }
+
+  view of france {
+    title 'HERALD vs Ridge AR - comparaison globale'
+    include *
+  }
+
+  view of france.ridge {
+    title 'Ridge AR - baseline lineaire'
+    include *
+  }
+
+  view of france.herald {
+    title 'HERALD - architecture interne'
+    include *
+  }
+
+  view of france.herald.dynamicGraph {
+    title 'Graphe dynamique HERALD'
+    include *
+  }
+
+  view of france.intelligence {
+    title 'HERALD Intelligence v0'
+    include *
+  }
+}

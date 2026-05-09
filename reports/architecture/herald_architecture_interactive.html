@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HERALD vs Ridge AR - exploration dynamique</title>
+  <style>
+    :root {
+      --bg:#0f1220; --panel:#171b2d; --panel2:#20253a; --line:#30364f;
+      --text:#eef2ff; --muted:#aab4d4; --data:#4aa3ff; --ridge:#66bb6a;
+      --herald:#f7834f; --graph:#b084f5; --out:#ffd54f; --danger:#ef5350;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:Inter,Segoe UI,Arial,sans-serif; }
+    .wrap { max-width:1560px; margin:0 auto; padding:22px; }
+    h1 { margin:0 0 6px; font-size:30px; letter-spacing:0; }
+    .subtitle { color:var(--muted); max-width:1120px; line-height:1.45; }
+    .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:18px 0; }
+    button, select, input[type="range"] { accent-color:var(--out); }
+    button, select {
+      background:#111525; color:var(--text); border:1px solid var(--line);
+      border-radius:7px; padding:8px 11px; cursor:pointer;
+    }
+    button.active { border-color:var(--out); background:#2a2638; color:#fff; }
+    .rangebox { display:flex; align-items:center; gap:8px; color:var(--muted); border:1px solid var(--line); border-radius:7px; padding:6px 10px; background:#111525; }
+    .layout { display:grid; grid-template-columns:minmax(790px,1.45fr) minmax(380px,0.55fr); gap:14px; align-items:start; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:12px; }
+    .canvas { height:760px; overflow:hidden; background:#111525; border:1px solid var(--line); border-radius:8px; position:relative; cursor:grab; }
+    .canvas:active { cursor:grabbing; }
+    svg { width:100%; height:100%; display:block; }
+    .stage-label { position:absolute; top:12px; left:12px; color:#dfe7ff; background:rgba(15,18,32,.86); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:13px; pointer-events:none; }
+    .node rect { fill:#171b2d; stroke:var(--line); stroke-width:1.2; rx:9; transition:.18s; }
+    .node text { fill:var(--text); pointer-events:none; font-size:13px; }
+    .node .sub { fill:var(--muted); font-size:11px; }
+    .node.data rect { stroke:var(--data); }
+    .node.ridge rect { stroke:var(--ridge); }
+    .node.herald rect { stroke:var(--herald); }
+    .node.graph rect { stroke:var(--graph); }
+    .node.out rect { stroke:var(--out); }
+    .node.dim { opacity:.08; }
+    .node.hidden { display:none; }
+    .node.active rect { stroke-width:3; filter:drop-shadow(0 0 9px rgba(255,213,79,.38)); }
+    .node.expanded rect { fill:#20253a; }
+    .edge { fill:none; stroke:#7782a5; stroke-width:1.4; opacity:.7; marker-end:url(#arrow); transition:.18s; }
+    .edge.ridge { stroke:var(--ridge); }
+    .edge.herald { stroke:var(--herald); }
+    .edge.graph { stroke:var(--graph); }
+    .edge.out { stroke:var(--out); }
+    .edge.hidden { display:none; }
+    .edge.dim { opacity:.05; }
+    .edge.flow { stroke-width:4; opacity:1; stroke-dasharray:10 7; animation:dash 900ms linear infinite; }
+    @keyframes dash { to { stroke-dashoffset:-34; } }
+    .panel-title { font-size:21px; font-weight:760; margin-bottom:8px; }
+    .detail { color:var(--muted); line-height:1.5; font-size:14px; }
+    .formula { margin:12px 0; padding:11px; border:1px solid var(--out); border-radius:8px; background:#111525; font-family:ui-monospace,monospace; color:#f7e6a3; }
+    .pillrow { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+    .pill { border:1px solid var(--line); border-radius:999px; color:var(--muted); padding:5px 8px; font-size:12px; }
+    .stepbox { margin-top:12px; display:grid; gap:8px; }
+    .step { border:1px solid var(--line); border-radius:8px; padding:8px; color:var(--muted); background:#111525; }
+    .step.on { border-color:var(--out); color:#eef2ff; }
+    .legend { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:12px; }
+    .legend div { border:1px solid var(--line); border-radius:8px; padding:8px; color:var(--muted); }
+    .dot { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; }
+    .hint { color:var(--muted); font-size:12px; margin-top:8px; }
+    @media (max-width:1100px) { .layout { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h1>HERALD vs Ridge AR - exploration dynamique</h1>
+  <div class="subtitle">
+    Cette visualisation est autonome: ouvrez ce fichier directement dans le navigateur. Utilisez le niveau de détail,
+    les vues et l'animation pour comparer Ridge AR, la base linéaire, avec HERALD, le modèle hybride territorial.
+  </div>
+
+  <div class="toolbar">
+    <button id="view-story" onclick="setMode('story')" class="active">Histoire animée</button>
+    <button id="view-ridge" onclick="setMode('ridge')">Ridge seul</button>
+    <button id="view-herald" onclick="setMode('herald')">HERALD complet</button>
+    <button id="view-graph" onclick="setMode('graph')">Graphe dynamique</button>
+    <button id="view-intel" onclick="setMode('intel')">Intelligence v0</button>
+    <button onclick="togglePlay()" id="play">Lecture</button>
+    <button onclick="resetCamera()">Recentrer</button>
+    <label class="rangebox">Granularité
+      <input id="level" type="range" min="1" max="4" value="2" oninput="setLevel(this.value)">
+      <span id="levelText">2</span>
+    </label>
+  </div>
+
+  <div class="layout">
+    <div class="card">
+      <div class="canvas" id="canvas">
+        <div class="stage-label" id="stageLabel">Étape 1/6 - données</div>
+        <svg id="svg" viewBox="0 0 1120 760">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b96ba"></path>
+            </marker>
+          </defs>
+          <g id="viewport">
+            <g id="edges"></g>
+            <g id="nodes"></g>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <div class="card">
+      <div id="sideTitle" class="panel-title">Histoire animée</div>
+      <div id="sideDetail" class="detail"></div>
+      <div class="formula">HERALD = Ridge AR + résidu neural territorial</div>
+      <div class="pillrow">
+        <span class="pill">Ridge: linéaire</span>
+        <span class="pill">HERALD: hybride</span>
+        <span class="pill">Graphe: dynamique</span>
+        <span class="pill">A10: secteurs</span>
+      </div>
+      <div id="steps" class="stepbox"></div>
+      <div class="legend">
+        <div><span class="dot" style="background:var(--data)"></span>Données</div>
+        <div><span class="dot" style="background:var(--ridge)"></span>Ridge AR</div>
+        <div><span class="dot" style="background:var(--herald)"></span>HERALD</div>
+        <div><span class="dot" style="background:var(--graph)"></span>Graphe</div>
+      </div>
+      <div class="hint">Astuce: molette = zoom, glisser = déplacer, clic sur un bloc = explication.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const nodes = [
+  {id:'raw', x:40, y:44, w:170, h:68, cls:'data', level:1, title:'Données brutes', sub:'SIDE, ZE2020, A10'},
+  {id:'panel', x:40, y:136, w:170, h:68, cls:'data', level:2, title:'Panel safe', sub:'lags, growth, features'},
+  {id:'quarter', x:40, y:228, w:170, h:68, cls:'data', level:3, title:'Trimestriel', sub:'signaux infra-annuels'},
+  {id:'splits', x:40, y:320, w:170, h:68, cls:'data', level:2, title:'Walk-forward', sub:'train passé seulement'},
+  {id:'a10', x:40, y:412, w:170, h:68, cls:'data', level:2, title:'Secteurs A10', sub:'proportions observées'},
+
+  {id:'r_feat', x:270, y:78, w:175, h:68, cls:'ridge', level:1, title:'Features Ridge', sub:'lags + growth'},
+  {id:'r_prep', x:500, y:78, w:175, h:68, cls:'ridge', level:2, title:'Prétraitement', sub:'imputer + scaler'},
+  {id:'ridge', x:730, y:78, w:175, h:68, cls:'ridge', level:1, title:'Ridge AR', sub:'régression linéaire'},
+  {id:'r_pred', x:945, y:78, w:140, h:68, cls:'out', level:1, title:'Prévision Ridge', sub:'contrôle'},
+
+  {id:'seq', x:270, y:268, w:175, h:68, cls:'herald', level:1, title:'Séquences HERALD', sub:'annuel + trim. + A10'},
+  {id:'local', x:500, y:236, w:175, h:68, cls:'herald', level:2, title:'Encodeur local', sub:'projection + GRU'},
+  {id:'priors', x:500, y:348, w:175, h:68, cls:'graph', level:2, title:'Priors territoriaux', sub:'geo + mobilité'},
+  {id:'qk', x:730, y:292, w:175, h:68, cls:'graph', level:3, title:'Attention QK', sub:'régime + embeddings'},
+  {id:'dyn', x:945, y:292, w:140, h:68, cls:'graph', level:1, title:'Graphe dyn.', sub:'A_t top-k'},
+  {id:'msg', x:945, y:392, w:140, h:68, cls:'graph', level:3, title:'Messages', sub:'A_t @ e_t'},
+
+  {id:'mix', x:270, y:570, w:175, h:68, cls:'herald', level:2, title:'Gate / alpha', sub:'local vs graphe'},
+  {id:'res', x:500, y:570, w:175, h:68, cls:'herald', level:1, title:'Résidu neural', sub:'correction'},
+  {id:'sector', x:730, y:570, w:175, h:68, cls:'herald', level:2, title:'Tête A10', sub:'secteurs prédits'},
+  {id:'h_pred', x:945, y:530, w:140, h:68, cls:'out', level:1, title:'HERALD pred', sub:'Ridge + résidu'},
+  {id:'intel', x:945, y:626, w:140, h:60, cls:'out', level:2, title:'Intelligence v0', sub:'scores + alertes'}
+];
+
+const edges = [
+  ['raw','panel','data'], ['panel','r_feat','ridge'], ['splits','r_feat','ridge'], ['r_feat','r_prep','ridge'], ['r_prep','ridge','ridge'], ['ridge','r_pred','ridge'],
+  ['panel','seq','herald'], ['quarter','seq','herald'], ['a10','seq','herald'], ['splits','seq','herald'],
+  ['seq','local','herald'], ['panel','priors','graph'], ['priors','qk','graph'], ['local','qk','graph'], ['qk','dyn','graph'], ['dyn','msg','graph'],
+  ['local','mix','herald'], ['msg','mix','graph'], ['mix','res','herald'], ['r_pred','h_pred','out'], ['res','h_pred','herald'], ['mix','sector','herald'],
+  ['sector','intel','out'], ['h_pred','intel','out'], ['dyn','intel','graph']
+];
+
+const modes = {
+  story: {title:'Histoire animée', text:'La lecture suit le trajet des données: contrôle linéaire Ridge, puis correction HERALD avec graphe et A10.', visible:'all'},
+  ridge: {title:'Ridge AR', text:'Ridge utilise seulement l historique local: lags, croissance, imputation, standardisation et régression linéaire régularisée.', visible:['raw','panel','splits','r_feat','r_prep','ridge','r_pred']},
+  herald: {title:'HERALD complet', text:'HERALD garde Ridge comme base, encode les signaux locaux, apprend le graphe dynamique et prédit une correction résiduelle.', visible:['raw','panel','quarter','a10','splits','r_pred','seq','local','priors','qk','dyn','msg','mix','res','sector','h_pred','intel']},
+  graph: {title:'Graphe dynamique', text:'Le graphe relie les zones selon mobilité, géographie et attention apprise; il montre où le modèle va chercher du signal territorial.', visible:['panel','local','priors','qk','dyn','msg','mix','h_pred','intel']},
+  intel: {title:'HERALD Intelligence v0', text:'Cette couche ne réentraîne rien: elle expose les sorties HERALD avec contexte, scores exploratoires, alertes et cartes.', visible:['raw','a10','r_pred','dyn','sector','h_pred','intel']}
+};
+
+const story = [
+  {label:'1/6 données', focus:['raw','panel','quarter','a10','splits'], edges:[['raw','panel']]},
+  {label:'2/6 Ridge AR', focus:['panel','splits','r_feat','r_prep','ridge','r_pred'], edges:[['panel','r_feat'],['splits','r_feat'],['r_feat','r_prep'],['r_prep','ridge'],['ridge','r_pred']]},
+  {label:'3/6 séquences HERALD', focus:['panel','quarter','a10','splits','seq','local'], edges:[['panel','seq'],['quarter','seq'],['a10','seq'],['splits','seq'],['seq','local']]},
+  {label:'4/6 graphe dynamique', focus:['panel','local','priors','qk','dyn','msg'], edges:[['panel','priors'],['priors','qk'],['local','qk'],['qk','dyn'],['dyn','msg']]},
+  {label:'5/6 correction résiduelle', focus:['r_pred','local','msg','mix','res','h_pred'], edges:[['local','mix'],['msg','mix'],['mix','res'],['res','h_pred'],['r_pred','h_pred']]},
+  {label:'6/6 secteurs et intelligence', focus:['dyn','sector','h_pred','intel'], edges:[['sector','intel'],['h_pred','intel'],['dyn','intel']]}
+];
+
+let mode = 'story', level = 2, step = 0, timer = null;
+let camera = {x:0, y:0, z:1}, dragging = false, start = null;
+
+function center(n) { return [n.x+n.w/2, n.y+n.h/2]; }
+function path(a,b) {
+  const s = nodes.find(n=>n.id===a), t = nodes.find(n=>n.id===b);
+  const [sx,sy] = center(s), [tx,ty] = center(t);
+  const dx = Math.abs(tx - sx);
+  const bend = Math.min(95, Math.max(35, dx * 0.32));
+  return `M ${sx} ${sy} C ${sx + bend} ${sy}, ${tx - bend} ${ty}, ${tx} ${ty}`;
+}
+function draw() {
+  const eg = document.getElementById('edges'), ng = document.getElementById('nodes');
+  eg.innerHTML = ''; ng.innerHTML = '';
+  edges.forEach(([a,b,c]) => {
+    const e = document.createElementNS('http://www.w3.org/2000/svg','path');
+    e.setAttribute('d', path(a,b)); e.setAttribute('class', `edge ${c}`);
+    e.dataset.from=a; e.dataset.to=b; eg.appendChild(e);
+  });
+  nodes.forEach(n => {
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class', `node ${n.cls}`); g.dataset.id=n.id; g.dataset.level=n.level;
+    g.innerHTML = `<rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}"></rect>
+      <text x="${n.x+12}" y="${n.y+25}">${n.title}</text>
+      <text class="sub" x="${n.x+12}" y="${n.y+48}">${n.sub}</text>`;
+    g.onclick = ev => { ev.stopPropagation(); selectNode(n.id); };
+    ng.appendChild(g);
+  });
+  buildSteps(); apply();
+}
+function buildSteps() {
+  document.getElementById('steps').innerHTML = story.map((s,i) =>
+    `<div class="step ${i===step?'on':''}" onclick="setStep(${i})">${s.label}</div>`).join('');
+}
+function setMode(m) {
+  mode=m; document.querySelectorAll('button[id^="view-"]').forEach(b=>b.classList.remove('active'));
+  document.getElementById('view-'+m)?.classList.add('active'); apply();
+}
+function setLevel(v) { level=Number(v); document.getElementById('levelText').textContent=v; apply(); }
+function setStep(i) { step=i; buildSteps(); apply(); }
+function visibleSet() {
+  const v = modes[mode].visible;
+  return v === 'all' ? new Set(nodes.map(n=>n.id)) : new Set(v);
+}
+function apply() {
+  const vis = visibleSet(), focus = mode === 'story' ? new Set(story[step].focus) : null;
+  const storyEdges = mode === 'story'
+    ? new Set(story[step].edges.map(([a,b]) => `${a}->${b}`))
+    : null;
+  document.getElementById('sideTitle').textContent = modes[mode].title;
+  document.getElementById('sideDetail').textContent = modes[mode].text;
+  document.getElementById('stageLabel').textContent = mode === 'story' ? `Étape ${story[step].label}` : modes[mode].title;
+  document.querySelectorAll('.node').forEach(g => {
+    const n = nodes.find(x=>x.id===g.dataset.id);
+    const show = vis.has(n.id) && n.level <= level;
+    g.classList.toggle('hidden', !show);
+    g.classList.toggle('dim', !!focus && !focus.has(n.id));
+    g.classList.toggle('active', !!focus && focus.has(n.id));
+  });
+  document.querySelectorAll('.edge').forEach(e => {
+    const a = nodes.find(n=>n.id===e.dataset.from), b = nodes.find(n=>n.id===e.dataset.to);
+    let show = vis.has(a.id) && vis.has(b.id) && a.level <= level && b.level <= level;
+    if(storyEdges) show = show && storyEdges.has(`${a.id}->${b.id}`);
+    const flow = !!focus && show;
+    e.classList.toggle('hidden', !show);
+    e.classList.toggle('dim', !!focus && !flow);
+    e.classList.toggle('flow', show && flow);
+  });
+}
+function selectNode(id) {
+  document.querySelectorAll('.node').forEach(n=>n.classList.toggle('active', n.dataset.id===id));
+  const n = nodes.find(x=>x.id===id);
+  document.getElementById('sideTitle').textContent = n.title;
+  document.getElementById('sideDetail').innerHTML = `<b>${n.sub}</b><br>${explain(id)}`;
+}
+function explain(id) {
+  const text = {
+    ridge:'C est le contrôle mathématique. Il donne une prévision sans réseau de neurones.',
+    h_pred:'La prédiction HERALD ajoute au Ridge un résidu appris par le modèle.',
+    dyn:'Le graphe dynamique change par année et combine attention, mobilité et géographie.',
+    intel:'La couche v0 expose les sorties sous forme de scores et alertes; ce n est pas une IA supplémentaire.'
+  };
+  return text[id] || 'Cliquez sur les vues ou augmentez la granularité pour voir les composants liés.';
+}
+function togglePlay() {
+  const btn = document.getElementById('play');
+  if(timer) { clearInterval(timer); timer=null; btn.textContent='Lecture'; return; }
+  setMode('story'); btn.textContent='Pause';
+  timer = setInterval(()=>setStep((step+1)%story.length), 1300);
+}
+function updateCamera() {
+  document.getElementById('viewport').setAttribute('transform', `translate(${camera.x} ${camera.y}) scale(${camera.z})`);
+}
+function resetCamera() { camera={x:0,y:0,z:1}; updateCamera(); }
+const canvas = document.getElementById('canvas');
+canvas.addEventListener('wheel', e => {
+  e.preventDefault(); const dz = e.deltaY < 0 ? 1.08 : 0.92;
+  camera.z = Math.max(.45, Math.min(2.2, camera.z*dz)); updateCamera();
+});
+canvas.addEventListener('pointerdown', e => { dragging=true; start={x:e.clientX-camera.x,y:e.clientY-camera.y}; canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener('pointermove', e => { if(!dragging) return; camera.x=e.clientX-start.x; camera.y=e.clientY-start.y; updateCamera(); });
+canvas.addEventListener('pointerup', () => { dragging=false; });
+draw(); updateCamera();
+</script>
+</body>
+</html>
