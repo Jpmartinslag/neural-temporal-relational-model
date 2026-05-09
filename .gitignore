@@ -13,6 +13,7 @@
 # ── Ambiente local ─────────────────────────────────────────────────
 .venv/
 .env
+node_modules/
 
 # ── Ferramentas externas clonadas localmente ───────────────────────
 tools/external/
