@@ -1,0 +1,134 @@
+object_type,schema,name,category,description_inferred,source_inferred,priority_for_herald
+TABLE,public,establishment,core_entity,One row per establishment (SIRET). FK to company/address/activity.,SIRENE/INSEE,HIGH
+TABLE,public,company,core_entity,One row per company (SIREN). FK to address.,SIRENE/INSEE,MEDIUM
+TABLE,public,address,geo,Street address with city_id FK and z_val.,SIRENE/INSEE geocoded,HIGH
+TABLE,public,city,geo,City with insee_code (indexed) and department_id/industry_territory_id FK.,COG INSEE,HIGH
+TABLE,public,department,geo,French department with region_id FK.,COG INSEE,LOW
+TABLE,public,region,geo,French region with country_id FK.,COG INSEE,LOW
+TABLE,public,country,geo,Country list.,Internal,LOW
+TABLE,public,industry_territory,geo,Territorial unit (industrie territoire) linked to cities.,Internal/INSEE,MEDIUM
+TABLE,public,industry_territory_dep,geo,Industry territory aggregated at department level.,Internal,LOW
+TABLE,public,epci,geo,EPCI groupings (intercommunal groups).,INSEE COG,LOW
+TABLE,public,epci_city,geo,Many-to-many EPCI ↔ city.,INSEE COG,LOW
+TABLE,public,nomenclature_activity,nomenclature,NAF activity code tree. FK to section/parent_activity.,NAF INSEE rev2,HIGH
+TABLE,public,nomenclature_activity_section,nomenclature,NAF section grouping.,NAF INSEE rev2,LOW
+TABLE,public,nomenclature_activity_product_proximity,nomenclature,Proximity score between NAF activity and HS product.,Harvard Atlas / internal,HIGH
+TABLE,public,nomenclature_activity_semantic_proximity,nomenclature,Semantic embedding proximity between NAF activities.,NLP / internal,MEDIUM
+TABLE,public,nomenclature_link_activity_rome,nomenclature,Crosswalk NAF ↔ ROME job codes.,France Travail / DARES,MEDIUM
+TABLE,public,nomenclature_product,nomenclature,HS4/NC product codes with chapter/section FK and macro_sector.,HS Douanes / NC2020,HIGH
+TABLE,public,nomenclature_product_chapter,nomenclature,HS/NC chapter hierarchy.,HS Douanes,LOW
+TABLE,public,nomenclature_product_section,nomenclature,HS/NC section grouping.,HS Douanes,LOW
+TABLE,public,nomenclature_product_proximity,nomenclature,Product-to-product proximity (product space). semantic_proximity_2 col noted.,Harvard Atlas / internal,HIGH
+TABLE,public,nomenclature_product_relationship,nomenclature,Explicit relationship links between products.,Internal,MEDIUM
+TABLE,public,nomenclature_product_complexity,nomenclature,Economic complexity index per product (ECI/PCI).,Harvard Atlas OEC,HIGH
+TABLE,public,nomenclature_product_resilience,nomenclature,Resilience score per product.,Internal / Harvard,HIGH
+TABLE,public,nomenclature_product_green,nomenclature,Green production score per product.,Internal / EU taxonomy inferred,HIGH
+TABLE,public,nomenclature_product_necessity,nomenclature,Basic necessity ranking per product.,Internal / UN inferred,HIGH
+TABLE,public,nomenclature_product_competitive_advantage,nomenclature,Competitive advantage indicator per product.,Internal / RCA-based,MEDIUM
+TABLE,public,nomenclature_product_semantic_similarity,nomenclature,Semantic embedding similarity between products.,NLP / internal,MEDIUM
+TABLE,public,nomenclature_rome,nomenclature,ROME job codes with professional domain FK.,France Travail (Pôle Emploi),MEDIUM
+TABLE,public,nomenclature_rome_main_domain,nomenclature,ROME main domain (grand domaine).,France Travail,LOW
+TABLE,public,nomenclature_rome_professional_domain,nomenclature,ROME professional domain (domaine professionnel).,France Travail,LOW
+TABLE,public,nomenclature_country,nomenclature,Country codes for trade data.,ISO / Douanes,LOW
+TABLE,public,macro_sector,nomenclature,High-level sector grouping.,Internal / A10-like,MEDIUM
+TABLE,public,macro_secteur_naf,nomenclature,Mapping NAF → macro_secteur.,Internal,MEDIUM
+TABLE,public,product,entity_link,Links establishment to nomenclature_product (declared products).,SIRENE+Douanes inferred,HIGH
+TABLE,public,recommendation,output,Computed recommendations for an establishment (typed).,Internal model output,MEDIUM
+TABLE,public,relation,output,Explicit client/supplier/partner relations (typed).,Internal model output,MEDIUM
+TABLE,public,partner_calc,analysis,Computed partner scores by product proximity per establishment pair.,Internal computation,HIGH
+TABLE,public,partner_calc_iot,analysis,Computed partner scores via IO table per establishment pair.,Internal computation,HIGH
+TABLE,public,ia_establishment_potential_partners,analysis,Final potential partner table per establishment.,Internal (func output),HIGH
+TABLE,public,ia_potential_by_iot,analysis,Potential partners via input-output table.,Internal (func output),HIGH
+TABLE,public,raw_iot_secteur_nace,io_table,Raw input-output matrix at NACE sector level.,Eurostat / INSEE IO table,HIGH
+TABLE,public,iot_production_nace,io_table,IO production flows at NACE level.,Eurostat / INSEE IO table,HIGH
+TABLE,public,iot_consume_nace,io_table,IO consumption flows at NACE level.,Eurostat / INSEE IO table,HIGH
+TABLE,public,nace_proximities,analysis,NACE sector proximity matrix.,Internal / IO-derived,HIGH
+TABLE,public,rank_basic_necessities,ranking,Territorial ranking: basic necessities.,Internal / Harvard-inspired,HIGH
+TABLE,public,rank_productive_resilience,ranking,Territorial ranking: productive resilience.,Internal / Harvard-inspired,HIGH
+TABLE,public,rank_green_production,ranking,Territorial ranking: green production.,Internal / Harvard-inspired,HIGH
+TABLE,public,rank_economic_growth,ranking,Territorial ranking: economic growth.,Internal / Harvard-inspired,HIGH
+TABLE,public,export_by_country,trade,Exports aggregated by country.,Douanes France,MEDIUM
+TABLE,public,biom,analysis,Unknown — possibly biomass/environmental indicator or bio-medical.,Unknown,LOW
+TABLE,public,parity,analysis,Parity indicator (gender/sectoral parity).,Unknown / possibly Eurostat,LOW
+TABLE,public,jobs,jobs,Job/workforce data linked to territories.,ROME/Pôle Emploi/DARES,MEDIUM
+TABLE,public,jobs_link,jobs,Link between job codes (src/dest).,ROME/Pôle Emploi,LOW
+TABLE,public,import_correctif_entreprise,util,Correction table for import data at firm level.,Internal,LOW
+TABLE,public,recup_establishment,util,Recovery/backup of establishment records.,Internal,LOW
+TABLE,public,forgotten_establishment,util,Establishments dropped or excluded.,Internal,LOW
+TABLE,public,util_nomenclature_naf_a10,util,NAF A10 hierarchy lookup.,NAF INSEE rev2,HIGH
+TABLE,public,util_nomenclature_naf_a17,util,NAF A17 hierarchy lookup.,NAF INSEE rev2,MEDIUM
+TABLE,public,util_nomenclature_naf_a21,util,NAF A21 hierarchy lookup.,NAF INSEE rev2,MEDIUM
+TABLE,public,util_nomenclature_naf_a38,util,NAF A38 hierarchy lookup.,NAF INSEE rev2,LOW
+TABLE,public,util_nomenclature_naf_a64,util,NAF A64 hierarchy lookup.,NAF INSEE rev2,LOW
+TABLE,public,util_nomenclature_naf_a88,util,NAF A88 hierarchy lookup.,NAF INSEE rev2,LOW
+TABLE,public,util_nomenclature_naf_a129,util,NAF A129 hierarchy lookup.,NAF INSEE rev2,LOW
+TABLE,public,util_nomenclature_naf_a732,util,NAF A732 (fine grain) with FK to all aggregation levels.,NAF INSEE rev2,LOW
+TABLE,public,util_nomenclature_nc2020_section,util,NC2020 section hierarchy.,Douanes/Eurostat NC,LOW
+TABLE,public,util_nomenclature_nc2020_chapter,util,NC2020 chapter.,Douanes/Eurostat NC,LOW
+TABLE,public,util_nomenclature_nc2020_lvl1,util,NC2020 level 1.,Douanes/Eurostat NC,LOW
+TABLE,public,util_nomenclature_nc2020_lvl2,util,NC2020 level 2.,Douanes/Eurostat NC,LOW
+TABLE,public,util_nomenclature_nc2020_lvl3,util,NC2020 level 3 (finest).,Douanes/Eurostat NC,LOW
+TABLE,public,util_import_export_2018_by_nc2020,trade,Import/export 2018 by NC2020 product.,Douanes France 2018,MEDIUM
+TABLE,public,util_link_a732_cpf6,crosswalk,Crosswalk NAF A732 → CPF6.,INSEE crosswalk,LOW
+TABLE,public,util_link_nc2020_cpf6,crosswalk,Crosswalk NC2020 → CPF6.,INSEE crosswalk,LOW
+TABLE,public,util_link_hs4_cpf4,crosswalk,Crosswalk HS4 → CPF4.,Douanes/INSEE crosswalk,LOW
+TABLE,public,util_convert_hs2017_hs1992,crosswalk,Conversion HS2017 ↔ HS1992.,UN/WTO HS revision table,LOW
+TABLE,public,util_import_region_2019,trade,Imports by French region 2019.,Douanes France 2019,MEDIUM
+TABLE,public,util_import_2019_nc8_a732,trade,Imports 2019 at NC8 product × NAF A732 sector.,Douanes France 2019,MEDIUM
+TABLE,public,util_export_import,trade,Aggregated export/import by territory.,Douanes France,MEDIUM
+TABLE,public,util_export_import_dep,trade,Export/import by French department.,Douanes France,MEDIUM
+TABLE,public,util_histo_establishment,history,Historical count of establishments by period.,SIRENE/INSEE historical,HIGH
+TABLE,public,util_histo_establishment_taille,history,Historical establishment size class distribution.,SIRENE/INSEE historical,HIGH
+TABLE,public,util_mondial_exports_by_hs4,trade_world,World exports by HS4 product (all countries).,UN COMTRADE / BACI,HIGH
+TABLE,public,util_mondial_exports_per_country,trade_world,Total world exports per country.,UN COMTRADE / BACI,LOW
+TABLE,public,util_mondial_imports_per_country,trade_world,Total world imports per country.,UN COMTRADE / BACI,LOW
+TABLE,public,util_mondial_exports_per_hs4_2019,trade_world,World exports per HS4 2019.,UN COMTRADE / BACI 2019,HIGH
+TABLE,public,util_mondial_exports_per_hs4_and_country_2019,trade_world,World exports per HS4 × country 2019.,UN COMTRADE / BACI 2019,HIGH
+TABLE,public,util_mondial_imports_per_hs4_and_country_2019,trade_world,World imports per HS4 × country 2019.,UN COMTRADE / BACI 2019,HIGH
+TABLE,public,util_mondial_import_export_2019,trade_world,Combined world import/export 2019.,UN COMTRADE / BACI 2019,MEDIUM
+TABLE,public,util_region_2019_import_export,trade,French region import/export 2019.,Douanes France 2019,MEDIUM
+TABLE,public,util_region_2019_exports_per_country,trade,French region exports per destination country 2019.,Douanes France 2019,LOW
+TABLE,public,util_region_2019_imports_per_country,trade,French region imports per origin country 2019.,Douanes France 2019,LOW
+TABLE,public,util_region_2019_exports_per_dep,trade,French exports per department 2019.,Douanes France 2019,MEDIUM
+TABLE,public,util_region_2019_imports_per_dep,trade,French imports per department 2019.,Douanes France 2019,MEDIUM
+TABLE,public,util_region_2019_exports_per_dep_and_country,trade,French exports per dep × country 2019.,Douanes France 2019,LOW
+TABLE,public,util_region_2019_imports_per_dep_and_country,trade,French imports per dep × country 2019.,Douanes France 2019,LOW
+TABLE,public,util_total_exports_by_french_department_2019,trade,Total exports by French department 2019.,Douanes France 2019,MEDIUM
+TABLE,public,util_efficiency_and_redundancy_per_flows_2019,analysis,Network efficiency & redundancy metrics per trade flow 2019.,Internal / network analysis,LOW
+TABLE,public,util_efficiency_and_redundancy_per_flows_2019_log,analysis,Log-transformed variant.,Internal,LOW
+TABLE,public,util_efficiency_and_redundancy_per_flows_2019_log2,analysis,Log2-transformed variant.,Internal,LOW
+TABLE,public,util_efficiency_and_redundancy_per_flows_2019_log10,analysis,Log10-transformed variant.,Internal,LOW
+TABLE,public,app_config,system,Application configuration key-value store.,Internal,NONE
+VIEW,public,vw_nomenclature_product_harvard,view,Harvard product nomenclature view (joins product + complexity + proximity).,Internal join,HIGH
+VIEW,public,vw_convert_hs2017_hs1992,view,HS2017↔HS1992 conversion view.,Crosswalk,LOW
+VIEW,public,vw_world_coef,view,World-level coefficient view (used for RCA denominator).,UN COMTRADE,HIGH
+VIEW,public,vw_proximity_123,view,Combined proximity view (product levels 1+2+3).,Internal,HIGH
+MATVIEW,public,vw_export_harvard_dep_hs4,matview,Export matrix: French department × HS4 (Harvard method).,Douanes France,HIGH
+MATVIEW,public,vw_export_harvard_reg_hs4,matview,Export matrix: French region × HS4.,Douanes France,MEDIUM
+MATVIEW,public,vw_export_harvard_it_hs4,matview,Export matrix: industry_territory × HS4.,Douanes France,HIGH
+MATVIEW,public,vw_import_harvard_dep_hs4,matview,Import matrix: French department × HS4.,Douanes France,MEDIUM
+MATVIEW,public,vw_import_harvard_it_hs4,matview,Import matrix: industry_territory × HS4.,Douanes France,MEDIUM
+MATVIEW,public,vw_import_harvard_reg_hs4,matview,Import matrix: French region × HS4.,Douanes France,LOW
+MATVIEW,public,vw_rca_by_dep,matview,RCA (Balassa) by French department × product.,Internal from Douanes,HIGH
+MATVIEW,public,vw_rca_by_reg,matview,RCA by French region × product.,Internal from Douanes,MEDIUM
+MATVIEW,public,vw_rca_by_it,matview,RCA by industry_territory × product.,Internal from Douanes,HIGH
+MATVIEW,public,vw_resilience_reg,matview,Productive resilience by region.,Internal,HIGH
+MATVIEW,public,vw_resilience_it,matview,Productive resilience by industry_territory.,Internal,HIGH
+MATVIEW,public,vw_hs4_by_it,matview,HS4 product presence by industry_territory.,Internal,HIGH
+MATVIEW,public,vw_hs4_by_dep,matview,HS4 product presence by department.,Internal,MEDIUM
+MATVIEW,public,vw_proximity_importation,matview,Proximity weighted by import flows.,Internal,MEDIUM
+MATVIEW,public,vw_proximity_importation_dep,matview,Proximity weighted by import flows at department level.,Internal,LOW
+MATVIEW,public,vw_naf_proximity,matview,NAF activity proximity matrix (core of partner recommendation).,Internal,HIGH
+MATVIEW,public,vw_establishment_for_partener,matview,Filtered establishments eligible for partnership computation.,Internal,HIGH
+MATVIEW,public,vw_npp_same_meta_code,matview,Product proximity pairs sharing same meta code.,Internal,MEDIUM
+MATVIEW,public,vw_siren,matview,Consolidated SIREN view for active companies.,SIRENE,HIGH
+FUNCTION,public,func_list_partner(integer),function,Returns ranked partner list for establishment_id using product space proximity.,Internal,HIGH
+FUNCTION,public,func_list_partner_iot(integer),function,Returns partner list for establishment_id using input-output linkages.,Internal,HIGH
+FUNCTION,public,func_list_partner_alt(integer),function,Alternative partner scoring function (possibly experimental variant).,Internal,MEDIUM
+PROCEDURE,public,create_ia_establishment_potential_partners(integer),procedure,Populates ia_establishment_potential_partners for a given establishment.,Internal,HIGH
+PROCEDURE,public,update_establishment(),procedure,Updates establishment records (re-geocode or re-enrich).,Internal,LOW
+PROCEDURE,public,process_product_faker(),procedure,Generates synthetic product data (for testing/imputation).,Internal test,NONE
+PROCEDURE,public,process_product_faker(double precision),procedure,Parameterized version of product faker.,Internal test,NONE
+PROCEDURE,public,drop_any_type_of_view_if_exists(text),procedure,Utility: safe DROP VIEW/MATVIEW by name.,Internal utility,NONE
+TYPE,public,recommendation_type,type,Enum type for recommendation categories.,Internal,MEDIUM
+TYPE,public,relation_type,type,Enum type for relation categories (client/supplier/partner).,Internal,HIGH
