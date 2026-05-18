@@ -29,6 +29,36 @@ Panels stricts et stress tests:
 - `data/processed/strict_exante_20260506/`
 - `data/processed/leak_stress_20260507/`
 
+Panels expérimentaux Phase 2H:
+
+- `data/processed/dynamic_stgnn_feature_panel_phase2h_macro_v1.csv`
+- `data/processed/dynamic_stgnn_feature_panel_phase2h_macro_permuted_v1.csv`
+- `data/processed/phase2h_macro_annual_features_v1.csv`
+
+Ces panels ont servi à tester les signaux macro INSEE/Banque de France. Ils sont documentés et
+réutilisables, mais ne remplacent pas le panel canonique: la Phase 2H ne retient pas les macro-features
+comme entrées principales du modèle actuel.
+
+Couche Atlas/IAT statique:
+
+- `data/interim/atlas_iat/atlas_iat_ze2020_static_features_v0.csv`
+- `data/interim/atlas_iat/atlas_iat_ze2020_static_features_v1.csv`
+- `data/interim/atlas_iat/static_feature_use_policy.csv`
+
+La couche v1 couvre 306 zones d'emploi et 25 colonnes, sans valeurs nulles. Elle est fermée comme
+contexte statique ZE2020 pour overlay post-modèle. Elle ne remplace pas les entrées actuelles de
+training HERALD.
+
+## Entrées retenues après Phase 2I
+
+Le candidat propre actuel utilise un noyau annuel SIDE minimal:
+
+- `side_lag_1`;
+- `growth_1y`.
+
+Les features SIDE longues (`side_lag_2`, `side_lag_3`, `growth_2y`) restent dans le panel canonique
+pour ablations et audit, mais elles ne sont pas retenues dans le candidat `lag1_growth1y`.
+
 ## Règle méthodologique
 
 Pour une prévision opérationnelle, une variable `t-1` ne suffit pas: elle doit aussi être publiée avant
