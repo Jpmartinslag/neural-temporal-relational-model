@@ -1,7 +1,7 @@
 # Atlas IAT → HERALD Integration — Experiment Plan
 
 **Date:** 2026-05-18  
-**Status:** Phase 2 — Updated with verified coverage and concrete feature formulas  
+**Status:** Phase 3 — Staged integration protocol with annual reconstruction standby  
 **No training runs here.** This document plans; HERALD Frente A trains.
 
 ---
@@ -259,7 +259,85 @@ For any feature that enters Exp 6 minimum combination:
 
 ---
 
-## 8. Product Vision
+## 8. Staged Integration Protocol
+
+Integration follows four stages. Each stage gates the next. No training runs until Stage A validates the post-model layer and Stage B shows zero WMAPE degradation.
+
+### Stage A — Post-model only (no training, no WMAPE impact)
+
+**Objective:** Verify that Atlas/IAT features are coherent with HERALD output before any training test.
+
+**Features used (post-model overlay only):**
+- `recommendation_density_postmodel` (39/306 ZEs — partial indicator)
+- `avg_pci_naf_weighted` (as interpretation context)
+- `avg_maslow_naf_weighted` (as narrative layer)
+- `avg_green_naf_weighted` (post-model only until source confirmed)
+
+**Validation criteria:**
+- Qualitative: do high predicted-growth ZEs align with high Atlas complexity/partnership indicators?
+- No WMAPE change — this is a dashboard exercise only
+- Document 3–5 case studies: ZE with high predicted growth × Atlas layer story
+
+**Prerequisite:** HERALD SIDE5 baseline locked (Frente A)
+
+---
+
+### Stage B — Atlas static structural minimum (first training test)
+
+**Objective:** Test whether static structural features add signal without noise.
+
+**Features to test (from `atlas_iat_ze2020_static_features_v1.csv` — static, safe):**
+```python
+features_stage_B = [
+    'avg_pci_naf_weighted',       # Harvard PCI (static 2019 — safe all years)
+    'nace_io_mean',               # IO linkage (static TES 2019 — safe all years)
+    'mean_naf_proximity',         # NAF proximity (static matrix — safe as structural)
+]
+# Note: all three are static — same value for every HERALD year
+# Leakage risk: LOW (structural indicators, no year-specific information)
+```
+
+**Pass criterion:**
+- WMAPE does not increase by > 0.3pp vs Exp 0 baseline
+- `wmape_2021` does not worsen by > 0.5pp
+- Seed std does not increase by > 0.5pp
+- If any criterion fails: reject entire Stage B block → go to Stage C
+
+---
+
+### Stage C — Atlas annual reconstructed (dynamic training test)
+
+**Prerequisite:** Annual SIRENE reconstruction complete for 2011–2024.
+
+**Features to test (from annual reconstruction pipeline):**
+```python
+features_stage_C = [
+    'naf4_shannon_diversity_t1',  # SIRENE Dec(Y-1) → ZE2020
+    'naf4_hhi_t1',                # SIRENE Dec(Y-1) → ZE2020
+    'n_active_estab_t1',          # SIRENE Dec(Y-1) → ZE2020
+    # optional: 'active_share_t1'
+]
+# Each feature subscript _t1 = computed from year Y-1 SIRENE stock
+# Leakage risk: MEDIUM — must verify SIRENE stock Dec(Y-1) is truly available before year Y
+```
+
+**Pass criterion:** Same as Stage B. Additionally:
+- Verify no correlation > 0.9 with `side_lag_1` (risk of double-counting SIDE signal)
+- If highly correlated: Stage C features are redundant → skip
+
+---
+
+### Stage D — Minimum robust combination
+
+After Stage B and C evaluated independently:
+- Select only blocks that passed their respective criteria
+- Combine and test together
+- Run ablations: remove one block at a time, measure WMAPE delta
+- Final feature set = minimum set where no individual removal degrades WMAPE by > 0.1pp
+
+---
+
+## 10. Product Vision
 
 The final integrated product:
 
