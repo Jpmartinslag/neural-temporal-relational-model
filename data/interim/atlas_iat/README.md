@@ -11,16 +11,46 @@ All files here are derived from the Atlas/IAT dump: `/home/jpdark/Downloads/proj
 
 ## Files
 
+### Current Phase — Static layer (closed, ready for post-model use)
+
 | File | Status | Description |
 |---|---|---|
-| `table_inventory.csv` | COMPLETE | All tables, views, functions from dump TOC. Category, source, priority. |
-| `source_mapping_draft.csv` | COMPLETE (draft) | Open source identification per data block. Confidence level: confirmed / inferred / unknown. |
-| `ze2020_feature_plan.csv` | COMPLETE | 17 candidate features, use classification A/B/C, leakage risk, aggregation method, dynamic recipe. |
-| `dynamic_feature_plan_by_year.csv` | COMPLETE | Feature × year matrix (2021–2027). Status, update recipe, lag per year. |
+| `atlas_iat_ze2020_static_features_v0.csv` | COMPLETE | **Basic layer:** counts, workforce, diversity, HHI. 306 rows × 12 cols. |
+| `atlas_iat_ze2020_static_features_v1.csv` | **COMPLETE — ACTIVE** | **Full static intelligence layer:** v0 + PCI, resilience, green, Maslow, NAF proximity, IO linkage, recommendation density. 306 rows × 26 cols. Zero nulls. Audited. |
+| `static_feature_use_policy.csv` | COMPLETE | Use policy per column: safe_static_context / post_model_only / blocked / needs_validation. |
+
+### Reference and planning
+
+| File | Status | Description |
+|---|---|---|
+| `table_inventory.csv` | COMPLETE | All 90+ tables, views, functions from dump TOC. |
+| `source_mapping_draft.csv` | COMPLETE | Open source identification per data block. |
+| `source_reproducibility_matrix.csv` | COMPLETE | 18 features × 23 cols: source, API, lag, year-by-year status. |
 | `atlas_iat_feature_hypotheses.csv` | COMPLETE | 16 hypotheses H1–H8 with formula, source, leakage, acceptance criterion. |
-| `atlas_iat_ze2020_static_features_v0.csv` | COMPLETE | Basic structural layer: counts, workforce, diversity, HHI. 306 rows. |
-| `atlas_iat_ze2020_static_features_v1.csv` | COMPLETE | Full intelligence layer: v0 + PCI, resilience, green, Maslow, NAF proximity, IO linkage, recommendation density. 306 rows. |
-| `atlas_iat_ze2020_dynamic_features_v0.csv` | NOT YET CREATED | Requires annual SIRENE/Douanes source data reconstruction (2012–2024). |
+| `ze2020_feature_plan.csv` | COMPLETE | 17 candidate features, use classification, leakage risk. |
+
+### Future phase — Annual dynamic reconstruction (NOT STARTED)
+
+| File | Status | Description |
+|---|---|---|
+| `annual_source_download_plan.csv` | PLANNED | 9 sources with URLs, lag, format — ready when dynamic phase starts. |
+| `annual_feature_reconstruction_plan.csv` | PLANNED | Feature × 2021–2027 reconstruction recipes — ready when dynamic phase starts. |
+| `dynamic_feature_plan_by_year.csv` | PLANNED | Full year × feature availability matrix. |
+| `atlas_iat_ze2020_dynamic_features_v0.csv` | **NOT STARTED** | Requires SIRENE Dec 2011–2024 + Douanes annual data. **Do not create until Stage A (post-model overlay) is validated.** |
+
+---
+
+## Phase Status
+
+```
+Phase 1 (DONE): DB restored, TOC audited, ZE2020 coverage confirmed (98.1%, 306/306 zones)
+Phase 2 (DONE): static_features_v0 + v1 generated, audited, use policy defined
+Phase 3 (CURRENT): Post-model/dashboard overlay — use v1 as interpretation layer for HERALD output
+Phase 4 (FUTURE): Annual dynamic reconstruction — SIRENE Dec 2011-2024, Douanes, CLAP
+Phase 5 (FUTURE): Controlled HERALD training experiments with Atlas features
+```
+
+**Current priority:** Close static layer. Use v1 as Stage A post-model overlay. Do not start Phase 4 until Stage A validation is complete.
 
 ---
 
