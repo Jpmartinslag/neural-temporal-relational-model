@@ -94,6 +94,27 @@ Unmapped 1.9% = overseas territories (971XX–976XX), correctly outside HERALD m
 
 ---
 
+## Source Reproducibility Summary
+
+See full audit: `reports/ATLAS_IAT_SOURCE_REPRODUCIBILITY_AUDIT.md`  
+See machine-readable matrix: `source_reproducibility_matrix.csv`
+
+| Feature block | Source status | Reconstructible annually | Training safe |
+|---|---|---|---|
+| Establishment counts (n_total, n_active, active_share) | confirmed — INSEE SIRENE | YES (T-1 lag) | YES |
+| Workforce (total, avg per estab) | confirmed — SIRENE / CLAP | PARTIAL (31% coverage in IAT; full coverage via CLAP T-2) | YES |
+| NAF diversity + HHI | confirmed — SIRENE + NAF Rev2 | YES (T-1 lag) | YES |
+| PCI (`avg_pci_naf_weighted`) | inferred — Harvard Atlas OEC | YES (static, update on new release) | YES |
+| Resilience (`avg_resilience`) | proprietary — formula undocumented | NO — static use only | static context |
+| Green score (`avg_green`) | **unknown** | NO — source unconfirmed | post-model only |
+| Maslow coverage | proprietary — internal mapping | NO — static use only | static context |
+| NAF proximity (product-space) | inferred — Harvard product space adapted | PARTIAL — can recompute with new data | static context |
+| Semantic proximity | inferred — NLP embeddings (model unknown) | PARTIAL — can re-embed with open model | static context |
+| IO linkage (NACE) | inferred — INSEE TES / Eurostat SUTS | YES (new TES vintage) | YES |
+| Recommendation density | proprietary — engine ran partially | NO — post-model only | post-model only |
+
+---
+
 ## Isolation Guarantee
 
 All files here are:
