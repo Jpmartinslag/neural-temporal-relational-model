@@ -1,246 +1,294 @@
 # Atlas IAT → HERALD Integration — Experiment Plan
 
 **Date:** 2026-05-18  
-**Status:** Planning only — no training runs here  
-**Purpose:** Define the experimental roadmap for integrating Atlas/IAT-derived features into HERALD, starting from the current SIDE5-only baseline.
+**Status:** Phase 2 — Updated with verified coverage and concrete feature formulas  
+**No training runs here.** This document plans; HERALD Frente A trains.
 
 ---
 
-## 0. Starting Point
+## 0. Methodological Framing
 
-**Frente A (active):** HERALD with a single dataset (SIDE), 5 features:
-- `side_lag_1`, `side_lag_2`, `side_lag_3`, `growth_1y`, `growth_2y`
-- Aggregation: ZE2020 × A10 × year
-- No manual flags, no external data
-- Goal: clean baseline, minimal noise, maximum robustness
+### What Atlas/IAT is and is not
 
-**Frente B (this plan):** Atlas/IAT audit and preparation.  
-Integration experiments are planned here but **will not be run until Frente A baseline is stable and validated.**
+Atlas/IAT is a **static economic intelligence system** built around:
+- 1.55M French establishments (SIRENE circa 2020–2022)
+- NAF/NACE activity codes → IO linkages → product space proximity
+- Harvard Atlas methodology: RCA, PCI, product space density
+- Maslow-based product necessity rankings
+- Network efficiency/redundancy as productive resilience
 
----
-
-## 1. Methodological Separation
-
-| System | Role | Unit | Time |
-|---|---|---|---|
-| HERALD | Territorial forecast | ZE2020 × A10 × year | Dynamic (2012–2025) |
-| Atlas/IAT | Economic intelligence | Establishment × sector × product | Static (snapshot 2022) |
-| Atlas/IAT re-aggregated | Derived features | ZE2020 × A10 × year (ex-ante) | Dynamic (where updatable) |
+It was **not built in ZE2020**. It operates at establishment / commune / department / region level. The ZE2020 aggregation is a methodological adaptation for HERALD compatibility.
 
 **Correct language:**
 - "Atlas/IAT-derived features re-aggregated by ZE2020"
 - "HERALD uses a territorial layer derived from Atlas/IAT"
-- NOT: "Atlas/IAT uses ZE2020" — the original system does not
+- **Not:** "Atlas/IAT uses ZE2020" or "Atlas/IAT predicts ZE2020 creation"
+
+### What HERALD is and is not
+
+HERALD is a **temporal territorial forecast model**. It predicts establishment creation (SIDE target) per ZE2020 × A10 × year. Currently: 5 features derived from SIDE only. Goal is minimal noise, maximum robustness.
+
+Atlas/IAT enriches the **interpretation** of HERALD output and **may** add signal to HERALD training — but only if evidence supports it and leakage is controlled.
 
 ---
 
-## 2. Prerequisites Before Any Integration Run
+## 1. Controlled Growth Strategy
 
-Before running any experiment from Phase 3 onward:
+HERALD is in a noise-reduction phase. Any feature addition must follow this protocol:
 
-1. **DB restored** (`iat_restore` database operational)
-2. **Coverage audit completed:**
-   - % establishments with valid `insee_code`
-   - % communes covered by `commune_to_ze2020_2026.csv`
-   - ZE2020 coverage density map produced
-3. **Temporal validity confirmed** for each candidate feature
-4. **Baseline HERALD SIDE5 stable:**
-   - WMAPE not sensitive to seed variance
-   - 2021 instability understood and documented
-   - Ablation battery complete
+```
+Step 1: Document hypothesis
+Step 2: Verify source vintage and leakage risk
+Step 3: Post-model test (does it correlate with HERALD errors?)
+Step 4: Small controlled training experiment
+Step 5: Accept / reject based on criteria
+Step 6: Dynamic reconstruction for full temporal panel
+```
 
----
-
-## 3. Experiment Sequence
-
-### Exp 0 — HERALD SIDE5 baseline (Frente A)
-**Already running / in progress.**
-
-Metrics to lock in before proceeding:
-- Overall WMAPE (mean)
-- WMAPE 2021 (instability year)
-- WMAPE 2025 (most recent)
-- WMAPE by A10 sector
-- Seed variance (std over ≥5 seeds)
-- Large ZE vs. small ZE performance gap
+No "dump all features and see what happens." Each block is evaluated independently. Ablation is mandatory before any combination.
 
 ---
 
-### Exp 1 — HERALD + Atlas structural (static, low leakage)
+## 2. ZE2020 Coverage (confirmed)
 
-**Features to add (Category A, static):**
-- `avg_product_complexity` (PCI, Harvard 2018 vintage)
-- `nace_io_linkage_strength` (IO coefficients, static)
-- `product_space_density` (proximity × RCA_t2)
-
-**Leakage check:** PCI and IO are structural/static. Use T-2 RCA from Douanes. Safe for all HERALD years.
-
-**Hypothesis:** Structural complexity and IO linkages add low-noise information about sector productive capacity.
-
-**Pass criterion:** WMAPE does not increase by more than 0.5pp versus Exp 0. No new 2021 instability introduced.
+From the verified database:
+- **306 / 306 ZE2020 have Atlas/IAT establishment data (100% coverage)**
+- 98.1% of IAT establishments are mappable to ZE2020
+- Unmapped 1.9% = overseas territories (971XX–976XX) correctly excluded from HERALD panel
+- Arrondissement fix applied: Paris (751XX→75056), Lyon (6938X→69123), Marseille (1320X→13055)
 
 ---
 
-### Exp 2 — HERALD + Establishment stock (dynamic, T-1)
+## 3. Feature Classification Summary
 
-**Features to add (Category A, dynamic):**
-- `n_active_establishments_iat` (from SIRENE T-1)
-- `sector_diversity_naf` (Shannon entropy, from SIRENE T-1)
-- `sector_concentration_hhi` (from SIRENE T-1)
-- `workforce_per_estab` (from SIRENE T-1, if available)
-
-**Leakage check:** Use SIRENE stock from year T-1. Reconstruct from historical SIRENE snapshots for backtest 2012–2023.
-
-**Hypothesis:** Absolute establishment stock and diversity complement SIDE creation data.  
-**Risk:** High correlation with SIDE target → potential redundancy or noise amplification.
-
-**Pass criterion:** WMAPE improvement ≥ 0.3pp versus Exp 1, OR no degradation + interpretability gain documented.
-
----
-
-### Exp 3 — HERALD + Trade features (dynamic, T-2)
-
-**Features to add (Category A, dynamic):**
-- `export_rca_strength` (RCA > 1 product count, from Douanes T-2)
-- `import_dependency_score` (import/export ratio, from Douanes T-2)
-- `product_space_density` (updated with T-2 RCA, replacing static version)
-
-**Leakage check:** T-2 Douanes data. For year Y prediction: use Y-2 trade data.
-
-**Note:** ZE2020-native RCA requires department → ZE2020 aggregation (population-weighted or establishment-weighted).
-
-**Hypothesis:** Export capacity and import dependency signal territorial economic openness and structural resilience.
+| Feature | Source | Train? | Dynamic? | Leakage |
+|---|---|---|---|---|
+| `naf4_shannon_diversity` | SIRENE stock | A — safe | Yes (T-1) | MEDIUM |
+| `naf4_hhi` | SIRENE stock | A — safe | Yes (T-1) | MEDIUM |
+| `avg_pci` | Harvard Atlas | A — safe | No (static) | LOW |
+| `nace_io_strength` | INSEE TES | A — safe | No (static) | LOW |
+| `mean_naf_proximity` | vw_naf_proximity | B — context | No (static matrix) | LOW |
+| `avg_resilience` | rank_productive_resilience | B — context | No (static) | LOW |
+| `export_rca_strength` | Douanes France | A — safe | Yes (T-2) | MEDIUM |
+| `avg_green_score` | rank_green_production | C — post-model | Source unconfirmed | MEDIUM |
+| `maslow_coverage` | rank_basic_necessities | C — post-model | No (static) | LOW |
+| `recommendation_density` | recommendation table | C — post-model | No (2022 snapshot) | HIGH |
+| `supplier_potential_score` | ia_potential_by_iot | C — post-model | No (2022 snapshot) | HIGH |
+| `workforce_density` | SIRENE workforce_count | A — safe | Yes (T-2) | MEDIUM |
+| `pci_std_within_ze` | Harvard Atlas | B — context | No (static) | LOW |
 
 ---
 
-### Exp 4 — HERALD + NAF proximity (structural)
+## 4. Experiment Sequence
 
-**Features to add (Category B):**
-- `mean_naf_proximity` within ZE2020 (how complementary is local sector mix)
-- `sector_green_potential` (if green scores confirmed)
+### Exp 0 — HERALD SIDE5 baseline (Frente A — running)
 
-**Leakage check:** NAF proximity matrix is static structural. Sector presence uses T-1 SIRENE.
-
-**Hypothesis:** Complementary sector mix → more resilient economic zone → smoother establishment creation growth.
-
----
-
-### Exp 5 — HERALD + IO-based features (static)
-
-**Features to add:**
-- `nace_io_linkage_strength` (sum of IO coefficients for sector pairs co-present in ZE2020)
-- Supplier chain exposure indicator
-
-**Leakage check:** IO coefficients are static. Sector presence from T-1 SIRENE.
-
-**Hypothesis:** Zones with strong input-output linkages (local supply chains) show different creation dynamics than purely export-oriented zones.
+Lock in before Exp 1:
+- `wmape_overall`, `wmape_2021`, `wmape_2025`
+- `wmape_by_a10` for all 10 sectors
+- `seed_std` over ≥5 seeds
+- Large ZE vs. small ZE WMAPE split
 
 ---
 
-### Exp 6 — HERALD + Rankings (structural)
+### Exp 1 — Static structural (PCI + IO, no temporal risk)
 
-**Features to add (Category B/C):**
-- `avg_product_resilience` (static resilience scores)
-- `basic_need_coverage` (static necessity scores)
+**Features:** `avg_pci`, `nace_io_strength`  
+**Why these first:** Both are static structural indicators with no leakage risk for any HERALD year. If they add nothing, stop here.
 
-**Note:** Green and basic need scores are not yet confirmed sources. Use only after source validation.
+**Configuration:**
+```python
+features = ['side_lag_1', 'side_lag_2', 'side_lag_3', 'growth_1y', 'growth_2y',
+            'avg_pci',           # Harvard PCI per ZE2020 (static)
+            'nace_io_strength']  # IO coefficient sum (static)
+```
 
-**Hypothesis:** Zones producing basic necessities or resilient products show more stable establishment creation patterns.
+**Pass criterion:**
+- WMAPE does not increase by > 0.3pp
+- Seed std does not increase
+- 2021 WMAPE does not worsen
 
----
-
-### Exp 7 — Minimum robust combination
-
-After Exps 1–6 are evaluated, identify the **minimum combination of Atlas features that:**
-1. Does not worsen WMAPE versus Exp 0
-2. Improves at least one of: WMAPE 2021, large ZE performance, interpretability
-3. Satisfies all leakage rules
-4. Is annualisable from open sources
-
-Expected candidate set: PCI + IO coefficients + sector diversity (T-1) + export RCA (T-2).
+**If pass:** proceed to Exp 2.  
+**If fail:** document and skip to Exp 3 (separate test).
 
 ---
 
-### Exp 8 — Ablations by block
+### Exp 2 — Diversity + concentration (T-1 SIRENE)
 
-For each feature block that enters the minimum combination:
-- Remove it and measure WMAPE delta
-- Identify true signal contributors vs. redundant features
-- Document which blocks are noise vs. signal
+**Features:** `naf4_shannon_diversity`, `naf4_hhi`  
+**Prerequisite:** Annual SIRENE stock files loaded for 2011–2024 (covers T-1 for 2012–2025 HERALD range)
+
+**Leakage control:** For each HERALD year Y, use SIRENE stock as of December Y-1.
+
+**Configuration:**
+```python
+features = baseline + ['naf4_shannon_diversity_t1', 'naf4_hhi_t1']
+```
+
+**Pass criterion:**
+- Same as Exp 1
+- If diversity and HHI are highly correlated with each other (r > 0.95), keep only one
 
 ---
 
-## 4. Metrics
+### Exp 3 — NAF proximity (static matrix, dynamic sector presence)
 
-All experiments evaluated on:
+**Feature:** `mean_naf_proximity_within_ze`  
+**Computation:**
+```sql
+-- For year Y: use SIRENE stock T-1 to identify co-present NAF codes in ZE2020
+-- Then compute mean proximity from static vw_naf_proximity matrix
+SELECT ze2020,
+  AVG(p.proximity) AS mean_naf_proximity,
+  AVG(p.semantic_proximity) AS mean_semantic_proximity
+FROM ze2020_naf_presence_t1 n1
+JOIN ze2020_naf_presence_t1 n2 ON n1.ze2020 = n2.ze2020 AND n1.naf_id < n2.naf_id
+JOIN vw_naf_proximity p ON p.naf_id = n1.naf_id AND p.naf_id_dest = n2.naf_id
+GROUP BY ze2020;
+```
+
+**Pass criterion:** Same as Exp 1 + 2.
+
+---
+
+### Exp 4 — Product complexity + resilience
+
+**Features:** `avg_pci` (already in Exp 1), `avg_resilience_score`
+
+**Note:** `avg_resilience_score` is computed from `rank_productive_resilience` (network efficiency × redundancy per HS4). Methodology confirmed from schema: `resilience = efficiency × redundancy`, `resilience_norm ∈ [0,1]`.
+
+**Pass criterion:** Improvement in 2021 WMAPE (COVID shock year, where resilient product zones may have shown different dynamics).
+
+---
+
+### Exp 5 — Export RCA (T-2 Douanes)
+
+**Feature:** `export_rca_strength` = count of HS4 products with RCA > 1 at ZE2020 level, aggregated from department-level Douanes data.
+
+**Temporal availability:**
+- For HERALD year 2021: use Douanes 2019 (T-2)
+- For HERALD year 2022: use Douanes 2020 (T-2)
+- For HERALD year 2025: use Douanes 2023 (T-2)
+
+**Pass criterion:** WMAPE improvement in ZEs with strong export sectors (A10-C manufacturing, A10-D energy).
+
+---
+
+### Exp 6 — Minimum robust combination
+
+After Exp 1–5 evaluated, identify the minimum combination that:
+1. Does not worsen WMAPE by > 0.2pp vs. Exp 0
+2. Improves at least one metric meaningfully
+3. Passes all leakage checks
+4. Is annualisable from open sources with documented recipes
+
+Expected candidate: `avg_pci` + `naf4_shannon_diversity_t1` + `nace_io_strength`
+
+---
+
+### Exp 7 — Post-model overlay (no training impact)
+
+After any of Exp 1–6 completes, build post-model overlay:
+
+**Input:** HERALD forecast for year Y per ZE2020 × A10  
+**Enrichment from Atlas/IAT:**
+```
+Zone accelerating (predicted +10%+):
+  → Top 3 NAF sectors by partnership potential
+  → Maslow coverage: basic needs vs. luxury products
+  → Green score: transition readiness
+  → Supplier potential: which neighboring ZEs could supply inputs
+
+Zone decelerating (predicted -5%):
+  → HHI (is this a concentrated zone at risk?)
+  → IO linkage: which sectors are most exposed?
+  → PCI: is the product base sophisticated enough to pivot?
+  → Closest ZE2020 with growing complementary sectors
+```
+
+This layer does not modify the WMAPE. It adds economic interpretability.
+
+---
+
+### Exp 8 — Ablations
+
+For any feature that enters Exp 6 minimum combination:
+- Remove one block at a time
+- Measure WMAPE delta
+- If removing a feature does not increase WMAPE by > 0.1pp, it is redundant → remove
+
+---
+
+## 5. Metrics
 
 | Metric | Description |
 |---|---|
-| `wmape_overall` | Weighted Mean Absolute Percentage Error across all ZE2020 × A10 × year |
-| `wmape_2021` | WMAPE restricted to year 2021 (instability probe) |
-| `wmape_2025` | WMAPE restricted to year 2025 (latest year) |
-| `wmape_by_a10` | WMAPE per A10 sector (identify which sectors benefit or suffer) |
-| `seed_std` | Standard deviation of WMAPE over ≥5 random seeds (stability) |
-| `wmape_large_ze` | WMAPE for ZE2020 with > median establishment count |
-| `wmape_small_ze` | WMAPE for ZE2020 with < median establishment count |
-| `n_features` | Total feature count (parsimony tracker) |
+| `wmape_overall` | Weighted MAE / weighted total, all ZE2020 × A10 × year |
+| `wmape_2021` | Same, restricted to 2021 (COVID instability probe) |
+| `wmape_2025` | Same, restricted to 2025 (latest year, out-of-sample) |
+| `wmape_by_a10` | Per A10 sector — identify which sectors benefit or regress |
+| `seed_std` | Std of wmape_overall over ≥5 seeds |
+| `wmape_large_ze` | ZE2020 with n_active_estab > 3748 (above median) |
+| `wmape_small_ze` | ZE2020 with n_active_estab ≤ 3748 (at/below median) |
+| `n_features` | Total feature count (parsimony monitor) |
 
 ---
 
-## 5. Pass/Fail Criteria
+## 6. Pass / Fail Criteria
 
 | Condition | Action |
 |---|---|
-| WMAPE increases by > 0.5pp | Reject feature block, document why |
-| Seed variance increases | Investigate which feature drives instability |
-| 2021 WMAPE worsens | Flag leakage risk, audit feature vintage |
-| Feature corr > 0.9 with SIDE lag_1 | Mark as redundant, drop |
-| WMAPE improves ≥ 0.5pp, stable seeds | Accept feature block |
-| WMAPE improves ≥ 0.3pp, interpretability gains | Accept with documentation |
-| No WMAPE improvement, clear interpretability gain | Accept as recommendation layer only (Category C) |
+| WMAPE increases by > 0.3pp | Reject block |
+| Seed std increases by > 0.5pp | Flag instability, investigate before accepting |
+| 2021 WMAPE worsens by > 0.5pp | Audit vintage — likely leakage |
+| Feature corr > 0.9 with side_lag_1 | Flag as potentially redundant, test ablation |
+| WMAPE improves ≥ 0.3pp, stable seeds | Accept block |
+| No WMAPE improvement but clear interpretation gain | Accept as post-model layer (Cat C) only |
+| Feature fails leakage check | Reject for training, keep as post-model only |
 
 ---
 
-## 6. Product Vision
+## 7. Prohibited Methods
 
-The final product is not just a lower WMAPE number.
-
-**HERALD output (from SIDE5 model):**
-- Zone X: +12% establishment creation expected in sector A10-G (trade)
-- Zone Y: -5% expected in A10-C (industry)
-- Zone Z: uncertain signal, high variance
-
-**Atlas/IAT dynamic layer adds:**
-
-For Zone X (trade expansion predicted):
-> "Current export RCA: 1.3 in HS4-8471 (computers). IO linkage: strong wholesale-logistics chain. Sector diversity: high (Shannon 2.1). Resilience: medium. Recommended: attract logistics firms to serve existing trade cluster. Green opportunity: moderate (2 green products in current basket)."
-
-For Zone Y (industry contraction predicted):
-> "Sector concentration HHI: 0.6 (dominated by manufacture A10-C). Product space density: low (few nearby products). IO exposure: high dependency on national supply chain. Resilience: low. Recommended: support diversification toward A10-M (professional services) or A10-J (ICT)."
-
-**This transforms a territorial forecast into an economic recommendation, without claiming causality.**
+- **No causal claims:** Atlas/IAT does not prove causality. HERALD predicts, Atlas explains.
+- **No manual flags:** No COVID dummy, no rebound dummy, no crisis indicator.
+- **No static snapshot for ≤2021 backtests** without confirmed temporal reconstruction.
+- **No calling nowcast a forecast:** In-sample fit is not a forecast.
+- **No language implying Atlas/IAT "is" ZE2020:** It is re-aggregated for HERALD compatibility.
+- **No combining features without ablation:** Always test blocks independently first.
 
 ---
 
-## 7. Prohibited Language and Methods
+## 8. Product Vision
 
-Throughout all experiments:
+The final integrated product:
 
-- Do NOT call Atlas-derived features "causal variables"
-- Do NOT call HERALD output "confirmed economic policy" — it is a **forecast with uncertainty**
-- Do NOT use 2022 Atlas snapshot as feature for year ≤ 2021 backtests without reconstruction
-- Do NOT use manual crisis/rebound flags
-- Do NOT call nowcast (in-sample fit) a forecast
-- Do NOT claim that Atlas/IAT methodology was designed for ZE2020 — it was not; we adapted it
+```
+HERALD FORECAST 2026 — ZE7625 Toulouse, A10-J (Information/Communication)
+Predicted growth: +14% establishment creation
+Confidence: HIGH (seed std < 0.8pp)
 
----
+ATLAS/IAT INTELLIGENCE LAYER:
+  Productive structure (static):
+    NAF diversity: 4.06 (high — 3rd quartile nationally)
+    HHI: 0.048 (low concentration)
+    Mean NAF proximity: 0.62 (above national mean 0.37)
+    Avg PCI: 1.23 (complex productive base)
+    Resilience score: 0.71 (high)
 
-## 8. Files and Versioning
+  Dynamic context (T-2 lag):
+    Export RCA in A10-J products: 1.4 (above 1 → competitive)
+    SIRENE growth rate 2024: +3.2% establishments in ICT
+    
+  Recommendation (post-model):
+    Top supplier opportunity: ZE8421 Lyon (proximity 0.85, 42km)
+    Green potential: moderate (3 green products in current basket)
+    Maslow coverage: esteem/self-actualization tier (non-basic)
+    
+  Interpretation:
+    Toulouse is a high-complexity, diversified, non-concentrated zone.
+    Predicted A10-J growth aligns with its strong NAF proximity to tech sectors.
+    Recommendation: attract logistics/support services (A10-H) to sustain ICT cluster.
+```
 
-All outputs versioned:
-- `atlas_iat_ze2020_static_features_v0.csv` → first static prototype
-- `atlas_iat_ze2020_dynamic_features_v0.csv` → first dynamic panel
-- Increment to v1, v2 etc. on significant revision
-
-No overwriting of existing files.  
-No push to remote until Frente A is complete and validated.
+This transforms a WMAPE number into an actionable economic recommendation, without claiming causality.
