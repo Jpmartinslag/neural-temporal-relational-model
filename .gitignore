@@ -90,12 +90,15 @@ hpc_results/**/*.out
 hpc_results/**/logs/
 hpc_results/herald_forecast_*/
 hpc_results/herald_leak_stress_*/
+hpc_results/herald_phase2*_smoke_*/
+hpc_results/herald_regime_*/
 hpc_results/herald_semi_v2_final_*/
 hpc_results/herald_semiv2_validation_*/
 hpc_results/herald_showdown_*/
 hpc_results/herald_strict_exante_*/
 hpc_results/project_recomm_herald_v7_*/
 hpc_results/archive/
+hpc_results/phase2h_combined_audit/
 
 # ── Arquivos legados ───────────────────────────────────────────────
 old/

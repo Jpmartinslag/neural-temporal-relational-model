@@ -84,6 +84,12 @@ class HERALDv7Residual(nn.Module):
 
         self.regime_proj_q = nn.Linear(base.REGIME_DIM, attn_dim)
         self.regime_proj_k = nn.Linear(base.REGIME_DIM, attn_dim)
+        self.latent_regime = nn.Sequential(
+            nn.Linear(hidden_dim * 2, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, base.REGIME_DIM),
+            nn.Tanh(),
+        )
         self.proj_Q = nn.Linear(hidden_dim, attn_dim)
         self.proj_K = nn.Linear(hidden_dim, attn_dim)
 
@@ -141,9 +147,14 @@ class HERALDv7Residual(nn.Module):
 
     def forward(self, x_annual_seq, x_quarterly_seq, regime_seq, sec_prior_seq,
                 adj_geo, adj_mob, adj_log_geo, adj_log_mob,
-                variant="full", return_internals=False):
+                variant="full", return_internals=False,
+                smooth_regime_source="explicit",
+                latent_mode="normal"):
         N = self.num_nodes
         device = next(self.parameters()).device
+        learned_graph_variants = {"learned_regime_graph", "learned_regime_both", "learned_regime_both_sector_enhanced"}
+        learned_gate_variants = {"learned_regime_gate", "learned_regime_both", "learned_regime_gate_sector_enhanced", "learned_regime_both_sector_enhanced"}
+        sector_enhanced_variants = {"sector_enhanced", "learned_regime_gate_sector_enhanced", "learned_regime_both_sector_enhanced"}
         h_local = torch.zeros(N, self.hidden_dim, device=device)
         h = torch.zeros(N, self.hidden_dim, device=device)
 
@@ -152,6 +163,9 @@ class HERALDv7Residual(nn.Module):
         fixed_blend = 0.5 * adj_geo + 0.5 * adj_mob
 
         pred_list, sector_list, alpha_list = [], [], []
+        latent_regime_list = []
+        latent_regime_list_grad = []   # differentiable — for H1 latent regularisation loss
+        alpha_balance_list = []        # differentiable — for H4 alpha balance loss
         adj_list, gate_list = [], []
         smooth_term = torch.tensor(0.0, device=device)
         gate_entropy = torch.tensor(0.0, device=device)
@@ -161,6 +175,8 @@ class HERALDv7Residual(nn.Module):
         A_prev = None
         alpha_prev = None
         regime_prev = None
+        latent_prev = None
+        latent_anchor = None
         adj_delta_list = []
         regime_delta_list = []
 
@@ -170,6 +186,23 @@ class HERALDv7Residual(nn.Module):
             ann = F.relu(self.annual_proj(x_ann))
             q_enc = F.relu(self.q_proj(self.quarterly_enc(x_q)))
             e_t = F.relu(self.proj_e(torch.cat([ann, q_enc, h_local], dim=-1)))
+            latent_context = torch.cat([
+                e_t.mean(dim=0),
+                e_t.std(dim=0, unbiased=False),
+            ], dim=-1)
+            latent_regime_t_raw = self.latent_regime(latent_context)
+            if latent_mode == "normal":
+                latent_regime_t = latent_regime_t_raw
+            elif latent_mode == "zero":
+                latent_regime_t = torch.zeros_like(latent_regime_t_raw)
+            elif latent_mode == "frozen_first":
+                if latent_anchor is None:
+                    latent_anchor = latent_regime_t_raw.detach()
+                latent_regime_t = latent_anchor
+            else:
+                raise ValueError(f"Unknown latent_mode={latent_mode!r}")
+            latent_regime_list_grad.append(latent_regime_t)        # keep grad for H1 loss
+            latent_regime_list.append(latent_regime_t.detach())    # detached for internals
             h_local = self.gru_local_cell(e_t, h_local)
 
             if variant == "ridge_only":
@@ -182,14 +215,31 @@ class HERALDv7Residual(nn.Module):
                 A_t = static_adj_m
                 m_t = self.msg_proj(A_t @ e_t)
             else:
-                r_adj = torch.zeros_like(regime_t) if variant == "no_regime_graph" else regime_t
+                if variant in learned_graph_variants:
+                    r_adj = latent_regime_t
+                elif variant == "no_regime_graph":
+                    r_adj = torch.zeros_like(regime_t)
+                else:
+                    r_adj = regime_t
                 A_t = self._dynamic_adj(e_t, prior_logits, r_adj)
                 m_t = self.msg_proj(A_t @ e_t)
 
             if A_t is not None and A_prev is not None:
                 delta_sq = torch.sum((A_t - A_prev) ** 2)
-                reg_delta = torch.sum(torch.abs(regime_t - regime_prev))
-                regime_weight = torch.tanh(reg_delta)
+                if smooth_regime_source == "explicit":
+                    reg_delta = torch.sum(torch.abs(regime_t - regime_prev))
+                    regime_weight = torch.tanh(reg_delta)
+                elif smooth_regime_source == "latent":
+                    if latent_prev is None:
+                        reg_delta = torch.tensor(0.0, device=device)
+                    else:
+                        reg_delta = torch.sum(torch.abs(latent_regime_t - latent_prev))
+                    regime_weight = torch.tanh(reg_delta)
+                elif smooth_regime_source == "none":
+                    reg_delta = torch.tensor(0.0, device=device)
+                    regime_weight = torch.tensor(0.0, device=device)
+                else:
+                    raise ValueError(f"Unknown smooth_regime_source={smooth_regime_source!r}")
                 smooth_term = smooth_term + delta_sq * (1.0 - regime_weight)
                 n_graph += 1
                 if return_internals:
@@ -215,7 +265,12 @@ class HERALDv7Residual(nn.Module):
             graph_disp = torch.mean(torch.abs(m_t - e_t), dim=-1, keepdim=True)
             h_norm = torch.norm(h, dim=-1, keepdim=True) / max(self.hidden_dim ** 0.5, 1.0)
             h_local_norm = torch.norm(h_local, dim=-1, keepdim=True) / max(self.hidden_dim ** 0.5, 1.0)
-            r_alpha = torch.zeros_like(regime_t) if variant == "no_regime_gate" else regime_t
+            if variant in learned_gate_variants:
+                r_alpha = latent_regime_t
+            elif variant == "no_regime_gate":
+                r_alpha = torch.zeros_like(regime_t)
+            else:
+                r_alpha = regime_t
             alpha_input = torch.cat([
                 h_local,
                 h,
@@ -240,6 +295,7 @@ class HERALDv7Residual(nn.Module):
             if alpha_prev is not None:
                 alpha_smooth = alpha_smooth + torch.mean((alpha - alpha_prev) ** 2)
             alpha_prev = alpha
+            alpha_balance_list.append(torch.mean((alpha - 0.5) ** 2))  # grad kept for H4
 
             sec_prior_t = torch.nan_to_num(sec_prior_t, nan=1.0 / self.n_sectors_a10)
             sector_input = torch.cat([h, pred.detach().unsqueeze(-1), sec_prior_t], dim=-1)
@@ -247,7 +303,7 @@ class HERALDv7Residual(nn.Module):
             prior_weight = torch.sigmoid(self.sector_prior_gate(sector_input))
             if variant == "sector_lag1_only":
                 sector = sec_prior_t
-            elif variant == "sector_enhanced":
+            elif variant in sector_enhanced_variants:
                 sector = prior_weight * sec_prior_t + (1.0 - prior_weight) * neural_sector
             else:
                 sector = 0.5 * sec_prior_t + 0.5 * neural_sector
@@ -263,6 +319,7 @@ class HERALDv7Residual(nn.Module):
 
             A_prev = A_t
             regime_prev = regime_t
+            latent_prev = latent_regime_t.detach()
 
         if n_graph > 0:
             smooth_term = smooth_term / n_graph
@@ -274,11 +331,42 @@ class HERALDv7Residual(nn.Module):
         preds = torch.stack(pred_list, dim=0)
         sectors = torch.stack(sector_list, dim=0)
         alpha_tensor = torch.stack(alpha_list, dim=0)
+        latent_regime_tensor = torch.stack(latent_regime_list, dim=0)
+
+        # H1 latent regularisation terms (differentiable — C1/C2 fix)
+        if latent_regime_list_grad:
+            lat_stack = torch.stack(latent_regime_list_grad, dim=0)  # (T, REGIME_DIM)
+            lat_var = lat_stack.var(dim=0).mean()
+            latent_collapse_term = F.relu(0.05 - lat_var)
+            if lat_stack.shape[0] > 1:
+                latent_smooth_term = ((lat_stack[1:] - lat_stack[:-1]) ** 2).mean()
+                latent_step_norm = (lat_stack[1:] - lat_stack[:-1]).norm(dim=-1)
+                step_threshold = float(getattr(self, "_latent_step_threshold", 0.6))
+                latent_max_step_term = F.relu(latent_step_norm - step_threshold).pow(2).mean()
+            else:
+                latent_smooth_term = torch.tensor(0.0, device=device)
+                latent_max_step_term = torch.tensor(0.0, device=device)
+        else:
+            latent_collapse_term = torch.tensor(0.0, device=device)
+            latent_smooth_term = torch.tensor(0.0, device=device)
+            latent_max_step_term = torch.tensor(0.0, device=device)
+
+        # H4 alpha balance term (differentiable — C2 fix)
+        alpha_balance_term = (
+            torch.stack(alpha_balance_list).mean()
+            if alpha_balance_list
+            else torch.tensor(0.0, device=device)
+        )
+
         graph_losses = {
             "smooth_term": smooth_term,
             "contrast_term": torch.tensor(0.0, device=device),
             "gate_entropy": gate_entropy,
             "alpha_smooth": alpha_smooth,
+            "latent_collapse_term": latent_collapse_term,
+            "latent_smooth_term": latent_smooth_term,
+            "latent_max_step_term": latent_max_step_term,
+            "alpha_balance_term": alpha_balance_term,
         }
 
         if return_internals:
@@ -290,7 +378,17 @@ class HERALDv7Residual(nn.Module):
             else:
                 adj_delta = torch.zeros(0, device=device)
                 regime_delta = torch.zeros(0, device=device)
-            return preds, sectors, graph_losses, adj_tensor, gate_tensor, alpha_tensor, regime_delta, adj_delta
+            return (
+                preds,
+                sectors,
+                graph_losses,
+                adj_tensor,
+                gate_tensor,
+                alpha_tensor,
+                latent_regime_tensor,
+                regime_delta,
+                adj_delta,
+            )
 
         return preds, sectors, graph_losses
 
@@ -341,7 +439,10 @@ def train_herald_v7(seq, adj_geo, adj_mob, args, device):
         pred_main, pred_sector, graph_losses = model(
             ann_list, q_list, reg_list, sec_prior_list,
             adj_g, adj_m_t, adj_log_g, adj_log_m,
-            variant=args.variant, return_internals=False,
+            variant=args.variant,
+            return_internals=False,
+            smooth_regime_source=args.smooth_regime_source,
+            latent_mode=args.latent_train_mode,
         )
 
         zone_w_bc = zone_w.unsqueeze(0).expand_as(pred_main)
@@ -374,16 +475,20 @@ def train_herald_v7(seq, adj_geo, adj_mob, args, device):
         reg_fl = [reg_f[t] for t in range(T_full)]
         sec_prior_fl = [sec_prior_f[t] for t in range(T_full)]
 
-        pred_f, sec_f, graph_f, adj_t, gate_t, alpha_t, regime_delta_t, adj_delta_t = model(
+        pred_f, sec_f, graph_f, adj_t, gate_t, alpha_t, latent_regime_t, regime_delta_t, adj_delta_t = model(
             ann_f, q_f, reg_fl, sec_prior_fl,
             adj_g, adj_m_t, adj_log_g, adj_log_m,
-            variant=args.variant, return_internals=True,
+            variant=args.variant,
+            return_internals=True,
+            smooth_regime_source=args.smooth_regime_source,
+            latent_mode=args.latent_inference_mode if args.latent_inference_mode != "match_train" else args.latent_train_mode,
         )
 
     internals = {
         "dynamic_adj": adj_t.cpu().numpy(),
         "gate_values": gate_t.cpu().numpy(),
         "alpha_values": alpha_t.cpu().numpy(),
+        "latent_regime_values": latent_regime_t.cpu().numpy(),
         "regime_delta_by_year": regime_delta_t.cpu().numpy(),
         "adj_delta_by_year": adj_delta_t.cpu().numpy(),
         "sector_proportions": sec_f[-1].cpu().numpy(),
@@ -554,6 +659,12 @@ def main():
     parser.add_argument("--gate-bias-init", type=float, default=2.0)
     parser.add_argument("--alpha-bias-init", type=float, default=1.5)
     parser.add_argument("--sector-lambda", type=float, default=0.1)
+    parser.add_argument("--smooth-regime-source", default="explicit",
+                        choices=["explicit", "none", "latent"])
+    parser.add_argument("--latent-train-mode", default="normal",
+                        choices=["normal", "zero", "frozen_first"])
+    parser.add_argument("--latent-inference-mode", default="match_train",
+                        choices=["match_train", "normal", "zero", "frozen_first"])
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--panel-path", type=Path, default=base.PANEL_PATH)
     parser.add_argument("--splits-path", type=Path, default=base.SPLITS_PATH)
@@ -572,6 +683,11 @@ def main():
                             "fixed_alpha_0.5",
                             "no_regime_gate",
                             "no_regime_graph",
+                            "learned_regime_graph",
+                            "learned_regime_gate",
+                            "learned_regime_both",
+                            "learned_regime_gate_sector_enhanced",
+                            "learned_regime_both_sector_enhanced",
                             "static_adaptive",
                             "sector_enhanced",
                             "sector_lag1_only",
@@ -629,6 +745,7 @@ def main():
         dynamic_adj=last["dynamic_adj"],
         gate_values=last["gate_values"],
         alpha_values=last["alpha_values"],
+        latent_regime_values=last["latent_regime_values"],
         regime_delta_by_year=last["regime_delta_by_year"],
         adj_delta_by_year=last["adj_delta_by_year"],
         sector_proportions=last["sector_proportions"],
