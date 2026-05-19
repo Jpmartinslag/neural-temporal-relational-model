@@ -29,6 +29,9 @@ Conclusion actuelle:
 - la Phase 2H montre que les ajouts macro INSEE/Banque de France testés ne sont pas retenus: ils
   améliorent parfois 2025 mais dégradent 2021 et la moyenne 2021-2025;
 - la Phase 2I montre que `side_lag_1 + growth_1y` bat le noyau SIDE5 sur tous les folds 2021-2025;
+- la Phase 2J montre que la comparaison propre doit séparer trois lignes: `HERALD flags étendu`
+  (contrôle historique plus chargé), `HERALD flags clean` (mêmes entrées SIDE2 + flags) et
+  `HERALD no flags` (mêmes entrées SIDE2, régime appris);
 - `lag1_growth1y` obtient WMAPE moyen 2021-2025 = 0.021323, WMAPE 2021 = 0.034885, WMAPE 2025 =
   0.013004, A10 WMAPE = 0.156384;
 - le forecast 2026/2027 est une prévision prospective conditionnelle aux données disponibles le
@@ -59,6 +62,13 @@ les ajouts de régime, macro ou features longues ne doivent pas être acceptés 
 décision actuelle est donc conservatrice: travailler avec `lag1_growth1y`, puis auditer finement la
 stabilité entre seeds et les régulateurs internes (`alpha`, `gamma_geo`, `gamma_mob`, latents) avant de
 relancer une architecture plus complexe.
+
+La prochaine phase méthodologique est la **Phase 2K**: auditer la taille du vecteur latent de régime.
+Le vecteur latent actuel a dimension 3, mais cette dimension ne doit pas être interprétée comme trois
+régimes économiques découverts. Elle sera traitée comme un hyperparamètre: `latent_dim = 1, 2, 3, 4, 5`,
+avec une variante auto-régularisée qui peut désactiver les dimensions inutiles. Cette phase vérifiera
+aussi si le vecteur latent agit seulement sur `alpha` ou s'il modifie réellement le graphe appris dans
+les variantes `learned_regime_both`.
 
 ## Structure
 
@@ -128,6 +138,7 @@ python3 src/visualisation/generate_herald_semi_v2_dashboard.py
 - `reports/HERALD_REGIME_DISCOVERY_BATTERY.md`
 - `reports/HERALD_PHASE2H_FEATURE_MINIMALITY_AUDIT.md`
 - `reports/HERALD_PHASE2I_SIDE2_FEATURE_AUDIT.md`
+- `reports/HERALD_LATENT_REGIME_DIMENSION_BATTERY_PLAN.md`
 - `reports/HERALD_SIDE5_STABILITY_AND_TREND_AUDIT_PLAN.md`
 - `reports/ATLAS_IAT_STATIC_LAYER_AUDIT.md`
 - `metadata/HERALD_DATASETS_MAIN.md`

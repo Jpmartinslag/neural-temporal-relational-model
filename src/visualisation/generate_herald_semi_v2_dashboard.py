@@ -35,6 +35,26 @@ def _find_latest_run(base: Path) -> Path:
 
 
 DEFAULT_RUN_ROOT = _find_latest_run(BASE)
+DEFAULT_PHASE2I_RUN_ROOT = (
+    BASE / "hpc_results/herald_regime_phase2i_side5_20260518_1122_side5_audit_r1_r1"
+)
+DEFAULT_FLAGS_RUN_ROOT = (
+    BASE / "hpc_results/herald_regime_phase2e_residual_rebound_20260513_143746_r1"
+)
+
+
+def _find_latest_phase2j(base: Path) -> Path | None:
+    candidates = sorted(glob.glob(str(base / "hpc_results/herald_regime_phase2j_fair_flag_*")))
+    return Path(candidates[-1]) if candidates else None
+
+DEFAULT_PHASE2J_RUN_ROOT = _find_latest_phase2j(BASE)
+
+FLAGS_SECTOR_PATTERN = (
+    "herald_semi_v2_predictions_sector_full_regime_manual_flags_no_source_flags_ctrl_manual_seed_*_v1.csv"
+)
+CLEAN_FLAGS_SECTOR_PATTERN = (
+    "herald_semi_v2_predictions_sector_full_regime_manual_flags_no_source_flags_lag1_growth1y_flags_seed_*_v1.csv"
+)
 DEFAULT_OLD_DASH = (
     BASE
     / "hpc_results/herald_semi_total_253_geo2025/reports/figures/herald_geo2025_final_dashboard.html"
@@ -42,11 +62,6 @@ DEFAULT_OLD_DASH = (
 DEFAULT_OUT = BASE / "reports/dashboards/herald_france_dashboard.html"
 DEFAULT_OFFLINE_OUT = BASE / "reports/dashboards/herald_france_dashboard_offline.html"
 DEFAULT_PLOTLY_BUNDLE = Path("/tmp/plotly_embedded.js")
-DEFAULT_FORECAST_SUMMARY = BASE / "reports/metrics/herald_forecast_2026_2027_summary.json"
-DEFAULT_FORECAST_DIR = BASE / "hpc_results/herald_forecast_20260506_forecast_after_strict/data_processed"
-HERALD_FORECAST_TOTAL_PATTERN = (
-    "herald_forecast_total_no_source_flags_semiv2_graph_ssl_forecast_2026_2027_seed_*_v1.csv"
-)
 # Historical baselines (2021-2025) used to fill years not covered by the strict ex-ante run
 LEGACY_BASELINES_JSON = (
     BASE
@@ -63,7 +78,6 @@ LEGACY_SEMIV2_CSV_PATTERN = (
     "hpc_results/herald_showdown_20260504_173129/data_processed/"
     "herald_semi_v2_predictions_sector_full_semiv2_full_f0.10_s0.30_r0.02_seed_*_v1.csv"
 )
-DEFAULT_LEAK_AUDIT = BASE / "reports/HERALD_LEAK_AUDIT_FINAL_20260507.md"
 DEFAULT_SPLITS = BASE / "metadata/dynamic_stgnn_walk_forward_splits_through_2025_v1.csv"
 
 YEARS = ["2021", "2022", "2023", "2024", "2025"]
@@ -156,6 +170,116 @@ def summarize_model(label: str, runs: list[dict[str, Any]]) -> dict[str, Any] | 
         if any("gamma_mob" in r for r in runs)
         else None,
     }
+
+
+def model_patterns_for_run(run_root: Path) -> dict[str, str]:
+    """Return dashboard input patterns for the selected HERALD run family."""
+    if "phase2j_fair_flag" in run_root.name:
+        stem = "full_regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_lag1_growth1y_nf"
+        return {
+            "json": "regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_lag1_growth1y_nf_seed_*.json",
+            "sector": f"herald_semi_v2_predictions_sector_{stem}_seed_*_v1.csv",
+            "graph": f"herald_semi_v2_internals_{stem}_seed_*_v1.npz",
+        }
+    if "phase2i_side5" in run_root.name:
+        stem = "full_regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_lag1_growth1y"
+        return {
+            "json": f"regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_lag1_growth1y_seed_*.json",
+            "sector": f"herald_semi_v2_predictions_sector_{stem}_seed_*_v1.csv",
+            "graph": f"herald_semi_v2_internals_{stem}_seed_*_v1.npz",
+        }
+    return {
+        "json": "strict_no_source_flags_semiv2_graph_only_seed_*.json",
+        "sector": "herald_semi_v2_predictions_sector_full_strict_no_source_flags_graph_only_f0.10_s0.30_r0.02_seed_*_v1.csv",
+        "graph": "herald_semi_v2_internals_full_strict_no_source_flags_graph_only_f0.10_s0.30_r0.02_seed_*_v1.npz",
+    }
+
+
+def load_dirty_flags_model() -> dict[str, Any] | None:
+    """Load the historical HERALD flags control with the older, noisier input set."""
+    per_run = DEFAULT_FLAGS_RUN_ROOT / "reports/per_run"
+    if not per_run.exists():
+        return None
+    m = summarize_model(
+        "HERALD flags étendu",
+        load_runs(per_run, "regime_manual_flags_no_source_flags_ctrl_manual_seed_*.json"),
+    )
+    if m:
+        m["flags_source"] = "phase2e_dirty"
+    return m
+
+
+def load_clean_flags_model() -> dict[str, Any] | None:
+    """Load Phase 2J clean flags: same SIDE2 inputs as the no-flags model."""
+    if DEFAULT_PHASE2J_RUN_ROOT is not None:
+        per_run = DEFAULT_PHASE2J_RUN_ROOT / "reports/per_run"
+        if per_run.exists():
+            runs = load_runs(per_run, "regime_manual_flags_no_source_flags_lag1_growth1y_flags_seed_*.json")
+            if runs:
+                m = summarize_model("HERALD flags clean", runs)
+                if m:
+                    m["flags_source"] = "phase2j_clean"
+                    return m
+    return None
+
+
+def load_regime_internals(csv_dir: Path, pattern: str) -> dict[str, Any]:
+    """Aggregate latent regime and internal weights for display."""
+    paths = [p for p in sorted(csv_dir.glob(pattern)) if "_fold_" not in p.name]
+    out: dict[str, Any] = {
+        "latent": {},
+        "latent_step": {},
+        "alpha": {},
+        "gamma_geo": None,
+        "gamma_mob": None,
+        "n": 0,
+    }
+    if not paths:
+        return out
+
+    latent_by_year: dict[str, list[np.ndarray]] = {}
+    alpha_by_year: dict[str, list[float]] = {}
+    gamma_geo: list[float] = []
+    gamma_mob: list[float] = []
+    for path in paths:
+        try:
+            z = np.load(path, allow_pickle=True)
+        except Exception:
+            continue
+        if "years" not in z:
+            continue
+        years = [str(int(y)) for y in z["years"]]
+        if "latent_regime_values" in z:
+            lat = z["latent_regime_values"].astype(float)
+            for idx, year in enumerate(years):
+                if idx < lat.shape[0]:
+                    latent_by_year.setdefault(year, []).append(lat[idx])
+        if "alpha_values" in z:
+            alpha = z["alpha_values"].astype(float)
+            for idx, year in enumerate(years):
+                if idx < alpha.shape[0]:
+                    alpha_by_year.setdefault(year, []).append(float(np.nanmean(alpha[idx])))
+        if "gamma_geo" in z:
+            gamma_geo.append(float(np.asarray(z["gamma_geo"]).ravel()[0]))
+        if "gamma_mob" in z:
+            gamma_mob.append(float(np.asarray(z["gamma_mob"]).ravel()[0]))
+        out["n"] += 1
+
+    for year, vals in latent_by_year.items():
+        arr = np.vstack(vals)
+        out["latent"][year] = [round(float(v), 6) for v in np.nanmedian(arr, axis=0)]
+    ordered_years = sorted(out["latent"], key=int)
+    for prev, cur in zip(ordered_years[:-1], ordered_years[1:]):
+        a = np.asarray(out["latent"][prev], dtype=float)
+        b = np.asarray(out["latent"][cur], dtype=float)
+        out["latent_step"][cur] = round(float(np.linalg.norm(b - a)), 6)
+    out["alpha"] = {
+        year: round(float(np.nanmedian(vals)), 6)
+        for year, vals in alpha_by_year.items()
+    }
+    out["gamma_geo"] = round(float(np.nanmedian(gamma_geo)), 6) if gamma_geo else None
+    out["gamma_mob"] = round(float(np.nanmedian(gamma_mob)), 6) if gamma_mob else None
+    return out
 
 
 def extract_js_const(name: str, html: str) -> Any:
@@ -439,27 +563,6 @@ def load_optional_json(path: Path) -> dict[str, Any] | None:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def load_forecast_public(path: Path) -> dict[str, Any] | None:
-    raw = load_optional_json(path)
-    if not raw:
-        return None
-    rows = []
-    for row in raw.get("national", []):
-        if row.get("panel_key") != "no_source_flags":
-            continue
-        if row.get("model") == "semiv2_graph_ssl":
-            public_model = "HERALD"
-        elif row.get("model") == "v7_ridge_only":
-            public_model = "Ridge AR"
-        else:
-            continue
-        clean = dict(row)
-        clean["panel_key"] = "panel principal"
-        clean["model"] = public_model
-        rows.append(clean)
-    return {"national": rows}
-
-
 def build_fold_table(path: Path) -> str:
     if not path.exists():
         return "<div class='mini'>Protocole de validation non disponible.</div>"
@@ -480,23 +583,6 @@ def build_fold_table(path: Path) -> str:
         + "".join(rows)
         + "</tbody></table>"
     )
-
-
-def parse_audit_summary(path: Path) -> dict[str, Any]:
-    if not path.exists():
-        return {}
-    return {
-        "verdict": "Aucun indice de fuite directe du target 2025 n'a ete trouve.",
-        "target_shuffle_status": "stress-test execute; degradation forte attendue quand le target est perturbe",
-        "calendar": (
-            "Forecast 2026/2027 presente comme prediction prospective conditionnelle "
-            "aux donnees disponibles au 2026-05-07."
-        ),
-        "residual_risk": (
-            "Le risque residuel concerne le calendrier reel de publication des sources, "
-            "pas une copie directe du target."
-        ),
-    }
 
 
 def clean_connections(rows: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
@@ -552,7 +638,7 @@ def build_learned_graph_data(
     max_edges: int = 70,
     total_edges: int = 500,
 ) -> dict[str, list[dict[str, Any]]]:
-    paths = sorted(csv_dir.glob(pattern))
+    paths = [p for p in sorted(csv_dir.glob(pattern)) if "_fold_" not in p.name]
     if not paths:
         return {}
     centroids = geojson_centroids(geojson)
@@ -635,116 +721,32 @@ def build_learned_graph_data(
     return graph
 
 
-def load_intelligence_layer(base_dir: Path) -> dict[str, Any]:
-    """Load exploratory HERALD Intelligence v0 zone-level indicators."""
-    scores_path = base_dir / "zone_recommendation_scores.csv"
-    alerts_path = base_dir / "zone_alerts.csv"
-    out: dict[str, Any] = {
-        "status": "exploratoire_v0",
-        "scores": {},
-        "alertsByZone": {},
-        "available": False,
-    }
-    if not scores_path.exists():
-        return out
-
-    try:
-        scores = pd.read_csv(scores_path)
-        for _, row in scores.iterrows():
-            ze = str(row.get("ZE2020", "")).strip().split(".")[0].zfill(4)
-            if not ze or ze == "0000":
-                continue
-            out["scores"][ze] = {
-                "name": str(row.get("libze2020", "")),
-                "opportunity_score": safe_float(row.get("opportunity_score")),
-                "opportunity_tier": str(row.get("opportunity_tier", "")),
-                "risk_score": safe_float(row.get("risk_score")),
-                "risk_tier": str(row.get("risk_tier", "")),
-                "score_status": str(row.get("score_status", "exploratoire_v0")),
-                "fc_2026_mean": safe_float(row.get("fc_2026_mean")),
-                "fc_2026_std": safe_float(row.get("fc_2026_std")),
-                "fc_growth_2025_2026_pct": safe_float(row.get("fc_growth_2025_2026_pct")),
-                "fc_2026_percentile": safe_float(row.get("fc_2026_percentile")),
-                "herald_wmape_aligned": safe_float(row.get("herald_wmape_aligned")),
-                "ridge_wmape": safe_float(row.get("ridge_wmape")),
-                "herald_vs_ridge_pct": safe_float(row.get("herald_vs_ridge_pct")),
-                "explication_fr": str(row.get("explication_fr", "")),
-            }
-        out["available"] = bool(out["scores"])
-    except Exception as e:
-        print(f"Warning: intelligence scores failed: {e}")
-
-    if alerts_path.exists():
-        try:
-            alerts = pd.read_csv(alerts_path)
-            for _, row in alerts.iterrows():
-                ze = str(row.get("ZE2020", "")).strip().split(".")[0].zfill(4)
-                if not ze or ze == "0000":
-                    continue
-                out["alertsByZone"].setdefault(ze, []).append(
-                    {
-                        "type": str(row.get("alert_type", "")),
-                        "severity": str(row.get("severity", "")),
-                        "value": safe_float(row.get("value")),
-                        "unit": str(row.get("unit", "")),
-                        "confidence": str(row.get("confidence", "")),
-                        "description": str(row.get("description", "")),
-                    }
-                )
-        except Exception as e:
-            print(f"Warning: intelligence alerts failed: {e}")
-
-    return out
-
-
-def load_zone_forecast_2026_2027(forecast_dir: Path) -> dict[str, Any]:
-    """Aggregate prospective HERALD zone forecasts for 2026 and 2027."""
-    paths = sorted(forecast_dir.glob(HERALD_FORECAST_TOTAL_PATTERN))
-    out: dict[str, Any] = {"byZone": {}, "available": False}
-    if not paths:
-        return out
-    frames = []
-    for path in paths:
-        try:
-            df = pd.read_csv(path)
-            if {"target_year", "ZE2020", "y_pred"}.issubset(df.columns):
-                frames.append(df[["target_year", "ZE2020", "y_pred", "ridge_pred", "seed"]].copy())
-        except Exception as e:
-            print(f"Warning: forecast file failed {path.name}: {e}")
-    if not frames:
-        return out
-    data = pd.concat(frames, ignore_index=True)
-    data["ZE2020"] = data["ZE2020"].astype(str).str.split(".").str[0].str.zfill(4)
-    agg = (
-        data.groupby(["ZE2020", "target_year"])
-        .agg(
-            mean=("y_pred", "mean"),
-            std=("y_pred", "std"),
-            ridge=("ridge_pred", "mean"),
-            n_seeds=("seed", "nunique"),
-        )
-        .reset_index()
-    )
-    for ze, grp in agg.groupby("ZE2020"):
-        out["byZone"][ze] = {}
-        vals: dict[int, float] = {}
-        for _, row in grp.iterrows():
-            year = int(row["target_year"])
-            vals[year] = float(row["mean"])
-            out["byZone"][ze][str(year)] = {
-                "mean": safe_float(row["mean"]),
-                "std": safe_float(row["std"]),
-                "ridge": safe_float(row["ridge"]),
-                "n_seeds": int(row["n_seeds"]),
-            }
-        if 2026 in vals and 2027 in vals and vals[2026]:
-            out["byZone"][ze]["growth_2026_2027_pct"] = 100.0 * (vals[2027] - vals[2026]) / vals[2026]
-    out["available"] = bool(out["byZone"])
-    return out
-
-
 def load_zone_ridge_predictions(csv_dir: Path) -> dict[str, dict[str, float]]:
     """Load deterministic Ridge AR zone predictions for 2021-2025."""
+    paths = sorted(csv_dir.glob("herald_semi_v2_predictions_total_*_seed_*_v1.csv"))
+    if paths:
+        frames = []
+        for path in paths:
+            try:
+                df = pd.read_csv(path)
+            except Exception:
+                continue
+            if {"target_year", "ZE2020", "ridge_pred"}.issubset(df.columns):
+                frames.append(df[["target_year", "ZE2020", "ridge_pred"]])
+        if frames:
+            df = pd.concat(frames, ignore_index=True)
+            df["ZE2020"] = df["ZE2020"].astype(str).str.split(".").str[0].str.zfill(4)
+            agg = (
+                df.groupby(["target_year", "ZE2020"], as_index=False)["ridge_pred"]
+                .median()
+            )
+            out: dict[str, dict[str, float]] = {}
+            for _, row in agg.iterrows():
+                year = str(int(row["target_year"]))
+                ze = str(row["ZE2020"])
+                out.setdefault(year, {})[ze] = float(row["ridge_pred"])
+            return out
+
     paths = sorted(csv_dir.glob("herald_v7_predictions_total_ridge_only_strict_no_source_flags_ridge_only_seed_0_v1.csv"))
     if not paths:
         paths = sorted((BASE / "data/processed").glob("dynamic_feature_panel_baseline_predictions_v1.csv"))
@@ -773,10 +775,13 @@ def build_dashboard(args: argparse.Namespace) -> None:
     csv_dir = run_root / "data_processed"
     out_path = Path(args.out)
     old = load_old_constants(Path(args.old_dashboard))
+    patterns = model_patterns_for_run(run_root)
 
-    winner = summarize_model("HERALD", load_runs(per_run, "strict_no_source_flags_semiv2_graph_only_seed_*.json"))
+    winner = summarize_model("HERALD no flags", load_runs(per_run, patterns["json"]))
     if not winner:
         raise RuntimeError("HERALD principal runs were not found.")
+    dirty_flags = load_dirty_flags_model()
+    clean_flags = load_clean_flags_model()
     internal_controls = [
         summarize_model(
             "Contrôle sans semi-supervision",
@@ -795,7 +800,16 @@ def build_dashboard(args: argparse.Namespace) -> None:
 
     zone_data = build_semiv2_zone_data(
         csv_dir,
-        "herald_semi_v2_predictions_sector_full_strict_no_source_flags_graph_only_f0.10_s0.30_r0.02_seed_*_v1.csv",
+        patterns["sector"],
+    )
+    flags_zone_data = build_semiv2_zone_data(
+        DEFAULT_FLAGS_RUN_ROOT / "data_processed",
+        FLAGS_SECTOR_PATTERN,
+    )
+    clean_flags_zone_data = (
+        build_semiv2_zone_data(DEFAULT_PHASE2J_RUN_ROOT / "data_processed", CLEAN_FLAGS_SECTOR_PATTERN)
+        if DEFAULT_PHASE2J_RUN_ROOT is not None
+        else {"zone_pred": {}, "zone_sector_pred": {}, "sector_totals_by_year": {}, "france_total": {}}
     )
     # Fill 2021-2023 zone/france data from legacy run (strict ex-ante only has 2024-2025)
     legacy_csvs = sorted(BASE.glob(LEGACY_SEMIV2_CSV_PATTERN))
@@ -818,30 +832,37 @@ def build_dashboard(args: argparse.Namespace) -> None:
                                     legacy_json=LEGACY_BASELINES_JSON,
                                     legacy_stgnn_json=LEGACY_STGNN_JSON)
     ridge_yr = baselines.get("ridge_ar") or old.get("RIDGE_YR") or {
-        "2021": 0.067308, "2022": 0.086199, "2023": 0.077667, "2024": 0.030697, "2025": 0.033911,
+        "2021": 0.067308, "2022": 0.086199, "2023": 0.077667, "2024": 0.030697, "2025": 0.036085,
     }
+    # Correct 2025 Ridge AR — strict exante no_source_flags value (legacy files had 0.033911)
+    ridge_yr["2025"] = 0.036085
     arima_yr = baselines.get("arima_local") or old.get("ARIMA_PY") or {
         "2021": 0.125337, "2022": 0.097012, "2023": 0.037834, "2024": 0.08621, "2025": 0.034292,
     }
     lstm_yr = baselines.get("lstm_local") or {}
-    dcrnn_yr = baselines.get("dcrnn_residual") or old.get("DCRNN_PY") or {
-        "2021": 0.061726, "2022": 0.079231, "2023": 0.072603, "2024": 0.031876, "2025": 0.033911,
-    }
-    stgnn_yr = baselines.get("dynamic_stgnn_residual") or old.get("STGNN_PY") or {
-        "2021": 0.061086, "2022": 0.079178, "2023": 0.07253, "2024": 0.031752, "2025": 0.033800,
-    }
+    # Strict exante no_source_flags medians — used as fallback AND to fill missing years (esp. 2025)
+    _dcrnn_strict = {"2021": 0.061489, "2022": 0.079708, "2023": 0.072683, "2024": 0.031266, "2025": 0.031156}
+    _stgnn_strict = {"2021": 0.060871, "2022": 0.078993, "2023": 0.072616, "2024": 0.032167, "2025": 0.031134}
+    _dcrnn_raw = baselines.get("dcrnn_residual") or old.get("DCRNN_PY") or {}
+    _stgnn_raw = baselines.get("dynamic_stgnn_residual") or old.get("STGNN_PY") or {}
+    # Merge: strict values first (all years), then override with any loaded values
+    dcrnn_yr = {**_dcrnn_strict, **_dcrnn_raw}
+    stgnn_yr = {**_stgnn_strict, **_stgnn_raw}
 
-    learned_graph = build_learned_graph_data(csv_dir, old.get("GEOJSON"), old.get("ZE_NAMES") or {})
+    learned_graph = build_learned_graph_data(
+        csv_dir,
+        old.get("GEOJSON"),
+        old.get("ZE_NAMES") or {},
+        pattern=patterns["graph"],
+    )
     if not learned_graph:
         learned_graph = old.get("GRAPH_DATA") or {}
-    intelligence = load_intelligence_layer(BASE / "reports/metrics/herald_intelligence")
-    zone_forecast = load_zone_forecast_2026_2027(DEFAULT_FORECAST_DIR)
     zone_ridge = load_zone_ridge_predictions(csv_dir)
 
     payload = {
         "years": YEARS,
         "sectorLabels": SECTOR_LABELS,
-        "models": [winner],
+        "models": [m for m in [dirty_flags, clean_flags, winner] if m is not None],
         "internalControls": internal_controls,
         "ridgeYear": ridge_yr,
         "arimaYear": arima_yr,
@@ -861,11 +882,22 @@ def build_dashboard(args: argparse.Namespace) -> None:
         "zoneSectorPreds": zone_data["zone_sector_pred"],
         "sectorTotalsByYear": zone_data["sector_totals_by_year"],
         "franceTotal": zone_data["france_total"],
-        "forecast": load_forecast_public(Path(args.forecast_summary)),
-        "audit": parse_audit_summary(Path(args.leak_audit)),
-        "intelligence": intelligence,
-        "zoneForecast": zone_forecast,
+        "zoneDirtyFlagsPreds": flags_zone_data["zone_pred"],
+        "zoneDirtyFlagsSectorPreds": flags_zone_data["zone_sector_pred"],
+        "dirtyFlagsSectorTotalsByYear": flags_zone_data["sector_totals_by_year"],
+        "dirtyFlagsFranceTotal": flags_zone_data["france_total"],
+        "zoneCleanFlagsPreds": clean_flags_zone_data["zone_pred"],
+        "zoneCleanFlagsSectorPreds": clean_flags_zone_data["zone_sector_pred"],
+        "cleanFlagsSectorTotalsByYear": clean_flags_zone_data["sector_totals_by_year"],
+        "cleanFlagsFranceTotal": clean_flags_zone_data["france_total"],
         "zoneRidgePreds": zone_ridge,
+        "regimeInternals": load_regime_internals(csv_dir, patterns["graph"]),
+        "heraldInputs": {
+            "annual": ["side_lag_1", "growth_1y"],
+            "regime": "appris par le modèle; aucune flag crise/rebond",
+            "variant": "lag1_growth1y",
+            "strategy": "retirer les flags, enlever les entrées SIDE redondantes, garder seulement niveau récent + croissance 1 an",
+        },
     }
 
     sector_year_options = "\n".join(
@@ -896,7 +928,7 @@ def build_dashboard(args: argparse.Namespace) -> None:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HERALD France - Tableau de bord scientifique</title>
+<title>HERALD France - Comparaison modèles</title>
 {plotly_script}
 <style>
   :root {{
@@ -941,17 +973,66 @@ def build_dashboard(args: argparse.Namespace) -> None:
   .intel-alert {{ margin-top:8px; color:#ffd180; font-size:12px; }}
   .intel-details {{ margin-top:8px; color:var(--muted); font-size:12px; }}
   .intel-details summary {{ cursor:pointer; color:#cbd5ff; }}
+  .arch-wrap {{ display:flex; flex-direction:column; gap:0; }}
+  .arch-row {{ display:flex; align-items:stretch; gap:0; }}
+  .arch-col {{ display:flex; flex-direction:column; gap:6px; }}
+  .arch-box {{ background:#111525; border:1px solid #3a4263; border-radius:8px; padding:12px; }}
+  .arch-box.input {{ border-color:#4aa3ff55; }}
+  .arch-box.ridge {{ border-color:#66bb6a55; }}
+  .arch-box.neural {{ border-color:#f7834f55; }}
+  .arch-box.gate {{ border-color:#b084f555; }}
+  .arch-box.output {{ border-color:#26a69a55; }}
+  .arch-box h4 {{ margin:0 0 6px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }}
+  .arch-box .aname {{ font-size:15px; font-weight:760; color:#eef2ff; margin-bottom:6px; }}
+  .arch-box ul {{ margin:0; padding-left:16px; color:var(--muted); font-size:12px; line-height:1.6; }}
+  .arch-badge {{ display:inline-block; background:#1a2040; border:1px solid #3a4263; border-radius:5px; padding:3px 8px; font-size:11px; font-family:monospace; color:#9aa4bf; margin:2px 2px 2px 0; }}
+  .arch-badge.hi {{ border-color:#4aa3ff88; color:#4aa3ff; }}
+  .arch-badge.gate {{ border-color:#b084f588; color:#b084f5; }}
+  .arch-badge.flag {{ border-color:#ffd18088; color:#ffd180; }}
+  .arch-pipe {{ display:flex; align-items:center; justify-content:center; padding:0 8px; color:#f7834f; font-size:22px; font-weight:800; flex-shrink:0; }}
+  .arch-pipe.vert {{ flex-direction:column; padding:4px 0; font-size:18px; }}
+  .arch-pipe.thin {{ font-size:14px; color:#9aa4bf; }}
+  .arch-branch {{ display:flex; flex-direction:column; gap:6px; flex:1; }}
+  .arch-label {{ font-size:11px; color:var(--muted); margin-top:4px; }}
+  .arch-label b {{ color:#eef2ff; }}
+  .arch-divider {{ border:none; border-top:1px solid var(--line); margin:12px 0; }}
+  .arch-compare {{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }}
+  .arch-compare-card {{ background:#111525; border:1px solid var(--line); border-radius:8px; padding:12px; }}
+  .arch-compare-card.nf {{ border-left:3px solid #f7834f; }}
+  .arch-compare-card.fl {{ border-left:3px solid #ffd180; }}
+  .arch-compare-card b {{ color:#eef2ff; font-size:14px; }}
+  .arch-compare-card .acsub {{ color:var(--muted); font-size:12px; line-height:1.5; margin-top:6px; }}
+  .arch-compare-card .acchips {{ display:flex; flex-wrap:wrap; gap:4px; margin-top:6px; }}
+  .arch-phase-badge {{ display:inline-block; font-size:10px; font-weight:700; border-radius:999px; padding:2px 8px; margin-left:6px; vertical-align:middle; }}
+  .arch-phase-badge.done {{ background:#1a3a1a; color:#66bb6a; border:1px solid #66bb6a55; }}
+  .arch-phase-badge.pend {{ background:#2a2a1a; color:#ffd180; border:1px solid #ffd18055; }}
+  .arch-metric {{ margin-top:8px; font-size:13px; }}
+  .arch-metric .av {{ font-size:20px; font-weight:760; color:#eef2ff; }}
+  .arch-metric .al {{ font-size:11px; color:var(--muted); }}
+  .model-figure {{ display:grid; grid-template-columns:1fr 44px 1.45fr 44px 1fr; gap:10px; align-items:center; }}
+  .model-node {{ background:#111525; border:1px solid #3a4263; border-radius:8px; padding:14px; min-height:142px; }}
+  .model-node h3 {{ margin:0 0 10px; font-size:15px; color:#cbd5ff; }}
+  .model-node .big {{ font-size:18px; font-weight:780; color:#eef2ff; margin-bottom:8px; }}
+  .model-node ul {{ margin:0; padding-left:18px; color:var(--muted); line-height:1.55; font-size:13px; }}
+  .model-arrow {{ text-align:center; color:#f7834f; font-size:30px; font-weight:800; }}
+  .model-stack {{ display:grid; grid-template-columns:1fr; gap:8px; }}
+  .model-step {{ background:#171b2d; border:1px solid #3a4263; border-radius:7px; padding:9px; }}
+  .model-step strong {{ display:block; color:#eef2ff; margin-bottom:3px; }}
+  .model-step span {{ color:var(--muted); font-size:12px; }}
+  .model-compare {{ margin-top:12px; display:grid; grid-template-columns:1fr 1fr; gap:10px; }}
+  .model-compare div {{ background:#111525; border:1px solid var(--line); border-radius:8px; padding:10px; color:var(--muted); font-size:13px; line-height:1.45; }}
+  .model-compare b {{ color:#eef2ff; }}
+  .regime-stat {{ display:grid; grid-template-columns:repeat(4,minmax(130px,1fr)); gap:10px; margin-bottom:10px; }}
+  .regime-stat .kpi {{ padding:10px; }}
   @media (max-width:1000px) {{ .kpis,.grid2,.grid-map {{ grid-template-columns:1fr; }} }}
+  @media (max-width:1000px) {{ .arch-compare,.model-figure,.model-compare {{ grid-template-columns:1fr; }} .model-arrow {{ display:none; }} }}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>HERALD France - Tableau de bord scientifique</h1>
+  <h1>HERALD France - Comparaison modèles</h1>
   <div class="subtitle">
-    Lecture opérationnelle du modèle HERALD: comparaison avec les modèles de référence, prévision observée
-    vs prédite, erreurs territoriales, secteurs A10 et structure du graphe dynamique appris. Les anciennes
-      contrôles méthodologiques internes sont résumés séparément pour ne pas les confondre avec
-      les modèles concurrents.
+    HERALD flags, HERALD no flags, références classiques, carte par zone, secteurs A10 et régime appris.
   </div>
 
   <div class="kpis">
@@ -962,7 +1043,7 @@ def build_dashboard(args: argparse.Namespace) -> None:
   </div>
 
   <div class="section">
-    <div class="section-title">Protocole walk-forward</div>
+    <div class="section-title">Protocole</div>
     <div class="section-note">
       Chaque année est testée comme une vraie année future: HERALD est entraîné uniquement avec les années
       antérieures au fold. Ce tableau rend visible les années qui entrent dans l'entraînement et l'année
@@ -972,35 +1053,168 @@ def build_dashboard(args: argparse.Namespace) -> None:
   </div>
 
   <div class="section">
-    <div class="section-title">0. Données du modèle</div>
-    <div class="section-note">Résumé du protocole d'entraînement et de validation strict ex-ante.</div>
+    <div class="section-title">0. Architecture HERALD</div>
+    <div class="section-note">
+      À partir des <b>données publiques INSEE</b> sur les créations d'établissements, HERALD prédit combien
+      d'entreprises vont être créées dans chaque territoire l'année suivante — sans connaître l'avenir.
+      HERALD prédit les créations d'établissements par zone d'emploi et secteur, sans connaître l'avenir.
+      Il apprend comment les territoires s'influencent mutuellement, quelle importance donner à la
+      dynamique propre de chaque zone versus l'influence des voisins, et comment les flux de mobilité
+      pendulaire structurent l'espace économique — le tout calibré sur l'historique des créations INSEE.
+    </div>
     <div class="kpis" style="grid-template-columns:repeat(6,minmax(140px,1fr))">
       <div class="kpi"><div class="v">walk-forward</div><div class="l">Fenêtre d'entraînement</div></div>
       <div class="kpi"><div class="v">2021–2025</div><div class="l">Années évaluées</div></div>
       <div class="kpi"><div class="v">280</div><div class="l">Zones d'emploi</div></div>
       <div class="kpi"><div class="v">9 (A10)</div><div class="l">Secteurs économiques</div></div>
       <div class="kpi"><div class="v">10</div><div class="l">Seeds du protocole</div></div>
-      <div class="kpi"><div class="v">conservateur</div><div class="l">Panel principal</div></div>
+      <div class="kpi"><div class="v">2</div><div class="l">Entrées annuelles SIDE</div></div>
     </div>
     <div class="card" style="margin-top:8px">
-      <table>
-        <thead><tr><th>Entrées</th><th>Détail</th></tr></thead>
-        <tbody>
-          <tr><td>Historique créations</td><td>SIDE/INSEE par zone d'emploi et secteur A10</td></tr>
-          <tr><td>Trajectoire de croissance</td><td>Lags et tendances locales récentes</td></tr>
-          <tr><td>Emploi &amp; masse salariale</td><td>URSSAF par zone</td></tr>
-          <tr><td>Caractéristiques structurelles</td><td>FLORES (taille d'établissement, structure)</td></tr>
-          <tr><td>Graphe géographique</td><td>Adjacence et distance entre zones d'emploi</td></tr>
-          <tr><td>Graphe mobilité</td><td>Flux domicile-travail inter-zones</td></tr>
-          <tr><td>Flags de régime</td><td>Chocs prédéfinis (crise, COVID, reprise)</td></tr>
-          <tr><td>Cible (target)</td><td>Créations d'établissements par zone et secteur A10</td></tr>
-        </tbody>
-      </table>
+
+      <!-- Architecture SVG — figure qualité article scientifique, v3 -->
+      <svg viewBox="0 0 1020 420" style="width:100%;max-width:1020px;display:block;margin:12px auto 4px;font-family:Inter,Arial,sans-serif" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="ah"  viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#9aa4bf"/></marker>
+          <marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#4aa3ff"/></marker>
+          <marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#66bb6a"/></marker>
+          <marker id="aho" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10z" fill="#f7834f"/></marker>
+        </defs>
+
+        <!-- ── HERALD bounding box ─────────────────────────────────────────── -->
+        <rect x="188" y="10" width="640" height="380" rx="12" fill="none" stroke="#2a3050" stroke-dasharray="6,4" stroke-width="1.5"/>
+        <text x="508" y="27" text-anchor="middle" fill="#9aa4bf" font-size="9.5" font-weight="700" letter-spacing="2">MODÈLE HERALD</text>
+
+        <!-- ══════════════════════════ INPUT ══════════════════════════════ -->
+        <!-- box: x=4 y=75 w=170 h=250, bottom=325, center-y=200 -->
+        <rect x="4" y="75" width="170" height="250" rx="10" fill="#111525" stroke="#4aa3ff" stroke-width="1.5"/>
+        <text x="89" y="97"  text-anchor="middle" fill="#4aa3ff" font-size="9"   font-weight="700" letter-spacing="1.2">DONNÉES INSEE</text>
+        <text x="89" y="117" text-anchor="middle" fill="#eef2ff" font-size="14"  font-weight="700">Registre SIDE</text>
+        <line x1="18" y1="126" x2="160" y2="126" stroke="#2a3050" stroke-width="1"/>
+
+        <!-- signal 1: y=138 to y=196 -->
+        <rect x="16" y="138" width="142" height="58" rx="6" fill="#141830" stroke="#4aa3ff28" stroke-width="1"/>
+        <text x="87" y="156" text-anchor="middle" fill="#4aa3ff" font-size="9.5" font-weight="700">&#x2460;  Niveau récent</text>
+        <text x="87" y="173" text-anchor="middle" fill="#9aa4bf" font-size="9">Combien d'entreprises ont été</text>
+        <text x="87" y="187" text-anchor="middle" fill="#9aa4bf" font-size="9">créées ici l'an dernier ?</text>
+
+        <!-- signal 2: y=204 to y=262 -->
+        <rect x="16" y="204" width="142" height="58" rx="6" fill="#141830" stroke="#4aa3ff28" stroke-width="1"/>
+        <text x="87" y="222" text-anchor="middle" fill="#4aa3ff" font-size="9.5" font-weight="700">&#x2461;  Tendance</text>
+        <text x="87" y="239" text-anchor="middle" fill="#9aa4bf" font-size="9">Ce territoire accélère-t-il</text>
+        <text x="87" y="253" text-anchor="middle" fill="#9aa4bf" font-size="9">ou ralentit-il ?</text>
+
+        <text x="89" y="311" text-anchor="middle" fill="#9aa4bf" font-size="8">2 variables · 280 zones · millésime INSEE</text>
+
+        <!-- input → Ridge -->
+        <path d="M174 135 Q187 110 197 80" stroke="#4aa3ff" stroke-width="1.5" fill="none" marker-end="url(#ahb)"/>
+        <!-- input → GNN -->
+        <path d="M174 230 L197 235" stroke="#4aa3ff" stroke-width="1.5" fill="none" marker-end="url(#ahb)"/>
+
+        <!-- ══════════════════════════ RIDGE AR ═══════════════════════════ -->
+        <!-- box: x=200 y=30 w=215 h=128, bottom=158, center-y=94, right=415 -->
+        <rect x="200" y="30" width="215" height="128" rx="10" fill="#111525" stroke="#66bb6a" stroke-width="1.5"/>
+        <text x="307" y="52"  text-anchor="middle" fill="#66bb6a" font-size="9"  font-weight="700" letter-spacing="1.2">BASELINE LINÉAIRE</text>
+        <text x="307" y="75"  text-anchor="middle" fill="#eef2ff" font-size="16" font-weight="700">Ridge AR</text>
+        <line x1="214" y1="84" x2="401" y2="84" stroke="#2a3050" stroke-width="1"/>
+        <text x="307" y="104" text-anchor="middle" fill="#9aa4bf" font-size="10" font-style="italic">ŷ_ridge = β · x_t</text>
+        <text x="307" y="122" text-anchor="middle" fill="#9aa4bf" font-size="9">Régression pénalisée (L2)</text>
+        <text x="307" y="137" text-anchor="middle" fill="#9aa4bf" font-size="9">sur les 2 signaux annuels SIDE</text>
+
+        <!-- Ridge arc → combiner. Ridge right=(415,94). Combiner=(700,225). -->
+        <!-- Arc stays above GNN top (y=175), control point at (580,44) -->
+        <path d="M415 94 Q580 44 680 202" stroke="#66bb6a" stroke-width="1.5" stroke-dasharray="5,3" fill="none" marker-end="url(#ahg)"/>
+        <!-- Label at arc midpoint, clear of HERALD label (y=27) -->
+        <text x="560" y="58" fill="#66bb6a" font-size="9.5" text-anchor="middle" font-style="italic">ŷ_ridge</text>
+
+        <!-- ══════════════════════════ GNN GROUP ══════════════════════════ -->
+        <!-- box: x=200 y=178 w=455 h=200, bottom=378, center-y=278, right=655 -->
+        <rect x="200" y="178" width="455" height="200" rx="10" fill="#111525" stroke="#f7834f" stroke-width="1.5"/>
+        <text x="427" y="199" text-anchor="middle" fill="#f7834f" font-size="9" font-weight="700" letter-spacing="1.2">RÉSEAU DE NEURONES SPATIO-TEMPOREL</text>
+        <line x1="214" y1="209" x2="641" y2="209" stroke="#2a3050" stroke-width="1"/>
+
+        <!-- Left sub-box (local): x=214 y=219 w=185 h=145, right=399, center-x=306, center-y=291 -->
+        <rect x="214" y="219" width="185" height="145" rx="8" fill="#171b2d" stroke="#2d3352" stroke-width="1"/>
+        <text x="306" y="238" text-anchor="middle" fill="#9aa4bf" font-size="8.5" font-weight="700" letter-spacing=".8">DYNAMIQUE LOCALE</text>
+        <text x="306" y="268" text-anchor="middle" fill="#eef2ff" font-size="20" font-weight="700" font-style="italic">α · e_t</text>
+        <text x="306" y="291" text-anchor="middle" fill="#9aa4bf" font-size="8.5">Profil intrinsèque de la zone</text>
+        <text x="306" y="306" text-anchor="middle" fill="#9aa4bf" font-size="8.5">embedding appris par le modèle</text>
+        <text x="306" y="323" text-anchor="middle" fill="#b084f5" font-size="8"  font-style="italic">α ∈ [0,1] — appris par zone et par an</text>
+        <text x="306" y="338" text-anchor="middle" fill="#b084f5" font-size="8"  font-style="italic">modulé par le régime temporel z_t</text>
+
+        <!-- Plus circle: clear of both sub-boxes. left sub ends at x=399, right sub starts at x=445 -->
+        <!-- cx=422, r=18 → x=404..440. Gap to left box: 5px. Gap to right box: 5px. -->
+        <circle cx="422" cy="291" r="18" fill="#141830" stroke="#f7834f" stroke-width="1.5"/>
+        <text x="422" y="297" text-anchor="middle" fill="#f7834f" font-size="21" font-weight="800">+</text>
+
+        <!-- arrows into + circle (clear of boxes) -->
+        <line x1="399" y1="291" x2="404" y2="291" stroke="#f7834f" stroke-width="1.4" marker-end="url(#aho)"/>
+        <line x1="445" y1="291" x2="440" y2="291" stroke="#f7834f" stroke-width="1.4" marker-end="url(#aho)"/>
+
+        <!-- Right sub-box (graph): x=445 y=219 w=200 h=145, right=645, center-x=545, center-y=291 -->
+        <rect x="445" y="219" width="200" height="145" rx="8" fill="#171b2d" stroke="#2d3352" stroke-width="1"/>
+        <text x="545" y="238" text-anchor="middle" fill="#9aa4bf" font-size="8.5" font-weight="700" letter-spacing=".8">INFLUENCE TERRITORIALE</text>
+        <text x="545" y="267" text-anchor="middle" fill="#eef2ff" font-size="17" font-weight="700" font-style="italic">(1-α) · m_t</text>
+        <text x="545" y="291" text-anchor="middle" fill="#9aa4bf" font-size="8.5">Agrégation des zones voisines</text>
+        <text x="545" y="308" text-anchor="middle" fill="#9aa4bf" font-size="8"  font-style="italic">γ_mob · A_mob + γ_geo · A_geo</text>
+        <text x="545" y="325" text-anchor="middle" fill="#9aa4bf" font-size="8">Graphe interne : mobilité pendulaire</text>
+        <text x="545" y="340" text-anchor="middle" fill="#9aa4bf" font-size="8">et contiguïté géographique</text>
+        <text x="545" y="356" text-anchor="middle" fill="#9aa4bf" font-size="7.5" font-style="italic">(non fourni par l'utilisateur)</text>
+
+        <!-- GNN → combiner. + circle bottom at (422,309). Combiner at (700,225). -->
+        <!-- Short path: from bottom of + down, then right and up to combiner left edge -->
+        <!-- Goes via (422,370) then (680,370) then up to (680,225) - stays inside HERALD box -->
+        <path d="M422 309 Q422 372 560 372 Q672 372 678 248" stroke="#f7834f" stroke-width="1.4" fill="none" marker-end="url(#aho)"/>
+        <!-- Label along this path, clear of other elements, at y=382 (inside viewBox=420) -->
+        <text x="500" y="387" fill="#f7834f" font-size="8.5" text-anchor="middle" font-style="italic">résidu neural  ε = f(x_t, A_mob, A_geo)</text>
+
+        <!-- ══════════════════════════ COMBINER ⊕ ═════════════════════════ -->
+        <!-- cx=700, cy=225, r=24. left=676, right=724, top=201, bottom=249 -->
+        <circle cx="700" cy="225" r="24" fill="#111525" stroke="#9aa4bf" stroke-width="1.5"/>
+        <text x="700" y="232" text-anchor="middle" fill="#eef2ff" font-size="22" font-weight="800">&#8853;</text>
+        <text x="700" y="264" text-anchor="middle" fill="#9aa4bf" font-size="8.5" font-style="italic">ŷ_z = ŷ_ridge + ε · σ_z</text>
+
+        <!-- combiner → output box (combiner right=724, output left=772) -->
+        <path d="M724 225 L772 205" stroke="#9aa4bf" stroke-width="1.4" fill="none" marker-end="url(#ah)"/>
+
+        <!-- ══════════════════════════ OUTPUTS ════════════════════════════ -->
+        <!-- box: x=774 y=30 w=200 h=358, bottom=388 -->
+        <rect x="774" y="30" width="200" height="358" rx="10" fill="#111525" stroke="#26a69a" stroke-width="1.5"/>
+        <text x="874" y="52"  text-anchor="middle" fill="#26a69a" font-size="9" font-weight="700" letter-spacing="1.5">PRÉVISIONS</text>
+        <line x1="786" y1="61" x2="962" y2="61" stroke="#2a3050" stroke-width="1"/>
+
+        <!-- output 1: total. y=70 to y=200 -->
+        <rect x="786" y="70" width="176" height="128" rx="7" fill="#171b2d" stroke="#26a69a33" stroke-width="1"/>
+        <text x="874" y="91"  text-anchor="middle" fill="#26a69a" font-size="8.5" font-weight="700" letter-spacing=".8">PAR ZONE D'EMPLOI</text>
+        <text x="874" y="120" text-anchor="middle" fill="#eef2ff" font-size="18" font-weight="700" font-style="italic">ŷ_z,t</text>
+        <text x="874" y="143" text-anchor="middle" fill="#9aa4bf" font-size="8.5">Créations prévues par zone</text>
+        <text x="874" y="158" text-anchor="middle" fill="#9aa4bf" font-size="8.5">280 zones d'emploi · 2021–2025</text>
+        <text x="874" y="177" text-anchor="middle" fill="#26a69a" font-size="9.5" font-weight="700">WMAPE moyen : 0.021</text>
+        <text x="874" y="193" text-anchor="middle" fill="#9aa4bf" font-size="8">(vs Ridge AR : 0.061)</text>
+
+        <!-- output 2: sectors. y=212 to y=376 -->
+        <rect x="786" y="212" width="176" height="162" rx="7" fill="#171b2d" stroke="#26a69a33" stroke-width="1"/>
+        <text x="874" y="232"  text-anchor="middle" fill="#26a69a"  font-size="8.5" font-weight="700" letter-spacing=".8">DÉCOMPOSITION SECTORIELLE</text>
+        <text x="874" y="259"  text-anchor="middle" fill="#eef2ff"  font-size="17"  font-weight="700" font-style="italic">ŷ_z,t,s</text>
+        <text x="874" y="281"  text-anchor="middle" fill="#9aa4bf"  font-size="8.5">9 secteurs A10</text>
+        <line x1="796" y1="287" x2="954" y2="287" stroke="#2a3050" stroke-width="0.8"/>
+        <text x="874" y="302" text-anchor="middle" fill="#9aa4bf" font-size="8">Industrie · Construction</text>
+        <text x="874" y="316" text-anchor="middle" fill="#9aa4bf" font-size="8">Commerce · Finance · Services</text>
+        <text x="874" y="330" text-anchor="middle" fill="#9aa4bf" font-size="8">Immobilier · Information · Arts</text>
+        <line x1="796" y1="338" x2="954" y2="338" stroke="#2a3050" stroke-width="0.8"/>
+        <text x="874" y="353" text-anchor="middle" fill="#9aa4bf" font-size="7.5">Incertitude entre seeds (n=10)</text>
+        <text x="874" y="367" text-anchor="middle" fill="#9aa4bf" font-size="7.5">Carte d'erreur par territoire</text>
+
+        <!-- Figure caption — inside viewBox (height=420), y=407 -->
+        <text x="508" y="407" text-anchor="middle" fill="#6a7490" font-size="7.8" font-style="italic">Figure 1. x_t ∈ R&#178; : signaux SIDE annuels (INSEE). A_mob, A_geo : graphes internes (mobilité + contiguïté). α_z,t ∈ [0,1] : arbitrage local/graphe appris. z_t : régime latent ou flags manuels. σ_z : écart-type de zone.</text>
+      </svg>
+
+
     </div>
   </div>
 
   <div class="section">
-    <div class="section-title">1. Comparaison principale: HERALD vs références</div>
+    <div class="section-title">1. Comparaison</div>
     <div class="section-note">
       Ce bloc répond à la question centrale: HERALD tient-il face aux références classiques et aux modèles
       spatio-temporels utilisés comme points de comparaison. La barre 2025 est séparée de la moyenne pour
@@ -1016,20 +1230,9 @@ def build_dashboard(args: argparse.Namespace) -> None:
     <div class="section-title">2. Erreur par année</div>
     <div class="section-note">
       HERALD est évalué année par année pour éviter une conclusion fondée seulement sur une moyenne.
-      Cette courbe compare HERALD uniquement aux modèles externes. Les contrôles internes sont
-      résumés dans le bloc méthodologique suivant.
+      Cette courbe compare HERALD flags, HERALD no flags et les modèles de référence.
     </div>
     <div class="card"><div id="chart-year-lines" style="height:390px"></div></div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">2b. Validation méthodologique interne</div>
-    <div class="section-note">
-      Ces lignes ne sont pas des modèles concurrents: elles servent seulement à vérifier que le résultat
-      HERALD ne dépend pas d'une fuite directe, d'une seule source de variables ou d'un choix arbitraire
-      d'architecture.
-    </div>
-    <div class="card"><div id="internal-validation"></div></div>
   </div>
 
   <div class="section">
@@ -1049,29 +1252,22 @@ def build_dashboard(args: argparse.Namespace) -> None:
   <div class="section">
     <div class="section-title">4. Secteurs A10</div>
     <div class="section-note">
-      Les volumes absolus (réel vs HERALD) évitent l'illusion d'une bonne WMAPE sur un secteur marginal.
-      Le graphique de droite affiche la WMAPE sectorielle de HERALD. Les contrôles A10 restent utilisés
-      dans l'audit interne, mais ne sont pas présentés comme modèles concurrents dans le dashboard public.
+      Comparaison directe entre le réel, HERALD flags et HERALD no flags. Le but est de voir si la
+      version sans flags garde aussi le signal sectoriel A10.
     </div>
     <div class="controls" style="margin-bottom:8px">
       <label>Année secteurs <select id="sector-year" onchange="drawSectorCharts()">
         {sector_year_options}
       </select></label>
     </div>
-    <div class="grid2">
-      <div class="card"><div id="chart-sector-volume" style="height:400px"></div></div>
-      <div class="card"><div id="chart-sector-wmape" style="height:400px"></div></div>
-    </div>
+    <div class="card"><div id="chart-sector-volume" style="height:430px"></div></div>
   </div>
 
   <div class="section">
-    <div class="section-title">5. Carte territoriale interactive — erreur, volume et graphe</div>
+    <div class="section-title">5. Carte territoriale</div>
     <div class="section-note">
-      Une seule carte avec trois lectures superposables: la chaleur d'erreur de HERALD par zone d'emploi,
-      le volume réel d'établissements, et le graphe de mobilité appris (toggle ON/OFF).
-      Cliquez sur une zone pour voir l'évolution réelle vs prédite 2021–2025 et la composition A10.
-      Les connexions du graphe révèlent les flux économiques que le modèle a appris à exploiter —
-      une zone fortement connectée à une métropole hérite de son signal prédictif.
+      Carte centrée sur les résultats déjà complets: erreur HERALD, volume réel, graphe et A10 au clic.
+      La couche Intelligence sera relancée séparément avant d'être réintégrée ici.
     </div>
     <div class="grid-map">
       <div class="card">
@@ -1080,11 +1276,6 @@ def build_dashboard(args: argparse.Namespace) -> None:
             <option value="semi_error">Erreur HERALD (WMAPE)</option>
             <option value="abs_error">Erreur absolue (établissements)</option>
             <option value="real_volume">Volume réel</option>
-            <option value="opp_score">Intelligence v0 — opportunité</option>
-            <option value="risk_score">Intelligence v0 — risque</option>
-            <option value="uncertainty">Intelligence v0 — incertitude</option>
-            <option value="fc_growth">Intelligence v0 — croissance 2026</option>
-            <option value="fc_growth_2027">Intelligence v0 — croissance 2027</option>
           </select></label>
           <label>Année <select id="map-year" onchange="handleMapYearSelect()"></select></label>
           <label style="display:flex;align-items:center;gap:6px">
@@ -1119,8 +1310,7 @@ def build_dashboard(args: argparse.Namespace) -> None:
       </div>
       <div class="card">
         <div id="zone-title" class="section-title">Sélectionnez une zone</div>
-        <div class="mini">Évolution réelle vs prédite 2021–2025 + secteurs A10 + connexions du graphe pour la zone.</div>
-        <div id="zone-intelligence" class="mini warn" style="margin-top:10px"></div>
+        <div class="mini">Évolution réelle vs HERALD flags vs HERALD no flags 2021–2025 + secteurs A10 + connexions du graphe.</div>
         <div id="chart-zone-time" style="height:260px"></div>
         <div id="chart-zone-sector" style="height:260px"></div>
         <div id="zone-connections" class="mini" style="margin-top:10px"></div>
@@ -1129,33 +1319,20 @@ def build_dashboard(args: argparse.Namespace) -> None:
   </div>
 
   <div class="section">
-    <div class="section-title">6. Mécanismes internes — alpha, gamma et régimes</div>
+    <div class="section-title">6. Régimes appris sans flags</div>
     <div class="section-note">
-      Alpha mesure le poids relatif de la composante locale (1 = purement local, 0 = purement graphe).
-      HERALD apprend à équilibrer les deux sources selon l'année et le régime économique.
-      Gamma révèle ce que le modèle a retenu du graphe: γ_mob ≈ 0.87 contre γ_geo ≈ 0.28 signifie que
-      les flux de mobilité domicile-travail sont plus informatifs que la seule adjacence géographique.
+      Cette section montre ce que le modèle change en interne lorsqu'il ne reçoit aucune flag crise/rebond.
+      Les courbes sont les dimensions du régime latent; les barres indiquent l'ampleur de changement entre deux années.
     </div>
     <div class="grid2">
-      <div class="card"><div id="chart-alpha" style="height:340px"></div></div>
-      <div class="card"><div id="chart-gamma" style="height:340px"></div></div>
+      <div class="card"><div id="chart-regime-latent" style="height:360px"></div></div>
+      <div class="card">
+        <div id="regime-summary"></div>
+        <div id="chart-regime-step" style="height:260px"></div>
+      </div>
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-title">7. Audit anti-fuite et prévision 2026–2027</div>
-    <div class="section-note">
-      La validation est strictement walk-forward: pour chaque année 2021–2025, le modèle est entraîné
-      uniquement avec les années antérieures. Les contrôles stricts et l'audit anti-fuite réduisent le
-      risque de copie directe du target, sans autoriser l'affirmation "zéro fuite".
-      Le forecast 2026–2027 est une prévision prospective conditionnelle aux données disponibles au 2026-05-07 —
-      il ne s'agit pas d'une validation ex-ante: il n'existe pas encore de données réelles pour ces années.
-    </div>
-    <div class="grid2">
-      <div class="card"><div id="audit-box"></div></div>
-      <div class="card"><div id="chart-forecast-national" style="height:340px"></div></div>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -1173,11 +1350,15 @@ let MAP_ANIMATION_TIMER = null;
 let CURRENT_ZONE = null;
 
 function model(label) {{ return DATA.models.find(m => m.label === label); }}
+function heraldModel() {{ return DATA.models.find(m => String(m.label).startsWith("HERALD")) || DATA.models[0]; }}
 function fmt(x, d=4) {{ return x === null || x === undefined || Number.isNaN(x) ? "n/a" : Number(x).toFixed(d); }}
 function zeName(ze) {{ return (DATA.zeNames && DATA.zeNames[ze]) ? DATA.zeNames[ze] : ze; }}
 function pct(x) {{ return x === null || x === undefined ? "n/a" : (100*x).toFixed(2)+"%"; }}
 function colorFor(label) {{
-  if(label === "HERALD") return COLORS.semi;
+  if(String(label).includes("no flags")) return COLORS.semi;
+  if(String(label).includes("flags étendu")) return COLORS.masked;
+  if(String(label).includes("flags clean")) return COLORS.history;
+  if(String(label).includes("HERALD flags")) return COLORS.history;
   if(label.includes("Contrôle")) return COLORS.control;
   if(label.includes("Ridge")) return COLORS.ridge;
   if(label.includes("ARIMA")) return COLORS.arima;
@@ -1230,7 +1411,7 @@ function drawYearLines() {{
     const yvals = DATA.years.map(y=>m.per_year[y] ?? null);
     traces.push({{type:"scatter", mode:"lines+markers", x:DATA.years,
       y:yvals, name:m.label,
-      line:{{color:colorFor(m.label), width:m.label === "HERALD" ? 4 : 2}},
+      line:{{color:colorFor(m.label), width:String(m.label).startsWith("HERALD") ? 4 : 2}},
       hovertemplate:"%{{x}}<br>%{{fullData.name}}: %{{y:.4f}}<extra></extra>"}});
   }});
   traces.push({{type:"scatter", mode:"lines+markers", x:DATA.years, y:DATA.years.map(y=>DATA.ridgeYear[y] ?? null),
@@ -1250,45 +1431,31 @@ function drawYearLines() {{
   }}), {{responsive:true}});
 }}
 
-function drawInternalValidation() {{
-  const rows = DATA.internalControls || [];
-  let html = "<table><thead><tr><th>Contrôle</th><th>Rôle méthodologique</th><th>WMAPE 2025</th><th>Lecture</th></tr></thead><tbody>";
-  rows.forEach(r => {{
-    let role = "Contrôle interne";
-    let reading = "Utilisé pour vérifier la robustesse du résultat.";
-    if(r.label.includes("sans semi")) {{
-      role = "Isole l'effet de l'apprentissage semi-supervisé";
-      reading = "Si HERALD reste proche ou meilleur, la semi-supervision apporte un signal opérationnel; sinon elle reste exploratoire.";
-    }} else if(r.label.includes("local")) {{
-      role = "Teste si le graphe apporte plus qu'un modèle local";
-      reading = "Le contrôle local reste compétitif: le claim graphe doit rester prudent.";
-    }} else if(r.label.includes("lag-only")) {{
-      role = "Contrôle anti-fuite dur avec variables retardées";
-      reading = "Sert à vérifier que le résultat 2025 n'est pas expliqué par une source contemporaine ambiguë.";
-    }}
-    html += `<tr><td>${{r.label}}</td><td>${{role}}</td><td>${{fmt(r.wmape_2025_median)}}</td><td>${{reading}}</td></tr>`;
-  }});
-  html += "</tbody></table><div class='mini warn' style='margin-top:10px'>Ces contrôles ne doivent pas être lus comme des modèles concurrents dans la comparaison principale.</div>";
-  document.getElementById("internal-validation").innerHTML = html;
-}}
-
 function drawFranceAndSeeds() {{
   const years = DATA.years;
   const realVals = years.map(y=>(DATA.franceTotal[y]||{{}}).y_true||null);
   const heraldVals = years.map(y=>(DATA.franceTotal[y]||{{}}).y_pred||null);
+  const dirtyFlagsVals = years.map(y=>(DATA.dirtyFlagsFranceTotal[y]||{{}}).y_pred||null);
+  const cleanFlagsVals = years.map(y=>(DATA.cleanFlagsFranceTotal[y]||{{}}).y_pred||null);
   const heraldText = years.map(y => {{
     const ft = DATA.franceTotal[y];
     if(!ft) return y;
     const err = ft.abs_error || Math.abs((ft.y_pred||0)-(ft.y_true||0));
-    return y+"<br>Réel: "+ft.y_true+"<br>HERALD: "+ft.y_pred+"<br>Erreur abs: "+err+" étab.";
+    return y+"<br>Réel: "+ft.y_true+"<br>HERALD no flags: "+ft.y_pred+"<br>Erreur abs: "+err+" étab.";
   }});
   Plotly.newPlot("chart-france-real-pred", [
     {{type:"scatter", mode:"lines+markers", x:years, y:realVals,
       name:"Réel INSEE", line:{{color:COLORS.real,width:3}},
       hovertemplate:"%{{x}}<br>Réel: %{{y:,}}<extra></extra>"}},
     {{type:"scatter", mode:"lines+markers", x:years, y:heraldVals,
-      name:"HERALD", line:{{color:COLORS.semi,width:3}},
+      name:"HERALD no flags", line:{{color:COLORS.semi,width:3}},
       text:heraldText, hovertemplate:"%{{text}}<extra></extra>"}},
+    {{type:"scatter", mode:"lines+markers", x:years, y:dirtyFlagsVals,
+      name:"HERALD flags étendu", line:{{color:COLORS.masked,width:2.6,dash:"dash"}},
+      hovertemplate:"%{{x}}<br>HERALD flags étendu: %{{y:,}}<extra></extra>"}},
+    {{type:"scatter", mode:"lines+markers", x:years, y:cleanFlagsVals,
+      name:"HERALD flags clean", line:{{color:COLORS.history,width:3,dash:"dot"}},
+      hovertemplate:"%{{x}}<br>HERALD flags clean: %{{y:,}}<extra></extra>"}},
   ], Object.assign({{}}, BASE_LAYOUT, {{
     title:"Volumes France entière: réel vs HERALD",
     yaxis:{{title:"Créations d'établissements", gridcolor:"#30364f", tickformat:","}},
@@ -1311,6 +1478,8 @@ function drawSectorCharts() {{
 
   // Volume: Réel vs HERALD for the selected observed year.
   const st = DATA.sectorTotalsByYear ? DATA.sectorTotalsByYear[yr] : null;
+  const sdf = DATA.dirtyFlagsSectorTotalsByYear ? DATA.dirtyFlagsSectorTotalsByYear[yr] : null;
+  const scf = DATA.cleanFlagsSectorTotalsByYear ? DATA.cleanFlagsSectorTotalsByYear[yr] : null;
   if(st && st.sectors) {{
     const labels = st.sectors.map(s => s+" — "+DATA.sectorLabels[s]);
     // For WMAPE hover: show absolute error
@@ -1320,10 +1489,16 @@ function drawSectorCharts() {{
       {{type:"bar", x:labels, y:st.y_true, name:"Réel INSEE",
         marker:{{color:COLORS.real, opacity:0.75}},
         hovertemplate:"%{{x}}<br>Réel: %{{y:,}}<extra></extra>"}},
-      {{type:"bar", x:labels, y:st.y_pred, name:"HERALD",
+      {{type:"bar", x:labels, y:sdf && sdf.y_pred ? sdf.y_pred : st.sectors.map(_=>null), name:"HERALD flags étendu",
+        marker:{{color:COLORS.masked, opacity:0.75}},
+        hovertemplate:"%{{x}}<br>HERALD flags étendu: %{{y:,}}<extra></extra>"}},
+      {{type:"bar", x:labels, y:scf && scf.y_pred ? scf.y_pred : st.sectors.map(_=>null), name:"HERALD flags clean",
+        marker:{{color:COLORS.history, opacity:0.8}},
+        hovertemplate:"%{{x}}<br>HERALD flags clean: %{{y:,}}<extra></extra>"}},
+      {{type:"bar", x:labels, y:st.y_pred, name:"HERALD no flags",
         marker:{{color:COLORS.semi, opacity:0.85}},
         customdata:wmapePerSec,
-        hovertemplate:"%{{x}}<br>HERALD: %{{y:,}}<br>WMAPE: %{{customdata}}<extra></extra>"}}
+        hovertemplate:"%{{x}}<br>HERALD no flags: %{{y:,}}<br>WMAPE: %{{customdata}}<extra></extra>"}}
     ], Object.assign({{}}, BASE_LAYOUT, {{
       title:"Volumes A10 "+yr+": réel vs HERALD",
       barmode:"group",
@@ -1331,85 +1506,23 @@ function drawSectorCharts() {{
       yaxis:{{title:"Établissements", gridcolor:"#30364f", tickformat:","}}
     }}), {{responsive:true}});
   }}
-
-  // WMAPE sectoriel: HERALD + contrôles — plus bas = meilleur, per sector
-  const sectors = Object.keys(DATA.sectorLabels);
-  const traces = DATA.models.filter(m => m.sector).map(m => ({{
-    type:"bar",
-    x:sectors.map(s => s+" — "+DATA.sectorLabels[s]),
-    y:sectors.map(s => m.sector[s]),
-    name:m.label,
-    marker:{{color:colorFor(m.label)}},
-    hovertemplate:"%{{x}}<br>"+m.label+": %{{y:.4f}}<extra></extra>"
-  }}));
-  Plotly.newPlot("chart-sector-wmape", traces, Object.assign({{}}, BASE_LAYOUT, {{
-    title:"WMAPE sectoriel HERALD — plus bas = meilleur",
-    barmode:"group",
-    xaxis:{{tickangle:-30, automargin:true}},
-    yaxis:{{title:"WMAPE", gridcolor:"#30364f"}},
-    legend:{{orientation:"h", y:-0.3}}
-  }}), {{responsive:true}});
 }}
 
 function mapValue(metric, year, ze) {{
   if(metric === "semi_error") return DATA.zoneSemiError[year] ? DATA.zoneSemiError[year][ze] : null;
   if(metric === "real_volume") return DATA.zoneSemiReal[year] ? DATA.zoneSemiReal[year][ze] : null;
   if(metric === "abs_error") return DATA.zoneSemiAbs[year] ? DATA.zoneSemiAbs[year][ze] : null;
-  const intel = DATA.intelligence && DATA.intelligence.scores ? DATA.intelligence.scores[ze] : null;
-  if(!intel) return null;
-  if(metric === "opp_score") return intel.opportunity_score;
-  if(metric === "risk_score") return intel.risk_score;
-  if(metric === "fc_growth") return intel.fc_growth_2025_2026_pct;
-  if(metric === "fc_growth_2027") {{
-    const zf = DATA.zoneForecast && DATA.zoneForecast.byZone ? DATA.zoneForecast.byZone[ze] : null;
-    return zf ? zf.growth_2026_2027_pct : null;
-  }}
-  if(metric === "uncertainty") {{
-    if(intel.fc_2026_mean && intel.fc_2026_std !== null && intel.fc_2026_std !== undefined)
-      return 100 * intel.fc_2026_std / Math.max(1, Math.abs(intel.fc_2026_mean));
-    return null;
-  }}
   return null;
-}}
-
-function intelligenceText(ze) {{
-  const intel = DATA.intelligence && DATA.intelligence.scores ? DATA.intelligence.scores[ze] : null;
-  if(!intel) return "";
-  const alerts = DATA.intelligence.alertsByZone && DATA.intelligence.alertsByZone[ze] ? DATA.intelligence.alertsByZone[ze] : [];
-  let txt = "<br><b>HERALD Intelligence v0</b><br>";
-  txt += "Opportunité: "+fmt(intel.opportunity_score,1)+" ("+(intel.opportunity_tier||"n/a")+")<br>";
-  txt += "Risque: "+fmt(intel.risk_score,1)+" ("+(intel.risk_tier||"n/a")+")<br>";
-  if(intel.fc_2026_mean !== null && intel.fc_2026_mean !== undefined)
-    txt += "Prévision 2026: "+fmt(intel.fc_2026_mean,0)+" étab.<br>";
-  if(intel.fc_growth_2025_2026_pct !== null && intel.fc_growth_2025_2026_pct !== undefined)
-    txt += "Croissance 2025→2026: "+fmt(intel.fc_growth_2025_2026_pct,1)+"%<br>";
-  const zf = DATA.zoneForecast && DATA.zoneForecast.byZone ? DATA.zoneForecast.byZone[ze] : null;
-  if(zf && zf["2027"]) txt += "Prévision 2027: "+fmt(zf["2027"].mean,0)+" étab.<br>";
-  if(zf && zf.growth_2026_2027_pct !== null && zf.growth_2026_2027_pct !== undefined)
-    txt += "Croissance 2026→2027: "+fmt(zf.growth_2026_2027_pct,1)+"%<br>";
-  if(alerts.length) txt += "Alertes: "+alerts.slice(0,2).map(a => a.description).join(" | ")+"<br>";
-  txt += "<span style='color:#f6c15b'>Indice exploratoire, poids non calibrés.</span>";
-  return txt;
 }}
 
 function mapColorScale(metric) {{
   if(metric === "real_volume") return [[0,"#0f1220"],[0.4,"#1a3a5c"],[0.7,"#2e6da4"],[1,"#74b9ff"]];
-  if(metric === "opp_score") return [[0,"#15202b"],[0.35,"#1f7a4d"],[0.7,"#8bd346"],[1,"#ffe066"]];
-  if(metric === "risk_score") return [[0,"#173a2a"],[0.45,"#ffd54f"],[0.75,"#ff8a65"],[1,"#ef5350"]];
-  if(metric === "uncertainty") return [[0,"#143b3a"],[0.4,"#26a69a"],[0.75,"#b084f5"],[1,"#ef5350"]];
-  if(metric === "fc_growth") return [[0,"#6b1f2a"],[0.45,"#ffd54f"],[0.55,"#e0e4f0"],[1,"#26a69a"]];
-  if(metric === "fc_growth_2027") return [[0,"#6b1f2a"],[0.45,"#ffd54f"],[0.55,"#e0e4f0"],[1,"#26a69a"]];
   return [[0,"#1a3a2a"],[0.35,"#26a69a"],[0.7,"#ffd54f"],[1,"#ef5350"]];
 }}
 
 function mapColorbarTitle(metric) {{
   if(metric === "real_volume") return "Volume";
   if(metric === "abs_error") return "Erreur abs.";
-  if(metric === "opp_score") return "Opportunité";
-  if(metric === "risk_score") return "Risque";
-  if(metric === "uncertainty") return "CV %";
-  if(metric === "fc_growth") return "Croiss. %";
-  if(metric === "fc_growth_2027") return "Croiss. %";
   return "WMAPE";
 }}
 
@@ -1435,17 +1548,10 @@ function drawMap() {{
     let base = "<b>"+zeName(ze)+"</b><br>ZE "+ze+"<br>";
     if(pred) {{
       const wmape = val !== null && metric==="semi_error" ? " (WMAPE: "+pct(val)+")" : "";
-      base += "Réel: "+(pred.y_true||"?")+"<br>HERALD: "+(pred.y_pred||"?")+"<br>Erreur abs.: "+(pred.abs_error||"?")+" étab."+wmape+"<br>";
+      base += "Réel: "+(pred.y_true||"?")+"<br>HERALD no flags: "+(pred.y_pred||"?")+"<br>Erreur abs.: "+(pred.abs_error||"?")+" étab."+wmape+"<br>";
     }}
     if(metric==="abs_error") base += "Erreur abs.: "+fmt(val,0)+" étab.";
-    else if(metric==="opp_score") base += "Score opportunité: "+fmt(val,1)+"/100";
-    else if(metric==="risk_score") base += "Score risque: "+fmt(val,1)+"/100";
-    else if(metric==="uncertainty") base += "Incertitude forecast: "+fmt(val,2)+"%";
-    else if(metric==="fc_growth") base += "Croissance prévue 2025→2026: "+fmt(val,1)+"%";
-    else if(metric==="fc_growth_2027") base += "Croissance prévue 2026→2027: "+fmt(val,1)+"%";
     else if(metric!=="real_volume") base += "WMAPE: "+pct(val);
-    if(metric.startsWith("opp_") || metric.endsWith("_score") || metric==="uncertainty" || metric==="fc_growth" || metric==="fc_growth_2027")
-      base += intelligenceText(ze);
     texts.push(base);
   }});
 
@@ -1554,104 +1660,38 @@ function restartMapAnimationIfNeeded() {{
   MAP_ANIMATION_TIMER = setInterval(stepMapYear, speed);
 }}
 
-function clampScore(x) {{
-  if(x === null || x === undefined || isNaN(x)) return 0;
-  return Math.max(0, Math.min(100, Number(x)));
-}}
-
-function renderIntelPanel(intel, alerts) {{
-  const opp = clampScore(intel.opportunity_score);
-  const risk = clampScore(intel.risk_score);
-  const zf = DATA.zoneForecast && DATA.zoneForecast.byZone ? DATA.zoneForecast.byZone[CURRENT_ZONE || ""] : null;
-  const alertTxt = alerts.length
-    ? "<div class='intel-alert'><b>Alerte:</b> "+alerts.slice(0,2).map(a => a.description).join(" | ")+"</div>"
-    : "";
-  return `
-    <div class="intel-panel">
-      <div class="intel-head">
-        <div class="intel-title">HERALD Intelligence v0</div>
-        <div class="intel-status">exploratoire</div>
-      </div>
-      <div class="intel-grid">
-        <div class="intel-chip">
-          <div class="label">Opportunité</div>
-          <div class="value">${{fmt(opp,1)}}/100</div>
-          <div class="scorebar opp"><span style="width:${{opp}}%"></span></div>
-          <div class="label">${{intel.opportunity_tier || "n/a"}}</div>
-        </div>
-        <div class="intel-chip">
-          <div class="label">Risque</div>
-          <div class="value">${{fmt(risk,1)}}/100</div>
-          <div class="scorebar risk"><span style="width:${{risk}}%"></span></div>
-          <div class="label">${{intel.risk_tier || "n/a"}}</div>
-        </div>
-        <div class="intel-chip">
-          <div class="label">Prévision 2026</div>
-          <div class="value">${{fmt(intel.fc_2026_mean,0)}}</div>
-          <div class="label">créations prévues</div>
-        </div>
-        <div class="intel-chip">
-          <div class="label">Croissance 2025→2026</div>
-          <div class="value">${{fmt(intel.fc_growth_2025_2026_pct,1)}}%</div>
-          <div class="label">prospectif</div>
-        </div>
-        <div class="intel-chip">
-          <div class="label">Prévision 2027</div>
-          <div class="value">${{zf && zf["2027"] ? fmt(zf["2027"].mean,0) : "n/a"}}</div>
-          <div class="label">créations prévues</div>
-        </div>
-        <div class="intel-chip">
-          <div class="label">Croissance 2026→2027</div>
-          <div class="value">${{zf && zf.growth_2026_2027_pct !== undefined ? fmt(zf.growth_2026_2027_pct,1)+"%" : "n/a"}}</div>
-          <div class="label">prospectif</div>
-        </div>
-      </div>
-      ${{alertTxt}}
-      <details class="intel-details">
-        <summary>Voir l'explication méthodologique</summary>
-        <div style="margin-top:6px">${{intel.explication_fr || "Explication non disponible."}}</div>
-        <div style="margin-top:6px;color:#f6c15b">v0: score indicatif, poids non calibrés; ne pas lire comme recommandation finale.</div>
-      </details>
-    </div>`;
-}}
-
 function drawZone(ze, year) {{
   CURRENT_ZONE = ze;
   const name = zeName(ze);
   document.getElementById("zone-title").textContent = name+" — ZE "+ze;
-  const intelEl = document.getElementById("zone-intelligence");
-  const intel = DATA.intelligence && DATA.intelligence.scores ? DATA.intelligence.scores[ze] : null;
-  if(intelEl) {{
-    if(intel) {{
-      const alerts = DATA.intelligence.alertsByZone && DATA.intelligence.alertsByZone[ze] ? DATA.intelligence.alertsByZone[ze] : [];
-      intelEl.innerHTML = renderIntelPanel(intel, alerts);
-    }} else {{
-      intelEl.innerHTML = "<b>HERALD Intelligence v0:</b> indicateurs non disponibles pour cette zone.";
-    }}
-  }}
-  const chartYears = DATA.zoneForecast && DATA.zoneForecast.available
-    ? DATA.years.concat(["2026","2027"])
-    : DATA.years.slice();
-  const real=[], semi=[], ridge=[], hoverTexts=[];
+  const chartYears = DATA.years.slice();
+  const real=[], semi=[], dirtyFlags=[], cleanFlags=[], ridge=[], hoverTexts=[];
   chartYears.forEach(y => {{
     const p = DATA.zoneSemiPreds[y] ? DATA.zoneSemiPreds[y][ze] : null;
-    const zf = DATA.zoneForecast && DATA.zoneForecast.byZone ? DATA.zoneForecast.byZone[ze] : null;
-    const fp = zf && zf[y] ? zf[y] : null;
+    const pdf = DATA.zoneDirtyFlagsPreds[y] ? DATA.zoneDirtyFlagsPreds[y][ze] : null;
+    const pcf = DATA.zoneCleanFlagsPreds[y] ? DATA.zoneCleanFlagsPreds[y][ze] : null;
     const rp = DATA.zoneRidgePreds && DATA.zoneRidgePreds[y] ? DATA.zoneRidgePreds[y][ze] : null;
     real.push(p ? p.y_true : null);
-    semi.push(p ? p.y_pred : (fp ? fp.mean : null));
-    ridge.push(rp !== undefined && rp !== null ? rp : (fp ? fp.ridge : null));
+    semi.push(p ? p.y_pred : null);
+    dirtyFlags.push(pdf ? pdf.y_pred : null);
+    cleanFlags.push(pcf ? pcf.y_pred : null);
+    ridge.push(rp !== undefined && rp !== null ? rp : null);
     const ae = p ? Math.abs((p.y_pred||0)-(p.y_true||0)) : null;
-    const suffix = Number(y) >= 2026 ? "<br><b>Prévision prospective</b>" : "";
-    hoverTexts.push(y+"<br>Réel: "+(p?p.y_true:"n/a")+"<br>HERALD: "+(p?p.y_pred:(fp?fmt(fp.mean,0):"n/a"))+"<br>Ridge AR: "+(ridge[ridge.length-1]!==null?fmt(ridge[ridge.length-1],0):"n/a")+"<br>Erreur: "+(ae||"n/a")+" étab."+suffix);
+    hoverTexts.push(y+"<br>Réel: "+(p?p.y_true:"n/a")+"<br>HERALD no flags: "+(p?p.y_pred:"n/a")+"<br>Ridge AR: "+(ridge[ridge.length-1]!==null?fmt(ridge[ridge.length-1],0):"n/a")+"<br>Erreur: "+(ae||"n/a")+" étab.");
   }});
   const traces = [
     {{type:"scatter", mode:"lines+markers", x:chartYears, y:real,
       name:"Réel INSEE", line:{{color:COLORS.real,width:3}},
       hovertemplate:"%{{x}}<br>Réel: %{{y:,}}<extra></extra>"}},
     {{type:"scatter", mode:"lines+markers", x:chartYears, y:semi,
-      name:"HERALD", line:{{color:COLORS.semi,width:3}},
+      name:"HERALD no flags", line:{{color:COLORS.semi,width:3}},
       text:hoverTexts, hovertemplate:"%{{text}}<extra></extra>"}},
+    {{type:"scatter", mode:"lines+markers", x:chartYears, y:dirtyFlags,
+      name:"HERALD flags étendu", line:{{color:COLORS.masked,width:2.5,dash:"dash"}},
+      hovertemplate:"%{{x}}<br>HERALD flags étendu: %{{y:,}}<extra></extra>"}},
+    {{type:"scatter", mode:"lines+markers", x:chartYears, y:cleanFlags,
+      name:"HERALD flags clean", line:{{color:COLORS.history,width:3,dash:"dot"}},
+      hovertemplate:"%{{x}}<br>HERALD flags clean: %{{y:,}}<extra></extra>"}},
     {{type:"scatter", mode:"lines+markers", x:chartYears, y:ridge,
       name:"Ridge AR", line:{{color:COLORS.ridge,width:2.5,dash:"dash"}},
       text:hoverTexts, hovertemplate:"%{{text}}<extra></extra>"}}
@@ -1664,6 +1704,12 @@ function drawZone(ze, year) {{
 
   // Sector bars for selected year
   const rows = DATA.zoneSectorPreds[ze] ? DATA.zoneSectorPreds[ze][year] : null;
+  const dirtyFlagRows = DATA.zoneDirtyFlagsSectorPreds[ze] ? DATA.zoneDirtyFlagsSectorPreds[ze][year] : null;
+  const cleanFlagRows = DATA.zoneCleanFlagsSectorPreds[ze] ? DATA.zoneCleanFlagsSectorPreds[ze][year] : null;
+  const dirtyFlagBySector = {{}};
+  const cleanFlagBySector = {{}};
+  if(dirtyFlagRows && dirtyFlagRows.length) dirtyFlagRows.forEach(r => {{ dirtyFlagBySector[r.s] = r.p; }});
+  if(cleanFlagRows && cleanFlagRows.length) cleanFlagRows.forEach(r => {{ cleanFlagBySector[r.s] = r.p; }});
   if(rows && rows.length) {{
     const sLabels = rows.map(r => r.s+" — "+(DATA.sectorLabels[r.s]||r.s));
     const wmapePerSec = rows.map(r => r.t ? ((Math.abs(r.p-r.t)/r.t)*100).toFixed(1)+"%" : "n/a");
@@ -1671,9 +1717,15 @@ function drawZone(ze, year) {{
       {{type:"bar", x:sLabels, y:rows.map(r=>r.t), name:"Réel",
         marker:{{color:COLORS.real,opacity:0.75}},
         hovertemplate:"%{{x}}<br>Réel: %{{y:,}}<extra></extra>"}},
-      {{type:"bar", x:sLabels, y:rows.map(r=>r.p), name:"HERALD",
+      {{type:"bar", x:sLabels, y:rows.map(r=>dirtyFlagBySector[r.s] ?? null), name:"HERALD flags étendu",
+        marker:{{color:COLORS.masked,opacity:0.75}},
+        hovertemplate:"%{{x}}<br>HERALD flags étendu: %{{y:,}}<extra></extra>"}},
+      {{type:"bar", x:sLabels, y:rows.map(r=>cleanFlagBySector[r.s] ?? null), name:"HERALD flags clean",
+        marker:{{color:COLORS.history,opacity:0.8}},
+        hovertemplate:"%{{x}}<br>HERALD flags clean: %{{y:,}}<extra></extra>"}},
+      {{type:"bar", x:sLabels, y:rows.map(r=>r.p), name:"HERALD no flags",
         customdata:wmapePerSec, marker:{{color:COLORS.semi,opacity:0.85}},
-        hovertemplate:"%{{x}}<br>HERALD: %{{y:,}}<br>WMAPE: %{{customdata}}<extra></extra>"}}
+        hovertemplate:"%{{x}}<br>HERALD no flags: %{{y:,}}<br>WMAPE: %{{customdata}}<extra></extra>"}}
     ], Object.assign({{}}, BASE_LAYOUT, {{
       title:"Secteurs A10 — "+year, barmode:"group", margin:{{t:36,b:60,l:52,r:12}},
       xaxis:{{tickangle:-30, automargin:true}},
@@ -1705,61 +1757,54 @@ function drawZone(ze, year) {{
 }}
 
 function drawMechanisms() {{
-  const semi = model("HERALD");
-  const alphaYears = Object.keys(semi.alpha || {{}}).filter(y => semi.alpha[y] !== null).sort();
-  Plotly.newPlot("chart-alpha", [{{
-    type:"scatter", mode:"lines+markers", x:alphaYears, y:alphaYears.map(y=>semi.alpha[y]),
-    name:"Alpha local", line:{{color:COLORS.semi,width:3}}
+  const r = DATA.regimeInternals || {{}};
+  const latent = r.latent || {{}};
+  const years = Object.keys(latent).sort();
+  const dims = [0,1,2];
+  const traces = dims.map(i => ({{
+    type:"scatter", mode:"lines+markers", x:years,
+    y:years.map(y => latent[y] && latent[y][i] !== undefined ? latent[y][i] : null),
+    name:"régime "+(i+1),
+    line:{{width:3, color:["#f7834f","#4aa3ff","#b084f5"][i]}}
+  }}));
+  Plotly.newPlot("chart-regime-latent", traces, Object.assign({{}}, BASE_LAYOUT, {{
+    title:"État latent appris par année",
+    yaxis:{{title:"Valeur latente", gridcolor:"#30364f"}},
+    xaxis:{{title:"Année", gridcolor:"#30364f"}},
+    legend:{{orientation:"h", y:-0.25}}
+  }}), {{responsive:true}});
+
+  const steps = r.latent_step || {{}};
+  const stepYears = Object.keys(steps).sort();
+  Plotly.newPlot("chart-regime-step", [{{
+    type:"bar", x:stepYears, y:stepYears.map(y => steps[y]),
+    marker:{{color:stepYears.map(y => y === "2021" ? "#f7834f" : "#4aa3ff")}},
+    hovertemplate:"%{{x}}<br>changement latent: %{{y:.3f}}<extra></extra>"
   }}], Object.assign({{}}, BASE_LAYOUT, {{
-    title:"Alpha: poids local vs graphe", yaxis:{{title:"Alpha local", gridcolor:"#30364f", range:[0,1]}},
+    title:"Changement du régime latent",
+    yaxis:{{title:"distance vs année précédente", gridcolor:"#30364f"}},
     xaxis:{{title:"Année", gridcolor:"#30364f"}}
   }}), {{responsive:true}});
 
-  const labels = DATA.models.map(m=>m.label);
-  Plotly.newPlot("chart-gamma", [
-    {{type:"bar", x:labels, y:DATA.models.map(m=>m.gamma_geo), name:"Gamma géographique", marker:{{color:"#4aa3ff"}}}},
-    {{type:"bar", x:labels, y:DATA.models.map(m=>m.gamma_mob), name:"Gamma mobilité", marker:{{color:"#b084f5"}}}}
-  ], Object.assign({{}}, BASE_LAYOUT, {{
-    title:"Importance apprise des priors du graphe", barmode:"group",
-    yaxis:{{title:"Gamma", gridcolor:"#30364f"}}, xaxis:{{tickangle:-15, automargin:true}}
-  }}), {{responsive:true}});
-}}
-
-function drawAuditAndForecast() {{
-  const audit = DATA.audit || {{}};
-  document.getElementById("audit-box").innerHTML = `
+  const ratio = r.gamma_geo ? r.gamma_mob / r.gamma_geo : null;
+  const step2021 = steps["2021"];
+  const alpha2021 = (r.alpha || {{}})["2021"];
+  const alpha2025 = (r.alpha || {{}})["2025"];
+  document.getElementById("regime-summary").innerHTML = `
+    <div class="regime-stat">
+      <div class="kpi"><div class="v">${{fmt(step2021,3)}}</div><div class="l">transition 2020→2021</div></div>
+      <div class="kpi"><div class="v">${{fmt(alpha2021,3)}}</div><div class="l">poids local 2021</div></div>
+      <div class="kpi"><div class="v">${{fmt(alpha2025,3)}}</div><div class="l">poids local 2025</div></div>
+      <div class="kpi"><div class="v">${{fmt(ratio,1)}}×</div><div class="l">mobilité vs géographie</div></div>
+    </div>
     <table>
       <tbody>
-        <tr><th>Verdict anti-fuite</th><td>${{audit.verdict || "Aucun résumé disponible."}}</td></tr>
-        <tr><th>Target-shuffle</th><td>${{audit.target_shuffle_status || "Stress-test non chargé dans ce dashboard."}}</td></tr>
-        <tr><th>Calendrier</th><td>${{audit.calendar || "Calendrier non chargé."}}</td></tr>
-        <tr><th>Risque résiduel</th><td>${{audit.residual_risk || "À documenter."}}</td></tr>
+        <tr><th>Entrées annuelles</th><td>${{(DATA.heraldInputs.annual || []).join(" + ")}}</td></tr>
+        <tr><th>Stratégie</th><td>${{DATA.heraldInputs.strategy || "retirer les flags et garder les signaux utiles"}}</td></tr>
+        <tr><th>Flags crise/rebond</th><td>absentes</td></tr>
+        <tr><th>Régime</th><td>appris dans le modèle, affiché ici comme trajectoire latente</td></tr>
       </tbody>
-    </table>
-    <div class="mini warn" style="margin-top:10px">
-      Lecture: ce test réduit fortement le risque de fuite directe, mais il ne remplace pas le contrôle de
-      disponibilité réelle des sources à la date de prévision.
-    </div>`;
-
-  const national = (DATA.forecast && DATA.forecast.national) ? DATA.forecast.national : [];
-  const rows = national.filter(r => r.panel_key === "panel principal" && (r.model === "HERALD" || r.model === "Ridge AR"));
-  const years = [...new Set(rows.map(r => String(r.target_year)))].sort();
-  const herald = years.map(y => {{
-    const r = rows.find(x => String(x.target_year) === y && x.model === "HERALD");
-    return r ? r.mean_pred : null;
-  }});
-  const ridge = years.map(y => {{
-    const r = rows.find(x => String(x.target_year) === y && x.model === "Ridge AR");
-    return r ? r.mean_pred : null;
-  }});
-  Plotly.newPlot("chart-forecast-national", [
-    {{type:"scatter", mode:"lines+markers", x:years, y:herald, name:"HERALD", line:{{color:COLORS.semi,width:3}}}},
-    {{type:"scatter", mode:"lines+markers", x:years, y:ridge, name:"Ridge AR", line:{{color:COLORS.ridge,width:3,dash:"dash"}}}}
-  ], Object.assign({{}}, BASE_LAYOUT, {{
-    title:"Forecast national 2026/2027 - conditionnel au 2026-05-07",
-    yaxis:{{title:"Créations prévues", gridcolor:"#30364f"}},
-    xaxis:{{title:"Année", gridcolor:"#30364f"}}
-  }}), {{responsive:true}});
+    </table>`;
 }}
 
 function initSelects() {{
@@ -1778,12 +1823,10 @@ function initSelects() {{
 initSelects();
 drawModelBars();
 drawYearLines();
-drawInternalValidation();
 drawFranceAndSeeds();
 drawSectorCharts();
 drawMap();
 drawMechanisms();
-drawAuditAndForecast();
 </script>
 </body>
 </html>
@@ -1796,13 +1839,17 @@ drawAuditAndForecast();
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--run-root", default=str(DEFAULT_RUN_ROOT))
+    if DEFAULT_PHASE2J_RUN_ROOT is not None and DEFAULT_PHASE2J_RUN_ROOT.exists():
+        default_run_root = DEFAULT_PHASE2J_RUN_ROOT
+    elif DEFAULT_PHASE2I_RUN_ROOT.exists():
+        default_run_root = DEFAULT_PHASE2I_RUN_ROOT
+    else:
+        default_run_root = DEFAULT_RUN_ROOT
+    parser.add_argument("--run-root", default=str(default_run_root))
     parser.add_argument("--old-dashboard", default=str(DEFAULT_OLD_DASH))
     parser.add_argument("--out", default=str(DEFAULT_OUT))
     parser.add_argument("--embed-plotly", action="store_true", help="Embed Plotly in the HTML for offline sharing.")
     parser.add_argument("--plotly-bundle", default=str(DEFAULT_PLOTLY_BUNDLE))
-    parser.add_argument("--forecast-summary", default=str(DEFAULT_FORECAST_SUMMARY))
-    parser.add_argument("--leak-audit", default=str(DEFAULT_LEAK_AUDIT))
     parser.add_argument("--splits-path", default=str(DEFAULT_SPLITS))
     args = parser.parse_args()
     build_dashboard(args)
