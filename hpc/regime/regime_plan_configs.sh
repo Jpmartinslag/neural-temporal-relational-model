@@ -190,6 +190,34 @@ plan_configs() {
       echo "no_regime learned_regime_gate_sector_enhanced no_source_flags lag1_growth1y_nf 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none"
       echo "manual_flags full no_source_flags lag1_growth1y_flags 0.1 0.001 0.01 explicit normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none"
       ;;
+    phase2k_latent_dim)
+      # Phase 2K latent-regime dimension audit — 13 configs × 10 seeds = 130 runs.
+      #
+      # Columns 1-22: same schema as Phase 2J.
+      # Columns 23-25: latent_regime_dim  latent_dim_l1_lambda  latent_dim_auto_mask
+      #
+      # Block A — fixed latent dim, gate only (5 configs):
+      #   variant = learned_regime_gate_sector_enhanced
+      #   tests: H1 (dim 3 not necessary?), H2 (dim 4/5 = instability?)
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L1_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 1 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L2_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 2 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L3_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 3 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L4_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 4 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L5_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed"
+      # Block B — fixed latent dim, gate + graph (5 configs):
+      #   variant = learned_regime_both_sector_enhanced
+      #   tests: H3 (latent affects graph connections?), paired vs gate at same dim
+      echo "no_regime learned_regime_both_sector_enhanced no_source_flags L1_both 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 1 0.0 fixed"
+      echo "no_regime learned_regime_both_sector_enhanced no_source_flags L2_both 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 2 0.0 fixed"
+      echo "no_regime learned_regime_both_sector_enhanced no_source_flags L3_both 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 3 0.0 fixed"
+      echo "no_regime learned_regime_both_sector_enhanced no_source_flags L4_both 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 4 0.0 fixed"
+      echo "no_regime learned_regime_both_sector_enhanced no_source_flags L5_both 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed"
+      # Block C — auto-regularized dim=5 with L1 mask (3 configs):
+      #   tests: H4 (model can deactivate unused dims?), H5 (AUTO5 → 1-2 active dims?)
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUTO5_l1_001 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.001 auto"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUTO5_l1_005 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.005 auto"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUTO5_l1_010 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.010 auto"
+      ;;
     *)
       echo "Unknown REGIME_PLAN=${REGIME_PLAN}" >&2
       return 1

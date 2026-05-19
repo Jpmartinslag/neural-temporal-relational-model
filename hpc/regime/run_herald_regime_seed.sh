@@ -63,6 +63,9 @@ common_args() {
   local latent_step_threshold=${19:-0.6}
   local feature_policy=${20:-current_clean}
   local macro_feature_set=${21:-none}
+  local latent_regime_dim=${22:-3}
+  local latent_dim_l1_lambda=${23:-0.0}
+  local latent_dim_auto_mask=${24:-fixed}
   echo \
     --panel-path "$PANEL_PATH" \
     --splits-path "$SPLITS_PATH" \
@@ -99,7 +102,12 @@ common_args() {
     --zone-dro-q45-boost "$zone_dro_boost" \
     --swa-start-frac "$swa_start_frac" \
     --latent-max-step-lambda "$latent_max_step_lambda" \
-    --latent-step-threshold "$latent_step_threshold"
+    --latent-step-threshold "$latent_step_threshold" \
+    --latent-regime-dim "${latent_regime_dim:-3}" \
+    --latent-dim-l1-lambda "${latent_dim_l1_lambda:-0.0}"
+  if [ "${latent_dim_auto_mask:-fixed}" = "auto" ]; then
+    echo --latent-dim-auto-mask
+  fi
   if [ "${window_years:-0}" -gt 0 ] 2>/dev/null; then
     echo --window-years "$window_years"
   fi
@@ -135,6 +143,9 @@ run_regime() {
   local latent_step_threshold=${20:-0.6}
   local feature_policy=${21:-current_clean}
   local macro_feature_set=${22:-none}
+  local latent_regime_dim=${23:-3}
+  local latent_dim_l1_lambda=${24:-0.0}
+  local latent_dim_auto_mask=${25:-fixed}
   local tag="regime_${mode}"
   if [ "$variant" != "full" ]; then
     tag="${tag}_${variant}"
@@ -164,7 +175,7 @@ run_regime() {
   done
 
   echo ""
-  echo ">> [seed=${SEED}] HERALD regime=${mode} variant=${variant} source_policy=${source_policy} label=${label} feature_policy=${feature_policy} macro_feature_set=${macro_feature_set} sector_lambda=${sector_lambda} alpha_smooth=${alpha_smooth_lambda} smooth=${smooth_lambda} smooth_source=${smooth_regime_source} latent_train=${latent_train_mode} latent_inf=${latent_inference_mode} regime_transform=${regime_seq_transform} fold=${single_target_year}  $(date '+%Y-%m-%d %H:%M:%S')"
+  echo ">> [seed=${SEED}] HERALD regime=${mode} variant=${variant} source_policy=${source_policy} label=${label} feature_policy=${feature_policy} macro_feature_set=${macro_feature_set} sector_lambda=${sector_lambda} alpha_smooth=${alpha_smooth_lambda} smooth=${smooth_lambda} smooth_source=${smooth_regime_source} latent_train=${latent_train_mode} latent_inf=${latent_inference_mode} regime_transform=${regime_seq_transform} fold=${single_target_year} latent_dim=${latent_regime_dim} l1=${latent_dim_l1_lambda} auto_mask=${latent_dim_auto_mask}  $(date '+%Y-%m-%d %H:%M:%S')"
   local source_args=()
   if [ "$source_policy" = "no_source_flags" ]; then
     source_args+=(--drop-source-flags)
@@ -176,7 +187,7 @@ run_regime() {
     --macro-feature-set "$macro_feature_set" \
     ${source_args[@]+"${source_args[@]}"} \
     --regime-metadata-path "$meta" \
-    $(common_args "$mp" "$mc" "$variant" "$sector_lambda" "$alpha_smooth_lambda" "$smooth_lambda" "$smooth_regime_source" "$latent_train_mode" "$latent_inference_mode" "$regime_seq_transform" "$single_target_year" "$collapse_lambda" "$latent_smooth_lambda" "$alpha_balance_lambda" "$zone_dro_boost" "$swa_start_frac" "$window_years" "$latent_max_step_lambda" "$latent_step_threshold" "$feature_policy" "$macro_feature_set") \
+    $(common_args "$mp" "$mc" "$variant" "$sector_lambda" "$alpha_smooth_lambda" "$smooth_lambda" "$smooth_regime_source" "$latent_train_mode" "$latent_inference_mode" "$regime_seq_transform" "$single_target_year" "$collapse_lambda" "$latent_smooth_lambda" "$alpha_balance_lambda" "$zone_dro_boost" "$swa_start_frac" "$window_years" "$latent_max_step_lambda" "$latent_step_threshold" "$feature_policy" "$macro_feature_set" "$latent_regime_dim" "$latent_dim_l1_lambda" "$latent_dim_auto_mask") \
     --seed "$SEED" \
     --run-tag "$tag"
   echo "   done  $(date '+%Y-%m-%d %H:%M:%S')"
@@ -202,7 +213,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/regime_plan_configs.sh"
 
 echo "Planned artifacts for seed=${SEED}:"
-while read -r mode variant source_policy label sector_lambda alpha_smooth_lambda smooth_lambda smooth_regime_source latent_train_mode latent_inference_mode regime_seq_transform single_target_year collapse_lambda latent_smooth_lambda alpha_balance_lambda zone_dro_boost swa_start_frac window_years latent_max_step_lambda latent_step_threshold feature_policy macro_feature_set; do
+while read -r mode variant source_policy label sector_lambda alpha_smooth_lambda smooth_lambda smooth_regime_source latent_train_mode latent_inference_mode regime_seq_transform single_target_year collapse_lambda latent_smooth_lambda alpha_balance_lambda zone_dro_boost swa_start_frac window_years latent_max_step_lambda latent_step_threshold feature_policy macro_feature_set latent_regime_dim latent_dim_l1_lambda latent_dim_auto_mask; do
   tag="regime_${mode}"
   if [ "$variant" != "full" ]; then
     tag="${tag}_${variant}"
@@ -221,8 +232,8 @@ while read -r mode variant source_policy label sector_lambda alpha_smooth_lambda
   echo "    $OUT_ROOT/data_processed/herald_semi_v2_internals_${suffix}_v1.npz"
 done < <(plan_configs)
 
-while read -r mode variant source_policy label sector_lambda alpha_smooth_lambda smooth_lambda smooth_regime_source latent_train_mode latent_inference_mode regime_seq_transform single_target_year collapse_lambda latent_smooth_lambda alpha_balance_lambda zone_dro_boost swa_start_frac window_years latent_max_step_lambda latent_step_threshold feature_policy macro_feature_set; do
-  run_regime "$mode" "$variant" "$source_policy" "$label" "$sector_lambda" "$alpha_smooth_lambda" "$smooth_lambda" "$smooth_regime_source" "$latent_train_mode" "$latent_inference_mode" "$regime_seq_transform" "$single_target_year" "${collapse_lambda:-0.0}" "${latent_smooth_lambda:-0.0}" "${alpha_balance_lambda:-0.0}" "${zone_dro_boost:-1.0}" "${swa_start_frac:-0.0}" "${window_years:-0}" "${latent_max_step_lambda:-0.0}" "${latent_step_threshold:-0.6}" "${feature_policy:-current_clean}" "${macro_feature_set:-none}"
+while read -r mode variant source_policy label sector_lambda alpha_smooth_lambda smooth_lambda smooth_regime_source latent_train_mode latent_inference_mode regime_seq_transform single_target_year collapse_lambda latent_smooth_lambda alpha_balance_lambda zone_dro_boost swa_start_frac window_years latent_max_step_lambda latent_step_threshold feature_policy macro_feature_set latent_regime_dim latent_dim_l1_lambda latent_dim_auto_mask; do
+  run_regime "$mode" "$variant" "$source_policy" "$label" "$sector_lambda" "$alpha_smooth_lambda" "$smooth_lambda" "$smooth_regime_source" "$latent_train_mode" "$latent_inference_mode" "$regime_seq_transform" "$single_target_year" "${collapse_lambda:-0.0}" "${latent_smooth_lambda:-0.0}" "${alpha_balance_lambda:-0.0}" "${zone_dro_boost:-1.0}" "${swa_start_frac:-0.0}" "${window_years:-0}" "${latent_max_step_lambda:-0.0}" "${latent_step_threshold:-0.6}" "${feature_policy:-current_clean}" "${macro_feature_set:-none}" "${latent_regime_dim:-3}" "${latent_dim_l1_lambda:-0.0}" "${latent_dim_auto_mask:-fixed}"
 done < <(plan_configs)
 
 echo ""

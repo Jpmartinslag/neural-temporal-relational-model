@@ -166,6 +166,8 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         prior_strength_init=args.prior_strength_init,
         gate_bias_init=args.gate_bias_init,
         alpha_bias_init=args.alpha_bias_init,
+        latent_regime_dim=getattr(args, "latent_regime_dim", None),
+        auto_mask=getattr(args, "latent_dim_auto_mask", False),
     ).to(device)
 
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
@@ -215,12 +217,13 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
     latent_smooth_lambda = getattr(args, "latent_smooth_lambda", 0.0)
     alpha_balance_lambda = getattr(args, "alpha_balance_lambda", 0.0)
     latent_max_step_lambda = getattr(args, "latent_max_step_lambda", 0.0)
+    latent_dim_l1_lambda = getattr(args, "latent_dim_l1_lambda", 0.0)
     model._latent_step_threshold = getattr(args, "latent_step_threshold", 0.6)
 
     model.train()
     for ep in range(args.epochs):
         opt.zero_grad()
-        model._latent_step_threshold = getattr(args, "latent_step_threshold", 0.6)
+        model._latent_step_threshold = getattr(args, "latent_step_threshold", 0.6)  # noqa: SIM117
 
         use_mask = ep >= args.semi_warmup_epochs
         feat_ratio = args.feature_mask_ratio if use_mask and args.mode in {
@@ -280,6 +283,8 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         )
         # H4 alpha balance (C2: differentiable tensor via graph_losses)
         loss_alpha_bal = alpha_balance_lambda * graph_losses["alpha_balance_term"]
+        # Phase 2K auto-mask L1: penalizes active latent dimensions.
+        loss_latent_dim_l1 = latent_dim_l1_lambda * graph_losses["latent_dim_mask_l1_term"]
 
         loss = (
             loss_main
@@ -288,6 +293,7 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
             + loss_graph
             + loss_latent_reg
             + loss_alpha_bal
+            + loss_latent_dim_l1
         )
         loss.backward()
         nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip)
@@ -338,6 +344,10 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
             "latent_max_step_term",
             torch.tensor(0.0, device=device),
         ).item()),
+        "latent_regime_dim": model._latent_regime_dim,
+        "latent_dim_auto_mask": model._auto_mask,
+        "latent_dim_mask_values": graph_f["latent_dim_mask_values"],
+        "latent_dim_effective_dim": graph_f["latent_dim_effective_dim"],
         "years": seq["years_full"],
         "node_order": seq["zones"],
     }
@@ -472,6 +482,12 @@ def write_report(total_rows, sector_rows, args, internals_by_year):
         "latent_max_step_lambda": getattr(args, "latent_max_step_lambda", 0.0),
         "latent_step_threshold": getattr(args, "latent_step_threshold", 0.6),
         "latent_step_by_fold": latent_step_by_fold,
+        # Phase 2K latent dimension audit fields
+        "latent_regime_dim": last.get("latent_regime_dim", base.REGIME_DIM),
+        "latent_dim_auto_mask": last.get("latent_dim_auto_mask", False),
+        "latent_dim_l1_lambda": getattr(args, "latent_dim_l1_lambda", 0.0),
+        "latent_dim_mask_values": last.get("latent_dim_mask_values"),
+        "latent_dim_effective_dim": last.get("latent_dim_effective_dim"),
     }
     existing = {}
     if args.metrics_path.exists():
@@ -550,6 +566,13 @@ def main():
                         help="Phase 2E: penalize only latent steps above --latent-step-threshold")
     parser.add_argument("--latent-step-threshold", type=float, default=0.6,
                         help="Phase 2E: threshold for excessive latent step penalty")
+    # Phase 2K latent dimension hyperparameter audit
+    parser.add_argument("--latent-regime-dim", type=int, default=None,
+                        help="Phase 2K: latent regime vector size (default: base.REGIME_DIM=3)")
+    parser.add_argument("--latent-dim-l1-lambda", type=float, default=0.0,
+                        help="Phase 2K: L1 penalty on auto-mask sigmoid values (0=disabled)")
+    parser.add_argument("--latent-dim-auto-mask", action="store_true",
+                        help="Phase 2K: enable learned per-dimension mask (auto-regularization)")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--panel-path", type=Path, default=base.PANEL_PATH)
     parser.add_argument("--splits-path", type=Path, default=base.SPLITS_PATH)

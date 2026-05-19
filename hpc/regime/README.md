@@ -16,7 +16,7 @@ macro/falsification batteries.
 | Phase 2H | macro INSEE/Banque de France | completed | macro not retained; `best_simplified` wins globally |
 | Phase 2I | SIDE 5-feature audit | completed | `lag1_growth1y` wins: WMAPE mean 0.021323 |
 | Phase 2J | fair flag comparison | completed | no-flags SIDE2 beats clean manual-flags SIDE2 |
-| Phase 2K | latent-regime dimension audit | planned | test whether latent size 3 is necessary or over-conditioning |
+| Phase 2K | latent-regime dimension audit | ready to launch | 13 configs × 10 seeds = 130 runs; auto-mask variant included |
 
 ## Canonical candidate after Phase 2H
 
@@ -69,6 +69,7 @@ Submit scripts:
 | `submit_herald_phase2h_macro.sh` | `phase2h_macro_real`, `phase2h_macro_permute`, `phase2h_macro_extra` |
 | `submit_herald_phase2i_side5.sh` | `phase2i_side5_audit` |
 | `submit_herald_phase2j_fair_flag.sh` | `phase2j_fair_flag` |
+| `submit_herald_phase2k_latent_dim.sh` | `phase2k_latent_dim` |
 
 Smoke tests:
 
@@ -80,6 +81,7 @@ Smoke tests:
 | `smoke_test_phase2h_macro.sh` | macro-panel sanity |
 | `smoke_test_phase2i_side5.sh` | Phase 2I SIDE5 sanity (9 configs) |
 | `smoke_test_phase2j_fair_flag.sh` | Phase 2J fair flag sanity (2 configs) |
+| `smoke_test_phase2k_latent_dim.sh` | Phase 2K latent dim sanity (5 configs) |
 
 ## Safe launch protocol
 
@@ -243,28 +245,54 @@ python3 hpc/regime/audit_herald_phase2j_fair_flag.py
 Goal: test whether the current learned latent regime vector of size 3 is a useful capacity choice or
 an implicit conditioning that encourages a false "three economic reactions" interpretation.
 
+Status: **ready to launch** — code implemented, smoke and submit scripts ready.
+
 Important methodological rule:
 
 - `latent_dim = 3` is an architecture hyperparameter, not evidence that the market has 3 regimes.
 - Do not claim "3 regimes discovered" unless a model-selection or effective-dimension audit supports it.
 
-Code impact:
+Code changes (Phase 2K):
 
-- In the current Phase 2J candidate (`learned_regime_gate_sector_enhanced`), the learned latent vector
-  mainly affects `alpha`, the local-vs-graph mixture.
-- In `learned_regime_graph*` or `learned_regime_both*`, the same latent vector also affects the
-  dynamic graph `A_t`.
+- `HERALDv7Residual` accepts `latent_regime_dim` (default `base.REGIME_DIM=3`) and `auto_mask=False`.
+- `latent_proj_q` / `latent_proj_k` (size `latent_regime_dim`) drive the dynamic graph for `learned_regime_both*`.
+- `regime_proj_q` / `regime_proj_k` (size `base.REGIME_DIM=3`) keep backward compat for explicit regime.
+- `alpha_gate` input size adapts to `latent_regime_dim` (no compat break since no checkpoint loading).
+- Auto-mask: `mask_logits` parameter; `z_eff = z * sigmoid(mask_logits)`; L1 term in loss.
+- `--latent-regime-dim`, `--latent-dim-l1-lambda`, `--latent-dim-auto-mask` CLI args added to `train_herald_semi_v2.py`.
+- Result JSON includes `latent_regime_dim`, `latent_dim_auto_mask`, `latent_dim_l1_lambda`,
+  `latent_dim_mask_values`, `latent_dim_effective_dim`.
 
-Planned configs:
+Configs (13 × 10 seeds = 130 runs):
 
-| Label family | Latent sizes | Variant | Purpose |
-|---|---:|---|---|
-| `L*_gate` | 1, 2, 3, 4, 5 | `learned_regime_gate_sector_enhanced` | test alpha/gate sensitivity |
-| `L*_both` | 1, 2, 3, 4 | `learned_regime_both_sector_enhanced` | test alpha + graph sensitivity |
-| `AUTO5_l1_*` | max 5 | masked latent with L1 penalty | let HERALD deactivate unused dimensions |
+| Label | latent_dim | Variant | auto_mask | Purpose |
+|---|---:|---|---|---|
+| `L1_gate` | 1 | `learned_regime_gate_sector_enhanced` | no | H1: minimal latent |
+| `L2_gate` | 2 | `learned_regime_gate_sector_enhanced` | no | H1: small latent |
+| `L3_gate` | 3 | `learned_regime_gate_sector_enhanced` | no | reference (= Phase 2J no-flags) |
+| `L4_gate` | 4 | `learned_regime_gate_sector_enhanced` | no | H2: higher capacity |
+| `L5_gate` | 5 | `learned_regime_gate_sector_enhanced` | no | H2: overcapacity test |
+| `L1_both` | 1 | `learned_regime_both_sector_enhanced` | no | H3: latent affects graph |
+| `L2_both` | 2 | `learned_regime_both_sector_enhanced` | no | H3: latent affects graph |
+| `L3_both` | 3 | `learned_regime_both_sector_enhanced` | no | H3: reference + graph |
+| `L4_both` | 4 | `learned_regime_both_sector_enhanced` | no | H3: higher graph capacity |
+| `L5_both` | 5 | `learned_regime_both_sector_enhanced` | no | H3: overcapacity + graph |
+| `AUTO5_l1_001` | 5 | `learned_regime_gate_sector_enhanced` | yes | H4/H5: light selection |
+| `AUTO5_l1_005` | 5 | `learned_regime_gate_sector_enhanced` | yes | H4/H5: medium selection |
+| `AUTO5_l1_010` | 5 | `learned_regime_gate_sector_enhanced` | yes | H4/H5: strong selection |
 
-Decision rule: prefer the smallest or auto-regularized latent representation that matches the Phase
-2J no-flags candidate without degrading 2025, A10, or seed stability.
+All configs: `no_regime`, `no_source_flags`, `side5_lag1_growth1y`, `sector_lambda=0.2`.
+
+Decision rule: prefer the smallest or auto-regularized latent representation that matches
+Phase 2J no-flags candidate without degrading 2025, A10, or seed stability.
+
+Hypotheses:
+
+- H1: `latent_dim=1` or `2` matches `L3_gate` → dim 3 not necessary.
+- H2: `L4/L5` add instability without improving WMAPE mean.
+- H3: `_both` variants show larger `adj_delta` than `_gate` at the same dim.
+- H4: auto-mask learns to deactivate unused dimensions.
+- H5: `AUTO5` with 1-2 effective dims keeps performance → more defensible than fixed dim 3.
 
 Planning report:
 
@@ -275,29 +303,35 @@ reports/HERALD_LATENT_REGIME_DIMENSION_BATTERY_PLAN.md
 ### Smoke test
 
 ```bash
-bash hpc/regime/smoke_test_phase2j_fair_flag.sh
+cd ~/project_recomm_herald_v6_2025_20260430/dataset
+bash hpc/regime/smoke_test_phase2k_latent_dim.sh
 ```
+
+Smoke validates: L1_gate, L3_gate, L5_gate, L3_both, AUTO5_l1_005 — 1 epoch, 1 seed.
+Checks artifacts, `latent_regime_dim` in JSON, mask_values and effective_dim for AUTO5.
 
 ### Submit (after smoke passes)
 
 ```bash
+cd ~/project_recomm_herald_v6_2025_20260430/dataset
 STAMP=$(date +%Y%m%d_%H%M%S) \
-bash hpc/regime/submit_herald_phase2j_fair_flag.sh
+bash hpc/regime/submit_herald_phase2k_latent_dim.sh
 ```
 
-The submit script enforces: bash -n syntax checks, py_compile, input file existence,
-OUT_ROOT uniqueness, 2 × N_SEEDS run count, tag uniqueness, tag non-collision with Phase 2I,
-feature policy audit.
+OUT_ROOT: `hpc_results/herald_regime_phase2k_latent_dim_<STAMP>_r1`
+
+Submit enforces: bash -n syntax checks, py_compile, input file existence,
+OUT_ROOT uniqueness, 13 × N_SEEDS run count, tag uniqueness, tag non-collision with Phase 2J.
 
 ### Post-run: aggregate and audit
 
 ```bash
-# After rsync from HPC:
-rsync -av meso-direct:~/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/herald_regime_phase2j_fair_flag_<STAMP>_r1/ \
-  hpc_results/herald_regime_phase2j_fair_flag_<STAMP>_r1/
+rsync -av meso-direct:~/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/herald_regime_phase2k_latent_dim_<STAMP>_r1/ \
+  hpc_results/herald_regime_phase2k_latent_dim_<STAMP>_r1/
 
 python3 hpc/regime/aggregate_herald_regime_results.py \
-  --root hpc_results/herald_regime_phase2j_fair_flag_<STAMP>_r1
+  --root hpc_results/herald_regime_phase2k_latent_dim_<STAMP>_r1
 
-python3 hpc/regime/audit_herald_phase2j_fair_flag.py
+python3 hpc/regime/audit_herald_phase2k_latent_dim.py \
+  --root hpc_results/herald_regime_phase2k_latent_dim_<STAMP>_r1
 ```

@@ -69,27 +69,39 @@ class HERALDv7Residual(nn.Module):
 
     def __init__(self, num_nodes, annual_dim, hidden_dim, attn_dim=16, q_hidden=32,
                  n_sectors_a10=9, top_k=10, prior_strength_init=1.0,
-                 gate_bias_init=2.0, alpha_bias_init=1.5):
+                 gate_bias_init=2.0, alpha_bias_init=1.5,
+                 latent_regime_dim=None, auto_mask=False):
         super().__init__()
         self.num_nodes = num_nodes
         self.hidden_dim = hidden_dim
         self.attn_dim = attn_dim
         self.top_k = top_k
         self.n_sectors_a10 = n_sectors_a10
+        # latent_regime_dim controls the learned latent vector size (Phase 2K hyperparameter).
+        # Defaults to base.REGIME_DIM (3) for backward compat with all existing configs.
+        self._latent_regime_dim = latent_regime_dim if latent_regime_dim is not None else base.REGIME_DIM
+        self._auto_mask = auto_mask
 
         self.quarterly_enc = base.QuarterlyEncoder(in_dim=2, hidden_dim=q_hidden)
         self.q_proj = nn.Linear(q_hidden, hidden_dim)
         self.annual_proj = nn.Linear(annual_dim, hidden_dim)
         self.proj_e = nn.Linear(hidden_dim * 3, hidden_dim)
 
+        # regime_proj_{q,k}: used when explicit regime (manual_flags, zeros) drives the graph.
         self.regime_proj_q = nn.Linear(base.REGIME_DIM, attn_dim)
         self.regime_proj_k = nn.Linear(base.REGIME_DIM, attn_dim)
+        # latent_proj_{q,k}: used when the learned latent vector drives the graph (learned_regime_both*).
+        self.latent_proj_q = nn.Linear(self._latent_regime_dim, attn_dim)
+        self.latent_proj_k = nn.Linear(self._latent_regime_dim, attn_dim)
         self.latent_regime = nn.Sequential(
             nn.Linear(hidden_dim * 2, hidden_dim),
             nn.ReLU(),
-            nn.Linear(hidden_dim, base.REGIME_DIM),
+            nn.Linear(hidden_dim, self._latent_regime_dim),
             nn.Tanh(),
         )
+        # Phase 2K auto-mask: learned per-dimension gate; allows model to deactivate unused dims.
+        if auto_mask:
+            self.mask_logits = nn.Parameter(torch.zeros(self._latent_regime_dim))
         self.proj_Q = nn.Linear(hidden_dim, attn_dim)
         self.proj_K = nn.Linear(hidden_dim, attn_dim)
 
@@ -115,7 +127,7 @@ class HERALDv7Residual(nn.Module):
 
         # alpha close to 1 means local neural correction; low alpha activates graph correction.
         self.alpha_gate = nn.Sequential(
-            nn.Linear(hidden_dim * 2 + base.REGIME_DIM + 2, hidden_dim),
+            nn.Linear(hidden_dim * 2 + self._latent_regime_dim + 2, hidden_dim),
             nn.ReLU(),
             nn.Linear(hidden_dim, 1),
         )
@@ -137,9 +149,13 @@ class HERALDv7Residual(nn.Module):
     def _static_adj(self):
         return torch.softmax(torch.relu(self.static_emb_1 @ self.static_emb_2), dim=1)
 
-    def _dynamic_adj(self, e_t, prior_logits, regime_t):
-        rq = self.regime_proj_q(regime_t)
-        rk = self.regime_proj_k(regime_t)
+    def _dynamic_adj(self, e_t, prior_logits, regime_t, use_latent=False):
+        if use_latent:
+            rq = self.latent_proj_q(regime_t)
+            rk = self.latent_proj_k(regime_t)
+        else:
+            rq = self.regime_proj_q(regime_t)
+            rk = self.regime_proj_k(regime_t)
         Q = self.proj_Q(e_t) + rq.unsqueeze(0)
         K = self.proj_K(e_t) + rk.unsqueeze(0)
         raw = (Q @ K.T) / (self.attn_dim ** 0.5)
@@ -201,6 +217,9 @@ class HERALDv7Residual(nn.Module):
                 latent_regime_t = latent_anchor
             else:
                 raise ValueError(f"Unknown latent_mode={latent_mode!r}")
+            # Phase 2K auto-mask: z_eff = z * sigmoid(mask_logits).
+            if self._auto_mask:
+                latent_regime_t = latent_regime_t * torch.sigmoid(self.mask_logits)
             latent_regime_list_grad.append(latent_regime_t)        # keep grad for H1 loss
             latent_regime_list.append(latent_regime_t.detach())    # detached for internals
             h_local = self.gru_local_cell(e_t, h_local)
@@ -216,12 +235,11 @@ class HERALDv7Residual(nn.Module):
                 m_t = self.msg_proj(A_t @ e_t)
             else:
                 if variant in learned_graph_variants:
-                    r_adj = latent_regime_t
+                    A_t = self._dynamic_adj(e_t, prior_logits, latent_regime_t, use_latent=True)
                 elif variant == "no_regime_graph":
-                    r_adj = torch.zeros_like(regime_t)
+                    A_t = self._dynamic_adj(e_t, prior_logits, torch.zeros_like(regime_t), use_latent=False)
                 else:
-                    r_adj = regime_t
-                A_t = self._dynamic_adj(e_t, prior_logits, r_adj)
+                    A_t = self._dynamic_adj(e_t, prior_logits, regime_t, use_latent=False)
                 m_t = self.msg_proj(A_t @ e_t)
 
             if A_t is not None and A_prev is not None:
@@ -358,6 +376,17 @@ class HERALDv7Residual(nn.Module):
             else torch.tensor(0.0, device=device)
         )
 
+        # Phase 2K auto-mask L1 term: mean(sigmoid(mask_logits)) penalizes active dimensions.
+        if self._auto_mask:
+            mask_sigmoid = torch.sigmoid(self.mask_logits)
+            latent_dim_mask_l1_term = mask_sigmoid.mean()
+            latent_dim_mask_values = mask_sigmoid.detach().cpu().tolist()
+            latent_dim_effective_dim = int((mask_sigmoid.detach() > 0.2).sum().item())
+        else:
+            latent_dim_mask_l1_term = torch.tensor(0.0, device=device)
+            latent_dim_mask_values = None
+            latent_dim_effective_dim = self._latent_regime_dim
+
         graph_losses = {
             "smooth_term": smooth_term,
             "contrast_term": torch.tensor(0.0, device=device),
@@ -367,6 +396,9 @@ class HERALDv7Residual(nn.Module):
             "latent_smooth_term": latent_smooth_term,
             "latent_max_step_term": latent_max_step_term,
             "alpha_balance_term": alpha_balance_term,
+            "latent_dim_mask_l1_term": latent_dim_mask_l1_term,
+            "latent_dim_mask_values": latent_dim_mask_values,
+            "latent_dim_effective_dim": latent_dim_effective_dim,
         }
 
         if return_internals:
