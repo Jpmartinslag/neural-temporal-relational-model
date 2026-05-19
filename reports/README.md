@@ -14,6 +14,7 @@ Ce dossier contient les rapports méthodologiques, métriques légères et dashb
 - `ATLAS_IAT_STATIC_LAYER_AUDIT.md` — couche statique Atlas/IAT ZE2020 pour overlay post-modèle.
 - `ATLAS_IAT_TO_HERALD_EXPERIMENT_PLAN.md` — protocole d'intégration Atlas/IAT, sans injection directe non auditée.
 - `HERALD_REPOSITORY_AND_DASHBOARD_CLEANUP_PLAN.md` — plan de nettoyage et dashboard.
+- `REPOSITORY_CLEANUP_20260519.md` — nettoyage effectif du dépôt avant la prochaine batterie.
 - `HERALD_PREDICTION_INTERPRETATION_METHODS.md` — usages économiques des prédictions.
 - `HERALD_SEMI_V2_VALIDATION_BATTERY.md` — protocole de validation Semi V2.
 - `HERALD_V7_RESEARCH_PLAN.md` — pistes de recherche, non modèle principal.
@@ -39,7 +40,6 @@ La migration vers cette structure doit se faire sans supprimer les rapports exis
 ## Artefacts publics actuels
 
 - Dashboard: `reports/dashboards/herald_france_dashboard_offline.html`
-- Dashboard audit Phase 2I: `reports/figures/herald_phase2i_side5_audit_dashboard.html`
 - Forecast: `reports/metrics/herald_forecast_2026_2027_summary.json`
 - Forecast national: `reports/metrics/herald_forecast_2026_2027_national.csv`
 - Leak stress: `reports/metrics/herald_leak_stress_prediction_invariance.json`

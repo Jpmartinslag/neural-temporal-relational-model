@@ -350,7 +350,7 @@ def build_sector_props_target(a10_panel, zones_sorted, years_sorted):
 
 # ─── regime vectors ────────────────────────────────────────────────────────────
 
-def build_regime_vectors(panel, years_sorted, train_max):
+def build_regime_vectors(panel, years_sorted, train_max, **_kwargs):
     T = len(years_sorted)
     year_to_idx = {y: i for i, y in enumerate(years_sorted)}
     agg = (panel.groupby("target_year")
@@ -676,7 +676,11 @@ def make_sequences(panel, cols, q_tensor, sec_props_tensor,
     sec_train = np.nan_to_num(sec_train, nan=1.0 / len(A10_SECTORS))
 
     # Regime vectors
-    regime_all   = build_regime_vectors(panel, years_sorted, train_max)
+    regime_all   = build_regime_vectors(
+        panel, years_sorted, train_max,
+        y_train=train_y_raw,
+        ridge_train=ridge[t_train_idx],
+    )
     regime_train = regime_all[t_train_idx]
     regime_full  = regime_all[t_full_idx]
 

@@ -140,6 +140,7 @@ python3 src/visualisation/generate_herald_semi_v2_dashboard.py
 - `reports/HERALD_PHASE2I_SIDE2_FEATURE_AUDIT.md`
 - `reports/HERALD_LATENT_REGIME_DIMENSION_BATTERY_PLAN.md`
 - `reports/HERALD_SIDE5_STABILITY_AND_TREND_AUDIT_PLAN.md`
+- `reports/REPOSITORY_CLEANUP_20260519.md`
 - `reports/ATLAS_IAT_STATIC_LAYER_AUDIT.md`
 - `metadata/HERALD_DATASETS_MAIN.md`
 - `metadata/HERALD_DATASETS_EXPLORATORY.md`

@@ -29,6 +29,11 @@ except ModuleNotFoundError as exc:
 import train_herald_v6 as base
 import train_herald_v7 as v7
 
+try:
+    from torch.optim.swa_utils import AveragedModel as _SWAModel
+except ImportError:
+    _SWAModel = None
+
 
 ROOT = Path(__file__).resolve().parents[2]
 PROCESSED = ROOT / "data/processed"
@@ -87,6 +92,66 @@ def ranking_loss(pred, target, mask, ridge_train=None, zone_std=None, max_pairs=
     return torch.stack(losses).mean()
 
 
+def transform_regime_sequence(regime_np, transform: str, seed: int):
+    if transform == "none":
+        return regime_np
+    out = np.array(regime_np, copy=True)
+    if out.shape[0] <= 1:
+        return out
+    if transform == "reverse":
+        return out[::-1]
+    if transform == "permute_random":
+        rng = np.random.default_rng(seed)
+        perm = rng.permutation(out.shape[0])
+        return out[perm]
+    raise ValueError(f"Unknown regime_seq_transform={transform!r}")
+
+
+def _apply_window(seq: dict, window_years: int) -> dict:
+    """Restrict training data to the last window_years, recomputing normalisation.
+
+    Causal: only uses training-period data (years <= train_max).
+    window_years=0 returns seq unchanged.
+    """
+    if window_years <= 0:
+        return seq
+    T = seq["x_ann_train"].shape[0]
+    if T <= window_years:
+        return seq  # already shorter than window; keep all
+    ws = T - window_years  # first index to keep
+
+    # Recover raw training targets for the windowed period.
+    # train_resid = (y_raw - ridge) / zone_std  ⟹  y_raw = ridge + train_resid * zone_std
+    zone_std_old = seq["zone_std"]                           # (N,)
+    train_ridge_w = seq["train_ridge"][ws:]                  # (W, N)
+    train_resid_w = seq["train_resid"][ws:]                  # (W, N)
+    y_raw_w = train_ridge_w + train_resid_w * zone_std_old[np.newaxis, :]
+
+    # Recompute zone normalisation from windowed training data only.
+    zone_std_new = np.nanstd(y_raw_w, axis=0)
+    zone_std_new = np.where(zone_std_new < 1.0, 1.0, zone_std_new)
+    zone_mean_new = np.nanmean(y_raw_w, axis=0)
+    zone_weight_new = np.clip(zone_mean_new / max(float(zone_mean_new.mean()), 1e-8), 0.1, 10.0)
+
+    # Renormalise residuals with the new zone_std.
+    ratio = zone_std_old / zone_std_new                      # (N,)
+    train_resid_new = train_resid_w * ratio[np.newaxis, :]
+
+    seq = dict(seq)  # shallow copy — do not mutate caller's dict
+    seq["x_ann_train"]   = seq["x_ann_train"][ws:]
+    seq["q_train"]       = seq["q_train"][ws:]
+    seq["sec_prior_train"] = seq["sec_prior_train"][ws:]
+    seq["train_resid"]   = train_resid_new
+    seq["train_ridge"]   = train_ridge_w
+    seq["mask"]          = seq["mask"][ws:]
+    seq["sec_train"]     = seq["sec_train"][ws:]
+    seq["sec_mask"]      = seq["sec_mask"][ws:]
+    seq["regime_train"]  = seq["regime_train"][ws:]
+    seq["zone_weight"]   = zone_weight_new
+    seq["zone_std"]      = zone_std_new   # also used in evaluate() for prediction
+    return seq
+
+
 def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
     N = len(seq["zones"])
     annual_dim = seq["x_ann_train"].shape[-1]
@@ -108,11 +173,21 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
 
     x_ann = torch.tensor(seq["x_ann_train"], device=device)
     x_q = torch.tensor(seq["q_train"], device=device)
-    regime = torch.tensor(seq["regime_train"], device=device)
+    regime_train_np = transform_regime_sequence(seq["regime_train"], args.regime_seq_transform, args.seed)
+    regime = torch.tensor(regime_train_np, device=device)
     sec_prior = torch.tensor(seq["sec_prior_train"], device=device)
     target = torch.tensor(seq["train_resid"], device=device)
     mask = torch.tensor(seq["mask"], device=device)
-    zone_w = torch.tensor(seq["zone_weight"], device=device)
+    # H5 zone-DRO: boost Q4/Q5 zones using training-derived weights only (causal, C4 fix)
+    zone_w_np = seq["zone_weight"].copy()
+    if getattr(args, "zone_dro_q45_boost", 1.0) > 1.0:
+        k = args.zone_dro_q45_boost
+        q4t = float(np.nanpercentile(zone_w_np, 60))
+        q5t = float(np.nanpercentile(zone_w_np, 80))
+        boost = np.where(zone_w_np >= q5t, k,
+                         np.where(zone_w_np >= q4t, (k + 1.0) / 2.0, 1.0))
+        zone_w_np = np.clip(zone_w_np * boost, 0.1, 10.0 * k)
+    zone_w = torch.tensor(zone_w_np, device=device)
     sec_t = torch.tensor(seq["sec_train"], device=device)
     sec_m = torch.tensor(seq["sec_mask"], device=device)
     ridge_train = torch.tensor(seq["train_ridge"], device=device) if "train_ridge" in seq else None
@@ -124,9 +199,28 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
     adj_log_m = torch.log(adj_m_t + 1e-6)
 
     T = x_ann.shape[0]
+
+    # H6 SWA setup (C6: no update_bn — v7 has no BatchNorm)
+    swa_start_frac = getattr(args, "swa_start_frac", 0.0)
+    if swa_start_frac > 0:
+        if _SWAModel is None:
+            raise ImportError("torch.optim.swa_utils.AveragedModel required for SWA (PyTorch >= 1.6)")
+        swa_model = _SWAModel(model)
+        swa_start_ep = int(args.epochs * (1.0 - swa_start_frac))
+    else:
+        swa_model = None
+        swa_start_ep = args.epochs  # never reached
+
+    collapse_lambda = getattr(args, "collapse_lambda", 0.0)
+    latent_smooth_lambda = getattr(args, "latent_smooth_lambda", 0.0)
+    alpha_balance_lambda = getattr(args, "alpha_balance_lambda", 0.0)
+    latent_max_step_lambda = getattr(args, "latent_max_step_lambda", 0.0)
+    model._latent_step_threshold = getattr(args, "latent_step_threshold", 0.6)
+
     model.train()
     for ep in range(args.epochs):
         opt.zero_grad()
+        model._latent_step_threshold = getattr(args, "latent_step_threshold", 0.6)
 
         use_mask = ep >= args.semi_warmup_epochs
         feat_ratio = args.feature_mask_ratio if use_mask and args.mode in {
@@ -147,7 +241,10 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         pred_main, pred_sector, graph_losses = model(
             ann_list, q_list, reg_list, sec_prior_list,
             adj_g, adj_m_t, adj_log_g, adj_log_m,
-            variant=args.v7_variant, return_internals=False,
+            variant=args.v7_variant,
+            return_internals=False,
+            smooth_regime_source=args.smooth_regime_source,
+            latent_mode=args.latent_train_mode,
         )
 
         zone_w_bc = zone_w.unsqueeze(0).expand_as(pred_main)
@@ -175,21 +272,39 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
             - args.gate_entropy_lambda * graph_losses["gate_entropy"]
             + args.alpha_smooth_lambda * graph_losses["alpha_smooth"]
         )
+        # H1 latent regularisation (C1: differentiable tensors via graph_losses)
+        loss_latent_reg = (
+            collapse_lambda * graph_losses["latent_collapse_term"]
+            + latent_smooth_lambda * graph_losses["latent_smooth_term"]
+            + latent_max_step_lambda * graph_losses["latent_max_step_term"]
+        )
+        # H4 alpha balance (C2: differentiable tensor via graph_losses)
+        loss_alpha_bal = alpha_balance_lambda * graph_losses["alpha_balance_term"]
+
         loss = (
             loss_main
             + args.sector_lambda * loss_sec
             + args.rank_lambda * loss_rank
             + loss_graph
+            + loss_latent_reg
+            + loss_alpha_bal
         )
         loss.backward()
         nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip)
         opt.step()
 
-    model.eval()
+        # H6 SWA: accumulate averaged weights in final swa_start_frac of training
+        if swa_model is not None and ep >= swa_start_ep:
+            swa_model.update_parameters(model)
+
+    # H6 SWA: use averaged model for inference (C6: no update_bn — no BatchNorm in v7)
+    eval_model = swa_model if swa_model is not None else model
+    eval_model.eval()
     with torch.no_grad():
         x_ann_f = torch.tensor(seq["x_ann_full"], device=device)
         x_q_f = torch.tensor(seq["q_full"], device=device)
-        reg_f = torch.tensor(seq["regime_full"], device=device)
+        regime_full_np = transform_regime_sequence(seq["regime_full"], args.regime_seq_transform, args.seed)
+        reg_f = torch.tensor(regime_full_np, device=device)
         sec_prior_f = torch.tensor(seq["sec_prior_full"], device=device)
         T_full = x_ann_f.shape[0]
         ann_f = [x_ann_f[t] for t in range(T_full)]
@@ -197,16 +312,20 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         reg_fl = [reg_f[t] for t in range(T_full)]
         sec_prior_fl = [sec_prior_f[t] for t in range(T_full)]
 
-        pred_f, sec_f, graph_f, adj_t, gate_t, alpha_t, regime_delta_t, adj_delta_t = model(
+        pred_f, sec_f, graph_f, adj_t, gate_t, alpha_t, latent_regime_t, regime_delta_t, adj_delta_t = eval_model(
             ann_f, q_f, reg_fl, sec_prior_fl,
             adj_g, adj_m_t, adj_log_g, adj_log_m,
-            variant=args.v7_variant, return_internals=True,
+            variant=args.v7_variant,
+            return_internals=True,
+            smooth_regime_source=args.smooth_regime_source,
+            latent_mode=args.latent_inference_mode if args.latent_inference_mode != "match_train" else args.latent_train_mode,
         )
 
     internals = {
         "dynamic_adj": adj_t.cpu().numpy(),
         "gate_values": gate_t.cpu().numpy(),
         "alpha_values": alpha_t.cpu().numpy(),
+        "latent_regime_values": latent_regime_t.cpu().numpy(),
         "regime_delta_by_year": regime_delta_t.cpu().numpy(),
         "adj_delta_by_year": adj_delta_t.cpu().numpy(),
         "sector_proportions": sec_f[-1].cpu().numpy(),
@@ -215,6 +334,10 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         "smooth_loss_inference": float(graph_f["smooth_term"].item()),
         "gate_entropy_inference": float(graph_f["gate_entropy"].item()),
         "alpha_smooth_inference": float(graph_f["alpha_smooth"].item()),
+        "latent_max_step_inference": float(graph_f.get(
+            "latent_max_step_term",
+            torch.tensor(0.0, device=device),
+        ).item()),
         "years": seq["years_full"],
         "node_order": seq["zones"],
     }
@@ -228,12 +351,16 @@ def evaluate(panel, a10_panel, splits, cols, q_tensor, sec_props_tensor,
     internals_by_year = {}
     for _, split in splits.iterrows():
         target_year = int(split["target_year"])
+        if args.single_target_year is not None and target_year != args.single_target_year:
+            continue
         train_max = int(split["train_years_max"])
         print(f"  Fold {target_year}...", flush=True)
         seq = v7.make_sequences_v7(
             panel, cols, q_tensor, sec_props_tensor, sec_lag1_tensor,
             zones_sorted, years_sorted, train_max, target_year,
         )
+        # H7 rolling window: restrict training years (causal — only data <= train_max)
+        seq = _apply_window(seq, getattr(args, "window_years", 0))
         residual, sector_props, internals = train_herald_semi_v2(seq, adj_geo, adj_mob, args, device)
         internals["target_year"] = target_year
         internals_by_year[target_year] = internals
@@ -296,6 +423,17 @@ def write_report(total_rows, sector_rows, args, internals_by_year):
     years_f = last["years"]
     alpha_arr = last["alpha_values"]
     alpha_by_year = {int(yr): round(float(alpha_arr[t].mean()), 5) for t, yr in enumerate(years_f)}
+    latent_step_by_fold = {}
+    for fold_year, internals in sorted(internals_by_year.items()):
+        fold_years = [int(y) for y in internals["years"]]
+        latent = np.asarray(internals["latent_regime_values"], dtype=float)
+        transitions = {}
+        if latent.shape[0] > 1:
+            for i in range(1, len(fold_years)):
+                transitions[f"{fold_years[i-1]}->{fold_years[i]}"] = round(
+                    float(np.linalg.norm(latent[i] - latent[i - 1])), 6
+                )
+        latent_step_by_fold[int(fold_year)] = transitions
     tag = f"_{args.run_tag}" if args.run_tag else ""
     run_key = f"{args.mode}{tag}_seed_{args.seed}"
     result = {
@@ -313,7 +451,27 @@ def write_report(total_rows, sector_rows, args, internals_by_year):
         "gamma_mob": round(last["gamma_mob"], 4),
         "feature_mask_ratio": args.feature_mask_ratio,
         "sector_mask_ratio": args.sector_mask_ratio,
+        "sector_lambda": args.sector_lambda,
         "rank_lambda": args.rank_lambda,
+        "smooth_lambda": args.smooth_lambda,
+        "gate_entropy_lambda": args.gate_entropy_lambda,
+        "alpha_smooth_lambda": args.alpha_smooth_lambda,
+        "huber_delta": args.huber_delta,
+        "smooth_regime_source": args.smooth_regime_source,
+        "latent_train_mode": args.latent_train_mode,
+        "latent_inference_mode": args.latent_inference_mode,
+        "regime_seq_transform": args.regime_seq_transform,
+        "single_target_year": args.single_target_year,
+        # Phase 2D stability params
+        "collapse_lambda": getattr(args, "collapse_lambda", 0.0),
+        "latent_smooth_lambda": getattr(args, "latent_smooth_lambda", 0.0),
+        "alpha_balance_lambda": getattr(args, "alpha_balance_lambda", 0.0),
+        "zone_dro_q45_boost": getattr(args, "zone_dro_q45_boost", 1.0),
+        "swa_start_frac": getattr(args, "swa_start_frac", 0.0),
+        "window_years": getattr(args, "window_years", 0),
+        "latent_max_step_lambda": getattr(args, "latent_max_step_lambda", 0.0),
+        "latent_step_threshold": getattr(args, "latent_step_threshold", 0.6),
+        "latent_step_by_fold": latent_step_by_fold,
     }
     existing = {}
     if args.metrics_path.exists():
@@ -362,10 +520,36 @@ def main():
     parser.add_argument("--gate-bias-init", type=float, default=2.0)
     parser.add_argument("--alpha-bias-init", type=float, default=1.5)
     parser.add_argument("--sector-lambda", type=float, default=0.1)
+    parser.add_argument("--smooth-regime-source", default="explicit",
+                        choices=["explicit", "none", "latent"])
+    parser.add_argument("--latent-train-mode", default="normal",
+                        choices=["normal", "zero", "frozen_first"])
+    parser.add_argument("--latent-inference-mode", default="match_train",
+                        choices=["match_train", "normal", "zero", "frozen_first"])
+    parser.add_argument("--regime-seq-transform", default="none",
+                        choices=["none", "reverse", "permute_random"])
+    parser.add_argument("--single-target-year", type=int, default=None)
     parser.add_argument("--feature-mask-ratio", type=float, default=0.10)
     parser.add_argument("--sector-mask-ratio", type=float, default=0.30)
     parser.add_argument("--semi-warmup-epochs", type=int, default=100)
     parser.add_argument("--rank-lambda", type=float, default=0.02)
+    # Phase 2D stability args
+    parser.add_argument("--collapse-lambda", type=float, default=0.0,
+                        help="H1: anti-collapse regularisation on latent regime variance")
+    parser.add_argument("--latent-smooth-lambda", type=float, default=0.0,
+                        help="H1: temporal smoothness regularisation on latent regime")
+    parser.add_argument("--alpha-balance-lambda", type=float, default=0.0,
+                        help="H4: penalty for alpha deviating from 0.5")
+    parser.add_argument("--zone-dro-q45-boost", type=float, default=1.0,
+                        help="H5: weight multiplier for Q4/Q5 zones (>1 = DRO boost)")
+    parser.add_argument("--swa-start-frac", type=float, default=0.0,
+                        help="H6: fraction of epochs to start SWA (0=disabled)")
+    parser.add_argument("--window-years", type=int, default=0,
+                        help="H7: rolling window size (0=use all training years)")
+    parser.add_argument("--latent-max-step-lambda", type=float, default=0.0,
+                        help="Phase 2E: penalize only latent steps above --latent-step-threshold")
+    parser.add_argument("--latent-step-threshold", type=float, default=0.6,
+                        help="Phase 2E: threshold for excessive latent step penalty")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--panel-path", type=Path, default=base.PANEL_PATH)
     parser.add_argument("--splits-path", type=Path, default=base.SPLITS_PATH)
@@ -411,6 +595,8 @@ def main():
         panel, a10_panel, splits, cols, q_tensor, sec_props_tensor, sec_lag1,
         zones_sorted, years_sorted, adj_geo, adj_mob, args, device,
     )
+    if not internals_by_year:
+        raise SystemExit("No folds evaluated. Check --single-target-year and splits.")
 
     tag = f"_{args.run_tag}" if args.run_tag else ""
     suffix = f"{args.mode}{tag}_seed_{args.seed}"
@@ -426,6 +612,7 @@ def main():
         dynamic_adj=last["dynamic_adj"],
         gate_values=last["gate_values"],
         alpha_values=last["alpha_values"],
+        latent_regime_values=last["latent_regime_values"],
         regime_delta_by_year=last["regime_delta_by_year"],
         adj_delta_by_year=last["adj_delta_by_year"],
         sector_proportions=last["sector_proportions"],
@@ -435,6 +622,24 @@ def main():
         node_order=np.array(last["node_order"]),
         sector_names=np.array(base.A10_SECTORS),
     )
+    for fold_year, fold_int in sorted(internals_by_year.items()):
+        out_fold = args.prediction_output_dir / f"herald_semi_v2_internals_{suffix}_fold_{int(fold_year)}_v1.npz"
+        np.savez_compressed(
+            out_fold,
+            dynamic_adj=fold_int["dynamic_adj"],
+            gate_values=fold_int["gate_values"],
+            alpha_values=fold_int["alpha_values"],
+            latent_regime_values=fold_int["latent_regime_values"],
+            regime_delta_by_year=fold_int["regime_delta_by_year"],
+            adj_delta_by_year=fold_int["adj_delta_by_year"],
+            sector_proportions=fold_int["sector_proportions"],
+            gamma_geo=np.array([fold_int["gamma_geo"]]),
+            gamma_mob=np.array([fold_int["gamma_mob"]]),
+            years=np.array(fold_int["years"]),
+            target_year=np.array([int(fold_year)]),
+            node_order=np.array(fold_int["node_order"]),
+            sector_names=np.array(base.A10_SECTORS),
+        )
     write_report(total_rows, sector_rows, args, internals_by_year)
 
     print(f"\nSaved: {out_total}")
