@@ -63,12 +63,21 @@ décision actuelle est donc conservatrice: travailler avec `lag1_growth1y`, puis
 stabilité entre seeds et les régulateurs internes (`alpha`, `gamma_geo`, `gamma_mob`, latents) avant de
 relancer une architecture plus complexe.
 
-La prochaine phase méthodologique est la **Phase 2K**: auditer la taille du vecteur latent de régime.
-Le vecteur latent actuel a dimension 3, mais cette dimension ne doit pas être interprétée comme trois
-régimes économiques découverts. Elle sera traitée comme un hyperparamètre: `latent_dim = 1, 2, 3, 4, 5`,
-avec une variante auto-régularisée qui peut désactiver les dimensions inutiles. Cette phase vérifiera
-aussi si le vecteur latent agit seulement sur `alpha` ou s'il modifie réellement le graphe appris dans
-les variantes `learned_regime_both`.
+Les Phases 2K-2N ont ensuite clarifié la question d'autonomie interne:
+
+- la taille du vecteur latent est un hyperparamètre, pas une preuve de trois régimes économiques;
+- les masques globaux hard-concrete/concrete/group-lasso n'ont pas produit de sélection fiable de
+  dimension;
+- l'auditeur interne conditionné par année est techniquement viable, mais il n'est pas encore un
+  candidat global robuste.
+
+La prochaine étape est donc **Phase 2O-2Q**: arrêter de chercher seulement "plus de latents" et tester
+des mécanismes plus sobres:
+
+- Phase 2O: encolher ou sélectionner la correction résiduelle HERALD face au fallback Ridge;
+- Phase 2P: tester l'interaction entre HC5 et l'auditeur interne;
+- Phase 2Q: vérifier si les meilleurs mécanismes restent valables quand on change la politique
+  d'entrées propres.
 
 ## Structure
 
@@ -139,6 +148,10 @@ python3 src/visualisation/generate_herald_semi_v2_dashboard.py
 - `reports/HERALD_PHASE2H_FEATURE_MINIMALITY_AUDIT.md`
 - `reports/HERALD_PHASE2I_SIDE2_FEATURE_AUDIT.md`
 - `reports/HERALD_LATENT_REGIME_DIMENSION_BATTERY_PLAN.md`
+- `reports/HERALD_AUTO_REGULATION_HYPOTHESIS_AUDIT.md`
+- `reports/HERALD_PHASE2L_LATENT_DIM_FINE_AUDIT.md`
+- `reports/HERALD_PHASE2M_AUTOREG_AUDIT.md`
+- `reports/HERALD_PHASE2O_2P_2Q_PLAN.md`
 - `reports/HERALD_SIDE5_STABILITY_AND_TREND_AUDIT_PLAN.md`
 - `reports/REPOSITORY_CLEANUP_20260519.md`
 - `reports/ATLAS_IAT_STATIC_LAYER_AUDIT.md`

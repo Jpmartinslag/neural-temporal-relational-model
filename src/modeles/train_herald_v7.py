@@ -14,6 +14,7 @@ Outputs use the herald_v7_ prefix and do not overwrite V6/Semi artifacts.
 
 import argparse
 import json
+import math
 from pathlib import Path
 
 import numpy as np
@@ -70,7 +71,10 @@ class HERALDv7Residual(nn.Module):
     def __init__(self, num_nodes, annual_dim, hidden_dim, attn_dim=16, q_hidden=32,
                  n_sectors_a10=9, top_k=10, prior_strength_init=1.0,
                  gate_bias_init=2.0, alpha_bias_init=1.5,
-                 latent_regime_dim=None, auto_mask=False):
+                 latent_regime_dim=None, auto_mask=False,
+                 latent_dim_mask_type="sigmoid",
+                 latent_dim_beta_start=None, latent_dim_beta_end=None,
+                 auditor_mode="none", auditor_bias_init=2.0):
         super().__init__()
         self.num_nodes = num_nodes
         self.hidden_dim = hidden_dim
@@ -81,6 +85,13 @@ class HERALDv7Residual(nn.Module):
         # Defaults to base.REGIME_DIM (3) for backward compat with all existing configs.
         self._latent_regime_dim = latent_regime_dim if latent_regime_dim is not None else base.REGIME_DIM
         self._auto_mask = auto_mask
+        self._latent_dim_mask_type = latent_dim_mask_type
+        self._hard_concrete_beta = 2.0 / 3.0
+        self._hard_concrete_beta_start = latent_dim_beta_start
+        self._hard_concrete_beta_end = latent_dim_beta_end
+        self._hard_concrete_gamma = -0.1
+        self._hard_concrete_zeta = 1.1
+        self._auditor_mode = auditor_mode
 
         self.quarterly_enc = base.QuarterlyEncoder(in_dim=2, hidden_dim=q_hidden)
         self.q_proj = nn.Linear(q_hidden, hidden_dim)
@@ -99,6 +110,12 @@ class HERALDv7Residual(nn.Module):
             nn.Linear(hidden_dim, self._latent_regime_dim),
             nn.Tanh(),
         )
+        self.auditor_gate = nn.Sequential(
+            nn.Linear(hidden_dim * 2, hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, 1),
+        )
+        nn.init.constant_(self.auditor_gate[-1].bias, float(auditor_bias_init))
         # Phase 2K auto-mask: learned per-dimension gate; allows model to deactivate unused dims.
         if auto_mask:
             self.mask_logits = nn.Parameter(torch.zeros(self._latent_regime_dim))
@@ -161,6 +178,75 @@ class HERALDv7Residual(nn.Module):
         raw = (Q @ K.T) / (self.attn_dim ** 0.5)
         return base.topk_sparse_softmax(raw + prior_logits, self.top_k)
 
+    def set_latent_dim_mask_progress(self, epoch, total_epochs):
+        """Anneal hard-concrete temperature for Phase 2M auto-regulation tests."""
+        if self._hard_concrete_beta_start is None or self._hard_concrete_beta_end is None:
+            return
+        if total_epochs <= 1:
+            ratio = 1.0
+        else:
+            ratio = min(max(float(epoch) / float(total_epochs - 1), 0.0), 1.0)
+        self._hard_concrete_beta = (
+            float(self._hard_concrete_beta_start) * (1.0 - ratio)
+            + float(self._hard_concrete_beta_end) * ratio
+        )
+
+    def _latent_dim_mask(self, stochastic=True):
+        if not self._auto_mask:
+            return None
+        if self._latent_dim_mask_type == "sigmoid":
+            return torch.sigmoid(self.mask_logits)
+        if self._latent_dim_mask_type == "hard_concrete":
+            beta = self._hard_concrete_beta
+            gamma = self._hard_concrete_gamma
+            zeta = self._hard_concrete_zeta
+            if stochastic and self.training:
+                eps = torch.finfo(self.mask_logits.dtype).eps
+                u = torch.rand_like(self.mask_logits).clamp(eps, 1.0 - eps)
+                s = torch.sigmoid((torch.log(u) - torch.log1p(-u) + self.mask_logits) / beta)
+            else:
+                s = torch.sigmoid(self.mask_logits)
+            return torch.clamp(s * (zeta - gamma) + gamma, 0.0, 1.0)
+        if self._latent_dim_mask_type == "concrete_dropout":
+            p_drop = torch.sigmoid(self.mask_logits)
+            if stochastic and self.training:
+                eps = torch.finfo(self.mask_logits.dtype).eps
+                u = torch.rand_like(self.mask_logits).clamp(eps, 1.0 - eps)
+                temp = max(float(self._hard_concrete_beta), 1e-3)
+                drop = torch.sigmoid((torch.log(u) - torch.log1p(-u) + self.mask_logits) / temp)
+                return 1.0 - drop
+            return 1.0 - p_drop
+        raise ValueError(f"Unknown latent_dim_mask_type={self._latent_dim_mask_type!r}")
+
+    def _latent_dim_mask_penalty(self):
+        if not self._auto_mask:
+            return None
+        if self._latent_dim_mask_type == "sigmoid":
+            return torch.sigmoid(self.mask_logits)
+        if self._latent_dim_mask_type == "hard_concrete":
+            beta = self._hard_concrete_beta
+            gamma = self._hard_concrete_gamma
+            zeta = self._hard_concrete_zeta
+            offset = beta * math.log(-gamma / zeta)
+            return torch.sigmoid(self.mask_logits - offset)
+        if self._latent_dim_mask_type == "concrete_dropout":
+            # Penalize expected active dimensions, not raw dropout probability.
+            return 1.0 - torch.sigmoid(self.mask_logits)
+        raise ValueError(f"Unknown latent_dim_mask_type={self._latent_dim_mask_type!r}")
+
+    def _latent_group_lasso_term(self):
+        # Output layer rows generate individual latent dimensions.
+        out = self.latent_regime[2]
+        row_norms = torch.linalg.vector_norm(out.weight, ord=2, dim=1)
+        return row_norms.mean(), row_norms.detach().cpu().tolist()
+
+    def _auditor_confidence(self, latent_context):
+        if self._auditor_mode == "none":
+            return torch.ones((), device=latent_context.device, dtype=latent_context.dtype)
+        if self._auditor_mode not in {"latent_scale", "alpha_neutral", "both"}:
+            raise ValueError(f"Unknown auditor_mode={self._auditor_mode!r}")
+        return torch.sigmoid(self.auditor_gate(latent_context).squeeze())
+
     def forward(self, x_annual_seq, x_quarterly_seq, regime_seq, sec_prior_seq,
                 adj_geo, adj_mob, adj_log_geo, adj_log_mob,
                 variant="full", return_internals=False,
@@ -180,6 +266,8 @@ class HERALDv7Residual(nn.Module):
 
         pred_list, sector_list, alpha_list = [], [], []
         latent_regime_list = []
+        auditor_confidence_list = []
+        auditor_confidence_list_grad = []
         latent_regime_list_grad = []   # differentiable — for H1 latent regularisation loss
         alpha_balance_list = []        # differentiable — for H4 alpha balance loss
         adj_list, gate_list = [], []
@@ -206,6 +294,7 @@ class HERALDv7Residual(nn.Module):
                 e_t.mean(dim=0),
                 e_t.std(dim=0, unbiased=False),
             ], dim=-1)
+            auditor_confidence = self._auditor_confidence(latent_context)
             latent_regime_t_raw = self.latent_regime(latent_context)
             if latent_mode == "normal":
                 latent_regime_t = latent_regime_t_raw
@@ -219,9 +308,13 @@ class HERALDv7Residual(nn.Module):
                 raise ValueError(f"Unknown latent_mode={latent_mode!r}")
             # Phase 2K auto-mask: z_eff = z * sigmoid(mask_logits).
             if self._auto_mask:
-                latent_regime_t = latent_regime_t * torch.sigmoid(self.mask_logits)
+                latent_regime_t = latent_regime_t * self._latent_dim_mask(stochastic=True)
+            if self._auditor_mode in {"latent_scale", "both"}:
+                latent_regime_t = auditor_confidence * latent_regime_t
             latent_regime_list_grad.append(latent_regime_t)        # keep grad for H1 loss
             latent_regime_list.append(latent_regime_t.detach())    # detached for internals
+            auditor_confidence_list_grad.append(auditor_confidence)
+            auditor_confidence_list.append(auditor_confidence.detach())
             h_local = self.gru_local_cell(e_t, h_local)
 
             if variant == "ridge_only":
@@ -304,6 +397,8 @@ class HERALDv7Residual(nn.Module):
                 alpha = torch.ones_like(alpha)
             elif variant == "fixed_alpha_0.5":
                 alpha = torch.full_like(alpha, 0.5)
+            elif self._auditor_mode in {"alpha_neutral", "both"} and variant in learned_gate_variants:
+                alpha = auditor_confidence * alpha + (1.0 - auditor_confidence) * 0.5
 
             if variant == "ridge_only":
                 pred = torch.zeros_like(local_residual)
@@ -350,6 +445,7 @@ class HERALDv7Residual(nn.Module):
         sectors = torch.stack(sector_list, dim=0)
         alpha_tensor = torch.stack(alpha_list, dim=0)
         latent_regime_tensor = torch.stack(latent_regime_list, dim=0)
+        auditor_confidence_tensor = torch.stack(auditor_confidence_list, dim=0).view(-1)
 
         # H1 latent regularisation terms (differentiable — C1/C2 fix)
         if latent_regime_list_grad:
@@ -376,12 +472,31 @@ class HERALDv7Residual(nn.Module):
             else torch.tensor(0.0, device=device)
         )
 
+        if auditor_confidence_list_grad:
+            auditor_stack = torch.stack(auditor_confidence_list_grad, dim=0).view(-1)
+            auditor_budget_term = auditor_stack.mean()
+            if auditor_stack.shape[0] > 1:
+                auditor_smooth_term = ((auditor_stack[1:] - auditor_stack[:-1]) ** 2).mean()
+                auditor_var = auditor_stack.var(unbiased=False)
+            else:
+                auditor_smooth_term = torch.tensor(0.0, device=device)
+                auditor_var = torch.tensor(0.0, device=device)
+        else:
+            auditor_budget_term = torch.tensor(0.0, device=device)
+            auditor_smooth_term = torch.tensor(0.0, device=device)
+            auditor_var = torch.tensor(0.0, device=device)
+
         # Phase 2K auto-mask L1 term: mean(sigmoid(mask_logits)) penalizes active dimensions.
+        latent_group_lasso_term, latent_group_norm_values = self._latent_group_lasso_term()
+        latent_group_effective_dim = int(
+            sum(float(v) > 1e-3 for v in latent_group_norm_values)
+        )
         if self._auto_mask:
-            mask_sigmoid = torch.sigmoid(self.mask_logits)
-            latent_dim_mask_l1_term = mask_sigmoid.mean()
-            latent_dim_mask_values = mask_sigmoid.detach().cpu().tolist()
-            latent_dim_effective_dim = int((mask_sigmoid.detach() > 0.2).sum().item())
+            mask_penalty = self._latent_dim_mask_penalty()
+            mask_values = self._latent_dim_mask(stochastic=False)
+            latent_dim_mask_l1_term = mask_penalty.mean()
+            latent_dim_mask_values = mask_values.detach().cpu().tolist()
+            latent_dim_effective_dim = int((mask_values.detach() > 0.2).sum().item())
         else:
             latent_dim_mask_l1_term = torch.tensor(0.0, device=device)
             latent_dim_mask_values = None
@@ -399,6 +514,16 @@ class HERALDv7Residual(nn.Module):
             "latent_dim_mask_l1_term": latent_dim_mask_l1_term,
             "latent_dim_mask_values": latent_dim_mask_values,
             "latent_dim_effective_dim": latent_dim_effective_dim,
+            "latent_dim_mask_type": self._latent_dim_mask_type,
+            "latent_group_lasso_term": latent_group_lasso_term,
+            "latent_group_norm_values": latent_group_norm_values,
+            "latent_group_effective_dim": latent_group_effective_dim,
+            "latent_dim_mask_beta": float(self._hard_concrete_beta),
+            "auditor_mode": self._auditor_mode,
+            "auditor_budget_term": auditor_budget_term,
+            "auditor_smooth_term": auditor_smooth_term,
+            "auditor_variance": auditor_var,
+            "auditor_confidence_values": auditor_confidence_tensor.detach().cpu().tolist(),
         }
 
         if return_internals:
@@ -418,6 +543,7 @@ class HERALDv7Residual(nn.Module):
                 gate_tensor,
                 alpha_tensor,
                 latent_regime_tensor,
+                auditor_confidence_tensor,
                 regime_delta,
                 adj_delta,
             )
