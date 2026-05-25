@@ -70,6 +70,12 @@ Submit scripts:
 | `submit_herald_phase2i_side5.sh` | `phase2i_side5_audit` |
 | `submit_herald_phase2j_fair_flag.sh` | `phase2j_fair_flag` |
 | `submit_herald_phase2k_latent_dim.sh` | `phase2k_latent_dim` |
+| `submit_herald_phase2l_latent_dim_wide.sh` | `phase2l_latent_dim_wide` |
+| `submit_herald_phase2m_latent_autoreg.sh` | `phase2m_latent_autoreg_strong` |
+| `submit_herald_phase2n_internal_auditor.sh` | `phase2n_internal_auditor` |
+| `submit_herald_phase2o_residual_shrinkage.sh` | `phase2o_residual_shrinkage` |
+| `submit_herald_phase2p_hc_auditor_interaction.sh` | `phase2p_hc_auditor_interaction` |
+| `submit_herald_phase2q_input_arch_robustness.sh` | `phase2q_input_arch_robustness` |
 
 Smoke tests:
 
@@ -335,3 +341,92 @@ python3 hpc/regime/aggregate_herald_regime_results.py \
 python3 hpc/regime/audit_herald_phase2k_latent_dim.py \
   --root hpc_results/herald_regime_phase2k_latent_dim_<STAMP>_r1
 ```
+
+## Phase 2N — internal auditor
+
+Goal: test real self-regulation with a year-by-year confidence signal. This is different from
+Phase 2M masks: the auditor is conditioned on the current hidden state and can reduce how much the
+learned latent regime affects the gate/alpha for a specific year.
+
+What changes:
+
+- `--auditor-mode none|latent_scale|alpha_neutral|both`
+- `latent_scale`: scales the learned latent regime before it enters the gate.
+- `alpha_neutral`: pulls alpha toward `0.5` when confidence is low.
+- `both`: applies both controls.
+- `--auditor-budget-lambda`: small pressure to lower confidence when the auditor is not useful.
+- `--auditor-smooth-lambda`: optional smoothness to avoid year-to-year jitter.
+
+Configs: 11 × 10 seeds = 110 runs.
+
+References:
+
+- `L3_gate`: best simple 2021 reference from latent-dim work.
+- `L5_gate_no_auditor`: clean dimension-5 control. Required to isolate the auditor effect.
+- `HC5_l0_050`: best Phase 2M mean/2025 reference.
+- `L4_a10g`: best A10 reference.
+
+Auditor variants:
+
+- `AUD_lat_b001`, `AUD_lat_b005`
+- `AUD_alpha_b001`, `AUD_alpha_b005`
+- `AUD_both_b001`, `AUD_both_b005`, `AUD_both_b001_s010`
+
+Decision rule:
+
+- Main auditor comparison must be against `L5_gate_no_auditor`, not only `L3_gate`.
+- Pass only if it improves or matches mean WMAPE while not degrading 2021 and A10.
+- Auditor confidence must vary by year; all-ones or all-zeros means no useful autonomy.
+
+Smoke:
+
+```bash
+cd ~/project_recomm_herald_v6_2025_20260430/dataset
+bash hpc/regime/smoke_test_phase2n_internal_auditor.sh
+```
+
+Submit:
+
+```bash
+cd ~/project_recomm_herald_v6_2025_20260430/dataset
+STAMP=$(date +%Y%m%d_%H%M%S) \
+bash hpc/regime/submit_herald_phase2n_internal_auditor.sh
+```
+
+## Phase 2O-2Q — next non-redundant batteries
+
+Canonical plan: `reports/HERALD_PHASE2O_2P_2Q_PLAN.md`.
+
+These phases intentionally avoid another broad latent-dimension or hard-concrete sweep.
+They test three distinct questions:
+
+- `phase2o_residual_shrinkage`: should the learned residual correction be shrunk or
+  selected fold-by-fold against Ridge?
+- `phase2p_hc_auditor_interaction`: does HC5's mean/2025 gain combine with auditor
+  gains on 2021/A10?
+- `phase2q_input_arch_robustness`: do the best architectures survive across clean
+  input policies?
+
+Shared submit template:
+
+- `hpc/regime/submit_herald_phase_template.sh`
+
+Phase submit commands:
+
+```bash
+cd ~/project_recomm_herald_v6_2025_20260430/dataset
+
+STAMP=$(date +%Y%m%d_%H%M%S) bash hpc/regime/submit_herald_phase2o_residual_shrinkage.sh
+STAMP=$(date +%Y%m%d_%H%M%S) bash hpc/regime/submit_herald_phase2p_hc_auditor_interaction.sh
+STAMP=$(date +%Y%m%d_%H%M%S) bash hpc/regime/submit_herald_phase2q_input_arch_robustness.sh
+```
+
+Default run counts:
+
+- Phase 2O: 9 configs × 10 seeds = 90 runs.
+- Phase 2P: 8 configs × 10 seeds = 80 runs.
+- Phase 2Q: 9 configs × 10 seeds = 90 runs.
+
+The submit template checks shell syntax, Python compilation, input files, expected
+run count, duplicate tags, and OUT_ROOT uniqueness before calling Slurm. By default
+it excludes `hpcgpu02` because prior Phase 2N failures were node-local.

@@ -168,6 +168,11 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         alpha_bias_init=args.alpha_bias_init,
         latent_regime_dim=getattr(args, "latent_regime_dim", None),
         auto_mask=getattr(args, "latent_dim_auto_mask", False),
+        latent_dim_mask_type=getattr(args, "latent_dim_mask_type", "sigmoid"),
+        latent_dim_beta_start=getattr(args, "latent_dim_beta_start", None),
+        latent_dim_beta_end=getattr(args, "latent_dim_beta_end", None),
+        auditor_mode=getattr(args, "auditor_mode", "none"),
+        auditor_bias_init=getattr(args, "auditor_bias_init", 2.0),
     ).to(device)
 
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
@@ -218,11 +223,15 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
     alpha_balance_lambda = getattr(args, "alpha_balance_lambda", 0.0)
     latent_max_step_lambda = getattr(args, "latent_max_step_lambda", 0.0)
     latent_dim_l1_lambda = getattr(args, "latent_dim_l1_lambda", 0.0)
+    latent_group_lasso_lambda = getattr(args, "latent_group_lasso_lambda", 0.0)
+    auditor_budget_lambda = getattr(args, "auditor_budget_lambda", 0.0)
+    auditor_smooth_lambda = getattr(args, "auditor_smooth_lambda", 0.0)
     model._latent_step_threshold = getattr(args, "latent_step_threshold", 0.6)
 
     model.train()
     for ep in range(args.epochs):
         opt.zero_grad()
+        model.set_latent_dim_mask_progress(ep, args.epochs)
         model._latent_step_threshold = getattr(args, "latent_step_threshold", 0.6)  # noqa: SIM117
 
         use_mask = ep >= args.semi_warmup_epochs
@@ -285,6 +294,11 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         loss_alpha_bal = alpha_balance_lambda * graph_losses["alpha_balance_term"]
         # Phase 2K auto-mask L1: penalizes active latent dimensions.
         loss_latent_dim_l1 = latent_dim_l1_lambda * graph_losses["latent_dim_mask_l1_term"]
+        loss_latent_group = latent_group_lasso_lambda * graph_losses["latent_group_lasso_term"]
+        loss_auditor = (
+            auditor_budget_lambda * graph_losses["auditor_budget_term"]
+            + auditor_smooth_lambda * graph_losses["auditor_smooth_term"]
+        )
 
         loss = (
             loss_main
@@ -294,6 +308,8 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
             + loss_latent_reg
             + loss_alpha_bal
             + loss_latent_dim_l1
+            + loss_latent_group
+            + loss_auditor
         )
         loss.backward()
         nn.utils.clip_grad_norm_(model.parameters(), args.grad_clip)
@@ -318,7 +334,7 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         reg_fl = [reg_f[t] for t in range(T_full)]
         sec_prior_fl = [sec_prior_f[t] for t in range(T_full)]
 
-        pred_f, sec_f, graph_f, adj_t, gate_t, alpha_t, latent_regime_t, regime_delta_t, adj_delta_t = eval_model(
+        pred_f, sec_f, graph_f, adj_t, gate_t, alpha_t, latent_regime_t, auditor_conf_t, regime_delta_t, adj_delta_t = eval_model(
             ann_f, q_f, reg_fl, sec_prior_fl,
             adj_g, adj_m_t, adj_log_g, adj_log_m,
             variant=args.v7_variant,
@@ -328,10 +344,12 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         )
 
     internals = {
+        "residual_predictions_full": pred_f.cpu().numpy(),
         "dynamic_adj": adj_t.cpu().numpy(),
         "gate_values": gate_t.cpu().numpy(),
         "alpha_values": alpha_t.cpu().numpy(),
         "latent_regime_values": latent_regime_t.cpu().numpy(),
+        "auditor_confidence_values": auditor_conf_t.cpu().numpy(),
         "regime_delta_by_year": regime_delta_t.cpu().numpy(),
         "adj_delta_by_year": adj_delta_t.cpu().numpy(),
         "sector_proportions": sec_f[-1].cpu().numpy(),
@@ -346,8 +364,25 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         ).item()),
         "latent_regime_dim": model._latent_regime_dim,
         "latent_dim_auto_mask": model._auto_mask,
+        "latent_dim_mask_type": model._latent_dim_mask_type,
         "latent_dim_mask_values": graph_f["latent_dim_mask_values"],
         "latent_dim_effective_dim": graph_f["latent_dim_effective_dim"],
+        "latent_dim_mask_beta": graph_f.get("latent_dim_mask_beta"),
+        "latent_group_norm_values": graph_f.get("latent_group_norm_values"),
+        "latent_group_effective_dim": graph_f.get("latent_group_effective_dim"),
+        "auditor_mode": graph_f.get("auditor_mode", "none"),
+        "auditor_budget_term": float(graph_f.get(
+            "auditor_budget_term",
+            torch.tensor(0.0, device=device),
+        ).item()),
+        "auditor_smooth_term": float(graph_f.get(
+            "auditor_smooth_term",
+            torch.tensor(0.0, device=device),
+        ).item()),
+        "auditor_variance": float(graph_f.get(
+            "auditor_variance",
+            torch.tensor(0.0, device=device),
+        ).item()),
         "years": seq["years_full"],
         "node_order": seq["zones"],
     }
@@ -379,7 +414,9 @@ def evaluate(panel, a10_panel, splits, cols, q_tensor, sec_props_tensor,
         y_true = seq["test_y"][mask_]
         ridge_p = seq["test_ridge"][mask_]
         zone_std = seq["zone_std"][mask_]
-        y_pred = np.maximum(ridge_p + residual[mask_] * zone_std, 0.0)
+        shrink_lambda = _residual_shrinkage_lambda(seq, internals, args)
+        internals["residual_shrinkage_lambda"] = float(shrink_lambda)
+        y_pred = np.maximum(ridge_p + shrink_lambda * residual[mask_] * zone_std, 0.0)
         s_props = sector_props[mask_]
         zones_arr = np.asarray(zones_sorted)[mask_]
         a10_test = a10_panel[a10_panel["target_year"] == target_year].set_index("ZE2020")
@@ -411,6 +448,43 @@ def evaluate(panel, a10_panel, splits, cols, q_tensor, sec_props_tensor,
     return total_rows, sector_rows, internals_by_year
 
 
+def _residual_shrinkage_lambda(seq, internals, args):
+    """Return a causal residual shrinkage coefficient for the current fold.
+
+    `fixed` is a direct ablation. `train_opt` chooses lambda on the training
+    years only, so the target fold remains unseen. This is a deliberately small
+    selector: it can choose Ridge-like behaviour (lambda near 0) or trust the
+    neural residual (lambda near 1) without adding another neural router.
+    """
+    mode = getattr(args, "residual_shrinkage_mode", "none")
+    if mode == "none":
+        return 1.0
+    if mode == "fixed":
+        return float(getattr(args, "residual_shrinkage_value", 1.0))
+    if mode != "train_opt":
+        raise ValueError(f"Unknown residual_shrinkage_mode={mode!r}")
+
+    pred_full = np.asarray(internals.get("residual_predictions_full"), dtype=float)
+    train_pred = pred_full[: seq["train_resid"].shape[0]]
+    if train_pred.shape != seq["train_resid"].shape:
+        return 1.0
+
+    train_mask = np.asarray(seq["mask"], dtype=bool)
+    train_y = seq["train_ridge"] + seq["train_resid"] * seq["zone_std"][np.newaxis, :]
+    best_lam = 1.0
+    best_score = np.inf
+    lo = float(getattr(args, "residual_shrinkage_min", 0.0))
+    hi = float(getattr(args, "residual_shrinkage_max", 1.25))
+    grid = np.linspace(lo, hi, 26)
+    for lam in grid:
+        pred = np.maximum(seq["train_ridge"] + lam * train_pred * seq["zone_std"][np.newaxis, :], 0.0)
+        score = base.wmape(train_y[train_mask], pred[train_mask])
+        if score < best_score:
+            best_score = float(score)
+            best_lam = float(lam)
+    return best_lam
+
+
 def write_report(total_rows, sector_rows, args, internals_by_year):
     total_df = pd.DataFrame(total_rows)
     sector_df = pd.DataFrame(sector_rows)
@@ -434,6 +508,8 @@ def write_report(total_rows, sector_rows, args, internals_by_year):
     alpha_arr = last["alpha_values"]
     alpha_by_year = {int(yr): round(float(alpha_arr[t].mean()), 5) for t, yr in enumerate(years_f)}
     latent_step_by_fold = {}
+    auditor_by_fold = {}
+    shrinkage_by_fold = {}
     for fold_year, internals in sorted(internals_by_year.items()):
         fold_years = [int(y) for y in internals["years"]]
         latent = np.asarray(internals["latent_regime_values"], dtype=float)
@@ -444,6 +520,15 @@ def write_report(total_rows, sector_rows, args, internals_by_year):
                     float(np.linalg.norm(latent[i] - latent[i - 1])), 6
                 )
         latent_step_by_fold[int(fold_year)] = transitions
+        auditor_arr = np.asarray(internals.get("auditor_confidence_values", []), dtype=float).reshape(-1)
+        if auditor_arr.size == len(fold_years):
+            auditor_by_fold[int(fold_year)] = {
+                int(yr): round(float(auditor_arr[i]), 6)
+                for i, yr in enumerate(fold_years)
+            }
+        shrinkage_by_fold[int(fold_year)] = round(
+            float(internals.get("residual_shrinkage_lambda", 1.0)), 6
+        )
     tag = f"_{args.run_tag}" if args.run_tag else ""
     run_key = f"{args.mode}{tag}_seed_{args.seed}"
     result = {
@@ -485,9 +570,30 @@ def write_report(total_rows, sector_rows, args, internals_by_year):
         # Phase 2K latent dimension audit fields
         "latent_regime_dim": last.get("latent_regime_dim", base.REGIME_DIM),
         "latent_dim_auto_mask": last.get("latent_dim_auto_mask", False),
+        "latent_dim_mask_type": last.get("latent_dim_mask_type", "sigmoid"),
         "latent_dim_l1_lambda": getattr(args, "latent_dim_l1_lambda", 0.0),
+        "latent_dim_beta_start": getattr(args, "latent_dim_beta_start", None),
+        "latent_dim_beta_end": getattr(args, "latent_dim_beta_end", None),
+        "latent_group_lasso_lambda": getattr(args, "latent_group_lasso_lambda", 0.0),
         "latent_dim_mask_values": last.get("latent_dim_mask_values"),
         "latent_dim_effective_dim": last.get("latent_dim_effective_dim"),
+        "latent_dim_mask_beta": last.get("latent_dim_mask_beta"),
+        "latent_group_norm_values": last.get("latent_group_norm_values"),
+        "latent_group_effective_dim": last.get("latent_group_effective_dim"),
+        # Phase 2N internal auditor fields
+        "auditor_mode": last.get("auditor_mode", getattr(args, "auditor_mode", "none")),
+        "auditor_budget_lambda": getattr(args, "auditor_budget_lambda", 0.0),
+        "auditor_smooth_lambda": getattr(args, "auditor_smooth_lambda", 0.0),
+        "auditor_bias_init": getattr(args, "auditor_bias_init", 2.0),
+        "auditor_budget_term": last.get("auditor_budget_term"),
+        "auditor_smooth_term": last.get("auditor_smooth_term"),
+        "auditor_variance": last.get("auditor_variance"),
+        "auditor_confidence_by_fold": auditor_by_fold,
+        "residual_shrinkage_mode": getattr(args, "residual_shrinkage_mode", "none"),
+        "residual_shrinkage_value": getattr(args, "residual_shrinkage_value", 1.0),
+        "residual_shrinkage_min": getattr(args, "residual_shrinkage_min", 0.0),
+        "residual_shrinkage_max": getattr(args, "residual_shrinkage_max", 1.25),
+        "residual_shrinkage_by_fold": shrinkage_by_fold,
     }
     existing = {}
     if args.metrics_path.exists():
@@ -573,6 +679,33 @@ def main():
                         help="Phase 2K: L1 penalty on auto-mask sigmoid values (0=disabled)")
     parser.add_argument("--latent-dim-auto-mask", action="store_true",
                         help="Phase 2K: enable learned per-dimension mask (auto-regularization)")
+    parser.add_argument("--latent-dim-mask-type", choices=["sigmoid", "hard_concrete", "concrete_dropout"],
+                        default="sigmoid",
+                        help="Phase 2L/2M: auto-mask type")
+    parser.add_argument("--latent-dim-beta-start", type=float, default=None,
+                        help="Phase 2M: starting hard-concrete/concrete temperature")
+    parser.add_argument("--latent-dim-beta-end", type=float, default=None,
+                        help="Phase 2M: final hard-concrete/concrete temperature")
+    parser.add_argument("--latent-group-lasso-lambda", type=float, default=0.0,
+                        help="Phase 2M: group-lasso penalty on latent output rows")
+    parser.add_argument("--auditor-mode", choices=["none", "latent_scale", "alpha_neutral", "both"],
+                        default="none",
+                        help="Phase 2N: input-conditioned internal auditor action")
+    parser.add_argument("--auditor-budget-lambda", type=float, default=0.0,
+                        help="Phase 2N: pressure to lower auditor confidence when not useful")
+    parser.add_argument("--auditor-smooth-lambda", type=float, default=0.0,
+                        help="Phase 2N: temporal smoothness penalty on auditor confidence")
+    parser.add_argument("--auditor-bias-init", type=float, default=2.0,
+                        help="Phase 2N: initial confidence bias; 2.0 starts close to baseline")
+    parser.add_argument("--residual-shrinkage-mode", choices=["none", "fixed", "train_opt"],
+                        default="none",
+                        help="Phase 2O: shrink HERALD residual correction after training")
+    parser.add_argument("--residual-shrinkage-value", type=float, default=1.0,
+                        help="Phase 2O: fixed residual shrinkage lambda")
+    parser.add_argument("--residual-shrinkage-min", type=float, default=0.0,
+                        help="Phase 2O: lower bound for train_opt shrinkage grid")
+    parser.add_argument("--residual-shrinkage-max", type=float, default=1.25,
+                        help="Phase 2O: upper bound for train_opt shrinkage grid")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--panel-path", type=Path, default=base.PANEL_PATH)
     parser.add_argument("--splits-path", type=Path, default=base.SPLITS_PATH)
@@ -636,6 +769,7 @@ def main():
         gate_values=last["gate_values"],
         alpha_values=last["alpha_values"],
         latent_regime_values=last["latent_regime_values"],
+        auditor_confidence_values=last["auditor_confidence_values"],
         regime_delta_by_year=last["regime_delta_by_year"],
         adj_delta_by_year=last["adj_delta_by_year"],
         sector_proportions=last["sector_proportions"],
@@ -653,6 +787,7 @@ def main():
             gate_values=fold_int["gate_values"],
             alpha_values=fold_int["alpha_values"],
             latent_regime_values=fold_int["latent_regime_values"],
+            auditor_confidence_values=fold_int["auditor_confidence_values"],
             regime_delta_by_year=fold_int["regime_delta_by_year"],
             adj_delta_by_year=fold_int["adj_delta_by_year"],
             sector_proportions=fold_int["sector_proportions"],

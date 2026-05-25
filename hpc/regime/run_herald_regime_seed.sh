@@ -66,6 +66,18 @@ common_args() {
   local latent_regime_dim=${22:-3}
   local latent_dim_l1_lambda=${23:-0.0}
   local latent_dim_auto_mask=${24:-fixed}
+  local latent_dim_mask_type=${25:-sigmoid}
+  local latent_dim_beta_start=${26:-none}
+  local latent_dim_beta_end=${27:-none}
+  local latent_group_lasso_lambda=${28:-0.0}
+  local auditor_mode=${29:-none}
+  local auditor_budget_lambda=${30:-0.0}
+  local auditor_smooth_lambda=${31:-0.0}
+  local auditor_bias_init=${32:-2.0}
+  local residual_shrinkage_mode=${33:-none}
+  local residual_shrinkage_value=${34:-1.0}
+  local residual_shrinkage_min=${35:-0.0}
+  local residual_shrinkage_max=${36:-1.25}
   echo \
     --panel-path "$PANEL_PATH" \
     --splits-path "$SPLITS_PATH" \
@@ -104,9 +116,25 @@ common_args() {
     --latent-max-step-lambda "$latent_max_step_lambda" \
     --latent-step-threshold "$latent_step_threshold" \
     --latent-regime-dim "${latent_regime_dim:-3}" \
-    --latent-dim-l1-lambda "${latent_dim_l1_lambda:-0.0}"
-  if [ "${latent_dim_auto_mask:-fixed}" = "auto" ]; then
+    --latent-dim-l1-lambda "${latent_dim_l1_lambda:-0.0}" \
+    --latent-dim-mask-type "${latent_dim_mask_type:-sigmoid}" \
+    --latent-group-lasso-lambda "${latent_group_lasso_lambda:-0.0}" \
+    --auditor-mode "${auditor_mode:-none}" \
+    --auditor-budget-lambda "${auditor_budget_lambda:-0.0}" \
+    --auditor-smooth-lambda "${auditor_smooth_lambda:-0.0}" \
+    --auditor-bias-init "${auditor_bias_init:-2.0}" \
+    --residual-shrinkage-mode "${residual_shrinkage_mode:-none}" \
+    --residual-shrinkage-value "${residual_shrinkage_value:-1.0}" \
+    --residual-shrinkage-min "${residual_shrinkage_min:-0.0}" \
+    --residual-shrinkage-max "${residual_shrinkage_max:-1.25}"
+  if [ "${latent_dim_auto_mask:-fixed}" = "auto" ] || [ "${latent_dim_auto_mask:-fixed}" = "hard_concrete" ]; then
     echo --latent-dim-auto-mask
+  fi
+  if [ "${latent_dim_beta_start:-none}" != "none" ]; then
+    echo --latent-dim-beta-start "$latent_dim_beta_start"
+  fi
+  if [ "${latent_dim_beta_end:-none}" != "none" ]; then
+    echo --latent-dim-beta-end "$latent_dim_beta_end"
   fi
   if [ "${window_years:-0}" -gt 0 ] 2>/dev/null; then
     echo --window-years "$window_years"
@@ -146,6 +174,18 @@ run_regime() {
   local latent_regime_dim=${23:-3}
   local latent_dim_l1_lambda=${24:-0.0}
   local latent_dim_auto_mask=${25:-fixed}
+  local latent_dim_mask_type=${26:-sigmoid}
+  local latent_dim_beta_start=${27:-none}
+  local latent_dim_beta_end=${28:-none}
+  local latent_group_lasso_lambda=${29:-0.0}
+  local auditor_mode=${30:-none}
+  local auditor_budget_lambda=${31:-0.0}
+  local auditor_smooth_lambda=${32:-0.0}
+  local auditor_bias_init=${33:-2.0}
+  local residual_shrinkage_mode=${34:-none}
+  local residual_shrinkage_value=${35:-1.0}
+  local residual_shrinkage_min=${36:-0.0}
+  local residual_shrinkage_max=${37:-1.25}
   local tag="regime_${mode}"
   if [ "$variant" != "full" ]; then
     tag="${tag}_${variant}"
@@ -175,7 +215,10 @@ run_regime() {
   done
 
   echo ""
-  echo ">> [seed=${SEED}] HERALD regime=${mode} variant=${variant} source_policy=${source_policy} label=${label} feature_policy=${feature_policy} macro_feature_set=${macro_feature_set} sector_lambda=${sector_lambda} alpha_smooth=${alpha_smooth_lambda} smooth=${smooth_lambda} smooth_source=${smooth_regime_source} latent_train=${latent_train_mode} latent_inf=${latent_inference_mode} regime_transform=${regime_seq_transform} fold=${single_target_year} latent_dim=${latent_regime_dim} l1=${latent_dim_l1_lambda} auto_mask=${latent_dim_auto_mask}  $(date '+%Y-%m-%d %H:%M:%S')"
+  if [ "${latent_dim_auto_mask:-fixed}" = "hard_concrete" ]; then
+    latent_dim_mask_type="hard_concrete"
+  fi
+  echo ">> [seed=${SEED}] HERALD regime=${mode} variant=${variant} source_policy=${source_policy} label=${label} feature_policy=${feature_policy} macro_feature_set=${macro_feature_set} sector_lambda=${sector_lambda} alpha_smooth=${alpha_smooth_lambda} smooth=${smooth_lambda} smooth_source=${smooth_regime_source} latent_train=${latent_train_mode} latent_inf=${latent_inference_mode} regime_transform=${regime_seq_transform} fold=${single_target_year} latent_dim=${latent_regime_dim} l1=${latent_dim_l1_lambda} auto_mask=${latent_dim_auto_mask} mask_type=${latent_dim_mask_type} beta=${latent_dim_beta_start}->${latent_dim_beta_end} group_lasso=${latent_group_lasso_lambda} auditor=${auditor_mode} auditor_budget=${auditor_budget_lambda} auditor_smooth=${auditor_smooth_lambda} shrink=${residual_shrinkage_mode}:${residual_shrinkage_value}  $(date '+%Y-%m-%d %H:%M:%S')"
   local source_args=()
   if [ "$source_policy" = "no_source_flags" ]; then
     source_args+=(--drop-source-flags)
@@ -187,7 +230,7 @@ run_regime() {
     --macro-feature-set "$macro_feature_set" \
     ${source_args[@]+"${source_args[@]}"} \
     --regime-metadata-path "$meta" \
-    $(common_args "$mp" "$mc" "$variant" "$sector_lambda" "$alpha_smooth_lambda" "$smooth_lambda" "$smooth_regime_source" "$latent_train_mode" "$latent_inference_mode" "$regime_seq_transform" "$single_target_year" "$collapse_lambda" "$latent_smooth_lambda" "$alpha_balance_lambda" "$zone_dro_boost" "$swa_start_frac" "$window_years" "$latent_max_step_lambda" "$latent_step_threshold" "$feature_policy" "$macro_feature_set" "$latent_regime_dim" "$latent_dim_l1_lambda" "$latent_dim_auto_mask") \
+    $(common_args "$mp" "$mc" "$variant" "$sector_lambda" "$alpha_smooth_lambda" "$smooth_lambda" "$smooth_regime_source" "$latent_train_mode" "$latent_inference_mode" "$regime_seq_transform" "$single_target_year" "$collapse_lambda" "$latent_smooth_lambda" "$alpha_balance_lambda" "$zone_dro_boost" "$swa_start_frac" "$window_years" "$latent_max_step_lambda" "$latent_step_threshold" "$feature_policy" "$macro_feature_set" "$latent_regime_dim" "$latent_dim_l1_lambda" "$latent_dim_auto_mask" "$latent_dim_mask_type" "$latent_dim_beta_start" "$latent_dim_beta_end" "$latent_group_lasso_lambda" "$auditor_mode" "$auditor_budget_lambda" "$auditor_smooth_lambda" "$auditor_bias_init" "$residual_shrinkage_mode" "$residual_shrinkage_value" "$residual_shrinkage_min" "$residual_shrinkage_max") \
     --seed "$SEED" \
     --run-tag "$tag"
   echo "   done  $(date '+%Y-%m-%d %H:%M:%S')"
@@ -213,7 +256,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "${SCRIPT_DIR}/regime_plan_configs.sh"
 
 echo "Planned artifacts for seed=${SEED}:"
-while read -r mode variant source_policy label sector_lambda alpha_smooth_lambda smooth_lambda smooth_regime_source latent_train_mode latent_inference_mode regime_seq_transform single_target_year collapse_lambda latent_smooth_lambda alpha_balance_lambda zone_dro_boost swa_start_frac window_years latent_max_step_lambda latent_step_threshold feature_policy macro_feature_set latent_regime_dim latent_dim_l1_lambda latent_dim_auto_mask; do
+while read -r mode variant source_policy label sector_lambda alpha_smooth_lambda smooth_lambda smooth_regime_source latent_train_mode latent_inference_mode regime_seq_transform single_target_year collapse_lambda latent_smooth_lambda alpha_balance_lambda zone_dro_boost swa_start_frac window_years latent_max_step_lambda latent_step_threshold feature_policy macro_feature_set latent_regime_dim latent_dim_l1_lambda latent_dim_auto_mask latent_dim_mask_type latent_dim_beta_start latent_dim_beta_end latent_group_lasso_lambda auditor_mode auditor_budget_lambda auditor_smooth_lambda auditor_bias_init residual_shrinkage_mode residual_shrinkage_value residual_shrinkage_min residual_shrinkage_max; do
   tag="regime_${mode}"
   if [ "$variant" != "full" ]; then
     tag="${tag}_${variant}"
@@ -232,8 +275,8 @@ while read -r mode variant source_policy label sector_lambda alpha_smooth_lambda
   echo "    $OUT_ROOT/data_processed/herald_semi_v2_internals_${suffix}_v1.npz"
 done < <(plan_configs)
 
-while read -r mode variant source_policy label sector_lambda alpha_smooth_lambda smooth_lambda smooth_regime_source latent_train_mode latent_inference_mode regime_seq_transform single_target_year collapse_lambda latent_smooth_lambda alpha_balance_lambda zone_dro_boost swa_start_frac window_years latent_max_step_lambda latent_step_threshold feature_policy macro_feature_set latent_regime_dim latent_dim_l1_lambda latent_dim_auto_mask; do
-  run_regime "$mode" "$variant" "$source_policy" "$label" "$sector_lambda" "$alpha_smooth_lambda" "$smooth_lambda" "$smooth_regime_source" "$latent_train_mode" "$latent_inference_mode" "$regime_seq_transform" "$single_target_year" "${collapse_lambda:-0.0}" "${latent_smooth_lambda:-0.0}" "${alpha_balance_lambda:-0.0}" "${zone_dro_boost:-1.0}" "${swa_start_frac:-0.0}" "${window_years:-0}" "${latent_max_step_lambda:-0.0}" "${latent_step_threshold:-0.6}" "${feature_policy:-current_clean}" "${macro_feature_set:-none}" "${latent_regime_dim:-3}" "${latent_dim_l1_lambda:-0.0}" "${latent_dim_auto_mask:-fixed}"
+while read -r mode variant source_policy label sector_lambda alpha_smooth_lambda smooth_lambda smooth_regime_source latent_train_mode latent_inference_mode regime_seq_transform single_target_year collapse_lambda latent_smooth_lambda alpha_balance_lambda zone_dro_boost swa_start_frac window_years latent_max_step_lambda latent_step_threshold feature_policy macro_feature_set latent_regime_dim latent_dim_l1_lambda latent_dim_auto_mask latent_dim_mask_type latent_dim_beta_start latent_dim_beta_end latent_group_lasso_lambda auditor_mode auditor_budget_lambda auditor_smooth_lambda auditor_bias_init residual_shrinkage_mode residual_shrinkage_value residual_shrinkage_min residual_shrinkage_max; do
+  run_regime "$mode" "$variant" "$source_policy" "$label" "$sector_lambda" "$alpha_smooth_lambda" "$smooth_lambda" "$smooth_regime_source" "$latent_train_mode" "$latent_inference_mode" "$regime_seq_transform" "$single_target_year" "${collapse_lambda:-0.0}" "${latent_smooth_lambda:-0.0}" "${alpha_balance_lambda:-0.0}" "${zone_dro_boost:-1.0}" "${swa_start_frac:-0.0}" "${window_years:-0}" "${latent_max_step_lambda:-0.0}" "${latent_step_threshold:-0.6}" "${feature_policy:-current_clean}" "${macro_feature_set:-none}" "${latent_regime_dim:-3}" "${latent_dim_l1_lambda:-0.0}" "${latent_dim_auto_mask:-fixed}" "${latent_dim_mask_type:-sigmoid}" "${latent_dim_beta_start:-none}" "${latent_dim_beta_end:-none}" "${latent_group_lasso_lambda:-0.0}" "${auditor_mode:-none}" "${auditor_budget_lambda:-0.0}" "${auditor_smooth_lambda:-0.0}" "${auditor_bias_init:-2.0}" "${residual_shrinkage_mode:-none}" "${residual_shrinkage_value:-1.0}" "${residual_shrinkage_min:-0.0}" "${residual_shrinkage_max:-1.25}"
 done < <(plan_configs)
 
 echo ""

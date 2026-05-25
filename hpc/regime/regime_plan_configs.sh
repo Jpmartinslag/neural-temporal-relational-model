@@ -218,6 +218,141 @@ plan_configs() {
       echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUTO5_l1_005 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.005 auto"
       echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUTO5_l1_010 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.010 auto"
       ;;
+    phase2l_latent_dim_wide)
+      # Phase 2L latent-regime wide audit — 20 configs × 10 seeds = 200 runs.
+      #
+      # Methodological goal:
+      #   Test whether the fixed 3D latent regime is a useful inductive bias or
+      #   an arbitrary constraint, while keeping the same clean input policy
+      #   used in Phase 2K (side_lag_1 + growth_1y, no source flags, no manual
+      #   COVID/rebound flags).
+      #
+      # Columns 1-22: same schema as Phase 2J.
+      # Columns 23-25: latent_regime_dim  latent_dim_l1_lambda  latent_dim_auto_mask
+      #
+      # Block A — fixed gate-only dimensions (7 configs):
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L1_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 1 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L2_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 2 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L3_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 3 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L4_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 4 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L5_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L6_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 6 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L8_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 8 0.0 fixed"
+      # Block B — stronger auto-mask L1 and hard-concrete L0-style masks.
+      # Phase 2K showed weak sigmoid L1 kept all dims active.
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUTO5_l1_005 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.005 auto"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUTO5_l1_020 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.020 auto"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUTO6_l1_020 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 6 0.020 auto"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_l0_005 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.005 hard_concrete"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC6_l0_005 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 6 0.005 hard_concrete"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC8_l0_005 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 8 0.005 hard_concrete"
+      # Block C — temporal step cap. Tests temporal coherence without manual flags.
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L3_step06 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.005 0.6 side5_lag1_growth1y none 3 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L4_step06 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.005 0.6 side5_lag1_growth1y none 4 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L5_step06 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.005 0.6 side5_lag1_growth1y none 5 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUTO5_step06 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.005 0.6 side5_lag1_growth1y none 5 0.005 auto"
+      # Block D — A10 guard through stronger sector loss. Tests total/A10 trade-off.
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L3_a10g 0.3 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 3 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L4_a10g 0.3 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 4 0.0 fixed"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUTO5_a10g 0.3 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.005 auto"
+      ;;
+    phase2m_latent_autoreg_strong)
+      # Phase 2M latent auto-regulation audit — 11 configs × 10 seeds = 110 runs.
+      #
+      # Goal:
+      #   Test whether Phase 2L failed because the auto-regulation mechanism was
+      #   too weak/misplaced. Keep the clean no-flags, SIDE2 input setting.
+      #
+      # Columns 1-26: Phase 2L schema.
+      # Columns 27-29: latent_dim_beta_start latent_dim_beta_end latent_group_lasso_lambda.
+      #
+      # References rerun in-battery for paired comparisons:
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L3_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 3 0.0 fixed sigmoid none none 0.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_l0_005 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.005 hard_concrete hard_concrete none none 0.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L4_a10g 0.3 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 4 0.0 fixed sigmoid none none 0.0"
+      # Stronger hard-concrete L0-style penalties:
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_l0_020 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.020 hard_concrete hard_concrete none none 0.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_l0_050 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.050 hard_concrete hard_concrete none none 0.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_l0_100 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.100 hard_concrete hard_concrete none none 0.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_l0_050_anneal 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.050 hard_concrete hard_concrete 0.6666667 0.3333333 0.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC8_l0_050 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 8 0.050 hard_concrete hard_concrete none none 0.0"
+      # Source-level dimension penalties and concrete dropout:
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags GL5_005 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.005"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags GL5_020 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.020"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags CD5_kl_001 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.001 auto concrete_dropout 0.6666667 0.3333333 0.0"
+      ;;
+    phase2n_internal_auditor)
+      # Phase 2N internal auditor — 11 configs × 10 seeds = 110 runs.
+      #
+      # Goal:
+      #   Test input-conditioned self-regulation. Unlike Phase 2M, this is not a
+      #   global latent-dimension mask. The auditor emits a confidence per year
+      #   and can down-weight the learned latent regime and/or neutralize alpha.
+      #
+      # References rerun in-battery:
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L3_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 3 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L5_gate_no_auditor 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_l0_050 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.050 hard_concrete hard_concrete none none 0.0 none 0.0 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L4_a10g 0.3 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 4 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0"
+      # Auditor acts only on latent vector before gate/graph consumers.
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUD_lat_b001 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 latent_scale 0.001 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUD_lat_b005 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 latent_scale 0.005 0.0 2.0"
+      # Auditor neutralizes alpha toward 0.5 when confidence drops.
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUD_alpha_b001 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 alpha_neutral 0.001 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUD_alpha_b005 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 alpha_neutral 0.005 0.0 2.0"
+      # Auditor controls both latent intensity and alpha neutrality.
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUD_both_b001 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 both 0.001 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUD_both_b005 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 both 0.005 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUD_both_b001_s010 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 both 0.001 0.010 2.0"
+      ;;
+    phase2o_residual_shrinkage)
+      # Phase 2O — residual shrinkage/selector audit, 9 configs × seeds.
+      #
+      # Goal:
+      #   Test whether HERALD should always apply its full neural residual.
+      #   `fixed` shrinkage is a direct ablation; `train_opt` picks lambda from
+      #   training years only inside each fold (causal fallback toward Ridge).
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L3_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 3 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 none 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L5_gate_no_auditor 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 none 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_l0_050 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.050 hard_concrete hard_concrete none none 0.0 none 0.0 0.0 2.0 none 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L4_a10g 0.3 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 4 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 none 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L5_shrink050 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 fixed 0.5 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L5_shrink075 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 fixed 0.75 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L5_trainopt 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_trainopt 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.050 hard_concrete hard_concrete none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUD_alpha_trainopt 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 alpha_neutral 0.001 0.0 2.0 train_opt 1.0 0.0 1.25"
+      ;;
+    phase2p_hc_auditor_interaction)
+      # Phase 2P — HC5 + auditor interaction, 8 configs × seeds.
+      #
+      # Goal:
+      #   Test whether HC5's mean/2025 advantage combines with the 2N auditor's
+      #   2021/A10 advantage. This is an interaction battery, not another L0 grid.
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L3_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 3 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L5_gate_no_auditor 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_l0_050 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.050 hard_concrete hard_concrete none none 0.0 none 0.0 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUD_alpha_b001 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 alpha_neutral 0.001 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUD_both_b001 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 both 0.001 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_alpha_b001 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.050 hard_concrete hard_concrete none none 0.0 alpha_neutral 0.001 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_both_b001 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.050 hard_concrete hard_concrete none none 0.0 both 0.001 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_both_b001_s010 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.050 hard_concrete hard_concrete none none 0.0 both 0.001 0.010 2.0"
+      ;;
+    phase2q_input_arch_robustness)
+      # Phase 2Q — input policy × architecture robustness, 9 configs × seeds.
+      #
+      # Goal:
+      #   Separate "SIDE2 is strong" from "architecture is strong" by crossing
+      #   three clean input policies with three no-flag architectures.
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags side2_L5 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags side2_HC5 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.050 hard_concrete hard_concrete none none 0.0 none 0.0 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags side2_AUDboth 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 both 0.001 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags minimal_L5 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 minimal_side_only none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags minimal_HC5 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 minimal_side_only none 5 0.050 hard_concrete hard_concrete none none 0.0 none 0.0 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags minimal_AUDboth 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 minimal_side_only none 5 0.0 fixed sigmoid none none 0.0 both 0.001 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags no_noise_L5 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 no_flores_no_side_stock_a10 none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags no_noise_HC5 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 no_flores_no_side_stock_a10 none 5 0.050 hard_concrete hard_concrete none none 0.0 none 0.0 0.0 2.0"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags no_noise_AUDboth 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 no_flores_no_side_stock_a10 none 5 0.0 fixed sigmoid none none 0.0 both 0.001 0.0 2.0"
+      ;;
     *)
       echo "Unknown REGIME_PLAN=${REGIME_PLAN}" >&2
       return 1
