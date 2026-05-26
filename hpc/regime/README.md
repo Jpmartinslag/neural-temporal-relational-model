@@ -13,37 +13,45 @@ macro/falsification batteries.
 | Phase 2D | stability regularizers | completed | no stable fix for 2021 |
 | Phase 2E | residual/rebound tests | completed | no robust improvement |
 | Phase 2G | feature-noise removal | completed | simplified SIDE core became best candidate |
-| Phase 2H | macro INSEE/Banque de France | completed | macro not retained; `best_simplified` wins globally |
+| Phase 2H | macro INSEE/Banque de France | completed | macro not retained; `best_simplified` won that stage |
 | Phase 2I | SIDE 5-feature audit | completed | `lag1_growth1y` wins: WMAPE mean 0.021323 |
 | Phase 2J | fair flag comparison | completed | no-flags SIDE2 beats clean manual-flags SIDE2 |
-| Phase 2K | latent-regime dimension audit | ready to launch | 13 configs × 10 seeds = 130 runs; auto-mask variant included |
+| Phase 2K | latent-regime dimension audit | completed | fixed larger latent helped; auto-size did not select cleanly |
+| Phase 2L-2N | auto-regulation / internal auditor | completed | useful diagnostics, no main-candidate promotion |
+| Phase 2O-2Q | residual shrinkage and robustness | completed | residual calibration became the strongest direction |
+| Phase 2R | confirmatory battery | completed | `L5_trainopt` confirmed vs no-calibration control |
 
-## Canonical candidate after Phase 2H
+## Canonical candidate after Phase 2R
 
-`best_simplified` is the current HERALD-France candidate.
+`L5_trainopt` is the current HERALD-France candidate.
 
 Annual features:
 
 - `side_lag_1`
-- `side_lag_2`
-- `side_lag_3`
 - `growth_1y`
-- `growth_2y`
 
-Phase 2H metrics:
+Mechanism:
 
-- mean WMAPE 2021-2025: `0.025347`
-- WMAPE 2021: `0.036236`
-- WMAPE 2025: `0.014990`
-- A10 WMAPE: `0.161675`
-- seed std: `0.002189`
+- Ridge baseline;
+- neural residual correction;
+- no manual crisis/rebound flags;
+- no source flags;
+- residual calibration estimated from training years only.
+
+Phase 2R metrics:
+
+- mean WMAPE 2021-2025: `0.020233`
+- WMAPE 2021: `0.035020`
+- WMAPE 2025: `0.012525`
+- A10 WMAPE: `0.158238`
+- paired vs no-calibration control: `17/20` wins, `p=0.002818`
 
 Combined audit:
 
 ```text
-hpc_results/phase2h_combined_audit/PHASE2H_COMBINED_AUDIT.md
-reports/HERALD_PHASE2H_FEATURE_MINIMALITY_AUDIT.md
-reports/HERALD_SIDE5_STABILITY_AND_TREND_AUDIT_PLAN.md
+reports/HERALD_PHASE2R_CONFIRMATORY_AUDIT.md
+reports/metrics/herald_phase2r_summary.csv
+reports/metrics/herald_phase2r_paired_vs_l5_gate.csv
 ```
 
 ## Entrypoints
@@ -76,6 +84,7 @@ Submit scripts:
 | `submit_herald_phase2o_residual_shrinkage.sh` | `phase2o_residual_shrinkage` |
 | `submit_herald_phase2p_hc_auditor_interaction.sh` | `phase2p_hc_auditor_interaction` |
 | `submit_herald_phase2q_input_arch_robustness.sh` | `phase2q_input_arch_robustness` |
+| `submit_herald_phase2r_confirmatory.sh` | `phase2r_confirmatory` |
 
 Smoke tests:
 
@@ -430,3 +439,43 @@ Default run counts:
 The submit template checks shell syntax, Python compilation, input files, expected
 run count, duplicate tags, and OUT_ROOT uniqueness before calling Slurm. By default
 it excludes `hpcgpu02` because prior Phase 2N failures were node-local.
+
+## Phase 2R — confirmatory battery
+
+Phase 2R freezes the candidate set after 2O/2P/2Q. It is not another broad
+search. It tests whether the main claim survives with more seeds and fair
+controls in the same run.
+
+Main question:
+
+- does `L5_trainopt` provide a robust no-flags HERALD result: Ridge baseline
+  plus neural residual correction calibrated from training years only?
+
+Controls included:
+
+- `ridge_side2`: Ridge-only fallback in the same HERALD pipeline;
+- `L5_gate_no_auditor`: no-flags, no shrinkage control;
+- `L3_gate`: legacy 2021-oriented control;
+- `HC5_trainopt`: best raw mean/2025 trade-off from 2O;
+- `AUD_alpha_trainopt`, `AUD_both_trainopt`, `side2_AUDboth`: auditor/stability controls;
+- `L4_a10g`: A10 guard comparison;
+- `clean_flags_side2`, `clean_flags_side2_trainopt`: manual flags with the same clean SIDE2 inputs;
+- `extended_flags_current`, `extended_flags_current_trainopt`: historical broader flag controls.
+
+Submit:
+
+```bash
+cd ~/project_recomm_herald_v6_2025_20260430/dataset
+STAMP=$(date +%Y%m%d_%H%M%S) bash hpc/regime/submit_herald_phase2r_confirmatory.sh
+```
+
+Default run count:
+
+- Phase 2R: 13 configs × 20 seeds = 260 runs.
+
+Audit after completion:
+
+```bash
+python3 hpc/regime/aggregate_herald_regime_results.py --root <OUT_ROOT>
+python3 hpc/regime/audit_herald_phase2r_confirmatory.py --root <OUT_ROOT> --strict
+```

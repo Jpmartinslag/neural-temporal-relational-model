@@ -376,25 +376,26 @@ class HERALDv7Residual(nn.Module):
             graph_disp = torch.mean(torch.abs(m_t - e_t), dim=-1, keepdim=True)
             h_norm = torch.norm(h, dim=-1, keepdim=True) / max(self.hidden_dim ** 0.5, 1.0)
             h_local_norm = torch.norm(h_local, dim=-1, keepdim=True) / max(self.hidden_dim ** 0.5, 1.0)
-            if variant in learned_gate_variants:
-                r_alpha = latent_regime_t
-            elif variant == "no_regime_gate":
-                r_alpha = torch.zeros_like(regime_t)
+            if variant == "ridge_only":
+                alpha = torch.ones(N, device=device)
             else:
-                r_alpha = regime_t
-            alpha_input = torch.cat([
-                h_local,
-                h,
-                r_alpha.unsqueeze(0).expand(N, -1),
-                graph_disp,
-                torch.abs(h_norm - h_local_norm),
-            ], dim=-1)
-            alpha = torch.sigmoid(self.alpha_gate(alpha_input)).squeeze(-1)
+                if variant in learned_gate_variants:
+                    r_alpha = latent_regime_t
+                elif variant == "no_regime_gate":
+                    r_alpha = torch.zeros_like(regime_t)
+                else:
+                    r_alpha = regime_t
+                alpha_input = torch.cat([
+                    h_local,
+                    h,
+                    r_alpha.unsqueeze(0).expand(N, -1),
+                    graph_disp,
+                    torch.abs(h_norm - h_local_norm),
+                ], dim=-1)
+                alpha = torch.sigmoid(self.alpha_gate(alpha_input)).squeeze(-1)
 
             if variant == "graph_only":
                 alpha = torch.zeros_like(alpha)
-            elif variant == "ridge_only":
-                alpha = torch.ones_like(alpha)
             elif variant == "fixed_alpha_0.5":
                 alpha = torch.full_like(alpha, 0.5)
             elif self._auditor_mode in {"alpha_neutral", "both"} and variant in learned_gate_variants:
