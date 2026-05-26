@@ -5,6 +5,12 @@ prédiction et `.npz` internes. Il ne doit pas être la structure principale du 
 
 ## Runs récents importants
 
+- `herald_regime_phase2r_confirmatory_20260526_2r_confirm_r1_r1/` — Phase 2R confirmatoire,
+  260 runs, audit strict passé. Résultat principal exporté vers `reports/HERALD_PHASE2R_CONFIRMATORY_AUDIT.md`
+  et `reports/metrics/herald_phase2r_*.csv`.
+- `herald_regime_phase2o_residual_shrinkage_20260525_2o_shrink_r1_r1/` — calibration du résidu.
+- `herald_regime_phase2p_hc_auditor_interaction_20260525_2p_hc_aud_r1_r1/` — interaction HC/auditeur.
+- `herald_regime_phase2q_input_arch_robustness_20260525_2q_input_arch_r1_r1/` — robustesse input/architecture.
 - `herald_regime_phase2i_side5_20260518_1122_side5_audit_r1_r1/` — Phase 2I SIDE5 ablations, 90 runs, audit strict passé.
 - `herald_regime_phase2h_macro_real_20260515_1205_macro_real_r3_r1/` — Phase 2H macro réel, 100 runs.
 - `herald_regime_phase2h_macro_permute_20260515_1206_macro_permute_r3_r1/` — falsification macro permutée, 40 runs.
@@ -35,6 +41,29 @@ La Phase 2H reste utile comme référence historique:
 ```text
 hpc_results/phase2h_combined_audit/PHASE2H_COMBINED_AUDIT.md
 reports/HERALD_PHASE2H_FEATURE_MINIMALITY_AUDIT.md
+```
+
+## Décision Phase 2R
+
+Phase 2R remplace les anciennes lectures exploratoires comme point d'entrée principal. Le candidat
+de travail est `L5_trainopt`: HERALD no flags, SIDE2, résidu neural calibré sur les années de train.
+
+Lecture courte:
+
+- `L5_trainopt` vs `L5_gate_no_auditor`: WMAPE moyen -0.000375, 17/20 wins, p=0.002818;
+- `HC5_trainopt`: meilleure moyenne brute, mais plus coûteux en 2021;
+- les variantes avec flags servent de contrôles méthodologiques, pas de modèle final;
+- la piste suivante est un module d'état économique pour les mouvements rares, pas une nouvelle
+  grille large de variantes internes.
+
+Les fichiers lourds de cette phase restent régénérables et ne doivent pas être versionnés. Les
+synthèses versionnées sont dans:
+
+```text
+reports/HERALD_PHASE2R_CONFIRMATORY_AUDIT.md
+reports/metrics/herald_phase2r_summary.csv
+reports/metrics/herald_phase2r_paired_vs_l5_gate.csv
+reports/dashboards/herald_france_dashboard.html
 ```
 
 ## Règle

@@ -10,16 +10,16 @@ V7 et Semi désignent des configurations de laboratoire et ne structurent plus l
 
 ## État scientifique actuel
 
-Le candidat de travail pour la France est maintenant **HERALD SIDE2 (`lag1_growth1y`)**, issu de la
-Phase 2I. Il conserve une configuration strict ex-ante / no-source-flags / no-manual-flags et réduit
-les entrées annuelles SIDE au noyau le plus parcimonieux testé:
+Le candidat de travail pour la France est maintenant **HERALD no flags calibré (`L5_trainopt`)**,
+issu de la Phase 2R confirmatoire. Il garde le noyau SIDE2, sans flags manuelles, et ajoute une
+calibration causale du résidu neural:
 
 - `side_lag_1`;
 - `growth_1y`.
 
-Cette décision vient d'une batterie de minimalité des features: 90 runs, 9 politiques de features, 10
-seeds par politique, artefacts complets et audit strict passé. La Phase 2H reste la référence
-précédente, mais le noyau SIDE5 est maintenant une ablation, pas le candidat principal.
+Le modèle part d'une base Ridge, apprend une correction résiduelle neuronale, puis estime sur les
+années de train combien de cette correction doit être utilisée. Cette calibration n'utilise pas
+l'année testée.
 
 Conclusion actuelle:
 
@@ -32,8 +32,9 @@ Conclusion actuelle:
 - la Phase 2J montre que la comparaison propre doit séparer trois lignes: `HERALD flags étendu`
   (contrôle historique plus chargé), `HERALD flags clean` (mêmes entrées SIDE2 + flags) et
   `HERALD no flags` (mêmes entrées SIDE2, régime appris);
-- `lag1_growth1y` obtient WMAPE moyen 2021-2025 = 0.021323, WMAPE 2021 = 0.034885, WMAPE 2025 =
-  0.013004, A10 WMAPE = 0.156384;
+- la Phase 2R confirme `L5_trainopt`: WMAPE moyen 2021-2025 = 0.020233, WMAPE 2021 = 0.035020,
+  WMAPE 2025 = 0.012525, A10 WMAPE = 0.158238;
+- contre `L5_gate_no_auditor`, le gain moyen est -0.000375 avec 17/20 seeds gagnantes et p=0.002818;
 - le forecast 2026/2027 est une prévision prospective conditionnelle aux données disponibles le
   2026-05-07, pas une prévision ex-ante au 2026-01-01;
 - le graphe est utile pour l'interprétation territoriale: mobilité, connexions économiques et
@@ -71,13 +72,14 @@ Les Phases 2K-2N ont ensuite clarifié la question d'autonomie interne:
 - l'auditeur interne conditionné par année est techniquement viable, mais il n'est pas encore un
   candidat global robuste.
 
-La prochaine étape est donc **Phase 2O-2Q**: arrêter de chercher seulement "plus de latents" et tester
-des mécanismes plus sobres:
+Les Phases 2O-2Q ont déplacé la lecture du projet: le résultat robuste n'est pas une auto-régulation
+forte de la dimension latente. Le résultat robuste est la **correction résiduelle calibrée**. Phase 2R
+a ensuite figé les candidats et confirmé ce point.
 
-- Phase 2O: encolher ou sélectionner la correction résiduelle HERALD face au fallback Ridge;
-- Phase 2P: tester l'interaction entre HC5 et l'auditeur interne;
-- Phase 2Q: vérifier si les meilleurs mécanismes restent valables quand on change la politique
-  d'entrées propres.
+La prochaine hypothèse de recherche est plus ciblée: un **module d'état économique** causal et continu,
+fondé sur des indicateurs reconnus de conjoncture/retournement, pour aider les mouvements rares
+comme choc, rebond, accélération et décélération. Cette hypothèse doit être testée contre
+`L5_trainopt`, avec permutation temporelle et séparation stricte train/test.
 
 ## Structure
 
@@ -152,13 +154,17 @@ python3 src/visualisation/generate_herald_semi_v2_dashboard.py
 - `reports/HERALD_PHASE2L_LATENT_DIM_FINE_AUDIT.md`
 - `reports/HERALD_PHASE2M_AUTOREG_AUDIT.md`
 - `reports/HERALD_PHASE2O_2P_2Q_PLAN.md`
+- `reports/HERALD_PHASE2O_2P_2Q_AUDIT.md`
+- `reports/HERALD_PHASE2R_CONFIRMATORY_AUDIT.md`
+- `reports/HERALD_ECONOMIC_STATE_TUTOR_PLAN.md`
+- `reports/HERALD_REPOSITORY_CLEANUP_20260526.md`
 - `reports/HERALD_SIDE5_STABILITY_AND_TREND_AUDIT_PLAN.md`
 - `reports/REPOSITORY_CLEANUP_20260519.md`
 - `reports/ATLAS_IAT_STATIC_LAYER_AUDIT.md`
 - `metadata/HERALD_DATASETS_MAIN.md`
 - `metadata/HERALD_DATASETS_EXPLORATORY.md`
 - `metadata/HERALD_DATA_UPDATE_POLICY.md`
-- `reports/dashboards/herald_france_dashboard_offline.html`
+- `reports/dashboards/herald_france_dashboard.html`
 
 ## Règle de présentation
 

@@ -353,6 +353,36 @@ plan_configs() {
       echo "no_regime learned_regime_gate_sector_enhanced no_source_flags no_noise_HC5 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 no_flores_no_side_stock_a10 none 5 0.050 hard_concrete hard_concrete none none 0.0 none 0.0 0.0 2.0"
       echo "no_regime learned_regime_gate_sector_enhanced no_source_flags no_noise_AUDboth 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 no_flores_no_side_stock_a10 none 5 0.0 fixed sigmoid none none 0.0 both 0.001 0.0 2.0"
       ;;
+    phase2r_confirmatory)
+      # Phase 2R — confirmatory HERALD battery.
+      #
+      # Goal:
+      #   Freeze the post-2O/2P/2Q candidate set and compare it against fair
+      #   controls in one run, instead of continuing exploratory grids.
+      #
+      # Reads:
+      #   - no manual flags candidate family;
+      #   - clean manual-flags control on the same SIDE2 input;
+      #   - extended manual-flags control with the historical broader inputs;
+      #   - Ridge-only fallback inside the same training/evaluation pipeline.
+      #
+      # Main claim candidate:
+      #   L5_trainopt = HERALD no-flags, SIDE2, residual correction calibrated
+      #   from training years only.
+      echo "no_regime ridge_only no_source_flags ridge_side2 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 none 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L3_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 3 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 none 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L5_gate_no_auditor 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 none 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L5_trainopt 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags HC5_trainopt 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.050 hard_concrete hard_concrete none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUD_alpha_trainopt 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 alpha_neutral 0.001 0.0 2.0 train_opt 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags AUD_both_trainopt 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 both 0.001 0.0 2.0 train_opt 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags L4_a10g 0.3 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 4 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 none 1.0 0.0 1.25"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags side2_AUDboth 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 both 0.001 0.0 2.0 none 1.0 0.0 1.25"
+      echo "manual_flags full no_source_flags clean_flags_side2 0.1 0.001 0.01 explicit normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 3 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 none 1.0 0.0 1.25"
+      echo "manual_flags full no_source_flags clean_flags_side2_trainopt 0.1 0.001 0.01 explicit normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 3 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25"
+      echo "manual_flags full with_source_flags extended_flags_current 0.1 0.001 0.01 explicit normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 current_clean none 3 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 none 1.0 0.0 1.25"
+      echo "manual_flags full with_source_flags extended_flags_current_trainopt 0.1 0.001 0.01 explicit normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 current_clean none 3 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25"
+      ;;
     *)
       echo "Unknown REGIME_PLAN=${REGIME_PLAN}" >&2
       return 1
