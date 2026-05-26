@@ -166,9 +166,6 @@
         <line x1="430" y1="90" x2="505" y2="135" stroke="#9aa4bf" stroke-width="1.5" marker-end="url(#arrow2)"/>
         <line x1="430" y1="235" x2="505" y2="180" stroke="#9aa4bf" stroke-width="1.5" marker-end="url(#arrow2)"/>
         <line x1="685" y1="160" x2="760" y2="160" stroke="#9aa4bf" stroke-width="1.5" marker-end="url(#arrow2)"/>
-        <rect x="505" y="255" width="180" height="42" rx="8" fill="#171b2d" stroke="#ffd180" stroke-dasharray="5,4"/>
-        <text x="595" y="281" text-anchor="middle" fill="#ffd180" font-size="11">piste suivante: état économique</text>
-        <line x1="595" y1="255" x2="595" y2="225" stroke="#ffd180" stroke-width="1" stroke-dasharray="5,4" marker-end="url(#arrow2)"/>
       </svg>
       <div class="model-compare">
         <div><b>Sans flags</b><br>Entrées SIDE réduites. Le modèle apprend un état latent et la Phase 2R ajoute une calibration train-only du résidu.</div>
@@ -284,8 +281,8 @@
   <div class="section">
     <div class="section-title">6. État interne sans flags</div>
     <div class="section-note">
-      Cette section montre les variables internes observées dans la variante sans flags. Elles aident à lire le comportement du modèle, sans prouver à elles seules une cause économique.
-      Les courbes sont les dimensions du régime latent; les barres indiquent l'ampleur de changement entre deux années.
+      Cette section montre des variables internes disponibles dans le dashboard actuel. Elles servent à lire le comportement du modèle; elles ne doivent pas être prises comme une preuve de cause économique.
+      La Phase 2R principale utilise une variante L5, donc cette lecture reste indicative tant que les internals L5 complets ne sont pas réexportés.
     </div>
     <div class="grid2">
       <div class="card"><div id="chart-regime-latent" style="height:360px"></div></div>
