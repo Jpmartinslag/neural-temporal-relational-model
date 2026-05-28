@@ -1,56 +1,50 @@
 # Dashboard HERALD — O que falta fazer
 
-Data: 2026-05-18
+Data: 2026-05-27
 
 ## Em andamento agora
 
 | Item | Estado | Detalhe |
 |---|---|---|
-| Phase 2J — comparação justa flags vs no flags | **em treino** | Job SLURM 7344087 · 20 runs (2 configs × 10 seeds) |
-
-Quando o job terminar:
-```bash
-# 1. Recuperar do HPC
-rsync -av meso-direct:~/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/herald_regime_phase2j_fair_flag_20260518_170504_r1/ \
-  hpc_results/herald_regime_phase2j_fair_flag_20260518_170504_r1/
-
-# 2. Agregar
-python3 hpc/regime/aggregate_herald_regime_results.py \
-  --root hpc_results/herald_regime_phase2j_fair_flag_20260518_170504_r1
-
-# 3. Regenerar o dashboard (vai detectar a pasta Phase 2J automaticamente)
-python3 src/visualisation/generate_herald_semi_v2_dashboard.py
-```
-
-O dashboard vai substituir automaticamente "en attente" pelo WMAPE 2021 real do `lag1_growth1y_flags`.
+| Phase 3E — arquitetura q_tensor | **concluída** | 240/240 runs OK; candidato atual `Q7_effectifs_lag1` |
+| Dashboard | **precisa atualizar** | trocar candidato principal para `HERALD no flags Q7` |
 
 ---
 
-## Para fazer amanhã
+## Próxima ação
 
-### Previsão prospectiva 2026/2027
+### Atualizar comparação principal
 
-O pipeline de forecast já existe em `hpc/forecast/`. A previsão condicional às dados disponíveis em
-2026-05-07 precisa de ser apresentada ao cliente como o resultado operacional do HERALD.
+O dashboard deve comparar, em uma tabela e nos gráficos principais:
 
-```bash
-# Ver scripts existentes
-ls hpc/forecast/
+- `HERALD no flags Q7` (`Q7_effectifs_lag1`) — candidato atual;
+- `HERALD no flags Q0` (`Q0_real`) — referência q_tensor completa;
+- `HERALD flags clean` — comparação justa com flags manuais e entradas limpas;
+- `HERALD flags extended` — controle histórico com entradas ampliadas;
+- Ridge AR, ARIMA, LSTM, DCRNN, Dynamic STGNN.
+
+Mensagem curta esperada:
+
+```text
+HERALD no flags Q7 usa SIDE limpo e o canal URSSAF effectifs com atraso de um ano.
+Ele não vence todos os números, mas é o compromisso mais estável e simples da Phase 3E.
 ```
-
-Adicionar ao dashboard:
-- Secção "7. Prévision 2026/2027" com mapa de previsão por zona
-- Nota metodológica: previsão condicional, não ex-ante
 
 ---
 
 ## Dados em falta no dashboard atual
 
-### HERALD flags clean (comparação justa)
-- **Problema**: o "HERALD flags" exibido vem da Phase 2E (`ctrl_manual`) com TODAS as features
-  (flores, side_stock, URSSAF, source flags) — não é comparável ao no flags (só SIDE2)
-- **Fix**: Phase 2J (job 7344087) vai produzir `lag1_growth1y_flags` com mesmas entradas
-- **Impacto**: conclusão "no flags bate flags" está suspensa até Phase 2J terminar
+### Phase 3E por zona e A10
+
+- Verificar se os CSVs/JSONs de `Q7_effectifs_lag1` têm predições por zona, por ano e por A10.
+- Se faltarem artefatos A10 completos, usar os valores globais do audit e marcar o detalhe A10 como
+  pendente de regeneração.
+
+### HERALD flags clean
+
+- Manter separado de `HERALD flags extended`.
+- `flags clean` é a comparação justa.
+- `flags extended` é controle histórico com mais entradas; não deve ser tratado como o mesmo modelo.
 
 ### KPI Gain HERALD vs Ridge
 - **Estado actual**: 63.8% ✅ (corrigido — era 61.5% com valor Ridge errado)
@@ -69,8 +63,8 @@ Adicionar ao dashboard:
 | Tabela de comparação completa | Uma tabela única: todos os modelos × WMAPE 2021, médio, 2025, A10, std |
 | WMAPE 2021 em KPI separado | O fold difícil não está em destaque; só visível no gráfico de linhas |
 | Intervalos de confiança | Envelope das 10 seeds no gráfico real vs previsto |
-| Secção 6 — contexto para leigo | Alpha, latent step, gamma precisam de explicação em linguagem territorial |
-| Nota sobre "HERALD flags" | Enquanto Phase 2J não terminar, deixar claro que a comparação actual não é justa |
+| Secção 6 — contexto para leigo | Mostrar regime aprendido sem prometer descoberta econômica completa |
+| Nota sobre flags | Explicar `flags clean` vs `flags extended` sem usar termos pejorativos |
 
 ---
 
@@ -89,4 +83,5 @@ Adicionar ao dashboard:
 
 - Macro INSEE/BdF nas entradas do modelo — testado Phase 2H, rejeitado
 - Mais de 2 features SIDE — testado Phase 2I, `lag1_growth1y` vence
-- Flags manuais como entradas fixas — suspenso até Phase 2J confirmar
+- Procurar novas features antes de apresentar a comparação Phase 3E
+- Chamar `Q7` de prova de sinal local ZE forte; a falsificação espacial ainda é fraca

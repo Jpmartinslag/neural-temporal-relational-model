@@ -107,6 +107,67 @@ def transform_regime_sequence(regime_np, transform: str, seed: int):
     raise ValueError(f"Unknown regime_seq_transform={transform!r}")
 
 
+TUTOR_FEATURE_SETS = {
+    "none": [],
+    "climat_affaires": ["fr_climat_affaires_t_minus_1"],
+    "climat_emploi": ["fr_climat_emploi_t_minus_1"],
+    "climat_affaires_emploi": [
+        "fr_climat_affaires_t_minus_1",
+        "fr_climat_emploi_t_minus_1",
+    ],
+    "bdf_conj_services": ["fr_bdf_conj_services_climate_t_minus_1"],
+    "bdf_gstix": ["fr_bdf_gstix_comp_t_minus_1"],
+    "bdf_conj_gstix": [
+        "fr_bdf_conj_services_climate_t_minus_1",
+        "fr_bdf_gstix_comp_t_minus_1",
+    ],
+    "insee_bdf_core": [
+        "fr_climat_affaires_t_minus_1",
+        "fr_climat_emploi_t_minus_1",
+        "fr_bdf_conj_services_climate_t_minus_1",
+        "fr_bdf_gstix_comp_t_minus_1",
+    ],
+}
+
+# Phase 3C: per-ZE labor-market tutor features (loaded from external CSV).
+# Mutually exclusive with TUTOR_FEATURE_SETS; use --labor-tutor-feature-set to select.
+LABOR_TUTOR_FEATURE_SETS = {
+    "none": [],
+    "urssaf_employer_estab_growth": ["urssaf_employer_estab_growth_tminus1"],
+    "urssaf_employer_estab_growth_perm": ["urssaf_employer_estab_growth_perm_tminus1"],
+    "urssaf_employer_estab_growth_lag2": ["urssaf_employer_estab_growth_lag2_tminus1"],
+    "urssaf_employer_estab_growth_spatial_perm": ["urssaf_employer_estab_growth_spatial_perm_tminus1"],
+    "urssaf_employer_estab_growth_neg": ["urssaf_employer_estab_growth_neg_tminus1"],
+    "urssaf_employer_estab_growth_pos": ["urssaf_employer_estab_growth_pos_tminus1"],
+    "defm_recovery": ["defm_recovery_tminus1"],
+    "defm_recovery_perm": ["defm_recovery_perm_tminus1"],
+    "defm_recovery_lag2": ["defm_recovery_lag2_tminus1"],
+    "defm_recovery_spatial_perm": ["defm_recovery_spatial_perm_tminus1"],
+    "defm_recovery_signed": ["defm_recovery_signed_tminus1"],
+    "defm_yoy": ["defm_yoy_tminus1"],
+    "defm_urssaf_combo": ["defm_recovery_tminus1", "urssaf_employer_estab_growth_tminus1"],
+    "defm_urssaf_combo_perm": ["defm_recovery_perm_tminus1", "urssaf_employer_estab_growth_perm_tminus1"],
+    "activite_partielle": ["activite_partielle_tminus1"],
+    "activite_partielle_perm": ["activite_partielle_perm_tminus1"],
+}
+
+LABOR_TUTOR_BLOCKED = {
+    "activite_partielle", "activite_partielle_perm",
+}
+
+
+def transform_tutor_sequence(tutor_np, transform: str, seed: int):
+    if transform == "none":
+        return tutor_np
+    out = np.array(tutor_np, copy=True)
+    if out.shape[0] <= 1:
+        return out
+    if transform == "permute_random":
+        rng = np.random.default_rng(seed + 7919)
+        return out[rng.permutation(out.shape[0])]
+    raise ValueError(f"Unknown tutor_state_transform={transform!r}")
+
+
 def _apply_window(seq: dict, window_years: int) -> dict:
     """Restrict training data to the last window_years, recomputing normalisation.
 
@@ -147,6 +208,8 @@ def _apply_window(seq: dict, window_years: int) -> dict:
     seq["sec_train"]     = seq["sec_train"][ws:]
     seq["sec_mask"]      = seq["sec_mask"][ws:]
     seq["regime_train"]  = seq["regime_train"][ws:]
+    if "tutor_train" in seq:
+        seq["tutor_train"] = seq["tutor_train"][ws:]
     seq["zone_weight"]   = zone_weight_new
     seq["zone_std"]      = zone_std_new   # also used in evaluate() for prediction
     return seq
@@ -173,6 +236,7 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         latent_dim_beta_end=getattr(args, "latent_dim_beta_end", None),
         auditor_mode=getattr(args, "auditor_mode", "none"),
         auditor_bias_init=getattr(args, "auditor_bias_init", 2.0),
+        tutor_dim=seq.get("tutor_train", np.zeros((0, 0), dtype=np.float32)).shape[-1],
     ).to(device)
 
     opt = torch.optim.AdamW(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
@@ -182,6 +246,12 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
     x_q = torch.tensor(seq["q_train"], device=device)
     regime_train_np = transform_regime_sequence(seq["regime_train"], args.regime_seq_transform, args.seed)
     regime = torch.tensor(regime_train_np, device=device)
+    tutor_train_np = transform_tutor_sequence(
+        seq.get("tutor_train", np.zeros((x_ann.shape[0], 0), dtype=np.float32)),
+        args.tutor_state_transform,
+        args.seed,
+    )
+    tutor_state = torch.tensor(tutor_train_np, device=device)
     sec_prior = torch.tensor(seq["sec_prior_train"], device=device)
     target = torch.tensor(seq["train_resid"], device=device)
     mask = torch.tensor(seq["mask"], device=device)
@@ -248,6 +318,7 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         ann_list = [x_ann_aug[t] for t in range(T)]
         q_list = [x_q[t].permute(1, 0, 2) for t in range(T)]
         reg_list = [regime[t] for t in range(T)]
+        tutor_list = [tutor_state[t] for t in range(T)]
         sec_prior_list = [sec_prior_aug[t] for t in range(T)]
 
         pred_main, pred_sector, graph_losses = model(
@@ -257,6 +328,7 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
             return_internals=False,
             smooth_regime_source=args.smooth_regime_source,
             latent_mode=args.latent_train_mode,
+            tutor_state_seq=tutor_list,
         )
 
         zone_w_bc = zone_w.unsqueeze(0).expand_as(pred_main)
@@ -327,11 +399,18 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         x_q_f = torch.tensor(seq["q_full"], device=device)
         regime_full_np = transform_regime_sequence(seq["regime_full"], args.regime_seq_transform, args.seed)
         reg_f = torch.tensor(regime_full_np, device=device)
+        tutor_full_np = transform_tutor_sequence(
+            seq.get("tutor_full", np.zeros((x_ann_f.shape[0], 0), dtype=np.float32)),
+            args.tutor_state_transform,
+            args.seed,
+        )
+        tutor_f = torch.tensor(tutor_full_np, device=device)
         sec_prior_f = torch.tensor(seq["sec_prior_full"], device=device)
         T_full = x_ann_f.shape[0]
         ann_f = [x_ann_f[t] for t in range(T_full)]
         q_f = [x_q_f[t].permute(1, 0, 2) for t in range(T_full)]
         reg_fl = [reg_f[t] for t in range(T_full)]
+        tutor_fl = [tutor_f[t] for t in range(T_full)]
         sec_prior_fl = [sec_prior_f[t] for t in range(T_full)]
 
         pred_f, sec_f, graph_f, adj_t, gate_t, alpha_t, latent_regime_t, auditor_conf_t, regime_delta_t, adj_delta_t = eval_model(
@@ -341,6 +420,7 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
             return_internals=True,
             smooth_regime_source=args.smooth_regime_source,
             latent_mode=args.latent_inference_mode if args.latent_inference_mode != "match_train" else args.latent_train_mode,
+            tutor_state_seq=tutor_fl,
         )
 
     internals = {
@@ -371,6 +451,9 @@ def train_herald_semi_v2(seq, adj_geo, adj_mob, args, device):
         "latent_group_norm_values": graph_f.get("latent_group_norm_values"),
         "latent_group_effective_dim": graph_f.get("latent_group_effective_dim"),
         "auditor_mode": graph_f.get("auditor_mode", "none"),
+        "tutor_columns": list(seq.get("tutor_columns", [])),
+        "tutor_state_transform": getattr(args, "tutor_state_transform", "none"),
+        "tutor_state_values_full": tutor_full_np.tolist(),
         "auditor_budget_term": float(graph_f.get(
             "auditor_budget_term",
             torch.tensor(0.0, device=device),
@@ -394,6 +477,31 @@ def evaluate(panel, a10_panel, splits, cols, q_tensor, sec_props_tensor,
              args, device):
     total_rows, sector_rows = [], []
     internals_by_year = {}
+
+    # Phase 3C: load per-ZE labor tutor data once (outside the fold loop).
+    labor_fset = getattr(args, "labor_tutor_feature_set", "none")
+    labor_tutor_cols = LABOR_TUTOR_FEATURE_SETS.get(labor_fset, [])
+    labor_tutor_df = None
+    if labor_tutor_cols:
+        if labor_fset in LABOR_TUTOR_BLOCKED:
+            raise SystemExit(
+                f"Labor tutor feature set '{labor_fset}' is blocked (data not available locally). "
+                f"See reports/HERALD_PHASE3C_LABOR_TUTOR_DATA_STATUS.md for download instructions."
+            )
+        ltp = getattr(args, "labor_tutor_path",
+                      Path("data/processed/herald_phase3c_labor_tutor_features.csv"))
+        if not Path(ltp).exists():
+            raise SystemExit(f"Labor tutor CSV not found: {ltp}. Run src/data/build_herald_phase3c_labor_tutor_features.py first.")
+        labor_tutor_df = pd.read_csv(ltp)
+        missing_c = [c for c in labor_tutor_cols if c not in labor_tutor_df.columns]
+        if missing_c:
+            raise SystemExit(f"Labor tutor CSV missing columns: {missing_c}")
+        n_valid = labor_tutor_df[labor_tutor_cols[0]].notna().sum()
+        n_total = len(labor_tutor_df)
+        print(f"  Labor tutor: {labor_fset} ({n_valid}/{n_total} valid rows, "
+              f"{labor_tutor_df['ze2020'].nunique()} ZEs, "
+              f"years {labor_tutor_df['year'].min()}–{labor_tutor_df['year'].max()})")
+
     for _, split in splits.iterrows():
         target_year = int(split["target_year"])
         if args.single_target_year is not None and target_year != args.single_target_year:
@@ -403,6 +511,9 @@ def evaluate(panel, a10_panel, splits, cols, q_tensor, sec_props_tensor,
         seq = v7.make_sequences_v7(
             panel, cols, q_tensor, sec_props_tensor, sec_lag1_tensor,
             zones_sorted, years_sorted, train_max, target_year,
+            tutor_cols=TUTOR_FEATURE_SETS[args.tutor_feature_set],
+            labor_tutor_df=labor_tutor_df,
+            labor_tutor_cols=labor_tutor_cols if labor_tutor_cols else None,
         )
         # H7 rolling window: restrict training years (causal — only data <= train_max)
         seq = _apply_window(seq, getattr(args, "window_years", 0))
@@ -594,6 +705,16 @@ def write_report(total_rows, sector_rows, args, internals_by_year):
         "residual_shrinkage_min": getattr(args, "residual_shrinkage_min", 0.0),
         "residual_shrinkage_max": getattr(args, "residual_shrinkage_max", 1.25),
         "residual_shrinkage_by_fold": shrinkage_by_fold,
+        "tutor_feature_set": getattr(args, "tutor_feature_set", "none"),
+        "tutor_state_transform": getattr(args, "tutor_state_transform", "none"),
+        "tutor_columns": last.get("tutor_columns", []),
+        "labor_tutor_feature_set": getattr(args, "labor_tutor_feature_set", "none"),
+        "labor_tutor_path": str(getattr(args, "labor_tutor_path", "")),
+        "labor_tutor_columns": LABOR_TUTOR_FEATURE_SETS.get(
+            getattr(args, "labor_tutor_feature_set", "none"), []),
+        "labor_tutor_is_ze_level": bool(LABOR_TUTOR_FEATURE_SETS.get(
+            getattr(args, "labor_tutor_feature_set", "none"), [])),
+        "quarterly_tensor_policy": getattr(args, "quarterly_tensor_policy", "real"),
     }
     existing = {}
     if args.metrics_path.exists():
@@ -706,6 +827,20 @@ def main():
                         help="Phase 2O: lower bound for train_opt shrinkage grid")
     parser.add_argument("--residual-shrinkage-max", type=float, default=1.25,
                         help="Phase 2O: upper bound for train_opt shrinkage grid")
+    parser.add_argument("--tutor-feature-set", choices=sorted(TUTOR_FEATURE_SETS),
+                        default="none",
+                        help="Phase 3: causal macro tutor state, separate from annual features")
+    parser.add_argument("--tutor-state-transform", choices=["none", "permute_random"],
+                        default="none",
+                        help="Phase 3: temporal falsification transform for tutor state")
+    parser.add_argument("--labor-tutor-feature-set", choices=sorted(LABOR_TUTOR_FEATURE_SETS),
+                        default="none",
+                        help="Phase 3C: per-ZE labor-market tutor signal (ZE-level gate context)")
+    parser.add_argument("--labor-tutor-path", type=Path,
+                        default=Path("data/processed/herald_phase3c_labor_tutor_features.csv"),
+                        help="Phase 3C: path to per-ZE labor tutor features CSV")
+    parser.add_argument("--quarterly-tensor-policy", default="real",
+                        help="Phase 3D: q_tensor transform applied by the experiment wrapper")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--panel-path", type=Path, default=base.PANEL_PATH)
     parser.add_argument("--splits-path", type=Path, default=base.SPLITS_PATH)
@@ -770,6 +905,8 @@ def main():
         alpha_values=last["alpha_values"],
         latent_regime_values=last["latent_regime_values"],
         auditor_confidence_values=last["auditor_confidence_values"],
+        tutor_state_values=np.array(last.get("tutor_state_values_full", [])),
+        tutor_columns=np.array(last.get("tutor_columns", [])),
         regime_delta_by_year=last["regime_delta_by_year"],
         adj_delta_by_year=last["adj_delta_by_year"],
         sector_proportions=last["sector_proportions"],
@@ -788,6 +925,8 @@ def main():
             alpha_values=fold_int["alpha_values"],
             latent_regime_values=fold_int["latent_regime_values"],
             auditor_confidence_values=fold_int["auditor_confidence_values"],
+            tutor_state_values=np.array(fold_int.get("tutor_state_values_full", [])),
+            tutor_columns=np.array(fold_int.get("tutor_columns", [])),
             regime_delta_by_year=fold_int["regime_delta_by_year"],
             adj_delta_by_year=fold_int["adj_delta_by_year"],
             sector_proportions=fold_int["sector_proportions"],

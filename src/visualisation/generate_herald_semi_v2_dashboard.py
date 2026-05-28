@@ -49,11 +49,29 @@ def _find_latest_phase2j(base: Path) -> Path | None:
 
 DEFAULT_PHASE2J_RUN_ROOT = _find_latest_phase2j(BASE)
 
+
+def _find_latest_phase2r(base: Path) -> Path | None:
+    candidates = sorted(glob.glob(str(base / "hpc_results/herald_regime_phase2r_*")))
+    return Path(candidates[-1]) if candidates else None
+
+DEFAULT_PHASE2R_RUN_ROOT = _find_latest_phase2r(BASE)
+
+
+def _find_latest_phase3e(base: Path) -> Path | None:
+    candidates = sorted(glob.glob(str(base / "hpc_results/herald_regime_phase3e_qtensor_arch_*")))
+    return Path(candidates[-1]) if candidates else None
+
+
+DEFAULT_PHASE3E_RUN_ROOT = _find_latest_phase3e(BASE)
+
 FLAGS_SECTOR_PATTERN = (
     "herald_semi_v2_predictions_sector_full_regime_manual_flags_no_source_flags_ctrl_manual_seed_*_v1.csv"
 )
 CLEAN_FLAGS_SECTOR_PATTERN = (
     "herald_semi_v2_predictions_sector_full_regime_manual_flags_no_source_flags_lag1_growth1y_flags_seed_*_v1.csv"
+)
+NF_CLEAN_SECTOR_PATTERN = (
+    "herald_semi_v2_predictions_sector_full_regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_lag1_growth1y_nf_seed_*_v1.csv"
 )
 DEFAULT_OLD_DASH = (
     BASE
@@ -174,12 +192,21 @@ def summarize_model(label: str, runs: list[dict[str, Any]]) -> dict[str, Any] | 
 
 def model_patterns_for_run(run_root: Path) -> dict[str, str]:
     """Return dashboard input patterns for the selected HERALD run family."""
+    if "phase3e_qtensor_arch" in run_root.name:
+        stem = "full_regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_Q7_effectifs_lag1"
+        return {
+            "json": "regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_Q7_effectifs_lag1_seed_*.json",
+            "sector": f"herald_semi_v2_predictions_sector_{stem}_seed_*_v1.csv",
+            "graph": f"herald_semi_v2_internals_{stem}_seed_*_v1.npz",
+            "label": "HERALD no flags Q7",
+        }
     if "phase2j_fair_flag" in run_root.name:
         stem = "full_regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_lag1_growth1y_nf"
         return {
             "json": "regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_lag1_growth1y_nf_seed_*.json",
             "sector": f"herald_semi_v2_predictions_sector_{stem}_seed_*_v1.csv",
             "graph": f"herald_semi_v2_internals_{stem}_seed_*_v1.npz",
+            "label": "HERALD no flags",
         }
     if "phase2i_side5" in run_root.name:
         stem = "full_regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_lag1_growth1y"
@@ -187,26 +214,61 @@ def model_patterns_for_run(run_root: Path) -> dict[str, str]:
             "json": f"regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_lag1_growth1y_seed_*.json",
             "sector": f"herald_semi_v2_predictions_sector_{stem}_seed_*_v1.csv",
             "graph": f"herald_semi_v2_internals_{stem}_seed_*_v1.npz",
+            "label": "HERALD no flags",
         }
     return {
         "json": "strict_no_source_flags_semiv2_graph_only_seed_*.json",
         "sector": "herald_semi_v2_predictions_sector_full_strict_no_source_flags_graph_only_f0.10_s0.30_r0.02_seed_*_v1.csv",
         "graph": "herald_semi_v2_internals_full_strict_no_source_flags_graph_only_f0.10_s0.30_r0.02_seed_*_v1.npz",
+        "label": "HERALD no flags",
     }
 
 
-def load_dirty_flags_model() -> dict[str, Any] | None:
-    """Load the historical HERALD flags control with the older, noisier input set."""
-    per_run = DEFAULT_FLAGS_RUN_ROOT / "reports/per_run"
+def load_phase3e_q0_reference(run_root: Path) -> dict[str, Any] | None:
+    if "phase3e_qtensor_arch" not in run_root.name:
+        return None
+    per_run = run_root / "reports/per_run"
     if not per_run.exists():
         return None
-    m = summarize_model(
-        "HERALD flags étendu",
-        load_runs(per_run, "regime_manual_flags_no_source_flags_ctrl_manual_seed_*.json"),
+    runs = load_runs(
+        per_run,
+        "regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_Q0_real_seed_*.json",
     )
+    if not runs:
+        return None
+    m = summarize_model("HERALD no flags Q0", runs)
     if m:
-        m["flags_source"] = "phase2e_dirty"
+        m["flags_source"] = "phase3e_q0_reference"
     return m
+
+
+def load_dirty_flags_model() -> dict[str, Any] | None:
+    """Load the historical HERALD flags control with the older, noisier input set.
+
+    Primary: Phase 2E ctrl_manual (herald_regime_phase2e_residual_rebound_*).
+    Fallback: Phase 2R extended_flags_current (herald_regime_phase2r_*).
+    """
+    per_run = DEFAULT_FLAGS_RUN_ROOT / "reports/per_run"
+    if per_run.exists():
+        m = summarize_model(
+            "HERALD flags étendu",
+            load_runs(per_run, "regime_manual_flags_no_source_flags_ctrl_manual_seed_*.json"),
+        )
+        if m:
+            m["flags_source"] = "phase2e_dirty"
+            return m
+    # Fallback: Phase 2R extended_flags_current
+    if DEFAULT_PHASE2R_RUN_ROOT is not None:
+        per_run_r = DEFAULT_PHASE2R_RUN_ROOT / "reports/per_run"
+        if per_run_r.exists():
+            m = summarize_model(
+                "HERALD flags étendu",
+                load_runs(per_run_r, "regime_manual_flags_extended_flags_current_seed_*.json"),
+            )
+            if m:
+                m["flags_source"] = "phase2r_extended"
+                return m
+    return None
 
 
 def load_clean_flags_model() -> dict[str, Any] | None:
@@ -219,6 +281,27 @@ def load_clean_flags_model() -> dict[str, Any] | None:
                 m = summarize_model("HERALD flags clean", runs)
                 if m:
                     m["flags_source"] = "phase2j_clean"
+                    return m
+    return None
+
+
+def load_clean_nf_model() -> dict[str, Any] | None:
+    """Load Phase 2J no-flags (lag1_growth1y_nf) as HERALD no flags clean.
+
+    Same inputs as flags clean — only difference is absence of manual regime flags.
+    Serves as the fair internal evolution comparator for Q7.
+    """
+    if DEFAULT_PHASE2J_RUN_ROOT is not None:
+        per_run = DEFAULT_PHASE2J_RUN_ROOT / "reports/per_run"
+        if per_run.exists():
+            runs = load_runs(
+                per_run,
+                "regime_no_regime_learned_regime_gate_sector_enhanced_no_source_flags_lag1_growth1y_nf_seed_*.json",
+            )
+            if runs:
+                m = summarize_model("HERALD no flags clean", runs)
+                if m:
+                    m["flags_source"] = "phase2j_nf"
                     return m
     return None
 
@@ -549,6 +632,26 @@ def build_semiv2_zone_data(csv_dir: Path, pattern: str) -> dict[str, Any]:
     }
 
 
+def empty_zone_data() -> dict[str, Any]:
+    return {
+        "zone_error": {},
+        "zone_pred": {},
+        "zone_real": {},
+        "zone_abs": {},
+        "zone_sector_pred": {},
+        "sector_totals_by_year": {},
+        "france_total": {},
+    }
+
+
+def safe_build_semiv2_zone_data(csv_dir: Path, pattern: str, label: str) -> dict[str, Any]:
+    try:
+        return build_semiv2_zone_data(csv_dir, pattern)
+    except FileNotFoundError:
+        print(f"Warning: {label} zone/sector CSV not found in {csv_dir}; metrics only.")
+        return empty_zone_data()
+
+
 def js(data: Any) -> str:
     return json.dumps(data, ensure_ascii=False, separators=(",", ":"))
 
@@ -777,9 +880,10 @@ def build_dashboard(args: argparse.Namespace) -> None:
     old = load_old_constants(Path(args.old_dashboard))
     patterns = model_patterns_for_run(run_root)
 
-    winner = summarize_model("HERALD no flags", load_runs(per_run, patterns["json"]))
+    winner = summarize_model(patterns.get("label", "HERALD no flags"), load_runs(per_run, patterns["json"]))
     if not winner:
         raise RuntimeError("HERALD principal runs were not found.")
+    no_flags_clean = load_clean_nf_model()
     dirty_flags = load_dirty_flags_model()
     clean_flags = load_clean_flags_model()
     internal_controls = [
@@ -802,14 +906,28 @@ def build_dashboard(args: argparse.Namespace) -> None:
         csv_dir,
         patterns["sector"],
     )
-    flags_zone_data = build_semiv2_zone_data(
+    flags_zone_data = safe_build_semiv2_zone_data(
         DEFAULT_FLAGS_RUN_ROOT / "data_processed",
         FLAGS_SECTOR_PATTERN,
+        "HERALD flags étendu",
     )
     clean_flags_zone_data = (
-        build_semiv2_zone_data(DEFAULT_PHASE2J_RUN_ROOT / "data_processed", CLEAN_FLAGS_SECTOR_PATTERN)
+        safe_build_semiv2_zone_data(
+            DEFAULT_PHASE2J_RUN_ROOT / "data_processed",
+            CLEAN_FLAGS_SECTOR_PATTERN,
+            "HERALD flags clean",
+        )
         if DEFAULT_PHASE2J_RUN_ROOT is not None
-        else {"zone_pred": {}, "zone_sector_pred": {}, "sector_totals_by_year": {}, "france_total": {}}
+        else empty_zone_data()
+    )
+    nf_clean_zone_data = (
+        safe_build_semiv2_zone_data(
+            DEFAULT_PHASE2J_RUN_ROOT / "data_processed",
+            NF_CLEAN_SECTOR_PATTERN,
+            "HERALD no flags clean",
+        )
+        if DEFAULT_PHASE2J_RUN_ROOT is not None
+        else empty_zone_data()
     )
     # Fill 2021-2023 zone/france data from legacy run (strict ex-ante only has 2024-2025)
     legacy_csvs = sorted(BASE.glob(LEGACY_SEMIV2_CSV_PATTERN))
@@ -862,7 +980,8 @@ def build_dashboard(args: argparse.Namespace) -> None:
     payload = {
         "years": YEARS,
         "sectorLabels": SECTOR_LABELS,
-        "models": [m for m in [dirty_flags, clean_flags, winner] if m is not None],
+        "models": [m for m in [winner, no_flags_clean, clean_flags] if m is not None],
+        "historicalControl": dirty_flags,
         "internalControls": internal_controls,
         "ridgeYear": ridge_yr,
         "arimaYear": arima_yr,
@@ -890,6 +1009,10 @@ def build_dashboard(args: argparse.Namespace) -> None:
         "zoneCleanFlagsSectorPreds": clean_flags_zone_data["zone_sector_pred"],
         "cleanFlagsSectorTotalsByYear": clean_flags_zone_data["sector_totals_by_year"],
         "cleanFlagsFranceTotal": clean_flags_zone_data["france_total"],
+        "zoneNfCleanPreds": nf_clean_zone_data["zone_pred"],
+        "zoneNfCleanSectorPreds": nf_clean_zone_data["zone_sector_pred"],
+        "nfCleanSectorTotalsByYear": nf_clean_zone_data["sector_totals_by_year"],
+        "nfCleanFranceTotal": nf_clean_zone_data["france_total"],
         "zoneRidgePreds": zone_ridge,
         "regimeInternals": load_regime_internals(csv_dir, patterns["graph"]),
         "heraldInputs": {
@@ -1338,7 +1461,7 @@ def build_dashboard(args: argparse.Namespace) -> None:
 <script>
 const DATA = {js(payload)};
 const COLORS = {{
-  semi:"#f7834f", masked:"#ffb074", control:"#4aa3ff", history:"#b084f5",
+  semi:"#f7834f", masked:"#ffb074", control:"#4aa3ff", history:"#b084f5", nfclean:"#64b5f6",
   ridge:"#66bb6a", arima:"#26a69a", lstm:"#ffd54f", dcrnn:"#ec407a", stgnn:"#ab47bc",
   real:"#e0e4f0", bad:"#ef5350", good:"#26a69a"
 }};
@@ -1355,6 +1478,7 @@ function fmt(x, d=4) {{ return x === null || x === undefined || Number.isNaN(x) 
 function zeName(ze) {{ return (DATA.zeNames && DATA.zeNames[ze]) ? DATA.zeNames[ze] : ze; }}
 function pct(x) {{ return x === null || x === undefined ? "n/a" : (100*x).toFixed(2)+"%"; }}
 function colorFor(label) {{
+  if(String(label).includes("no flags clean")) return COLORS.nfclean;
   if(String(label).includes("no flags")) return COLORS.semi;
   if(String(label).includes("flags étendu")) return COLORS.masked;
   if(String(label).includes("flags clean")) return COLORS.history;
@@ -1435,27 +1559,32 @@ function drawFranceAndSeeds() {{
   const years = DATA.years;
   const realVals = years.map(y=>(DATA.franceTotal[y]||{{}}).y_true||null);
   const heraldVals = years.map(y=>(DATA.franceTotal[y]||{{}}).y_pred||null);
-  const dirtyFlagsVals = years.map(y=>(DATA.dirtyFlagsFranceTotal[y]||{{}}).y_pred||null);
+  const nfCleanVals = years.map(y=>(DATA.nfCleanFranceTotal[y]||{{}}).y_pred||null);
   const cleanFlagsVals = years.map(y=>(DATA.cleanFlagsFranceTotal[y]||{{}}).y_pred||null);
+  const dirtyFlagsVals = years.map(y=>((DATA.historicalControl && DATA.dirtyFlagsFranceTotal[y])||{{}}).y_pred||null);
   const heraldText = years.map(y => {{
     const ft = DATA.franceTotal[y];
     if(!ft) return y;
     const err = ft.abs_error || Math.abs((ft.y_pred||0)-(ft.y_true||0));
-    return y+"<br>Réel: "+ft.y_true+"<br>HERALD no flags: "+ft.y_pred+"<br>Erreur abs: "+err+" étab.";
+    return y+"<br>Réel: "+ft.y_true+"<br>HERALD no flags Q7: "+ft.y_pred+"<br>Erreur abs: "+err+" étab.";
   }});
   Plotly.newPlot("chart-france-real-pred", [
     {{type:"scatter", mode:"lines+markers", x:years, y:realVals,
       name:"Réel INSEE", line:{{color:COLORS.real,width:3}},
       hovertemplate:"%{{x}}<br>Réel: %{{y:,}}<extra></extra>"}},
     {{type:"scatter", mode:"lines+markers", x:years, y:heraldVals,
-      name:"HERALD no flags", line:{{color:COLORS.semi,width:3}},
+      name:"HERALD no flags Q7", line:{{color:COLORS.semi,width:3}},
       text:heraldText, hovertemplate:"%{{text}}<extra></extra>"}},
-    {{type:"scatter", mode:"lines+markers", x:years, y:dirtyFlagsVals,
-      name:"HERALD flags étendu", line:{{color:COLORS.masked,width:2.6,dash:"dash"}},
-      hovertemplate:"%{{x}}<br>HERALD flags étendu: %{{y:,}}<extra></extra>"}},
+    {{type:"scatter", mode:"lines+markers", x:years, y:nfCleanVals,
+      name:"HERALD no flags clean", line:{{color:COLORS.nfclean,width:2.5,dash:"dot"}},
+      hovertemplate:"%{{x}}<br>HERALD no flags clean: %{{y:,}}<extra></extra>"}},
     {{type:"scatter", mode:"lines+markers", x:years, y:cleanFlagsVals,
-      name:"HERALD flags clean", line:{{color:COLORS.history,width:3,dash:"dot"}},
+      name:"HERALD flags clean", line:{{color:COLORS.history,width:2.5,dash:"dash"}},
       hovertemplate:"%{{x}}<br>HERALD flags clean: %{{y:,}}<extra></extra>"}},
+    {{type:"scatter", mode:"lines+markers", x:years, y:dirtyFlagsVals,
+      name:"HERALD flags étendu (contrôle historique)", line:{{color:COLORS.masked,width:1.5,dash:"dash"}},
+      visible:"legendonly",
+      hovertemplate:"%{{x}}<br>HERALD flags étendu: %{{y:,}}<extra></extra>"}},
   ], Object.assign({{}}, BASE_LAYOUT, {{
     title:"Volumes France entière: réel vs HERALD",
     yaxis:{{title:"Créations d'établissements", gridcolor:"#30364f", tickformat:","}},
@@ -1478,7 +1607,7 @@ function drawSectorCharts() {{
 
   // Volume: Réel vs HERALD for the selected observed year.
   const st = DATA.sectorTotalsByYear ? DATA.sectorTotalsByYear[yr] : null;
-  const sdf = DATA.dirtyFlagsSectorTotalsByYear ? DATA.dirtyFlagsSectorTotalsByYear[yr] : null;
+  const snfc = DATA.nfCleanSectorTotalsByYear ? DATA.nfCleanSectorTotalsByYear[yr] : null;
   const scf = DATA.cleanFlagsSectorTotalsByYear ? DATA.cleanFlagsSectorTotalsByYear[yr] : null;
   if(st && st.sectors) {{
     const labels = st.sectors.map(s => s+" — "+DATA.sectorLabels[s]);
@@ -1489,13 +1618,13 @@ function drawSectorCharts() {{
       {{type:"bar", x:labels, y:st.y_true, name:"Réel INSEE",
         marker:{{color:COLORS.real, opacity:0.75}},
         hovertemplate:"%{{x}}<br>Réel: %{{y:,}}<extra></extra>"}},
-      {{type:"bar", x:labels, y:sdf && sdf.y_pred ? sdf.y_pred : st.sectors.map(_=>null), name:"HERALD flags étendu",
-        marker:{{color:COLORS.masked, opacity:0.75}},
-        hovertemplate:"%{{x}}<br>HERALD flags étendu: %{{y:,}}<extra></extra>"}},
+      {{type:"bar", x:labels, y:snfc && snfc.y_pred ? snfc.y_pred : st.sectors.map(_=>null), name:"HERALD no flags clean",
+        marker:{{color:COLORS.nfclean, opacity:0.8}},
+        hovertemplate:"%{{x}}<br>HERALD no flags clean: %{{y:,}}<extra></extra>"}},
       {{type:"bar", x:labels, y:scf && scf.y_pred ? scf.y_pred : st.sectors.map(_=>null), name:"HERALD flags clean",
         marker:{{color:COLORS.history, opacity:0.8}},
         hovertemplate:"%{{x}}<br>HERALD flags clean: %{{y:,}}<extra></extra>"}},
-      {{type:"bar", x:labels, y:st.y_pred, name:"HERALD no flags",
+      {{type:"bar", x:labels, y:st.y_pred, name:"HERALD no flags Q7",
         marker:{{color:COLORS.semi, opacity:0.85}},
         customdata:wmapePerSec,
         hovertemplate:"%{{x}}<br>HERALD no flags: %{{y:,}}<br>WMAPE: %{{customdata}}<extra></extra>"}}
@@ -1665,32 +1794,32 @@ function drawZone(ze, year) {{
   const name = zeName(ze);
   document.getElementById("zone-title").textContent = name+" — ZE "+ze;
   const chartYears = DATA.years.slice();
-  const real=[], semi=[], dirtyFlags=[], cleanFlags=[], ridge=[], hoverTexts=[];
+  const real=[], semi=[], nfClean=[], cleanFlags=[], ridge=[], hoverTexts=[];
   chartYears.forEach(y => {{
     const p = DATA.zoneSemiPreds[y] ? DATA.zoneSemiPreds[y][ze] : null;
-    const pdf = DATA.zoneDirtyFlagsPreds[y] ? DATA.zoneDirtyFlagsPreds[y][ze] : null;
+    const pnfc = DATA.zoneNfCleanPreds && DATA.zoneNfCleanPreds[y] ? DATA.zoneNfCleanPreds[y][ze] : null;
     const pcf = DATA.zoneCleanFlagsPreds[y] ? DATA.zoneCleanFlagsPreds[y][ze] : null;
     const rp = DATA.zoneRidgePreds && DATA.zoneRidgePreds[y] ? DATA.zoneRidgePreds[y][ze] : null;
     real.push(p ? p.y_true : null);
     semi.push(p ? p.y_pred : null);
-    dirtyFlags.push(pdf ? pdf.y_pred : null);
+    nfClean.push(pnfc ? pnfc.y_pred : null);
     cleanFlags.push(pcf ? pcf.y_pred : null);
     ridge.push(rp !== undefined && rp !== null ? rp : null);
     const ae = p ? Math.abs((p.y_pred||0)-(p.y_true||0)) : null;
-    hoverTexts.push(y+"<br>Réel: "+(p?p.y_true:"n/a")+"<br>HERALD no flags: "+(p?p.y_pred:"n/a")+"<br>Ridge AR: "+(ridge[ridge.length-1]!==null?fmt(ridge[ridge.length-1],0):"n/a")+"<br>Erreur: "+(ae||"n/a")+" étab.");
+    hoverTexts.push(y+"<br>Réel: "+(p?p.y_true:"n/a")+"<br>HERALD no flags Q7: "+(p?p.y_pred:"n/a")+"<br>Ridge AR: "+(ridge[ridge.length-1]!==null?fmt(ridge[ridge.length-1],0):"n/a")+"<br>Erreur: "+(ae||"n/a")+" étab.");
   }});
   const traces = [
     {{type:"scatter", mode:"lines+markers", x:chartYears, y:real,
       name:"Réel INSEE", line:{{color:COLORS.real,width:3}},
       hovertemplate:"%{{x}}<br>Réel: %{{y:,}}<extra></extra>"}},
     {{type:"scatter", mode:"lines+markers", x:chartYears, y:semi,
-      name:"HERALD no flags", line:{{color:COLORS.semi,width:3}},
+      name:"HERALD no flags Q7", line:{{color:COLORS.semi,width:3}},
       text:hoverTexts, hovertemplate:"%{{text}}<extra></extra>"}},
-    {{type:"scatter", mode:"lines+markers", x:chartYears, y:dirtyFlags,
-      name:"HERALD flags étendu", line:{{color:COLORS.masked,width:2.5,dash:"dash"}},
-      hovertemplate:"%{{x}}<br>HERALD flags étendu: %{{y:,}}<extra></extra>"}},
+    {{type:"scatter", mode:"lines+markers", x:chartYears, y:nfClean,
+      name:"HERALD no flags clean", line:{{color:COLORS.nfclean,width:2.5,dash:"dot"}},
+      hovertemplate:"%{{x}}<br>HERALD no flags clean: %{{y:,}}<extra></extra>"}},
     {{type:"scatter", mode:"lines+markers", x:chartYears, y:cleanFlags,
-      name:"HERALD flags clean", line:{{color:COLORS.history,width:3,dash:"dot"}},
+      name:"HERALD flags clean", line:{{color:COLORS.history,width:2.5,dash:"dash"}},
       hovertemplate:"%{{x}}<br>HERALD flags clean: %{{y:,}}<extra></extra>"}},
     {{type:"scatter", mode:"lines+markers", x:chartYears, y:ridge,
       name:"Ridge AR", line:{{color:COLORS.ridge,width:2.5,dash:"dash"}},
@@ -1704,11 +1833,11 @@ function drawZone(ze, year) {{
 
   // Sector bars for selected year
   const rows = DATA.zoneSectorPreds[ze] ? DATA.zoneSectorPreds[ze][year] : null;
-  const dirtyFlagRows = DATA.zoneDirtyFlagsSectorPreds[ze] ? DATA.zoneDirtyFlagsSectorPreds[ze][year] : null;
+  const nfCleanRows = DATA.zoneNfCleanSectorPreds && DATA.zoneNfCleanSectorPreds[ze] ? DATA.zoneNfCleanSectorPreds[ze][year] : null;
   const cleanFlagRows = DATA.zoneCleanFlagsSectorPreds[ze] ? DATA.zoneCleanFlagsSectorPreds[ze][year] : null;
-  const dirtyFlagBySector = {{}};
+  const nfCleanBySector = {{}};
   const cleanFlagBySector = {{}};
-  if(dirtyFlagRows && dirtyFlagRows.length) dirtyFlagRows.forEach(r => {{ dirtyFlagBySector[r.s] = r.p; }});
+  if(nfCleanRows && nfCleanRows.length) nfCleanRows.forEach(r => {{ nfCleanBySector[r.s] = r.p; }});
   if(cleanFlagRows && cleanFlagRows.length) cleanFlagRows.forEach(r => {{ cleanFlagBySector[r.s] = r.p; }});
   if(rows && rows.length) {{
     const sLabels = rows.map(r => r.s+" — "+(DATA.sectorLabels[r.s]||r.s));
@@ -1717,15 +1846,15 @@ function drawZone(ze, year) {{
       {{type:"bar", x:sLabels, y:rows.map(r=>r.t), name:"Réel",
         marker:{{color:COLORS.real,opacity:0.75}},
         hovertemplate:"%{{x}}<br>Réel: %{{y:,}}<extra></extra>"}},
-      {{type:"bar", x:sLabels, y:rows.map(r=>dirtyFlagBySector[r.s] ?? null), name:"HERALD flags étendu",
-        marker:{{color:COLORS.masked,opacity:0.75}},
-        hovertemplate:"%{{x}}<br>HERALD flags étendu: %{{y:,}}<extra></extra>"}},
+      {{type:"bar", x:sLabels, y:rows.map(r=>nfCleanBySector[r.s] ?? null), name:"HERALD no flags clean",
+        marker:{{color:COLORS.nfclean,opacity:0.8}},
+        hovertemplate:"%{{x}}<br>HERALD no flags clean: %{{y:,}}<extra></extra>"}},
       {{type:"bar", x:sLabels, y:rows.map(r=>cleanFlagBySector[r.s] ?? null), name:"HERALD flags clean",
         marker:{{color:COLORS.history,opacity:0.8}},
         hovertemplate:"%{{x}}<br>HERALD flags clean: %{{y:,}}<extra></extra>"}},
-      {{type:"bar", x:sLabels, y:rows.map(r=>r.p), name:"HERALD no flags",
+      {{type:"bar", x:sLabels, y:rows.map(r=>r.p), name:"HERALD no flags Q7",
         customdata:wmapePerSec, marker:{{color:COLORS.semi,opacity:0.85}},
-        hovertemplate:"%{{x}}<br>HERALD no flags: %{{y:,}}<br>WMAPE: %{{customdata}}<extra></extra>"}}
+        hovertemplate:"%{{x}}<br>HERALD no flags Q7: %{{y:,}}<br>WMAPE: %{{customdata}}<extra></extra>"}}
     ], Object.assign({{}}, BASE_LAYOUT, {{
       title:"Secteurs A10 — "+year, barmode:"group", margin:{{t:36,b:60,l:52,r:12}},
       xaxis:{{tickangle:-30, automargin:true}},
@@ -1839,7 +1968,9 @@ drawMechanisms();
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    if DEFAULT_PHASE2J_RUN_ROOT is not None and DEFAULT_PHASE2J_RUN_ROOT.exists():
+    if DEFAULT_PHASE3E_RUN_ROOT is not None and DEFAULT_PHASE3E_RUN_ROOT.exists():
+        default_run_root = DEFAULT_PHASE3E_RUN_ROOT
+    elif DEFAULT_PHASE2J_RUN_ROOT is not None and DEFAULT_PHASE2J_RUN_ROOT.exists():
         default_run_root = DEFAULT_PHASE2J_RUN_ROOT
     elif DEFAULT_PHASE2I_RUN_ROOT.exists():
         default_run_root = DEFAULT_PHASE2I_RUN_ROOT

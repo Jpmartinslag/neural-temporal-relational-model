@@ -57,6 +57,82 @@ FEATURE_POLICIES = (
     *sorted(_SIDE5_EXTRA_DROPS),
 )
 
+QUARTERLY_TENSOR_POLICIES = (
+    "real",
+    "zero",
+    "temporal_perm",       # NOT fold-safe — do not use for causal claims
+    "spatial_perm",
+    "effectifs_only",
+    "masse_only",
+    "lag1",
+    "effectifs_lag1",      # Phase 3E: lag1 + keep effectifs only
+    "masse_lag1",          # Phase 3E: lag1 + keep masse_salariale only
+    "lag2",                # Phase 3E: shift q_tensor 2 years back
+    "effectifs_spatial_perm",  # Phase 3E: effectifs_only + spatial perm
+    "lag1_spatial_perm",   # Phase 3E: lag1 + spatial perm
+)
+
+
+def apply_quarterly_tensor_policy(q, policy, rng_seed):
+    """Transform the quarterly tensor for Phase 3D ablations.
+
+    Args:
+        q: [T, Q, N, 2] float32 array from build_quarterly_tensor
+        policy: one of QUARTERLY_TENSOR_POLICIES
+        rng_seed: integer seed for reproducible permutations
+    Returns:
+        transformed array of same shape
+    """
+    if policy == "real":
+        return q
+    if policy == "zero":
+        return np.zeros_like(q)
+    T, _Q, N, _C = q.shape
+    rng = np.random.RandomState(rng_seed)
+    if policy == "temporal_perm":
+        perm = rng.permutation(T)
+        return q[perm].copy()
+    if policy == "spatial_perm":
+        perm = rng.permutation(N)
+        return q[:, :, perm, :].copy()
+    if policy == "effectifs_only":
+        q = q.copy()
+        q[:, :, :, 1] = 0.0
+        return q
+    if policy == "masse_only":
+        q = q.copy()
+        q[:, :, :, 0] = 0.0
+        return q
+    if policy == "lag1":
+        q_lag = np.zeros_like(q)
+        q_lag[1:] = q[:-1]
+        return q_lag
+    if policy == "effectifs_lag1":
+        q_lag = np.zeros_like(q)
+        q_lag[1:] = q[:-1]
+        q_lag[:, :, :, 1] = 0.0
+        return q_lag
+    if policy == "masse_lag1":
+        q_lag = np.zeros_like(q)
+        q_lag[1:] = q[:-1]
+        q_lag[:, :, :, 0] = 0.0
+        return q_lag
+    if policy == "lag2":
+        q_lag = np.zeros_like(q)
+        q_lag[2:] = q[:-2]
+        return q_lag
+    if policy == "effectifs_spatial_perm":
+        q = q.copy()
+        q[:, :, :, 1] = 0.0
+        perm = rng.permutation(N)
+        return q[:, :, perm, :]
+    if policy == "lag1_spatial_perm":
+        q_lag = np.zeros_like(q)
+        q_lag[1:] = q[:-1]
+        perm = rng.permutation(N)
+        return q_lag[:, :, perm, :]
+    raise ValueError(f"Unknown quarterly_tensor_policy: {policy!r}")
+
 MACRO_FEATURE_SETS = {
     "none": [],
     "climat_affaires": ["fr_climat_affaires_t_minus_1"],
@@ -186,6 +262,7 @@ def main():
     parser.add_argument("--drop-source-flags", action="store_true")
     parser.add_argument("--feature-policy", default="current_clean", choices=FEATURE_POLICIES)
     parser.add_argument("--macro-feature-set", default="none", choices=sorted(MACRO_FEATURE_SETS))
+    parser.add_argument("--quarterly-tensor-policy", default="real", choices=QUARTERLY_TENSOR_POLICIES)
     parser.add_argument("--regime-metadata-path", type=Path, default=None)
     parser.add_argument("--experiment-label", default="")
     # Only the four args the wrapper owns are consumed here.
@@ -202,6 +279,8 @@ def main():
     feature_columns_seen = []
     ridge_columns_seen = []
     zeroed_quarterly = policy_zeros_quarterly(regime_args.feature_policy)
+    qtensor_policy = regime_args.quarterly_tensor_policy
+    perm_seed = _peek_int(remaining, "--seed", 42)
 
     def patched_feature_columns(panel, ablation="full"):
         if regime_args.regime_mode == "manual_flags":
@@ -246,6 +325,8 @@ def main():
         q = original_build_quarterly_tensor(*args, **kwargs)
         if zeroed_quarterly:
             return np.zeros_like(q)
+        if qtensor_policy != "real":
+            q = apply_quarterly_tensor_policy(q, qtensor_policy, perm_seed)
         return q
 
     base.feature_columns = patched_feature_columns
@@ -255,6 +336,8 @@ def main():
     base.build_quarterly_tensor = patched_build_quarterly_tensor
 
     try:
+        # Re-inject quarterly_tensor_policy so semiv2 can record it in the per-run JSON.
+        remaining = list(remaining) + ["--quarterly-tensor-policy", qtensor_policy]
         sys.argv = [sys.argv[0], *remaining]
         semiv2.main()
     finally:
@@ -272,6 +355,9 @@ def main():
         latent_inf_raw = _peek_str(remaining, "--latent-inference-mode", "match_train")
         eff_latent_inf = latent_train if latent_inf_raw == "match_train" else latent_inf_raw
         regime_transform = _peek_str(remaining, "--regime-seq-transform", "none")
+        tutor_feature_set = _peek_str(remaining, "--tutor-feature-set", "none")
+        tutor_transform = _peek_str(remaining, "--tutor-state-transform", "none")
+        labor_tutor_fset = _peek_str(remaining, "--labor-tutor-feature-set", "none")
         single_year = _peek_int(remaining, "--single-target-year", None)
         _side5_remaining = set(feature_columns_seen) & set(SIDE5_ALL)
         _dropped_side5 = sorted(set(SIDE5_ALL) - _side5_remaining)
@@ -288,12 +374,25 @@ def main():
             "feature_policy": regime_args.feature_policy,
             "macro_feature_set": regime_args.macro_feature_set,
             "macro_features": list(MACRO_FEATURE_SETS[regime_args.macro_feature_set]),
+            "tutor_feature_set": tutor_feature_set,
+            "tutor_state_transform": tutor_transform,
+            "labor_tutor_feature_set": labor_tutor_fset,
             "annual_feature_count": len(feature_columns_seen),
             "annual_features": list(feature_columns_seen),
             "dropped_side5_features": _dropped_side5,
             "ridge_features": list(ridge_columns_seen),
             "ridge_dropped_side5_features": sorted(set(SIDE5_ALL) - set(ridge_columns_seen)),
-            "quarterly_tensor_zeroed": bool(zeroed_quarterly),
+            "quarterly_tensor_policy": qtensor_policy,
+            "quarterly_tensor_zeroed": bool(zeroed_quarterly) or qtensor_policy == "zero",
+            "q_tensor_channels_active": (
+                [] if (zeroed_quarterly or qtensor_policy == "zero")
+                else ["effectifs_salaries_cvs"] if qtensor_policy == "effectifs_only"
+                else ["masse_salariale_cvs"] if qtensor_policy == "masse_only"
+                else ["effectifs_salaries_cvs", "masse_salariale_cvs"]
+            ),
+            "q_tensor_transform_seed": (
+                perm_seed if qtensor_policy in {"temporal_perm", "spatial_perm"} else None
+            ),
             "smooth_regime_source": smooth_src,
             "latent_train_mode": latent_train,
             "latent_inference_mode": eff_latent_inf,

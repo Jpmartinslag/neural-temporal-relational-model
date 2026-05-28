@@ -20,10 +20,14 @@ macro/falsification batteries.
 | Phase 2L-2N | auto-regulation / internal auditor | completed | useful diagnostics, no main-candidate promotion |
 | Phase 2O-2Q | residual shrinkage and robustness | completed | residual calibration became the strongest direction |
 | Phase 2R | confirmatory battery | completed | `L5_trainopt` confirmed vs no-calibration control |
+| Phase 3A | tutor gate block A | completed | T6 (permuted) beat T5 (real) — signal not usable |
+| Phase 3B | tutor signal screen | completed | no macro signal beat its permutation — architecture not cross-attention |
+| Phase 3C | labor-market ZE tutor | completed | weak URSSAF direction; not retained as external tutor |
+| Phase 3E | q_tensor architecture | completed | `Q7_effectifs_lag1` selected as current no-flags candidate |
 
-## Canonical candidate after Phase 2R
+## Canonical candidate after Phase 3E
 
-`L5_trainopt` is the current HERALD-France candidate.
+`Q7_effectifs_lag1` is the current HERALD-France no-flags candidate.
 
 Annual features:
 
@@ -37,21 +41,22 @@ Mechanism:
 - no manual crisis/rebound flags;
 - no source flags;
 - residual calibration estimated from training years only.
+- learned latent regime, dimension 5;
+- q_tensor reduced to `effectifs_salaries_cvs`, lagged by one year.
 
-Phase 2R metrics:
+Phase 3E metrics:
 
-- mean WMAPE 2021-2025: `0.020233`
-- WMAPE 2021: `0.035020`
-- WMAPE 2025: `0.012525`
-- A10 WMAPE: `0.158238`
-- paired vs no-calibration control: `17/20` wins, `p=0.002818`
+- mean WMAPE 2021-2025: `0.020398`
+- WMAPE std across seeds: `0.001498`
+- WMAPE 2021: `0.0348`
+- WMAPE 2025: `0.0114`
+- sector WMAPE: `0.15612`
 
 Combined audit:
 
 ```text
-reports/HERALD_PHASE2R_CONFIRMATORY_AUDIT.md
-reports/metrics/herald_phase2r_summary.csv
-reports/metrics/herald_phase2r_paired_vs_l5_gate.csv
+reports/HERALD_CURRENT_MODEL_DECISION_20260527.md
+reports/HERALD_PHASE3E_QTENSOR_ARCH_AUDIT.md
 ```
 
 ## Entrypoints
@@ -479,3 +484,88 @@ Audit after completion:
 python3 hpc/regime/aggregate_herald_regime_results.py --root <OUT_ROOT>
 python3 hpc/regime/audit_herald_phase2r_confirmatory.py --root <OUT_ROOT> --strict
 ```
+
+## Phase 3C — labor-market ZE-level tutor
+
+Status: **completed**. Final audit: `reports/HERALD_PHASE3C_LABOR_TUTOR_AUDIT.md`.
+
+Objective: test whether ZE-level labor-market tutor signals could help the residual gate distinguish
+rare rebound dynamics without manual flags.
+
+Final reading:
+
+| Config | Mean WMAPE | WMAPE 2021 | WMAPE 2025 | Reading |
+|---|---:|---:|---:|---|
+| C0 baseline | 0.02100 | 0.03628 | 0.01256 | reference |
+| C3 URSSAF | 0.02118 | 0.03449 | 0.01179 | better 2021/2025, not better global mean |
+| C1 DEFM | 0.02157 | 0.03894 | 0.01194 | not retained |
+| C5 combo | 0.02337 | 0.04088 | 0.01301 | adds noise |
+
+Methodological reading:
+
+- C3 moved in the correct direction against temporal permutation, but not with p < 0.05.
+- C3 failed the stronger spatial-falsification reading; its gain may be mostly national timing.
+- The line was useful diagnostically, but not retained as a main external tutor.
+- Phase 3D/3E became the cleaner way to keep a labor signal through q_tensor architecture selection.
+
+## Phase 3E — q_tensor architecture decision
+
+Status: **completed** — 240/240 runs, 12 configs, 20 seeds per config.
+
+Root:
+`hpc_results/herald_regime_phase3e_qtensor_arch_20260527_173259_r1`
+
+Audit:
+`reports/HERALD_PHASE3E_QTENSOR_ARCH_AUDIT.md`
+
+### Question
+
+Which quarterly URSSAF tensor form should be kept in the HERALD no-flags candidate?
+
+The test compared:
+
+- full q_tensor vs no q_tensor;
+- real ZE identity vs spatial permutation;
+- `effectifs_salaries_cvs` vs `masse_salariale_cvs`;
+- contemporaneous vs lagged q_tensor;
+- with/without a light A10 guard.
+
+### Main result
+
+| Config | Mean WMAPE | Std | WMAPE 2021 | WMAPE 2025 | Reading |
+|---|---:|---:|---:|---:|---|
+| `Q6_lag1` | 0.020251 | 0.001718 | 0.0339 | 0.0123 | best raw mean |
+| `Q12_effectifs_lag1_a10guard` | 0.020371 | 0.001959 | 0.0347 | 0.0124 | best sector WMAPE |
+| `Q7_effectifs_lag1` | 0.020398 | 0.001498 | 0.0348 | 0.0114 | current default candidate |
+| `Q0_real` | 0.020559 | 0.001835 | 0.0349 | 0.0113 | full contemporaneous baseline |
+| `Q1_zero` | 0.020659 | 0.002045 | 0.0315 | 0.0130 | no q_tensor, competitive |
+
+### Decision
+
+Use `Q7_effectifs_lag1` as the current HERALD no-flags candidate for dashboard and final comparison.
+
+Reason:
+
+- it is not the best raw mean, but it has the lowest seed std among top configs;
+- it keeps only the stronger q_tensor channel (`effectifs_salaries_cvs`);
+- it uses a safer lagged signal instead of contemporaneous q_tensor;
+- it avoids the extra A10 guard complexity;
+- it remains easy to explain.
+
+### Methodological caution
+
+Do not overclaim the q_tensor result.
+
+- `Q1_zero` remains competitive, so q_tensor is not indispensable.
+- Spatial falsification is not strong enough to claim a robust ZE-local effect.
+- The evidence supports a simple lagged employment signal, not a rich autonomous labor tutor.
+
+### Next comparison target
+
+The dashboard/presentation comparison should now use:
+
+- `HERALD no flags Q7_effectifs_lag1` as current candidate;
+- `HERALD no flags Q0_real` as q_tensor reference;
+- `HERALD flags clean` as the fair manual-flags comparator;
+- `HERALD flags extended` as broader-input historical control;
+- Ridge AR, ARIMA, LSTM, DCRNN, and Dynamic STGNN as external baselines.
