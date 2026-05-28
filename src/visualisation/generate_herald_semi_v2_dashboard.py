@@ -880,12 +880,17 @@ def build_dashboard(args: argparse.Namespace) -> None:
     old = load_old_constants(Path(args.old_dashboard))
     patterns = model_patterns_for_run(run_root)
 
+    presentation = getattr(args, "presentation", False)
+
     winner = summarize_model(patterns.get("label", "HERALD no flags"), load_runs(per_run, patterns["json"]))
     if not winner:
         raise RuntimeError("HERALD principal runs were not found.")
-    no_flags_clean = load_clean_nf_model()
-    dirty_flags = load_dirty_flags_model()
-    clean_flags = load_clean_flags_model()
+    if presentation:
+        no_flags_clean = dirty_flags = clean_flags = None
+    else:
+        no_flags_clean = load_clean_nf_model()
+        dirty_flags = load_dirty_flags_model()
+        clean_flags = load_clean_flags_model()
     internal_controls = [
         summarize_model(
             "Contrôle sans semi-supervision",
@@ -906,29 +911,34 @@ def build_dashboard(args: argparse.Namespace) -> None:
         csv_dir,
         patterns["sector"],
     )
-    flags_zone_data = safe_build_semiv2_zone_data(
-        DEFAULT_FLAGS_RUN_ROOT / "data_processed",
-        FLAGS_SECTOR_PATTERN,
-        "HERALD flags étendu",
-    )
-    clean_flags_zone_data = (
-        safe_build_semiv2_zone_data(
-            DEFAULT_PHASE2J_RUN_ROOT / "data_processed",
-            CLEAN_FLAGS_SECTOR_PATTERN,
-            "HERALD flags clean",
+    if presentation:
+        flags_zone_data = empty_zone_data()
+        clean_flags_zone_data = empty_zone_data()
+        nf_clean_zone_data = empty_zone_data()
+    else:
+        flags_zone_data = safe_build_semiv2_zone_data(
+            DEFAULT_FLAGS_RUN_ROOT / "data_processed",
+            FLAGS_SECTOR_PATTERN,
+            "HERALD flags étendu",
         )
-        if DEFAULT_PHASE2J_RUN_ROOT is not None
-        else empty_zone_data()
-    )
-    nf_clean_zone_data = (
-        safe_build_semiv2_zone_data(
-            DEFAULT_PHASE2J_RUN_ROOT / "data_processed",
-            NF_CLEAN_SECTOR_PATTERN,
-            "HERALD no flags clean",
+        clean_flags_zone_data = (
+            safe_build_semiv2_zone_data(
+                DEFAULT_PHASE2J_RUN_ROOT / "data_processed",
+                CLEAN_FLAGS_SECTOR_PATTERN,
+                "HERALD flags clean",
+            )
+            if DEFAULT_PHASE2J_RUN_ROOT is not None
+            else empty_zone_data()
         )
-        if DEFAULT_PHASE2J_RUN_ROOT is not None
-        else empty_zone_data()
-    )
+        nf_clean_zone_data = (
+            safe_build_semiv2_zone_data(
+                DEFAULT_PHASE2J_RUN_ROOT / "data_processed",
+                NF_CLEAN_SECTOR_PATTERN,
+                "HERALD no flags clean",
+            )
+            if DEFAULT_PHASE2J_RUN_ROOT is not None
+            else empty_zone_data()
+        )
     # Fill 2021-2023 zone/france data from legacy run (strict ex-ante only has 2024-2025)
     legacy_csvs = sorted(BASE.glob(LEGACY_SEMIV2_CSV_PATTERN))
     if legacy_csvs:
@@ -980,8 +990,8 @@ def build_dashboard(args: argparse.Namespace) -> None:
     payload = {
         "years": YEARS,
         "sectorLabels": SECTOR_LABELS,
-        "models": [m for m in [winner, no_flags_clean, clean_flags] if m is not None],
-        "historicalControl": dirty_flags,
+        "models": [m for m in ([winner] if presentation else [winner, no_flags_clean, clean_flags]) if m is not None],
+        "historicalControl": None if presentation else dirty_flags,
         "internalControls": internal_controls,
         "ridgeYear": ridge_yr,
         "arimaYear": arima_yr,
@@ -1022,6 +1032,50 @@ def build_dashboard(args: argparse.Namespace) -> None:
             "strategy": "retirer les flags, enlever les entrées SIDE redondantes, garder seulement niveau récent + croissance 1 an",
         },
     }
+
+    # Pre-computed JS trace fragments — empty in presentation mode
+    if presentation:
+        _extra_france_traces = ""
+        _extra_sector_bars = ""
+        _extra_zone_time_traces = ""
+        _extra_zone_sector_bars = ""
+    else:
+        _extra_france_traces = (
+            '{type:"scatter", mode:"lines+markers", x:years, y:nfCleanVals,'
+            ' name:"HERALD no flags clean", line:{color:COLORS.nfclean,width:2.5,dash:"dot"},'
+            ' hovertemplate:"%{x}<br>HERALD no flags clean: %{y:,}<extra></extra>"},'
+            '\n    {type:"scatter", mode:"lines+markers", x:years, y:cleanFlagsVals,'
+            ' name:"HERALD flags clean", line:{color:COLORS.history,width:2.5,dash:"dash"},'
+            ' hovertemplate:"%{x}<br>HERALD flags clean: %{y:,}<extra></extra>"},'
+            '\n    {type:"scatter", mode:"lines+markers", x:years, y:dirtyFlagsVals,'
+            ' name:"HERALD flags étendu (contrôle historique)",'
+            ' line:{color:COLORS.masked,width:1.5,dash:"dash"}, visible:"legendonly",'
+            ' hovertemplate:"%{x}<br>HERALD flags étendu: %{y:,}<extra></extra>"},'
+        )
+        _extra_sector_bars = (
+            '{type:"bar", x:labels, y:snfc && snfc.y_pred ? snfc.y_pred : st.sectors.map(_=>null),'
+            ' name:"HERALD no flags clean", marker:{color:COLORS.nfclean, opacity:0.8},'
+            ' hovertemplate:"%{x}<br>HERALD no flags clean: %{y:,}<extra></extra>"},'
+            '\n      {type:"bar", x:labels, y:scf && scf.y_pred ? scf.y_pred : st.sectors.map(_=>null),'
+            ' name:"HERALD flags clean", marker:{color:COLORS.history, opacity:0.8},'
+            ' hovertemplate:"%{x}<br>HERALD flags clean: %{y:,}<extra></extra>"},'
+        )
+        _extra_zone_time_traces = (
+            '{type:"scatter", mode:"lines+markers", x:chartYears, y:nfClean,'
+            ' name:"HERALD no flags clean", line:{color:COLORS.nfclean,width:2.5,dash:"dot"},'
+            ' hovertemplate:"%{x}<br>HERALD no flags clean: %{y:,}<extra></extra>"},'
+            '\n    {type:"scatter", mode:"lines+markers", x:chartYears, y:cleanFlags,'
+            ' name:"HERALD flags clean", line:{color:COLORS.history,width:2.5,dash:"dash"},'
+            ' hovertemplate:"%{x}<br>HERALD flags clean: %{y:,}<extra></extra>"},'
+        )
+        _extra_zone_sector_bars = (
+            '{type:"bar", x:sLabels, y:rows.map(r=>nfCleanBySector[r.s] ?? null),'
+            ' name:"HERALD no flags clean", marker:{color:COLORS.nfclean,opacity:0.8},'
+            ' hovertemplate:"%{x}<br>HERALD no flags clean: %{y:,}<extra></extra>"},'
+            '\n      {type:"bar", x:sLabels, y:rows.map(r=>cleanFlagBySector[r.s] ?? null),'
+            ' name:"HERALD flags clean", marker:{color:COLORS.history,opacity:0.8},'
+            ' hovertemplate:"%{x}<br>HERALD flags clean: %{y:,}<extra></extra>"},'
+        )
 
     sector_year_options = "\n".join(
         f'<option value="{y}"{" selected" if y=="2025" else ""}>{y}</option>'
@@ -1575,16 +1629,7 @@ function drawFranceAndSeeds() {{
     {{type:"scatter", mode:"lines+markers", x:years, y:heraldVals,
       name:"HERALD no flags Q7", line:{{color:COLORS.semi,width:3}},
       text:heraldText, hovertemplate:"%{{text}}<extra></extra>"}},
-    {{type:"scatter", mode:"lines+markers", x:years, y:nfCleanVals,
-      name:"HERALD no flags clean", line:{{color:COLORS.nfclean,width:2.5,dash:"dot"}},
-      hovertemplate:"%{{x}}<br>HERALD no flags clean: %{{y:,}}<extra></extra>"}},
-    {{type:"scatter", mode:"lines+markers", x:years, y:cleanFlagsVals,
-      name:"HERALD flags clean", line:{{color:COLORS.history,width:2.5,dash:"dash"}},
-      hovertemplate:"%{{x}}<br>HERALD flags clean: %{{y:,}}<extra></extra>"}},
-    {{type:"scatter", mode:"lines+markers", x:years, y:dirtyFlagsVals,
-      name:"HERALD flags étendu (contrôle historique)", line:{{color:COLORS.masked,width:1.5,dash:"dash"}},
-      visible:"legendonly",
-      hovertemplate:"%{{x}}<br>HERALD flags étendu: %{{y:,}}<extra></extra>"}},
+    {_extra_france_traces}
   ], Object.assign({{}}, BASE_LAYOUT, {{
     title:"Volumes France entière: réel vs HERALD",
     yaxis:{{title:"Créations d'établissements", gridcolor:"#30364f", tickformat:","}},
@@ -1618,12 +1663,7 @@ function drawSectorCharts() {{
       {{type:"bar", x:labels, y:st.y_true, name:"Réel INSEE",
         marker:{{color:COLORS.real, opacity:0.75}},
         hovertemplate:"%{{x}}<br>Réel: %{{y:,}}<extra></extra>"}},
-      {{type:"bar", x:labels, y:snfc && snfc.y_pred ? snfc.y_pred : st.sectors.map(_=>null), name:"HERALD no flags clean",
-        marker:{{color:COLORS.nfclean, opacity:0.8}},
-        hovertemplate:"%{{x}}<br>HERALD no flags clean: %{{y:,}}<extra></extra>"}},
-      {{type:"bar", x:labels, y:scf && scf.y_pred ? scf.y_pred : st.sectors.map(_=>null), name:"HERALD flags clean",
-        marker:{{color:COLORS.history, opacity:0.8}},
-        hovertemplate:"%{{x}}<br>HERALD flags clean: %{{y:,}}<extra></extra>"}},
+      {_extra_sector_bars}
       {{type:"bar", x:labels, y:st.y_pred, name:"HERALD no flags Q7",
         marker:{{color:COLORS.semi, opacity:0.85}},
         customdata:wmapePerSec,
@@ -1815,12 +1855,7 @@ function drawZone(ze, year) {{
     {{type:"scatter", mode:"lines+markers", x:chartYears, y:semi,
       name:"HERALD no flags Q7", line:{{color:COLORS.semi,width:3}},
       text:hoverTexts, hovertemplate:"%{{text}}<extra></extra>"}},
-    {{type:"scatter", mode:"lines+markers", x:chartYears, y:nfClean,
-      name:"HERALD no flags clean", line:{{color:COLORS.nfclean,width:2.5,dash:"dot"}},
-      hovertemplate:"%{{x}}<br>HERALD no flags clean: %{{y:,}}<extra></extra>"}},
-    {{type:"scatter", mode:"lines+markers", x:chartYears, y:cleanFlags,
-      name:"HERALD flags clean", line:{{color:COLORS.history,width:2.5,dash:"dash"}},
-      hovertemplate:"%{{x}}<br>HERALD flags clean: %{{y:,}}<extra></extra>"}},
+    {_extra_zone_time_traces}
     {{type:"scatter", mode:"lines+markers", x:chartYears, y:ridge,
       name:"Ridge AR", line:{{color:COLORS.ridge,width:2.5,dash:"dash"}},
       text:hoverTexts, hovertemplate:"%{{text}}<extra></extra>"}}
@@ -1846,12 +1881,7 @@ function drawZone(ze, year) {{
       {{type:"bar", x:sLabels, y:rows.map(r=>r.t), name:"Réel",
         marker:{{color:COLORS.real,opacity:0.75}},
         hovertemplate:"%{{x}}<br>Réel: %{{y:,}}<extra></extra>"}},
-      {{type:"bar", x:sLabels, y:rows.map(r=>nfCleanBySector[r.s] ?? null), name:"HERALD no flags clean",
-        marker:{{color:COLORS.nfclean,opacity:0.8}},
-        hovertemplate:"%{{x}}<br>HERALD no flags clean: %{{y:,}}<extra></extra>"}},
-      {{type:"bar", x:sLabels, y:rows.map(r=>cleanFlagBySector[r.s] ?? null), name:"HERALD flags clean",
-        marker:{{color:COLORS.history,opacity:0.8}},
-        hovertemplate:"%{{x}}<br>HERALD flags clean: %{{y:,}}<extra></extra>"}},
+      {_extra_zone_sector_bars}
       {{type:"bar", x:sLabels, y:rows.map(r=>r.p), name:"HERALD no flags Q7",
         customdata:wmapePerSec, marker:{{color:COLORS.semi,opacity:0.85}},
         hovertemplate:"%{{x}}<br>HERALD no flags Q7: %{{y:,}}<br>WMAPE: %{{customdata}}<extra></extra>"}}
@@ -1982,6 +2012,11 @@ def main() -> None:
     parser.add_argument("--embed-plotly", action="store_true", help="Embed Plotly in the HTML for offline sharing.")
     parser.add_argument("--plotly-bundle", default=str(DEFAULT_PLOTLY_BUNDLE))
     parser.add_argument("--splits-path", default=str(DEFAULT_SPLITS))
+    parser.add_argument(
+        "--presentation", action="store_true",
+        help="Presentation mode: show only the winning HERALD Q7 vs external baselines. "
+             "Drops HERALD flags clean / no-flags clean / étendu from all charts.",
+    )
     args = parser.parse_args()
     build_dashboard(args)
 
