@@ -8,7 +8,8 @@ Ce dossier contient les scripts à envoyer sur le cluster.
 hpc/
 ├── audit/              # strict ex-ante, target-shuffle, leak audit
 ├── forecast/           # forecast prospectif 2026/2027
-├── regime/             # régimes appris, feature minimality, falsifications
+├── phase4/             # batteries internationales NL/BE/PT (Phase 4)
+├── regime/             # régimes appris, feature minimality, falsifications (France Phase 2+3)
 ├── validation/         # validation Semi V2 / batteries principales
 ├── research/           # recherches V7/showdown non principales
 ├── archive/legacy_runs # scripts historiques V3-V6 et anciennes comparaisons
@@ -20,23 +21,36 @@ hpc/
 - `hpc/audit/submit_herald_strict_exante.sh` — validation anti-fuite strict ex-ante.
 - `hpc/audit/submit_herald_leak_stress.sh` — target-shuffle leak stress.
 - `hpc/forecast/submit_herald_forecast_2026_2027.sh` — forecast prospectif France.
-- `hpc/regime/submit_herald_phase2h_macro.sh` — Phase 2H macro/falsification, terminée.
-- `hpc/regime/submit_herald_phase2i_side5.sh` — Phase 2I SIDE feature ablations, terminée.
-- `hpc/validation/submit_herald_semiv2_validation.sh` — batterie de validation Semi V2.
+- `hpc/regime/submit_herald_phase3e_qtensor_arch.sh` — Phase 3E sélection architecture Q7, terminée.
+- `hpc/phase4/` — batteries Phase 4 internationales NL/BE/PT (à préparer).
 
 ## Phase active
 
-La dernière phase terminée est Phase 2I. Le candidat courant est HERALD SIDE2 `lag1_growth1y`, documenté
-dans:
+**France (Phase 2+3) — terminée.** Candidat courant: `Q7_effectifs_lag1`, sélectionné en Phase 3E.
 
 ```text
-reports/HERALD_PHASE2I_SIDE2_FEATURE_AUDIT.md
-reports/HERALD_SIDE5_STABILITY_AND_TREND_AUDIT_PLAN.md
+reports/HERALD_PHASE3E_QTENSOR_ARCH_AUDIT.md
+reports/HERALD_CURRENT_MODEL_DECISION_20260527.md
 hpc/regime/README.md
 ```
 
-La prochaine phase prévue est l'audit des régulateurs internes et l'overlay Atlas/IAT post-modèle,
-sans ajouter de nouvelles features au training principal avant validation.
+| Métrique France | Valeur |
+|----------------|--------|
+| Mean WMAPE 2021-2025 | 0.020398 |
+| Std WMAPE (seeds) | 0.001498 |
+| WMAPE 2025 | 0.011415 |
+
+**Phase 4 — données prêtes, batteries à préparer.**
+
+Panneaux validés (preflight `python3 src/data/phase4_preflight.py`):
+
+| Pays | Zones | Fenêtre | Tensor | Statut |
+|------|-------|---------|--------|--------|
+| Pays-Bas | 40 COROP | 2016–2024 | `qtensor_jobs` (employment, CBS) | ✅ HPC-ready |
+| Belgique | 42 arrondissements | 2009–2020 | `qtensor_jobs` (employment, ONSS) | ✅ HPC-ready |
+| Portugal | 25 NUTS3 | 2009–2022 | `sector_births_tensor` (⚠️ proxy, non Q7) | ✅ HPC-ready |
+
+Prochaine étape: préparer les scripts `hpc/phase4/`.
 
 ## Règles
 

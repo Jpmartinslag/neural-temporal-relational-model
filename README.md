@@ -28,13 +28,13 @@ gantt
 
     section Dashboard & Consolidation
     Dashboard France finalisé        :done, dash, 2026-05-27, 2026-05-28
-    Commit + push Phase 3E           :active, commit, 2026-05-28, 2026-05-29
+    Commit + push Phase 3E           :done, commit, 2026-05-28, 2026-05-28
 
     section Phase 4 — Généralisation Internationale
-    Belgique pipeline + batterie     :p4be, 2026-05-29, 2026-06-02
-    Pays-Bas pipeline + batterie     :p4nl, 2026-06-02, 2026-06-05
-    Portugal pipeline + batterie     :p4pt, 2026-06-05, 2026-06-09
-    Rapport comparatif 4 pays        :p4rep, 2026-06-09, 2026-06-12
+    Pipelines données NL+BE+PT       :done, p4data, 2026-05-28, 2026-05-28
+    Batterie HPC NL+BE               :p4hpc_nb, 2026-05-28, 2026-06-04
+    Batterie HPC PT                  :p4hpc_pt, 2026-06-04, 2026-06-08
+    Rapport comparatif 4 pays        :p4rep, 2026-06-08, 2026-06-12
 
     section Phase 5 — Données Synthétiques
     DGP contrôlé + génération        :p5gen, 2026-06-12, 2026-06-20
@@ -96,11 +96,13 @@ HERALD utilise des données disponibles dans tous les pays européens avec syst�
 
 | Composant | France | Belgique | Pays-Bas | Portugal |
 |-----------|--------|---------|---------|---------|
-| Créations entreprises | SIDE/SIRENE | Statbel | CBS StatLine | INE |
-| Effectifs | URSSAF | ONSS/NSSO | CBS werkzame | GEP Quadros de Pessoal |
-| Masse salariale | URSSAF | FPB | CBS loonsom | GEP remuneração |
-| Territoire | 306 ZE | 43 arrondissements | 40 COROP | 308 municípios |
-| Secteur | NAF Rev.2 | NACE-BEL | SBI 2008 | CAE Rev.3 |
+| Créations entreprises | SIDE/SIRENE | Statbel TVA primo-assujettissements | CBS 83631NED | INE 0009702 |
+| Effectifs (Q-tensor) | URSSAF effectifs | ONSS localunit Q4 | CBS 83582NED | ⚠️ sector_births proxy (GEP Quadros de Pessoal non ingéré) |
+| Stock entreprises | SIDE | Statbel TVA | CBS 81578NED | INE 0009819 |
+| Territoire | 306 ZE | **42** arrondissements | 40 COROP | **25 NUTS3** |
+| Secteur | NAF Rev.2 | NACE-BEL → A10 | SBI 2008 → A10 | CAE Rev.3 → A10 |
+| Fenêtre modélisation | 2010–2025 | 2008–2020 | 2016–2024 | 2009–2022 |
+| Preflight | ✅ | ✅ | ✅ | ✅ (tensor framing ⚠️) |
 
 Voir `reports/HERALD_PHASE4_INTERNATIONAL_PLAN.md` pour le plan détaillé.
 
@@ -127,10 +129,15 @@ dataset/
 # Régénérer le dashboard France
 python3 src/visualisation/generate_herald_semi_v2_dashboard.py
 
-# Lancer batterie Phase 4 Belgique
-bash hpc/regime/submit_herald_phase4_belgium.sh
+# Vérifier les panneaux Phase 4 (NL/BE/PT)
+python3 src/data/phase4_preflight.py
 
-# Agréger résultats
+# Lancer batterie Phase 4 (après préparation des scripts)
+bash hpc/phase4/submit_herald_phase4_nl.sh
+bash hpc/phase4/submit_herald_phase4_be.sh
+bash hpc/phase4/submit_herald_phase4_pt.sh
+
+# Agréger résultats France
 python3 hpc/regime/aggregate_herald_regime_results.py --root hpc_results/<run_root>
 
 # Auditer Phase 3E
@@ -150,7 +157,11 @@ python3 hpc/regime/audit_herald_phase3e_qtensor_arch_results.py \
 - `reports/HERALD_CURRENT_MODEL_DECISION_20260527.md`
 
 **Phase 4 (généralisation internationale):**
-- `reports/HERALD_PHASE4_INTERNATIONAL_PLAN.md`
+- `data/external/PHASE4_DATA_STATUS.md` — statut panneaux NL/BE/PT, fenêtres, tensor framing
+- `src/data/ingest_belgium_panel.py` — pipeline Belgique (ONSS + Statbel TVA)
+- `src/data/ingest_netherlands_panel.py` — pipeline Pays-Bas (CBS)
+- `src/data/ingest_portugal_panel_nuts3.py` — pipeline Portugal (INE, reaggregation NUTS3)
+- `hpc/phase4/` — batteries HPC internationales (à préparer)
 
 **Audit intégrité:**
 - `reports/HERALD_LEAK_AUDIT_FINAL_20260507.md`

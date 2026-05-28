@@ -2,11 +2,21 @@
 Belgium Phase 4 — Data Ingestion
 Births/Stock: Statbel TVA demography — data/external/belgium/raw/export (1).csv
               43 arrondissements × monthly 2006-2020
-              births panel 2007-2020 (2006 excluded — December only)
+              births panel: main window 2007-2020 (2006 excluded — partial)
 Q-tensor:     ONSS localunit publications — employees × NACE-detailed × arrondissement
               Q4 snapshot (31 Dec) downloaded per year 2007-2020
               Source: https://www.onss.be/stats/repartition-des-postes-de-travail-par-lieu-de-travail
               Archive links extracted from page HTML (data-spreadsheet attributes)
+
+Main modelling window: 2008-2020
+  - q_tensor starts 2008 because 2007 uses NACE Rev.1, incompatible with Rev.2 A10 mapping.
+    The ONSS ingestion correctly skips 2007. This is NOT a data error.
+  - Do NOT carry-forward 2008 qtensor values to synthesize 2007 in the main pipeline.
+    Synthetic 2007 is only allowed as a clearly-flagged sensitivity test.
+  - First evaluation year after lags: 2009 (needs births(2008) and qtensor(2008)).
+  - Stock: raw Statbel data starts 2006. Only years 2007-2020 are written to the
+    main panel (2006 row dropped). If a pre-2007 stock lag is ever needed, read
+    the raw CSV directly.
 
 Geographic mismatch NOTE:
   Births (Statbel TVA): Tournai + Mouscron as separate arrondissements, no La Louvière
@@ -236,8 +246,15 @@ def download_onss_year(year: int, archive_urls: dict, cache_dir: Path) -> pd.Dat
 
 
 def build_births_panel(df: pd.DataFrame) -> pd.DataFrame:
-    """Primo-assujetissements summed per arrondissement per year. Excludes 2006 (partial).
-    Combines Tournai+Mouscron → BE_tournai_mouscron to match ONSS geography."""
+    """Primo-assujetissements summed per arrondissement per year.
+
+    Main pipeline window: 2007-2020.
+      - 2006 is excluded (partial year, beSTAT series starts fully in 2007).
+      - Full modelling window used in main results: 2008-2020 (aligns with qtensor).
+        2007 is retained in the panel for lag computation (side_lag_1 of 2008
+        uses births[2007]) but 2007 itself is not a modelling target year.
+    Combines Tournai+Mouscron → BE_tournai_mouscron to match ONSS geography.
+    """
     df = df.copy()
     df["zone_id"]     = df["Arrondissement"].map(clean_zone_id)
     # Merge Tournai + Mouscron → combined zone matching ONSS
@@ -260,7 +277,15 @@ def build_births_panel(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def build_stock_panel(df: pd.DataFrame) -> pd.DataFrame:
-    """December year-end stock (Entreprises Act. Fin T). Available 2006-2020."""
+    """December year-end stock (Entreprises Act. Fin T).
+
+    Main pipeline window: 2007-2020.
+      - Raw Statbel data includes 2006 (first full December snapshot).
+      - 2006 is excluded from the main panel (outside target window 2007-2020).
+        If a pre-2007 stock value is ever needed as a lag feature, read the
+        raw CSV directly; do not add 2006 back to this panel without a
+        methodology note in the paper.
+    """
     df = df.copy()
     df_dec = df[df["Mois"] == "décembre"].copy()
     df_dec["zone_id"]     = df_dec["Arrondissement"].map(clean_zone_id)
@@ -270,6 +295,8 @@ def build_stock_panel(df: pd.DataFrame) -> pd.DataFrame:
     })
     df_dec["target_year"] = df_dec["Année"].astype(int)
     df_dec["stock"]       = pd.to_numeric(df_dec["Entreprises Act. Fin T"], errors="coerce")
+    # Clip to main modelling window — 2006 dropped intentionally
+    df_dec = df_dec[df_dec["target_year"] >= 2007].copy()
     # Sum Tournai+Mouscron for merged zone
     stock = (
         df_dec.groupby(["zone_id", "target_year"])["stock"]
@@ -281,30 +308,87 @@ def build_stock_panel(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def preflight(births: pd.DataFrame, stock: pd.DataFrame, qtensor: pd.DataFrame | None) -> None:
-    print("\n=== PREFLIGHT — Belgium ===")
+    """Phase 4 preflight for Belgium. Validates windows, methodology constraints,
+    and proxy guard. Any FAIL blocks HPC launch."""
+    import sys
+    failures = []
+    warnings_list = []
+
+    print("\n=== PREFLIGHT — Belgium (Phase 4) ===")
+    print(f"  Tensor type       : employment/effectifs (ONSS employee jobs)")
+    print(f"  Tensor label      : qtensor_jobs (equivalent to Q7 effectifs)")
+    print(f"  Main modelling window: 2008-2020")
+    print(f"  First evaluation year: 2009 (after lag)")
+
+    # --- Births ---
     zones_b = births["zone_id"].nunique()
     years_b = sorted(births["target_year"].unique())
-    print(f"Births: {len(births)} rows | {zones_b} zones (expected 42) | years {years_b}")
-    print(f"  NaN y: {births['y'].isna().sum()} | NaN side_lag_1: {births['side_lag_1'].isna().sum()}")
+    exp_years_b = list(range(2007, 2021))  # 2007 retained for lag, main targets 2008-2020
+    print(f"\nBirths:")
+    print(f"  Rows={len(births)}, zones={zones_b} (expected 42), years={years_b[0]}-{years_b[-1]}")
+    print(f"  NaN y={births['y'].isna().sum()} | NaN side_lag_1={births['side_lag_1'].isna().sum()}")
+    if zones_b != 42:
+        failures.append(f"births: expected 42 arrondissements, got {zones_b}")
+    if sorted(years_b) != exp_years_b:
+        failures.append(f"births: year range {years_b[0]}-{years_b[-1]} != expected 2007-2020")
     total_2020 = births[births["target_year"] == 2020]["y"].sum()
     print(f"  Total BE 2020 births: {total_2020:.0f}")
+
+    # --- Stock ---
     zones_s = stock["zone_id"].nunique()
-    print(f"Stock: {len(stock)} rows | {zones_s} zones | years {sorted(stock['target_year'].unique())}")
+    years_s = sorted(stock["target_year"].unique())
+    exp_years_s = list(range(2007, 2021))  # 2006 dropped
+    print(f"\nStock:")
+    print(f"  Rows={len(stock)}, zones={zones_s}, years={years_s[0]}-{years_s[-1]}")
+    if sorted(years_s) != exp_years_s:
+        failures.append(f"stock: year range {years_s[0]}-{years_s[-1]} != expected 2007-2020 (2006 must be excluded)")
+    nan_s = stock["stock"].isna().sum()
+    if nan_s > 0:
+        failures.append(f"stock: {nan_s} NaN values")
+
+    # --- Q-tensor ---
     if qtensor is not None:
         zones_q = qtensor["zone_id"].nunique()
         a10_found = sorted(qtensor["a10"].unique())
         years_q = sorted(qtensor["target_year"].unique())
-        print(f"Q-tensor: {len(qtensor)} rows | {zones_q} zones | {len(a10_found)} A10 | years {years_q}")
+        exp_years_q = list(range(2008, 2021))  # 2007 skipped: NACE Rev.1
+        print(f"\nQ-tensor (employment/effectifs — ONSS):")
+        print(f"  Rows={len(qtensor)}, zones={zones_q}, A10={len(a10_found)}, years={years_q[0]}-{years_q[-1]}")
+        print(f"  2007 ABSENT: NACE Rev.1 incompatible with A10 Rev.2 — correct by design")
+        print(f"  Synthetic 2007 NOT present in main pipeline: ", end="")
+        if 2007 in years_q:
+            print("*** FAIL — synthetic 2007 detected ***")
+            failures.append("qtensor: year 2007 present — NACE Rev.1 incompatibility; remove synthetic 2007")
+        else:
+            print("✓ CLEAN")
+        if sorted(years_q) != exp_years_q:
+            failures.append(f"qtensor: year range {years_q[0]}-{years_q[-1]} != expected 2008-2020")
         missing_a10 = set(["A","BE","FZ","GI","JZ","KZ","LZ","MN","OPQ","RSU"]) - set(a10_found)
         if missing_a10:
-            print(f"  WARNING: missing A10: {missing_a10}")
+            failures.append(f"qtensor: missing A10 codes: {missing_a10}")
         print(f"  NaN jobs: {qtensor['jobs'].isna().sum()}")
+        if qtensor["jobs"].isna().sum() > 0:
+            failures.append(f"qtensor: {qtensor['jobs'].isna().sum()} NaN jobs values")
     else:
-        print("Q-tensor: NOT BUILT")
-    print("NOTE: Tournai+Mouscron merged → BE_tournai_mouscron; La Louvière → BE_soignies")
+        failures.append("qtensor: NOT BUILT")
+
+    print("\nNOTE: Tournai+Mouscron merged → BE_tournai_mouscron; La Louvière → BE_soignies")
     print("NOTE: Primo-assujetissements = TVA enterprise births (≠ establishment)")
     print("NOTE: Methodology break 2018 — flag in modelling")
+
+    # --- Summary ---
+    print("\n" + "=" * 36)
+    if failures:
+        print("PREFLIGHT RESULT: *** FAIL — DO NOT LAUNCH HPC ***")
+        for f in failures:
+            print(f"  FAIL: {f}")
+    else:
+        print("PREFLIGHT RESULT: PASS")
+    for w in warnings_list:
+        print(f"  WARN: {w}")
     print("=" * 36)
+    if failures:
+        sys.exit(1)
 
 
 def main():

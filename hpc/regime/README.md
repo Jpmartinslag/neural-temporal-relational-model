@@ -569,3 +569,25 @@ The dashboard/presentation comparison should now use:
 - `HERALD flags clean` as the fair manual-flags comparator;
 - `HERALD flags extended` as broader-input historical control;
 - Ridge AR, ARIMA, LSTM, DCRNN, and Dynamic STGNN as external baselines.
+
+---
+
+## Phase 4 — International generalisation
+
+Phase 4 batteries are **not in this directory**. All international (NL/BE/PT) scripts live in:
+
+```text
+hpc/phase4/
+```
+
+This directory (`hpc/regime/`) is France Phase 2+3 only. Do not add Phase 4 scripts here.
+
+Data panels are ready:
+
+| Country | Zones | Window | Tensor type | File |
+|---------|-------|--------|-------------|------|
+| Netherlands | 40 COROP | 2016–2024 | employment (CBS, Q7-equiv) | `data/external/netherlands/processed/` |
+| Belgium | 42 arrondissements | 2009–2020 | employment (ONSS, Q7-equiv) | `data/external/belgium/processed/` |
+| Portugal | 25 NUTS3 | 2009–2022 | sector_births (⚠️ proxy) | `data/external/portugal/processed/` |
+
+Preflight: `python3 src/data/phase4_preflight.py` — all three countries PASS.

@@ -1,5 +1,4 @@
 zone_id,target_year,stock
-BE_alost,2006,17008.0
 BE_alost,2007,17319.0
 BE_alost,2008,17741.0
 BE_alost,2009,17826.0
@@ -14,7 +13,6 @@ BE_alost,2017,21244.0
 BE_alost,2018,22145.0
 BE_alost,2019,23114.0
 BE_alost,2020,24397.0
-BE_anvers,2006,67102.0
 BE_anvers,2007,69004.0
 BE_anvers,2008,70590.0
 BE_anvers,2009,71682.0
@@ -29,7 +27,6 @@ BE_anvers,2017,90530.0
 BE_anvers,2018,94575.0
 BE_anvers,2019,98709.0
 BE_anvers,2020,103184.0
-BE_arlon,2006,1973.0
 BE_arlon,2007,2032.0
 BE_arlon,2008,2042.0
 BE_arlon,2009,2002.0
@@ -44,7 +41,6 @@ BE_arlon,2017,2318.0
 BE_arlon,2018,2368.0
 BE_arlon,2019,2448.0
 BE_arlon,2020,2515.0
-BE_ath,2006,4984.0
 BE_ath,2007,5127.0
 BE_ath,2008,5176.0
 BE_ath,2009,5184.0
@@ -59,7 +55,6 @@ BE_ath,2017,6124.0
 BE_ath,2018,6302.0
 BE_ath,2019,6410.0
 BE_ath,2020,6638.0
-BE_audenarde,2006,8840.0
 BE_audenarde,2007,9000.0
 BE_audenarde,2008,9190.0
 BE_audenarde,2009,9336.0
@@ -74,7 +69,6 @@ BE_audenarde,2017,11550.0
 BE_audenarde,2018,12007.0
 BE_audenarde,2019,12525.0
 BE_audenarde,2020,13254.0
-BE_bastogne,2006,3866.0
 BE_bastogne,2007,3732.0
 BE_bastogne,2008,3733.0
 BE_bastogne,2009,3687.0
@@ -89,7 +83,6 @@ BE_bastogne,2017,4048.0
 BE_bastogne,2018,4136.0
 BE_bastogne,2019,4246.0
 BE_bastogne,2020,4345.0
-BE_bruges,2006,23107.0
 BE_bruges,2007,23567.0
 BE_bruges,2008,24017.0
 BE_bruges,2009,24317.0
@@ -104,7 +97,6 @@ BE_bruges,2017,29291.0
 BE_bruges,2018,30254.0
 BE_bruges,2019,31191.0
 BE_bruges,2020,32448.0
-BE_bruxelles_capitale,2006,75852.0
 BE_bruxelles_capitale,2007,78175.0
 BE_bruxelles_capitale,2008,80042.0
 BE_bruxelles_capitale,2009,80764.0
@@ -119,7 +111,6 @@ BE_bruxelles_capitale,2017,104705.0
 BE_bruxelles_capitale,2018,108243.0
 BE_bruxelles_capitale,2019,110825.0
 BE_bruxelles_capitale,2020,113195.0
-BE_charleroi,2006,19366.0
 BE_charleroi,2007,19788.0
 BE_charleroi,2008,20004.0
 BE_charleroi,2009,19956.0
@@ -134,7 +125,6 @@ BE_charleroi,2017,22199.0
 BE_charleroi,2018,22722.0
 BE_charleroi,2019,22940.0
 BE_charleroi,2020,23585.0
-BE_courtrai,2006,22439.0
 BE_courtrai,2007,22714.0
 BE_courtrai,2008,23162.0
 BE_courtrai,2009,23438.0
@@ -149,7 +139,6 @@ BE_courtrai,2017,28106.0
 BE_courtrai,2018,29139.0
 BE_courtrai,2019,29976.0
 BE_courtrai,2020,31141.0
-BE_dinant,2006,7580.0
 BE_dinant,2007,7652.0
 BE_dinant,2008,7633.0
 BE_dinant,2009,7683.0
@@ -164,7 +153,6 @@ BE_dinant,2017,9013.0
 BE_dinant,2018,9265.0
 BE_dinant,2019,9579.0
 BE_dinant,2020,9849.0
-BE_dixmude,2006,4714.0
 BE_dixmude,2007,4796.0
 BE_dixmude,2008,4854.0
 BE_dixmude,2009,4840.0
@@ -179,7 +167,6 @@ BE_dixmude,2017,5767.0
 BE_dixmude,2018,5975.0
 BE_dixmude,2019,6121.0
 BE_dixmude,2020,6324.0
-BE_eeklo,2006,6428.0
 BE_eeklo,2007,6542.0
 BE_eeklo,2008,6678.0
 BE_eeklo,2009,6697.0
@@ -194,7 +181,6 @@ BE_eeklo,2017,7593.0
 BE_eeklo,2018,7821.0
 BE_eeklo,2019,8095.0
 BE_eeklo,2020,8416.0
-BE_furnes,2006,5367.0
 BE_furnes,2007,5428.0
 BE_furnes,2008,5512.0
 BE_furnes,2009,5577.0
@@ -209,7 +195,6 @@ BE_furnes,2017,6317.0
 BE_furnes,2018,6490.0
 BE_furnes,2019,6643.0
 BE_furnes,2020,6812.0
-BE_gand,2006,40161.0
 BE_gand,2007,41156.0
 BE_gand,2008,42218.0
 BE_gand,2009,42762.0
@@ -224,7 +209,6 @@ BE_gand,2017,54048.0
 BE_gand,2018,56303.0
 BE_gand,2019,58833.0
 BE_gand,2020,61492.0
-BE_hal_vilvorde,2006,37641.0
 BE_hal_vilvorde,2007,38459.0
 BE_hal_vilvorde,2008,39239.0
 BE_hal_vilvorde,2009,39588.0
@@ -239,7 +223,6 @@ BE_hal_vilvorde,2017,49874.0
 BE_hal_vilvorde,2018,52520.0
 BE_hal_vilvorde,2019,56161.0
 BE_hal_vilvorde,2020,60050.0
-BE_hasselt,2006,26131.0
 BE_hasselt,2007,27146.0
 BE_hasselt,2008,28223.0
 BE_hasselt,2009,28849.0
@@ -254,7 +237,6 @@ BE_hasselt,2017,36392.0
 BE_hasselt,2018,37810.0
 BE_hasselt,2019,39206.0
 BE_hasselt,2020,41244.0
-BE_huy,2006,6484.0
 BE_huy,2007,6644.0
 BE_huy,2008,6720.0
 BE_huy,2009,6774.0
@@ -269,7 +251,6 @@ BE_huy,2017,8379.0
 BE_huy,2018,8612.0
 BE_huy,2019,8751.0
 BE_huy,2020,9093.0
-BE_liege,2006,30734.0
 BE_liege,2007,31455.0
 BE_liege,2008,31906.0
 BE_liege,2009,32193.0
@@ -284,7 +265,6 @@ BE_liege,2017,38126.0
 BE_liege,2018,39065.0
 BE_liege,2019,39810.0
 BE_liege,2020,40775.0
-BE_louvain,2006,30995.0
 BE_louvain,2007,31907.0
 BE_louvain,2008,32749.0
 BE_louvain,2009,33281.0
@@ -299,7 +279,6 @@ BE_louvain,2017,42591.0
 BE_louvain,2018,44413.0
 BE_louvain,2019,46350.0
 BE_louvain,2020,48256.0
-BE_maaseik,2006,14926.0
 BE_maaseik,2007,15338.0
 BE_maaseik,2008,15743.0
 BE_maaseik,2009,16079.0
@@ -314,7 +293,6 @@ BE_maaseik,2017,19379.0
 BE_maaseik,2018,20035.0
 BE_maaseik,2019,20879.0
 BE_maaseik,2020,22007.0
-BE_malines,2006,20362.0
 BE_malines,2007,20971.0
 BE_malines,2008,21496.0
 BE_malines,2009,21741.0
@@ -329,7 +307,6 @@ BE_malines,2017,28199.0
 BE_malines,2018,29268.0
 BE_malines,2019,30369.0
 BE_malines,2020,31852.0
-BE_marche_en_famenne,2006,4327.0
 BE_marche_en_famenne,2007,4320.0
 BE_marche_en_famenne,2008,4352.0
 BE_marche_en_famenne,2009,4353.0
@@ -344,7 +321,6 @@ BE_marche_en_famenne,2017,4846.0
 BE_marche_en_famenne,2018,4972.0
 BE_marche_en_famenne,2019,5022.0
 BE_marche_en_famenne,2020,5241.0
-BE_mons,2006,11156.0
 BE_mons,2007,11310.0
 BE_mons,2008,11497.0
 BE_mons,2009,11463.0
@@ -359,7 +335,6 @@ BE_mons,2017,13058.0
 BE_mons,2018,13345.0
 BE_mons,2019,13555.0
 BE_mons,2020,14064.0
-BE_namur,2006,18000.0
 BE_namur,2007,18194.0
 BE_namur,2008,18547.0
 BE_namur,2009,18682.0
@@ -374,7 +349,6 @@ BE_namur,2017,23227.0
 BE_namur,2018,24065.0
 BE_namur,2019,25044.0
 BE_namur,2020,26010.0
-BE_neufchateau,2006,5249.0
 BE_neufchateau,2007,5162.0
 BE_neufchateau,2008,5134.0
 BE_neufchateau,2009,5071.0
@@ -389,7 +363,6 @@ BE_neufchateau,2017,5534.0
 BE_neufchateau,2018,5562.0
 BE_neufchateau,2019,5650.0
 BE_neufchateau,2020,5788.0
-BE_nivelles,2006,29643.0
 BE_nivelles,2007,30710.0
 BE_nivelles,2008,31671.0
 BE_nivelles,2009,32129.0
@@ -404,7 +377,6 @@ BE_nivelles,2017,41498.0
 BE_nivelles,2018,43145.0
 BE_nivelles,2019,44135.0
 BE_nivelles,2020,45649.0
-BE_ostende,2006,10197.0
 BE_ostende,2007,10381.0
 BE_ostende,2008,10578.0
 BE_ostende,2009,10658.0
@@ -419,7 +391,6 @@ BE_ostende,2017,12220.0
 BE_ostende,2018,12613.0
 BE_ostende,2019,13003.0
 BE_ostende,2020,13573.0
-BE_philippeville,2006,4040.0
 BE_philippeville,2007,4061.0
 BE_philippeville,2008,4099.0
 BE_philippeville,2009,4086.0
@@ -434,7 +405,6 @@ BE_philippeville,2017,4663.0
 BE_philippeville,2018,4809.0
 BE_philippeville,2019,4959.0
 BE_philippeville,2020,5149.0
-BE_roulers,2006,12248.0
 BE_roulers,2007,12518.0
 BE_roulers,2008,12789.0
 BE_roulers,2009,12955.0
@@ -449,7 +419,6 @@ BE_roulers,2017,15579.0
 BE_roulers,2018,16074.0
 BE_roulers,2019,16757.0
 BE_roulers,2020,17356.0
-BE_saint_nicolas,2006,15294.0
 BE_saint_nicolas,2007,15754.0
 BE_saint_nicolas,2008,16159.0
 BE_saint_nicolas,2009,16317.0
@@ -464,7 +433,6 @@ BE_saint_nicolas,2017,19451.0
 BE_saint_nicolas,2018,20237.0
 BE_saint_nicolas,2019,21072.0
 BE_saint_nicolas,2020,22032.0
-BE_soignies,2006,9009.0
 BE_soignies,2007,9236.0
 BE_soignies,2008,9426.0
 BE_soignies,2009,9464.0
@@ -479,7 +447,6 @@ BE_soignies,2017,10922.0
 BE_soignies,2018,11252.0
 BE_soignies,2019,11377.0
 BE_soignies,2020,11845.0
-BE_termonde,2006,13060.0
 BE_termonde,2007,13146.0
 BE_termonde,2008,13386.0
 BE_termonde,2009,13511.0
@@ -494,7 +461,6 @@ BE_termonde,2017,15944.0
 BE_termonde,2018,16494.0
 BE_termonde,2019,17113.0
 BE_termonde,2020,17925.0
-BE_thuin,2006,8008.0
 BE_thuin,2007,8198.0
 BE_thuin,2008,8351.0
 BE_thuin,2009,8358.0
@@ -509,7 +475,6 @@ BE_thuin,2017,9552.0
 BE_thuin,2018,9775.0
 BE_thuin,2019,9896.0
 BE_thuin,2020,10289.0
-BE_tielt,2006,9183.0
 BE_tielt,2007,9352.0
 BE_tielt,2008,9521.0
 BE_tielt,2009,9573.0
@@ -524,7 +489,6 @@ BE_tielt,2017,11227.0
 BE_tielt,2018,11564.0
 BE_tielt,2019,11873.0
 BE_tielt,2020,12288.0
-BE_tongres,2006,13307.0
 BE_tongres,2007,13671.0
 BE_tongres,2008,13913.0
 BE_tongres,2009,14023.0
@@ -539,7 +503,6 @@ BE_tongres,2017,16592.0
 BE_tongres,2018,17057.0
 BE_tongres,2019,17563.0
 BE_tongres,2020,18393.0
-BE_tournai_mouscron,2006,12452.0
 BE_tournai_mouscron,2007,12672.0
 BE_tournai_mouscron,2008,12806.0
 BE_tournai_mouscron,2009,12841.0
@@ -554,7 +517,6 @@ BE_tournai_mouscron,2017,14338.0
 BE_tournai_mouscron,2018,14564.0
 BE_tournai_mouscron,2019,14811.0
 BE_tournai_mouscron,2020,15117.0
-BE_turnhout,2006,28169.0
 BE_turnhout,2007,29023.0
 BE_turnhout,2008,29962.0
 BE_turnhout,2009,30613.0
@@ -569,7 +531,6 @@ BE_turnhout,2017,37762.0
 BE_turnhout,2018,39372.0
 BE_turnhout,2019,40867.0
 BE_turnhout,2020,42514.0
-BE_verviers,2006,18637.0
 BE_verviers,2007,18793.0
 BE_verviers,2008,19076.0
 BE_verviers,2009,18935.0
@@ -584,7 +545,6 @@ BE_verviers,2017,21819.0
 BE_verviers,2018,22252.0
 BE_verviers,2019,22698.0
 BE_verviers,2020,23443.0
-BE_virton,2006,2578.0
 BE_virton,2007,2632.0
 BE_virton,2008,2666.0
 BE_virton,2009,2663.0
@@ -599,7 +559,6 @@ BE_virton,2017,2988.0
 BE_virton,2018,3046.0
 BE_virton,2019,3117.0
 BE_virton,2020,3264.0
-BE_waremme,2006,4622.0
 BE_waremme,2007,4748.0
 BE_waremme,2008,4804.0
 BE_waremme,2009,4823.0
@@ -614,7 +573,6 @@ BE_waremme,2017,6123.0
 BE_waremme,2018,6169.0
 BE_waremme,2019,6295.0
 BE_waremme,2020,6621.0
-BE_ypres,2006,8598.0
 BE_ypres,2007,8738.0
 BE_ypres,2008,8861.0
 BE_ypres,2009,8966.0
