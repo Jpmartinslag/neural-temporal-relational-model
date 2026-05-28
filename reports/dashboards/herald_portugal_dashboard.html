@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HERALD Portugal — Phase 4</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+
+  :root {
+    --bg:#0f1220; --panel:#171b2d; --panel2:#20253a; --line:#30364f;
+    --text:#eef2ff; --muted:#9aa4bf; --good:#26a69a; --bad:#ef5350;
+    --warn:#ffd180;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font-family:Inter,Segoe UI,Arial,sans-serif; }
+  .wrap { max-width:1500px; margin:0 auto; padding:22px; }
+  h1 { margin:0 0 8px; font-size:30px; font-weight:760; }
+  .subtitle { color:var(--muted); margin-bottom:18px; line-height:1.45; max-width:1100px; }
+  .kpis { display:grid; grid-template-columns:repeat(4,minmax(180px,1fr)); gap:12px; margin:16px 0 22px; }
+  .kpi { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:14px; }
+  .kpi .v { font-size:26px; font-weight:760; }
+  .kpi .l { color:var(--muted); font-size:13px; margin-top:4px; }
+  .section { margin-top:26px; }
+  .section-title { font-size:20px; font-weight:720; margin:0 0 6px; }
+  .section-note { color:var(--muted); font-size:14px; line-height:1.45; max-width:1200px; margin-bottom:10px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th,td { border-bottom:1px solid var(--line); padding:7px 6px; text-align:left; }
+  th { color:#cbd5ff; font-weight:700; }
+  .warn { color:var(--warn); }
+  .pending-box { background:var(--panel2); border:2px dashed var(--line);
+                 border-radius:8px; padding:30px; text-align:center; }
+  .pending-box .icon { font-size:40px; margin-bottom:12px; }
+  .pending-box .msg { font-size:18px; font-weight:700; margin-bottom:8px; }
+  .pending-box .sub { color:var(--muted); font-size:14px; line-height:1.5; }
+  .badge { display:inline-block; border-radius:999px; padding:3px 9px; font-size:11px;
+           font-weight:700; vertical-align:middle; }
+  .badge-done { background:#1a3a1a; color:#66bb6a; border:1px solid #66bb6a55; }
+  .badge-pend { background:#2a2a1a; color:#ffd180; border:1px solid #ffd18055; }
+  .badge-warn { background:#2a1a1a; color:#ef9a9a; border:1px solid #ef5350; }
+  @media (max-width:900px) { .kpis,.grid2 { grid-template-columns:1fr; } }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>HERALD Portugal — Phase 4 Généralisation internationale</h1>
+  <div class="subtitle">
+    Panels de données Portugal : naissances d'entreprises, stock actif, tensor sectoriel.
+    Fenêtre de modélisation : <b>2009–2022</b> · 25 NUTS3.
+    <span class="badge badge-warn">⚠️ proxy — não é Q7 effectifs</span>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="v">25</div>
+      <div class="l">Zones (NUTS3)</div>
+    </div>
+    <div class="kpi">
+      <div class="v">2009–2022</div>
+      <div class="l">Fenêtre de modélisation</div>
+    </div>
+    <div class="kpi">
+      <div class="v">2008–2022</div>
+      <div class="l">Panel naissances</div>
+    </div>
+    <div class="kpi">
+      <div class="v">2008–2022</div>
+      <div class="l">Panel tensor (sector_births_tensor)</div>
+    </div>
+  </div>
+
+  
+<div class="card" style="border-color:#ef535066; margin-bottom:14px;">
+  <b style="color:#ef9a9a;">⚠️ Tensor framing critique — Portugal</b><br>
+  <span style="color:var(--muted); font-size:13px;">
+    Le tensor <code>sector_births_tensor</code> représente des <b>naissances d'entreprises par secteur CAE</b>,
+    pas un stock d'emploi (Q7 effectifs). KZ = 0 partout (le secteur financier n'apparaît pas dans les naissances INE).
+    Les comparaisons NL/BE↔PT sont qualitatives uniquement. Un vrai Q7-équivalent (GEP Quadros de Pessoal) est
+    documenté mais non ingéré — prévu Phase 4B si nécessaire.
+  </span>
+</div>
+
+
+  <div class="section">
+    <div class="section-title">1. Naissances d'entreprises — Portugal</div>
+    <div class="section-note">
+      Évolution agrégée des naissances sur toutes les zones NUTS3 (2008–2022).
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div style="color:var(--muted); font-size:12px; margin-bottom:6px;">Naissances totales (toutes zones)</div>
+        <div id="chart_births_pt" style="height:280px;"></div>
+      </div>
+      <div class="card">
+        <div style="color:var(--muted); font-size:12px; margin-bottom:6px;">Top 8 zones — évolution temporelle</div>
+        <div id="chart_zones_pt" style="height:280px;"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div style="color:var(--muted); font-size:12px; margin-bottom:8px;">Top 10 zones — naissances cumulées</div>
+      
+<table>
+  <thead><tr><th>Zone</th><th>Naissances cumulées</th></tr></thead>
+  <tbody><tr><td>PT_170</td><td>855,639</td></tr><tr><td>PT_11A</td><td>429,743</td></tr><tr><td>PT_150</td><td>155,608</td></tr><tr><td>PT_16E</td><td>104,486</td></tr><tr><td>PT_112</td><td>91,270</td></tr><tr><td>PT_16B</td><td>87,461</td></tr><tr><td>PT_16D</td><td>83,304</td></tr><tr><td>PT_119</td><td>77,685</td></tr><tr><td>PT_11C</td><td>73,465</td></tr><tr><td>PT_16F</td><td>65,017</td></tr></tbody>
+</table>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">2. Stock d'entreprises actives — Portugal</div>
+    <div class="section-note">
+      Stock total actif sur toutes les zones (2008–2022).
+    </div>
+    <div class="card">
+      <div id="chart_stock_pt" style="height:280px;"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">3. Tensor sectoriel — sector_births_tensor</div>
+    <div class="section-note">
+      INE 0009703 — naissances d'entreprises × CAE-A10 × NUTS3 (⚠️ proxy — NÃO é Q7 effectifs)
+      · 3750 lignes · 10 secteurs A10 · 2008–2022.
+    </div>
+    
+    <div class="card">
+      <div style="color:var(--muted); font-size:12px; margin-bottom:6px;">Heatmap — signal agrégé (toutes zones) par secteur × année</div>
+      <div id="chart_qtensor_pt" style="height:340px;"></div>
+    </div>
+  </div>
+
+  
+<div class="section">
+  <div class="section-title">Résultats HERALD — Portugal <span class="badge badge-pend">En attente</span></div>
+  <div class="section-note">
+    Les batteries HPC Phase 4 n'ont pas encore été lancées pour ce pays.
+    Ce dashboard sera mis à jour après réception des résultats.
+  </div>
+  <div class="pending-box">
+    <div class="icon">⏳</div>
+    <div class="msg">Résultats HPC en attente</div>
+    <div class="sub">
+      Lancer la batterie : <code>bash hpc/phase4/submit_herald_phase4_pt.sh</code><br>
+      Puis relancer ce script avec <code>--run-root hpc_results/&lt;OUT_ROOT&gt;</code>
+    </div>
+  </div>
+</div>
+
+
+  <div class="section" style="margin-top:32px; border-top:1px solid var(--line); padding-top:18px;">
+    <div class="section-title">Sources et protocole</div>
+    <div class="section-note">
+      Panels ingérés et validés · Preflight : <code>python3 src/data/phase4_preflight.py</code> ·
+      Scripts HPC : <code>hpc/phase4/</code>
+    </div>
+    <table style="max-width:900px;">
+      <thead><tr><th>Panel</th><th>Source</th><th>Fenêtre</th><th>Zones</th><th>Statut</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Naissances</td>
+          <td>INE 0009702 — naissances × município</td>
+          <td>2008–2022</td>
+          <td>25</td>
+          <td><span class="badge badge-done">✅ ingéré</span></td>
+        </tr>
+        <tr>
+          <td>Stock</td>
+          <td>INE 0009819 — stock × NUTS3</td>
+          <td>2008–2022</td>
+          <td>25</td>
+          <td><span class="badge badge-done">✅ ingéré</span></td>
+        </tr>
+        <tr>
+          <td>Tensor (sector_births_tensor)</td>
+          <td>INE 0009703 — naissances × CAE-section × município</td>
+          <td>2008–2022</td>
+          <td>25</td>
+          <td><span class="badge badge-done">✅ ingéré</span></td>
+        </tr>
+        <tr>
+          <td>Résultats HERALD</td>
+          <td>HPC Phase 4</td>
+          <td>2009–2022</td>
+          <td>25</td>
+          <td><span class="badge badge-pend">⏳ en attente</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+
+Plotly.newPlot('chart_births_pt', [{
+  x: [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022],
+  y: [179293, 148477, 136759, 141749, 132960, 199050, 176560, 180169, 178432, 187244, 194990, 194951, 153290, 184168, 231065],
+  type: 'scatter', mode: 'lines+markers',
+  name: 'Naissances totales',
+  line: {color: '#26a69a', width: 2},
+  marker: {size: 6}
+}], {
+  paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
+  font: {color:'#eef2ff', size:12},
+  margin: {t:10, b:40, l:60, r:10},
+  xaxis: {gridcolor:'#30364f', title:'Année'},
+  yaxis: {gridcolor:'#30364f', title:'Naissances (total zones)'},
+  showlegend: false
+}, {responsive:true, displayModeBar:false});
+
+
+Plotly.newPlot('chart_stock_pt', [{
+  x: [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022],
+  y: [1235989, 1199843, 1145390, 1113559, 1065173, 1098409, 1128258, 1163082, 1196102, 1242693, 1278164, 1318330, 1301000, 1342116, 1437254],
+  type: 'scatter', mode: 'lines+markers',
+  name: 'Stock total',
+  line: {color: '#b084f5', width: 2},
+  marker: {size: 6}
+}], {
+  paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
+  font: {color:'#eef2ff', size:12},
+  margin: {t:10, b:40, l:70, r:10},
+  xaxis: {gridcolor:'#30364f', title:'Année'},
+  yaxis: {gridcolor:'#30364f', title:'Stock total (entreprises actives)'},
+  showlegend: false
+}, {responsive:true, displayModeBar:false});
+
+
+Plotly.newPlot('chart_qtensor_pt', [{
+  type: 'heatmap',
+  x: [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022],
+  y: ["Agriculture", "Industrie / \u00e9nergie", "Construction", "Commerce / transport", "Information / comm.", "Finance / assurance", "Immobilier", "Services aux entreprises", "Services publics", "Arts / loisirs"],
+  z: [[4498.0, 3656.0, 3719.0, 7461.0, 7553.0, 56411.0, 29582.0, 17092.0, 13228.0, 12809.0, 13804.0, 10238.0, 9055.0, 9779.0, 9614.0], [6811.0, 5304.0, 4713.0, 6071.0, 5554.0, 7125.0, 6902.0, 7070.0, 8824.0, 6152.0, 6696.0, 6200.0, 5058.0, 5705.0, 7238.0], [15001.0, 10268.0, 8628.0, 8090.0, 6762.0, 8695.0, 8468.0, 9268.0, 9165.0, 10013.0, 11345.0, 12019.0, 9794.0, 11774.0, 12948.0], [43357.0, 35887.0, 33093.0, 35919.0, 35160.0, 42126.0, 39960.0, 45876.0, 42267.0, 43550.0, 47305.0, 46710.0, 35042.0, 37801.0, 46915.0], [2659.0, 2017.0, 1998.0, 2451.0, 2283.0, 2362.0, 2451.0, 2694.0, 2850.0, 3263.0, 3727.0, 4216.0, 3332.0, 5525.0, 7528.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [3379.0, 2519.0, 2546.0, 2419.0, 2532.0, 2729.0, 3530.0, 4461.0, 5517.0, 6973.0, 7709.0, 7598.0, 6210.0, 7873.0, 8432.0], [67619.0, 54554.0, 51562.0, 49085.0, 46849.0, 50149.0, 54331.0, 59335.0, 61612.0, 67037.0, 66853.0, 70419.0, 52676.0, 68045.0, 92366.0], [22407.0, 23312.0, 20762.0, 19214.0, 16342.0, 17856.0, 19347.0, 21180.0, 21148.0, 22482.0, 22967.0, 22556.0, 20550.0, 24615.0, 27565.0], [13562.0, 10960.0, 9738.0, 11039.0, 9925.0, 11597.0, 11989.0, 13193.0, 13821.0, 14965.0, 14584.0, 14995.0, 11573.0, 13051.0, 18459.0]],
+  colorscale: 'Blues',
+  showscale: true,
+  hovertemplate: '%{y}<br>%{x}: %{z:,.0f}<extra></extra>'
+}], {
+  paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
+  font: {color:'#eef2ff', size:11},
+  margin: {t:10, b:50, l:180, r:20},
+  xaxis: {title:'Année', gridcolor:'#30364f'},
+  yaxis: {title:'', automargin:true}
+}, {responsive:true, displayModeBar:false});
+
+
+Plotly.newPlot('chart_zones_pt', [{x:[2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022], y:[61998, 50139, 44723, 45709, 42815, 48167, 51863, 56637, 58627, 63889, 66141, 68308, 50622, 64382, 81619], type:'scatter', mode:'lines', name:"PT_170", line:{width:1.5}},
+{x:[2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022], y:[29857, 24506, 23074, 23599, 22309, 27049, 26624, 27932, 28493, 30188, 30674, 35412, 26577, 30747, 42702], type:'scatter', mode:'lines', name:"PT_11A", line:{width:1.5}},
+{x:[2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022], y:[11126, 8712, 7515, 7247, 6972, 8571, 10655, 12870, 11151, 11648, 12390, 11914, 8616, 10593, 15628], type:'scatter', mode:'lines', name:"PT_150", line:{width:1.5}},
+{x:[2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022], y:[7143, 6067, 5577, 5826, 5335, 8953, 7844, 7827, 7480, 7618, 7035, 6979, 5964, 6751, 8087], type:'scatter', mode:'lines', name:"PT_16E", line:{width:1.5}},
+{x:[2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022], y:[5881, 5211, 4881, 5148, 4755, 6869, 6110, 6022, 6156, 6207, 6723, 6884, 5774, 6695, 7954], type:'scatter', mode:'lines', name:"PT_112", line:{width:1.5}},
+{x:[2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022], y:[5906, 4786, 4663, 4900, 4490, 7161, 5671, 6221, 6064, 6433, 6502, 6277, 5065, 5929, 7393], type:'scatter', mode:'lines', name:"PT_16B", line:{width:1.5}},
+{x:[2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022], y:[5687, 4895, 4558, 4510, 4268, 6943, 5768, 6041, 5952, 5775, 5710, 5697, 4889, 5756, 6855], type:'scatter', mode:'lines', name:"PT_16D", line:{width:1.5}},
+{x:[2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022], y:[5548, 4584, 4434, 4546, 4528, 5707, 5421, 5362, 5396, 5297, 5293, 5319, 4774, 5454, 6022], type:'scatter', mode:'lines', name:"PT_119", line:{width:1.5}}], {
+  paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
+  font: {color:'#eef2ff', size:12},
+  margin: {t:10, b:40, l:60, r:10},
+  xaxis: {gridcolor:'#30364f', title:'Année'},
+  yaxis: {gridcolor:'#30364f', title:'Naissances'},
+  legend: {bgcolor:'#171b2d', bordercolor:'#30364f', borderwidth:1, font:{size:11}}
+}, {responsive:true, displayModeBar:false});
+
+</script>
+</body>
+</html>
