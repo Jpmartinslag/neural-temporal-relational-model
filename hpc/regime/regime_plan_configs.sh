@@ -383,6 +383,198 @@ plan_configs() {
       echo "manual_flags full with_source_flags extended_flags_current 0.1 0.001 0.01 explicit normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 current_clean none 3 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 none 1.0 0.0 1.25"
       echo "manual_flags full with_source_flags extended_flags_current_trainopt 0.1 0.001 0.01 explicit normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 current_clean none 3 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25"
       ;;
+    phase3_tutor_gate_block_a)
+      # Phase 3 Tutor Block A — 5 configs × 10 seeds = 50 runs.
+      #
+      # Question:
+      #   Does a forecast-safe macro state help HERALD no-flags react to rare
+      #   economic states, and does local heterogeneous gating beat global action?
+      #
+      # Tutor state:
+      #   climat_affaires_emploi = INSEE business climate + employment climate,
+      #   lagged as t_minus_1 in the macro panel.
+      #
+      # Controls:
+      #   T0 = current no-flags L5 calibrated baseline.
+      #   T1 = same model, macro as ordinary annual feature.
+      #   T2 = macro drives one global alpha gate shared by all ZE.
+      #   T5 = macro enters local alpha gate with ZE state.
+      #   T6 = T5 with tutor state temporally permuted.
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags T0_l5_trainopt 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none"
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags T1_macro_feature 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y climat_affaires_emploi 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none"
+      echo "no_regime tutor_global_gate no_source_flags T2_tutor_global_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 climat_affaires_emploi none"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags T5_tutor_hetero_gate 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 climat_affaires_emploi none"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags T6_tutor_hetero_permute 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 climat_affaires_emploi permute_random"
+      ;;
+    phase3b_tutor_signal_screen)
+      # Phase 3B — tutor signal screen, 11 configs × 10 seeds = 110 runs.
+      #
+      # Goal:
+      #   Keep architecture fixed (heterogeneous tutor gate), isolate which
+      #   macro signal helps or harms.  Every real signal has a temporal
+      #   permutation falsification.
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags T0_l5_trainopt 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags B1_affaires 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 climat_affaires none"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags B1p_affaires_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 climat_affaires permute_random"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags B2_emploi 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 climat_emploi none"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags B2p_emploi_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 climat_emploi permute_random"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags B3_bdf_conj 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 bdf_conj_services none"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags B3p_bdf_conj_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 bdf_conj_services permute_random"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags B4_gstix 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 bdf_gstix none"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags B4p_gstix_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 bdf_gstix permute_random"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags B5_core 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 insee_bdf_core none"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags B5p_core_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 insee_bdf_core permute_random"
+      ;;
+    phase3c_labor_tutor)
+      # Phase 3C — labor-market tutor gate battery.
+      #
+      # Hypothesis:
+      #   Labor-market signals (URSSAF employer counts, DEFM) contain causal local
+      #   information about which ZEs are in recovery vs choc, and can help the
+      #   residual gate distinguish choc from rebond without manual flags.
+      #
+      # Architecture: same as Phase 3A/3B (tutor_heterogeneous_gate, L5_trainopt).
+      # Key change: ZE-level per-ZE tutor signal via --labor-tutor-feature-set.
+      #
+      # Column layout (same as all other plans):
+      #   mode variant source_policy label sector_lambda alpha_smooth_lambda
+      #   smooth_lambda smooth_regime_source latent_train_mode latent_inference_mode
+      #   regime_seq_transform single_target_year
+      #   collapse_lambda latent_smooth_lambda alpha_balance_lambda zone_dro_boost
+      #   swa_start_frac window_years latent_max_step_lambda latent_step_threshold
+      #   feature_policy macro_feature_set latent_regime_dim latent_dim_l1_lambda
+      #   latent_dim_auto_mask latent_dim_mask_type latent_dim_beta_start latent_dim_beta_end
+      #   latent_group_lasso_lambda auditor_mode auditor_budget_lambda auditor_smooth_lambda
+      #   auditor_bias_init residual_shrinkage_mode residual_shrinkage_value
+      #   residual_shrinkage_min residual_shrinkage_max
+      #   tutor_feature_set tutor_state_transform
+      #   labor_tutor_feature_set          ← NEW col 40
+      #
+      # C0: baseline L5_trainopt (no labor tutor, no global tutor)
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags C0_baseline 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none"
+      # C1: DEFM cat-A ZE recovery Q4(t-1)/Q2(t-1) — unlocked 2026-05-26
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C1_defm_ze_recovery 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none defm_recovery"
+      # C2: DEFM permuted — falsification
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C2_defm_ze_recovery_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none defm_recovery_perm"
+      # C3: URSSAF cotisants delta ZE — available
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C3_urssaf_employer_estab_growth 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none urssaf_employer_estab_growth"
+      # C4: URSSAF cotisants delta permuted — available
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C4_urssaf_employer_estab_growth_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none urssaf_employer_estab_growth_perm"
+      # C5/C6: combined local labor tutor and temporal falsification.
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C5_combo_defm_urssaf 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none defm_urssaf_combo"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C6_combo_defm_urssaf_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none defm_urssaf_combo_perm"
+      # C7/C8: lag controls.  If lag2 beats lag1, the tutor may be capturing slow inertia, not rebound state.
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C7_defm_lag2 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none defm_recovery_lag2"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C8_urssaf_lag2 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none urssaf_employer_estab_growth_lag2"
+      # C9/C10: spatial falsification.  Keeps year signal, destroys ZE-specific assignment.
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C9_defm_spatial_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none defm_recovery_spatial_perm"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C10_urssaf_spatial_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none urssaf_employer_estab_growth_spatial_perm"
+      # C11/C12: DEFM alternative transforms.
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C11_defm_signed_recovery 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none defm_recovery_signed"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C12_defm_yoy 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none defm_yoy"
+      # C13/C14: split URSSAF contraction vs expansion.
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C13_urssaf_negative_only 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none urssaf_employer_estab_growth_neg"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C14_urssaf_positive_only 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none urssaf_employer_estab_growth_pos"
+      # C15/C16/C17: combined signal under regularization and latent-size controls.
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C15_combo_step06 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.005 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none defm_urssaf_combo"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C16_combo_a10_guard 0.3 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none defm_urssaf_combo"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C17_combo_l3dim 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 3 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none defm_urssaf_combo"
+      # Activité partielle remains blocked: no clean pre-2020 ZE-level open data.
+      ;;
+    phase3c_urssaf_isolation)
+      # Isolation battery: all configs use no_urssaf policy (q_tensor zeroed).
+      # Purpose: isolate whether urssaf_employer_estab_growth adds value beyond
+      # the quarterly URSSAF tensor (effectifs_salaries_cvs + masse_salariale_cvs).
+      # Compare C3_no_urssaf vs C0_no_urssaf (value), C4_no_urssaf (temporal falsif),
+      # C10_no_urssaf (spatial falsif). 4 configs × 10 seeds = 40 runs.
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags C0_no_urssaf 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 no_urssaf none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C3_no_urssaf 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 no_urssaf none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none urssaf_employer_estab_growth"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C4_no_urssaf 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 no_urssaf none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none urssaf_employer_estab_growth_perm"
+      echo "no_regime tutor_heterogeneous_gate no_source_flags C10_no_urssaf 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 no_urssaf none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none urssaf_employer_estab_growth_spatial_perm"
+      ;;
+    phase3d_qtensor)
+      # Phase 3D — quarterly URSSAF tensor ablation battery.
+      #
+      # Hypothesis:
+      #   The q_tensor (effectifs_salaries_cvs + masse_salariale_cvs, quarterly ZE)
+      #   is a causal/local source of information. We falsify:
+      #   - temporal content (temporal_perm destroys year ordering)
+      #   - spatial content  (spatial_perm destroys ZE identity)
+      #   - channel split    (effectifs_only vs masse_only)
+      #   - temporal recency (lag1 shifts tensor 1 year back)
+      #
+      # Architecture: same strong config as Phase 3C baseline (L5_trainopt).
+      # feature_policy=side5_lag1_growth1y throughout (no FLORES, clean SIDE).
+      # No annual labor tutor (labor_tutor_feature_set=none).
+      #
+      # Column layout (cols 1-40 same as all other plans, col 41 = quarterly_tensor_policy):
+      #   ... residual_shrinkage_min residual_shrinkage_max
+      #   tutor_feature_set tutor_state_transform labor_tutor_feature_set
+      #   quarterly_tensor_policy          ← NEW col 41
+      #
+      # 7 configs × 10 seeds = 70 runs.
+      #
+      # Q0: baseline — real q_tensor
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q0_real 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none real"
+      # Q1: zero q_tensor — measures total q_tensor contribution
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q1_zero 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none zero"
+      # Q2 (temporal_perm) removed: global year permutation is not fold-safe and cannot
+      # serve as a causal falsification. A fold-safe version would require permuting only
+      # within years <= train_max per fold, which is not implemented in the current
+      # build_quarterly_tensor + make_sequences contract.
+      # Q3: spatial permutation — shuffles ZE identity, preserves temporal distribution
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q3_spatial_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none spatial_perm"
+      # Q4: effectifs only — zeros masse_salariale channel
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q4_effectifs_only 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none effectifs_only"
+      # Q5: masse_salariale only — zeros effectifs channel
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q5_masse_only 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none masse_only"
+      # Q6: lag1 — shifts q_tensor 1 year back (t gets t-1 data), tests temporal recency
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q6_lag1 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none lag1"
+      ;;
+    phase3e_qtensor_arch)
+      # Phase 3E — q_tensor architecture selection battery.
+      #
+      # Hypothesis:
+      #   Select the optimal form of the quarterly URSSAF tensor for HERALD:
+      #   complete vs zero, effectifs vs masse, contemporaneous vs lagged,
+      #   real ZE vs spatial perm, with/without A10 guard.
+      #
+      # 12 configs × 20 seeds = 240 runs.
+      # Architecture: no_regime + learned_regime_gate_sector_enhanced, L5_trainopt.
+      # feature_policy=side5_lag1_growth1y throughout. No external tutor signals.
+      #
+      # Phase 3D findings:
+      #   Q6_lag1 best mean WMAPE, Q4_effectifs_only ≈ Q0_real, Q1_zero competitive on 2021.
+      #   Hypothesis: effectifs_lag1 may be the best single form.
+      #
+      # col 41 = quarterly_tensor_policy (new in Phase 3D)
+      # Note: temporal_perm (global) is NOT included — not fold-safe.
+      #
+      # Q0: baseline — real q_tensor (both channels, contemporaneous)
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q0_real 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none real"
+      # Q1: zero q_tensor — no q_tensor contribution
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q1_zero 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none zero"
+      # Q3: spatial perm of full q_tensor — destroys ZE identity
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q3_spatial_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none spatial_perm"
+      # Q4: effectifs only (contemporaneous)
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q4_effectifs_only 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none effectifs_only"
+      # Q5: masse_salariale only (contemporaneous)
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q5_masse_only 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none masse_only"
+      # Q6: full q_tensor lag1
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q6_lag1 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none lag1"
+      # Q7: effectifs lag1 — primary candidate from Phase 3D
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q7_effectifs_lag1 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none effectifs_lag1"
+      # Q8: masse_salariale lag1
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q8_masse_lag1 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none masse_lag1"
+      # Q9: full q_tensor lag2
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q9_lag2 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none lag2"
+      # Q10: effectifs + spatial perm — falsification of Q4/Q7 ZE-local claim
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q10_effectifs_spatial_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none effectifs_spatial_perm"
+      # Q11: lag1 + spatial perm — falsification of Q6/Q7 ZE-local claim
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q11_lag1_spatial_perm 0.2 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none lag1_spatial_perm"
+      # Q12: effectifs_lag1 + A10 guard (sector_lambda=0.3)
+      echo "no_regime learned_regime_gate_sector_enhanced no_source_flags Q12_effectifs_lag1_a10guard 0.3 0.001 0.01 none normal match_train none all 0.0 0.0 0.0 1.0 0.0 0 0.0 0.6 side5_lag1_growth1y none 5 0.0 fixed sigmoid none none 0.0 none 0.0 0.0 2.0 train_opt 1.0 0.0 1.25 none none none effectifs_lag1"
+      ;;
     *)
       echo "Unknown REGIME_PLAN=${REGIME_PLAN}" >&2
       return 1

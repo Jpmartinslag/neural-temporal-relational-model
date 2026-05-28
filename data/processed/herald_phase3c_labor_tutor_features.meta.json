@@ -1,0 +1,128 @@
+{
+  "script": "/home/jpdark/Downloads/project_recomm/dataset/src/data/build_herald_phase3c_labor_tutor_features.py",
+  "panel_path": "data/processed/dynamic_stgnn_feature_panel_through_2025_v1.csv",
+  "defm_path": "data/raw/phase3c_labor_tutor/defm_cat_a_ze_raw/defm_ze2020_trim_brut.csv",
+  "defm_available": true,
+  "out_path": "data/processed/herald_phase3c_labor_tutor_features.csv",
+  "perm_seed": 42,
+  "n_rows": 3920,
+  "n_years": 14,
+  "n_ze": 280,
+  "year_min": 2012,
+  "year_max": 2025,
+  "coverage": {
+    "urssaf_employer_estab_growth_tminus1": {
+      "status": "available",
+      "coverage": 1.0,
+      "n_valid": 3920,
+      "n_ze": 280,
+      "year_min": 2012,
+      "year_max": 2025
+    },
+    "urssaf_employer_estab_growth_perm_tminus1": {
+      "status": "available",
+      "coverage": 1.0,
+      "n_valid": 3920,
+      "n_ze": 280,
+      "year_min": 2012,
+      "year_max": 2025
+    },
+    "urssaf_employer_estab_growth_lag2_tminus1": {
+      "status": "available",
+      "coverage": 1.0,
+      "n_valid": 3920,
+      "n_ze": 280,
+      "year_min": 2012,
+      "year_max": 2025
+    },
+    "urssaf_employer_estab_growth_spatial_perm_tminus1": {
+      "status": "available",
+      "coverage": 1.0,
+      "n_valid": 3920,
+      "n_ze": 280,
+      "year_min": 2012,
+      "year_max": 2025
+    },
+    "urssaf_employer_estab_growth_neg_tminus1": {
+      "status": "available",
+      "coverage": 1.0,
+      "n_valid": 3920,
+      "n_ze": 280,
+      "year_min": 2012,
+      "year_max": 2025
+    },
+    "urssaf_employer_estab_growth_pos_tminus1": {
+      "status": "available",
+      "coverage": 1.0,
+      "n_valid": 3920,
+      "n_ze": 280,
+      "year_min": 2012,
+      "year_max": 2025
+    },
+    "defm_recovery_tminus1": {
+      "status": "available",
+      "coverage": 1.0,
+      "n_valid": 3920,
+      "n_ze": 280,
+      "year_min": 2012,
+      "year_max": 2025
+    },
+    "defm_recovery_perm_tminus1": {
+      "status": "available",
+      "coverage": 1.0,
+      "n_valid": 3920,
+      "n_ze": 280,
+      "year_min": 2012,
+      "year_max": 2025
+    },
+    "defm_recovery_lag2_tminus1": {
+      "status": "available",
+      "coverage": 1.0,
+      "n_valid": 3920,
+      "n_ze": 280,
+      "year_min": 2012,
+      "year_max": 2025
+    },
+    "defm_recovery_spatial_perm_tminus1": {
+      "status": "available",
+      "coverage": 1.0,
+      "n_valid": 3920,
+      "n_ze": 280,
+      "year_min": 2012,
+      "year_max": 2025
+    },
+    "defm_recovery_signed_tminus1": {
+      "status": "available",
+      "coverage": 1.0,
+      "n_valid": 3920,
+      "n_ze": 280,
+      "year_min": 2012,
+      "year_max": 2025
+    },
+    "defm_yoy_tminus1": {
+      "status": "available",
+      "coverage": 1.0,
+      "n_valid": 3920,
+      "n_ze": 280,
+      "year_min": 2012,
+      "year_max": 2025
+    },
+    "activite_partielle_tminus1": {
+      "status": "blocked",
+      "coverage": 0.0,
+      "n_valid": 0,
+      "n_ze": 0,
+      "year_min": null,
+      "year_max": null
+    },
+    "activite_partielle_perm_tminus1": {
+      "status": "blocked",
+      "coverage": 0.0,
+      "n_valid": 0,
+      "n_ze": 0,
+      "year_min": null,
+      "year_max": null
+    }
+  },
+  "leakage_check_passed": true
+}

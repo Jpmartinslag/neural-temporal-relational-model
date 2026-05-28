@@ -52,7 +52,9 @@ def sector_lag1_tensor(sec_props_tensor):
 
 
 def make_sequences_v7(panel, cols, q_tensor, sec_props_tensor, sec_lag1_tensor,
-                      zones_sorted, years_sorted, train_max, target_year):
+                      zones_sorted, years_sorted, train_max, target_year,
+                      tutor_cols=None,
+                      labor_tutor_df=None, labor_tutor_cols=None):
     seq = base.make_sequences(
         panel, cols, q_tensor, sec_props_tensor,
         zones_sorted, years_sorted, train_max, target_year,
@@ -62,6 +64,67 @@ def make_sequences_v7(panel, cols, q_tensor, sec_props_tensor, sec_lag1_tensor,
     t_full_idx = [year_to_idx[y] for y in years_sorted if y <= target_year]
     seq["sec_prior_train"] = sec_lag1_tensor[t_train_idx].astype(np.float32)
     seq["sec_prior_full"] = sec_lag1_tensor[t_full_idx].astype(np.float32)
+    tutor_cols = list(tutor_cols or [])
+    if tutor_cols:
+        missing = [c for c in tutor_cols if c not in panel.columns]
+        if missing:
+            raise ValueError(f"Missing tutor columns: {missing}")
+        annual = (
+            panel[["target_year", *tutor_cols]]
+            .drop_duplicates("target_year")
+            .set_index("target_year")
+            .sort_index()
+        )
+        train_years = [y for y in years_sorted if y <= train_max]
+        full_years = [y for y in years_sorted if y <= target_year]
+        train_raw = annual.loc[train_years, tutor_cols].to_numpy(dtype=np.float32)
+        full_raw = annual.loc[full_years, tutor_cols].to_numpy(dtype=np.float32)
+        mu = np.nanmean(train_raw, axis=0)
+        sd = np.nanstd(train_raw, axis=0)
+        sd = np.where((~np.isfinite(sd)) | (sd < 1e-6), 1.0, sd)
+        train_z = np.nan_to_num((train_raw - mu) / sd, nan=0.0, posinf=0.0, neginf=0.0)
+        full_z = np.nan_to_num((full_raw - mu) / sd, nan=0.0, posinf=0.0, neginf=0.0)
+        seq["tutor_train"] = train_z.astype(np.float32)
+        seq["tutor_full"] = full_z.astype(np.float32)
+        seq["tutor_columns"] = tutor_cols
+    else:
+        seq["tutor_train"] = np.zeros((len(t_train_idx), 0), dtype=np.float32)
+        seq["tutor_full"] = np.zeros((len(t_full_idx), 0), dtype=np.float32)
+        seq["tutor_columns"] = []
+
+    # Phase 3C: per-ZE labor-market tutor signals (shape T × N × D).
+    # Overwrites global tutor when provided; the two paths are mutually exclusive.
+    labor_tutor_cols = list(labor_tutor_cols or [])
+    if labor_tutor_df is not None and labor_tutor_cols:
+        missing_c = [c for c in labor_tutor_cols if c not in labor_tutor_df.columns]
+        if missing_c:
+            raise ValueError(f"Missing labor tutor columns: {missing_c}")
+        train_years = [y for y in years_sorted if y <= train_max]
+        full_years = [y for y in years_sorted if y <= target_year]
+        N = len(zones_sorted)
+        D = len(labor_tutor_cols)
+
+        def _ze_matrix(years):
+            mat = np.full((len(years), N, D), np.nan, dtype=np.float32)
+            sub = labor_tutor_df[labor_tutor_df["year"].isin(years)]
+            sub = sub.set_index(["year", "ze2020"])
+            for ti, yr in enumerate(years):
+                for ni, ze in enumerate(zones_sorted):
+                    key = (yr, ze)
+                    if key in sub.index:
+                        mat[ti, ni, :] = sub.loc[key, labor_tutor_cols].to_numpy(dtype=np.float32)
+            return mat
+
+        train_raw = _ze_matrix(train_years)   # (T_train, N, D)
+        full_raw = _ze_matrix(full_years)     # (T_full, N, D)
+        mu = np.nanmean(train_raw.reshape(-1, D), axis=0)   # (D,)
+        sd = np.nanstd(train_raw.reshape(-1, D), axis=0)    # (D,)
+        sd = np.where((~np.isfinite(sd)) | (sd < 1e-6), 1.0, sd)
+        train_z = np.nan_to_num((train_raw - mu) / sd, nan=0.0, posinf=0.0, neginf=0.0)
+        full_z = np.nan_to_num((full_raw - mu) / sd, nan=0.0, posinf=0.0, neginf=0.0)
+        seq["tutor_train"] = train_z.astype(np.float32)   # (T, N, D)
+        seq["tutor_full"] = full_z.astype(np.float32)     # (T, N, D)
+        seq["tutor_columns"] = labor_tutor_cols
     return seq
 
 
@@ -74,7 +137,8 @@ class HERALDv7Residual(nn.Module):
                  latent_regime_dim=None, auto_mask=False,
                  latent_dim_mask_type="sigmoid",
                  latent_dim_beta_start=None, latent_dim_beta_end=None,
-                 auditor_mode="none", auditor_bias_init=2.0):
+                 auditor_mode="none", auditor_bias_init=2.0,
+                 tutor_dim=0):
         super().__init__()
         self.num_nodes = num_nodes
         self.hidden_dim = hidden_dim
@@ -92,6 +156,7 @@ class HERALDv7Residual(nn.Module):
         self._hard_concrete_gamma = -0.1
         self._hard_concrete_zeta = 1.1
         self._auditor_mode = auditor_mode
+        self._tutor_dim = int(tutor_dim or 0)
 
         self.quarterly_enc = base.QuarterlyEncoder(in_dim=2, hidden_dim=q_hidden)
         self.q_proj = nn.Linear(q_hidden, hidden_dim)
@@ -144,11 +209,18 @@ class HERALDv7Residual(nn.Module):
 
         # alpha close to 1 means local neural correction; low alpha activates graph correction.
         self.alpha_gate = nn.Sequential(
-            nn.Linear(hidden_dim * 2 + self._latent_regime_dim + 2, hidden_dim),
+            nn.Linear(hidden_dim * 2 + self._latent_regime_dim + 2 + self._tutor_dim, hidden_dim),
             nn.ReLU(),
             nn.Linear(hidden_dim, 1),
         )
         nn.init.constant_(self.alpha_gate[-1].bias, float(alpha_bias_init))
+        if self._tutor_dim > 0:
+            self.tutor_global_alpha_gate = nn.Sequential(
+                nn.Linear(self._tutor_dim, hidden_dim),
+                nn.ReLU(),
+                nn.Linear(hidden_dim, 1),
+            )
+            nn.init.constant_(self.tutor_global_alpha_gate[-1].bias, float(alpha_bias_init))
 
         # Stronger A10 head: neural props blended with lag-1 sector prior.
         self.out_sector_a10 = nn.Sequential(
@@ -251,12 +323,21 @@ class HERALDv7Residual(nn.Module):
                 adj_geo, adj_mob, adj_log_geo, adj_log_mob,
                 variant="full", return_internals=False,
                 smooth_regime_source="explicit",
-                latent_mode="normal"):
+                latent_mode="normal",
+                tutor_state_seq=None):
         N = self.num_nodes
         device = next(self.parameters()).device
         learned_graph_variants = {"learned_regime_graph", "learned_regime_both", "learned_regime_both_sector_enhanced"}
-        learned_gate_variants = {"learned_regime_gate", "learned_regime_both", "learned_regime_gate_sector_enhanced", "learned_regime_both_sector_enhanced"}
-        sector_enhanced_variants = {"sector_enhanced", "learned_regime_gate_sector_enhanced", "learned_regime_both_sector_enhanced"}
+        learned_gate_variants = {"learned_regime_gate", "learned_regime_both", "learned_regime_gate_sector_enhanced", "learned_regime_both_sector_enhanced", "tutor_heterogeneous_gate"}
+        tutor_variants = {"tutor_heterogeneous_gate", "tutor_global_gate"}
+        sector_enhanced_variants = {"sector_enhanced", "learned_regime_gate_sector_enhanced", "learned_regime_both_sector_enhanced", "tutor_heterogeneous_gate", "tutor_global_gate"}
+        if variant in tutor_variants and self._tutor_dim <= 0:
+            raise ValueError(f"Variant {variant!r} requires tutor_dim > 0")
+        if tutor_state_seq is None:
+            tutor_state_seq = [
+                torch.zeros(self._tutor_dim, device=device)
+                for _ in x_annual_seq
+            ]
         h_local = torch.zeros(N, self.hidden_dim, device=device)
         h = torch.zeros(N, self.hidden_dim, device=device)
 
@@ -284,9 +365,13 @@ class HERALDv7Residual(nn.Module):
         adj_delta_list = []
         regime_delta_list = []
 
-        for x_ann, x_q, regime_t, sec_prior_t in zip(
-            x_annual_seq, x_quarterly_seq, regime_seq, sec_prior_seq
+        for x_ann, x_q, regime_t, sec_prior_t, tutor_state_t in zip(
+            x_annual_seq, x_quarterly_seq, regime_seq, sec_prior_seq, tutor_state_seq
         ):
+            if self._tutor_dim > 0 and tutor_state_t.shape[-1] != self._tutor_dim:
+                raise ValueError(
+                    f"tutor_state last dim {tutor_state_t.shape[-1]} != expected {self._tutor_dim}"
+                )
             ann = F.relu(self.annual_proj(x_ann))
             q_enc = F.relu(self.q_proj(self.quarterly_enc(x_q)))
             e_t = F.relu(self.proj_e(torch.cat([ann, q_enc, h_local], dim=-1)))
@@ -379,20 +464,31 @@ class HERALDv7Residual(nn.Module):
             if variant == "ridge_only":
                 alpha = torch.ones(N, device=device)
             else:
-                if variant in learned_gate_variants:
+                if variant == "tutor_global_gate":
+                    alpha = torch.sigmoid(self.tutor_global_alpha_gate(tutor_state_t)).expand(N)
+                    alpha_input = None
+                elif variant in learned_gate_variants:
                     r_alpha = latent_regime_t
                 elif variant == "no_regime_gate":
                     r_alpha = torch.zeros_like(regime_t)
                 else:
                     r_alpha = regime_t
-                alpha_input = torch.cat([
-                    h_local,
-                    h,
-                    r_alpha.unsqueeze(0).expand(N, -1),
-                    graph_disp,
-                    torch.abs(h_norm - h_local_norm),
-                ], dim=-1)
-                alpha = torch.sigmoid(self.alpha_gate(alpha_input)).squeeze(-1)
+                if variant != "tutor_global_gate":
+                    pieces = [
+                        h_local,
+                        h,
+                        r_alpha.unsqueeze(0).expand(N, -1),
+                        graph_disp,
+                        torch.abs(h_norm - h_local_norm),
+                    ]
+                    if self._tutor_dim > 0:
+                        # Global (1-D) → broadcast; per-ZE (2-D, shape N×D) → use directly.
+                        if tutor_state_t.dim() == 1:
+                            pieces.append(tutor_state_t.unsqueeze(0).expand(N, -1))
+                        else:
+                            pieces.append(tutor_state_t)
+                    alpha_input = torch.cat(pieces, dim=-1)
+                    alpha = torch.sigmoid(self.alpha_gate(alpha_input)).squeeze(-1)
 
             if variant == "graph_only":
                 alpha = torch.zeros_like(alpha)

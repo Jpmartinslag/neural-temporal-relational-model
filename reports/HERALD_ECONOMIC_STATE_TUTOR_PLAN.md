@@ -120,3 +120,14 @@ Critère de lecture:
 - un indicateur macro isolé suffit à prévoir les crises;
 - 2021 est résolu si le gain vient uniquement d'une sélection post-hoc.
 - le contexte macro explique toutes les différences entre territoires.
+
+## Mise à jour après Block A
+
+Le premier bloc `phase3_tutor_gate_block_a` n'a pas soutenu l'hypothèse du gate hétérogène avec
+`climat_affaires_emploi`: le contrôle permuté (`T6`) a battu le gate réel (`T5`). Cela bloque le
+passage à une cross-attention: un mécanisme plus expressif ne serait pas défendable tant que le signal
+tuteur ne bat pas sa falsification temporelle.
+
+La suite devient donc `phase3b_tutor_signal_screen`: même architecture simple, mais signaux macro
+isolés un par un, chacun avec son contrôle permuté. Objectif: déterminer si le problème vient du
+mécanisme ou du choix du signal tuteur.
