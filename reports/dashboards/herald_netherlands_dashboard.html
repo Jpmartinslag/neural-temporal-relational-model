@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HERALD Pays-Bas — Phase 4</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+
+  :root {
+    --bg:#0f1220; --panel:#171b2d; --panel2:#20253a; --line:#30364f;
+    --text:#eef2ff; --muted:#9aa4bf; --good:#26a69a; --bad:#ef5350;
+    --warn:#ffd180;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font-family:Inter,Segoe UI,Arial,sans-serif; }
+  .wrap { max-width:1500px; margin:0 auto; padding:22px; }
+  h1 { margin:0 0 8px; font-size:30px; font-weight:760; }
+  .subtitle { color:var(--muted); margin-bottom:18px; line-height:1.45; max-width:1100px; }
+  .kpis { display:grid; grid-template-columns:repeat(4,minmax(180px,1fr)); gap:12px; margin:16px 0 22px; }
+  .kpi { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:14px; }
+  .kpi .v { font-size:26px; font-weight:760; }
+  .kpi .l { color:var(--muted); font-size:13px; margin-top:4px; }
+  .section { margin-top:26px; }
+  .section-title { font-size:20px; font-weight:720; margin:0 0 6px; }
+  .section-note { color:var(--muted); font-size:14px; line-height:1.45; max-width:1200px; margin-bottom:10px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th,td { border-bottom:1px solid var(--line); padding:7px 6px; text-align:left; }
+  th { color:#cbd5ff; font-weight:700; }
+  .warn { color:var(--warn); }
+  .pending-box { background:var(--panel2); border:2px dashed var(--line);
+                 border-radius:8px; padding:30px; text-align:center; }
+  .pending-box .icon { font-size:40px; margin-bottom:12px; }
+  .pending-box .msg { font-size:18px; font-weight:700; margin-bottom:8px; }
+  .pending-box .sub { color:var(--muted); font-size:14px; line-height:1.5; }
+  .badge { display:inline-block; border-radius:999px; padding:3px 9px; font-size:11px;
+           font-weight:700; vertical-align:middle; }
+  .badge-done { background:#1a3a1a; color:#66bb6a; border:1px solid #66bb6a55; }
+  .badge-pend { background:#2a2a1a; color:#ffd180; border:1px solid #ffd18055; }
+  .badge-warn { background:#2a1a1a; color:#ef9a9a; border:1px solid #ef5350; }
+  @media (max-width:900px) { .kpis,.grid2 { grid-template-columns:1fr; } }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>HERALD Pays-Bas — Phase 4 Généralisation internationale</h1>
+  <div class="subtitle">
+    Panels de données Pays-Bas : naissances d'entreprises, stock actif, tensor sectoriel.
+    Fenêtre de modélisation : <b>2016–2024</b> · 40 COROP.
+    <span class="badge badge-done">✅ Q7-equivalent</span>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="v">40</div>
+      <div class="l">Zones (COROP)</div>
+    </div>
+    <div class="kpi">
+      <div class="v">2016–2024</div>
+      <div class="l">Fenêtre de modélisation</div>
+    </div>
+    <div class="kpi">
+      <div class="v">2015–2025</div>
+      <div class="l">Panel naissances</div>
+    </div>
+    <div class="kpi">
+      <div class="v">2010–2024</div>
+      <div class="l">Panel tensor (qtensor_jobs)</div>
+    </div>
+  </div>
+
+  
+
+  <div class="section">
+    <div class="section-title">1. Naissances d'entreprises — Pays-Bas</div>
+    <div class="section-note">
+      Évolution agrégée des naissances sur toutes les zones COROP (2015–2025).
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div style="color:var(--muted); font-size:12px; margin-bottom:6px;">Naissances totales (toutes zones)</div>
+        <div id="chart_births_nl" style="height:280px;"></div>
+      </div>
+      <div class="card">
+        <div style="color:var(--muted); font-size:12px; margin-bottom:6px;">Top 8 zones — évolution temporelle</div>
+        <div id="chart_zones_nl" style="height:280px;"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div style="color:var(--muted); font-size:12px; margin-bottom:8px;">Top 10 zones — naissances cumulées</div>
+      
+<table>
+  <thead><tr><th>Zone</th><th>Naissances cumulées</th></tr></thead>
+  <tbody><tr><td>CR23</td><td>306,690</td></tr><tr><td>CR29</td><td>215,655</td></tr><tr><td>CR17</td><td>194,330</td></tr><tr><td>CR26</td><td>157,130</td></tr><tr><td>CR36</td><td>94,640</td></tr><tr><td>CR15</td><td>91,775</td></tr><tr><td>CR35</td><td>80,095</td></tr><tr><td>CR13</td><td>77,375</td></tr><tr><td>CR33</td><td>75,575</td></tr><tr><td>CR12</td><td>62,130</td></tr></tbody>
+</table>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">2. Stock d'entreprises actives — Pays-Bas</div>
+    <div class="section-note">
+      Stock total actif sur toutes les zones (2015–2025).
+    </div>
+    <div class="card">
+      <div id="chart_stock_nl" style="height:280px;"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">3. Tensor sectoriel — qtensor_jobs</div>
+    <div class="section-note">
+      CBS 83582NED — postes de travail salariés × SBI-A10 × COROP
+      · 6000 lignes · 10 secteurs A10 · 2010–2024.
+    </div>
+    <div class="section-note warn">⚠️ 0.8% cellules supprimées CBS (divulgation statistique) — rempli à 0 avec flag <code>jobs_suppressed</code>.</div>
+    <div class="card">
+      <div style="color:var(--muted); font-size:12px; margin-bottom:6px;">Heatmap — signal agrégé (toutes zones) par secteur × année</div>
+      <div id="chart_qtensor_nl" style="height:340px;"></div>
+    </div>
+  </div>
+
+  
+<div class="section">
+  <div class="section-title">Résultats HERALD — Pays-Bas <span class="badge badge-pend">En attente</span></div>
+  <div class="section-note">
+    Les batteries HPC Phase 4 n'ont pas encore été lancées pour ce pays.
+    Ce dashboard sera mis à jour après réception des résultats.
+  </div>
+  <div class="pending-box">
+    <div class="icon">⏳</div>
+    <div class="msg">Résultats HPC en attente</div>
+    <div class="sub">
+      Lancer la batterie : <code>bash hpc/phase4/submit_herald_phase4_nl.sh</code><br>
+      Puis relancer ce script avec <code>--run-root hpc_results/&lt;OUT_ROOT&gt;</code>
+    </div>
+  </div>
+</div>
+
+
+  <div class="section" style="margin-top:32px; border-top:1px solid var(--line); padding-top:18px;">
+    <div class="section-title">Sources et protocole</div>
+    <div class="section-note">
+      Panels ingérés et validés · Preflight : <code>python3 src/data/phase4_preflight.py</code> ·
+      Scripts HPC : <code>hpc/phase4/</code>
+    </div>
+    <table style="max-width:900px;">
+      <thead><tr><th>Panel</th><th>Source</th><th>Fenêtre</th><th>Zones</th><th>Statut</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Naissances</td>
+          <td>CBS 83631NED — oprichtingen vestigingen</td>
+          <td>2015–2025</td>
+          <td>40</td>
+          <td><span class="badge badge-done">✅ ingéré</span></td>
+        </tr>
+        <tr>
+          <td>Stock</td>
+          <td>CBS 81578NED — vestigingen actifs</td>
+          <td>2015–2025</td>
+          <td>40</td>
+          <td><span class="badge badge-done">✅ ingéré</span></td>
+        </tr>
+        <tr>
+          <td>Tensor (qtensor_jobs)</td>
+          <td>CBS 83582NED — banen werknemers × SBI-A10</td>
+          <td>2010–2024</td>
+          <td>40</td>
+          <td><span class="badge badge-done">✅ ingéré</span></td>
+        </tr>
+        <tr>
+          <td>Résultats HERALD</td>
+          <td>HPC Phase 4</td>
+          <td>2016–2024</td>
+          <td>40</td>
+          <td><span class="badge badge-pend">⏳ en attente</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+
+Plotly.newPlot('chart_births_nl', [{
+  x: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
+  y: [164970, 169195, 170295, 185965, 209760, 210620, 233775, 241255, 255695, 229885, 198900],
+  type: 'scatter', mode: 'lines+markers',
+  name: 'Naissances totales',
+  line: {color: '#4aa3ff', width: 2},
+  marker: {size: 6}
+}], {
+  paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
+  font: {color:'#eef2ff', size:12},
+  margin: {t:10, b:40, l:60, r:10},
+  xaxis: {gridcolor:'#30364f', title:'Année'},
+  yaxis: {gridcolor:'#30364f', title:'Naissances (total zones)'},
+  showlegend: false
+}, {responsive:true, displayModeBar:false});
+
+
+Plotly.newPlot('chart_stock_nl', [{
+  x: [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
+  y: [1637350, 1707505, 1761660, 1843965, 1933245, 2033385, 2104535, 2275245, 2358600, 2507800, 2551560],
+  type: 'scatter', mode: 'lines+markers',
+  name: 'Stock total',
+  line: {color: '#b084f5', width: 2},
+  marker: {size: 6}
+}], {
+  paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
+  font: {color:'#eef2ff', size:12},
+  margin: {t:10, b:40, l:70, r:10},
+  xaxis: {gridcolor:'#30364f', title:'Année'},
+  yaxis: {gridcolor:'#30364f', title:'Stock total (entreprises actives)'},
+  showlegend: false
+}, {responsive:true, displayModeBar:false});
+
+
+Plotly.newPlot('chart_qtensor_nl', [{
+  type: 'heatmap',
+  x: [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
+  y: ["Agriculture", "Industrie / \u00e9nergie", "Construction", "Commerce / transport", "Information / comm.", "Finance / assurance", "Immobilier", "Services aux entreprises", "Services publics", "Arts / loisirs"],
+  z: [[99.4, 97.0, 96.4, 95.7, 96.7, 95.7, 97.6, 100.0, 102.1, 103.3, 106.0, 107.3, 102.2, 101.6, 105.3], [837.0, 833.7, 823.2, 804.5, 807.4, 803.0, 798.6, 740.9, 759.0, 843.3, 836.9, 846.4, 861.8, 873.1, 878.4], [370.1, 357.1, 338.2, 309.4, 298.9, 294.1, 299.0, 289.7, 300.8, 331.7, 337.8, 346.3, 354.8, 358.6, 367.1], [1991.6, 2023.1, 2019.1, 1992.2, 2020.7, 2053.7, 2081.1, 2144.6, 2212.1, 2250.1, 2145.3, 2234.3, 2331.7, 2360.7, 2380.0], [228.0, 229.1, 230.0, 226.0, 235.4, 241.2, 252.7, 265.2, 275.8, 284.3, 290.9, 309.6, 326.8, 330.6, 329.2], [276.1, 306.7, 259.9, 249.4, 242.6, 282.4, 276.7, 267.5, 267.5, 268.7, 275.8, 280.7, 289.7, 296.7, 243.2], [74.3, 71.2, 68.5, 66.6, 66.0, 63.7, 64.8, 65.5, 66.3, 68.5, 69.1, 70.4, 71.0, 73.6, 79.1], [1329.2, 1319.4, 1300.9, 1305.2, 1363.6, 1429.0, 1491.2, 1586.1, 1627.8, 1623.3, 1503.2, 1584.8, 1617.3, 1567.9, 1578.4], [2391.0, 2383.9, 2371.6, 2338.6, 2304.2, 2285.7, 2305.2, 2346.1, 2401.0, 2493.2, 2564.9, 2632.9, 2685.8, 2748.4, 2804.6], [287.5, 274.9, 271.1, 261.8, 258.5, 257.6, 261.1, 268.3, 274.2, 277.4, 255.1, 266.7, 279.8, 285.6, 293.2]],
+  colorscale: 'Blues',
+  showscale: true,
+  hovertemplate: '%{y}<br>%{x}: %{z:,.0f}<extra></extra>'
+}], {
+  paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
+  font: {color:'#eef2ff', size:11},
+  margin: {t:10, b:50, l:180, r:20},
+  xaxis: {title:'Année', gridcolor:'#30364f'},
+  yaxis: {title:'', automargin:true}
+}, {responsive:true, displayModeBar:false});
+
+
+Plotly.newPlot('chart_zones_nl', [{x:[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], y:[21365, 23355, 23720, 25410, 29420, 27680, 30645, 32080, 33880, 31550, 27585], type:'scatter', mode:'lines', name:"CR23", line:{width:1.5}},
+{x:[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], y:[13805, 14510, 14900, 17210, 20045, 20330, 22795, 24670, 26325, 22515, 18550], type:'scatter', mode:'lines', name:"CR29", line:{width:1.5}},
+{x:[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], y:[14625, 14525, 14780, 16090, 18425, 17745, 19985, 20895, 21710, 18975, 16575], type:'scatter', mode:'lines', name:"CR17", line:{width:1.5}},
+{x:[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], y:[9880, 10720, 11315, 13240, 14920, 14520, 16270, 18125, 18730, 16175, 13235], type:'scatter', mode:'lines', name:"CR26", line:{width:1.5}},
+{x:[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], y:[6930, 7170, 7195, 7825, 8735, 8960, 9970, 9730, 10220, 9410, 8495], type:'scatter', mode:'lines', name:"CR36", line:{width:1.5}},
+{x:[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], y:[6680, 6970, 7025, 7605, 8510, 8435, 9375, 9740, 10540, 9110, 7785], type:'scatter', mode:'lines', name:"CR15", line:{width:1.5}},
+{x:[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], y:[6110, 5960, 6035, 6505, 7255, 7520, 8300, 8315, 9050, 8000, 7045], type:'scatter', mode:'lines', name:"CR35", line:{width:1.5}},
+{x:[2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], y:[5905, 5775, 5690, 6290, 6955, 7145, 8275, 8125, 8635, 7940, 6640], type:'scatter', mode:'lines', name:"CR13", line:{width:1.5}}], {
+  paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
+  font: {color:'#eef2ff', size:12},
+  margin: {t:10, b:40, l:60, r:10},
+  xaxis: {gridcolor:'#30364f', title:'Année'},
+  yaxis: {gridcolor:'#30364f', title:'Naissances'},
+  legend: {bgcolor:'#171b2d', bordercolor:'#30364f', borderwidth:1, font:{size:11}}
+}, {responsive:true, displayModeBar:false});
+
+</script>
+</body>
+</html>

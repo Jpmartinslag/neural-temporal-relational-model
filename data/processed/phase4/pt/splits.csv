@@ -1,0 +1,14 @@
+fold,target_year,train_years_max,train_years_min,eval_year,covid_in_train,is_post_covid_eval,note
+fold_2010,2010,2009,2009,2010,0,0,strict ex-ante fold 2010
+fold_2011,2011,2010,2009,2011,0,0,strict ex-ante fold 2011
+fold_2012,2012,2011,2009,2012,0,0,strict ex-ante fold 2012
+fold_2013,2013,2012,2009,2013,0,0,strict ex-ante fold 2013
+fold_2014,2014,2013,2009,2014,0,0,strict ex-ante fold 2014
+fold_2015,2015,2014,2009,2015,0,0,strict ex-ante fold 2015
+fold_2016,2016,2015,2009,2016,0,0,strict ex-ante fold 2016
+fold_2017,2017,2016,2009,2017,0,0,strict ex-ante fold 2017
+fold_2018,2018,2017,2009,2018,0,0,strict ex-ante fold 2018
+fold_2019,2019,2018,2009,2019,0,0,strict ex-ante fold 2019
+fold_2020,2020,2019,2009,2020,0,0,strict ex-ante fold 2020
+fold_2021,2021,2020,2009,2021,1,1,strict ex-ante fold 2021
+fold_2022,2022,2021,2009,2022,1,0,strict ex-ante fold 2022

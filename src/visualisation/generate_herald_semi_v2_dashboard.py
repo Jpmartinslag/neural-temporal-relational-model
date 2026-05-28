@@ -1992,6 +1992,15 @@ drawMechanisms();
 """
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
+    if presentation:
+        html = html.replace("HERALD no flags Q7", "HERALD")
+        html = html.replace("HERALD no flags", "HERALD")
+        html = html.replace("HERALD flags étendu", "HERALD")
+        html = html.replace("HERALD flags clean", "HERALD")
+        html = html.replace("HERALD flags", "HERALD")
+        html = html.replace("flags clean", "HERALD")
+        html = html.replace("flags étendu", "HERALD")
+        html = html.replace("no flags", "HERALD")
     out_path.write_text(html, encoding="utf-8")
     print(f"Wrote {out_path} ({out_path.stat().st_size / 1024:.1f} KB)")
 

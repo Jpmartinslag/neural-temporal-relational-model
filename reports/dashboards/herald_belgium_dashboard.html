@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HERALD Belgique — Phase 4</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+
+  :root {
+    --bg:#0f1220; --panel:#171b2d; --panel2:#20253a; --line:#30364f;
+    --text:#eef2ff; --muted:#9aa4bf; --good:#26a69a; --bad:#ef5350;
+    --warn:#ffd180;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font-family:Inter,Segoe UI,Arial,sans-serif; }
+  .wrap { max-width:1500px; margin:0 auto; padding:22px; }
+  h1 { margin:0 0 8px; font-size:30px; font-weight:760; }
+  .subtitle { color:var(--muted); margin-bottom:18px; line-height:1.45; max-width:1100px; }
+  .kpis { display:grid; grid-template-columns:repeat(4,minmax(180px,1fr)); gap:12px; margin:16px 0 22px; }
+  .kpi { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:14px; }
+  .kpi .v { font-size:26px; font-weight:760; }
+  .kpi .l { color:var(--muted); font-size:13px; margin-top:4px; }
+  .section { margin-top:26px; }
+  .section-title { font-size:20px; font-weight:720; margin:0 0 6px; }
+  .section-note { color:var(--muted); font-size:14px; line-height:1.45; max-width:1200px; margin-bottom:10px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th,td { border-bottom:1px solid var(--line); padding:7px 6px; text-align:left; }
+  th { color:#cbd5ff; font-weight:700; }
+  .warn { color:var(--warn); }
+  .pending-box { background:var(--panel2); border:2px dashed var(--line);
+                 border-radius:8px; padding:30px; text-align:center; }
+  .pending-box .icon { font-size:40px; margin-bottom:12px; }
+  .pending-box .msg { font-size:18px; font-weight:700; margin-bottom:8px; }
+  .pending-box .sub { color:var(--muted); font-size:14px; line-height:1.5; }
+  .badge { display:inline-block; border-radius:999px; padding:3px 9px; font-size:11px;
+           font-weight:700; vertical-align:middle; }
+  .badge-done { background:#1a3a1a; color:#66bb6a; border:1px solid #66bb6a55; }
+  .badge-pend { background:#2a2a1a; color:#ffd180; border:1px solid #ffd18055; }
+  .badge-warn { background:#2a1a1a; color:#ef9a9a; border:1px solid #ef5350; }
+  @media (max-width:900px) { .kpis,.grid2 { grid-template-columns:1fr; } }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>HERALD Belgique — Phase 4 Généralisation internationale</h1>
+  <div class="subtitle">
+    Panels de données Belgique : naissances d'entreprises, stock actif, tensor sectoriel.
+    Fenêtre de modélisation : <b>2009–2020</b> · 42 arrondissements.
+    <span class="badge badge-done">✅ Q7-equivalent</span>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="v">42</div>
+      <div class="l">Zones (arrondissements)</div>
+    </div>
+    <div class="kpi">
+      <div class="v">2009–2020</div>
+      <div class="l">Fenêtre de modélisation</div>
+    </div>
+    <div class="kpi">
+      <div class="v">2007–2020</div>
+      <div class="l">Panel naissances</div>
+    </div>
+    <div class="kpi">
+      <div class="v">2008–2020</div>
+      <div class="l">Panel tensor (qtensor_jobs)</div>
+    </div>
+  </div>
+
+  
+
+  <div class="section">
+    <div class="section-title">1. Naissances d'entreprises — Belgique</div>
+    <div class="section-note">
+      Évolution agrégée des naissances sur toutes les zones arrondissements (2007–2020).
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <div style="color:var(--muted); font-size:12px; margin-bottom:6px;">Naissances totales (toutes zones)</div>
+        <div id="chart_births_be" style="height:280px;"></div>
+      </div>
+      <div class="card">
+        <div style="color:var(--muted); font-size:12px; margin-bottom:6px;">Top 8 zones — évolution temporelle</div>
+        <div id="chart_zones_be" style="height:280px;"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <div style="color:var(--muted); font-size:12px; margin-bottom:8px;">Top 10 zones — naissances cumulées</div>
+      
+<table>
+  <thead><tr><th>Zone</th><th>Naissances cumulées</th></tr></thead>
+  <tbody><tr><td>BE_bruxelles_capitale</td><td>138,877</td></tr><tr><td>BE_anvers</td><td>108,578</td></tr><tr><td>BE_gand</td><td>60,022</td></tr><tr><td>BE_hal_vilvorde</td><td>55,786</td></tr><tr><td>BE_louvain</td><td>47,231</td></tr><tr><td>BE_liege</td><td>46,340</td></tr><tr><td>BE_nivelles</td><td>42,370</td></tr><tr><td>BE_turnhout</td><td>41,817</td></tr><tr><td>BE_hasselt</td><td>41,679</td></tr><tr><td>BE_malines</td><td>30,809</td></tr></tbody>
+</table>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">2. Stock d'entreprises actives — Belgique</div>
+    <div class="section-note">
+      Stock total actif sur toutes les zones (2007–2020).
+    </div>
+    <div class="card">
+      <div id="chart_stock_be" style="height:280px;"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">3. Tensor sectoriel — qtensor_jobs</div>
+    <div class="section-note">
+      ONSS — postes de travail × NACE-BEL-A10 × arrondissement (Q4)
+      · 5460 lignes · 10 secteurs A10 · 2008–2020.
+    </div>
+    
+    <div class="card">
+      <div style="color:var(--muted); font-size:12px; margin-bottom:6px;">Heatmap — signal agrégé (toutes zones) par secteur × année</div>
+      <div id="chart_qtensor_be" style="height:340px;"></div>
+    </div>
+  </div>
+
+  
+<div class="section">
+  <div class="section-title">Résultats HERALD — Belgique <span class="badge badge-pend">En attente</span></div>
+  <div class="section-note">
+    Les batteries HPC Phase 4 n'ont pas encore été lancées pour ce pays.
+    Ce dashboard sera mis à jour après réception des résultats.
+  </div>
+  <div class="pending-box">
+    <div class="icon">⏳</div>
+    <div class="msg">Résultats HPC en attente</div>
+    <div class="sub">
+      Lancer la batterie : <code>bash hpc/phase4/submit_herald_phase4_be.sh</code><br>
+      Puis relancer ce script avec <code>--run-root hpc_results/&lt;OUT_ROOT&gt;</code>
+    </div>
+  </div>
+</div>
+
+
+  <div class="section" style="margin-top:32px; border-top:1px solid var(--line); padding-top:18px;">
+    <div class="section-title">Sources et protocole</div>
+    <div class="section-note">
+      Panels ingérés et validés · Preflight : <code>python3 src/data/phase4_preflight.py</code> ·
+      Scripts HPC : <code>hpc/phase4/</code>
+    </div>
+    <table style="max-width:900px;">
+      <thead><tr><th>Panel</th><th>Source</th><th>Fenêtre</th><th>Zones</th><th>Statut</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>Naissances</td>
+          <td>Statbel beSTAT — TVA primo-assujettissements</td>
+          <td>2007–2020</td>
+          <td>42</td>
+          <td><span class="badge badge-done">✅ ingéré</span></td>
+        </tr>
+        <tr>
+          <td>Stock</td>
+          <td>Statbel beSTAT — TVA entreprises actives</td>
+          <td>2007–2020</td>
+          <td>42</td>
+          <td><span class="badge badge-done">✅ ingéré</span></td>
+        </tr>
+        <tr>
+          <td>Tensor (qtensor_jobs)</td>
+          <td>ONSS archives localunit × NACE-BEL Q4</td>
+          <td>2008–2020</td>
+          <td>42</td>
+          <td><span class="badge badge-done">✅ ingéré</span></td>
+        </tr>
+        <tr>
+          <td>Résultats HERALD</td>
+          <td>HPC Phase 4</td>
+          <td>2009–2020</td>
+          <td>42</td>
+          <td><span class="badge badge-pend">⏳ en attente</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+
+Plotly.newPlot('chart_births_be', [{
+  x: [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020],
+  y: [63132, 61169, 57135, 62756, 65126, 64456, 60931, 81270, 70716, 80493, 82315, 86089, 93431, 94076],
+  type: 'scatter', mode: 'lines+markers',
+  name: 'Naissances totales',
+  line: {color: '#f7c948', width: 2},
+  marker: {size: 6}
+}], {
+  paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
+  font: {color:'#eef2ff', size:12},
+  margin: {t:10, b:40, l:60, r:10},
+  xaxis: {gridcolor:'#30364f', title:'Année'},
+  yaxis: {gridcolor:'#30364f', title:'Naissances (total zones)'},
+  showlegend: false
+}, {responsive:true, displayModeBar:false});
+
+
+Plotly.newPlot('chart_stock_be', [{
+  x: [2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020],
+  y: [730571, 746266, 753740, 768676, 786176, 802351, 810120, 834876, 854756, 889631, 923820, 956756, 989255, 1029074],
+  type: 'scatter', mode: 'lines+markers',
+  name: 'Stock total',
+  line: {color: '#b084f5', width: 2},
+  marker: {size: 6}
+}], {
+  paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
+  font: {color:'#eef2ff', size:12},
+  margin: {t:10, b:40, l:70, r:10},
+  xaxis: {gridcolor:'#30364f', title:'Année'},
+  yaxis: {gridcolor:'#30364f', title:'Stock total (entreprises actives)'},
+  showlegend: false
+}, {responsive:true, displayModeBar:false});
+
+
+Plotly.newPlot('chart_qtensor_be', [{
+  type: 'heatmap',
+  x: [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020],
+  y: ["Agriculture", "Industrie / \u00e9nergie", "Construction", "Commerce / transport", "Information / comm.", "Finance / assurance", "Immobilier", "Services aux entreprises", "Services publics", "Arts / loisirs"],
+  z: [[12282.0, 12583.0, 13730.0, 14492.0, 14455.0, 14294.0, 14554.0, 15158.0, 15409.0, 15834.0, 16560.0, 17245.0, 18604.0], [597072.0, 564026.0, 558476.0, 557926.0, 545915.0, 532151.0, 521353.0, 514713.0, 515868.0, 520513.0, 526776.0, 530678.0, 528322.0], [216371.0, 215276.0, 216968.0, 219876.0, 218302.0, 209031.0, 204315.0, 201080.0, 202278.0, 203192.0, 206454.0, 208234.0, 208653.0], [835167.0, 822088.0, 830354.0, 835524.0, 825785.0, 821039.0, 825660.0, 828575.0, 840810.0, 851517.0, 868560.0, 885854.0, 845275.0], [100116.0, 97070.0, 96336.0, 94879.0, 94317.0, 95092.0, 95246.0, 97125.0, 100586.0, 104315.0, 107411.0, 110831.0, 111900.0], [136321.0, 133138.0, 132232.0, 131770.0, 130263.0, 128539.0, 126765.0, 125977.0, 125073.0, 124200.0, 121989.0, 120048.0, 119023.0], [14832.0, 15118.0, 19205.0, 19803.0, 20462.0, 20653.0, 20946.0, 21232.0, 21670.0, 22120.0, 22657.0, 22865.0, 23056.0], [391986.0, 395045.0, 443755.0, 471230.0, 481035.0, 492983.0, 512818.0, 538000.0, 554585.0, 581047.0, 598557.0, 614341.0, 604000.0], [1335273.0, 1370019.0, 1364520.0, 1349511.0, 1354575.0, 1358713.0, 1368257.0, 1379366.0, 1390962.0, 1406820.0, 1422151.0, 1440791.0, 1458751.0], [132683.0, 133625.0, 137907.0, 137660.0, 138509.0, 137957.0, 138152.0, 135255.0, 135458.0, 135625.0, 137936.0, 139810.0, 133724.0]],
+  colorscale: 'Blues',
+  showscale: true,
+  hovertemplate: '%{y}<br>%{x}: %{z:,.0f}<extra></extra>'
+}], {
+  paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
+  font: {color:'#eef2ff', size:11},
+  margin: {t:10, b:50, l:180, r:20},
+  xaxis: {title:'Année', gridcolor:'#30364f'},
+  yaxis: {title:'', automargin:true}
+}, {responsive:true, displayModeBar:false});
+
+
+Plotly.newPlot('chart_zones_be', [{x:[2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], y:[8746, 7957, 7409, 8659, 8849, 8969, 9064, 13268, 10141, 11050, 11301, 11820, 11315, 10329], type:'scatter', mode:'lines', name:"BE_bruxelles_capitale", line:{width:1.5}},
+{x:[2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], y:[6240, 6166, 5859, 6559, 6685, 6511, 5964, 8482, 7662, 8498, 8845, 9567, 10626, 10914], type:'scatter', mode:'lines', name:"BE_anvers", line:{width:1.5}},
+{x:[2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], y:[3524, 3506, 3160, 3424, 3568, 3542, 3319, 4821, 4062, 4827, 4925, 5305, 6003, 6036], type:'scatter', mode:'lines', name:"BE_gand", line:{width:1.5}},
+{x:[2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], y:[2924, 2867, 2779, 3066, 3221, 3123, 2974, 4392, 3677, 4234, 4241, 4870, 6448, 6970], type:'scatter', mode:'lines', name:"BE_hal_vilvorde", line:{width:1.5}},
+{x:[2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], y:[2853, 2772, 2611, 2770, 2850, 2781, 2599, 3721, 3208, 3841, 4067, 4129, 4482, 4547], type:'scatter', mode:'lines', name:"BE_louvain", line:{width:1.5}},
+{x:[2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], y:[2995, 2847, 2955, 3121, 3336, 3339, 3477, 3760, 3230, 3468, 3504, 3448, 3521, 3339], type:'scatter', mode:'lines', name:"BE_liege", line:{width:1.5}},
+{x:[2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], y:[2482, 2579, 2327, 2540, 2780, 2756, 2534, 3536, 3082, 3531, 3591, 3557, 3666, 3409], type:'scatter', mode:'lines', name:"BE_nivelles", line:{width:1.5}},
+{x:[2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020], y:[2571, 2572, 2351, 2684, 2695, 2560, 2516, 2926, 2864, 3247, 3372, 3580, 3902, 3977], type:'scatter', mode:'lines', name:"BE_turnhout", line:{width:1.5}}], {
+  paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
+  font: {color:'#eef2ff', size:12},
+  margin: {t:10, b:40, l:60, r:10},
+  xaxis: {gridcolor:'#30364f', title:'Année'},
+  yaxis: {gridcolor:'#30364f', title:'Naissances'},
+  legend: {bgcolor:'#171b2d', bordercolor:'#30364f', borderwidth:1, font:{size:11}}
+}, {responsive:true, displayModeBar:false});
+
+</script>
+</body>
+</html>
