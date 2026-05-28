@@ -1,99 +1,87 @@
-# Phase 4 — Data Status & Open Issues
+# Phase 4 — Data Status (actualizado 2026-05-28)
 
-**Date:** 2026-05-27  
-**Purpose:** Cross-country data readiness summary before pipeline build.
+**Propósito:** Resumo de prontidão de dados por país antes do pipeline HPC Phase 4A.  
+**Estado:** ✅ Todos os painéis principais validados pelo preflight. Prontos para preparação HPC.
 
 ---
 
 ## Consolidated Status Table
 
-| Component | Belgium | Netherlands | Portugal |
-|-----------|---------|-------------|---------|
-| Enterprise births | ⚠ 2021+ only (new series) | ⚠ No COROP births → ΔStock proxy | ✓ Municipal, 2008+, CC BY 4.0 |
-| Territory | ⚠ Births at arrond. not confirmed | ✓ 40 COROP (functional) | ⚠ 308 vs 23 zones: choose |
-| Sector | ✓ NACE-BEL → A10 | ✓ SBI 2008 → NACE → A10 | ✓ CAE Rev.3 → NACE → A10 |
-| Time coverage | ⚠ 2008-2020 old series (break) | ✓ 2007+ | ✓ 1990+ |
-| Q-tensor source | ✓ RSZ arrond × NACE (2005+) | ⚠ Verify COROP × sector | ⚠ GEP recent yrs: access TBD |
-| Geometries | ✓ Statbel CC BY 4.0 | ✓ CBS open data | ✓ INE CAOP |
+| Componente | Belgium | Netherlands | Portugal |
+|------------|---------|-------------|----------|
+| Enterprise births | ✅ Arrondissements, TVA primo-assujetissements, 2007–2020 | ✅ COROP oprichtingen vestigingen (CBS 83631NED), 2015–2025 | ✅ NUTS3 nascimentos de empresas (INE 0009702), 2008–2022 |
+| Territory | ✅ 42 arrondissements | ✅ 40 COROP (CR01–CR40; CR98/CR99 excluídas) | ✅ 25 NUTS3 |
+| Sector tensor | ✅ ONSS jobs × NACE-A10, 2008–2020 | ✅ CBS jobs × SBI-A10, 2010–2024 | ⚠️ sector_births × CAE-A10 (NOT employment) |
+| Stock | ✅ Statbel TVA, 2007–2020 | ✅ CBS 81578NED, 2015–2025 | ✅ INE 0009819, 2008–2022 |
+| Geometries | ✅ Statbel CC BY 4.0 | ✅ CBS open data | ✅ INE CAOP |
 
 ---
 
-## Open Questions (must resolve before pipeline build)
+## Modelling Windows
 
-### Belgium
+| País | Births | Stock | Tensor | Primeira avaliação |
+|------|--------|-------|--------|-------------------|
+| **NL** | 2015–2025 | 2015–2025 | 2010–2024 (employment) | 2016 |
+| **BE** | 2007–2020 | 2007–2020 | 2008–2020 (employment) | 2009 |
+| **PT** | 2008–2022 | 2008–2022 | 2008–2022 (sector_births) | 2009 |
 
-1. **Births geography**: Does Statbel beSTAT API provide births at arrondissement level?
-   - Test: `curl "https://bestat.statbel.fgov.be/bestat/api/views/1a3f63bd-2792-4804-833d-55b02eb9b232/result/CSV"`
-   - If national only: major blocker → document, consider workaround from CBR/administrative data
+---
 
-2. **Births history**: Is pre-2021 series (old methodology) downloadable? How severe is the 2018 break?
-   - Action: Navigate beSTAT, check "Demography of employers" series for older data
+## Preflight Status (2026-05-28)
 
-3. **RSZ detailed quarters**: Confirm the Excel download contains arrondissement × NACE cross-tab (not just regional aggregate).
+```
+NL: PASS ✅  |  BE: PASS ✅  |  PT: PASS ✅
+Run: python3 src/data/phase4_preflight.py
+```
+
+---
+
+## Notas metodológicas críticas
 
 ### Netherlands
+- **Births**: CBS 83631NED oprichtingen vestigingen — **idêntico ao conceito France SIRENE** ✅
+- **Stock**: CBS 81578NED, clipped a 2015–2025. Anos 2007–2014 têm NaN (CBS não publica totais COROP antes de 2015).
+- **Q-tensor**: CBS 83582NED, 2010–2024. Ano 2025 **não disponível e não proxied** no pipeline principal. Para modelos lag-1, o target 2025 usa qtensor 2024 — nenhum proxy necessário.
+- **NaN suprimidos no qtensor**: 48 células (0.8%) suprimidas pelo CBS (controlo de divulgação estatística). Política: `jobs_suppressed=1`, preenchimento com 0. Documentado em `jobs_suppressed` flag column.
+- ~~NL usa apenas ΔStock proxy~~ — **OBSOLETO**. NL tem births COROP reais 2015–2025.
 
-4. **Q-tensor sector breakdown**: Does CBS 85481NED include sector (SBI) breakdown at COROP level?
-   - If not: fall back to 81644NED (size class proxy) or Q1_zero for NL.
-   - Action: Check CBS StatLine 85481NED column list.
-
-5. **ΔStock validation**: Compare 83631NED province births vs ΔStock from 81578NED province level to validate proxy quality (should correlate r > 0.9).
+### Belgium
+- **Window principal**: 2008–2020 (qtensor começa 2008 — NACE Rev.1 em 2007 incompatível com A10).
+- **2006 stock removido**: Statbel disponível desde 2006 mas excluído da janela principal.
+- **2007 qtensor ausente**: correcto por design (NACE Rev.1). NÃO usar carry-forward 2008→2007 no pipeline principal. Sensibilidade apenas se documentado.
+- **Conceito births**: Primo-assujetissements TVA (empresa legal ≠ estabelecimento físico). Diferença documentada.
+- **Quebra metodológica 2018**: flagar no modelling.
 
 ### Portugal
-
-6. **Territory choice**: Confirm whether INE zonas de emprego (23) exist as named geographic units with shapefile.
-   - If yes: use 23 zones (preferred, comparable scale).
-   - If no: use 308 municípios (larger graph, confirmed available).
-
-7. **GEP access**: Verify what years of Quadros de Pessoal are freely downloadable.
-   - URL: https://www.gep.mtsss.gov.pt/quadros-de-pessoal
-   - If 2022+ needs formal request: document, use through 2021 for q_tensor.
-
----
-
-## Data Files to Download (prioritized)
-
-### Step 1 (before preflight scripts)
-
-```bash
-# Belgium — births
-curl "https://bestat.statbel.fgov.be/bestat/api/views/1a3f63bd-2792-4804-833d-55b02eb9b232/result/CSV" \
-  > data/external/belgium/raw/statbel_enterprise_births_2021plus.csv
-
-# Netherlands — COROP stock (target proxy)
-# Via CBS OData API:
-# https://opendata.cbs.nl/ODataApi/odata/81578NED/TypedDataSet
-# Select: BedrijfstakkenBranchesSBI2008, RegioS (filter COROP), Perioden → CSV
-
-# Netherlands — births at province (validation)
-# https://opendata.cbs.nl/ODataApi/odata/83631NED/TypedDataSet
-
-# Portugal — INE empresa data
-# https://dados.gov.pt/en/datasets/numero-de-empresas/
-```
-
-### Step 2 (q_tensor sources)
-
-```bash
-# Belgium — RSZ detailed quarterly data
-# https://www.rsz.be/stats/arbeidsmarktanalyse-gedetailleerde-kwartaalgegevens
-# Download ZIP for available quarters → extract arrond × NACE sheet
-
-# Netherlands — CBS 85481NED
-# https://opendata.cbs.nl/ODataApi/odata/85481NED/TypedDataSet
-
-# Portugal — GEP Quadros de Pessoal
-# https://www.gep.mtsss.gov.pt/quadros-de-pessoal
-```
+- **Tensor framing**: `portugal_qtensor_births_cae_nuts3.csv` é um **sector_births_tensor**, NÃO Q7 effectifs.
+  - França Q7 = URSSAF effectifs (stock de assalariados × sector × ZE)
+  - Portugal tensor = nascimentos de empresas × CAE→A10 × NUTS3
+  - **Não chamar de Q7 effectifs ou tensor laboral em nenhum contexto.**
+  - Usar label: `sector_births_tensor` ou `sector_births_lag1` em todos os configs.
+- **KZ = 0**: esperado (setor financeiro não aparece nos nascimentos de empresas INE).
+- **Q7-equivalente (employment)**: requer GEP Quadros de Pessoal — **não ingested ainda**.
 
 ---
 
-## Preflight Decision Matrix
+## Questões resolvidas
 
-Based on current investigation:
+| # | Questão original | Estado |
+|---|-----------------|--------|
+| NL-4 | Verificar se CBS tem breakdown setor × COROP | ✅ Resolvido — CBS 83582NED confirmado |
+| NL-5 | Validação ΔStock proxy | ✅ Obsoleto — births reais disponíveis |
+| BE-1 | Births por arrondissement confirmados | ✅ Resolvido — TVA primo-assujetissements |
+| BE-2 | Série pré-2021 disponível | ✅ Resolvido — 2007–2020 TVA disponível |
+| BE-3 | RSZ cross-tab arrondissement × NACE | ✅ Resolvido — ONSS localunit confirmado |
+| PT-6 | Escolha território 308 vs 23 | ✅ Decidido — 25 NUTS3 (reagregação de municípios) |
+| PT-7 | Acesso GEP Quadros de Pessoal | ⚠️ Pendente — necessário para Q7-equivalente PT |
 
-| Country | Launch Decision | Condition |
-|---------|----------------|-----------|
-| **Portugal** | LIKELY LAUNCH | After confirming GEP access + territory choice |
-| **Netherlands** | LAUNCH with caveat | ΔStock proxy documented in preflight point 1 |
-| **Belgium** | SUSPEND pending | Births geography + time coverage must be confirmed first |
+---
+
+## Bloqueadores restantes antes de HPC
+
+| País | Bloqueador | Impacto |
+|------|-----------|---------|
+| PT | GEP Quadros de Pessoal não ingerido | PT só tem sector_births_tensor, não Q7-equivalente. Modelos com employment signal não comparáveis a FR/NL/BE. |
+| BE | Quebra metodológica TVA 2018 | Deve ser flagado nos resultados — não bloqueia mas afecta interpretação. |
+
+**Nenhum bloqueador impede lançar Phase 4A com births + stock + sector_births_tensor (PT) ou qtensor_jobs (NL/BE).**

@@ -58,25 +58,27 @@ C (Industrie):   ~45
 
 | Item | Verificação |
 |------|-------------|
-| Fonte candidata A | CBS `85481NED` — Werknemersbanen por região de trabalho |
-| Fonte candidata B | CBS `81644NED` — Estabelecimentos por classe de tamanho × COROP × SBI |
-| Território | COROP (40 regiões) — confirmado |
-| Setores | SBI 2008 → A10 |
-| Status | ⚠ Verificar se 85481NED tem breakdown por setor × COROP |
+| Fonte | CBS `83582NED` — BanenVanWerknemersInDecember × SBI × COROP |
+| Território | 40 COROP (CR01–CR40) — confirmado |
+| Setores | SBI 2008 → NACE → A10 (10 códigos) |
+| Anos | 2010–2024 (CBS disponibilidade) |
+| Status | ✅ CONFIRMADO — CBS 83582NED tem breakdown setor × COROP |
+| NaN policy | 48 células suprimidas (0.8%) — flag `jobs_suppressed=1`, fill 0 |
 
 ### Veredicto Países-Bas
 
 ```
-✓ Conceito y idêntico à França
-✓ 40 COROP = unidades funcionais de emprego (comparável às ZE)
-✓ SBI 2008 → NACE → A10 mapping direto (EU harmonizado)
-⚠ GAP 2007–2014: dados null nas APIs CBS — séries começam 2015
-   → Janela de treino reduzida: 2015–2025 (11 anos vs 14 da França)
-   → Crise 2008 não coberta — documentar no preflight ponto 4
-⚠ Q-tensor por setor × COROP a confirmar (85481NED)
+✅ Conceito y idêntico à França (oprichtingen vestigingen)
+✅ 40 COROP = unidades funcionais de emprego (CR01–CR40; CR98/CR99 excluídas)
+✅ SBI 2008 → NACE → A10 mapping direto (EU harmonizado)
+✅ Q-tensor employment/effectifs confirmado: CBS 83582NED 2010–2024
+⚠ GAP 2007–2014: births CBS começam 2015 — janela 11 anos vs 14 da França
+   → Documentado. Não é bloqueador.
+⚠ Q-tensor 2025: não disponível CBS. Para lag-1, target 2025 usa qtensor 2024.
+   Nenhum proxy necessário no pipeline principal.
 ```
 
-**Decisão:** LANÇAR com caveat — documentar gap temporal no preflight.
+**Decisão:** ✅ LANÇAR — preflight PASS.
 
 ---
 
@@ -86,60 +88,48 @@ C (Industrie):   ~45
 
 | Item | Verificação |
 |------|-------------|
-| Fonte nova | Statbel beSTAT (série 2021+) |
-| Fonte antiga | Statbel série pré-2021 (quebra metodológica 2018) |
-| API beSTAT | `https://bestat.statbel.fgov.be/bestat/api/views/{id}/result/CSV` |
-| Status API | **400 Bad Request** — requer sessão de browser (não acessível via curl) |
-| Território | Nacional apenas nas tabelas principais — arrondissement **não confirmado** |
-| Anos | Nova série: 2021–2024; Antiga: pré-2018 (com quebra) |
+| Fonte | Statbel TVA primo-assujetissements (export (1).csv) |
+| Status API | ✅ Dados disponíveis — ficheiro CSV local |
+| Território | 42 arrondissements — confirmado |
+| Anos | 2007–2020 (série antiga; quebra metodológica 2018) |
 | Conceito | **Empresa** (entidade legal) ≠ **estabelecimento** (unidade física) |
 
-**Diferença crítica vs França:**  
-França mede CRIAÇÕES DE ESTABELECIMENTOS (unidades físicas — podem existir múltiplos por empresa).  
-Bélgica mede CRIAÇÕES DE EMPRESAS (entidades legais).  
-→ Não são o mesmo conceito. Documentar no preflight ponto 1.
-
-**Views beSTAT identificadas:**
-- `d97429d4` — "Nb. d'entreprise active, naissance, mort en Belgique par année, 2021-" → nacional, 2021+
-- `bec40330` — "Dynamiek van btw-registraties (per arrondissement...)" → **por arrondissement**, mas API retorna 400
-- `b7f7018c` — "Number of active enterprises subject to VAT according to economic activity and administrative geography" → por atividade e geografia
+**Diferença crítica vs França:**
+França mede CRIAÇÕES DE ESTABELECIMENTOS (unidades físicas). Bélgica mede CRIAÇÕES DE EMPRESAS (entidades legais). Documentar no paper.
 
 ### Q-Tensor — Emprego RSZ/ONSS
 
 | Item | Verificação |
 |------|-------------|
-| Fonte | RSZ (Rijksdienst voor Sociale Zekerheid) — Statwork |
-| Território | **43 arrondissements confirmados** (NIS-code Statbel) |
+| Fonte | ONSS localunit publications — employees × NACE × arrondissement |
+| Território | 42 arrondissements confirmados |
 | Setores | NACE-BEL → NACE Rev.2 → A10 |
-| Anos | Trimestral 2005–2025 |
-| Download | Excel/ZIP disponível |
-| Status | ✓ CONFIRMADO — emprego por arrondissement × NACE |
+| Anos | **2008–2020** (2007 NACE Rev.1 — incompatível com A10, excluído por design) |
+| Status | ✅ CONFIRMADO |
 
 ### Alinhamento vs França
 
 | Componente | França | Bélgica | Status |
 |-----------|--------|---------|--------|
 | Conceito (y) | Créations établissements | Criações empresas (legal) | ⚠ DIFERENÇA DE CONCEITO |
-| Território | 280 ZE | 43 arrondissements | ✓ Comparável |
-| Setores | NAF → A10 | NACE-BEL → A10 | ✓ Mapeável |
-| Cobertura | 2012–2025 | 2021+ (nova série) | ⚠ GAP GRAVE |
-| Q-tensor | URSSAF arrd × A10 | RSZ arrd × NACE | ✓ EQUIVALENTE |
+| Território | 280 ZE | 42 arrondissements | ✅ Comparável |
+| Setores | NAF → A10 | NACE-BEL → A10 | ✅ Mapeável |
+| Cobertura | 2012–2025 | 2007–2020 | ⚠ Janela mais curta |
+| Q-tensor | URSSAF arrd × A10 | ONSS arrd × NACE | ✅ EQUIVALENTE |
 
 ### Veredicto Bélgica
 
 ```
-✓ Q-tensor (RSZ) totalmente equivalente — melhor fonte entre os 3 países
-⚠ Target y: conceito diferente (empresa vs estabelecimento)
-⚠ Cobertura temporal: 2021+ apenas na nova série
-   → Série pré-2021 existe mas com quebra 2018 — verificar severidade
-⚠ beSTAT API não acessível via curl — download manual obrigatório
-⚠ Dados por arrondissement: confirmado para RSZ, não confirmado para nascimentos
-BLOQUEANTE: verificar arrondissement-level births antes de lançar
+✅ Q-tensor (ONSS) equivalente a employment/effectifs
+✅ 42 arrondissements confirmados
+✅ Window principal: 2008–2020; primeira avaliação 2009 (depois de lags)
+⚠ Stock 2006 excluído da janela principal (fora do target window)
+⚠ Qtensor 2007 ausente por design (NACE Rev.1 incomp.)
+   → Não usar carry-forward 2008→2007 no pipeline principal
+⚠ Quebra metodológica TVA 2018 — flagar no modelling
 ```
 
-**Decisão:** SUSPENDER — resolver 2 pontos antes de lançar:
-1. Download manual dos dados de nascimentos beSTAT (ou dados de BTW registrations por arrondissement)
-2. Verificar se série pré-2021 está disponível em download
+**Decisão:** ✅ LANÇAR — preflight PASS.
 
 ---
 
@@ -182,40 +172,40 @@ Corvo (Açores):         16
 
 | Item | Verificação |
 |------|-------------|
-| Fonte | GEP — Quadros de Pessoal (declarações anuais de todas as empresas com trabalhadores) |
-| URL | `https://www.gep.mtsss.gov.pt/quadros-de-pessoal` |
-| Território | Município por estabelecimento (agregável) |
-| Setores | CAE Rev. 3 → NACE → A10 |
-| Anos | 1985–2022 (anos recentes TBD — verificar acesso) |
-| Conceito | Headcount + remuneração por estabelecimento × CAE × município |
-| Status | ⚠ Download verificado para anos históricos; 2022+ pode requerer pedido formal |
+| Fonte | INE BDPortugal — indicador `0009703` (nascimentos × CAE section × município) |
+| Território | 25 NUTS3 (reagreg. de municípios) |
+| Anos | 2008–2022 |
+| Valor | Nascimentos de empresas (não emprego/effectifs) |
+| Status | ✅ Disponível | 
+
+> **AVISO FRAMING**: Este tensor é um `sector_births_tensor`, NÃO um Q7 effectifs (employment).
+> Não chamar de "Q7 effectifs" ou "tensor laboral" em configs, paper ou dashboards.
+> Para Q7-equivalente, é necessário ingerir GEP Quadros de Pessoal (employment).
 
 ### Alinhamento vs França
 
 | Componente | França | Portugal | Status |
 |-----------|--------|---------|--------|
 | Conceito (y) | Créations établissements | Nascimentos empresas | ⚠ Empresa vs estabelecimento |
-| Território | 280 ZE | 308 municípios | ✓ Granularidade similar |
-| Cobertura | 2012–2025 | **2008–2022** | ✓ MELHOR cobertura histórica |
-| Setores target | NAF → A10 | Forma jurídica apenas | ⚠ Sem breakdown CAE no target |
-| Q-tensor | URSSAF × A10 | Quadros de Pessoal × CAE | ✓ EQUIVALENTE |
+| Território | 280 ZE | 25 NUTS3 | ✅ Comparável |
+| Cobertura | 2012–2025 | **2008–2022** | ✅ Melhor cobertura histórica |
+| Setores target | NAF → A10 | CAE → A10 | ✅ Mapeável |
+| Tensor | URSSAF effectifs | sector_births (CAE) | ⚠ NÃO equivalente a Q7 employment |
 
 ### Veredicto Portugal
 
 ```
-✓ Cobertura temporal: 2008–2022 confirmada — cobre crise 2008
-✓ 308 municípios acessíveis via API pública INE
-✓ Q-tensor equivalente (Quadros de Pessoal)
-✓ CAE Rev.3 → NACE → A10 mapping direto
-⚠ Conceito y: empresa (legal) vs estabelecimento (físico) — documentar
-⚠ Breakdown setorial das criações: não disponível neste indicador
-   → Para alvo auxiliar A10, precisar de indicador separado (buscar nascimentos × CAE)
-⚠ Anos recentes Quadros de Pessoal (2022+): verificar acesso
-⚠ Territorio: 308 municípios >> 40 COROP NL / 43 arrd BE
-   → Considerar agregação em zonas de emprego INE (23) se disponível
+✅ Cobertura temporal: 2008–2022 confirmada
+✅ 25 NUTS3 — acessível via reagregação de municípios
+✅ CAE → A10 mapping direto
+✅ Preflight PASS — pronto para Phase 4A
+⚠ Tensor: sector_births_tensor (NOT Q7 effectifs/employment)
+   → Testar como variante separada, não como drop-in replacement do Q7
+⚠ KZ = 0 everywhere — esperado (setor financeiro não aparece em nascimentos)
+⚠ GEP Quadros de Pessoal: não ingerido. Pendente para Q7-equivalente PT.
 ```
 
-**Decisão:** LANÇAR após resolver: (1) acesso GEP, (2) escolha territorio 308 vs 23.
+**Decisão:** ✅ LANÇAR — preflight PASS (com sector_births_tensor como variante separada).
 
 ---
 
@@ -223,13 +213,13 @@ Corvo (Açores):         16
 
 | Critério preflight | França (ref) | Países-Bas | Bélgica | Portugal |
 |--------------------|-------------|------------|---------|---------|
-| **1. Conceito y** | établissement | vestiging ✓ | empresa ⚠ | empresa ⚠ |
-| **2. Território** | 280 ZE | 40 COROP ✓ | 43 arrd ✓ | 308 mun ⚠ |
-| **3. Setores** | NAF→A10 | SBI→A10 ✓ | NACE-BEL ✓ | CAE→A10 ✓ |
-| **4. Cobertura** | 2012–2025 | 2015–2025 ⚠ | 2021+ ⚠⚠ | 2008–2022 ✓ |
-| **5. Q-tensor** | URSSAF ✓ | CBS (verificar) ⚠ | RSZ ✓ | Quadros ⚠ |
-| **6. Estanquidade** | ✓ | ✓ | ✓ | ✓ |
-| **Prontidão** | — | **LANÇAR** ⚠ | **SUSPENDER** ⛔ | **LANÇAR** ⚠ |
+| **1. Conceito y** | établissement | vestiging ✅ | empresa ⚠ | empresa ⚠ |
+| **2. Território** | 280 ZE | 40 COROP ✅ | 42 arrd ✅ | 25 NUTS3 ✅ |
+| **3. Setores** | NAF→A10 | SBI→A10 ✅ | NACE-BEL ✅ | CAE→A10 ✅ |
+| **4. Cobertura** | 2012–2025 | 2015–2025 ⚠ | 2007–2020 ⚠ | 2008–2022 ✅ |
+| **5. Tensor** | URSSAF effectifs | CBS jobs ✅ | ONSS jobs ✅ | sector_births ⚠⚠ |
+| **6. Preflight** | — | ✅ PASS | ✅ PASS | ✅ PASS |
+| **Prontidão** | — | **✅ LANÇAR** | **✅ LANÇAR** | **✅ LANÇAR** ⚠ |
 
 ---
 
