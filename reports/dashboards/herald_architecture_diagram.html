@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>HERALD — Architecture</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0d1117;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  padding: 24px;
+}
+.wrap { width: 100%; max-width: 1000px; }
+svg { width: 100%; height: auto; display: block; }
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+button {
+  background: #141830;
+  border: 1px solid #2a3050;
+  color: #9aa4bf;
+  padding: 7px 22px;
+  border-radius: 6px;
+  cursor: pointer;
+  font: 12px/1 inherit;
+  transition: border-color .2s, color .2s;
+}
+button:hover { border-color: #4aa3ff; color: #4aa3ff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<svg id="diagram" viewBox="0 0 960 490" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <marker id="m-blue"   viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="7" markerHeight="5" orient="auto"><path d="M0,0 L10,3.5 L0,7z" fill="#4aa3ff"/></marker>
+  <marker id="m-green"  viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="7" markerHeight="5" orient="auto"><path d="M0,0 L10,3.5 L0,7z" fill="#66bb6a"/></marker>
+  <marker id="m-orange" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="7" markerHeight="5" orient="auto"><path d="M0,0 L10,3.5 L0,7z" fill="#f7834f"/></marker>
+  <marker id="m-purple" viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="7" markerHeight="5" orient="auto"><path d="M0,0 L10,3.5 L0,7z" fill="#b084f5"/></marker>
+  <marker id="m-grey"   viewBox="0 0 10 7" refX="9" refY="3.5" markerWidth="7" markerHeight="5" orient="auto"><path d="M0,0 L10,3.5 L0,7z" fill="#9aa4bf"/></marker>
+</defs>
+
+<!-- ══ HERALD bounding box ══ -->
+<rect id="g-herald" x="192" y="14" width="505" height="462"
+      rx="14" fill="none" stroke="#252b45" stroke-width="1.5"
+      stroke-dasharray="8 5" opacity="0"/>
+<text id="g-herald-lbl" x="444" y="11" text-anchor="middle"
+      fill="#3d4560" font-size="9.5" font-weight="700" letter-spacing="2.5"
+      opacity="0">HERALD</text>
+
+<!-- ══ INPUT A — SIDE ══ -->
+<g id="g-side" opacity="0">
+  <rect x="8" y="55" width="168" height="140" rx="10"
+        fill="#111525" stroke="#4aa3ff" stroke-width="1.5"/>
+  <text x="92" y="77" text-anchor="middle" fill="#4aa3ff"
+        font-size="9" font-weight="700" letter-spacing="1.3">SIDE · INSEE</text>
+  <line x1="22" y1="87" x2="162" y2="87" stroke="#1e2540" stroke-width="1"/>
+
+  <rect x="20" y="95" width="136" height="38" rx="5" fill="#141830"/>
+  <text x="88" y="111" text-anchor="middle" fill="#9aa4bf" font-size="8.5">Créations t-1</text>
+  <text x="88" y="126" text-anchor="middle" fill="#eef2ff" font-size="9" font-weight="700">side_lag_1</text>
+
+  <rect x="20" y="138" width="136" height="44" rx="5" fill="#141830"/>
+  <text x="88" y="155" text-anchor="middle" fill="#9aa4bf" font-size="8.5">Tendance annuelle</text>
+  <text x="88" y="172" text-anchor="middle" fill="#eef2ff" font-size="9" font-weight="700">growth_1y</text>
+
+  <text x="92" y="188" text-anchor="middle" fill="#4aa3ff"
+        font-size="7.5" font-style="italic">280 zones d'emploi · INSEE</text>
+</g>
+
+<!-- ══ INPUT B — URSSAF q-tensor ══ -->
+<g id="g-urssaf" opacity="0">
+  <rect x="8" y="233" width="168" height="102" rx="10"
+        fill="#111525" stroke="#b084f5" stroke-width="1.5"/>
+  <text x="92" y="255" text-anchor="middle" fill="#b084f5"
+        font-size="9" font-weight="700" letter-spacing="1.3">URSSAF</text>
+  <line x1="22" y1="264" x2="162" y2="264" stroke="#1e2540" stroke-width="1"/>
+  <text x="92" y="285" text-anchor="middle" fill="#9aa4bf" font-size="8.5">Emploi × secteur A10</text>
+  <text x="92" y="302" text-anchor="middle" fill="#eef2ff" font-size="9" font-weight="700">effectifs lag-1</text>
+  <text x="92" y="320" text-anchor="middle" fill="#b084f5"
+        font-size="7.5" font-style="italic">q-tensor</text>
+</g>
+
+<!-- ══ RIDGE AR ══ -->
+<g id="g-ridge" opacity="0">
+  <rect x="212" y="46" width="182" height="112" rx="10"
+        fill="#111525" stroke="#66bb6a" stroke-width="1.5"/>
+  <text x="303" y="68" text-anchor="middle" fill="#66bb6a"
+        font-size="9" font-weight="700" letter-spacing="1.3">BASELINE LINÉAIRE</text>
+  <line x1="226" y1="78" x2="380" y2="78" stroke="#1e2540" stroke-width="1"/>
+  <text x="303" y="110" text-anchor="middle" fill="#eef2ff"
+        font-size="22" font-weight="700" font-style="italic">Ridge AR</text>
+  <text x="303" y="133" text-anchor="middle" fill="#9aa4bf"
+        font-size="8.5">Régression pénalisée L2</text>
+  <text x="303" y="148" text-anchor="middle" fill="#66bb6a"
+        font-size="9" font-style="italic">→  ŷ_ridge</text>
+</g>
+
+<!-- ══ STGNN ══ -->
+<g id="g-stgnn" opacity="0">
+  <rect x="212" y="208" width="368" height="138" rx="10"
+        fill="#111525" stroke="#f7834f" stroke-width="1.5"/>
+  <text x="396" y="230" text-anchor="middle" fill="#f7834f"
+        font-size="9" font-weight="700" letter-spacing="1.3">RÉSEAU SPATIO-TEMPOREL</text>
+  <line x1="226" y1="240" x2="566" y2="240" stroke="#1e2540" stroke-width="1"/>
+
+  <!-- local sub -->
+  <rect x="224" y="248" width="152" height="84" rx="7" fill="#171b2d" stroke="#252b45"/>
+  <text x="300" y="267" text-anchor="middle" fill="#9aa4bf"
+        font-size="8.5" font-weight="700">PROFIL LOCAL</text>
+  <text x="300" y="296" text-anchor="middle" fill="#eef2ff"
+        font-size="22" font-weight="700" font-style="italic">α · e_z</text>
+  <text x="300" y="323" text-anchor="middle" fill="#b084f5"
+        font-size="8" font-style="italic">α ← gate</text>
+
+  <!-- plus circle -->
+  <circle cx="392" cy="290" r="15" fill="#141830" stroke="#f7834f" stroke-width="1.2"/>
+  <text x="392" y="296" text-anchor="middle" fill="#f7834f"
+        font-size="20" font-weight="800">+</text>
+
+  <!-- spatial sub -->
+  <rect x="410" y="248" width="156" height="84" rx="7" fill="#171b2d" stroke="#252b45"/>
+  <text x="488" y="267" text-anchor="middle" fill="#9aa4bf"
+        font-size="8.5" font-weight="700">VOISINAGE</text>
+  <text x="488" y="293" text-anchor="middle" fill="#eef2ff"
+        font-size="16" font-weight="700" font-style="italic">(1-α) · m_z</text>
+  <text x="488" y="313" text-anchor="middle" fill="#9aa4bf"
+        font-size="7.5" font-style="italic">γ_mob · A_mob + γ_geo · A_geo</text>
+  <text x="488" y="327" text-anchor="middle" fill="#9aa4bf"
+        font-size="7.5" font-style="italic">graphe interne</text>
+</g>
+
+<!-- ══ HC5 GATE ══ -->
+<g id="g-gate" opacity="0">
+  <rect x="212" y="372" width="212" height="82" rx="10"
+        fill="#111525" stroke="#b084f5" stroke-width="1.8"/>
+  <text x="318" y="394" text-anchor="middle" fill="#b084f5"
+        font-size="9" font-weight="700" letter-spacing="1.3">REGIME GATE · HC5</text>
+  <line x1="226" y1="403" x2="410" y2="403" stroke="#1e2540" stroke-width="1"/>
+  <text x="318" y="426" text-anchor="middle" fill="#eef2ff"
+        font-size="13" font-weight="700" font-style="italic">z_t  →  α_z,t</text>
+  <text x="318" y="444" text-anchor="middle" fill="#9aa4bf"
+        font-size="8">5 dim latentes · L0 sparse · auditor interne</text>
+</g>
+
+<!-- ══ COMBINER ⊕ ══ -->
+<g id="g-comb" opacity="0">
+  <circle cx="648" cy="278" r="30" fill="#111525" stroke="#9aa4bf" stroke-width="1.5"/>
+  <text x="648" y="287" text-anchor="middle" fill="#eef2ff"
+        font-size="26" font-weight="800">⊕</text>
+  <text x="648" y="323" text-anchor="middle" fill="#9aa4bf"
+        font-size="8" font-style="italic">ŷ_ridge + σ_z · ε</text>
+</g>
+
+<!-- ══ OUTPUT ══ -->
+<g id="g-output" opacity="0">
+  <rect x="712" y="42" width="180" height="396" rx="10"
+        fill="#111525" stroke="#26a69a" stroke-width="1.5"/>
+  <text x="802" y="65" text-anchor="middle" fill="#26a69a"
+        font-size="9" font-weight="700" letter-spacing="1.5">PRÉVISIONS</text>
+  <line x1="726" y1="74" x2="878" y2="74" stroke="#1e2540" stroke-width="1"/>
+
+  <!-- zones -->
+  <rect x="724" y="82" width="160" height="106" rx="7" fill="#171b2d" stroke="#26a69a33"/>
+  <text x="804" y="103" text-anchor="middle" fill="#26a69a"
+        font-size="8.5" font-weight="700">PAR ZONE D'EMPLOI</text>
+  <text x="804" y="142" text-anchor="middle" fill="#eef2ff"
+        font-size="28" font-weight="700" font-style="italic">ŷ_z,t</text>
+  <text x="804" y="164" text-anchor="middle" fill="#9aa4bf" font-size="8.5">280 zones · 2021–2025</text>
+  <text x="804" y="180" text-anchor="middle" fill="#9aa4bf"
+        font-size="8">walk-forward strict</text>
+
+  <!-- wmape badge -->
+  <rect x="724" y="200" width="160" height="64" rx="7" fill="#141830" stroke="#26a69a55"/>
+  <text x="804" y="222" text-anchor="middle" fill="#9aa4bf"
+        font-size="8" font-weight="700" letter-spacing=".8">WMAPE MOYEN</text>
+  <text x="804" y="254" text-anchor="middle" fill="#26a69a"
+        font-size="32" font-weight="800" id="wmape-num">0.020</text>
+
+  <!-- sectors -->
+  <rect x="724" y="276" width="160" height="146" rx="7" fill="#171b2d" stroke="#26a69a33"/>
+  <text x="804" y="297" text-anchor="middle" fill="#26a69a"
+        font-size="8.5" font-weight="700">SECTORIEL A10</text>
+  <text x="804" y="332" text-anchor="middle" fill="#eef2ff"
+        font-size="24" font-weight="700" font-style="italic">ŷ_z,t,s</text>
+  <text x="804" y="354" text-anchor="middle" fill="#9aa4bf" font-size="8">9 secteurs économiques</text>
+  <text x="804" y="370" text-anchor="middle" fill="#9aa4bf" font-size="8">Industrie · Construction</text>
+  <text x="804" y="386" text-anchor="middle" fill="#9aa4bf" font-size="8">Commerce · Finance</text>
+  <text x="804" y="402" text-anchor="middle" fill="#9aa4bf" font-size="8">Services · Immobilier · Arts</text>
+</g>
+
+<!-- ══ ARROWS ══ -->
+
+<!-- SIDE → Ridge AR -->
+<path id="a1" d="M176,114 L212,102"
+      stroke="#4aa3ff" stroke-width="1.6" fill="none" opacity="0"
+      marker-end="url(#m-blue)"/>
+
+<!-- SIDE → STGNN (curved down) -->
+<path id="a2" d="M176,160 Q192,255 212,268"
+      stroke="#4aa3ff" stroke-width="1.6" fill="none" opacity="0"
+      marker-end="url(#m-blue)"/>
+
+<!-- URSSAF → STGNN -->
+<path id="a3" d="M176,284 L212,284"
+      stroke="#b084f5" stroke-width="1.6" fill="none" opacity="0"
+      marker-end="url(#m-purple)"/>
+
+<!-- Gate → STGNN (upward) -->
+<path id="a4" d="M318,372 L318,346"
+      stroke="#b084f5" stroke-width="1.6" fill="none" opacity="0"
+      marker-end="url(#m-purple)"/>
+
+<!-- STGNN → Combiner -->
+<path id="a5" d="M580,278 L618,278"
+      stroke="#f7834f" stroke-width="1.6" fill="none" opacity="0"
+      marker-end="url(#m-orange)"/>
+
+<!-- Ridge → Combiner (arc, green) -->
+<path id="a6" d="M394,102 Q560,20 622,254"
+      stroke="#66bb6a" stroke-width="1.6" fill="none" opacity="0"
+      marker-end="url(#m-green)"/>
+
+<!-- Combiner → Output -->
+<path id="a7" d="M678,278 L712,278"
+      stroke="#9aa4bf" stroke-width="1.9" fill="none" opacity="0"
+      marker-end="url(#m-grey)"/>
+
+</svg>
+
+<div class="controls">
+  <button id="btn-replay">↻  Replay</button>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+gsap.defaults({ ease: 'power2.out' });
+
+// Animate stroke-dashoffset for "draw" effect
+function drawPath(id, dur) {
+  const el = document.getElementById(id);
+  const len = el.getTotalLength();
+  gsap.set(el, { strokeDasharray: len, strokeDashoffset: len, opacity: 1 });
+  return gsap.to(el, { strokeDashoffset: 0, duration: dur });
+}
+
+function buildTL() {
+  // Reset all
+  gsap.set(['#g-herald','#g-herald-lbl','#g-side','#g-urssaf',
+            '#g-ridge','#g-stgnn','#g-gate','#g-comb','#g-output',
+            '#a1','#a2','#a3','#a4','#a5','#a6','#a7'], { opacity: 0 });
+  gsap.set('#g-side',   { x: -18 });
+  gsap.set('#g-urssaf', { x: -18 });
+  gsap.set(['#g-ridge','#g-stgnn','#g-gate'], { y: 14 });
+  gsap.set('#g-comb',   { scale: 0.6, transformOrigin: '648px 278px' });
+  gsap.set('#g-output', { x: 18 });
+
+  const tl = gsap.timeline();
+
+  // 1 — HERALD frame
+  tl.to('#g-herald',     { opacity: 1, duration: 0.5 })
+    .to('#g-herald-lbl', { opacity: 1, duration: 0.3 }, '-=0.2')
+
+  // 2 — Inputs slide in from left
+    .to('#g-side',   { opacity: 1, x: 0, duration: 0.4 }, '+=0.05')
+    .to('#g-urssaf', { opacity: 1, x: 0, duration: 0.4 }, '-=0.2')
+
+  // 3 — Ridge block
+    .to('#g-ridge', { opacity: 1, y: 0, duration: 0.4 }, '+=0.05')
+
+  // 4 — Arrow: SIDE → Ridge
+    .add(() => drawPath('a1', 0.3))
+
+  // 5 — STGNN block
+    .to('#g-stgnn', { opacity: 1, y: 0, duration: 0.4 }, '+=0.05')
+
+  // 6 — Arrows: SIDE → STGNN + URSSAF → STGNN
+    .add(() => drawPath('a2', 0.45))
+    .add(() => drawPath('a3', 0.3), '-=0.3')
+
+  // 7 — HC5 Gate
+    .to('#g-gate', { opacity: 1, y: 0, duration: 0.4 }, '+=0.05')
+
+  // 8 — Arrow: Gate → STGNN
+    .add(() => drawPath('a4', 0.28))
+
+  // 9 — Combiner pops in
+    .to('#g-comb', { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(1.6)' }, '+=0.1')
+
+  // 10 — Ridge arc to Combiner (fade: dashed style preserved)
+    .to('#a6', { opacity: 1, duration: 0.55 })
+
+  // 11 — STGNN → Combiner
+    .add(() => drawPath('a5', 0.35), '-=0.35')
+
+  // 12 — Output slides in from right
+    .to('#g-output', { opacity: 1, x: 0, duration: 0.45 }, '+=0.08')
+
+  // 13 — Final arrow
+    .add(() => drawPath('a7', 0.3), '-=0.2')
+
+  // 14 — Subtle pulse on WMAPE value
+    .to('#wmape-num', {
+      fill: '#5dd4c8', duration: 0.3, yoyo: true, repeat: 1, ease: 'sine.inOut'
+    }, '+=0.1')
+
+  return tl;
+}
+
+let tl = buildTL();
+
+document.getElementById('btn-replay').addEventListener('click', () => {
+  tl.kill();
+  tl = buildTL();
+});
+</script>
+</body>
+</html>
