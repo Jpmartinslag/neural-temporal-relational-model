@@ -4,9 +4,10 @@ Reaggregates municipality-level births data → 25 NUTS3 zones.
 Downloads stock data (0009819) directly at NUTS3 level.
 
 Sources:
-  Births (0009702): Nascimentos Empresas × município × forma jurídica  (existing raw)
-  Births by CAE (0009703): Nascimentos Empresas × município × CAE section (existing raw)
-  Stock (0009819): Empresas × NUTS3 × Dimensão  (downloaded here)
+  Births old (0009702): Nascimentos Empresas × município × forma jurídica, NUTS 2013
+  Births old by CAE (0009703): Nascimentos Empresas × município × CAE section, NUTS 2013
+  Births new (0014098/0014099): same concepts, NUTS 2024, used for 2023-2024
+  Stock old/new (0009819/0014061): Empresas × NUTS3 × Dimensão
 
 NUT3 extraction: geocod[:3] for 7-char municipality codes.
 Zone IDs: 'PT_' + nut3_code  (e.g. 'PT_111', 'PT_170', 'PT_300')
@@ -58,7 +59,27 @@ RAW_DIR  = BASE / "data/external/portugal/raw/ine"
 PROC_DIR = BASE / "data/external/portugal/processed"
 PROC_DIR.mkdir(parents=True, exist_ok=True)
 
-YEARS = list(range(2008, 2023))
+YEARS = list(range(2008, 2025))
+STOCK_OLD = "0009819"
+STOCK_NEW = "0014061"
+
+NUTS2024_TO_HERALD_NUTS3 = {
+    "191": "16D",  # Regiao de Aveiro
+    "192": "16E",  # Regiao de Coimbra
+    "193": "16F",  # Regiao de Leiria
+    "194": "16G",  # Viseu Dao Lafoes
+    "195": "16H",  # Beira Baixa
+    "196": "16J",  # Beiras e Serra da Estrela
+    "1A0": "170",  # Grande Lisboa -> old AML
+    "1B0": "170",  # Peninsula de Setubal -> old AML
+    "1C1": "181",  # Alentejo Litoral
+    "1C2": "184",  # Baixo Alentejo
+    "1C3": "186",  # Alto Alentejo
+    "1C4": "187",  # Alentejo Central
+    "1D1": "16B",  # Oeste
+    "1D2": "16I",  # Medio Tejo
+    "1D3": "185",  # Leziria do Tejo
+}
 
 CAE_TO_A10 = {
     "A": "A",
@@ -77,7 +98,8 @@ ALL_A10 = ["A", "BE", "FZ", "GI", "JZ", "KZ", "LZ", "MN", "OPQ", "RSU"]
 
 
 def geocod_to_nuts3(geocod: str) -> str:
-    return str(geocod)[:3]
+    prefix = str(geocod)[:3]
+    return NUTS2024_TO_HERALD_NUTS3.get(prefix, prefix)
 
 
 def zone_id(nuts3: str) -> str:
@@ -100,6 +122,10 @@ def fetch_ine_indicator(indicator: str, year: int) -> list:
         json.dump(data, f)
     time.sleep(0.4)
     return data
+
+
+def stock_indicator_for_year(year: int) -> str:
+    return STOCK_NEW if year >= 2023 else STOCK_OLD
 
 
 def build_births_panel_nuts3() -> pd.DataFrame:
@@ -161,10 +187,10 @@ def build_qtensor_nuts3() -> pd.DataFrame:
 
 
 def build_stock_panel_nuts3() -> pd.DataFrame:
-    """Download 0009819 (Empresas × NUT3 × Dimensão) and extract Total."""
+    """Download stock (Empresas × NUT3 × Dimensão) and extract Total."""
     records = []
     for yr in YEARS:
-        data = fetch_ine_indicator("0009819", yr)
+        data = fetch_ine_indicator(stock_indicator_for_year(yr), yr)
         if not data or not isinstance(data, list):
             print(f"  {yr}: no data")
             continue
@@ -181,9 +207,15 @@ def build_stock_panel_nuts3() -> pd.DataFrame:
                 val = float(str(val).replace(" ", "").replace(",", "."))
             except (ValueError, TypeError):
                 val = float("nan")
-            records.append({"zone_id": zone_id(geo), "target_year": yr, "stock": val})
+            records.append({"zone_id": zone_id(geocod_to_nuts3(geo)), "target_year": yr, "stock": val})
         print(f"  {yr}: {sum(1 for r in records if r['target_year'] == yr)} zones")
-    df = pd.DataFrame(records).sort_values(["zone_id", "target_year"]).reset_index(drop=True)
+    df = (
+        pd.DataFrame(records)
+        .groupby(["zone_id", "target_year"], as_index=False)["stock"]
+        .sum()
+        .sort_values(["zone_id", "target_year"])
+        .reset_index(drop=True)
+    )
     return df
 
 
@@ -198,19 +230,19 @@ def preflight(births: pd.DataFrame, qtensor: pd.DataFrame, stock: pd.DataFrame) 
     print(f"  Tensor type       : sector_births (enterprise births by CAE→A10)")
     print(f"  Tensor label      : sector_births_tensor (NOT Q7 effectifs)")
     print(f"  Q7 equivalence    : NO — employment tensor requires GEP Quadros de Pessoal")
-    print(f"  Main window       : 2008-2022")
+    print(f"  Main window       : 2008-2024")
     print(f"  First eval year   : 2009 (after lag)")
 
     # --- Births ---
     zones_b = births["zone_id"].nunique()
     years_b = sorted(births["target_year"].unique())
-    exp_years_b = list(range(2008, 2023))
+    exp_years_b = YEARS
     print(f"\nBirths:")
     print(f"  Rows={len(births)}, zones={zones_b} (expected 25), years={years_b[0]}-{years_b[-1]}")
     if zones_b != 25:
         failures.append(f"births: expected 25 NUT3 zones, got {zones_b}")
     if sorted(years_b) != exp_years_b:
-        failures.append(f"births: year range {years_b[0]}-{years_b[-1]} != expected 2008-2022")
+        failures.append(f"births: year range {years_b[0]}-{years_b[-1]} != expected 2008-2024")
     nan_lag = births["side_lag_1"].isna().sum()
     if nan_lag != zones_b:
         failures.append(f"births: NaN side_lag_1={nan_lag}, expected {zones_b} (one per zone, first year)")
@@ -221,13 +253,13 @@ def preflight(births: pd.DataFrame, qtensor: pd.DataFrame, stock: pd.DataFrame) 
     zones_q = qtensor["zone_id"].nunique()
     a10_found = sorted(qtensor["a10"].unique())
     years_q = sorted(qtensor["target_year"].unique())
-    exp_years_q = list(range(2008, 2023))
+    exp_years_q = YEARS
     print(f"\nSector-births tensor (births by CAE→A10 — NOT employment):")
     print(f"  Rows={len(qtensor)}, zones={zones_q}, A10={len(a10_found)}, years={years_q[0]}-{years_q[-1]}")
     if zones_q != 25:
         failures.append(f"sector_births_tensor: expected 25 zones, got {zones_q}")
     if sorted(years_q) != exp_years_q:
-        failures.append(f"sector_births_tensor: year range {years_q[0]}-{years_q[-1]} != expected 2008-2022")
+        failures.append(f"sector_births_tensor: year range {years_q[0]}-{years_q[-1]} != expected 2008-2024")
     missing = set(ALL_A10) - set(a10_found)
     if missing:
         failures.append(f"sector_births_tensor: missing A10 codes: {missing}")
@@ -246,14 +278,14 @@ def preflight(births: pd.DataFrame, qtensor: pd.DataFrame, stock: pd.DataFrame) 
     # --- Stock ---
     zones_s = stock["zone_id"].nunique()
     years_s = sorted(stock["target_year"].unique())
-    exp_years_s = list(range(2008, 2023))
+    exp_years_s = YEARS
     nan_s = stock["stock"].isna().sum()
     print(f"\nStock:")
     print(f"  Rows={len(stock)}, zones={zones_s} (expected 25), years={years_s[0]}-{years_s[-1]}, NaN={nan_s}")
     if zones_s != 25:
         failures.append(f"stock: expected 25 zones, got {zones_s}")
     if sorted(years_s) != exp_years_s:
-        failures.append(f"stock: year range {years_s[0]}-{years_s[-1]} != expected 2008-2022")
+        failures.append(f"stock: year range {years_s[0]}-{years_s[-1]} != expected 2008-2024")
     if nan_s > 0:
         failures.append(f"stock: {nan_s} NaN stock values")
 

@@ -1,6 +1,6 @@
 """
 Portugal Phase 4 — Data Ingestion
-Downloads INE births data (0009702, 0009703) for all years 2008-2022
+Downloads INE births data for all years 2008-2024
 at municipality level (308 municípios).
 Outputs: portugal_births_panel.parquet (zone × year × births)
          portugal_births_cae_panel.parquet (zone × year × A10 sector × births)
@@ -20,12 +20,22 @@ OUT_DIR = Path(__file__).parents[2] / "data/external/portugal"
 RAW_DIR = OUT_DIR / "raw/ine"
 PROC_DIR = OUT_DIR / "processed"
 
-YEARS = list(range(2008, 2023))  # 2022 is last confirmed year
+YEARS = list(range(2008, 2025))
 INE_BASE = "https://www.ine.pt/ine/json_indicador/pindica.jsp"
 
 # INE indicator codes
-IND_BIRTHS_TOTAL = "0009702"   # births × município × forma jurídica
-IND_BIRTHS_CAE   = "0009703"   # births × município × CAE section
+IND_BIRTHS_TOTAL_OLD = "0009702"   # NUTS 2013, valid through 2022
+IND_BIRTHS_CAE_OLD   = "0009703"   # NUTS 2013, valid through 2022
+IND_BIRTHS_TOTAL_NEW = "0014098"   # NUTS 2024, 2023+
+IND_BIRTHS_CAE_NEW   = "0014099"   # NUTS 2024, 2023+
+
+
+def total_indicator_for_year(year: int) -> str:
+    return IND_BIRTHS_TOTAL_NEW if year >= 2023 else IND_BIRTHS_TOTAL_OLD
+
+
+def cae_indicator_for_year(year: int) -> str:
+    return IND_BIRTHS_CAE_NEW if year >= 2023 else IND_BIRTHS_CAE_OLD
 
 # A10 sector mapping from CAE/NACE section letters
 # INE 0009703 uses NACE section letters directly
@@ -118,9 +128,10 @@ def parse_births_cae(data: list, year: int) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def download_all(indicator: str, years: list, raw_dir: Path) -> list[pd.DataFrame]:
+def download_all(kind: str, years: list, raw_dir: Path) -> list[pd.DataFrame]:
     dfs = []
     for year in years:
+        indicator = total_indicator_for_year(year) if kind == "total" else cae_indicator_for_year(year)
         cache_path = raw_dir / f"{indicator}_{year}.json"
         if cache_path.exists():
             print(f"  {indicator} {year} — cached")
@@ -133,7 +144,7 @@ def download_all(indicator: str, years: list, raw_dir: Path) -> list[pd.DataFram
                 json.dump(data, f)
             time.sleep(0.3)  # be polite to INE API
 
-        if indicator == IND_BIRTHS_TOTAL:
+        if kind == "total":
             df = parse_births_total(data, year)
         else:
             df = parse_births_cae(data, year)
@@ -202,7 +213,7 @@ def main():
     PROC_DIR.mkdir(parents=True, exist_ok=True)
 
     print("=== Portugal births (0009702) — total ===")
-    total_dfs = download_all(IND_BIRTHS_TOTAL, YEARS, RAW_DIR)
+    total_dfs = download_all("total", YEARS, RAW_DIR)
     panel_total = build_total_panel(total_dfs)
     preflight_check(panel_total)
     out_total = PROC_DIR / "portugal_births_panel.csv"
@@ -210,7 +221,7 @@ def main():
     print(f"Saved: {out_total}")
 
     print("\n=== Portugal births × CAE section (0009703) ===")
-    cae_dfs = download_all(IND_BIRTHS_CAE, YEARS, RAW_DIR)
+    cae_dfs = download_all("cae", YEARS, RAW_DIR)
     panel_cae = build_cae_panel(cae_dfs)
     if not panel_cae.empty:
         out_cae = PROC_DIR / "portugal_births_cae_raw.csv"

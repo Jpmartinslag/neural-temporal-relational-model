@@ -23,7 +23,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-BASE = Path("/home/jpdark/Downloads/project_recomm/dataset")
+BASE = Path(__file__).resolve().parent.parent.parent
 
 # A10 sectors in France format (column order matches train_herald_v6.py)
 FRANCE_A10_SECTORS = ["BE", "FZ", "GI", "JZ", "KZ", "LZ", "MN", "OQ", "RU"]
@@ -89,17 +89,38 @@ def build_main_panel(births: pd.DataFrame, stock: pd.DataFrame,
                      mapping: pd.DataFrame) -> pd.DataFrame:
     """Build France-format main panel from births + stock panels."""
     zm = mapping.set_index("zone_id")["ZE2020"]
+
+    # Lookup: (ze_int, year) → births value for lag computation
+    births_lookup: dict[tuple[int, int], float] = {}
+    for _, br in births.iterrows():
+        ze_int = int(zm[br["zone_id"]])
+        y_val = float(br["y"]) if pd.notna(br["y"]) else np.nan
+        births_lookup[(ze_int, int(br["target_year"]))] = y_val
+
     rows = []
     for _, r in births.iterrows():
         ze = int(zm[r["zone_id"]])
+        ty = int(r["target_year"])
+        lag1 = float(r["side_lag_1"]) if pd.notna(r["side_lag_1"]) else np.nan
+        lag2 = births_lookup.get((ze, ty - 2), np.nan)
+        lag3 = births_lookup.get((ze, ty - 3), np.nan)
+        g1y = float(r["growth_1y"]) if pd.notna(r["growth_1y"]) else np.nan
+        # growth_2y = (lag1 / lag3 - 1), matching France v6 convention
+        if pd.notna(lag1) and pd.notna(lag3) and lag3 != 0:
+            g2y = float(lag1 / lag3 - 1.0)
+        else:
+            g2y = np.nan
         row = {
             "ZE2020": ze,
-            "target_year": int(r["target_year"]),
+            "target_year": ty,
             "node_idx": ze - 1,
             "side_establishment_creations_official": float(r["y"]) if pd.notna(r["y"]) else np.nan,
             "side_enterprise_creations_official": float(r["y"]) if pd.notna(r["y"]) else np.nan,
-            "side_lag_1": float(r["side_lag_1"]) if pd.notna(r["side_lag_1"]) else np.nan,
-            "growth_1y": float(r["growth_1y"]) if pd.notna(r["growth_1y"]) else np.nan,
+            "side_lag_1": lag1,
+            "side_lag_2": lag2,
+            "side_lag_3": lag3,
+            "growth_1y": g1y,
+            "growth_2y": g2y,
             # Flag columns — all 0: no France-specific sources
             "has_flores_source": 0,
             "has_side_stock_source": 0,
