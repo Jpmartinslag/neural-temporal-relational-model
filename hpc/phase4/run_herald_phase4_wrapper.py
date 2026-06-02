@@ -79,6 +79,48 @@ def _build_international_qtensor(
     return tensor
 
 
+def _graph_stats(adj_path: str) -> dict:
+    """Compute graph metadata from an adjacency CSV. Used for run provenance."""
+    import json as _json
+    df = pd.read_csv(adj_path)
+    mat = df.drop("source_idx", axis=1).values.astype(np.float64)
+    N = mat.shape[0]
+    diag = np.diag(mat)
+    off_mask = ~np.eye(N, dtype=bool)
+    return {
+        "graph_path": str(adj_path),
+        "graph_shape": [N, N],
+        "graph_density": float((mat[off_mask] > 0).sum() / (N * (N - 1))),
+        "graph_diag_mean": float(diag.mean()),
+        "graph_diag_min": float(diag.min()),
+        "graph_diag_max": float(diag.max()),
+        "graph_row_sum_min": float(mat.sum(axis=1).min()),
+        "graph_row_sum_max": float(mat.sum(axis=1).max()),
+        "graph_avg_off_neighbors": float((mat[off_mask] > 0).sum() / N),
+    }
+
+
+def _inject_graph_metadata(metadata_path: str, graph_meta: dict, graph_policy: str,
+                           tensor_policy: str, feature_policy: str, country: str,
+                           config_label: str) -> None:
+    """Append graph/config provenance fields to the trainer's metadata JSON."""
+    import json as _json
+    p = Path(metadata_path)
+    if not p.exists():
+        return
+    try:
+        data = _json.loads(p.read_text())
+    except Exception:
+        data = {}
+    data.update(graph_meta)
+    data["graph_policy"] = graph_policy
+    data["tensor_policy"] = tensor_policy
+    data["feature_policy"] = feature_policy
+    data["country"] = country
+    data["config_label"] = config_label
+    p.write_text(_json.dumps(data, indent=2), encoding="utf-8")
+
+
 def main() -> None:
     panel_path   = _require_env("PHASE4_PANEL")
     splits_path  = _require_env("PHASE4_SPLITS")
@@ -89,6 +131,26 @@ def main() -> None:
     qtensor_col  = _require_env("PHASE4_QTENSOR_COL")
     country      = _require_env("PHASE4_COUNTRY")
     mapping_path = str(Path(panel_path).parent / "zone_mapping.csv")
+
+    # Optional provenance vars (set by phase4d seed script)
+    graph_policy  = os.environ.get("PHASE4_GRAPH_POLICY", Path(geo_adj).stem)
+    tensor_policy = os.environ.get("PHASE4_TENSOR_POLICY", "unknown")
+    feature_policy = os.environ.get("PHASE4_FEATURE_POLICY", "unknown")
+    config_label  = os.environ.get("PHASE4_CONFIG_LABEL", "unknown")
+
+    # Compute graph stats before training (fail fast if adj path is wrong)
+    graph_meta = _graph_stats(geo_adj)
+    print(f"[wrapper] graph={graph_policy} path={geo_adj}")
+    print(f"[wrapper] graph_density={graph_meta['graph_density']:.3f} "
+          f"diag_mean={graph_meta['graph_diag_mean']:.3f} "
+          f"avg_neighbors={graph_meta['graph_avg_off_neighbors']:.1f}")
+
+    # Parse --regime-metadata-path from sys.argv so we can inject graph metadata after training
+    metadata_path: str | None = None
+    for i, arg in enumerate(sys.argv):
+        if arg == "--regime-metadata-path" and i + 1 < len(sys.argv):
+            metadata_path = sys.argv[i + 1]
+            break
 
     # Patch train_herald_v6 globals BEFORE the training modules import them.
     import train_herald_v6 as v6
@@ -112,6 +174,13 @@ def main() -> None:
     # Forward remaining argv to the training script.
     import train_herald_regime_experiment as trainer
     trainer.main()
+
+    # After training, inject graph provenance into metadata JSON
+    if metadata_path:
+        _inject_graph_metadata(
+            metadata_path, graph_meta, graph_policy,
+            tensor_policy, feature_policy, country, config_label,
+        )
 
 
 if __name__ == "__main__":
