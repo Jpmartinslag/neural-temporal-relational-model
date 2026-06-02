@@ -77,7 +77,8 @@ def _graph_stats(adj_path: str) -> dict:
     }
 
 
-def _inject_metadata(metadata_path: str, country: str, config_label: str) -> None:
+def _inject_metadata(metadata_path: str, country: str, config_label: str,
+                     panel_path: str = "") -> None:
     p = Path(metadata_path)
     if not p.exists():
         return
@@ -88,6 +89,7 @@ def _inject_metadata(metadata_path: str, country: str, config_label: str) -> Non
     data["graph_policy"]    = "identity"
     data["tensor_policy"]   = "zero"
     data["feature_policy"]  = "baseline_annual"
+    data["panel_path"]      = panel_path
     data["non_predictive_fields_excluded"] = _NON_PREDICTIVE_HERALD
     data["baseline_annual_features"]       = _BASELINE_HERALD_COLS
     p.write_text(json.dumps(data, indent=2))
@@ -169,7 +171,7 @@ def main() -> None:
 
     # ── Inject Phase 4E-A metadata into per-run JSON ─────────────────────
     if metadata_path:
-        _inject_metadata(metadata_path, country, config_label)
+        _inject_metadata(metadata_path, country, config_label, panel_path=panel_path)
         print(f"[4E-A wrapper] metadata injected → {metadata_path}")
 
 
