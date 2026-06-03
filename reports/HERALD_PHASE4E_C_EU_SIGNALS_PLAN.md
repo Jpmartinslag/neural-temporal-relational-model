@@ -119,6 +119,13 @@ a diferenciar anos bons de maus, não a diferenciar zonas.
 **Metadata validada**: `phase=4E-C`, `macro_feature_set` gravado, `is_falsification_test=True` para C5.  
 **Permutação C5**: shuffle temporal in-place com `np.random.default_rng(seed + 99991)`.
 
+## Nota operacional HPC — constraint `mpi`
+
+`run_herald_phase4e_c_array.sbatch` usa `#SBATCH --constraint="mpi"` para evitar nós `nompi`
+afetados pelo incidente HPC2 (nós H100 simatlabgpu02, igredgpu01, hpcgpu02, hpcgpu03 e
+pascalgpu01 A100 com problema MPI/log). Decisão operacional, não metodológica — não afeta
+resultados científicos.
+
 ## Para lançar no HPC
 
 ```bash
