@@ -163,6 +163,22 @@ MACRO_FEATURE_SETS = {
         "fr_climat_emploi_t_minus_1",
         "fr_bdf_nowcast_pib_t_minus_1",
     ],
+    # ── European panel — harmonised EU signals (Phase 4E-C) ───────────────
+    "eu_gdp": ["eu_gdp_growth_lag1"],
+    "eu_labor": ["eu_unemployment_rate_lag1", "eu_employment_rate_lag1"],
+    "eu_esi": ["eu_esi_lag1"],
+    "eu_all": [
+        "eu_gdp_growth_lag1",
+        "eu_unemployment_rate_lag1",
+        "eu_employment_rate_lag1",
+        "eu_esi_lag1",
+    ],
+    "eu_all_perm": [
+        "eu_gdp_growth_lag1",
+        "eu_unemployment_rate_lag1",
+        "eu_employment_rate_lag1",
+        "eu_esi_lag1",
+    ],
 }
 
 
@@ -235,7 +251,10 @@ _FALSIFICATION_LABELS = frozenset({
     "falsify_latent_inf_zero",
     "falsify_latent_frozen",
     "fold2021_probe",
+    "c5_all_eu_perm",
 })
+
+_EU_PERM_SETS = frozenset({"eu_all_perm"})
 
 
 def _peek_str(argv, flag, default=""):
@@ -281,6 +300,7 @@ def main():
     zeroed_quarterly = policy_zeros_quarterly(regime_args.feature_policy)
     qtensor_policy = regime_args.quarterly_tensor_policy
     perm_seed = _peek_int(remaining, "--seed", 42)
+    _eu_panel_permuted = [False]
 
     def patched_feature_columns(panel, ablation="full"):
         if regime_args.regime_mode == "manual_flags":
@@ -291,6 +311,12 @@ def main():
             cols = drop_source_flag_columns(cols)
         cols = apply_feature_policy(cols, regime_args.feature_policy)
         cols = append_macro_features(cols, panel, regime_args.macro_feature_set)
+        if regime_args.macro_feature_set in _EU_PERM_SETS and not _eu_panel_permuted[0]:
+            rng = np.random.default_rng(perm_seed + 99991)
+            eu_cols = [c for c in MACRO_FEATURE_SETS[regime_args.macro_feature_set] if c in panel.columns]
+            for col in eu_cols:
+                panel[col] = rng.permutation(panel[col].values)
+            _eu_panel_permuted[0] = True
         feature_columns_seen[:] = cols
         return cols
 

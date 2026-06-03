@@ -92,9 +92,60 @@ a diferenciar anos bons de maus, não a diferenciar zonas.
 
 ---
 
-## Próximos passos para lançar
+## Estado de implementação (2026-06-03)
 
-1. Confirmar disponibilidade dos ficheiros de sinais EU em `data/external/`
-2. Criar configs HPC em `hpc/phase4/` (análogo a `phase4e_b_configs.sh`)
-3. Testar smoke run (1 seed, 1 país, 1 sinal) antes de submeter bateria completa
-4. Submeter por país em paralelo (mínimo 10 seeds por config por país)
+**Scripts HPC prontos e smoke validado:**
+
+| Ficheiro | Estado |
+|----------|--------|
+| `hpc/phase4/phase4e_c_configs.sh` | ✅ criado |
+| `hpc/phase4/run_herald_phase4e_c_seed.sh` | ✅ criado |
+| `hpc/phase4/run_herald_phase4e_c_array.sbatch` | ✅ criado |
+| `hpc/phase4/smoke_test_phase4e_c.sh` | ✅ criado |
+| `hpc/phase4/submit_herald_phase4e_c.sh` | ✅ criado |
+| `hpc/phase4/audit_phase4e_c_results.py` | ✅ criado |
+| `src/modeles/train_herald_regime_experiment.py` | ✅ EU sets adicionados + permutação |
+
+**Sinais EU confirmados nos painéis** (0% NaN para GDP/ESI; 12–17% NaN para labor em BE/PT — anos antigos):
+
+| Sinal | FR | NL | BE | PT |
+|-------|----|----|----|----|
+| `eu_gdp_growth_lag1` | ✅ | ✅ | ✅ | ✅ |
+| `eu_esi_lag1` | ✅ | ✅ | ✅ | ✅ |
+| `eu_unemployment_rate_lag1` | ✅ | ✅ | ⚠️ 17% NaN | ⚠️ 12% NaN |
+| `eu_employment_rate_lag1` | ✅ | ✅ | ⚠️ 17% NaN | ⚠️ 12% NaN |
+
+**Smoke local**: PASS=4 FAIL=0 (EPOCHS=1, CPU, seed=42)  
+**Metadata validada**: `phase=4E-C`, `macro_feature_set` gravado, `is_falsification_test=True` para C5.  
+**Permutação C5**: shuffle temporal in-place com `np.random.default_rng(seed + 99991)`.
+
+## Para lançar no HPC
+
+```bash
+# 1. rsync para o HPC
+rsync -av hpc/phase4/ meso:~/project_recomm_herald_v6_2025_20260430/dataset/hpc/phase4/
+rsync -av src/modeles/ meso:~/project_recomm_herald_v6_2025_20260430/dataset/src/modeles/
+rsync -av data/processed/phase4e/ meso:~/project_recomm_herald_v6_2025_20260430/dataset/data/processed/phase4e/
+
+# 2. Verificar no HPC
+ssh meso
+cd ~/project_recomm_herald_v6_2025_20260430/dataset
+source ~/venvs/herald-v5-env.sh
+bash -n hpc/phase4/phase4e_c_configs.sh hpc/phase4/run_herald_phase4e_c_seed.sh hpc/phase4/run_herald_phase4e_c_array.sbatch
+python3 -m py_compile hpc/phase4/audit_phase4e_c_results.py
+
+# 3. Smoke remoto (antes de submeter)
+EPOCHS=1 DEVICE=cpu bash hpc/phase4/smoke_test_phase4e_c.sh
+
+# 4. Submit (só com autorização explícita)
+bash hpc/phase4/submit_herald_phase4e_c.sh
+```
+
+**Auditoria pós-run:**
+```bash
+python3 hpc/phase4/audit_phase4e_c_results.py \
+  --root-fr hpc_results/herald_phase4e_c_fr_<STAMP>_r1 \
+  --root-nl hpc_results/herald_phase4e_c_nl_<STAMP>_r1 \
+  --root-be hpc_results/herald_phase4e_c_be_<STAMP>_r1 \
+  --root-pt hpc_results/herald_phase4e_c_pt_<STAMP>_r1
+```
