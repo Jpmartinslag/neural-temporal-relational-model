@@ -20,12 +20,19 @@ breaks reproducibility. A general mechanism is more defensible scientifically.
 
 ## Experimental Design
 
-### Phase 4A — Clean baseline (no mask)
+> **⚠️ NOTA RETROACTIVA (2026-06-03): Phase 4A affectée par leakage temporel.**
+> La feature `growth_1y` dans les panels Phase 4A/4D était calculée comme
+> `(y[t] − y[t-1]) / y[t-1]`, utilisant l'objectif courant `y[t]` (fuite temporelle).
+> Les WMAPE Phase 4A sont **invalides comme baseline scientifique**.
+> Baseline causal: Phase 4E-A. Voir `reports/HERALD_PHASE4E_A2_DEGRADATION_AUDIT.md`.
+
+### Phase 4A — ~~Clean~~ **Legacy baseline (leakage-affected)** (no mask)
 - Train only on years/sectors that are **fully comparable across all countries**
 - Netherlands: 2015–2024 births (T001081 available, OPQ included)
 - Belgium: 2006–2020 (homogeneous series)
 - Portugal: 2008–2022 (homogeneous series)
-- **Purpose**: establish a clean floor with no methodological confound
+- **Purpose (original)**: establish a clean floor with no methodological confound
+- **Status**: `growth_1y` was leaky — WMAPEs inflated. Use Phase 4E-A as baseline instead.
 
 ### Phase 4B — Coverage mask
 - Extend training to partially-observed years/sectors

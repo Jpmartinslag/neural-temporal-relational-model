@@ -90,9 +90,29 @@ HERALD combine:
 
 ---
 
-## Généralisation internationale (Phase 4)
+## Généralisation internationale (Phase 4E — painel européen causal)
 
-HERALD utilise des données disponibles dans tous les pays européens avec système de sécurité sociale:
+> **⚠️ Note critique — leakage temporel Phase 4A/4D (2026-06-03)**
+>
+> Les batteries Phase 4A et Phase 4D calculaient `growth_1y[t] = (y[t] − y[t-1]) / y[t-1]`,
+> ce qui utilise l'objectif courant `y[t]`. Les WMAPE correspondants sont **invalides comme
+> baseline scientifique**. Phase 4E corrige cela avec `growth_1y[t] = (y[t-1] − y[t-2]) / y[t-2]`
+> (données passées uniquement). Voir `reports/HERALD_PHASE4E_A2_DEGRADATION_AUDIT.md`.
+>
+> **Baseline causal actuel : Phase 4E-A / Phase 4E-A2.**
+
+### Résultats Phase 4E (baseline causal, painel européen)
+
+| Pays | Phase 4E-A (n=10) | Phase 4E-A2 (n=10) | Config A2 |
+|------|-------------------|---------------------|-----------|
+| FR | 0.117044 ± 0.004437 | 0.103189 ± 0.008034 | fr_side2 |
+| NL | 0.103570 ± 0.008227 | 0.102759 ± 0.006983 | current_clean + zero |
+| BE | 0.154536 ± 0.008184 | 0.162253 ± 0.008524 | side5_lag1_growth1y + zero |
+| PT | 0.246521 ± 0.013689 | 0.234945 ± 0.009427 | side5_lag1_growth1y + effectifs_lag1 |
+
+Phase 4A/4D : référence historique uniquement — **affectées par fuite temporelle sur `growth_1y`**.
+
+### Sources de données internationales
 
 | Composant | France | Belgique | Pays-Bas | Portugal |
 |-----------|--------|---------|---------|---------|
@@ -101,10 +121,10 @@ HERALD utilise des données disponibles dans tous les pays européens avec syst�
 | Stock entreprises | SIDE | Statbel TVA | CBS 81578NED | INE 0009819 |
 | Territoire | 306 ZE | **42** arrondissements | 40 COROP | **25 NUTS3** |
 | Secteur | NAF Rev.2 | NACE-BEL → A10 | SBI 2008 → A10 | CAE Rev.3 → A10 |
-| Fenêtre modélisation | 2010–2025 | 2008–2020 | 2016–2024 | 2009–2022 |
+| Fenêtre Phase 4E | 2012–2024 | 2007–2024 | 2015–2025 | 2008–2024 |
 | Preflight | ✅ | ✅ | ✅ | ✅ (tensor framing ⚠️) |
 
-Voir `reports/HERALD_PHASE4_INTERNATIONAL_PLAN.md` pour le plan détaillé.
+Voir `reports/HERALD_PHASE4_INTERNATIONAL_PLAN.md` et `reports/HERALD_EUROPEAN_PANEL_STANDARD_PLAN.md`.
 
 ---
 
@@ -156,12 +176,18 @@ python3 hpc/regime/audit_herald_phase3e_qtensor_arch_results.py \
 - `reports/HERALD_PHASE2R_CONFIRMATORY_AUDIT.md`
 - `reports/HERALD_CURRENT_MODEL_DECISION_20260527.md`
 
-**Phase 4 (généralisation internationale):**
-- `data/external/PHASE4_DATA_STATUS.md` — statut panneaux NL/BE/PT, fenêtres, tensor framing
-- `src/data/ingest_belgium_panel.py` — pipeline Belgique (ONSS + Statbel TVA)
-- `src/data/ingest_netherlands_panel.py` — pipeline Pays-Bas (CBS)
-- `src/data/ingest_portugal_panel_nuts3.py` — pipeline Portugal (INE, reaggregation NUTS3)
-- `hpc/phase4/` — batteries HPC internationales (à préparer)
+**Phase 4E (généralisation internationale — painel européen causal):**
+- `reports/HERALD_PHASE4E_A2_DEGRADATION_AUDIT.md` — **audit leakage + baseline causal établi**
+- `reports/HERALD_EUROPEAN_PANEL_STANDARD_PLAN.md` — architecture du painel européen standardisé
+- `src/data/european_panel/build_european_panel.py` — pipeline causal (enforce_causal_growth)
+- `src/data/european_panel/validation.py` — garde causale automatique sur growth_1y/2y
+- `hpc/phase4/` — batteries HPC internationales Phase 4E-A/A2 complètes
+
+**Phase 4A/4D (legacy — leakage-affected, ne pas utiliser comme baseline):**
+- `data/external/PHASE4_DATA_STATUS.md` — statut panneaux NL/BE/PT (pipelines anciens)
+- `src/data/ingest_belgium_panel.py` — pipeline Belgique ancien (growth_1y leaky)
+- `src/data/ingest_netherlands_panel.py` — pipeline Pays-Bas ancien (growth_1y leaky)
+- `src/data/ingest_portugal_panel_nuts3.py` — pipeline Portugal ancien (growth_1y leaky)
 
 **Audit intégrité:**
 - `reports/HERALD_LEAK_AUDIT_FINAL_20260507.md`

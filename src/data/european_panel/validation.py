@@ -138,9 +138,19 @@ def validate_panel(
                     f"(max diff={discrepancy.max():.4f}). Possible lookahead contamination."
                 )
 
-    # growth_* must be derived from lagged values only.  The legacy HERALD
-    # country panels sometimes define growth_1y as (target_t - lag1) / lag1,
-    # which leaks the target.  The canonical European panel blocks that form.
+    # growth_* must be derived from lagged values only.
+    #
+    # KNOWN BUG (Phase 4A/4D): legacy ingest_*.py scripts computed
+    #   growth_1y[t] = (y[t] - y[t-1]) / y[t-1]
+    # which leaks the target year into a feature. This inflated Phase 4A/4D
+    # WMAPEs and invalidates them as scientific baselines.
+    #
+    # Phase 4E canonical contract (this check enforces it):
+    #   growth_1y[t] = (y[t-1] - y[t-2]) / y[t-2]   ← lag1_births and lag2_births only
+    #   growth_2y[t] = (y[t-1] - y[t-3]) / y[t-3]   ← lag1_births and lag3_births only
+    #
+    # Any panel failing these checks must NOT be used for training.
+    # See reports/HERALD_PHASE4E_A2_DEGRADATION_AUDIT.md for full analysis.
     growth_required = {"growth_1y", "growth_2y", "lag1_births", "lag2_births", "lag3_births"}
     if growth_required.issubset(df.columns):
         safe_g1 = (df["lag1_births"] - df["lag2_births"]) / df["lag2_births"]
@@ -153,17 +163,21 @@ def validate_panel(
                 diff = (df.loc[mask, col] - expected.loc[mask]).abs()
                 if (diff > 1e-8).any():
                     errors.append(
-                        f"{col} is not causal: expected feature from lagged births only "
-                        f"in {int((diff > 1e-8).sum())} rows (max diff={diff.max():.6g})."
+                        f"CAUSAL INTEGRITY FAILURE: {col} is not derived from lagged births only "
+                        f"({int((diff > 1e-8).sum())} rows affected, max diff={diff.max():.6g}). "
+                        f"Expected: (lag1-lag2)/lag2 for growth_1y, (lag1-lag3)/lag3 for growth_2y. "
+                        f"This panel cannot be used for training — matches legacy leaky formula."
                     )
 
         mask = leaky_g1.notna() & df["growth_1y"].notna()
         if mask.any():
             leaky_diff = (df.loc[mask, "growth_1y"] - leaky_g1.loc[mask]).abs()
-            if (leaky_diff < 1e-10).sum() > 0:
+            n_leaky = int((leaky_diff < 1e-10).sum())
+            if n_leaky > 0:
                 errors.append(
-                    "growth_1y matches (target_births - lag1_births) / lag1_births "
-                    f"in {int((leaky_diff < 1e-10).sum())} rows. This is target leakage."
+                    f"TARGET LEAKAGE DETECTED: growth_1y matches (target_births-lag1)/lag1 "
+                    f"in {n_leaky} rows. This is the Phase 4A/4D bug — using current target y[t] "
+                    f"as a feature. Panel must be rebuilt with enforce_causal_growth()."
                 )
 
     # ── 6. mask_target coherence ──────────────────────────────────────────

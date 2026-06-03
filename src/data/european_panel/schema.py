@@ -264,7 +264,9 @@ METADATA_FIELDS: list[str] = [f.name for f in FIELD_CATALOGUE if f.temporal_role
 ]
 
 # Safe annual features for Phase 4E-A baseline (no EU signals, no sector).
-# Equivalent to Phase 4A "no_qtensor_control" feature set.
+# Structurally equivalent to Phase 4A "no_qtensor_control" feature set,
+# but with growth_1y computed causally: (y[t-1]-y[t-2])/y[t-2].
+# Phase 4A growth_1y was leaky — do not compare WMAPEs directly.
 BASELINE_ANNUAL_FEATURES: list[str] = [
     "lag1_births",
     "lag2_births",

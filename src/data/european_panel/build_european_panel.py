@@ -63,16 +63,20 @@ _OUT_NAMES = {
 
 
 def enforce_causal_growth(df: pd.DataFrame) -> pd.DataFrame:
-    """Recompute growth_* from lagged births only.
+    """Recompute growth_* from lagged births only — Phase 4E causal contract.
 
-    Some legacy country panels store growth_1y as (y_t - y_{t-1}) / y_{t-1},
-    which leaks the target year into a feature.  The European canonical contract
-    requires features available before year t:
+    Phase 4A/4D LEGACY BUG: ingest_*.py scripts computed
+      growth_1y[t] = (y[t] - y[t-1]) / y[t-1]
+    which uses the target y[t] directly (lookahead leakage).
+    This inflated Phase 4A/4D WMAPEs and invalidates them as baselines.
 
-      growth_1y[t] = (y_{t-1} - y_{t-2}) / y_{t-2}
-      growth_2y[t] = (y_{t-1} - y_{t-3}) / y_{t-3}
+    Phase 4E canonical formula (this function enforces it):
+      growth_1y[t] = (y_{t-1} - y_{t-2}) / y_{t-2}   ← lag1_births, lag2_births
+      growth_2y[t] = (y_{t-1} - y_{t-3}) / y_{t-3}   ← lag1_births, lag3_births
 
-    This keeps Phase 4E causal without changing historical HERALD runs.
+    This function is called by build_european_panel before writing any panel.
+    validation.py checks the output and raises errors on leakage.
+    See reports/HERALD_PHASE4E_A2_DEGRADATION_AUDIT.md.
     """
     out = df.copy()
     required = {"lag1_births", "lag2_births", "lag3_births"}

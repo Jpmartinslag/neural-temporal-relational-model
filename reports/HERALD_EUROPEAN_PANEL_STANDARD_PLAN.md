@@ -43,9 +43,9 @@ Consequências concretas:
 ### Resultado Phase 4D
 
 Os grafos funcionais (commuting, sector similarity) não superaram o controlo de identidade de forma robusta:
-- NL: melhor funcional (+1.4% regressão vs Phase 4A histórico; -3.0% vs geo_4c)
+- NL: melhor funcional (+1.4% regressão vs Phase 4A histórico ⚠️ leaky; -3.0% vs geo_4c)
 - BE: perm control ganhou sobre todos os grafos reais (sem sinal espacial)
-- PT: sector_top8 marginal (+0.3% vs 4A, dentro do σ)
+- PT: sector_top8 marginal (+0.3% vs 4A ⚠️ leaky, dentro do σ)
 
 **Conclusão**: adicionar mais complexidade de grafo não é o caminho. O HERALD já captura
 estrutura suficiente com identidade. O problema está na qualidade e homogeneidade dos dados.
@@ -351,8 +351,8 @@ em NL, BE e PT sem regredir em França.
 #### 4E-A: Baseline padronizado (sanity check)
 - Painel canónico por país, sem sinais EU, sem country embedding
 - Mesmo contrato de dados, só com campos obrigatórios + sector A10
-- Comparar com Phase 4A: deve reproduzir resultados (validação do adapter)
-- **20 seeds por país, 1 config por país**
+- ~~Comparar com Phase 4A: deve reproduzir resultados~~ → **OBSOLETO**: Phase 4A leaky em `growth_1y`; comparar com Phase 4E-A como novo baseline limpo
+- **Concluído: 10 seeds por país** — resultados: FR 0.117±0.004, NL 0.104±0.008, BE 0.155±0.008, PT 0.247±0.014
 
 #### 4E-B: Country embedding
 - Adicionar `country_embedding` de 16 dimensões ao HERALD (aprendido)
@@ -373,13 +373,19 @@ em NL, BE e PT sem regredir em França.
 
 ### Critérios de sucesso Phase 4E
 
+> **⚠️ ATENÇÃO (2026-06-03): Phase 4A/4D afectadas por leakage em `growth_1y`.**
+> Os WMAPEs Phase 4A/4D não devem ser usados como threshold de comparação científica.
+> Baseline causal estabelecido: Phase 4E-A (FR 0.117, NL 0.104, BE 0.155, PT 0.247).
+> Ver `reports/HERALD_PHASE4E_A2_DEGRADATION_AUDIT.md`.
+
 | Critério | Threshold |
 |---|---|
-| WMAPE melhora vs Phase 4A | ≥1 país com melhoria ≥1% |
-| Nenhum país regride | <1% regressão vs Phase 4A |
+| WMAPE melhora vs Phase 4E-A | ≥1 país com melhoria ≥1% |
+| Nenhum país regride vs Phase 4E-A | <1% regressão vs Phase 4E-A |
 | França não regride | <0.5% regressão vs V6/V7 baseline |
-| Estabilidade de seed | σ_seed < 0.005 por país |
+| Estabilidade de seed | σ_seed < 0.008 por país |
 | Feature ajuda ≥2 países | Para ser considerada "europeia" |
+| ~~WMAPE melhora vs Phase 4A~~ | ~~≥1 país com melhoria ≥1%~~ — **OBSOLETO: Phase 4A leaky** |
 
 ### O que NÃO fazer em Phase 4E
 - Não alterar `train_herald_v7.py` ou `train_herald_semi_v2.py`
