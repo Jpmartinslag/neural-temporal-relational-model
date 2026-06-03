@@ -96,6 +96,7 @@ def main() -> None:
     side_a10 = _require_env("PHASE4E_SIDE_A10")
     geo_adj = _require_env("PHASE4E_GEO_ADJ")
     mob_adj = _require_env("PHASE4E_MOB_ADJ")
+    phase = os.environ.get("PHASE4E_PHASE", "4E-A2")
     label = os.environ.get("PHASE4E_CONFIG_LABEL", "unknown")
     feature_policy = os.environ.get("PHASE4E_FEATURE_POLICY", "unknown")
     tensor_policy = os.environ.get("PHASE4E_TENSOR_POLICY", "zero")
@@ -152,7 +153,7 @@ def main() -> None:
         _inject_metadata(
             metadata_path,
             {
-                "phase": "4E-A2",
+                "phase": phase,
                 "country": country,
                 "config_label": label,
                 "panel_path": panel_path,

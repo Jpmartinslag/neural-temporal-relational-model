@@ -1,6 +1,6 @@
 # HERALD European Panel Standard — Plan
 
-**Status**: Arquitectura implementada — adapters validados — Phase 4E-A pronta  
+**Status**: Arquitectura implementada — adapters validados — Phase 4E-B estabelecida (baseline causal final por país)  
 **Data**: 2026-05-31  
 **Contexto**: Após Phase 4D (grafos funcionais, resultados marginais), mudança de direcção  
 para padronização de dados em vez de complexificação de grafos.
@@ -354,11 +354,12 @@ em NL, BE e PT sem regredir em França.
 - ~~Comparar com Phase 4A: deve reproduzir resultados~~ → **OBSOLETO**: Phase 4A leaky em `growth_1y`; comparar com Phase 4E-A como novo baseline limpo
 - **Concluído: 10 seeds por país** — resultados: FR 0.117±0.004, NL 0.104±0.008, BE 0.155±0.008, PT 0.247±0.014
 
-#### 4E-B: Country embedding
-- Adicionar `country_embedding` de 16 dimensões ao HERALD (aprendido)
-- Treino multi-país (FR + NL + BE + PT) num único modelo
-- Ablação: com vs sem embedding
-- **20 seeds, 2 configs (com/sem embedding)**
+#### 4E-B: Feature-policy ablation ✅ CONCLUÍDA (2026-06-03)
+- Ablação de políticas de features no painel europeu causal: b0–b3 para todos os países, b4–b5 para PT
+- **10 seeds, 4 configs FR/NL/BE + 6 configs PT = 180 runs**
+- Vencedores por país: FR `b2_side2_zero` (0.1031), NL `b0_baseline_annual` (0.1017), BE `b3_current_clean_zero` (0.1488), PT `b5_side2_emp_lag1` (0.2286)
+- **Phase 4E-B = baseline causal final por país. Phase 4E-C deve comparar contra estes vencedores.**
+- Ver `reports/HERALD_PHASE4E_B_RESULTS_AUDIT.md` e `reports/HERALD_PHASE4E_B_FEATURE_POLICY_PLAN.md`
 
 #### 4E-C: EU signals — ciclo económico
 - Adicionar `eu_esi_lag1` e `eu_gdp_growth_lag1`
@@ -375,13 +376,13 @@ em NL, BE e PT sem regredir em França.
 
 > **⚠️ ATENÇÃO (2026-06-03): Phase 4A/4D afectadas por leakage em `growth_1y`.**
 > Os WMAPEs Phase 4A/4D não devem ser usados como threshold de comparação científica.
-> Baseline causal estabelecido: Phase 4E-A (FR 0.117, NL 0.104, BE 0.155, PT 0.247).
+> Baseline causal estabelecido: **Phase 4E-B** por país — FR 0.1031, NL 0.1017, BE 0.1488, PT 0.2286. Phase 4E-A/A2 são intermediários históricos.
 > Ver `reports/HERALD_PHASE4E_A2_DEGRADATION_AUDIT.md`.
 
 | Critério | Threshold |
 |---|---|
-| WMAPE melhora vs Phase 4E-A | ≥1 país com melhoria ≥1% |
-| Nenhum país regride vs Phase 4E-A | <1% regressão vs Phase 4E-A |
+| WMAPE melhora vs Phase 4E-B (por país) | ≥1 país com melhoria ≥1% |
+| Nenhum país regride vs Phase 4E-B (por país) | <1% regressão vs Phase 4E-B winner |
 | França não regride | <0.5% regressão vs V6/V7 baseline |
 | Estabilidade de seed | σ_seed < 0.008 por país |
 | Feature ajuda ≥2 países | Para ser considerada "europeia" |
