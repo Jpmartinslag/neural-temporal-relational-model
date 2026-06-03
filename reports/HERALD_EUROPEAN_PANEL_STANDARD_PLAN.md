@@ -361,11 +361,18 @@ em NL, BE e PT sem regredir em França.
 - **Phase 4E-B = baseline causal final por país. Phase 4E-C deve comparar contra estes vencedores.**
 - Ver `reports/HERALD_PHASE4E_B_RESULTS_AUDIT.md` e `reports/HERALD_PHASE4E_B_FEATURE_POLICY_PLAN.md`
 
-#### 4E-C: EU signals — ciclo económico
-- Adicionar `eu_esi_lag1` e `eu_gdp_growth_lag1`
-- Ablação separada por sinal e por país
-- Comparar: aumenta WMAPE? diminui? em que países?
-- **20 seeds, 4 configs (baseline, +ESI, +GDP, +ESI+GDP)**
+#### 4E-C: EU signals — ciclo económico ⬅ PRÓXIMA FASE
+- Baselines por país: FR `b2_side2_zero`, NL `b0_baseline_annual`, BE `b3_current_clean_zero`, PT `b5_side2_emp_lag1`
+- Sinais candidatos: `eu_gdp_growth_lag1`, `eu_unemployment_rate_lag1`, `eu_employment_rate_lag1`, `eu_esi_lag1`
+- Ablações:
+  - C0: winner 4E-B (baseline)
+  - C1: + `eu_gdp_growth_lag1`
+  - C2: + `eu_unemployment_rate_lag1` + `eu_employment_rate_lag1`
+  - C3: + `eu_esi_lag1`
+  - C4: + todos os sinais EU
+  - C5: sinais permutados / falsificação
+- Critério de vitória: sinal real bate baseline 4E-B; controle permutado não piora >1%; melhoria consistente em ≥2 países
+- Ver `reports/HERALD_PHASE4E_C_EU_SIGNALS_PLAN.md`
 
 #### 4E-D: EU signals — emprego e crédito
 - Adicionar `eu_employment_rate_lag1` e `eu_credit_standards_lag1`
