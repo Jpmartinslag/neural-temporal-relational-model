@@ -14,13 +14,14 @@ Usage:
         --root-fr hpc_results/herald_phase4e_a_fr_20260601_r1
 
 Acceptance criteria (Phase 4E-A sanity check):
-  - WMAPE within 2% of Phase 4A for NL/BE/PT (small regression acceptable)
-  - Small differences explained by:
-      * flag_forecast_safe corrected (first year now excluded)
-      * NON_PREDICTIVE_FIELDS excluded (COVID flags not in x_ann)
-      * Identity graph (same as Phase 4A)
-  - Seed stability: σ < 0.008
-  - If regression > 2%: must be investigated before Phase 4E-B/C/D
+  - WMAPE compared against Phase 4E-A itself for seed stability (σ < 0.008)
+  - Phase 4A reference values are listed for historical context ONLY.
+    Phase 4A/4D growth_1y was leaky: growth_1y[t] = (y[t]-y[t-1])/y[t-1] used the
+    target y[t] directly. Phase 4E corrects this to (y[t-1]-y[t-2])/y[t-2].
+    Phase 4A WMAPEs are INVALID as scientific baselines.
+    See reports/HERALD_PHASE4E_A2_DEGRADATION_AUDIT.md.
+  - Regression vs Phase 4A is EXPECTED and methodologically correct.
+  - The causal (Phase 4E) WMAPE is the only valid baseline for Phase 4E-B/C/D.
 """
 
 import argparse
@@ -32,11 +33,23 @@ import pandas as pd
 
 BASE = Path(__file__).resolve().parents[2]
 
+# ⚠️ LEAKAGE-AFFECTED — historical reference only, NOT valid scientific baselines.
+# Phase 4A/4D panels computed growth_1y[t] = (y[t]-y[t-1])/y[t-1], leaking target y[t].
+# These values are kept for provenance; do not use for comparison claims.
+# Use PHASE4E_A_WMAPE (Phase 4E-A results) as the causal baseline.
 PHASE4A_WMAPE = {
     "fr": None,       # Phase 4A FR used different pipeline (V6/V7); not directly comparable
-    "nl": 0.058184,
-    "be": 0.070900,
-    "pt": 0.169900,
+    "nl": 0.058184,   # LEAKY — inflated by growth_1y lookahead
+    "be": 0.070900,   # LEAKY — inflated by growth_1y lookahead
+    "pt": 0.169900,   # LEAKY — inflated by growth_1y lookahead
+}
+
+# Causal baseline (Phase 4E-A, 10 seeds, growth_1y corrected).
+PHASE4E_A_WMAPE = {
+    "fr": 0.117044,
+    "nl": 0.103570,
+    "be": 0.154536,
+    "pt": 0.246521,
 }
 
 
@@ -132,26 +145,17 @@ def audit_country(run_root, country, phase4a_wmape=None):
         best_std    = np.std(configs[best_label])
         delta_pct   = (best_mean - phase4a_wmape) / phase4a_wmape * 100
 
-        print(f"\n  Acceptance criteria vs Phase 4A (WMAPE={phase4a_wmape:.6f}):")
+        # Phase 4A reference is leaky — shown for provenance only.
+        print(f"\n  Phase 4A reference (LEAKY — historical only): {phase4a_wmape:.6f}")
+        print(f"  ⚠  Phase 4A/4D growth_1y used target y[t] — regression vs Phase 4A is EXPECTED.")
         print(f"  {'─'*50}")
 
         def chk(ok, msg):
             print(f"  {'✓' if ok else '✗'} {msg}")
 
-        chk(abs(delta_pct) <= 2.0,
-            f"Within 2% of Phase 4A: {best_mean:.6f} [{delta_pct:+.2f}%]")
         chk(best_std < 0.008,
             f"Seed stability σ < 0.008: σ={best_std:.6f}")
-        chk(delta_pct <= 0.0,
-            f"No regression (≤0%): {delta_pct:+.2f}%")
-
-        if delta_pct > 2.0:
-            print(f"\n  ⚠  REGRESSION > 2% — investigate before Phase 4E-B/C/D")
-            print(f"     Possible causes:")
-            print(f"     1. flag_forecast_safe corrected (−1 row/region) — expect tiny effect")
-            print(f"     2. NON_PREDICTIVE_FIELDS excluded — COVID/rebound flags removed from x_ann")
-            print(f"     3. Different Panel: European canonical vs Phase 4 original")
-            print(f"     4. Splits changed (FR: eval_start=2016 vs original)")
+        print(f"  — vs Phase 4A (leaky ref): {best_mean:.6f} [{delta_pct:+.2f}%] — informational only")
 
         if country == "be" and n_seeds < 10:
             print(f"\n  ⚠  BE: {n_seeds} seeds completed, expected 10")
@@ -215,7 +219,9 @@ def main() -> None:
         print(f"\n{'='*60}")
         print(f"  Phase 4E-A Cross-country summary")
         print(f"{'='*60}")
-        print(f"  {'Country':<8} {'WMAPE 4E-A':>12} {'vs 4A':>10} {'σ':>8} {'N':>4} {'Status':>10}")
+        print(f"  ⚠  'vs 4A' column is INFORMATIONAL ONLY — Phase 4A/4D were leaky.")
+        print(f"     Use Phase 4E-A WMAPE as the causal baseline for Phase 4E-B/C/D.")
+        print(f"  {'Country':<8} {'WMAPE 4E-A':>12} {'vs 4A (leaky)':>14} {'σ':>8} {'N':>4}")
         print(f"  {'─'*56}")
         for c, res in all_results.items():
             s = res.get("_summary", {})
@@ -223,10 +229,8 @@ def main() -> None:
                 print(f"  {c.upper():<8} {'no data':>32}")
                 continue
             delta = s["delta_pct"]
-            status = "✓ OK" if abs(delta) <= 2.0 else "⚠ REGRESS" if delta > 2.0 else "✓ IMPROVE"
-            ref_str = f"{s['phase4a_ref']:.4f}" if s["phase4a_ref"] else "—"
-            print(f"  {c.upper():<8} {s['best_mean']:>12.6f} {delta:>+9.2f}% {s['best_std']:>8.6f} "
-                  f"{s['n_total']:>4}   {status}")
+            print(f"  {c.upper():<8} {s['best_mean']:>12.6f} {delta:>+13.2f}% {s['best_std']:>8.6f} "
+                  f"{s['n_total']:>4}")
 
     print()
 

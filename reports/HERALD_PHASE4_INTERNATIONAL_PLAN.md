@@ -189,7 +189,8 @@ df.columns = [
     "target_year",  # années couvertes
     "y",            # créations établissements/entreprises (avec note si écart)
     "side_lag_1",   # y(t-1), dérivé
-    "growth_1y",    # (y(t)-y(t-1))/y(t-1), dérivé
+    "growth_1y",    # (y(t-1)-y(t-2))/y(t-2) — CAUSAL (lags seulement)
+                    # ⚠️ ANCIEN calcul (y(t)-y(t-1))/y(t-1) = LEAKAGE — invalide en Phase 4E
     "effectifs",    # employés par zone × secteur (ou NaN si Q_TENSOR absent)
     "masse_sal",    # masse salariale (ou NaN si absent)
 ]
