@@ -20,15 +20,15 @@ Phase 4E-A2 full battery (10 seeds per country) has completed and confirms the P
 
 | Country | Phase 4A (n=20) | Phase 4E-A (n=10) | Phase 4E-A2 (n=10) | Config A2 |
 |---------|-----------------|-------------------|---------------------|-----------|
-| FR | — (different pipeline) | 0.044371 ± 0.002537 | **0.103189 ± 0.008034** | fr_side2 |
-| NL | 0.058184 ± 0.002302 | 0.065946 ± 0.003276 | **0.102759 ± 0.006983** | current_clean + zero |
-| BE | 0.070913 ± — | 0.082228 ± 0.003050 | **0.162253 ± 0.008524** | side5_lag1_growth1y + zero |
-| PT | 0.169902 ± — | 0.248367 ± 0.010059 | **0.234945 ± 0.009427** | side5_lag1_growth1y + effectifs_lag1 |
+| FR | — (different pipeline) | 0.117044 ± 0.004437 | **0.103189 ± 0.008034** | fr_side2 |
+| NL | 0.058184 ± 0.002302 | 0.103570 ± 0.008227 | **0.102759 ± 0.006983** | current_clean + zero |
+| BE | 0.070913 ± — | 0.154536 ± 0.008184 | **0.162253 ± 0.008524** | side5_lag1_growth1y + zero |
+| PT | 0.169902 ± — | 0.246521 ± 0.013689 | **0.234945 ± 0.009427** | side5_lag1_growth1y + effectifs_lag1 |
 
 Phase 4A and Phase 4E-A use all available eval years (different ranges per country — see §3).  
 Phase 4A values are **leaky** (see §1) and listed for historical context only.
 
-Key observation: Phase 4E-A2 is worse than Phase 4E-A for NL and BE, but PT A2 improves vs PT A (tensor helps PT slightly). NL and BE regressions in A2 vs A are unexpected — see §4.
+Key observation: Phase 4E-A2 improves FR, NL, and PT versus Phase 4E-A, but BE worsens. PT A2 improves because the tensor helps slightly. BE remains the open case — see §4.
 
 ---
 
@@ -122,24 +122,24 @@ The gap exists even on identical year ranges → attributable to leakage fix, no
 
 ---
 
-## Finding 4 — PHASE 4E-A2 REGRESSION VS PHASE 4E-A (OPEN QUESTION)
+## Finding 4 — PHASE 4E-A2 VS PHASE 4E-A (OPEN QUESTION)
 
-Phase 4E-A2 is worse than Phase 4E-A for NL and BE, despite using "best Phase 4A configs":
+Phase 4E-A2 changes the feature/tensor protocol to approximate the old country-specific Phase 4A choices on the corrected European panel:
 
 | Country | Phase 4E-A | Phase 4E-A2 | Config change |
 |---------|-----------|------------|---------------|
-| FR | 0.044371 | 0.103189 | baseline_annual → fr_side2 (different feature set) |
-| NL | 0.065946 | 0.102759 | baseline_annual → current_clean + zero |
-| BE | 0.082228 | 0.162253 | baseline_annual → side5_lag1_growth1y + zero |
-| PT | 0.248367 | 0.234945 | baseline_annual → side5_lag1_growth1y + effectifs_lag1 |
+| FR | 0.117044 | 0.103189 | baseline_annual → fr_side2 |
+| NL | 0.103570 | 0.102759 | baseline_annual → current_clean + zero |
+| BE | 0.154536 | 0.162253 | baseline_annual → side5_lag1_growth1y + zero |
+| PT | 0.246521 | 0.234945 | baseline_annual → side5_lag1_growth1y + effectifs_lag1 |
 
-PT A2 improves vs A (births tensor helps). NL and BE worsen.
+FR, NL, and PT improve vs A. BE worsens.
 
 Phase 4E-A used `baseline_annual` which appears to mean all 5 SIDE features (lag1–3, growth_1y, growth_2y). Phase 4E-A2 uses country-specific Phase 4A best configs:
 - NL: `current_clean` drops lag2, lag3, growth_2y → keeps lag1 + growth_1y + stock
 - BE: `side5_lag1_growth1y` drops lag2, lag3, growth_2y → keeps lag1 + growth_1y only
 
-The NL/BE A2 configs use fewer features than Phase 4E-A. **Dropping lag2/lag3 may hurt on the European panel** even though it helped on the leaky Phase 4A panel — in the leaky panel, growth_1y carried almost all signal, making other features redundant. Without leakage, lag2/lag3 carry real information.
+The BE A2 config uses fewer features than Phase 4E-A. **Dropping lag2/lag3 may hurt on the European panel** even though it helped on the leaky Phase 4A panel — in the leaky panel, growth_1y carried almost all signal, making other features redundant. Without leakage, lag2/lag3 carry real information.
 
 This is a hypothesis, not confirmed. Requires a controlled ablation (Phase 4E-B with systematic feature policy sweep).
 
@@ -195,12 +195,12 @@ Phase 4A must not appear in scientific claims. New baselines:
 
 | Country | Phase 4E-A (all eval yrs) | Phase 4E-A2 (all eval yrs) | Recommended baseline |
 |---------|--------------------------|---------------------------|----------------------|
-| FR | 0.044371 ± 0.002537 | 0.103189 ± 0.008034 | Phase 4E-A (more features) |
-| NL | 0.065946 ± 0.003276 | 0.102759 ± 0.006983 | Phase 4E-A (less feature drop) |
-| BE | 0.082228 ± 0.003050 | 0.162253 ± 0.008524 | Phase 4E-A (side2 config hurts) |
-| PT | 0.248367 ± 0.010059 | 0.234945 ± 0.009427 | Phase 4E-A2 (tensor helps) |
+| FR | 0.117044 ± 0.004437 | 0.103189 ± 0.008034 | Phase 4E-A2 |
+| NL | 0.103570 ± 0.008227 | 0.102759 ± 0.006983 | Phase 4E-A2 (≈ empate, menor mean) |
+| BE | 0.154536 ± 0.008184 | 0.162253 ± 0.008524 | Phase 4E-A |
+| PT | 0.246521 ± 0.013689 | 0.234945 ± 0.009427 | Phase 4E-A2 (tensor helps) |
 
-The FR A2 regression (0.044→0.103) needs separate investigation — config change from `baseline_annual` to `fr_side2` changed feature set substantially.
+BE A2 regression needs a controlled feature-policy ablation before promoting `side5_lag1_growth1y` for Belgium.
 
 ---
 
@@ -209,11 +209,11 @@ The FR A2 regression (0.044→0.103) needs separate investigation — config cha
 ### 1. Retire Phase 4A as performance baseline (immediate)
 Use Phase 4E-A or Phase 4E-A2 (per-country, see table above).
 
-### 2. Understand NL/BE A2 regression
-Why does dropping lag2/lag3 hurt in Phase 4E but helped in Phase 4A? Run a single controlled ablation: Phase 4E panel + `side5_full` (all 5 features) to test the hypothesis.
+### 2. Understand BE A2 regression
+Why does dropping lag2/lag3 hurt Belgium in Phase 4E but helped in Phase 4A? Run a controlled ablation: Phase 4E panel + `side5_full` (all 5 features) versus `side5_lag1_growth1y`.
 
 ### 3. Investigate PT structural difficulty
-PT WMAPE on common years is +46% vs Phase 4A even after leakage removal. PT has fewer zones (25), shorter history, and higher variance. This may require architecture tuning, not just feature policy changes.
+PT remains structurally difficult after leakage removal. It has fewer zones (25), shorter history, and higher variance. This may require architecture tuning, not just feature policy changes.
 
 ### 4. Do not "fix" Phase 4A to recover old scores
 Phase 4E is the correct pipeline. Phase 4A was wrong. The WMAPE drop is expected and correct.
@@ -222,9 +222,18 @@ Phase 4E is the correct pipeline. Phase 4A was wrong. The WMAPE drop is expected
 
 ## Recommendation: Launch Phase 4E-B/C/D?
 
-**Yes.** Full battery complete, diagnosis confirmed.
+**Phase 4E-B complete (2026-06-03).** See `reports/HERALD_PHASE4E_B_RESULTS_AUDIT.md`.
 
-- New baselines established per country (Phase 4E-A or A2, see §above)
-- PT tensor confirmed useful — should be included in B/C/D
-- NL/BE feature policy needs re-evaluation with full ablation
-- FR config change was too aggressive in A2; revert toward `baseline_annual` features for Phase B
+> **Phase 4E-B supersedes Phase 4E-A/A2 as the causal baseline.**  
+> Phase 4E-A/A2 values in this document are historical intermediates only.
+
+Per-country clean baselines established by Phase 4E-B (180/180 runs):
+
+| Country | Phase 4E-B winner | WMAPE |
+|---------|------------------|-------|
+| FR | `b2_side2_zero` | 0.1031 ± 0.0084 |
+| NL | `b0_baseline_annual` | 0.1017 ± 0.0075 |
+| BE | `b3_current_clean_zero` | 0.1488 ± 0.0063 |
+| PT | `b5_side2_emp_lag1` | 0.2286 ± 0.0148 |
+
+Phase 4E-C must compare against these per-country winners.

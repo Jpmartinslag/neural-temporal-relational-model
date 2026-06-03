@@ -169,10 +169,14 @@ def validate_panel(
                         f"This panel cannot be used for training — matches legacy leaky formula."
                     )
 
-        mask = leaky_g1.notna() & df["growth_1y"].notna()
+        # A causal value can coincide numerically with the leaky expression in
+        # flat/local edge cases. Only flag leakage when growth_1y matches the
+        # leaky expression while failing the causal expression.
+        mask = leaky_g1.notna() & safe_g1.notna() & df["growth_1y"].notna()
         if mask.any():
             leaky_diff = (df.loc[mask, "growth_1y"] - leaky_g1.loc[mask]).abs()
-            n_leaky = int((leaky_diff < 1e-10).sum())
+            safe_diff = (df.loc[mask, "growth_1y"] - safe_g1.loc[mask]).abs()
+            n_leaky = int(((leaky_diff < 1e-10) & (safe_diff > 1e-8)).sum())
             if n_leaky > 0:
                 errors.append(
                     f"TARGET LEAKAGE DETECTED: growth_1y matches (target_births-lag1)/lag1 "

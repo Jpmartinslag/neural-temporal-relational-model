@@ -99,9 +99,22 @@ HERALD combine:
 > baseline scientifique**. Phase 4E corrige cela avec `growth_1y[t] = (y[t-1] − y[t-2]) / y[t-2]`
 > (données passées uniquement). Voir `reports/HERALD_PHASE4E_A2_DEGRADATION_AUDIT.md`.
 >
-> **Baseline causal actuel : Phase 4E-A / Phase 4E-A2.**
+> **Baseline causal actuel : Phase 4E-B (par pays — feature-policy ablation 180 runs).**
 
-### Résultats Phase 4E (baseline causal, painel européen)
+### Résultats Phase 4E-B (baseline causal final, 10 seeds par pays)
+
+| Pays | Baseline limpo | WMAPE | Config | Interprétation |
+|------|---------------|-------|--------|---------------|
+| FR | `b2_side2_zero` | 0.1031 ± 0.0084 | lag1 + causal growth1, zero tensor | modèle simple gagne |
+| NL | `b0_baseline_annual` | 0.1017 ± 0.0075 | historique complet 5 features | historique complet gagne; side2 dégrade (+25%) |
+| BE | `b3_current_clean_zero` | 0.1488 ± 0.0063 | current_clean, zero tensor | current_clean gagne; side2 dégrade |
+| PT | `b5_side2_emp_lag1` | 0.2286 ± 0.0148 | lag1 + growth1 + tensor emploi | tensor Eurostat/ARDECO gagne |
+
+Phase 4E-C doit comparer contre ces vencedores par pays — pas contre Phase 4E-A.  
+Phase 4A/4D : référence historique uniquement — **affectées par fuite temporelle sur `growth_1y`**.
+
+<details>
+<summary>Résultats intermédiaires Phase 4E-A/A2 (historique)</summary>
 
 | Pays | Phase 4E-A (n=10) | Phase 4E-A2 (n=10) | Config A2 |
 |------|-------------------|---------------------|-----------|
@@ -110,7 +123,7 @@ HERALD combine:
 | BE | 0.154536 ± 0.008184 | 0.162253 ± 0.008524 | side5_lag1_growth1y + zero |
 | PT | 0.246521 ± 0.013689 | 0.234945 ± 0.009427 | side5_lag1_growth1y + effectifs_lag1 |
 
-Phase 4A/4D : référence historique uniquement — **affectées par fuite temporelle sur `growth_1y`**.
+</details>
 
 ### Sources de données internationales
 
@@ -177,11 +190,13 @@ python3 hpc/regime/audit_herald_phase3e_qtensor_arch_results.py \
 - `reports/HERALD_CURRENT_MODEL_DECISION_20260527.md`
 
 **Phase 4E (généralisation internationale — painel européen causal):**
-- `reports/HERALD_PHASE4E_A2_DEGRADATION_AUDIT.md` — **audit leakage + baseline causal établi**
+- `reports/HERALD_PHASE4E_B_RESULTS_AUDIT.md` — **baseline causal final par pays (Phase 4E-B)**
+- `reports/HERALD_PHASE4E_B_FEATURE_POLICY_PLAN.md` — design de la feature-policy ablation
+- `reports/HERALD_PHASE4E_A2_DEGRADATION_AUDIT.md` — audit leakage Phase 4A + historique 4E-A/A2
 - `reports/HERALD_EUROPEAN_PANEL_STANDARD_PLAN.md` — architecture du painel européen standardisé
 - `src/data/european_panel/build_european_panel.py` — pipeline causal (enforce_causal_growth)
 - `src/data/european_panel/validation.py` — garde causale automatique sur growth_1y/2y
-- `hpc/phase4/` — batteries HPC internationales Phase 4E-A/A2 complètes
+- `hpc/phase4/` — batteries HPC Phase 4E-A/A2/B complètes
 
 **Phase 4A/4D (legacy — leakage-affected, ne pas utiliser comme baseline):**
 - `data/external/PHASE4_DATA_STATUS.md` — statut panneaux NL/BE/PT (pipelines anciens)

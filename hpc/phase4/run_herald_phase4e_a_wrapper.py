@@ -1,8 +1,8 @@
 """
 HERALD Phase 4E-A training wrapper.
 
-Purpose: sanity check that the European canonical panel reproduces Phase 4A
-behaviour without any architectural changes to HERALD.
+Purpose: run the European canonical panel as the causal Phase 4E-A baseline
+after retiring leakage-affected Phase 4A/4D results.
 
 What this wrapper does:
   1. Points train_herald_v6 globals to the Phase 4E panel (from prepare_phase4e_panel.py).
@@ -83,7 +83,7 @@ def _inject_metadata(metadata_path: str, country: str, config_label: str,
     if not p.exists():
         return
     data = json.loads(p.read_text())
-    data["phase"]           = "4E-A"
+    data["phase"]           = os.environ.get("PHASE4E_PHASE", "4E-A")
     data["country"]         = country
     data["config_label"]    = config_label
     data["graph_policy"]    = "identity"
@@ -96,6 +96,7 @@ def _inject_metadata(metadata_path: str, country: str, config_label: str,
 
 
 def main() -> None:
+    phase = os.environ.get("PHASE4E_PHASE", "4E-A")
     country      = _require_env("PHASE4E_COUNTRY")
     panel_path   = _require_env("PHASE4E_PANEL")
     splits_path  = _require_env("PHASE4E_SPLITS")
@@ -114,7 +115,7 @@ def main() -> None:
             sys.exit(1)
 
     graph_meta = _graph_stats(geo_adj)
-    print(f"[4E-A wrapper] country={country} config={config_label}")
+    print(f"[{phase} baseline wrapper] country={country} config={config_label}")
     print(f"[4E-A wrapper] panel={panel_path}")
     print(f"[4E-A wrapper] graph_density={graph_meta['graph_density']:.4f}  "
           f"diag_mean={graph_meta['graph_diag_mean']:.4f}")

@@ -192,7 +192,7 @@ Sequência de baterias:
 4. `phase4e_tensor_masks` — usar `mask_tensor`/`mask_employment` na loss e nas configs
 
 Critérios de vitória:
-- WMAPE melhora vs Phase 4A em ≥2 países
-- Nenhum país regride >1% vs Phase 4A
-- França não regride vs V6/V7 baseline
+- WMAPE melhora vs Phase 4E-A/A2 causal baseline em ≥2 países
+- Nenhum país regride >1% vs seu baseline causal limpo
+- França é analisada separadamente porque V6/V7 usa pipeline nacional distinto
 - Estabilidade: σ_seed < 0.005
