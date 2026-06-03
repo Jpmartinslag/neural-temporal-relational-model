@@ -8,6 +8,8 @@
 #SBATCH --time=4:00:00
 #SBATCH --output=logs/%x-%A_%a.out
 #SBATCH --error=logs/%x-%A_%a.err
+#SBATCH --constraint="mpi"
+# Avoid HPC2 nompi/H100 nodes affected by MPI slowdown/log issue.
 
 set -euo pipefail
 
