@@ -1,6 +1,6 @@
 # HERALD Phase 4E-C — EU Macro Signals Plan
 
-**Status**: Planeada — não lançada  
+**Status**: CONCLUÍDA — 2026-06-03/04 (Jobs 7426150–7426153)  
 **Depende de**: Phase 4E-B ✅ CONCLUÍDA (2026-06-03)  
 **Referência**: `reports/HERALD_EUROPEAN_PANEL_STANDARD_PLAN.md` §8
 
@@ -125,6 +125,39 @@ a diferenciar anos bons de maus, não a diferenciar zonas.
 afetados pelo incidente HPC2 (nós H100 simatlabgpu02, igredgpu01, hpcgpu02, hpcgpu03 e
 pascalgpu01 A100 com problema MPI/log). Decisão operacional, não metodológica — não afeta
 resultados científicos.
+
+## Resultados (2026-06-04)
+
+**Completude**: 240/240 runs (60 por país). Zero erros.  
+**Audit**: `reports/HERALD_PHASE4E_C_RESULTS_AUDIT.md`
+
+### Vencedores por país e decisão de baseline
+
+| País | Melhor config 4E-C | Δc0 | C5 permutado | Decisão |
+|------|--------------------|-----|--------------|---------|
+| FR | c2_labor | -0.0049 | +0.0075 (pior que c0) | **4E-B permanece baseline** — melhora <1%, sinal EU não justificado |
+| NL | c2_labor | -0.0033 | +0.0133 (pior que c0) | **4E-B permanece baseline** — melhora <1%, sinal EU não justificado |
+| BE | c4_all_eu | -0.0110 | -0.0048 (pior que c4) | **c4_all_eu candidato promovível** — bate c0 >1%, C5 não acompanha, ganho credível |
+| PT | c1_gdp | -0.0428 | -0.0174 (também bate c0 >1%) | **Bloqueado por C5** — C5 permutado supera c0 >1%, ganho pode ser artefato de regularização |
+
+### Interpretação dos sinais EU
+
+- **GDP (c1)**: só ajuda PT (−4.3pp); degrada FR+NL fortemente. Não universal.
+- **Labor (c2)**: melhora marginal consistente nos 4 países (<0.5pp cada), nunca cruza limiar >1%. Sinal mais estável mas fraco.
+- **ESI (c3)**: ajuda FR e BE marginalmente; degrada NL. Não consistente.
+- **All EU (c4)**: CONSISTENT (≥2 países) mas polarizado — BE+PT melhoram, FR+NL degradam. Regime macro diferente entre países ricos em dados vs. escassos.
+- **C5 permutado**: falhou o controle em PT (bate c0 >1%). Sugere que PT beneficia de regularização implícita com mais features, não de sinal económico real.
+
+### Próximos passos por país
+
+| País | Ação |
+|------|------|
+| FR | Encerrar 4E-C. Baseline = b2_side2_zero (4E-B). |
+| NL | Encerrar 4E-C. Baseline = b0_baseline_annual (4E-B). |
+| BE | Promover c4_all_eu condicionalmente. Precisa ablação isolada antes de claim publicável. |
+| PT | Não promover ainda. Investigar efeito regularização antes de nova bateria. |
+
+---
 
 ## Para lançar no HPC
 
