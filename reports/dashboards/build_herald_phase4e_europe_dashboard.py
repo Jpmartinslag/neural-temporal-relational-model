@@ -268,6 +268,80 @@ def build_zone_error_map(pred_df, zone_mapping_df):
     return zone_stats.to_dict("records")
 
 
+def build_zone_preds_by_year(country, pred_df, zone_mapping_df, geojson_feats, featureidkey):
+    """Build per-year per-zone prediction data for interactive choropleth.
+
+    Returns (zone_preds_by_year, all_years) where:
+      zone_preds_by_year[str(year)][nuts_id] = {
+          y_true, y_pred, wmape, name, zone_id
+      }
+    nuts_id is used as the Plotly choropleth location key.
+    """
+    if pred_df is None or zone_mapping_df is None:
+        return {}, []
+
+    # Build zone_id -> nuts_id and nuts_id -> name lookups
+    zone_to_nuts = {}
+    nuts_to_name = {}
+
+    if country == "FR":
+        if not ZE2020_GEOJSON_PATH.exists():
+            return {}, []
+        with open(ZE2020_GEOJSON_PATH) as fh:
+            ze_geo = json.load(fh)
+        ze_feats = ze_geo["features"]
+        ze_lookup = {ft["properties"]["ze2020"]: ft["properties"]["libze2020"] for ft in ze_feats}
+        for _, row in zone_mapping_df.iterrows():
+            padded = str(int(row["ZE2020"])).zfill(4)
+            zone_to_nuts[row["zone_id"]] = padded
+        for ze_code, name in ze_lookup.items():
+            nuts_to_name[ze_code] = name
+    elif country == "PT":
+        for zid in zone_mapping_df["zone_id"]:
+            zone_to_nuts[zid] = nuts3_for_pt(zid)
+        if geojson_feats:
+            for ft in geojson_feats:
+                nuts_to_name[ft["properties"]["NUTS_ID"]] = ft["properties"].get("NAME_LATN", ft["properties"].get("NUTS_NAME", ""))
+    elif country == "BE":
+        zone_to_nuts = {k: v for k, v in BE_NUTS3_MAP.items()}
+        if geojson_feats:
+            for ft in geojson_feats:
+                nuts_to_name[ft["properties"]["NUTS_ID"]] = ft["properties"].get("NAME_LATN", ft["properties"].get("NUTS_NAME", ""))
+    elif country == "NL":
+        for zid in zone_mapping_df["zone_id"]:
+            if zid in NL_COROP_TO_NUTS3:
+                zone_to_nuts[zid] = NL_COROP_TO_NUTS3[zid]
+        if geojson_feats:
+            for ft in geojson_feats:
+                nuts_to_name[ft["properties"]["NUTS_ID"]] = ft["properties"].get("NAME_LATN", ft["properties"].get("NUTS_NAME", ""))
+
+    # Merge predictions with zone_mapping to get zone_id
+    df = pred_df.merge(zone_mapping_df, on="ZE2020", how="left")
+    df["ape"] = df["abs_error"] / df["y_true"].clip(lower=1)
+
+    all_years = sorted(df["target_year"].unique())
+    zone_preds_by_year = {}
+
+    for yr in all_years:
+        yr_df = df[df["target_year"] == yr]
+        yr_data = {}
+        for _, row in yr_df.iterrows():
+            zid = row["zone_id"]
+            nuts = zone_to_nuts.get(zid)
+            if nuts is None:
+                continue
+            yr_data[nuts] = {
+                "y_true": round(float(row["y_true"]), 0),
+                "y_pred": round(float(row["y_pred"]), 1),
+                "wmape": round(float(row["ape"]) * 100, 2),
+                "name": nuts_to_name.get(nuts, zid),
+                "zone_id": zid,
+            }
+        zone_preds_by_year[str(yr)] = yr_data
+
+    return zone_preds_by_year, [str(y) for y in all_years]
+
+
 def load_geojson_country(country_code: str):
     """Load GeoJSON features for a country, returns list of features."""
     if not GEOJSON_PATH.exists():
@@ -397,7 +471,17 @@ def assemble_all_data():
         else:
             choropleth_b, geojson_b, featureidkey_b = None, None, None
 
-        # Per-territory time series
+        # Per-year per-zone predictions for interactive choropleth + click
+        geojson_feats_for_year = None
+        if country != "FR" and GEOJSON_PATH.exists():
+            with open(GEOJSON_PATH) as _f:
+                _g = json.load(_f)
+            geojson_feats_for_year = [ft for ft in _g["features"] if ft["properties"]["CNTR_CODE"] == country]
+        zone_preds_by_year, all_years = build_zone_preds_by_year(
+            country, pred_total_b, zone_map, geojson_feats_for_year, featureidkey_b
+        )
+
+        # Per-territory time series (zone_id keyed, all years)
         territory_ts = {}
         if pred_total_b is not None and zone_map is not None:
             df_merged = pred_total_b.merge(zone_map, on="ZE2020", how="left")
@@ -410,6 +494,12 @@ def assemble_all_data():
                     "abs_error": [round(v, 1) for v in grp_s["abs_error"].tolist()],
                 }
 
+        # Build nuts_id -> zone_id reverse mapping for click handler
+        nuts_to_zone_id = {}
+        for yr_data in zone_preds_by_year.values():
+            for nuts, info in yr_data.items():
+                nuts_to_zone_id[nuts] = info["zone_id"]
+
         country_data["4E-B"] = {
             "configs": configs_b,
             "winner": winner_b,
@@ -419,6 +509,9 @@ def assemble_all_data():
             "geojson": geojson_b,
             "featureidkey": featureidkey_b,
             "territory_ts": territory_ts,
+            "zone_preds_by_year": zone_preds_by_year,
+            "all_years": all_years,
+            "nuts_to_zone_id": nuts_to_zone_id,
         }
 
         # 4E-C
@@ -673,20 +766,32 @@ def render_html(data):
   <div class="section">
     <div class="section-title">Section 2 — Carte territoriale</div>
     <div class="section-note">
-      Erreur moyenne par territoire (MAPE local, baseline causal 4E-B).
-      Cartes disponibles pour les 4 pays : FR (zones d'emploi ZE2020, géométrie extraite du tableau de bord France),
-      NL (COROP CBS → NUTS3 Eurostat), BE et PT (NUTS3 Eurostat 2021).
+      Erreur WMAPE par territoire (baseline causal 4E-B) pour l'année sélectionnée.
+      Cliquez sur une zone pour afficher la série temporelle réel vs prédit.
+      Cartes : FR (zones d'emploi ZE2020), NL (COROP → NUTS3), BE et PT (NUTS3 Eurostat 2021).
     </div>
     <div class="controls">
       <label for="s2_country">Pays :</label>
-      <select id="s2_country" onchange="s2_update()">
+      <select id="s2_country" onchange="s2_reset_and_update()">
         <option value="FR">France (FR)</option>
         <option value="NL">Pays-Bas (NL)</option>
         <option value="BE">Belgique (BE)</option>
         <option value="PT">Portugal (PT)</option>
       </select>
+      <label for="s2_year">Année :</label>
+      <select id="s2_year" onchange="s2_draw_map()"></select>
     </div>
-    <div id="s2_content"></div>
+    <div style="display:grid; grid-template-columns:minmax(540px,1.4fr) minmax(360px,1fr); gap:14px; align-items:start;">
+      <div>
+        <div id="s2_map_container"><div class="no-map-msg">Chargement...</div></div>
+      </div>
+      <div class="card">
+        <div id="s2_zone_title" class="section-title" style="font-size:16px;border-bottom:none;margin-bottom:8px;">Cliquez une zone sur la carte</div>
+        <div id="s2_zone_ts" style="height:260px;"></div>
+        <div id="s2_zone_err" style="height:200px;margin-top:10px;"></div>
+        <div id="s2_zone_table" style="margin-top:10px;font-size:12px;"></div>
+      </div>
+    </div>
   </div>
 
   <!-- ════════════════════ SECTION 3 — Détail par territoire ════════════════════ -->
@@ -862,6 +967,9 @@ def render_html(data):
             "geojson": cd["4E-B"]["geojson"],
             "featureidkey": cd["4E-B"]["featureidkey"],
             "territory_ts": cd["4E-B"]["territory_ts"],
+            "zone_preds_by_year": cd["4E-B"]["zone_preds_by_year"],
+            "all_years": cd["4E-B"]["all_years"],
+            "nuts_to_zone_id": cd["4E-B"]["nuts_to_zone_id"],
             "sector_stats": cd["4E-C"]["sector_stats"],
             "sector_by_config": cd["4E-C"]["sector_by_config"],
             "year_wmape": country_year_wmape[country],
@@ -1001,15 +1109,58 @@ const MAP_CENTERS = {
   PT: {lat: 39.5, lon: -8.0, zoom: 5.0},
 };
 
+let S2_CURRENT_COUNTRY = "FR";
+let S2_CURRENT_ZONE = null;
+
+function s2_reset_and_update() {
+  S2_CURRENT_ZONE = null;
+  document.getElementById("s2_zone_title").textContent = "Cliquez une zone sur la carte";
+  const ets = document.getElementById("s2_zone_ts");
+  const eer = document.getElementById("s2_zone_err");
+  const etb = document.getElementById("s2_zone_table");
+  if (ets) { Plotly.purge(ets); ets.innerHTML = ""; }
+  if (eer) { Plotly.purge(eer); eer.innerHTML = ""; }
+  if (etb) etb.innerHTML = "";
+  s2_update();
+}
+
 function s2_update() {
   const country = document.getElementById("s2_country").value;
+  S2_CURRENT_COUNTRY = country;
   const d = ALL_DATA[country];
-  const el = document.getElementById("s2_content");
 
-  if (!d.choropleth || d.choropleth.length === 0) {
+  // Populate year selector
+  const ySel = document.getElementById("s2_year");
+  const prevYear = ySel.value;
+  ySel.innerHTML = "";
+  const years = d.all_years || [];
+  years.forEach(y => {
+    const opt = document.createElement("option");
+    opt.value = y; opt.textContent = y;
+    ySel.appendChild(opt);
+  });
+  // Keep previous year if still valid, else last year
+  if (years.includes(prevYear)) ySel.value = prevYear;
+  else if (years.length > 0) ySel.value = years[years.length - 1];
+
+  s2_draw_map();
+}
+
+function s2_draw_map() {
+  const country = S2_CURRENT_COUNTRY;
+  const d = ALL_DATA[country];
+  const year = document.getElementById("s2_year").value;
+  const el = document.getElementById("s2_map_container");
+
+  const yr_data = d.zone_preds_by_year && d.zone_preds_by_year[year];
+  const geojson = d.geojson;
+  const fkey = d.featureidkey || "properties.NUTS_ID";
+
+  if (!geojson || !yr_data || Object.keys(yr_data).length === 0) {
+    // Fallback: no geometry — show table
     let tbl = "";
     if (d.zone_stats && d.zone_stats.length > 0) {
-      tbl = `<div style="margin-top:10px;"><table><thead><tr><th>Zone ID</th><th>MAPE moy (%)</th><th>y_true moy</th><th>y_pred moy</th></tr></thead><tbody>`;
+      tbl = `<div style="margin-top:10px;overflow-x:auto;"><table><thead><tr><th>Zone ID</th><th>WMAPE moy (%)</th><th>Réel moy</th><th>Prédit moy</th></tr></thead><tbody>`;
       const sorted_zones = [...d.zone_stats].sort((a,b) => b.mape - a.mape);
       for (const z of sorted_zones) {
         tbl += `<tr><td>${z.zone_id}</td><td>${(z.mape*100).toFixed(2)}%</td><td>${z.y_true_mean.toFixed(0)}</td><td>${z.y_pred_mean.toFixed(0)}</td></tr>`;
@@ -1018,21 +1169,22 @@ function s2_update() {
     }
     el.innerHTML = `<div class="no-map-msg">
       <strong>Géométrie non disponible pour ${COUNTRY_NAMES[country]}.</strong><br>
-      Tableau des erreurs territoriales ci-dessous :
+      Données annuelles non disponibles. Tableau des erreurs moyennes ci-dessous.
     </div>${tbl}`;
     return;
   }
 
-  // Render choropleth
-  const rows = d.choropleth;
-  const geojson = d.geojson;
-  const ids = rows.map(r => r.nuts_id);
-  const names = rows.map(r => r.name);
-  const mapes = rows.map(r => r.mape);
-  const y_trues = rows.map(r => r.y_true);
-  const y_preds = rows.map(r => r.y_pred);
-  const fkey = d.featureidkey || "properties.NUTS_ID";
+  // Build arrays from yr_data
+  const ids = Object.keys(yr_data);
+  const wmapes = ids.map(k => yr_data[k].wmape);
+  const texts = ids.map(k => {
+    const z = yr_data[k];
+    return `<b>${z.name}</b><br>Zone: ${z.zone_id}<br>WMAPE: ${z.wmape}%<br>Réel: ${z.y_true.toFixed(0)}<br>Prédit: ${z.y_pred.toFixed(1)}`;
+  });
+
   const mc = MAP_CENTERS[country] || {lat:50.5, lon:4, zoom:4};
+  const wmapeMin = Math.min(...wmapes);
+  const wmapeMax = Math.max(...wmapes);
 
   el.innerHTML = `<div class="card"><div id="s2_map" style="height:500px;"></div></div>`;
 
@@ -1040,14 +1192,14 @@ function s2_update() {
     type: "choroplethmapbox",
     geojson: geojson,
     locations: ids,
-    z: mapes,
+    z: wmapes,
     featureidkey: fkey,
-    colorscale: [[0,"#1a3a2a"],[0.5,"#ffd180"],[1,"#ef5350"]],
-    colorbar: {title:"MAPE (%)", titlefont:{color:"#eef2ff"}, tickfont:{color:"#eef2ff"}},
-    text: names.map((n,i) => `${n}<br>MAPE: ${mapes[i]}%<br>Réel: ${y_trues[i]}<br>Prédit: ${y_preds[i]}`),
+    colorscale: [[0,"#1a3a2a"],[0.4,"#26a69a"],[0.7,"#ffd180"],[1,"#ef5350"]],
+    colorbar: {title:"WMAPE (%)", titlefont:{color:"#eef2ff"}, tickfont:{color:"#eef2ff"}},
+    text: texts,
     hovertemplate: "%{text}<extra></extra>",
-    zmin: Math.min(...mapes),
-    zmax: Math.max(...mapes),
+    zmin: wmapeMin,
+    zmax: wmapeMax,
   };
 
   Plotly.newPlot("s2_map", [trace], {
@@ -1056,7 +1208,86 @@ function s2_update() {
     font:{color:"#eef2ff"},
     margin:{l:0,r:0,t:20,b:0},
   });
+
+  // Attach plotly_click handler
+  const mapEl = document.getElementById("s2_map");
+  mapEl.removeAllListeners && mapEl.removeAllListeners("plotly_click");
+  mapEl.on("plotly_click", function(ev) {
+    if (ev.points && ev.points[0] && ev.points[0].location) {
+      const nuts_id = ev.points[0].location;
+      s2_draw_zone(nuts_id);
+    }
+  });
 }
+
+function s2_draw_zone(nuts_id) {
+  S2_CURRENT_ZONE = nuts_id;
+  const country = S2_CURRENT_COUNTRY;
+  const d = ALL_DATA[country];
+  const territory_ts = d.territory_ts || {};
+  const nuts_to_zone_id = d.nuts_to_zone_id || {};
+
+  // Get zone_id from nuts_id
+  const zone_id = nuts_to_zone_id[nuts_id] || nuts_id;
+
+  // Get name from any available year
+  let zone_name = zone_id;
+  const yr_data_any = d.zone_preds_by_year && Object.values(d.zone_preds_by_year)[0];
+  if (yr_data_any && yr_data_any[nuts_id]) {
+    zone_name = yr_data_any[nuts_id].name || zone_id;
+  }
+
+  document.getElementById("s2_zone_title").textContent = `${zone_name} — ${zone_id}`;
+
+  const ts = territory_ts[zone_id];
+  if (!ts) {
+    document.getElementById("s2_zone_ts").innerHTML = `<div style="color:var(--muted);padding:20px;">Série temporelle non disponible pour ${zone_id}.</div>`;
+    return;
+  }
+
+  const years = ts.years.map(String);
+  const PDARK = {paper_bgcolor:"#171b2d", plot_bgcolor:"#171b2d",
+    font:{color:"#eef2ff",size:11},
+    xaxis:{gridcolor:"#30364f",zerolinecolor:"#30364f"},
+    yaxis:{gridcolor:"#30364f",zerolinecolor:"#30364f"},
+    margin:{l:50,r:10,t:30,b:40},
+  };
+
+  // Time series: réel vs prédit
+  Plotly.newPlot("s2_zone_ts", [
+    {x:years, y:ts.y_true, name:"Réel", mode:"lines+markers",
+     line:{color:"#4aa3ff",width:2}, marker:{size:5}},
+    {x:years, y:ts.y_pred, name:"HERALD", mode:"lines+markers",
+     line:{color:"#f7834f",width:2,dash:"dash"}, marker:{size:5}},
+  ], {...PDARK,
+    title:{text:"Réel vs HERALD",font:{size:12}},
+    legend:{font:{color:"#eef2ff",size:10}},
+    xaxis:{...PDARK.xaxis, title:{text:"Année",font:{size:10}}},
+    yaxis:{...PDARK.yaxis, title:{text:"Créations",font:{size:10}}},
+  });
+
+  // Absolute error bars
+  const apes = ts.y_true.map((v,i) => v > 0 ? round2(ts.abs_error[i]/v*100) : 0);
+  Plotly.newPlot("s2_zone_err", [
+    {x:years, y:apes, name:"APE (%)", type:"bar",
+     marker:{color:apes.map(v => v > 25 ? "#ef5350" : v > 15 ? "#ffd180" : "#26a69a")}},
+  ], {...PDARK,
+    title:{text:"Erreur relative par année (%)",font:{size:12}},
+    xaxis:{...PDARK.xaxis, title:{text:"Année",font:{size:10}}},
+    yaxis:{...PDARK.yaxis, title:{text:"APE (%)",font:{size:10}}},
+  });
+
+  // Table
+  let tbl = '<table><thead><tr><th>Année</th><th>Réel</th><th>HERALD</th><th>Err. abs.</th><th>APE (%)</th></tr></thead><tbody>';
+  for (let i=0; i<ts.years.length; i++) {
+    const ape = ts.y_true[i] > 0 ? (ts.abs_error[i]/ts.y_true[i]*100).toFixed(1) : "—";
+    tbl += `<tr><td>${ts.years[i]}</td><td>${ts.y_true[i].toFixed(0)}</td><td>${ts.y_pred[i].toFixed(0)}</td><td>${ts.abs_error[i].toFixed(0)}</td><td>${ape}%</td></tr>`;
+  }
+  tbl += '</tbody></table>';
+  document.getElementById("s2_zone_table").innerHTML = tbl;
+}
+
+function round2(v) { return Math.round(v*100)/100; }
 
 // ── Section 3 ─────────────────────────────────────────────────────────────────
 function s3_update_zones() {
@@ -1197,6 +1428,12 @@ window.onload = function() {
   s4_update();
   s5_update();
 };
+
+// Also sync s2 country state on manual change
+document.addEventListener("DOMContentLoaded", function() {
+  const s2c = document.getElementById("s2_country");
+  if (s2c) S2_CURRENT_COUNTRY = s2c.value;
+});
 </script>
 </body>
 </html>
