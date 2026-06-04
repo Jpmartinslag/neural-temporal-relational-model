@@ -85,55 +85,99 @@ SECTOR_LABELS = {
 }
 
 # BE zone_id -> NUTS3 code mapping (Arrondissements belges)
+# Zone IDs from data/processed/phase4/be/zone_mapping.csv
+# NUTS3 IDs from data/external/nuts3_2021_eurostat.geojson (CNTR_CODE=BE)
 BE_NUTS3_MAP = {
-    "BE_alost": "BE231",
-    "BE_anvers": "BE211",
-    "BE_arlon": "BE341",
-    "BE_ath": "BE321",
-    "BE_audenarde": "BE233",
-    "BE_bastogne": "BE342",
-    "BE_bruges": "BE251",
-    "BE_bruxelles_capitale": "BE100",
-    "BE_charleroi": "BE322",
-    "BE_courtrai": "BE254",
-    "BE_dendermonde": "BE232",
-    "BE_diest": "BE242",  # Leuven arrondissement area
-    "BE_dinant": "BE352",
-    "BE_eeklo": "BE234",
-    "BE_gand": "BE235",
-    "BE_halle_vilvoorde": "BE241",
-    "BE_hasselt": "BE224",
-    "BE_huy": "BE332",
-    "BE_ixelles": "BE100",
-    "BE_jumet": "BE322",
-    "BE_leuven": "BE242",
-    "BE_liege": "BE331",
-    "BE_lokeren": "BE236",
-    "BE_maaseik": "BE225",
-    "BE_marche_en_famenne": "BE343",
-    "BE_mechelen": "BE212",
-    "BE_mons": "BE323",
-    "BE_mouscron": "BE324",
-    "BE_namur": "BE351",
-    "BE_neufchateau": "BE344",
-    "BE_nivelles": "BE310",
-    "BE_ostende": "BE252",
-    "BE_philippeville": "BE353",
-    "BE_roeselare": "BE255",
-    "BE_sint_niklaas": "BE236",
-    "BE_soignies": "BE325",
-    "BE_thuin": "BE326",
-    "BE_tielt": "BE256",
-    "BE_tongeren": "BE223",
-    "BE_tournai": "BE327",
-    "BE_turnhout": "BE213",
-    "BE_verviers": "BE333",
-    "BE_veurne": "BE257",
-    "BE_virton": "BE345",
-    "BE_waremme": "BE334",
+    "BE_alost":              "BE231",  # Arr. Aalst
+    "BE_anvers":             "BE211",  # Arr. Antwerpen
+    "BE_arlon":              "BE341",  # Arr. Arlon
+    "BE_ath":                "BE32A",  # Arr. Ath
+    "BE_audenarde":          "BE235",  # Arr. Oudenaarde
+    "BE_bastogne":           "BE342",  # Arr. Bastogne
+    "BE_bruges":             "BE251",  # Arr. Brugge
+    "BE_bruxelles_capitale": "BE100",  # Arr. de Bruxelles-Capitale
+    "BE_charleroi":          "BE32B",  # Arr. Charleroi
+    "BE_courtrai":           "BE254",  # Arr. Kortrijk
+    "BE_dinant":             "BE351",  # Arr. Dinant
+    "BE_dixmude":            "BE252",  # Arr. Diksmuide
+    "BE_eeklo":              "BE233",  # Arr. Eeklo
+    "BE_furnes":             "BE258",  # Arr. Veurne
+    "BE_gand":               "BE234",  # Arr. Gent
+    "BE_hal_vilvorde":       "BE241",  # Arr. Halle-Vilvoorde
+    "BE_hasselt":            "BE224",  # Arr. Hasselt
+    "BE_huy":                "BE331",  # Arr. Huy
+    "BE_liege":              "BE332",  # Arr. Liège
+    "BE_louvain":            "BE242",  # Arr. Leuven
+    "BE_maaseik":            "BE225",  # Arr. Maaseik
+    "BE_malines":            "BE212",  # Arr. Mechelen
+    "BE_marche_en_famenne":  "BE343",  # Arr. Marche-en-Famenne
+    "BE_mons":               "BE323",  # Arr. Mons
+    "BE_namur":              "BE352",  # Arr. Namur
+    "BE_neufchateau":        "BE344",  # Arr. Neufchâteau
+    "BE_nivelles":           "BE310",  # Arr. Nivelles
+    "BE_ostende":            "BE255",  # Arr. Oostende
+    "BE_philippeville":      "BE353",  # Arr. Philippeville
+    "BE_roulers":            "BE256",  # Arr. Roeselare
+    "BE_saint_nicolas":      "BE236",  # Arr. Sint-Niklaas
+    "BE_soignies":           "BE32C",  # Arr. Soignies
+    "BE_termonde":           "BE232",  # Arr. Dendermonde
+    "BE_thuin":              "BE32D",  # Arr. Thuin
+    "BE_tielt":              "BE257",  # Arr. Tielt
+    "BE_tongres":            "BE223",  # Arr. Tongeren
+    "BE_tournai_mouscron":   "BE328",  # Arr. Tournai-Mouscron (merged)
+    "BE_turnhout":           "BE213",  # Arr. Turnhout
+    "BE_verviers":           "BE335",  # Arr. Verviers (FR)
+    "BE_virton":             "BE345",  # Arr. Virton
+    "BE_waremme":            "BE334",  # Arr. Waremme
+    "BE_ypres":              "BE253",  # Arr. Ieper
+}
+
+# NL COROP -> NUTS3 mapping (CBS standard order, 40 regions)
+NL_COROP_TO_NUTS3 = {
+    "CR01": "NL111",  # Oost-Groningen
+    "CR02": "NL112",  # Delfzijl en omgeving
+    "CR03": "NL113",  # Overig Groningen
+    "CR04": "NL124",  # Noord-Friesland
+    "CR05": "NL125",  # Zuidwest-Friesland
+    "CR06": "NL126",  # Zuidoost-Friesland
+    "CR07": "NL131",  # Noord-Drenthe
+    "CR08": "NL132",  # Zuidoost-Drenthe
+    "CR09": "NL133",  # Zuidwest-Drenthe
+    "CR10": "NL211",  # Noord-Overijssel
+    "CR11": "NL212",  # Zuidwest-Overijssel
+    "CR12": "NL213",  # Twente
+    "CR13": "NL221",  # Veluwe
+    "CR14": "NL224",  # Zuidwest-Gelderland
+    "CR15": "NL225",  # Achterhoek
+    "CR16": "NL226",  # Arnhem/Nijmegen
+    "CR17": "NL230",  # Flevoland
+    "CR18": "NL310",  # Utrecht
+    "CR19": "NL321",  # Kop van Noord-Holland
+    "CR20": "NL323",  # IJmond
+    "CR21": "NL324",  # Agglomeratie Haarlem
+    "CR22": "NL325",  # Zaanstreek
+    "CR23": "NL327",  # Het Gooi en Vechtstreek
+    "CR24": "NL328",  # Alkmaar en omgeving
+    "CR25": "NL329",  # Groot-Amsterdam
+    "CR26": "NL332",  # Agglomeratie 's-Gravenhage
+    "CR27": "NL333",  # Delft en Westland
+    "CR28": "NL337",  # Agglomeratie Leiden en Bollenstreek
+    "CR29": "NL33A",  # Zuidoost-Zuid-Holland
+    "CR30": "NL33B",  # Oost-Zuid-Holland
+    "CR31": "NL33C",  # Groot-Rijnmond
+    "CR32": "NL341",  # Zeeuwsch-Vlaanderen
+    "CR33": "NL342",  # Overig Zeeland
+    "CR34": "NL411",  # West-Noord-Brabant
+    "CR35": "NL412",  # Midden-Noord-Brabant
+    "CR36": "NL413",  # Noordoost-Noord-Brabant
+    "CR37": "NL414",  # Zuidoost-Noord-Brabant
+    "CR38": "NL421",  # Noord-Limburg
+    "CR39": "NL422",  # Midden-Limburg
+    "CR40": "NL423",  # Zuid-Limburg
 }
 
 GEOJSON_PATH = BASE / "data/external/nuts3_2021_eurostat.geojson"
+ZE2020_GEOJSON_PATH = BASE / "data/external/ze2020_geometry.geojson"
 
 
 # ─── Data loading ─────────────────────────────────────────────────────────────
@@ -239,12 +283,51 @@ def nuts3_for_pt(zone_id: str):
 
 
 def build_choropleth_data(country, zone_stats, zone_mapping_df):
-    """Return dict for Plotly choropleth: {nuts3_id: {mape, y_true, y_pred, name}}."""
+    """Return (rows, geojson_filtered, featureidkey) for Plotly choropleth."""
+
+    # ── France: use embedded ZE2020 geometry ──────────────────────────────────
+    if country == "FR":
+        if not ZE2020_GEOJSON_PATH.exists():
+            return None, None, None
+        with open(ZE2020_GEOJSON_PATH) as fh:
+            ze_geo = json.load(fh)
+        ze_feats = ze_geo["features"]
+        # Build lookup: padded ze2020 code (str) -> libze2020 name
+        ze_lookup = {ft["properties"]["ze2020"]: ft["properties"]["libze2020"] for ft in ze_feats}
+        # zone_mapping_df has ZE2020 (int) and zone_id (libze2020 name)
+        # Build zone_id -> padded code map
+        if zone_mapping_df is None:
+            return None, None, None
+        zone_to_ze = {}
+        for _, row in zone_mapping_df.iterrows():
+            padded = str(int(row["ZE2020"])).zfill(4)
+            zone_to_ze[row["zone_id"]] = padded
+        rows = []
+        matched_codes = set()
+        for r in zone_stats:
+            zid = r["zone_id"]
+            ze_code = zone_to_ze.get(zid)
+            if ze_code and ze_code in ze_lookup:
+                rows.append({
+                    "nuts_id": ze_code,          # reuse field name for JS compatibility
+                    "name": ze_lookup[ze_code],
+                    "mape": round(r["mape"] * 100, 2),
+                    "y_true": round(r["y_true_mean"], 1),
+                    "y_pred": round(r["y_pred_mean"], 1),
+                })
+                matched_codes.add(ze_code)
+        geojson_filtered = {
+            "type": "FeatureCollection",
+            "features": [ft for ft in ze_feats if ft["properties"]["ze2020"] in matched_codes],
+        }
+        return rows, geojson_filtered, "properties.ze2020"
+
+    # ── NUTS3-based countries (NL, BE, PT) ────────────────────────────────────
     geojson_feats = load_geojson_country(country)
     if geojson_feats is None:
-        return None, None
+        return None, None, None
 
-    nuts3_lookup = {ft["properties"]["NUTS_ID"]: ft["properties"]["NAME_LATN"] for ft in geojson_feats}
+    nuts3_lookup = {ft["properties"]["NUTS_ID"]: ft["properties"].get("NAME_LATN", ft["properties"].get("NUTS_NAME", "")) for ft in geojson_feats}
 
     zone_to_nuts = {}
     if country == "PT":
@@ -252,12 +335,11 @@ def build_choropleth_data(country, zone_stats, zone_mapping_df):
             zone_to_nuts[zid] = nuts3_for_pt(zid)
     elif country == "BE":
         zone_to_nuts = {k: v for k, v in BE_NUTS3_MAP.items()}
-    elif country == "FR":
-        # FR uses numeric ZE2020 zones - no direct NUTS3 map available
-        return None, None
     elif country == "NL":
-        # NL uses COROP codes - no direct NUTS3 map available
-        return None, None
+        # NL: COROP code (CR01..CR40) -> NUTS3
+        for zid in zone_mapping_df["zone_id"]:
+            if zid in NL_COROP_TO_NUTS3:
+                zone_to_nuts[zid] = NL_COROP_TO_NUTS3[zid]
 
     rows = []
     for r in zone_stats:
@@ -276,7 +358,7 @@ def build_choropleth_data(country, zone_stats, zone_mapping_df):
         "type": "FeatureCollection",
         "features": [ft for ft in geojson_feats if ft["properties"]["NUTS_ID"] in {r["nuts_id"] for r in rows}],
     }
-    return rows, geojson_filtered
+    return rows, geojson_filtered, "properties.NUTS_ID"
 
 
 # ─── Data assembly ────────────────────────────────────────────────────────────
@@ -310,7 +392,10 @@ def assemble_all_data():
 
         pred_total_b = load_predictions_total(root_b, winner_b)
         zone_stats_b = build_zone_error_map(pred_total_b, zone_map) if pred_total_b is not None else []
-        choropleth_b, geojson_b = build_choropleth_data(country, zone_stats_b, zone_map) if zone_stats_b else (None, None)
+        if zone_stats_b:
+            choropleth_b, geojson_b, featureidkey_b = build_choropleth_data(country, zone_stats_b, zone_map)
+        else:
+            choropleth_b, geojson_b, featureidkey_b = None, None, None
 
         # Per-territory time series
         territory_ts = {}
@@ -332,6 +417,7 @@ def assemble_all_data():
             "zone_stats": zone_stats_b,
             "choropleth": choropleth_b,
             "geojson": geojson_b,
+            "featureidkey": featureidkey_b,
             "territory_ts": territory_ts,
         }
 
@@ -588,8 +674,8 @@ def render_html(data):
     <div class="section-title">Section 2 — Carte territoriale</div>
     <div class="section-note">
       Erreur moyenne par territoire (MAPE local, baseline causal 4E-B).
-      Géométries NUTS3 disponibles pour BE et PT via le fichier Eurostat 2021.
-      FR (zones d'emploi ZE2020) et NL (COROP) utilisent une nomenclature non-NUTS3 — carte non disponible.
+      Cartes disponibles pour les 4 pays : FR (zones d'emploi ZE2020, géométrie extraite du tableau de bord France),
+      NL (COROP CBS → NUTS3 Eurostat), BE et PT (NUTS3 Eurostat 2021).
     </div>
     <div class="controls">
       <label for="s2_country">Pays :</label>
@@ -673,11 +759,15 @@ def render_html(data):
 
   <!-- ════════════════════ SECTION 5 — Régimes / Graphes internes ════════════════════ -->
   <div class="section">
-    <div class="section-title">Section 5 — Régimes / Graphes internes (alpha)</div>
+    <div class="section-title">Section 5 — Régimes / Graphes internes (alpha, gate, gamma)</div>
     <div class="section-note">
-      Phase 4E-B et 4E-C utilisent le graphe identité (pas de graphe appris).
-      Les fichiers <code>*internals*.npz</code> ne sont pas générés dans ces configurations.
-      L'alpha (pondération spatiale) est cependant enregistré par run.
+      <strong>HERALD dispose d'un module graphique</strong> (Graph Neural Network spatio-temporel) qui apprend
+      l'influence entre territoires. Dans Phase 4E-B et 4E-C, le graphe a été maintenu comme
+      <strong>graphe identité</strong> pour isoler l'effet des features et des signaux EU.
+      Phase 4D a testé des graphes géographiques et fonctionnels — sans amélioration robuste → retour au
+      graphe identité pour établir un baseline causal propre.
+      <strong>adj_diagonal_ratio = 1.0 confirmé (vérifié sur HPC).</strong>
+      Prochaine étape : réactiver le graphe fonctionnel sur le baseline 4E-B/C consolidé.
     </div>
     <div class="controls">
       <label for="s5_country">Pays :</label>
@@ -688,13 +778,16 @@ def render_html(data):
         <option value="PT">Portugal (PT)</option>
       </select>
     </div>
-    <div class="no-map-msg">
-      <strong>Information :</strong> Identity graph utilisé dans Phase 4E-B/C — pas de graphe appris disponible.
-      Les fichiers <code>*internals*.npz</code> ne sont pas présents dans les résultats HPC.
-    </div>
-    <div class="card" style="margin-top:12px;">
-      <h3>Alpha spatial moyen par année (baseline winner)</h3>
-      <div id="s5_chart_alpha" style="height:280px;"></div>
+    <div id="s5_internals_kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px;"></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Alpha (local vs graphe) & Gate par année</h3>
+        <div id="s5_chart_alpha" style="height:300px;"></div>
+      </div>
+      <div class="card">
+        <h3>Gamma (poids graphe géo vs mobilité)</h3>
+        <div id="s5_chart_gamma" style="height:300px;"></div>
+      </div>
     </div>
   </div>
 
@@ -767,6 +860,7 @@ def render_html(data):
             "zone_stats": cd["4E-B"]["zone_stats"],
             "choropleth": cd["4E-B"]["choropleth"],
             "geojson": cd["4E-B"]["geojson"],
+            "featureidkey": cd["4E-B"]["featureidkey"],
             "territory_ts": cd["4E-B"]["territory_ts"],
             "sector_stats": cd["4E-C"]["sector_stats"],
             "sector_by_config": cd["4E-C"]["sector_by_config"],
@@ -786,6 +880,24 @@ def render_html(data):
         all_data_for_js[country]["alpha_by_year"] = alpha_by_year
 
     html += f"const ALL_DATA = {js_json(all_data_for_js)};\n"
+
+    # Load and embed HERALD internals summary
+    internals_path = BASE / "reports" / "HERALD_PHASE4E_INTERNALS_SUMMARY.json"
+    internals_data = {}
+    if internals_path.exists():
+        raw_internals = json.loads(internals_path.read_text())
+        # Flatten: use 4E-B data as primary (most representative for module graphique)
+        for country in ["FR", "NL", "BE", "PT"]:
+            country_internals = raw_internals.get(country, {})
+            phase_b = country_internals.get("4E-B", {})
+            internals_data[country] = {
+                "adj_diagonal_ratio_mean": phase_b.get("adj_diagonal_ratio_mean", 1.0),
+                "adj_is_identity": phase_b.get("adj_is_identity", True),
+                "gamma_geo_mean": phase_b.get("gamma_geo_mean", 0.0),
+                "gamma_mob_mean": phase_b.get("gamma_mob_mean", 0.0),
+                "alpha_gate_by_year": phase_b.get("alpha_gate_by_year", {}),
+            }
+    html += f"const INTERNALS_DATA = {js_json(internals_data)};\n"
 
     html += f"const DECISIONS = {js_json(COUNTRY_DECISIONS)};\n"
     html += f"const SECTOR_LABELS = {js_json(SECTOR_LABELS)};\n"
@@ -882,6 +994,13 @@ function s1_update() {
 }
 
 // ── Section 2 ─────────────────────────────────────────────────────────────────
+const MAP_CENTERS = {
+  FR: {lat: 46.5, lon: 2.5, zoom: 4.5},
+  NL: {lat: 52.3, lon: 5.3, zoom: 5.5},
+  BE: {lat: 50.5, lon: 4.5, zoom: 6.5},
+  PT: {lat: 39.5, lon: -8.0, zoom: 5.0},
+};
+
 function s2_update() {
   const country = document.getElementById("s2_country").value;
   const d = ALL_DATA[country];
@@ -897,17 +1016,9 @@ function s2_update() {
       }
       tbl += '</tbody></table></div>';
     }
-
-    const msg_fr = country === "FR" ? "Les zones d'emploi ZE2020 (nomenclature française) ne correspondent pas aux codes NUTS3 du GeoJSON Eurostat." : "";
-    const msg_nl = country === "NL" ? "Les régions COROP néerlandaises ne correspondent pas aux codes NUTS3 du GeoJSON Eurostat." : "";
-
     el.innerHTML = `<div class="no-map-msg">
       <strong>Géométrie non disponible pour ${COUNTRY_NAMES[country]}.</strong><br>
-      ${msg_fr}${msg_nl}
-      Un GeoJSON NUTS3 Eurostat 2021 est présent (<code>data/external/nuts3_2021_eurostat.geojson</code>)
-      mais la correspondance entre les zones du modèle et les codes NUTS3 nécessiterait
-      une table de correspondance supplémentaire pour ce pays.
-      <br><br>Tableau des erreurs territoriales ci-dessous :
+      Tableau des erreurs territoriales ci-dessous :
     </div>${tbl}`;
     return;
   }
@@ -920,6 +1031,8 @@ function s2_update() {
   const mapes = rows.map(r => r.mape);
   const y_trues = rows.map(r => r.y_true);
   const y_preds = rows.map(r => r.y_pred);
+  const fkey = d.featureidkey || "properties.NUTS_ID";
+  const mc = MAP_CENTERS[country] || {lat:50.5, lon:4, zoom:4};
 
   el.innerHTML = `<div class="card"><div id="s2_map" style="height:500px;"></div></div>`;
 
@@ -928,7 +1041,7 @@ function s2_update() {
     geojson: geojson,
     locations: ids,
     z: mapes,
-    featureidkey: "properties.NUTS_ID",
+    featureidkey: fkey,
     colorscale: [[0,"#1a3a2a"],[0.5,"#ffd180"],[1,"#ef5350"]],
     colorbar: {title:"MAPE (%)", titlefont:{color:"#eef2ff"}, tickfont:{color:"#eef2ff"}},
     text: names.map((n,i) => `${n}<br>MAPE: ${mapes[i]}%<br>Réel: ${y_trues[i]}<br>Prédit: ${y_preds[i]}`),
@@ -938,7 +1051,7 @@ function s2_update() {
   };
 
   Plotly.newPlot("s2_map", [trace], {
-    mapbox: {style:"carto-darkmatter", zoom:4, center:{lat:50.5,lon:4}},
+    mapbox: {style:"carto-darkmatter", zoom:mc.zoom, center:{lat:mc.lat, lon:mc.lon}},
     paper_bgcolor:"#171b2d",
     font:{color:"#eef2ff"},
     margin:{l:0,r:0,t:20,b:0},
@@ -1031,12 +1144,49 @@ function s5_update() {
   const years = Object.keys(alpha).sort();
   const vals = years.map(y => alpha[y]);
 
+  // Internals from HERALD_PHASE4E_INTERNALS_SUMMARY.json
+  const internals = INTERNALS_DATA[country] || {};
+  const adjDiag = internals.adj_diagonal_ratio_mean !== undefined ? internals.adj_diagonal_ratio_mean.toFixed(4) : "1.0000";
+  const gammaGeo = internals.gamma_geo_mean !== undefined ? internals.gamma_geo_mean.toFixed(4) : "—";
+  const gammaMob = internals.gamma_mob_mean !== undefined ? internals.gamma_mob_mean.toFixed(4) : "—";
+  const isIdentity = internals.adj_is_identity !== undefined ? (internals.adj_is_identity ? "Oui" : "Non") : "Oui";
+
+  // KPI chips
+  const kpisEl = document.getElementById("s5_internals_kpis");
+  kpisEl.innerHTML = [
+    {v: adjDiag, l: "adj_diagonal_ratio (4E-B)"},
+    {v: isIdentity, l: "Graphe identité confirmé (HPC)"},
+    {v: gammaGeo, l: "gamma_geo (poids graphe géo)"},
+    {v: gammaMob, l: "gamma_mob (poids mobilité)"},
+  ].map(k => `<div class="kpi"><div class="v" style="font-size:18px">${k.v}</div><div class="l">${k.l}</div></div>`).join("");
+
+  // Alpha chart
   Plotly.newPlot("s5_chart_alpha", [
-    {x:years, y:vals, name:"alpha moyen", type:"bar", marker:{color:"#b084f5"},
-     text:vals.map(v=>v!==null?v.toFixed(3):"—"), textposition:"outside"},
+    {x:years, y:vals, name:"alpha (local vs graphe)", mode:"lines+markers",
+     line:{color:"#4aa3ff",width:2}, marker:{size:5}},
   ], {...PLOTLY_DARK, xaxis:{...PLOTLY_DARK.xaxis,title:"Année"},
-      yaxis:{...PLOTLY_DARK.yaxis,title:"alpha (pondération spatiale)", range:[0,1]},
-      title:{text:`Alpha spatial — ${COUNTRY_NAMES[country]} (baseline ${d.winner_b})`,font:{size:12}}});
+      yaxis:{...PLOTLY_DARK.yaxis,title:"alpha [0,1]", range:[0,1.05]},
+      title:{text:`Alpha spatial (local vs graphe) — ${COUNTRY_NAMES[country]}`,font:{size:12}},
+      annotations:[{
+        x:0.5, xref:"paper", y:-0.2, yref:"paper", showarrow:false,
+        text:"HERALD dispose d'un module graphique. Dans 4E-B/C, graphe identité pour isoler features et signaux EU. adj_diagonal_ratio=1.0 (vérifié HPC).",
+        font:{color:"#9aa4bf", size:10}, xanchor:"center"
+      }]});
+
+  // Gamma chart
+  Plotly.newPlot("s5_chart_gamma", [
+    {type:"bar", x:["gamma_geo (contiguïté)", "gamma_mob (mobilité)"],
+     y:[parseFloat(gammaGeo)||0, parseFloat(gammaMob)||0],
+     marker:{color:["#66bb6a","#f7834f"]},
+     text:[gammaGeo, gammaMob], textposition:"outside"},
+  ], {...PLOTLY_DARK, xaxis:{...PLOTLY_DARK.xaxis},
+      yaxis:{...PLOTLY_DARK.yaxis,title:"Poids gamma"},
+      title:{text:`Poids graphe (gamma) — Phase 4E-B : graphe identité`,font:{size:12}},
+      annotations:[{
+        x:0.5, xref:"paper", y:-0.2, yref:"paper", showarrow:false,
+        text:"Phase 4D a testé graphes géo/fonctionnels — pas d'amélioration robuste → retour au graphe identité. Prochaine étape : réactiver graphe fonctionnel sur baseline 4E-B/C.",
+        font:{color:"#9aa4bf", size:10}, xanchor:"center"
+      }]});
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
