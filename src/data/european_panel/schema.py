@@ -68,7 +68,7 @@ FIELD_CATALOGUE: list[FieldSpec] = [
               "Number of enterprise / establishment births in year t. "
               "Concept must be consistent within a country across years; "
               "cross-country comparisons require source_quality_flags.",
-              "Eurostat BD (bd_hgnace_r) or national (SIDE/CBS/StatBel/INE-GEP)"),
+              "Eurostat BD (bd_hgnace_r) or national (SIDE/CBS/StatBel/INE)"),
 
     # ── Lagged target features (available at forecast time) ────────────────
     FieldSpec("lag1_births",   "float64", True,  "feature_t1",
@@ -207,7 +207,7 @@ FIELD_CATALOGUE: list[FieldSpec] = [
               "adapter"),
     FieldSpec("meta_source_label",   "str",   True,  "meta",
               "Short label for primary target data source: "
-              "SIDE | CBS | StatBel | INE-GEP | Eurostat-BD | …",
+              "SIDE | CBS | StatBel | INE | Eurostat-BD | …",
               "adapter"),
 ]
 

@@ -13,7 +13,7 @@ reproducibility.  This is explicitly a JRC/DG REGIO ARDECO continuation of the
 Eurostat regional accounts signal, not a pure Eurostat observation.
 
 Important geography note:
-The Portugal births panel uses the older 25 NUTS3 layout from the INE/GEP raw
+The Portugal births panel uses the older 25 NUTS3 layout from the INE raw
 series. Eurostat currently exposes some regions in the newer NUTS layout. This
 builder maps newer Eurostat codes back to the old HERALD zones. The only real
 aggregation is old PT_170, which combines current Grande Lisboa and Peninsula de

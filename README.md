@@ -130,7 +130,7 @@ Phase 4A/4D : référence historique uniquement — **affectées par fuite tempo
 | Composant | France | Belgique | Pays-Bas | Portugal |
 |-----------|--------|---------|---------|---------|
 | Créations entreprises | SIDE/SIRENE | Statbel TVA primo-assujettissements | CBS 83631NED | INE 0009702 |
-| Effectifs (Q-tensor) | URSSAF effectifs | ONSS localunit Q4 | CBS 83582NED | ⚠️ sector_births proxy (GEP Quadros de Pessoal non ingéré) |
+| Effectifs (Q-tensor) | URSSAF effectifs | ONSS localunit Q4 | CBS 83582NED | Eurostat `nama_10r_3empers` + ARDECO SNETZ 2024 |
 | Stock entreprises | SIDE | Statbel TVA | CBS 81578NED | INE 0009819 |
 | Territoire | 306 ZE | **42** arrondissements | 40 COROP | **25 NUTS3** |
 | Secteur | NAF Rev.2 | NACE-BEL → A10 | SBI 2008 → A10 | CAE Rev.3 → A10 |
@@ -187,32 +187,39 @@ complet** — distinction établie dans `HERALD_PHASE4H_CODE_CONCEPT_AUDIT_2026.
 | FR | ZE2020 | créations d'établissements (SIDE/SIRENE) |
 | NL | COROP | oprichtingen van vestigingen (CBS 83631NED, unité locale) |
 | BE | arrondissements | primo-assujettissements TVA (StatBel) |
-| PT | NUTS3 | entrées GEP / Quadros de Pessoal |
+| PT | NUTS3 | naissances d'entreprises INE (0009702/0014098) |
 
 Le painel **mélange 4 systèmes spatiaux** (pas du NUTS3 homogène → exposé au
-*Modifiable Areal Unit Problem*) et **4 concepts de target dont l'équivalence
+*Modifiable Areal Unit Problem*) et **plusieurs concepts de target dont l'équivalence
 sémantique n'est pas établie documentalement**. Ne pas présenter ces targets
 comme équivalents.
 
 ### Décision méthodologique actuelle
 
-**Ne pas étendre les pays ni augmenter l'architecture** avant d'avoir franchi deux
-gates :
+**Ne pas étendre les pays ni augmenter l'architecture.** Phase 4J a exécuté les
+deux gates :
 
-1. **Gate 1 — Audit sémantique officiel** des 4 targets : équivalence documentale
-   obligatoire (métadonnées officielles : unité, réactivation, fusions/scissions).
-   La comparaison numérique de séries est un diagnostic secondaire, **pas** une
-   preuve d'équivalence ; aucun seuil statistique décidé après observation.
-2. **Gate 2 — Benchmark de combinaison** : persistance, Ridge, moyenne 50/50,
-   poids choisis **uniquement sur les pays-source**, fallback persistance.
-   Conformal **exploratoire seulement**.
+1. **Gate sémantique : FAIL pour un target unique harmonisé.** FR/NL mesurent des
+   unités locales avec des règles différentes, BE une première inscription TVA,
+   PT des naissances d'entreprises INE. Le panneau actuel reste utilisable comme
+   benchmark de transfert entre tâches hétérogènes, pas comme preuve de
+   généralisation d'un target identique.
+2. **Gate combinaison agrégé : PASS, promotion finale : en attente.** La moyenne
+   fixe `0.5 × persistance + 0.5 × Ridge` réduit le WMAPE balancé de `0.093912` à
+   `0.087067` (-7.29 %) et améliore la moyenne dans les 4 pays. Mais elle dégrade
+   fortement certaines pires années; les poids appris sur pays-source ne
+   transfèrent pas de façon sûre.
 
-Ce n'est qu'après ces deux gates qu'on décidera d'Espagne/Allemagne, de graphes
-transfrontaliers ou d'une architecture plus grande.
+Les intervalles conformes rolling restent exploratoires: couverture raisonnable,
+mais largeur élevée en FR/PT. Prochaine décision: construire un nouveau target
+européen harmonisé, ou formaliser le problème comme transfert multi-tâche à
+targets explicitement hétérogènes.
 
 ### Rapports principaux
 
 - `reports/HERALD_PHASE4_NEXT_STEP_INDEPENDENT_AUDIT.md` — audit indépendant, matrice de décision, gates
+- `reports/HERALD_PHASE4J_A_FORECAST_COMBINATION_AUDIT.md` — combinaison, stabilité et incertitude
+- `reports/HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md` — audit officiel des concepts de target
 - `reports/HERALD_PHASE4H_B_RESULTS_AUDIT.md` — résultats LOCO corrigés (graphe réel, contrôle permutation)
 - `reports/HERALD_PHASE4I_A_RESULTS_AUDIT.md` — benchmark de transfert sélectif (persistance vs Ridge vs graphe)
 - `reports/HERALD_PHASE4H_CODE_CONCEPT_AUDIT_2026.md` — audit code/concept, définition du protocole
@@ -276,8 +283,10 @@ python3 hpc/regime/audit_herald_phase3e_qtensor_arch_results.py \
 - `src/data/european_panel/validation.py` — garde causale automatique sur growth_1y/2y
 - `hpc/phase4/` — batteries HPC Phase 4E-A/A2/B complètes
 
-**Phase 4G/4H/4I (généralisation LOCO 4 pays — état scientifique actuel):**
+**Phase 4G/4H/4I/4J (généralisation LOCO 4 pays — état scientifique actuel):**
 - `reports/HERALD_PHASE4_NEXT_STEP_INDEPENDENT_AUDIT.md` — audit indépendant + gates de décision
+- `reports/HERALD_PHASE4J_A_FORECAST_COMBINATION_AUDIT.md` — combinaison 50/50 (candidate), stabilité, conformal exploratoire
+- `reports/HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md` — audit officiel des targets (gate sémantique : FAIL, Path H/M)
 - `reports/HERALD_PHASE4H_B_RESULTS_AUDIT.md` — résultats LOCO corrigés
 - `reports/HERALD_PHASE4I_A_RESULTS_AUDIT.md` — benchmark de transfert sélectif
 - `reports/HERALD_PHASE4H_CODE_CONCEPT_AUDIT_2026.md` — audit code/concept + protocole

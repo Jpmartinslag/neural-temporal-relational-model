@@ -155,9 +155,9 @@ mensal 2021–2024. O tensor ONSS ainda cobre a janela antiga disponível no Pha
 
 | Grupo | Campo | Cobertura | Fonte |
 |---|---|---|---|
-| Target | `target_births` | 100% | INE/GEP Quadros de Pessoal |
-| Lags | `lag1_births` | 93.3% | GEP |
-| Sector | `sector_*` | 93.3% | GEP CAE → A10 (births by sector) ✓ |
+| Target | `target_births` | 100% | INE 0009702/0014098 |
+| Lags | `lag1_births` | 93.3% | INE |
+| Sector | `sector_*` | 93.3% | INE 0009703/0014099 CAE → A10 (births by sector) ✓ |
 | Sector | `mask_sector_a10` | 93.3% / 0% | 1 para anos com dados |
 | Stock | `stock_lag1` | 93.3% | INE |
 | EU signals | todos os `eu_*` | 0% | não carregados |
@@ -169,7 +169,7 @@ births por CAE. Phase 4E agora tem `portugal_qtensor_employment_eurostat_nuts3.c
 um tensor de emprego regional por sector (`EMP`, Eurostat `nama_10r_3empers`),
 mapeado de NUTS actual para as 25 regiões do painel HERALD.
 
-**Nota sector PT**: GEP publica births por CAE mapeados a A10. `sector_*` = births by sector
+**Nota sector PT**: INE publica births por CAE mapeados a A10. `sector_*` = births by sector
 (mesma grandeza que target), lagged t-1. Total sectorial = target_births do ano anterior
 (confirmado: max_diff = 0). Único país com sector A10 de births, além de França.
 
@@ -227,11 +227,21 @@ Todos os `eu_*` estão a NaN. Quando preenchidos em Phase 4E, devem seguir a reg
 | FR | `establishment_creation` | SIDE/SIRENE | ❌ com NL/BE/PT |
 | NL | `enterprise_birth` | CBS | ✓ com BE, PT |
 | BE | `enterprise_birth` | StatBel BCR | ✓ com NL, PT |
-| PT | `enterprise_birth` | INE-GEP | ✓ com NL, BE |
+| PT | `enterprise_birth` | INE | equivalência Eurostat a confirmar |
 
 **Implicação**: WMAPE cross-country FR vs NL/BE/PT não é directamente comparável.
 FR conta estabelecimentos (incluindo novas filiais), NL/BE/PT contam empresas.
 Para Phase 4E, manter avaliação separada por país. `flag_target_concept` documenta isto.
+
+> **Correção Phase 4J (2026-06-09) — superseca a coluna "Comparável entre si?"
+> acima.** A auditoria semântica oficial
+> (`reports/HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md`) mostra que **NL não é
+> `enterprise_birth`**, mas `oprichtingen van vestigingen` (unidade local, como
+> FR), e que **BE é uma primeira inscrição à TVA** (registo fiscal, com ruptura na
+> saúde em jan/2022), não um nascimento demográfico. Logo NL/BE/PT **não** são
+> mutuamente comparáveis como "empresas"; os rótulos `enterprise_birth` desta
+> tabela para NL/BE estão imprecisos. Tratar o painel como multi-tarefa de targets
+> heterogéneos (Path M). Conteúdo histórico preservado.
 
 ### Sector A10
 | País | Sector disponível | Tipo | Grandeza |
@@ -239,7 +249,7 @@ Para Phase 4E, manter avaliação separada por país. `flag_target_concept` docu
 | FR | ✓ | SIDE A10 births | mesma que target |
 | NL | ❌ | Q-tensor = employment | diferente do target |
 | BE | ❌ | Q-tensor = employment | diferente do target |
-| PT | ✓ | GEP CAE births | mesma que target |
+| PT | ✓ | INE CAE births | mesma que target |
 
 **Implicação**: para Phase 4E, modelos com sector features só se aplicam a FR e PT.
 Para NL e BE: usar employment tensor como feature separada (não como sector births).

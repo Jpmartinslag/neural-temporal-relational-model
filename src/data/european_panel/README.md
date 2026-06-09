@@ -33,7 +33,7 @@ src/data/european_panel/
 │   ├── france_adapter.py    ← SIDE/A10/URSSAF para schema canónico
 │   ├── nl_adapter.py        ← CBS COROP para schema canónico
 │   ├── be_adapter.py        ← StatBel arrondissements para schema canónico
-│   └── pt_adapter.py        ← INE/GEP NUTS3 para schema canónico
+│   └── pt_adapter.py        ← INE NUTS3 (target births) + Eurostat emprego para schema canónico
 └── eu_signals/          (Phase 4E-C — INTEGRADO)
     ├── eurostat_client.py  ← cliente REST JSON-stat + cache em data/raw/
     ├── eurostat_gdp.py     ← nama_10_gdp (GDP growth real, nacional)
@@ -105,7 +105,7 @@ Campos obrigatórios em todos os adapters:
 | `flag_is_rebound_year` | int | 1 para 2021 |
 | `flag_forecast_safe` | int | 1 se todos os lags necessários disponíveis |
 | `meta_region_system` | str | Sistema regional usado |
-| `meta_source_label` | str | SIDE / CBS / StatBel / INE-GEP / Eurostat-BD |
+| `meta_source_label` | str | SIDE / CBS / StatBel / INE / Eurostat-BD |
 
 Campos opcionais relevantes: `lag2_births`, `lag3_births`, `growth_2y`, `stock_lag1`,
 `sector_BE…RU` (A10), `eu_employment_rate_lag1`, `eu_esi_lag1`, `eu_credit_standards_lag1`,
@@ -161,12 +161,15 @@ não é usado nas baterias Phase 4D/4E e não deve ser referenciado para novos e
 - `flag_target_concept` documenta o conceito exacto.
 - Não comparar WMAPE entre países se os conceitos forem diferentes.
 - Não imputar sector ausente como zero sem `mask_sector_a10`.
-- **Estado Phase 4G/4H/4I (LOCO):** a equivalência semântica dos 4 targets (FR
-  créations d'établissements, NL oprichtingen van vestigingen, BE primo-
-  assujettissements TVA, PT entradas GEP) **ainda não está estabelecida
-  documentalmente**. Gate 1 do próximo passo é uma auditoria semântica oficial
-  obrigatória antes de qualquer comparação cross-country ou expansão. Ver
-  `reports/HERALD_PHASE4_NEXT_STEP_INDEPENDENT_AUDIT.md`.
+- **Estado Phase 4J (gate semântico EXECUTADO — FAIL para target único):** a
+  auditoria semântica oficial confirmou que os 4 targets **não** são o mesmo
+  evento estatístico: FR créations d'établissements (unidade local), NL
+  oprichtingen van vestigingen (unidade local, regras de continuidade distintas),
+  BE primo-assujettissements TVA (registo fiscal, ruptura saúde jan/2022), PT
+  nascimentos de empresas INE `0009702/0014098` (unidade empresa). O painel é, por
+  ora, um **benchmark multi-tarefa de targets heterogéneos**, não prova de
+  generalização de um target idêntico. Não comparar como se fossem equivalentes.
+  Ver `reports/HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md`.
 
 ### Sinais macro
 - Adicionar sinais `eu_*` um de cada vez, com ablação por país.

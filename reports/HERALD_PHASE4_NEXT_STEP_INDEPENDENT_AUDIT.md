@@ -75,7 +75,9 @@ de um benchmark frugal.
     verificar** (regras de reativação, fusões/cisões, limiar de atividade);
   - **BE:** aparentemente primeiras inscrições à TVA — registro fiscal, que
     tende a sobrecontar vs. births demográficos; a confirmar;
-  - **PT:** entradas GEP/Quadros de Pessoal — unidade a **confirmar**.
+  - **PT:** nascimentos de empresas INE, indicadores `0009702/0014098`, NUTS3.
+    A unidade empresa está documentada; falta fechar a correspondência exata
+    com a população Eurostat escolhida.
 
   Até essa verificação, a redação correta é: *comparabilidade não estabelecida e
   provavelmente heterogênea entre os quatro países*.
@@ -251,7 +253,7 @@ reconstrução causal dos lags. O critério "não degradar os 4 atuais em >1%" �
    incompatibilidade geométrica real, agravada por MAUP (re-agregar = nova versão
    do dataset). Alvo: harmonizável **somente após** uma tabela de equivalência —
    há ≥4 conceitos em jogo (établissements FR, vestigingen NL, inscrições TVA BE,
-   entradas GEP PT) e **dois** indicadores Eurostat (births totais vs. de
+   nascimentos de empresas INE PT) e **dois** indicadores Eurostat (births totais vs. de
    empregadoras). Migrar para "employer births" não é justificado a priori.
 6. **Grafos transfronteiriços necessários agora?** Não. Introduzem nova variável
    experimental prematuramente. Primeiro estabelecer um alvo comparável e um
@@ -285,7 +287,7 @@ reconstrução causal dos lags. O critério "não degradar os 4 atuais em >1%" �
 **Principal (D):** executar uma **etapa intermediária frugal** em dois gates
 antes de A/B/C:
 1. **Gate semântico (C2):** produzir uma tabela de equivalência dos quatro alvos
-   (établissements FR, vestigingen NL, inscrições TVA BE, entradas GEP PT) usando
+   (établissements FR, vestigingen NL, inscrições TVA BE, nascimentos INE PT) usando
    documentação oficial e, quando possível, comparar cada série nacional com o
    indicador Eurostat candidato (births total vs. empregadoras). Não migrar para
    "employer births" sem essa evidência; documentar o conceito efetivo e
@@ -360,8 +362,8 @@ relativo, não absoluto.
   com dependência temporal, **não** se promete cobertura formal forte. Usar
   resíduos rolling-origin **normalizados por país** e reportar cobertura **por
   país e agregada** como diagnóstico — nunca como gate de aprovação.
-- **H3.** Os quatro alvos nacionais medem objetos diferentes (FR établissements,
-  NL vestigingen, BE inscrições TVA, PT entradas GEP). **Equivalência é primeiro
+- **H3.** Os alvos nacionais podem medir objetos diferentes (FR établissements,
+  NL vestigingen, BE inscrições TVA, PT nascimentos de empresas INE). **Equivalência é primeiro
   documental:** definir, a partir dos metadados oficiais, se cada alvo mapeia ao
   mesmo conceito Eurostat (unidade, regra de reativação, tratamento de
   fusões/cisões). Correlação alta entre séries **não** prova equivalência
@@ -490,7 +492,7 @@ diferentes no artigo.
 | ID | Severidade | Achado |
 |---|---|---|
 | C1 | Crítico | n=4 domínios: claim só condicional (in-scope), não universal |
-| C2 | Crítico | ≥4 conceitos de alvo (établissements/vestigingen/TVA/GEP) + 2 indicadores Eurostat; MAUP em ZE2020 vs NUTS3 |
+| C2 | Crítico | conceitos de alvo potencialmente distintos (établissements/vestigingen/TVA/INE births) + 2 indicadores Eurostat; MAUP em ZE2020 vs NUTS3 |
 | C3 | Crítico | Desbalanceamento FR 280 vs PT 25 inverte rankings balanced/pooled |
 | A1 | Alto | Grafo block-diagonal: transfronteiriço nunca testado |
 | A2 | Alto | Distância de descritores não prediz transferência |

@@ -8,22 +8,22 @@ Primary sources (already processed, local files):
     portugal_qtensor_births_cae_nuts3.csv              — births by CAE×NUTS3 (proxy tensor)
     portugal_qtensor_employment_eurostat_nuts3.csv     — Eurostat employment × NACE×NUTS3
 
-Target concept: enterprise_birth (INE/GEP)
-  Portugal GEP Quadros de Pessoal counts enterprise entries (NUTS3 × year).
+Target concept: enterprise_birth (INE Demografia das Empresas)
+  INE indicators 0009702/0014098 count enterprise births (NUTS3 × year).
   flag_target_concept = 'enterprise_birth'
 
-Sector births: AVAILABLE from GEP CAE → A10 mapping.
+Sector births: AVAILABLE from INE indicators 0009703/0014099, CAE → A10.
   PT A10 total == target_births (max_diff = 0).
   sector_* = births by A10 sector at t-1 (lagged).
   mask_sector_a10 = 1.0 where sector data present.
 
 Employment tensor:
-  Phase 4D used GEP births-by-CAE as a proxy tensor.
+  Phase 4D used INE births-by-CAE as a proxy tensor.
   Phase 4E can use Eurostat nama_10r_3empers regional employment by NACE,
   mapped back to the 25-region HERALD Portugal panel.
   flag_has_national_employment = 1 when that Eurostat tensor is present.
 
-NUTS3 codes: PT_111..PT_300 correspond to the INE/GEP 25-region panel.
+NUTS3 codes: PT_111..PT_300 correspond to the INE 25-region panel.
   PT_111 → PT111 (Minho-Lima), etc. Underscore notation used in pipeline.
 
 Notes:
@@ -85,7 +85,7 @@ class PTAdapter:
     country        = "PT"
     region_level   = "NUTS3"
     meta_region_system = "NUTS3"
-    meta_source_label  = "INE-GEP"
+    meta_source_label  = "INE"
     flag_target_concept = "enterprise_birth"
 
     def __init__(self, panel_path: Optional[Path] = None) -> None:
@@ -158,7 +158,7 @@ class PTAdapter:
         out["growth_2y"]     = pan["growth_2y"].astype(float)
         out["stock_lag1"]    = pan["stock_lag1"].astype(float)
 
-        # Sector births (A10 from GEP CAE, same concept as target)
+        # Sector births (A10 from INE CAE, same concept as target)
         for s in _SECTOR_COLS:
             col = f"sector_{s}"
             out[col] = pan[col].astype(float) if col in pan.columns else np.nan
