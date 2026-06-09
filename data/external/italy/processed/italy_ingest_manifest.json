@@ -1,0 +1,42 @@
+{
+  "dataset": "Eurostat bd_size_r3 (Business demography by size class and NUTS 3 region, 2008-2020)",
+  "indicators": {
+    "V11920": "births",
+    "V11910": "stock"
+  },
+  "size_class": "TOTAL (whole enterprise population, incl. without employees)",
+  "concept": "enterprise_birth (demographic, Eurostat-OECD; ASIA register)",
+  "downloaded": "2026-06-09",
+  "license": "Eurostat \u2014 \u00a9 European Union, CC BY 4.0 (reuse with attribution)",
+  "sources": [
+    {
+      "indic": "V11920",
+      "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/bd_size_r3?format=JSON&lang=EN&indic_sb=V11920&sizeclas=TOTAL",
+      "file": "data/external/italy/raw/bd_size_r3_IT_V11920.json",
+      "bytes": 185199,
+      "md5": "4cd850d9264789e831935c8adadee056"
+    },
+    {
+      "indic": "V11910",
+      "url": "https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/bd_size_r3?format=JSON&lang=EN&indic_sb=V11910&sizeclas=TOTAL",
+      "file": "data/external/italy/raw/bd_size_r3_IT_V11910.json",
+      "bytes": 196179,
+      "md5": "3b5404eba922ef83ae158d65c82c6075"
+    }
+  ],
+  "processed_file": "data/external/italy/processed/italy_births_panel_nuts3.csv",
+  "processed_md5": "d3544603273193bfcd8f69f5a78f59f1",
+  "rows": 1495,
+  "regions": 115,
+  "years": [
+    2008,
+    2020
+  ],
+  "target_coverage_pct": 95.25,
+  "suppressed_or_absent_cells": 71,
+  "nuts_version_note": {
+    "2008-2018": "NUTS 2013/2016 IT NUTS3 codes",
+    "2019-2020": "NUTS 2021 IT NUTS3 codes (Sardinia reorganization; province count 110->107)"
+  },
+  "no_imputation": true
+}

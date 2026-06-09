@@ -1,0 +1,85 @@
+{
+  "subpanel": "enterprise_birth (PT + IT) \u2014 partial Path H",
+  "common_window": [
+    2008,
+    2020
+  ],
+  "common_years": 13,
+  "countries": {
+    "PT": {
+      "regions": 25,
+      "years": [
+        2008,
+        2020
+      ],
+      "rows": 325,
+      "target_concept": [
+        "enterprise_birth"
+      ],
+      "geometry": [
+        "NUTS3"
+      ],
+      "source": [
+        "INE"
+      ],
+      "target_coverage_pct": 100.0,
+      "sector_coverage_pct": 92.31,
+      "employment_coverage_pct": 100.0,
+      "forecast_safe_rows": 300,
+      "target_scale_median": 3533.0,
+      "target_scale_max": 68308.0
+    },
+    "IT": {
+      "regions": 102,
+      "years": [
+        2008,
+        2020
+      ],
+      "rows": 1326,
+      "target_concept": [
+        "enterprise_birth"
+      ],
+      "geometry": [
+        "NUTS3"
+      ],
+      "source": [
+        "Eurostat-BD"
+      ],
+      "target_coverage_pct": 100.0,
+      "sector_coverage_pct": 0.0,
+      "employment_coverage_pct": 0.0,
+      "forecast_safe_rows": 1224,
+      "target_scale_median": 1925.5,
+      "target_scale_max": 34246.0
+    }
+  },
+  "it_dropped_nuts_transition_regions": [
+    "ITG25",
+    "ITG26",
+    "ITG27",
+    "ITG28",
+    "ITG29",
+    "ITG2A",
+    "ITG2B",
+    "ITG2C",
+    "ITG2D",
+    "ITG2E",
+    "ITG2F",
+    "ITG2G",
+    "ITG2H"
+  ],
+  "files": {
+    "it_panel": {
+      "path": "data/processed/european_panel/it_panel.csv",
+      "md5": "3f052aa88db20f12e6a1e727051e7cb3",
+      "rows": 1326
+    },
+    "subpanel": {
+      "path": "data/processed/european_panel/enterprise_birth_pt_it_panel.csv",
+      "md5": "f537701f8b33589d256f1551a5c8a20b",
+      "rows": 1651
+    }
+  },
+  "pooled_wmape_used": false,
+  "note": "FR/NL/BE excluded (different concepts). Not a European generalization claim."
+}
