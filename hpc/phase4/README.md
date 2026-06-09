@@ -3,6 +3,20 @@
 Batteries SLURM pour la généralisation de HERALD à NL/BE/PT.
 Scripts France (Phase 2+3) → `hpc/regime/`. Ne pas mélanger.
 
+> **⚠️ Statut actuel (2026-06-09) — ce fichier décrit les batteries par pays
+> initiales (Phase 4 NL/BE/PT). Le travail a depuis évolué vers un protocole
+> LOCO 4 pays (Phase 4G/4H/4I).** Résultat validé : la persistance (~0.0939) est
+> le meilleur baseline balancé et Ridge non pondéré (~0.0969) le meilleur modèle
+> entraînable ; le graphe/résiduel ne transfère pas robustement **dans ce
+> protocole** (ce qui ne prouve pas qu'il ne marche jamais ailleurs). Protocole =
+> LOCO *parameter zero-shot avec historique du pays-cible*, **pas cold-start**.
+> Prochains pas (2 gates) : audit sémantique officiel des targets, puis benchmark
+> de combinaison persistance/Ridge. Voir
+> `reports/HERALD_PHASE4_NEXT_STEP_INDEPENDENT_AUDIT.md`,
+> `reports/HERALD_PHASE4H_B_RESULTS_AUDIT.md`,
+> `reports/HERALD_PHASE4I_A_RESULTS_AUDIT.md`. Le contenu ci-dessous est conservé
+> comme registre historique des batteries initiales.
+
 ---
 
 ## Candidat de départ
