@@ -177,8 +177,11 @@ FIELD_CATALOGUE: list[FieldSpec] = [
 
     # ── Source quality flags ───────────────────────────────────────────────
     FieldSpec("flag_target_concept",    "str",   True,  "flag",
-              "Target concept identifier: 'establishment_creation' | 'enterprise_birth' | "
+              "Target concept identifier (unit-precise after Phase 4J): "
+              "'establishment_creation' (FR) | 'local_unit_opening' (NL) | "
+              "'vat_first_registration' (BE) | 'enterprise_birth' (PT, Eurostat-OECD) | "
               "'enterprise_creation' | 'self_employment_entry' | 'mixed'. "
+              "Passthrough metadata (no model consumes the string). "
               "Cross-country comparison is only valid when concepts match.",
               "adapter"),
     FieldSpec("flag_has_national_employment", "int64", False, "flag",
