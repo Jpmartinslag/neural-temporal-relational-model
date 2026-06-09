@@ -169,7 +169,11 @@ não é usado nas baterias Phase 4D/4E e não deve ser referenciado para novos e
   nascimentos de empresas INE `0009702/0014098` (unidade empresa). O painel é, por
   ora, um **benchmark multi-tarefa de targets heterogéneos**, não prova de
   generalização de um target idêntico. Não comparar como se fossem equivalentes.
-  Ver `reports/HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md`.
+  `flag_target_concept` é **metadata obrigatória** com valores unidade-precisos:
+  FR `establishment_creation`, NL `local_unit_opening`, BE `vat_first_registration`,
+  PT `enterprise_birth` (Eurostat-OECD, população total). Ver
+  `reports/HERALD_PHASE4J_TARGET_EQUIVALENCE_TABLE.md` e
+  `reports/HERALD_PHASE4J_PATH_M_PROTOCOL.md`.
 
 ### Sinais macro
 - Adicionar sinais `eu_*` um de cada vez, com ablação por país.

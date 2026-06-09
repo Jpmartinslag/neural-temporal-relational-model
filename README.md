@@ -287,6 +287,9 @@ python3 hpc/regime/audit_herald_phase3e_qtensor_arch_results.py \
 - `reports/HERALD_PHASE4_NEXT_STEP_INDEPENDENT_AUDIT.md` — audit indépendant + gates de décision
 - `reports/HERALD_PHASE4J_A_FORECAST_COMBINATION_AUDIT.md` — combinaison 50/50 (candidate), stabilité, conformal exploratoire
 - `reports/HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md` — audit officiel des targets (gate sémantique : FAIL, Path H/M)
+- `reports/HERALD_PHASE4J_TARGET_EQUIVALENCE_TABLE.md` — table canonique des 4 targets (PT gate fermé : Eurostat total enterprise births)
+- `reports/HERALD_PHASE4J_PATH_M_PROTOCOL.md` — protocole transfert multi-tâche à targets hétérogènes
+- `reports/HERALD_PHASE4J_TARGET_AWARE_RESULTS.md` — résultats par concept + tail-risk (50/50 : FAIL, non promu)
 - `reports/HERALD_PHASE4H_B_RESULTS_AUDIT.md` — résultats LOCO corrigés
 - `reports/HERALD_PHASE4I_A_RESULTS_AUDIT.md` — benchmark de transfert sélectif
 - `reports/HERALD_PHASE4H_CODE_CONCEPT_AUDIT_2026.md` — audit code/concept + protocole

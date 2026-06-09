@@ -12,9 +12,15 @@ Primary sources (already processed, local files):
     netherlands_sector_births_cbs_83631NED_corop_a10.csv
                                                     — births by HERALD A10 × COROP × year
 
-Target concept: enterprise_birth (CBS OprichtingenVanVestigingen)
-  NL CBS counts enterprise births (vestigingen), not legal entities.
-  flag_target_concept = 'enterprise_birth'
+Target concept: local_unit_opening (CBS OprichtingenVanVestigingen)
+  CBS 83631NED counts openings of *vestigingen* (local units / establishments),
+  not enterprises (legal/economic units). Confirmed against CBS 81575ned.
+  flag_target_concept = 'local_unit_opening'
+  Migration note (Phase 4J, 2026-06-09): previously labelled 'enterprise_birth';
+  corrected to a unit-precise value after the semantic target audit. The label is
+  passthrough metadata (no model consumes its string value), so no retraining is
+  required — rebuild the canonical panel to propagate. See
+  reports/HERALD_PHASE4J_TARGET_EQUIVALENCE_TABLE.md.
 
 Sector births: available from CBS 83631NED at COROP × SBI aggregate level.
   sector_* = births by HERALD A10 at t-1; mask_sector_a10 = 1 where present.
@@ -78,7 +84,7 @@ class NLAdapter:
     region_level   = "COROP"
     meta_region_system = "COROP"
     meta_source_label  = "CBS"
-    flag_target_concept = "enterprise_birth"
+    flag_target_concept = "local_unit_opening"  # was 'enterprise_birth' (Phase 4J)
 
     def __init__(self, panel_path: Optional[Path] = None) -> None:
         self._panel_path = Path(panel_path) if panel_path else _PANEL_PATH

@@ -12,10 +12,16 @@ Primary sources (already processed, local files):
     belgium_births_stock_extension_2021_2024_42zones.csv
                                                     — StatBel TVA extension, harmonised to 42 zones
 
-Target concept: enterprise_birth (StatBel / BCR)
-  Belgium StatBel counts enterprise creations (BCR database, VAT-registered entities).
-  Concept is closer to 'enterprise_birth' than to French 'establishment_creation'.
-  flag_target_concept = 'enterprise_birth'
+Target concept: vat_first_registration (StatBel — assujettis à la TVA)
+  Belgium StatBel counts first VAT registrations (primo-assujettissements), a
+  fiscal-administrative event, NOT a demographic enterprise birth. StatBel
+  documents a methodological break in the health sector in January 2022 from a
+  VAT-exemption change. This is the strongest semantic incompatibility of the four.
+  flag_target_concept = 'vat_first_registration'
+  Migration note (Phase 4J, 2026-06-09): previously labelled 'enterprise_birth';
+  corrected after the semantic target audit. Passthrough metadata only (no model
+  consumes the string), so no retraining is required — rebuild to propagate.
+  See reports/HERALD_PHASE4J_TARGET_EQUIVALENCE_TABLE.md.
 
 Sector births: NOT available from StatBel at arrondissement × sector level.
   BE A10 (StatBel ONSS) provides employment counts (jobs), not births by sector.
@@ -101,7 +107,7 @@ class BEAdapter:
     region_level   = "arrondissement"
     meta_region_system = "arrondissement"
     meta_source_label  = "StatBel"
-    flag_target_concept = "enterprise_birth"
+    flag_target_concept = "vat_first_registration"  # was 'enterprise_birth' (Phase 4J)
 
     def __init__(self, panel_path: Optional[Path] = None) -> None:
         self._panel_path = Path(panel_path) if panel_path else _PANEL_PATH
