@@ -72,7 +72,7 @@ estrutura suficiente com identidade. O problema está na qualidade e homogeneida
 │  França: SIDE, URSSAF, FLORES, SIRENE                               │
 │  NL: CBS (COROP), Eurostat BD, LFS                                  │
 │  BE: StatBel (arrondissements), Eurostat LFS, ECB BLS               │
-│  PT: INE-GEP (Quadros de Pessoal), INE (NUTS3)                      │
+│  PT: INE Demografia das Empresas (NUTS3), Eurostat/ARDECO emprego   │
 │  Todos: Eurostat BD, LFS, STS, BCS/ESI, ECB BLS, GDP               │
 └───────────┬─────────────────────────────────────────────────────────┘
             │
@@ -135,7 +135,7 @@ Ver `src/data/european_panel/schema.py` para especificação completa com `Field
 | `flag_is_rebound_year` | 1 para 2021 |
 | `flag_forecast_safe` | 1 se todos os lags disponíveis sem lookahead |
 | `meta_region_system` | Sistema regional usado |
-| `meta_source_label` | SIDE / CBS / StatBel / INE-GEP / Eurostat-BD |
+| `meta_source_label` | SIDE / CBS / StatBel / INE / Eurostat-BD |
 
 ### Opcionais relevantes
 
@@ -417,7 +417,7 @@ em NL, BE e PT sem regredir em França.
 | **FR** | ~285 ZE2020 | 2008–2024 | establishment_creation | URSSAF ✓ | ✓ (validação) | ✓ | ✓ |
 | **NL** | 40 COROP | 2015–2025 | enterprise_birth (CBS) | CBS ✓ | ✓ | ✓ | ✓ |
 | **BE** | 42 arr. | 2007–2024 | enterprise_birth (StatBel) | StatBel ✓ | ✗ (ausente) | ✓ | ✓ |
-| **PT** | 25 NUTS3 | 2008–2024 | enterprise_birth (INE-GEP) | Eurostat employment ✓ | ✓ | ✓ | ✓ |
+| **PT** | 25 NUTS3 | 2008–2024 | enterprise_birth (INE) | Eurostat employment ✓ | ✓ | ✓ | ✓ |
 
 **Notas**:
 - BE ausente do Eurostat BD: confirmado empiricamente (Phase 4D data audit)
