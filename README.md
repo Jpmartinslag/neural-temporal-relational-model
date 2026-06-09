@@ -141,6 +141,84 @@ Voir `reports/HERALD_PHASE4_INTERNATIONAL_PLAN.md` et `reports/HERALD_EUROPEAN_P
 
 ---
 
+## État scientifique actuel — Phase 4 (généralisation LOCO 4 pays)
+
+> Phase 4G/4H/4I étend le painel européen à un protocole **leave-one-country-out**
+> (FR, NL, BE, PT). Cette section reflète l'état validé après les audits 4H-B et
+> 4I-A et l'audit indépendant du prochain pas. **Elle supersède, pour le claim de
+> généralisation, les chiffres antérieurs des phases 4A/4D (affectées par fuite).**
+
+### Protocole (à énoncer précisément)
+
+Le protocole est un **LOCO « parameter zero-shot avec historique du pays-cible
+disponible »** : le pays exclu ne participe pas à l'ajustement (Ridge, préproc,
+loss neuronale), mais ses **lags historiques** et ses écarts-types par zone
+proviennent de son propre passé à l'inférence. **Ce n'est pas un cold-start
+complet** — distinction établie dans `HERALD_PHASE4H_CODE_CONCEPT_AUDIT_2026.md`.
+
+### Résultats valides (4 pays, horizon 1 an, métrique WMAPE annuelle balancée par pays)
+
+| Modèle | WMAPE balancé 4 pays | Statut |
+|--------|----------------------|--------|
+| Persistance (last value) | **~0.0939** | meilleur baseline balancé |
+| Ridge non pondéré | ~0.0969 | meilleur modèle entraînable |
+| Graphe réel / résiduel neuronal / sélection par compatibilité | ≥ Ridge | ne transfère pas robustement |
+
+- Le **graphe réel ne dépasse pas consistamment** l'identité ni le graphe permuté
+  (BE : petit gain, non significatif).
+- Le **résiduel neuronal** et la **sélection par compatibilité de descripteurs**
+  ne transfèrent pas robustement dans ce protocole (compat. améliore NL/PT mais
+  dégrade FR +113 % et BE +27 %).
+
+### Limites du claim (à respecter)
+
+- Claim **conditionnel valide** : « la méthode actuelle ne transfère pas
+  robustement sur **ces 4 pays et ce protocole** ».
+- Claim **universel interdit** : ceci **ne prouve pas** que graphes ou résiduels
+  ne fonctionnent **jamais** sur d'autres pays ou protocoles (n=4 domaines, pas de
+  puissance statistique ; les seeds ne sont pas des pays indépendants).
+- L'**avantage de la persistance est dépendant de l'horizon d'un an** — non
+  testé au-delà.
+
+### Géométries et targets hétérogènes (fait confirmé par les adapters)
+
+| Pays | Géométrie | Target (concept national) |
+|------|-----------|---------------------------|
+| FR | ZE2020 | créations d'établissements (SIDE/SIRENE) |
+| NL | COROP | oprichtingen van vestigingen (CBS 83631NED, unité locale) |
+| BE | arrondissements | primo-assujettissements TVA (StatBel) |
+| PT | NUTS3 | entrées GEP / Quadros de Pessoal |
+
+Le painel **mélange 4 systèmes spatiaux** (pas du NUTS3 homogène → exposé au
+*Modifiable Areal Unit Problem*) et **4 concepts de target dont l'équivalence
+sémantique n'est pas établie documentalement**. Ne pas présenter ces targets
+comme équivalents.
+
+### Décision méthodologique actuelle
+
+**Ne pas étendre les pays ni augmenter l'architecture** avant d'avoir franchi deux
+gates :
+
+1. **Gate 1 — Audit sémantique officiel** des 4 targets : équivalence documentale
+   obligatoire (métadonnées officielles : unité, réactivation, fusions/scissions).
+   La comparaison numérique de séries est un diagnostic secondaire, **pas** une
+   preuve d'équivalence ; aucun seuil statistique décidé après observation.
+2. **Gate 2 — Benchmark de combinaison** : persistance, Ridge, moyenne 50/50,
+   poids choisis **uniquement sur les pays-source**, fallback persistance.
+   Conformal **exploratoire seulement**.
+
+Ce n'est qu'après ces deux gates qu'on décidera d'Espagne/Allemagne, de graphes
+transfrontaliers ou d'une architecture plus grande.
+
+### Rapports principaux
+
+- `reports/HERALD_PHASE4_NEXT_STEP_INDEPENDENT_AUDIT.md` — audit indépendant, matrice de décision, gates
+- `reports/HERALD_PHASE4H_B_RESULTS_AUDIT.md` — résultats LOCO corrigés (graphe réel, contrôle permutation)
+- `reports/HERALD_PHASE4I_A_RESULTS_AUDIT.md` — benchmark de transfert sélectif (persistance vs Ridge vs graphe)
+- `reports/HERALD_PHASE4H_CODE_CONCEPT_AUDIT_2026.md` — audit code/concept, définition du protocole
+
+---
+
 ## Structure du dépôt
 
 ```
@@ -197,6 +275,12 @@ python3 hpc/regime/audit_herald_phase3e_qtensor_arch_results.py \
 - `src/data/european_panel/build_european_panel.py` — pipeline causal (enforce_causal_growth)
 - `src/data/european_panel/validation.py` — garde causale automatique sur growth_1y/2y
 - `hpc/phase4/` — batteries HPC Phase 4E-A/A2/B complètes
+
+**Phase 4G/4H/4I (généralisation LOCO 4 pays — état scientifique actuel):**
+- `reports/HERALD_PHASE4_NEXT_STEP_INDEPENDENT_AUDIT.md` — audit indépendant + gates de décision
+- `reports/HERALD_PHASE4H_B_RESULTS_AUDIT.md` — résultats LOCO corrigés
+- `reports/HERALD_PHASE4I_A_RESULTS_AUDIT.md` — benchmark de transfert sélectif
+- `reports/HERALD_PHASE4H_CODE_CONCEPT_AUDIT_2026.md` — audit code/concept + protocole
 
 **Phase 4A/4D (legacy — leakage-affected, ne pas utiliser comme baseline):**
 - `data/external/PHASE4_DATA_STATUS.md` — statut panneaux NL/BE/PT (pipelines anciens)

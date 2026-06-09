@@ -161,6 +161,12 @@ não é usado nas baterias Phase 4D/4E e não deve ser referenciado para novos e
 - `flag_target_concept` documenta o conceito exacto.
 - Não comparar WMAPE entre países se os conceitos forem diferentes.
 - Não imputar sector ausente como zero sem `mask_sector_a10`.
+- **Estado Phase 4G/4H/4I (LOCO):** a equivalência semântica dos 4 targets (FR
+  créations d'établissements, NL oprichtingen van vestigingen, BE primo-
+  assujettissements TVA, PT entradas GEP) **ainda não está estabelecida
+  documentalmente**. Gate 1 do próximo passo é uma auditoria semântica oficial
+  obrigatória antes de qualquer comparação cross-country ou expansão. Ver
+  `reports/HERALD_PHASE4_NEXT_STEP_INDEPENDENT_AUDIT.md`.
 
 ### Sinais macro
 - Adicionar sinais `eu_*` um de cada vez, com ablação por país.
