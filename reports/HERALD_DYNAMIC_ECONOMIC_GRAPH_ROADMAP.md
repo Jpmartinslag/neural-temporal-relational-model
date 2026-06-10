@@ -228,8 +228,9 @@ all three countries beat both temporal and territory-label null controls at
 `q=0.005` after BH/FDR correction, all pass LOYO direction, all have stable
 bootstrap edges, and results are COVID-robust (2020 excluded).  Stability:
 FR 0.782, NL 0.789, PT 0.778 (8 sectors).  3/3 countries pass, 2 required.
-Co-growth edges are Granger-predictive associations, not structural economic
-causality.  L4 mobility and L5 geography remain unvalidated.
+Co-growth edges are Pearson co-movement associations, not Granger
+predictability or structural economic causality. L4 mobility and L5 geography
+remain unvalidated.
 
 These results do not validate causality, forecast gain, recommendation or a
 learned GNN.
@@ -307,7 +308,9 @@ Detect and characterize economic dynamics from the evolving graph.
 Priority null models, from most to least preferred:
 
 1. **Within-country/within-sector temporal permutation** — shuffle years within each territory-sector pair; preserves marginal distributions
-2. **Territory-identity permutation** — relabel which territory is which; preserves overall structure
+2. **Territory-series permutation before graph construction** — permute complete
+   territory growth histories within country and sector, then rebuild the graph;
+   simple node relabeling of an already-built graph is not a valid topology null
 3. **Configuration model** — preserve degree sequence; randomize connections
 4. **Column permutation** (as used in Phase 4P/4Q) — equivalent to `P W P^T`; preserves degree multiset
 5. **Erdős-Rényi** — last resort baseline; least informative; must not be primary null
@@ -381,8 +384,8 @@ Components when developed:
 The 10 items are frozen in `reports/HERALD_G0_FORMAL_CONTRACT.md`. Completed
 G1 results: preflight (PASS), L3 territory projection (PASS FR/NL), L1 sector
 relatedness (FAIL), PT KZ audit (DEC-018: definitional exclusion), L2 causal
-co-growth (PASS FR/NL/PT; DEC-019).  Next: community detection baseline (2.8)
-using validated L3 and/or L2 layers.
+co-growth (PASS FR/NL/PT; DEC-019), and corrected Louvain community baseline
+(FAIL 0/3; DEC-021). Do not promote community labels.
 
 ---
 

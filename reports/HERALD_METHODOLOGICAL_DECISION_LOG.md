@@ -344,10 +344,14 @@ threshold (seed=42).  Results:
 | NL | 9 | 2012–2026 | 0.7893 | 0.0050 | 0.0050 | True | 19 |
 | PT | 8 | 2013–2025 | 0.7778 | 0.0050 | 0.0050 | True | 22 |
 
-COVID sensitivity (2020 excluded): all three still pass.  3/2 required.
+COVID sensitivity (2020 excluded from window observation years; eval_year=2020
+retained): all three still pass full gate (temporal q=0.005, territory q=0.005,
+LOYO, stable edges > 0).  Classification: COVID_ROBUST (DEC-020).
+Stability with exclusion: FR 0.7440, NL 0.7622, PT 0.7379.  3/2 required.
 **Decision:** L2 PASS.  The co-growth graph is promoted as an analytically
-validated layer.  Correlation edges are Granger-predictive associations, not
-structural economic causality.  This result does not authorize GNN training,
+validated layer. Correlation edges are statistical co-movement associations,
+not Granger predictability or structural economic causality. This result does
+not authorize GNN training,
 forecast combination or recommendation.
 **Rationale:** All three countries independently beat both null models after FDR
 correction and LOYO direction stability.  The result is COVID-robust.
@@ -357,3 +361,107 @@ participates with 8 sectors (KZ excluded per DEC-018).
 **Affected files:** `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md`;
 `src/data/european_panel/build_g1_l2_cogrowth.py`;
 `data/processed/economic_graph/g1_l2_cogrowth/`.
+
+---
+
+## DEC-020 — 2026-06-10 — COVID sensitivity correction: eval_year exclusion bug fixed
+
+**Phase:** G1 audit / Part A
+**Question:** Was the COVID sensitivity analysis in the original L2 builder
+correctly excluding only window observation data, or was it also
+removing `eval_year=2020` from evaluation?
+**Evidence:** Code audit of `build_g1_l2_cogrowth.py` (commit `ebb2979`):
+(1) `eval_yrs = [t for t in eval_yrs if t not in exclude_years]` incorrectly
+removed `eval_year=2020` from the evaluation set, even though its window covers
+`[2015..2019]` which contains no COVID data.
+(2) `bootstrap_edge_stability` called `window_matrix` without propagating
+`exclude_years`, so bootstrap windows could silently include 2020.
+(3) The COVID sensitivity gate omitted the `stable_edge_count > 0` check,
+making the COVID gate strictly weaker than the main gate.
+**Alternatives considered:** Accept original result as conservative (removing
+2020 from eval_years is a stricter test). Rejected: the intent is to exclude
+2020 from window DATA, not from the evaluation itself.
+**Decision:** (1) Remove the eval_year filter; `eval_year=2020`'s window
+covers pre-COVID years and is retained. (2) Propagate `exclude_years` to
+`bootstrap_edge_stability`. (3) Apply the full 4-criterion gate (temporal q,
+territory q, LOYO, bootstrap stable edges) to the COVID sensitivity run as well.
+(4) Report explicit window gaps (list of excluded years per window) in output.
+(5) Classify result as `COVID_ROBUST` if the full gate passes with 2020 excluded,
+`COVID_SENSITIVE` otherwise.
+**Rationale:** Removing eval_year=2020 was unnecessary and discarded a valid
+evaluation point. Bootstrap windows were inconsistent with the declared protocol.
+Gate asymmetry between main and COVID runs was an undeclared relaxation.
+**Limitations:** The corrected result uses a slightly different eval_year set
+than the original run; re-run results may differ numerically.
+**Reopen condition:** If MIN_PERIODS < 4, some windows excluding 2020 would
+have too few observations; review if window length changes.
+**Affected files:** `src/data/european_panel/build_g1_l2_cogrowth.py`;
+`tests/test_g1_l2_cogrowth.py`; `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md`.
+
+---
+
+## DEC-021 — 2026-06-10 — G1 community detection baseline authorized on validated L2 layer
+
+**Phase:** G1 / task 2.8
+**Question:** What community structure does the validated L2 co-growth graph
+exhibit, and is it more structured than temporally or territorially permuted nulls?
+**Evidence:** L2 PASS (DEC-019) provides a validated co-growth edge set per
+(country, eval_year, sector). Louvain algorithm available via NetworkX 3.4.2
+(no external dependency required). Positive correlations only (negative
+co-growth ≠ community membership). Per-country analysis; no cross-country pooling.
+**Decision:** Build Louvain community baseline on a fixed symmetric top-k=5 L2
+graph. Metrics: modularity, AMI between consecutive years, edge
+appearance/disappearance, community count and size. Null models rebuild L2
+from temporally and territorially permuted growth series. Node relabeling is
+not a valid modularity null. COVID sensitivity removes observation year 2020
+from windows while retaining evaluation year 2020.
+**Rationale:** G0 contract item 8 requires community stability metrics. Louvain
+is the standard method; NetworkX implementation avoids new dependencies. Results
+are analytical observations, not economic claims.
+**Limitations:** Louvain is stochastic; one fixed-seed run is applied equally
+to observed and null graphs. Community membership is a statistical co-growth
+cluster, not an economic production district or industrial cluster. Results
+cannot be used as policy input.
+**Reopen condition:** If igraph or leidenalg become available, repeat with Leiden
+for comparison; results should agree in direction.
+**Affected files:** `src/data/european_panel/build_g1_communities.py`;
+`tests/test_g1_communities.py`; `reports/HERALD_G1_COMMUNITIES_AUDIT.md`;
+`data/processed/economic_graph/g1_communities/`.
+**Result (corrected 2026-06-10):** FAIL 0/3 after applying valid nulls, equal
+Louvain budget, top-k sparsification and FDR to both modularity and AMI. FR
+modularity q=(0.54, 0.42); NL=(1.0, 1.0); PT=(0.587, 0.072). Some AMI tests
+are positive, especially PT, but no country passes all four criteria. COVID
+sensitivity also fails 0/3. G-11 is NOT_SUPPORTED under this protocol. L2 edge
+stability remains supported; only the community claim is rejected.
+
+---
+
+## DEC-022 — 2026-06-10 — Phase 5 HPC architecture drafted; training blocked
+
+**Phase:** Pre-Phase 5
+**Question:** What architecture and comparison protocol should the next HPC
+battery use for the residual neural corrector experiment?
+**Evidence:** Phase 4N established persistence (0.0939) as best LOCO baseline.
+L3 and L2 are validated observable graph layers. The geographic spatial branch
+(Phase 4P/4Q) is closed (FAIL). The next logical step is testing whether
+validated graph layers provide out-of-sample forecast improvement when combined
+with a low-capacity residual corrector.
+**Decision:** Keep the corrected H0-H5 specification as a draft in
+`reports/HERALD_PHASE5_HPC_SPEC.md`. Architecture:
+`y_hat = y_hat_baseline + alpha * residual_neural(G)`. Gate: ≥1% WMAPE
+improvement vs persistence and Ridge, graph-control p ≤ 0.05, no per-country
+regression, both temporal and territory permutation controls. H5 (learned
+graph) only if H2 or H4 pass. The failed community hypothesis does not
+invalidate the validated L2 edges: community separability and predictive
+utility are distinct hypotheses. Training remains blocked only until the
+sector-specific L2 pooling implementation is tested locally, exact L2
+artifacts are frozen, the supervisor deadline is confirmed and the smoke test
+passes. Community labels must not enter the model.
+**Rationale:** A draft specification prevents parameter selection after seeing
+forecast results while allowing correction of invalid upstream assumptions.
+The gate is strict enough to reject a graph that merely matches the null.
+**Limitations:** Alpha regularization design is not yet validated; implementation
+may require adjustment during smoke test.
+**Reopen condition:** If H2/H4 fail the gate, close Phase 5 graph branch and
+return to non-graph frugal improvements (Bloco 1).
+**Affected files:** `reports/HERALD_PHASE5_HPC_SPEC.md`.

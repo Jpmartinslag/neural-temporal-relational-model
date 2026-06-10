@@ -33,6 +33,7 @@
 | G-07 | The L3 territory projection from sector shares contains temporally stable, territory-specific associations | G1-L3 observable graph | G1/G4-lite | FR/NL clean nine-sector panels | Temporal and territory nulls, BH/FDR, LOYO, bootstrap | `HERALD_G1_OBSERVABLE_GRAPH_AUDIT.md` | Strong within current protocol (2/2 eligible pass, q=0.005) | Two countries; heterogeneous territorial systems | PT excluded because KZ has zero mass; other layers unvalidated | `SUPPORTED` |
 | G-08 | RCA/product-space sector co-specialization is reproducible across the common country nucleus | G1-L1 observable graph | G1/G4-lite | FR/NL; PT ineligible | Temporal and configuration nulls, BH/FDR, LOYO, bootstrap | `HERALD_G1_L1_SECTOR_GRAPH_AUDIT.md` | Refuted by gate (NL pass, FR fail, PT ineligible) | One passing country | Stable marginal prevalence reproduces FR stability | `NOT_SUPPORTED` |
 | G-10 | Same-sector cross-territory co-growth patterns are temporally stable across the country nucleus | G1-L2 causal co-growth | G1/G4-lite | FR (9 sectors), NL (9 sectors), PT (8 sectors; KZ excluded per DEC-018) | Temporal and territory nulls, BH/FDR, LOYO, bootstrap, COVID sensitivity | `HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md` | Strong: 3/3 pass, q=0.005, COVID-robust; FR 0.782, NL 0.789, PT 0.778 | Rolling Pearson conflates co-movement with shared trends; MAUP applies; heterogeneous territorial systems | Edges are statistical associations, not structural causality | `SUPPORTED` |
+| G-11 | The L2 co-growth graph exhibits community structure significantly exceeding temporal and territory permutation nulls | Corrected G1-L2 community baseline | G1 / task 2.8 | FR, NL, PT | Symmetric top-k=5; L2 rebuilt from 99 temporal + 99 territory series permutations; equal Louvain budget; modularity and AMI with BH/FDR; COVID sensitivity | `HERALD_G1_COMMUNITIES_AUDIT.md` | 0/3 pass: modularity is reproducible by nulls; some AMI evidence survives but full gate fails | Three heterogeneous territorial systems | L2 stability remains supported, but Louvain communities are not validated | `NOT_SUPPORTED` |
 | G-09 | Functional/mobility network provides predictive signal for enterprise births | Not yet run | — | — | — | — | None | — | Data availability not confirmed at NUTS3 level | `NOT_TESTED` |
 
 ---
@@ -74,10 +75,10 @@
 | `SUPPORTED` | 8 |
 | `PARTIALLY_SUPPORTED` | 2 |
 | `EXPLORATORY` | 1 |
-| `NOT_SUPPORTED` | 2 |
+| `NOT_SUPPORTED` | 3 |
 | `REFUTED_UNDER_CURRENT_PROTOCOL` | 6 |
 | `NOT_TESTED` | 5 |
-| **Total** | **24** |
+| **Total** | **25** |
 
 ---
 

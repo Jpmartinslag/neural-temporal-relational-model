@@ -1,0 +1,123 @@
+{
+  "status": "PASS",
+  "contract": "reports/HERALD_G0_FORMAL_CONTRACT.md",
+  "sector_vocabulary": [
+    "BE",
+    "FZ",
+    "GI",
+    "JZ",
+    "KZ",
+    "LZ",
+    "MN",
+    "OQ",
+    "RU"
+  ],
+  "agriculture_policy": "excluded_not_folded",
+  "birth_panel": {
+    "rows": 45945,
+    "duplicates": 0,
+    "invalid_sectors": [],
+    "incomplete_region_years": 320,
+    "countries": {
+      "FR": {
+        "regions": 280,
+        "years": [
+          2012,
+          2025
+        ],
+        "year_count": 14,
+        "sectors": 9,
+        "observed_pct": 100.0,
+        "complete_region_year_pct": 100.0,
+        "complete_years_all_regions": [
+          2012,
+          2013,
+          2014,
+          2015,
+          2016,
+          2017,
+          2018,
+          2019,
+          2020,
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "unsupported_sectors": [],
+        "target_concept": [
+          "establishment_creation"
+        ],
+        "region_system": [
+          "ZE2020"
+        ]
+      },
+      "NL": {
+        "regions": 40,
+        "years": [
+          2007,
+          2025
+        ],
+        "year_count": 19,
+        "sectors": 9,
+        "observed_pct": 95.322,
+        "complete_region_year_pct": 57.895,
+        "complete_years_all_regions": [
+          2015,
+          2016,
+          2017,
+          2018,
+          2019,
+          2020,
+          2021,
+          2022,
+          2023,
+          2024,
+          2025
+        ],
+        "unsupported_sectors": [
+          "OQ"
+        ],
+        "target_concept": [
+          "local_unit_opening"
+        ],
+        "region_system": [
+          "COROP"
+        ]
+      },
+      "PT": {
+        "regions": 25,
+        "years": [
+          2008,
+          2024
+        ],
+        "year_count": 17,
+        "sectors": 9,
+        "observed_pct": 100.0,
+        "complete_region_year_pct": 0.0,
+        "complete_years_all_regions": [],
+        "unsupported_sectors": [
+          "KZ"
+        ],
+        "target_concept": [
+          "enterprise_birth"
+        ],
+        "region_system": [
+          "NUTS3"
+        ]
+      }
+    }
+  },
+  "belgium_employment": {
+    "rows": 6426,
+    "regions": 42,
+    "years": [
+      2008,
+      2024
+    ],
+    "sectors": 9,
+    "observed_pct": 100.0
+  },
+  "errors": []
+}

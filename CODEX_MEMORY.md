@@ -106,11 +106,24 @@ PT KZ audit (DEC-018): INE indicator 0009703 never includes section K; verified
 definitional exclusion per Eurostat/OECD enterprise demography convention.
 G1-L1 RCA co-specialization failed the common gate (NL pass, FR fail, PT ineligible).
 G1-L2 same-sector cross-territory co-growth PASSED (DEC-019): FR 0.782, NL 0.789,
-PT 0.778 (8 sectors); temporal q=0.005, territory q=0.005, LOYO pass, COVID-robust.
-3/3 countries pass, 2 required. Edges are Granger-predictive associations, not
-structural economic causality. L4 mobility and L5 geography remain unvalidated.
-Next: community detection baseline (task 2.8).
+PT 0.778 (8 sectors); temporal q=0.005, territory q=0.005, LOYO pass.
+COVID_ROBUST (DEC-020): all 3 pass full gate with 2020 excluded from windows
+(eval_year=2020 retained; its window covers pre-COVID years 2015-2019).
+COVID stability: FR 0.744, NL 0.762, PT 0.738 — all still pass.
+3/3 countries pass, 2 required. Edges are statistical co-movement
+associations, not Granger predictability or structural economic causality.
+L2 builder corrected bugs: (1) eval_year exclusion removed; (2) bootstrap
+propagates exclude_years; (3) full 4-criterion gate applied to COVID run.
+27 tests pass. Second run confirms determinism.
+Corrected community baseline (DEC-021): FAIL 0/3. Symmetric top-k=5 graphs,
+valid temporal/territory series nulls, equal Louvain budget, modularity+AMI
+BH/FDR. Some AMI signal survives, but modularity is reproduced by nulls.
+L4 mobility and L5 geography remain unvalidated.
 Artifacts: `data/processed/economic_graph/g1_l2_cogrowth/`; `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md`.
+HPC spec is a corrected draft: `reports/HERALD_PHASE5_HPC_SPEC.md`
+(DEC-022). Community failure does not invalidate L2. Training remains blocked
+pending sector-specific L2 pooling tests, frozen artifacts, deadline
+confirmation and a local smoke test.
 See `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md`.
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)
@@ -119,7 +132,7 @@ Cannot be claimed as a current capability.
 
 ## Documents créés/révisés 2026-06-10
 - `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — DEC-001 to DEC-019 (DEC-018: PT KZ exclusion; DEC-019: L2 PASS)
-- `reports/HERALD_EVIDENCE_MATRIX.md` — 24 claims (G-10 added: L2 SUPPORTED), all classified
+- `reports/HERALD_EVIDENCE_MATRIX.md` — 25 claims (G-10: L2 SUPPORTED; G-11: community NOT_SUPPORTED), all classified
 - `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` — G0→G6→Bloco 3; dashboard section added
 - `reports/HERALD_RESEARCH_GANTT.md` — Gantt with DATE_LIMITE_A_CONFIRMER; task 4.4 updated
 - `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_LITERATURE_REVIEW.md` — ≥30 works
