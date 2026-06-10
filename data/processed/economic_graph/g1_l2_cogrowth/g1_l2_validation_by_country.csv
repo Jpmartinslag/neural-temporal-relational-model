@@ -1,0 +1,4 @@
+country,sectors,n_sectors,eval_years,n_eval_years,observed_stability,temporal_null_median,temporal_p,territory_null_median,territory_p,leave_one_year_direction_pass,stable_edge_count,exclude_covid,temporal_q,territory_q,country_pass
+FR,"BE,FZ,GI,JZ,KZ,LZ,MN,OQ,RU",9,2017-2026,10,0.7824109338903954,0.7287944644562201,0.005,0.7337496003527513,0.005,True,13,False,0.005,0.005,True
+NL,"BE,FZ,GI,JZ,KZ,LZ,MN,OQ,RU",9,2012-2026,15,0.7892905864428711,0.7241728010156606,0.005,0.7382590971708031,0.005,True,19,False,0.005,0.005,True
+PT,"BE,FZ,GI,JZ,LZ,MN,OQ,RU",8,2013-2025,13,0.7778166762345221,0.7246211192680226,0.005,0.7385616459985712,0.005,True,22,False,0.005,0.005,True
