@@ -24,7 +24,7 @@
 The MVP must be achievable even if the deadline is tight:
 
 1. **Causal temporal baseline** — persistence + Ridge, rolling-origin, PT/IT/AT harmonized panel ✅ (DONE, Phase 4N)
-2. **Observable economic graph (G1)** — sector similarity or employment-based, Italy + Portugal
+2. **Observable economic graph (G1)** — sector similarity for FR + NL; PT pending `KZ` audit
 3. **Graph validation (G4-lite)** — sparsity, bootstrap stability, permutation test
 4. **Interpretive visualizations** — edge evolution, community maps, regime detection
 5. **Written report** — scientific framing, honest limitations, no recommendation claim
@@ -57,17 +57,19 @@ The MVP must be achievable even if the deadline is tight:
 
 ## Phase 1 — G0 Contract and Data Audit
 
-> **Context (2026-06-10):** Data inventory partially complete (DEC-012/DEC-013). Sector nucleus confirmed as FR+NL+PT. G0 gate is at 4/10. Phase 1 closes the 6 open items and writes the formal G0 contract.
+> **Context (2026-06-10):** The intended sector nucleus is FR+NL+PT, but PT is
+> temporarily ineligible for nine-sector graph validation because `KZ` is zero
+> in every territory/year. The formal G0 contract is complete at 10/10.
 
 | Task | Start | End | Depends | Deliverable | Done when | Risk | Contingency |
 |------|-------|-----|---------|-------------|-----------|------|-------------|
-| 1.1 Map bd_hgnace_r NACE→A10 for FR/NL/PT | 2026-06-11 | 2026-06-12 | — | Sector mapping table | All 9 A10 sectors mapped | Partial coverage | Document gaps; use available sectors |
-| 1.2 Write G0 node + edge definition (formal) | 2026-06-11 | 2026-06-13 | 1.1 | `HERALD_G0_FORMAL_CONTRACT.md` § node + edge | territory×sector pair committed; 5 edge layers documented | None | — |
+| 1.1 Build clean unlagged sector preflight | 2026-06-10 | 2026-06-11 | G0 | `sector_panel_fr_nl_pt.csv` | Agriculture excluded; keys and masks audited | Source mismatch | Keep national sources and explicit concepts |
+| 1.2 Write G0 node + edge definition (formal) | 2026-06-10 | 2026-06-10 | — | `HERALD_G0_FORMAL_CONTRACT.md` | territory×sector pair committed; 5 edge layers documented | None | DONE |
 | 1.3 Write G0 null model specification | 2026-06-12 | 2026-06-13 | 1.2 | G0 contract § null | Priority null model list formalized | None | — |
 | 1.4 Write G0 falsifiable hypothesis | 2026-06-12 | 2026-06-13 | 1.2 | G0 contract § hypothesis | One testable hypothesis per edge layer | None | — |
 | 1.5 Pre-specify stability metrics + acceptance criteria | 2026-06-13 | 2026-06-14 | 1.3, 1.4 | G0 contract § validation | Thresholds written with justification before any experiment | None | — |
 | 1.6 Write post-experiment audit plan | 2026-06-14 | 2026-06-14 | 1.5 | G0 contract § audit plan | Checklist of audit steps after G1 experiment | None | — |
-| 1.7 G0 gate review (self + supervisor) | 2026-06-14 | 2026-06-16 | 1.2–1.6 | G0 gate at 10/10 | All items checked; supervisor sign-off | Supervisor unavailable | Self-approve with limitations document |
+| 1.7 G0 gate review | 2026-06-10 | 2026-06-10 | 1.2–1.6 | G0 gate at 10/10 | All items checked | Supervisor review pending | Proceed only to data preflight |
 | 1.8 Literature review complete | 2026-06-11 | 2026-06-18 | 0.8 | `HERALD_DYNAMIC_ECONOMIC_GRAPH_LITERATURE_REVIEW.md` | ≥30 papers in table; refs in bibliography | None | Reduce to 25 if time-constrained |
 
 **Criterion for Phase 1 completion:** G0 gate 10/10 in `HERALD_G0_FORMAL_CONTRACT.md`; supervisor sign-off; literature review done.
@@ -78,11 +80,14 @@ The MVP must be achievable even if the deadline is tight:
 
 | Task | Start | End | Depends | Deliverable | Done when | Risk | Contingency |
 |------|-------|-----|---------|-------------|-----------|------|-------------|
-| 2.1 Build canonical FR/NL/PT sector dataset (territory×sector×year) | W+1 after G0 | W+5 | 1.7 | `data/graphs/sector_panel_fr_nl_pt.csv` | Dataset built, audit pass; masks documented | bd_hgnace_r coverage gaps | Use canonical panels first; bridge with bd_hgnace_r |
-| 2.2 Build G1 observable graph (sector similarity + co-presence) | W+5 | W+10 | 2.1 | `data/graphs/g1_observable/` | Graph files generated, audit pass | None | Start with sector distribution similarity (no estimation needed) |
-| 2.3 G1 audit: sparsity, components, degree distribution | W+10 | W+12 | 2.2 | `reports/HERALD_G1_GRAPH_AUDIT.md` | Audit document complete, PASS/FAIL | None | — |
-| 2.4 G4-lite validation (bootstrap, permutation) | W+12 | W+16 | 2.3 | Stability metrics | Bootstrap Jaccard ≥ 0.5; permutation p ≤ 0.05 per edge | Low T limits bootstrap power | Report with explicit limitation |
-| 2.5 Community detection (static baseline) | W+14 | W+18 | 2.3 | Community labels | Louvain or DSBM on average graph | None | Use Louvain first |
+| 2.1 Build canonical FR/NL/PT sector dataset (territory×sector×year) | 2026-06-10 | 2026-06-10 | 1.7 | `data/processed/economic_graph/sector_panel_fr_nl_pt.csv` | PASS; masks and agriculture policy documented | None | DONE |
+| 2.2 Build G1 observable graph (bipartite + sector-structure similarity) | 2026-06-10 | 2026-06-10 | 2.1 | `data/processed/economic_graph/g1_observable/` | Graph files generated | None | DONE |
+| 2.3 G1-L3 audit: components, degrees and stability | 2026-06-10 | 2026-06-10 | 2.2 | `reports/HERALD_G1_OBSERVABLE_GRAPH_AUDIT.md` | PASS in FR/NL; PT excluded by coverage gate | PT KZ unresolved | DONE with limitations |
+| 2.4 G4-lite validation for L3 (bootstrap, permutation) | 2026-06-10 | 2026-06-10 | 2.3 | Null/FDR/LOYO metrics | 2/2 eligible countries pass; bootstrap stable edges available | Low T remains | DONE with limitations |
+| 2.5 Economic-coherence review + L1 sector relatedness | 2026-06-10 | 2026-06-10 | 2.4 | `HERALD_G1_L1_SECTOR_GRAPH_AUDIT.md` | FAIL: NL passes, FR fails, PT ineligible | Stable composition dominates FR nulls | Keep L3 descriptive; do not retune L1 |
+| 2.6 Resolve PT KZ source semantics | 2026-06-10 | 2026-06-10 | 2.5 | INE 0009703 audit: K absent in all years (DEC-018) | K is definitional exclusion per Eurostat/OECD convention | Financial sector excluded by INE | PT eligible for L2 with 8 sectors; excluded from 9-sector gate | DONE |
+| 2.7 Build and validate L2 causal co-growth | 2026-06-10 | 2026-06-10 | 2.6 | `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md`; `data/processed/economic_graph/g1_l2_cogrowth/` | PASS: FR 0.782, NL 0.789, PT 0.778; temporal q=0.005, territory q=0.005, LOYO pass, COVID-robust (DEC-019) | Rolling correlation ≠ causality; MAUP | L4 mobility and L5 geography next | DONE |
+| 2.8 Community detection (static baseline) | after 2.7 | after 2.7 | validated layer | Community labels | Louvain only on a validated layer; DSBM deferred | None | Use L3 FR/NL if L2 fails |
 
 **W = week when G0 gate is approved (depends on 0.9 deadline confirmation)**
 
@@ -108,7 +113,7 @@ The MVP must be achievable even if the deadline is tight:
 | 4.1 Edge ranking and influence maps | W+32 | W+36 | 2.5, 3.2 | Visualizations | Maps interpretable by domain expert | None | — |
 | 4.2 Community evolution plots | W+34 | W+38 | 3.2 | Animation or multi-panel plot | Year-by-year community structure visible | None | — |
 | 4.3 Correlation with forecast residuals | W+36 | W+40 | 4.1 | `HERALD_G5_EXPLANATION.md` | Association documented; causality NOT claimed | None | — |
-| 4.4 Dashboard adaptation (from France base) | W+40 | W+44 | 4.1–4.3 + G1 validated | Adapted `herald_france_final_dashboard.html` — country/sector/year selectors + G1 graph layer | Country selector, edge legend, territory click, association≠causality labels | Dashboard complexity unknown until G1 finalized | Deliver static multi-panel report if dashboard integration blocked |
+| 4.4 Dashboard adaptation (from France base) | W+40 | W+44 | 4.1–4.3 + L1/L2/L3 validated | Adapted `herald_france_final_dashboard.html` — country/sector/year selectors + validated graph layers | Country selector, edge legend, territory click, association≠causality labels | Dashboard complexity unknown until observable layers are finalized | Deliver static multi-panel report if dashboard integration blocked |
 
 ---
 
@@ -170,9 +175,9 @@ The MVP must be achievable even if the deadline is tight:
 
 | Block | Status | MVP | Duration estimate |
 |-------|--------|-----|------------------|
-| Phase 0: Organisation | In progress | ✅ Required | 1 day |
-| Phase 1: G0 + data audit + literature | Not started | ✅ Required | 1–2 weeks |
-| Phase 2: G1 observable graph | Not started | ✅ Required | 3–4 weeks |
+| Phase 0: Organisation | 8/9 complete; deadline confirmation pending | ✅ Required | 1 day |
+| Phase 1: G0 + data audit + literature | Technically complete; supervisor sign-off pending | ✅ Required | Complete |
+| Phase 2: G1 observable graph | In progress (L3 FR/NL PASS; L1 FAIL; L2 FR/NL/PT PASS) | ✅ Required | Community detection baseline (2.8) remaining |
 | Phase 3: G2/G3 dynamic graph | Not started | Optional | 4–6 weeks |
 | Phase 4: G5 explanation + visualization | Not started | ✅ Required | 3–4 weeks |
 | Phase 5: G6 forecast integration | Not started | Optional | 2–3 weeks |
@@ -181,4 +186,16 @@ The MVP must be achievable even if the deadline is tight:
 
 **Total minimum viable timeline (Phases 0+1+2+4+6):** ~20 weeks from today  
 **Full timeline (all phases):** ~30+ weeks  
-**Critical path:** `0.9 (deadline confirmation) → 1.6 (G0 gate) → 2.4 (G1 validation) → 4.3 (explanation) → 6.8 (report submission)`
+**Critical path:** `0.9 (deadline confirmation) → 1.6 (G0 gate) → 2.4
+(L1/L2/L3 validation) → 4.3 (explanation) → 6.8 (report submission)`
+
+### Progress estimate
+
+Planning estimate, not an empirical metric:
+
+- MVP scientific product: approximately **40% complete**.
+- Full product through economic recommendation: approximately **25% complete**.
+
+Completed: temporal baselines, G0, sector preflight, G1-L3, G1-L1, PT KZ audit,
+G1-L2 and G4-lite validation. Remaining MVP: community detection baseline (2.8),
+G5 visualization/explanation and report completion.

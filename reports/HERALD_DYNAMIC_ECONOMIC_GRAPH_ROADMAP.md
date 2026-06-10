@@ -2,8 +2,8 @@
 
 **Created:** 2026-06-10  
 **Revised:** 2026-06-10 (data inventory corrected after panel inspection)  
-**Status:** PLANNING — G0 gate partially satisfied; implementation not yet authorized  
-**Audit classification:** `PASS_WITH_LIMITATIONS` (planning document; empirical validation pending)
+**Status:** G0 COMPLETE — G1-L3 validated for FR/NL; G1-L1 common gate failed
+**Audit classification:** `PASS_WITH_LIMITATIONS` (G0 complete; G1-L3 validated for FR/NL)
 
 ---
 
@@ -23,7 +23,7 @@
 | Leakage risks | Edge weights computed with t-year data = leakage; all graph construction uses data through t-1 |
 | Claims permitted | Graph reveals economic structure (associative); graph validated independently of WMAPE |
 | Claims prohibited | Causal relations between sectors; policy recommendations without intervention study |
-| Decision | Roadmap approved for planning; implementation blocked pending full G0 gate |
+| Decision | G0 complete; bounded G1 observable-layer implementation authorized |
 
 ---
 
@@ -60,7 +60,7 @@ This is primarily an **interpretive and explanatory** task. Forecasting improvem
 
 | Country | mask_employment | Source | Notes |
 |---------|----------------|--------|-------|
-| FR | 1.000 | URSSAF effectifs, `france_panel.csv` | Full ZE×A10×lag |
+| FR | aggregate only | URSSAF quarterly ZE totals | No verified ZE×A10 employment table in the current repository |
 | NL | 1.000 | CBS 83582NED, `nl_panel.csv` | Full COROP×A10 |
 | PT | 1.000 | Eurostat `nama_10r_3empers` + ARDECO, `pt_panel.csv` | Full NUTS3×A10 |
 | BE | 1.000 | ONSS Q4, `belgium_qtensor_jobs_panel.csv` | Employment A10 available; births A10 absent |
@@ -127,14 +127,15 @@ Requires Bloco 1 + Bloco 2 validated. Cannot be claimed as a current capability.
 
 ## Bloco 2 — Dynamic Economic Graph
 
-### Node definition (proposed, pending G0 formal commitment)
+### Node definition (frozen by G0)
 
-- **Node:** territory × sector pair `(NUTS3_id, sector_A10)`
+- **Node:** territory × sector pair `(country, territory_id, sector_A10)`
 - **Node attributes (observed):** enterprise births (lag1, lag2), stock_lag1, employment (lag1), growth_1y (causal), growth_2y (causal), mask flags
 - **Snapshot:** annual (year t; all attributes from data through t-1)
 - **Missing:** `NaN + mask_sector_a10`, never zero-imputed
+- **Agriculture:** excluded; never folded into `OQ` in the graph panel
 
-### Edge definition (proposed, pending G0 formal commitment)
+### Edge definition (frozen by G0)
 
 Edges are organized in layers, from most to least interpretable:
 
@@ -164,22 +165,22 @@ IT and AT are not excluded from the project — they remain canonical LOCO domai
 
 ### G0 — Conceptual Contract Gate
 
-**Current gate status: 4/10 items formally satisfied. Implementation BLOCKED until all 10 are checked.**
+**Current gate status: 10/10. G1 data preflight is authorized.**
 
 | # | Item | Status | Evidence |
 |---|------|--------|---------|
-| 1 | Formal node and edge definition with semantic meaning | ⬜ OPEN | Proposed above; pending formal commitment in a signed G0 document |
+| 1 | Formal node and edge definition with semantic meaning | ✅ DONE | `HERALD_G0_FORMAL_CONTRACT.md` |
 | 2 | Data confirmed available for ≥2 countries at required granularity | ✅ DONE | FR mask_sector_a10=0.923, NL=1.000, PT=0.941 (verified from panels 2026-06-10) |
-| 3 | Falsifiable hypothesis stated | ⬜ OPEN | Proposed above; pending explicit pre-registration |
+| 3 | Falsifiable hypothesis stated | ✅ DONE | H1-H4 in formal contract |
 | 4 | Baseline defined (persistence or Ridge) | ✅ DONE | Persistence (Phase 4N): IT 0.055, AT 0.075, PT 0.132, balanced 0.087 |
-| 5 | Null model specified (permuted graph, configuration model) | ⬜ OPEN | Permutation approach identified but not formally specified |
+| 5 | Null model specified (permuted graph, configuration model) | ✅ DONE | Temporal, territorial, configuration and geography controls |
 | 6 | Causal temporal protocol written (no t leakage in edge construction) | ✅ DONE | Enforced since Phase 4E; all edge features use data through t-1 |
-| 7 | Stability metrics pre-specified | ⬜ OPEN | Not yet formally pre-specified |
-| 8 | Acceptance criteria pre-registered | ⬜ OPEN | Not yet |
+| 7 | Stability metrics pre-specified | ✅ DONE | Weighted stability, top-k overlap, bootstrap and AMI |
+| 8 | Acceptance criteria pre-registered | ✅ DONE | Relative-to-null promotion gate in formal contract |
 | 9 | Permitted scientific claims listed | ✅ DONE | Evidence Matrix + README claims gate |
-| 10 | Post-experiment audit plan written | ⬜ OPEN | Not yet |
+| 10 | Post-experiment audit plan written | ✅ DONE | Eleven-step audit in formal contract |
 
-Items 1, 3, 5, 7, 8, 10 must be completed in the G0 contract document before implementation begins.
+The formal contract is frozen in `reports/HERALD_G0_FORMAL_CONTRACT.md`.
 
 ---
 
@@ -193,13 +194,61 @@ Build edges from directly observed data — no statistical estimation, no learni
 2. **Sector co-growth correlation** (rolling 5-year window): Pearson correlation of A10 sector growth rates across territories. Rolling window keeps it causal.
 3. **Commuting-weighted territory graph** (NL/BE/PT): Use existing commuting files to define functional-area proximity between territories.
 
-Do **not** start with GLASSO, TVGL, DSBM, or any GNN at G1. These are conditional on G1 validation passing.
+Do **not** start with GLASSO, TVGL, DSBM, or any GNN at G1. These are
+conditional on the relevant observable layers passing G4 validation. The
+current L3 result alone does not authorize them.
+
+### G1-L3 result (2026-06-10)
+
+The clean sector preflight and first observable graph passed:
+
+- FR: 280 ZE2020, 2012–2025;
+- NL: 40 COROP, complete clean vectors for 2015–2025;
+- PT: 25 NUTS3, 2008–2024;
+- BE: separate employment complement, 42 arrondissements, 2008–2024.
+
+The L3 territory-structure similarity graph passed temporal and territory-label
+null controls in FR and NL (`q=0.005`), remained directionally stable under
+leave-one-year-out, and had no isolated nodes. PT was removed from this claim
+after the preflight detected that `KZ` has zero mass in every territory and
+year despite an observed mask. The pre-registered minimum of two countries is
+still met.
+
+The first L1 RCA/product-space graph did not pass the common gate: NL passed,
+FR did not outperform the null controls, and PT was ineligible because of
+`KZ`. L1 is therefore not promoted.
+
+PT `KZ` audit (DEC-018): INE indicator 0009703 never includes section K
+(Financial/insurance) in any year 2008–2022.  This is a verified definitional
+exclusion per Eurostat/OECD enterprise demography convention; PT is excluded from
+the nine-sector gate and eligible for L2 with 8 sectors.
+
+The L2 same-sector cross-territory co-growth graph passed validation (DEC-019):
+all three countries beat both temporal and territory-label null controls at
+`q=0.005` after BH/FDR correction, all pass LOYO direction, all have stable
+bootstrap edges, and results are COVID-robust (2020 excluded).  Stability:
+FR 0.782, NL 0.789, PT 0.778 (8 sectors).  3/3 countries pass, 2 required.
+Co-growth edges are Granger-predictive associations, not structural economic
+causality.  L4 mobility and L5 geography remain unvalidated.
+
+These results do not validate causality, forecast gain, recommendation or a
+learned GNN.
+
+Artifacts:
+
+- `reports/HERALD_G1_SECTOR_DATA_PREFLIGHT.md`
+- `reports/HERALD_G1_OBSERVABLE_GRAPH_AUDIT.md`
+- `reports/HERALD_G1_L1_SECTOR_GRAPH_AUDIT.md`
+- `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md`
+- `data/processed/economic_graph/g1_observable/`
+- `data/processed/economic_graph/g1_l2_cogrowth/`
 
 ---
 
-### G2 — Learned Sparse Graph (conditional on G1 validation)
+### G2 — Learned Sparse Graph (conditional on observable-layer validation)
 
-Learn conditional dependence structure. **Only after G1 is validated under G4.**
+Learn conditional dependence structure. **Only after L1 sector relatedness and
+L2 co-growth are validated under G4.** L3 alone is insufficient.
 
 **T≈10–14 annual observations is a severe constraint.** With p=40–306 territories × 9 sectors, direct estimation is impossible. The following ordering respects this constraint:
 
@@ -283,7 +332,9 @@ Produce human-readable outputs:
 
 **Base:** `reports/dashboards/herald_france_final_dashboard.html` — official visual base. Do **not** create a new dashboard from scratch.
 
-**Strategy:** Incremental adaptation of the France dashboard, deferred to Gantt Phase 4 (task 4.4) and **only after G1 is validated**.
+**Strategy:** Incremental adaptation of the France dashboard, deferred to Gantt
+Phase 4 (task 4.4) and **only after L1, L2 and L3 are validated and their
+economic meaning is audited**.
 
 Planned adaptations:
 - Country selector: FR, NL, PT, BE
@@ -294,7 +345,7 @@ Planned adaptations:
 - Real NUTS3/ZE geometries with declared granularity
 - All labels must distinguish association from causality (never "causal edge" for Granger/correlation-based edges)
 
-**Forbidden until G1 validated:**
+**Forbidden until L1, L2 and L3 are validated:**
 - Modify `herald_france_final_dashboard.html`
 - Generate any new HTML dashboard file
 - Present economic associations as causal relations in any visualization
@@ -317,7 +368,7 @@ Requires Bloco 1 + Bloco 2. Cannot be claimed as current capability.
 
 Components when developed:
 - Forecast of territorial economic trajectory (Bloco 1)
-- Sector-territory economic graph validated (Bloco 2)
+- Complete validated observable economic graph (at least L1, L2 and L3)
 - Existing territorial capacity (sector employment, enterprise stock)
 - Sector relatedness (product space, I-O, skill similarity — Pachot et al. 2021/2022)
 - Productive compatibility and risk quantification
@@ -325,18 +376,13 @@ Components when developed:
 
 ---
 
-## G0 Gate: Next Steps to Reach 10/10
+## G0 Gate: Complete
 
-The 6 remaining open items require a dedicated G0 contract document:
-
-1. **Item 1** — Formally commit to `territory × sector A10` as node definition, with the edge layer structure above
-2. **Item 3** — State the falsifiable hypothesis: *"The sector co-growth similarity graph (FR/NL/PT, rolling 5-year window) is more stable under bootstrap resampling than the geographic contiguity graph, and its community structure is consistent with known economic geography"*
-3. **Item 5** — Formally specify null models in priority order (as above)
-4. **Item 7** — Pre-specify stability metrics with justification for each threshold
-5. **Item 8** — Pre-register acceptance criteria for each validation test
-6. **Item 10** — Write post-experiment audit plan
-
-Write these in a new document: `reports/HERALD_G0_FORMAL_CONTRACT.md`
+The 10 items are frozen in `reports/HERALD_G0_FORMAL_CONTRACT.md`. Completed
+G1 results: preflight (PASS), L3 territory projection (PASS FR/NL), L1 sector
+relatedness (FAIL), PT KZ audit (DEC-018: definitional exclusion), L2 causal
+co-growth (PASS FR/NL/PT; DEC-019).  Next: community detection baseline (2.8)
+using validated L3 and/or L2 layers.
 
 ---
 
@@ -345,6 +391,6 @@ Write these in a new document: `reports/HERALD_G0_FORMAL_CONTRACT.md`
 | Track | Status | Immediate action |
 |-------|--------|-----------------|
 | Bloco 1: Temporal forecasting | Active | Non-graph improvements; conformal intervals; no architecture restart |
-| Bloco 2: Economic dynamic graph | Blocked at G0 (4/10) | Write G0 formal contract; verify bd_hgnace_r A10 mapping |
+| Bloco 2: Economic dynamic graph | L3 PASS FR/NL; L1 FAIL; L2 PASS FR/NL/PT | Community detection baseline (2.8), then L4/L5 |
 | Bloco 3: Recommendation | Not started | Deferred until Bloco 2 complete |
-| Visualization | France dashboard is official base | No new HTML; adapt incrementally after G1 validated (DEC-014) |
+| Visualization | France dashboard is official base | No new HTML; adapt incrementally after L1/L2/L3 validation (DEC-014) |

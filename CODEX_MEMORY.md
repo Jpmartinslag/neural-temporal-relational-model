@@ -5,7 +5,8 @@ Updated 2026-06-10 (Phase 4Q + strategic reorientation). Read first; verify drif
 - Repo `/home/jpdark/Downloads/project_recomm/dataset`.
 - Prefix shell commands `rtk`; raw Python/SSH/rsync: `rtk proxy <command>`.
 - Dirty worktree: never reset/revert unrelated changes. Exclude raws, `hpc_results/`, large generated artifacts from commits.
-- Branch `main`; last confirmed pushed HEAD `f734538` (docs: correct dynamic economic graph roadmap and data scope).
+- Branch `main`; use `rtk git rev-parse HEAD` and `rtk git rev-parse origin/main`
+  to verify the current revision instead of storing a commit hash here.
 - Forecast `t` uses data available through `t-1` only.
 - Phase 4A/4D metrics are legacy/leaky (`growth_1y[t]` used `target[t]`). Scientific baseline starts at causal Phase 4E.
 
@@ -93,11 +94,23 @@ Three scientific tracks, in priority order:
 - Permitted: non-graph frugal country-specific improvements; conformal intervals.
 - Forbidden: STGNN, neural graph, multi-country Phase 4P.
 
-### Bloco 2 — Dynamic Economic Graph (BLOCKED at G0 gate)
+### Bloco 2 — Dynamic Economic Graph (L3 FR/NL PASS; L1 FAIL; L2 FR/NL/PT PASS)
 New scientific question: what sector-territory economic relations exist and evolve?
 NOT about improving forecast accuracy (that question was answered: geographic graph FAIL).
 Role: represent relations, track evolution, detect growth/crisis/stagnation, explain dynamics.
-Implementation BLOCKED until G0 contract (10 items) is completed.
+The formal contract is `reports/HERALD_G0_FORMAL_CONTRACT.md` (10/10).
+G1-L3 territory-structure projection passed for FR/NL with temporal and
+territory-label nulls, FDR, leave-one-year-out and bootstrap stability. PT is
+excluded from nine-sector gate because KZ has zero mass in every territory/year.
+PT KZ audit (DEC-018): INE indicator 0009703 never includes section K; verified
+definitional exclusion per Eurostat/OECD enterprise demography convention.
+G1-L1 RCA co-specialization failed the common gate (NL pass, FR fail, PT ineligible).
+G1-L2 same-sector cross-territory co-growth PASSED (DEC-019): FR 0.782, NL 0.789,
+PT 0.778 (8 sectors); temporal q=0.005, territory q=0.005, LOYO pass, COVID-robust.
+3/3 countries pass, 2 required. Edges are Granger-predictive associations, not
+structural economic causality. L4 mobility and L5 geography remain unvalidated.
+Next: community detection baseline (task 2.8).
+Artifacts: `data/processed/economic_graph/g1_l2_cogrowth/`; `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md`.
 See `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md`.
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)
@@ -105,8 +118,8 @@ Terminal use case. Requires Bloco 1 + Bloco 2 complete.
 Cannot be claimed as a current capability.
 
 ## Documents créés/révisés 2026-06-10
-- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — DEC-001 to DEC-014 (DEC-014: dashboard base decision)
-- `reports/HERALD_EVIDENCE_MATRIX.md` — 23 claims, all classified
+- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — DEC-001 to DEC-019 (DEC-018: PT KZ exclusion; DEC-019: L2 PASS)
+- `reports/HERALD_EVIDENCE_MATRIX.md` — 24 claims (G-10 added: L2 SUPPORTED), all classified
 - `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` — G0→G6→Bloco 3; dashboard section added
 - `reports/HERALD_RESEARCH_GANTT.md` — Gantt with DATE_LIMITE_A_CONFIRMER; task 4.4 updated
 - `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_LITERATURE_REVIEW.md` — ≥30 works
@@ -116,8 +129,9 @@ Cannot be claimed as a current capability.
 
 **Dashboard (DEC-014):**
 `reports/dashboards/herald_france_final_dashboard.html` = base visuelle officielle.
-Pas de nouveau dashboard from scratch. Adaptation incrémentale uniquement après G1 validé.
-Ne pas modifier ce fichier ni générer un nouveau HTML avant G1 validé.
+Pas de nouveau dashboard from scratch. Adaptation incrémentale uniquement
+après validation de L3, L2 (et L1 si récupéré). L3 PASS + L2 PASS sont maintenant validés.
+Ne pas modifier ce fichier ni générer un nouveau HTML avant autorisation explicite.
 
 ## Claims gate
 Permitted: persistence best baseline PT/IT/AT LOCO; Italian residual spatial autocorrelation robust; geographic lags rejected; FR/NL/BE/PT targets heterogeneous.

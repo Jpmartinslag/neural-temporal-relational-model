@@ -200,7 +200,9 @@
 **Question:** Should a new dashboard be created from scratch for the economic graph, or should the existing France dashboard be adapted?  
 **Evidence:** `reports/dashboards/herald_france_final_dashboard.html` implements: interactive choropleth map, territory selection, A10 sector breakdown, time series navigation, and rolling forecast visualization. Separate European panel dashboard also exists (`herald_phase4e_europe_dashboard.html`). Recreating map/navigation/sector components from scratch is unnecessary work.  
 **Decision:** `herald_france_final_dashboard.html` is the official visual base. No new dashboard from scratch. Incremental adaptations only.  
-**Rationale:** Reuse tested components. Avoid parallel dashboard fragmentation. Graph layer added only after G1 is validated (G4 pass).  
+**Rationale:** Reuse tested components. Avoid parallel dashboard fragmentation.
+Graph layer added only after L1, L2 and L3 are validated under G4; the current
+L3 result alone is insufficient.
 **Planned adaptations (deferred to Gantt Phase 4, task 4.4):**
 - Country selector: FR, NL, PT, BE
 - Year, territory, and sector A10 selectors
@@ -209,7 +211,149 @@
 - Territory click → sector breakdown + time series + forecast + graph neighbors
 - Real geometries with declared granularity
 - All labels must distinguish association from causality  
-**Forbidden in this task and any task until G1 validated:** modify `herald_france_final_dashboard.html`; generate a new HTML dashboard.  
+**Forbidden in this task and any task until L1/L2/L3 are validated:** modify
+`herald_france_final_dashboard.html`; generate a new HTML dashboard.
 **Limitations:** Adaptation scope and complexity unknown until G1 graph structure is finalized.  
-**Reopen condition:** G1 validated; supervisor confirms dashboard requirements.  
-**Affected files:** `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md`; `reports/HERALD_RESEARCH_GANTT.md`; `README.md`
+**Reopen condition:** L1/L2/L3 validated; supervisor confirms dashboard
+requirements.
+
+---
+
+## DEC-015 — 2026-06-10 — G0 frozen; clean sector vocabulary excludes agriculture
+
+**Phase:** G0 / Pre-G1
+**Question:** Can the observable economic graph preflight begin, and what is its
+common sector vocabulary?
+**Evidence:** FR, NL and PT unlagged national sector sources are locally
+available. The legacy nine-sector predictive builders folded agriculture `A`
+into `OQ` for NL/PT, which is not a clean European business-sector contract.
+France currently has aggregate quarterly URSSAF employment, not a verified
+ZE-by-A10 employment file.
+**Decision:** Freeze `reports/HERALD_G0_FORMAL_CONTRACT.md` at 10/10. Build the
+analytical graph panel from unlagged sources using
+`BE,FZ,GI,JZ,KZ,LZ,MN,OQ,RU`; exclude agriculture rather than folding it into
+`OQ`. Preserve legacy predictive files unchanged. Use BE employment as a
+separate complementary layer.
+**Rationale:** This prevents off-by-one temporal labels and sector-definition
+contamination while retaining reproducibility of prior forecasting runs.
+**Limitations:** Territorial systems and target concepts still differ. Raw
+counts cannot be pooled across countries.
+**Reopen condition:** A future harmonized source provides a documented common
+territorial and sector definition.
+**Affected files:** `reports/HERALD_G0_FORMAL_CONTRACT.md`;
+`src/data/european_panel/build_dynamic_sector_preflight.py`.
+
+---
+
+## DEC-016 — 2026-06-10 — G1-L3 territory-structure projection validated
+
+**Phase:** G1 / G4-lite
+**Question:** Does the observable sector-structure graph contain stable
+territory-specific information beyond structure-preserving nulls?
+**Evidence:** FR and NL beat temporal and territory-identity nulls after
+BH/FDR (`q=0.005`), pass leave-one-year-out direction checks, contain stable
+bootstrap edges, have one connected component per snapshot and no isolated
+nodes. PT was removed from the validated set after detecting `KZ=0` in every
+territory and year despite an observed mask. Clean validated windows are FR
+2012–2025 and NL 2015–2025.
+**Decision:** G1-L3 territory-structure similarity PASS for analytical use.
+Authorize economic-coherence review and bounded interpretive dynamics. L1
+sector-sector, L2 co-growth, L4 mobility and L5 geography remain unvalidated.
+Do not authorize GNN
+training, causal claims, recommendation claims or dashboard modification yet.
+**Rationale:** The tested graph captures persistent country-specific economic
+structure beyond temporal and territory-label nulls. Prediction was not part
+of this gate.
+**Limitations:** Similarity may reflect stable size/composition effects;
+territorial systems and target concepts differ; bootstrap edge stability is
+project-specific; external economic validation remains pending.
+**Reopen condition:** G3-lite dynamics or economic-coherence audit reveals
+instability or semantic failure.
+**Affected files:** `reports/HERALD_G1_OBSERVABLE_GRAPH_AUDIT.md`;
+`data/processed/economic_graph/g1_observable/`.
+
+---
+
+## DEC-017 — 2026-06-10 — G1-L1 RCA sector graph fails common promotion gate
+
+**Phase:** G1 / G4-lite
+**Question:** Does RCA-based sector co-specialization provide a reproducible
+sector-sector relation in at least two countries?
+**Evidence:** NL passes temporal and configuration nulls after BH/FDR
+(`q=0.01`) and LOYO. FR has high raw stability (`0.9797`) but the temporal and
+configuration nulls are equally or more stable (`q=1.0`), so stable marginal
+sector prevalence explains the result. PT is ineligible because `KZ` has zero
+mass in every territory/year.
+**Decision:** L1 FAIL and is not promoted. Do not tune thresholds or replace
+the formula after observing the result. Keep L3 descriptive in FR/NL and move
+to the pre-specified L2 causal co-growth test after auditing PT `KZ`.
+**Rationale:** High raw stability is insufficient when null models reproduce
+it. The failed gate prevents converting persistent composition into a false
+claim of economic relatedness.
+**Limitations:** Only one observable L1 definition was tested. Failure does not
+prove that all sector-relatedness definitions are invalid.
+**Affected files:** `reports/HERALD_G1_L1_SECTOR_GRAPH_AUDIT.md`;
+`data/processed/economic_graph/g1_l1_sector/`.
+
+---
+
+## DEC-018 — 2026-06-10 — PT sector KZ formally unavailable: INE structural exclusion
+
+**Phase:** G1 preflight
+**Question:** Does `sector_KZ` zero mass in Portugal represent an economic zero,
+a mapping error, or a structural data absence?
+**Evidence:** INE Portugal indicator 0009703 (enterprise births by NUTS3 and CAE
+section) never includes section K (Financial and insurance activities) in any
+year 2008–2022.  Available sections in all years: A, B, C, D, E, F, G, H, I,
+J, L, M, N, P, Q, R, S, TOT.  K is completely absent.  Root cause: INE follows
+the Eurostat/OECD enterprise demography convention excluding the financial
+sector, which is regulated by Banco de Portugal and not covered in standard firm
+demography statistics.  Evidence chain: raw JSON files
+`data/external/portugal/raw/ine/0009703_*.json` → `portugal_qtensor_births_cae_nuts3.csv`
+(KZ births all=0) → `pt_adapter.py` (KZ passes through as zero) →
+`sector_panel_fr_nl_pt.csv` (`mask_sector_supported=0` for PT KZ).
+**Decision:** PT KZ is formally unavailable.  `mask_sector_supported=0` for PT
+KZ is correct.  PT is excluded from the nine-sector gate (L1, L3).  PT is
+eligible for L2 with an eight-sector vocabulary (KZ excluded), explicitly
+labeled.  No data correction is needed or authorized; the source definition is
+the binding constraint.
+**Rationale:** The absence is a verified definitional exclusion, not a missing
+file, a mapping error, or an economic zero.  Imputing or re-coding KZ would
+introduce unverifiable assumptions.
+**Limitations:** If Banco de Portugal ever releases a compatible enterprise-birth
+series for section K, the exclusion could be revisited.
+**Affected files:** `data/external/portugal/raw/ine/0009703_*.json`;
+`data/external/portugal/processed/portugal_qtensor_births_cae_nuts3.csv`;
+`src/data/european_panel/adapters/pt_adapter.py`.
+
+---
+
+## DEC-019 — 2026-06-10 — G1-L2 same-sector co-growth graph passes validation
+
+**Phase:** G1
+**Question:** Does rolling same-sector cross-territory co-growth produce a
+reproducible graph structure in at least two of FR/NL/PT?
+**Evidence:** Builder `src/data/european_panel/build_g1_l2_cogrowth.py` with
+rolling window w=5, min_periods=4, 199 temporal permutations, 199 territory
+permutations, BH FDR q=0.05, LOYO direction test, bootstrap stability at 70%
+threshold (seed=42).  Results:
+
+| Country | Sectors | Eval years | Stability | Temporal q | Territory q | LOYO | Stable edges |
+|---|---|---|---:|---:|---:|---|---:|
+| FR | 9 | 2017–2026 | 0.7824 | 0.0050 | 0.0050 | True | 13 |
+| NL | 9 | 2012–2026 | 0.7893 | 0.0050 | 0.0050 | True | 19 |
+| PT | 8 | 2013–2025 | 0.7778 | 0.0050 | 0.0050 | True | 22 |
+
+COVID sensitivity (2020 excluded): all three still pass.  3/2 required.
+**Decision:** L2 PASS.  The co-growth graph is promoted as an analytically
+validated layer.  Correlation edges are Granger-predictive associations, not
+structural economic causality.  This result does not authorize GNN training,
+forecast combination or recommendation.
+**Rationale:** All three countries independently beat both null models after FDR
+correction and LOYO direction stability.  The result is COVID-robust.
+**Limitations:** Pearson rolling correlation conflates co-movement with shared
+trends.  MAUP applies (NUTS3/ZE/COROP boundaries are administrative).  PT
+participates with 8 sectors (KZ excluded per DEC-018).
+**Affected files:** `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md`;
+`src/data/european_panel/build_g1_l2_cogrowth.py`;
+`data/processed/economic_graph/g1_l2_cogrowth/`.
