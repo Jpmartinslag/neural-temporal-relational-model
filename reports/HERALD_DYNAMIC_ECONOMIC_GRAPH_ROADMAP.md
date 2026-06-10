@@ -267,7 +267,7 @@ Priority null models, from most to least preferred:
 
 ---
 
-### G5 — Explanation
+### G5 — Explanation and Visualization
 
 Produce human-readable outputs:
 
@@ -278,6 +278,26 @@ Produce human-readable outputs:
 5. Correlation of graph communities with forecast residuals (descriptive, not causal)
 
 > **Attention weights require permutation test before being called explanations.** Any GNN attention used in G6 must be validated against a null (random-graph) baseline before being interpreted.
+
+#### Dashboard and Visualization Decision (DEC-014)
+
+**Base:** `reports/dashboards/herald_france_final_dashboard.html` — official visual base. Do **not** create a new dashboard from scratch.
+
+**Strategy:** Incremental adaptation of the France dashboard, deferred to Gantt Phase 4 (task 4.4) and **only after G1 is validated**.
+
+Planned adaptations:
+- Country selector: FR, NL, PT, BE
+- Year, territory, and A10 sector selectors
+- G1 graph layer: nodes, edges, weight, stability, communities, annual evolution
+- Edge type legend: geographic (control), economic, mobility, learned
+- Territory click → sector breakdown + time series + forecast + graph neighbor list
+- Real NUTS3/ZE geometries with declared granularity
+- All labels must distinguish association from causality (never "causal edge" for Granger/correlation-based edges)
+
+**Forbidden until G1 validated:**
+- Modify `herald_france_final_dashboard.html`
+- Generate any new HTML dashboard file
+- Present economic associations as causal relations in any visualization
 
 ---
 
@@ -327,3 +347,4 @@ Write these in a new document: `reports/HERALD_G0_FORMAL_CONTRACT.md`
 | Bloco 1: Temporal forecasting | Active | Non-graph improvements; conformal intervals; no architecture restart |
 | Bloco 2: Economic dynamic graph | Blocked at G0 (4/10) | Write G0 formal contract; verify bd_hgnace_r A10 mapping |
 | Bloco 3: Recommendation | Not started | Deferred until Bloco 2 complete |
+| Visualization | France dashboard is official base | No new HTML; adapt incrementally after G1 validated (DEC-014) |

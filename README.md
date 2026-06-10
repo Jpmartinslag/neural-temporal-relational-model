@@ -312,8 +312,11 @@ Le graphe économique dynamique répond à : **quelles relations économiques se
 **Implémentation BLOQUÉE** jusqu'à validation du contrat G0 (10 critères). Voir :
 - `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` — roadmap complet G0→G6→Bloco 3
 - `reports/HERALD_RESEARCH_GANTT.md` — Gantt réaliste avec DATE_LIMITE_A_CONFIRMER
-- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — log de décisions DEC-001→DEC-011
+- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — log de décisions DEC-001→DEC-014
 - `reports/HERALD_EVIDENCE_MATRIX.md` — matrice de claims et statuts
+
+**Visualisation (DEC-014) :**  
+`reports/dashboards/herald_france_final_dashboard.html` est la **base visuelle officielle**. Pas de nouveau dashboard from scratch. Adaptation incrémentale après validation de G1 uniquement. Ne pas modifier ce fichier ni générer un nouveau HTML avant G1 validé.
 
 ---
 
@@ -344,7 +347,7 @@ dataset/
 ├── hpc/            batteries SLURM, scripts de soumission et audits
 ├── hpc_results/    sorties HPC (non versionnées, régénérables)
 ├── reports/        rapports méthodologiques, audits et dashboards
-│   └── dashboards/ herald_france_dashboard.html
+│   └── dashboards/ herald_france_final_dashboard.html  ← base visuelle officielle
 ├── src/            code modèle, baselines, visualisation
 └── metadata/       splits walk-forward, datasets, politiques de données
 ```
