@@ -32,8 +32,9 @@ gantt
     section Phase 5 — Grafo Econômico Dinâmico (planejado)
     G0 Contrato conceptual           :done, p5g0, 2026-06-10, 2026-06-10
     G1-L3 observável FR/NL           :done, p5g1a, 2026-06-10, 2026-06-10
-    G1-L2 co-croissance causal PASS  :done, p5g1b, 2026-06-10, 2026-06-10
+    G1-L2 co-croissance temporellement causale PASS  :done, p5g1b, 2026-06-10, 2026-06-10
     G1 communautés baseline FAIL     :done, p5g1c, 2026-06-10, 2026-06-10
+    Phase 5 smoke NL HPC_BLOCKED     :done, p5smoke, 2026-06-10, 2026-06-10
     G2-G3 Grafo aprendido + dinâmica :p5g2, after p5g1b, 2026-08-18
     G4-G5 Validação + explicação     :p5g4, 2026-08-04, 2026-09-01
 
@@ -337,14 +338,17 @@ explicite.
 - **Détection de communautés (L2):** FAIL 0/3 sous contrôles corrigés; la
   modularité est reproductible par les nulls malgré quelques signaux AMI.
 - **L4 mobilité, L5 géographie:** non encore validés.
-- **Phase 5 (résidu neural + graphe):** spec HPC corrigée mais encore en draft.
-  L2 sera propagé séparément par secteur puis agrégé par territoire. L'échec
-  des communautés interdit d'utiliser leurs labels, mais n'invalide pas les
-  arêtes L2. Entraînement HPC bloqué jusqu'aux tests locaux, au gel des
-  artefacts, à la confirmation du délai et au smoke test.
+- **Phase 5 (résidu + graphe) — HPC_BLOCKED (smoke test 2026-06-10):**
+  Architecture `y_hat = baseline + alpha * corrector(G)` implémentée localement
+  (Ridge, numpy, sans PyTorch). Smoke NL (2021-2023, seed=42):
+  H0b 3.41%, H1 5.52%, H2 5.56%, PC-temporal 5.49%, PC-territory 5.52%.
+  H2 ne bat pas H0b (−2.15%) ni les contrôles de permutation. Gate: NOT_PROMOTED.
+  L2 est propagé séparément par secteur A10, agrégé avec masque (PT KZ=absent, jamais zéro).
+  47/47 tests unitaires passent. Leakage OK, aucun NaN/Inf.
+  L'échec des communautés n'invalide pas les arêtes L2, mais le correcteur faible
+  capacité (1D, Ridge conservatif) n'en extrait aucun signal prédictif au-delà de H1.
+  Avant reouvrir : tuning ridge_alpha, features multi-dim, ou inclusion L3/H4.
 
-Ces résultats autorisent l'implémentation locale et les tests unitaires du
-correcteur graphé, mais pas encore l'entraînement HPC ni la recommandation.
 Voir `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md` et
 `reports/HERALD_PHASE5_HPC_SPEC.md`.
 

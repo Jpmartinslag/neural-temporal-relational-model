@@ -120,10 +120,14 @@ valid temporal/territory series nulls, equal Louvain budget, modularity+AMI
 BH/FDR. Some AMI signal survives, but modularity is reproduced by nulls.
 L4 mobility and L5 geography remain unvalidated.
 Artifacts: `data/processed/economic_graph/g1_l2_cogrowth/`; `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md`.
-HPC spec is a corrected draft: `reports/HERALD_PHASE5_HPC_SPEC.md`
-(DEC-022). Community failure does not invalidate L2. Training remains blocked
-pending sector-specific L2 pooling tests, frozen artifacts, deadline
-confirmation and a local smoke test.
+HPC spec: `reports/HERALD_PHASE5_HPC_SPEC.md` (DEC-022). Community failure
+does not invalidate L2.
+**Phase 5 smoke test (NL, 2021-2023, seed=42): HPC_BLOCKED.**
+H0b 3.41%, H1 5.52%, H2 5.56%, PC-temporal 5.49%, PC-territory 5.52%.
+H2 does NOT beat H0b (−2.15%) or controls. Gate: NOT_PROMOTED.
+H2 indistinguishable from H1 and permuted graphs — no graph-specific signal.
+Leakage OK; no NaN/Inf. Bug fixed: permute_growth_temporal/territory (dict API)
+replaced by inline matrix permutation in l2_pool.py. 47/47 tests pass.
 See `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md`.
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)

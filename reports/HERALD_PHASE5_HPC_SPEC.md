@@ -1,10 +1,25 @@
 # HERALD Phase 5 — HPC Battery Specification
 
-**Status:** DRAFT DESIGN — not yet authorized or submitted
-**Drafted:** 2026-06-10
+**Status:** SMOKE TESTED — HPC_BLOCKED (gate not cleared, see §11)
+**Drafted:** 2026-06-10  **Smoke test:** 2026-06-10
 **Gate:** requires corrected L2 artifacts, a local smoke test and supervisor
 confirmation of deadline before submission. The failed community hypothesis is
 documented but does not invalidate the L2 edge layer.
+
+**Smoke result (NL, eval_years=[2021,2022,2023], seed=42):**
+
+| Hypothesis | Mean WMAPE | Std | Alpha ratio |
+|---|---|---|---|
+| H0 (persistence) | 6.96% | 2.85% | — |
+| H0b (Ridge AR) | **3.41%** | 1.08% | — |
+| H1 (corrector, no graph) | 5.52% | 1.68% | 3.72% |
+| H2 (L2 graph) | 5.56% | 1.75% | 3.56% |
+| PC-temporal | 5.49% | 1.74% | 3.66% |
+| PC-territory | 5.52% | 1.81% | 3.51% |
+
+Gate result: **NOT_PROMOTED**. H2 beats H0 by +1.4% but loses to H0b by −2.2%.
+H2 is indistinguishable from H1 (+0.04% vs no graph) and from permutation controls.
+Leakage: OK (all years). No NaN/Inf.
 
 ---
 

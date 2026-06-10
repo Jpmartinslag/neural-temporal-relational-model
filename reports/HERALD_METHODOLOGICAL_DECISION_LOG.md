@@ -465,3 +465,15 @@ may require adjustment during smoke test.
 **Reopen condition:** If H2/H4 fail the gate, close Phase 5 graph branch and
 return to non-graph frugal improvements (Bloco 1).
 **Affected files:** `reports/HERALD_PHASE5_HPC_SPEC.md`.
+
+**Update 2026-06-10 — Smoke test result (NL, eval_years=[2021,2022,2023], seed=42):**
+H0b (Ridge AR) achieves 3.41% WMAPE, substantially better than all graph hypotheses.
+H2 (L2 graph): 5.56%; H1 (no graph): 5.52%; PC-temporal: 5.49%; PC-territory: 5.52%.
+H2 is indistinguishable from H1 and permutation controls. Gate: NOT_PROMOTED.
+Leakage audit: all OK. No NaN/Inf.
+**Conclusion:** HPC_BLOCKED. The Ridge AR baseline dominates the residual corrector.
+This does not invalidate the validated L2 co-growth layer (DEC-019/020) — it means
+the low-capacity 1-hop Ridge corrector cannot extract forecast utility from it under
+this protocol. Candidate mitigations before reopening: (a) larger feature set beyond
+pooled 1D; (b) tuning ridge_alpha; (c) L3 layer inclusion in H3/H4. Not to be pursued
+without supervisor confirmation of scope.
