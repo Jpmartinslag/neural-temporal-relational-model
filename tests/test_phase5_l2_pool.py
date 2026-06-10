@@ -81,11 +81,12 @@ def test_message_pass_identity_graph():
     np.testing.assert_array_equal(h, x)
 
 
-def test_message_pass_no_edges_returns_nan():
+def test_message_pass_no_edges_returns_self():
+    # Isolated regions fall back to own value (identity pass), never NaN.
     x = np.array([1.0, 2.0, 3.0])
     adj = np.zeros((3, 3))
     h = message_pass_1hop(x, adj, identity_graph=False)
-    assert np.all(np.isnan(h)), "no edges → all NaN"
+    np.testing.assert_array_equal(h, x, err_msg="no edges → self-value fallback")
 
 
 def test_message_pass_nan_source_excluded():

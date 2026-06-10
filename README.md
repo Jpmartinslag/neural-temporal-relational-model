@@ -34,8 +34,8 @@ gantt
     G1-L3 observável FR/NL           :done, p5g1a, 2026-06-10, 2026-06-10
     G1-L2 co-croissance temporellement causale PASS  :done, p5g1b, 2026-06-10, 2026-06-10
     G1 communautés baseline FAIL     :done, p5g1c, 2026-06-10, 2026-06-10
-    Phase 5 smoke NL HPC_BLOCKED     :done, p5smoke, 2026-06-10, 2026-06-10
-    G2-G3 Grafo aprendido + dinâmica :p5g2, after p5g1b, 2026-08-18
+    Phase 5 fixed-L2 corrector NOT_SUPPORTED (fermé) :done, p5smoke, 2026-06-10, 2026-06-10
+    G2 Preflight dinâmica temporal L2 :p5g2, 2026-06-10, 2026-08-18
     G4-G5 Validação + explicação     :p5g4, 2026-08-04, 2026-09-01
 
     section Redação e publicação
@@ -338,16 +338,15 @@ explicite.
 - **Détection de communautés (L2):** FAIL 0/3 sous contrôles corrigés; la
   modularité est reproductible par les nulls malgré quelques signaux AMI.
 - **L4 mobilité, L5 géographie:** non encore validés.
-- **Phase 5 (résidu + graphe) — HPC_BLOCKED (smoke test 2026-06-10):**
-  Architecture `y_hat = baseline + alpha * corrector(G)` implémentée localement
-  (Ridge, numpy, sans PyTorch). Smoke NL (2021-2023, seed=42):
-  H0b 3.41%, H1 5.52%, H2 5.56%, PC-temporal 5.49%, PC-territory 5.52%.
-  H2 ne bat pas H0b (−2.15%) ni les contrôles de permutation. Gate: NOT_PROMOTED.
-  L2 est propagé séparément par secteur A10, agrégé avec masque (PT KZ=absent, jamais zéro).
-  47/47 tests unitaires passent. Leakage OK, aucun NaN/Inf.
-  L'échec des communautés n'invalide pas les arêtes L2, mais le correcteur faible
-  capacité (1D, Ridge conservatif) n'en extrait aucun signal prédictif au-delà de H1.
-  Avant reouvrir : tuning ridge_alpha, features multi-dim, ou inclusion L3/H4.
+- **Phase 5 (résidu + graphe) — NOT_SUPPORTED (fermé 2026-06-10, DEC-023):**
+  Ablation v3 : NL 2021-2023, 5 seeds, widths (2,)(4,)(8,)(16,8).
+  Meilleur H2-neural (width=(8,)) : 5.53 % vs H0b 3.41 % — régression de 62 %.
+  H2 bat les contrôles permutés (spécificité graphique ✓) mais ne bat pas H1-neural (sans graphe).
+  Correcteur linéaire H2-linear : 5.56 % vs H0b 3.41 % — même conclusion.
+  H0b (Ridge AR) reste la meilleure baseline. Pas de soumettre au HPC.
+  65/65 tests passent. Leakage OK. Déterministe. Masques PT KZ corrects.
+  Correcteur résiduel fixed-L2 fermé. L2 reste validé comme graphe analytique (G-10 SUPPORTED).
+  Prochaine étape : Bloco 2 descritivo (G2 preflight — caractérisation temporelle du graphe L2).
 
 Voir `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md` et
 `reports/HERALD_PHASE5_HPC_SPEC.md`.

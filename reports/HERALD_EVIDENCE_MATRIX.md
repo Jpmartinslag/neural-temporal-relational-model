@@ -34,6 +34,7 @@
 | G-08 | RCA/product-space sector co-specialization is reproducible across the common country nucleus | G1-L1 observable graph | G1/G4-lite | FR/NL; PT ineligible | Temporal and configuration nulls, BH/FDR, LOYO, bootstrap | `HERALD_G1_L1_SECTOR_GRAPH_AUDIT.md` | Refuted by gate (NL pass, FR fail, PT ineligible) | One passing country | Stable marginal prevalence reproduces FR stability | `NOT_SUPPORTED` |
 | G-10 | Same-sector cross-territory co-growth patterns are temporally stable across the country nucleus | G1-L2 causal co-growth | G1/G4-lite | FR (9 sectors), NL (9 sectors), PT (8 sectors; KZ excluded per DEC-018) | Temporal and territory nulls, BH/FDR, LOYO, bootstrap, COVID sensitivity | `HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md` | Strong: 3/3 pass, q=0.005, COVID-robust; FR 0.782, NL 0.789, PT 0.778 | Rolling Pearson conflates co-movement with shared trends; MAUP applies; heterogeneous territorial systems | Edges are statistical associations, not structural causality | `SUPPORTED` |
 | G-11 | The L2 co-growth graph exhibits community structure significantly exceeding temporal and territory permutation nulls | Corrected G1-L2 community baseline | G1 / task 2.8 | FR, NL, PT | Symmetric top-k=5; L2 rebuilt from 99 temporal + 99 territory series permutations; equal Louvain budget; modularity and AMI with BH/FDR; COVID sensitivity | `HERALD_G1_COMMUNITIES_AUDIT.md` | 0/3 pass: modularity is reproducible by nulls; some AMI evidence survives but full gate fails | Three heterogeneous territorial systems | L2 stability remains supported, but Louvain communities are not validated | `NOT_SUPPORTED` |
+| G-12 | Fixed-L2 residual corrector (sklearn MLP on pre-aggregated L2 features) improves out-of-sample territorial forecasting over AR-Ridge baseline | Phase 5 ablation v3 | Phase 5 | NL 40 COROP, eval 2021-2023 | Rolling-origin; 5 seeds; widths (2,)(4,)(8,)(16,8); temporal+territory permuted-graph controls; gate: H2 ≤ H0b×1.1, beats H1, beats both controls | `HERALD_PHASE5_HPC_SPEC.md`; DEC-023 | H2-neural (best width=(8,)) 5.53% vs H0b 3.41% — 62% regression. Beats permuted controls but worse than H1-neural (no graph). Linear H2 also fails (5.56%). n_train fixed (39→440 after imputation). Architecture confirmed NOT a GNN: fixed non-trainable 1-hop aggregation. | NL only; other countries not run | Residual corrector architecture may be insufficient; result does not preclude trainable GNN on other data | `NOT_SUPPORTED` |
 | G-09 | Functional/mobility network provides predictive signal for enterprise births | Not yet run | — | — | — | — | None | — | Data availability not confirmed at NUTS3 level | `NOT_TESTED` |
 
 ---
@@ -75,10 +76,10 @@
 | `SUPPORTED` | 8 |
 | `PARTIALLY_SUPPORTED` | 2 |
 | `EXPLORATORY` | 1 |
-| `NOT_SUPPORTED` | 3 |
+| `NOT_SUPPORTED` | 4 |
 | `REFUTED_UNDER_CURRENT_PROTOCOL` | 6 |
 | `NOT_TESTED` | 5 |
-| **Total** | **25** |
+| **Total** | **26** |
 
 ---
 
@@ -95,7 +96,9 @@
 - "HERALD provides economic recommendations."
 - "The economic dynamic graph is operational."
 - "Geographic graphs improve forecasting." (refuted under current protocol)
+- "The L2 co-growth graph improves territorial forecasting." (G-12 NOT_SUPPORTED)
 - "LOCO protocol is cold-start."
 - "The system generalizes to arbitrary European countries."
 - "Attention weights explain economic relations."
 - "Granger predictability implies economic causality."
+- "The G-12 result refutes trainable GNN architectures." (only fixed-L2 residual corrector tested)
