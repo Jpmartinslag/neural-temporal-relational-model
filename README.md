@@ -6,42 +6,38 @@
 
 ## Trajectoire du projet
 
+> **Mise à jour 2026-06-10 :** Le plan Gantt ci-dessous reflète l'état à jour. Le Gantt détaillé avec toutes les tâches, dépendances, risques et critères de conclusion est dans `reports/HERALD_RESEARCH_GANTT.md`.
+
 ```mermaid
 gantt
-    title HERALD — Trajectoire de développement
+    title HERALD — Trajectoire de développement (mise à jour 2026-06-10)
     dateFormat  YYYY-MM-DD
     axisFormat  %b %Y
 
-    section Fondation
+    section Fondation France (fait)
     Données & graphe France          :done, found1, 2026-04-08, 2026-04-20
     Architecture de base V6/V7       :done, found2, 2026-04-13, 2026-04-22
 
-    section Phase 2 — Régimes & Robustesse France
-    2A-2C Régime learner + flags     :done, p2a, 2026-04-20, 2026-05-05
-    2D-2J Stabilité + fair flag      :done, p2d, 2026-05-05, 2026-05-18
-    2K-2R Latent dim + confirmatoire :done, p2k, 2026-05-18, 2026-05-26
+    section Phase 2-3 — France (fait)
+    2A-2R Régime learner + confirmato :done, p2, 2026-04-20, 2026-05-26
+    3A-3E q_tensor + sélection Q7     :done, p3, 2026-05-24, 2026-05-28
 
-    section Phase 3 — q_tensor URSSAF
-    3A-3C Labor tutor signals        :done, p3a, 2026-05-24, 2026-05-26
-    3D q_tensor présence             :done, p3d, 2026-05-27, 2026-05-27
-    3E Architecture selection → Q7   :done, p3e, 2026-05-27, 2026-05-27
+    section Phase 4 — Harmonisation internationale (fait)
+    Pipelines PT+IT+AT (Path H)      :done, p4data, 2026-05-28, 2026-06-09
+    LOCO baseline 4N                 :done, p4n, 2026-06-09, 2026-06-09
+    Spatial diagnostic 4O-C          :done, p4o, 2026-06-09, 2026-06-09
+    Spatial lag 4P (FAIL)            :done, p4p, 2026-06-10, 2026-06-10
+    Spatial Durbin 4Q (FAIL — branche géogr. fermée) :done, p4q, 2026-06-10, 2026-06-10
 
-    section Dashboard & Consolidation
-    Dashboard France finalisé        :done, dash, 2026-05-27, 2026-05-28
-    Commit + push Phase 3E           :done, commit, 2026-05-28, 2026-05-28
+    section Phase 5 — Grafo Econômico Dinâmico (planejado)
+    G0 Contrato conceptual           :p5g0, 2026-06-11, 2026-06-16
+    G1 Grafo observável              :p5g1, 2026-06-16, 2026-07-07
+    G2-G3 Grafo aprendido + dinâmica :p5g2, 2026-07-07, 2026-08-18
+    G4-G5 Validação + explicação     :p5g4, 2026-08-04, 2026-09-01
 
-    section Phase 4 — Généralisation Internationale
-    Pipelines données NL+BE+PT       :done, p4data, 2026-05-28, 2026-05-28
-    Batterie HPC NL+BE               :p4hpc_nb, 2026-05-28, 2026-06-04
-    Batterie HPC PT                  :p4hpc_pt, 2026-06-04, 2026-06-08
-    Rapport comparatif 4 pays        :p4rep, 2026-06-08, 2026-06-12
-
-    section Phase 5 — Données Synthétiques
-    DGP contrôlé + génération        :p5gen, 2026-06-12, 2026-06-20
-    Validation régime learner        :p5val, 2026-06-20, 2026-06-27
-
-    section Publication
-    Rédaction paper (conf/revue)     :paper, 2026-06-27, 2026-09-01
+    section Redação e publicação
+    Rédaction rapport                :rep, after p5g4, 2026-10-01
+    Rédaction article                :paper, after p5g4, 2026-11-01
 ```
 
 ---
@@ -141,6 +137,34 @@ Voir `reports/HERALD_PHASE4_INTERNATIONAL_PLAN.md` et `reports/HERALD_EUROPEAN_P
 
 ---
 
+### Phase 4L/4M — sous-panel harmonisé `enterprise_birth`
+
+Le Path H partiel compare uniquement des cibles démographiques
+`enterprise_birth` équivalentes et un périmètre territorial déclaré
+`continental_mainland`. Les panels nationaux complets restent inchangés.
+
+| Pays | Régions retenues | Fenêtre | Statut |
+|---|---:|---:|---|
+| Portugal | 23 NUTS3 continentales | 2008–2020 | intégré |
+| Italie | 93 NUTS3 continentales | 2008–2020 | intégré |
+| Autriche | 35 NUTS3 continentales | 2008–2020 | intégré |
+
+Açores, Madère, Sicile et Sardaigne sont exclus du sous-panel harmonisé, sans
+fusion ni imputation. Ce choix contrôle la discontinuité territoriale; il ne
+signifie pas que ces territoires sont hors d'Europe ou que leurs données sont
+de moindre qualité. Voir
+`reports/HERALD_PHASE4M_COMMON_FEATURE_CONTRACT.md` et
+`reports/HERALD_PHASE4M_THIRD_COUNTRY_PREFLIGHT.md`.
+
+Le panel conceptuellement harmonisé contient **151 NUTS3, 1 963 lignes et
+3 pays**. Il est prêt pour la conception du benchmark LOCO, pas encore pour un
+claim de généralisation.
+
+Phases 4N→4Q ont ensuite exécuté le LOCO baseline, le diagnostic spatial et deux
+ablations géographiques. Résultats ci-dessous.
+
+---
+
 ## État scientifique actuel — Phase 4 (généralisation LOCO 4 pays)
 
 > Phase 4G/4H/4I étend le painel européen à un protocole **leave-one-country-out**
@@ -223,6 +247,92 @@ targets explicitement hétérogènes.
 - `reports/HERALD_PHASE4H_B_RESULTS_AUDIT.md` — résultats LOCO corrigés (graphe réel, contrôle permutation)
 - `reports/HERALD_PHASE4I_A_RESULTS_AUDIT.md` — benchmark de transfert sélectif (persistance vs Ridge vs graphe)
 - `reports/HERALD_PHASE4H_CODE_CONCEPT_AUDIT_2026.md` — audit code/concept, définition du protocole
+
+---
+
+## Phase 4N–4Q — Baseline LOCO harmonisé et branche géographique (2026-06-10)
+
+> **Branche graphe géographique FERMÉE sous les données actuelles.**
+
+### Phase 4N — LOCO Baseline (PT/IT/AT)
+
+| Country | persistence | n3_residual | n2_ridge_direct |
+|---|---:|---:|---:|
+| PT | 0.1321 | **0.1166** | 0.1596 |
+| IT | **0.0549** | 0.0607 | 0.1246 |
+| AT | **0.0753** | 0.0823 | 0.3021 |
+| **Balancé** | **0.0874** | **0.0865** | 0.1954 |
+
+Verdict : **persistance = meilleur baseline balancé**. n3 améliore PT uniquement (1/3) — non promu.
+
+### Phase 4O-C — Diagnostic spatial résiduel
+
+- IT : **PASS** — Moran's I robuste (résidus relatifs + causaux, 7/9 ans significatifs, LOO stable).
+- PT : **FAIL** — LOO instable (signal concentré dans quelques provinces).
+- AT : **FAIL** — signal uniquement dans résidus absolus (hétéroscédasticité probable).
+- **Gate multi-pays Phase 4P : NON autorisé (1/3 pays).**
+
+### Phase 4P — Spatial Lag Italy (FAIL)
+
+`W × births[t-1]` (queen-contiguity) : WMAPE réel 0.05619 vs persistence 0.05495 (+2.26%). p=0.19 (18/99 contrôles égalent ou battent le graphe réel). **Rejeté.**
+
+### Phase 4Q — Spatial Durbin Italy (FAIL)
+
+Bloc Spatial-Durbin fixe (moyennes voisins de tous les covariables communs) : WMAPE 0.05821 vs persistence 0.05495 (−5.95%). p=0.32. **Rejeté.**
+
+**Conclusion : branche graphe géographique (queen-contiguité linéaire) fermée sous les données 2008–2020. Ne pas lancer STGNN, HERALD multi-pays ou Phase 4P multi-pays.**
+
+- `reports/HERALD_PHASE4N_RESULTS_AUDIT.md`
+- `reports/HERALD_PHASE4O_B_RESIDUAL_SPATIAL_AUDIT.md`
+- `reports/HERALD_PHASE4P_ITALY_SPATIAL_LAG_AUDIT.md`
+- `reports/HERALD_PHASE4Q_ITALY_SPATIAL_DURBIN_AUDIT.md`
+
+---
+
+## Nouveau cap — Graphe Économique Dynamique (Bloco 2)
+
+> **Ce n'est pas la réouverture du graphe géographique.** C'est une question scientifique différente.
+
+La branche géographique testait si des lags de voisins améliorent la **prévision**.
+Le graphe économique dynamique répond à : **quelles relations économiques secteur-territoire existent et évoluent dans le temps ?**
+
+**Rôle du graphe :**
+- Représenter les relations entre secteurs et territoires
+- Suivre leur évolution annuelle (2008–2020)
+- Détecter croissance, crise, stagnation, reprise
+- Identifier communautés et vagues économiques
+- Expliquer quelles relations sont associées aux prévisions
+- Alimenter à terme la recommandation économique (Bloco 3)
+
+**Ce que ce graphe n'est PAS encore :**
+- Un composant de prévision promu
+- Une preuve de causalité économique
+- Un système de recommandation opérationnel
+
+**Implémentation BLOQUÉE** jusqu'à validation du contrat G0 (10 critères). Voir :
+- `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` — roadmap complet G0→G6→Bloco 3
+- `reports/HERALD_RESEARCH_GANTT.md` — Gantt réaliste avec DATE_LIMITE_A_CONFIRMER
+- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — log de décisions DEC-001→DEC-011
+- `reports/HERALD_EVIDENCE_MATRIX.md` — matrice de claims et statuts
+
+---
+
+## Claims autorisés dans les publications
+
+**Autorisés (avec portée déclarée) :**
+- La persistance est le meilleur baseline LOCO balancé pour PT/IT/AT, enterprise birth harmonisé, 2008–2020, horizon 1 an.
+- Les résidus italiens montrent une autocorrélation spatiale robuste (Moran's I, FDR, LOO-stable, 7/9 ans).
+- Les lags géographiques linéaires (queen-contiguité) n'améliorent pas les prévisions sous le protocole actuel.
+- FR/NL/BE/PT ont des targets sémantiquement hétérogènes ; le WMAPE poolé n'est pas une métrique de généralisation valide.
+- HERALD Q7 atteint WMAPE moyen 0.0204 sur les ZE françaises 2021–2025.
+
+**Interdits :**
+- « HERALD fournit des recommandations économiques. » (module inexistant)
+- « Le graphe géographique améliore les prévisions. » (réfuté sous protocole actuel)
+- « Le système se généralise à tout pays européen. » (n=3–4 domaines, portée conditionnelle)
+- « Le protocole LOCO est un cold-start complet. » (faux — historique du pays-cible disponible)
+- « Les poids d'attention expliquent les relations économiques. » (non testé, non validé)
+- « Granger-prédictabilité = causalité économique structurelle. » (interdit explicitement)
 
 ---
 
