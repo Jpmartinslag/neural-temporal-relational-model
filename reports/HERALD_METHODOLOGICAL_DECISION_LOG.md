@@ -191,3 +191,25 @@
 **Rationale:** Panel mask is authoritative. Mask=0 is unambiguous.  
 **Reopen condition:** New Eurostat `bd_hgnace_r` extract covers AT or IT at NUTS3 with sector disaggregation.  
 **Affected files:** `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` (corrected); `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_LITERATURE_REVIEW.md`
+
+---
+
+## DEC-014 — 2026-06-10 — Official visualization base: France dashboard
+
+**Phase:** G0 preparation / Bloco 2  
+**Question:** Should a new dashboard be created from scratch for the economic graph, or should the existing France dashboard be adapted?  
+**Evidence:** `reports/dashboards/herald_france_final_dashboard.html` implements: interactive choropleth map, territory selection, A10 sector breakdown, time series navigation, and rolling forecast visualization. Separate European panel dashboard also exists (`herald_phase4e_europe_dashboard.html`). Recreating map/navigation/sector components from scratch is unnecessary work.  
+**Decision:** `herald_france_final_dashboard.html` is the official visual base. No new dashboard from scratch. Incremental adaptations only.  
+**Rationale:** Reuse tested components. Avoid parallel dashboard fragmentation. Graph layer added only after G1 is validated (G4 pass).  
+**Planned adaptations (deferred to Gantt Phase 4, task 4.4):**
+- Country selector: FR, NL, PT, BE
+- Year, territory, and sector A10 selectors
+- G1 graph layer: nodes, edges, weight, stability, communities, evolution
+- Edge type legend: geographic, economic, mobility, learned
+- Territory click → sector breakdown + time series + forecast + graph neighbors
+- Real geometries with declared granularity
+- All labels must distinguish association from causality  
+**Forbidden in this task and any task until G1 validated:** modify `herald_france_final_dashboard.html`; generate a new HTML dashboard.  
+**Limitations:** Adaptation scope and complexity unknown until G1 graph structure is finalized.  
+**Reopen condition:** G1 validated; supervisor confirms dashboard requirements.  
+**Affected files:** `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md`; `reports/HERALD_RESEARCH_GANTT.md`; `README.md`

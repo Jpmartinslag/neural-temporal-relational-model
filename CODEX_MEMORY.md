@@ -5,7 +5,7 @@ Updated 2026-06-10 (Phase 4Q + strategic reorientation). Read first; verify drif
 - Repo `/home/jpdark/Downloads/project_recomm/dataset`.
 - Prefix shell commands `rtk`; raw Python/SSH/rsync: `rtk proxy <command>`.
 - Dirty worktree: never reset/revert unrelated changes. Exclude raws, `hpc_results/`, large generated artifacts from commits.
-- Branch `main`; last confirmed pushed HEAD `eb75194`.
+- Branch `main`; last confirmed pushed HEAD `f734538` (docs: correct dynamic economic graph roadmap and data scope).
 - Forecast `t` uses data available through `t-1` only.
 - Phase 4A/4D metrics are legacy/leaky (`growth_1y[t]` used `target[t]`). Scientific baseline starts at causal Phase 4E.
 
@@ -104,15 +104,20 @@ See `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md`.
 Terminal use case. Requires Bloco 1 + Bloco 2 complete.
 Cannot be claimed as a current capability.
 
-## Documents créés 2026-06-10
-- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — DEC-001 to DEC-011
+## Documents créés/révisés 2026-06-10
+- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — DEC-001 to DEC-014 (DEC-014: dashboard base decision)
 - `reports/HERALD_EVIDENCE_MATRIX.md` — 23 claims, all classified
-- `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` — G0→G6→Bloco 3
-- `reports/HERALD_RESEARCH_GANTT.md` — Gantt with DATE_LIMITE_A_CONFIRMER
+- `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` — G0→G6→Bloco 3; dashboard section added
+- `reports/HERALD_RESEARCH_GANTT.md` — Gantt with DATE_LIMITE_A_CONFIRMER; task 4.4 updated
 - `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_LITERATURE_REVIEW.md` — ≥30 works
-- `reports/bibliography/HERALD_REFERENCES_MASTER.md` — 19 refs, 8 axes
-- `reports/bibliography/herald_references.bib` — BibTeX
-- `reports/bibliography/HERALD_REFERENCE_AUDIT.csv` — audit table
+- `reports/bibliography/HERALD_REFERENCES_MASTER.md` — 25 refs, 9 axes
+- `reports/bibliography/herald_references.bib` — BibTeX; Friedman 2008 VERIFIED_PRIMARY
+- `reports/bibliography/HERALD_REFERENCE_AUDIT.csv` — audit table; Friedman 2008 VERIFIED_PRIMARY
+
+**Dashboard (DEC-014):**
+`reports/dashboards/herald_france_final_dashboard.html` = base visuelle officielle.
+Pas de nouveau dashboard from scratch. Adaptation incrémentale uniquement après G1 validé.
+Ne pas modifier ce fichier ni générer un nouveau HTML avant G1 validé.
 
 ## Claims gate
 Permitted: persistence best baseline PT/IT/AT LOCO; Italian residual spatial autocorrelation robust; geographic lags rejected; FR/NL/BE/PT targets heterogeneous.

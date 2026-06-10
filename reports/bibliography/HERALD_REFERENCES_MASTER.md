@@ -349,7 +349,7 @@
 | Metric | Count |
 |--------|------:|
 | Total references | 25 |
-| VERIFIED_PRIMARY | 11 |
+| VERIFIED_PRIMARY | 12 |
 | VERIFIED_INSTITUTIONAL | 2 |
 | PREPRINT | 1 |
 | UNVERIFIED | 10 |

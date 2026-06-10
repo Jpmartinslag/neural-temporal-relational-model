@@ -108,7 +108,7 @@ The MVP must be achievable even if the deadline is tight:
 | 4.1 Edge ranking and influence maps | W+32 | W+36 | 2.5, 3.2 | Visualizations | Maps interpretable by domain expert | None | — |
 | 4.2 Community evolution plots | W+34 | W+38 | 3.2 | Animation or multi-panel plot | Year-by-year community structure visible | None | — |
 | 4.3 Correlation with forecast residuals | W+36 | W+40 | 4.1 | `HERALD_G5_EXPLANATION.md` | Association documented; causality NOT claimed | None | — |
-| 4.4 Dashboard update | W+40 | W+44 | 4.1–4.3 | Updated dashboard | Graph layer integrated with France dashboard | None | Separate static report if dashboard integration blocked |
+| 4.4 Dashboard adaptation (from France base) | W+40 | W+44 | 4.1–4.3 + G1 validated | Adapted `herald_france_final_dashboard.html` — country/sector/year selectors + G1 graph layer | Country selector, edge legend, territory click, association≠causality labels | Dashboard complexity unknown until G1 finalized | Deliver static multi-panel report if dashboard integration blocked |
 
 ---
 
