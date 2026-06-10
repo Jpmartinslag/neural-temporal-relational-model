@@ -202,7 +202,8 @@ def masked_pool_sectors(
                 total[r] += h[r]
                 count[r] += 1.0
 
-    return np.where(count > 0, total / count, np.nan)
+    with np.errstate(invalid="ignore", divide="ignore"):
+        return np.where(count > 0, total / count, np.nan)
 
 
 # ---------------------------------------------------------------------------
@@ -256,3 +257,48 @@ def territory_features(
 
     state = masked_pool_sectors(h_by_sector, mask_by_sector, sectors)
     return region_order, state
+
+
+def territory_features_multi(
+    panel: pd.DataFrame,
+    country: str,
+    eval_year: int,
+    *,
+    identity_graph: bool = False,
+    permute_mode: str | None = None,
+    rng: np.random.Generator | None = None,
+) -> tuple[list[str], np.ndarray, list[str]]:
+    """Per-sector message-passed features WITHOUT cross-sector pooling.
+
+    Returns:
+        region_ids: sorted territory list.
+        features: (n_regions, n_sectors) — each column is one A10 sector.
+          Structurally absent sectors (PT KZ) → column all-NaN (never zero).
+          Data gaps within supported sectors → NaN for those regions.
+        sectors: ordered sector list (column names for features).
+
+    This gives H1-neural and H2-neural the same input dimensionality while
+    preserving sector-level structure that a 1-hop MLP can exploit.
+    """
+    sectors = eligible_sectors(panel, country)
+    region_order = sorted(
+        panel[panel["country"].eq(country)]["region_id"].unique()
+    )
+    n_r = len(region_order)
+    n_s = len(sectors)
+    features = np.full((n_r, n_s), np.nan)
+
+    for si, s in enumerate(sectors):
+        adj, _ = build_sector_graph(
+            panel, country, s, eval_year,
+            permute_mode=permute_mode, rng=rng,
+        )
+        x = sector_growth_features(panel, country, s, eval_year, region_order)
+        h = message_pass_1hop(x, adj, identity_graph=identity_graph)
+        m = structural_mask(panel, country, s, region_order)
+        for r in range(n_r):
+            if m[r] > 0:
+                features[r, si] = h[r]  # NaN where data gap; never zero
+            # m[r] == 0: structural absence, column stays NaN
+
+    return region_order, features, sectors

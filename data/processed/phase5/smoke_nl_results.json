@@ -6,18 +6,34 @@
       2022,
       2023
     ],
-    "seed": 42,
-    "runtime_seconds": 28.02
+    "seeds": [
+      42,
+      43,
+      44
+    ],
+    "hypotheses": [
+      "H0",
+      "H0b",
+      "H1-linear",
+      "H2-linear",
+      "PC-temporal-linear",
+      "PC-territory-linear",
+      "H1-neural",
+      "H2-neural",
+      "PC-temporal-neural",
+      "PC-territory-neural"
+    ],
+    "runtime_seconds": 152.1
   },
-  "summary": {
+  "aggregated_summary": {
     "H0": {
       "mean_wmape": 0.06955176019285274,
-      "std_wmape": 0.028524274705800528,
+      "std_wmape": 0.02470274651974915,
       "mean_alpha_ratio": 0.0,
-      "any_nan_any_year": false,
-      "any_inf_any_year": false,
+      "any_nan": false,
+      "any_inf": false,
       "all_leakage_ok": true,
-      "n_eval_years": 3,
+      "n_eval_seeds": 9,
       "wmape_by_year": {
         "2021": 0.10145305271388545,
         "2022": 0.046504290762241295,
@@ -26,76 +42,164 @@
     },
     "H0b": {
       "mean_wmape": 0.034089217067152226,
-      "std_wmape": 0.010832063981179203,
+      "std_wmape": 0.009380842583119595,
       "mean_alpha_ratio": 0.0,
-      "any_nan_any_year": false,
-      "any_inf_any_year": false,
+      "any_nan": false,
+      "any_inf": false,
       "all_leakage_ok": true,
-      "n_eval_years": 3,
+      "n_eval_seeds": 9,
       "wmape_by_year": {
-        "2021": 0.04211382695027478,
+        "2021": 0.04211382695027479,
         "2022": 0.03838581321178331,
-        "2023": 0.02176801103939858
+        "2023": 0.021768011039398582
       }
     },
-    "H1": {
-      "mean_wmape": 0.05523852218702014,
-      "std_wmape": 0.016751351104769007,
+    "H1-linear": {
+      "mean_wmape": 0.05523852218702015,
+      "std_wmape": 0.01450709560444248,
       "mean_alpha_ratio": 0.03718951398254299,
-      "any_nan_any_year": false,
-      "any_inf_any_year": false,
+      "any_nan": false,
+      "any_inf": false,
       "all_leakage_ok": true,
-      "n_eval_years": 3,
+      "n_eval_seeds": 9,
       "wmape_by_year": {
         "2021": 0.07366263964059126,
         "2022": 0.051127609005894685,
         "2023": 0.04092531791457449
       }
     },
-    "H2": {
+    "H2-linear": {
       "mean_wmape": 0.05557932730159169,
-      "std_wmape": 0.017471481926380743,
-      "mean_alpha_ratio": 0.035555548396698215,
-      "any_nan_any_year": false,
-      "any_inf_any_year": false,
+      "std_wmape": 0.015130747190006405,
+      "mean_alpha_ratio": 0.03555554839669821,
+      "any_nan": false,
+      "any_inf": false,
       "all_leakage_ok": true,
-      "n_eval_years": 3,
+      "n_eval_seeds": 9,
       "wmape_by_year": {
         "2021": 0.07495465480399234,
-        "2022": 0.05075994803621249,
+        "2022": 0.0507599480362125,
         "2023": 0.04102337906457024
       }
     },
-    "PC-temporal": {
-      "mean_wmape": 0.054949174446423145,
-      "std_wmape": 0.01741965221056534,
-      "mean_alpha_ratio": 0.03655993243497855,
-      "any_nan_any_year": false,
-      "any_inf_any_year": false,
+    "PC-temporal-linear": {
+      "mean_wmape": 0.05518807815916492,
+      "std_wmape": 0.015354090432169919,
+      "mean_alpha_ratio": 0.03571449948497506,
+      "any_nan": false,
+      "any_inf": false,
       "all_leakage_ok": true,
-      "n_eval_years": 3,
+      "n_eval_seeds": 9,
       "wmape_by_year": {
-        "2021": 0.0744918040642136,
-        "2022": 0.0493019963779196,
-        "2023": 0.04105372289713625
+        "2021": 0.07508291128612554,
+        "2022": 0.04940912018904934,
+        "2023": 0.04107220300231987
       }
     },
-    "PC-territory": {
-      "mean_wmape": 0.0551833300775019,
-      "std_wmape": 0.018126658620181445,
-      "mean_alpha_ratio": 0.03508948979627741,
-      "any_nan_any_year": false,
-      "any_inf_any_year": false,
+    "PC-territory-linear": {
+      "mean_wmape": 0.054936453634151575,
+      "std_wmape": 0.015671133440649188,
+      "mean_alpha_ratio": 0.035423974295671845,
+      "any_nan": false,
+      "any_inf": false,
       "all_leakage_ok": true,
-      "n_eval_years": 3,
+      "n_eval_seeds": 9,
       "wmape_by_year": {
-        "2021": 0.0758191543005405,
-        "2022": 0.04789820904178862,
-        "2023": 0.0418326268901766
+        "2021": 0.0754388327521676,
+        "2022": 0.04814544896823806,
+        "2023": 0.041225079182049054
+      }
+    },
+    "H1-neural": {
+      "mean_wmape": 0.05801175253330414,
+      "std_wmape": 0.00619498214460361,
+      "mean_alpha_ratio": 0.07079688844853682,
+      "any_nan": false,
+      "any_inf": false,
+      "all_leakage_ok": true,
+      "n_eval_seeds": 9,
+      "wmape_by_year": {
+        "2021": 0.061920269477770795,
+        "2022": 0.05806124019659789,
+        "2023": 0.05405374792554373
+      }
+    },
+    "H2-neural": {
+      "mean_wmape": 0.08794894016004254,
+      "std_wmape": 0.031637424975067656,
+      "mean_alpha_ratio": 0.07981890355240272,
+      "any_nan": false,
+      "any_inf": false,
+      "all_leakage_ok": true,
+      "n_eval_seeds": 9,
+      "wmape_by_year": {
+        "2021": 0.08637036399776775,
+        "2022": 0.07420021325937796,
+        "2023": 0.10327624322298186
+      }
+    },
+    "PC-temporal-neural": {
+      "mean_wmape": 0.09813958722751698,
+      "std_wmape": 0.04845653953890164,
+      "mean_alpha_ratio": 0.05502497125828834,
+      "any_nan": false,
+      "any_inf": false,
+      "all_leakage_ok": true,
+      "n_eval_seeds": 9,
+      "wmape_by_year": {
+        "2021": 0.10230686606635057,
+        "2022": 0.08414591217654888,
+        "2023": 0.10796598343965152
+      }
+    },
+    "PC-territory-neural": {
+      "mean_wmape": 0.09325517829272027,
+      "std_wmape": 0.024701035692995314,
+      "mean_alpha_ratio": 0.08106362837811992,
+      "any_nan": false,
+      "any_inf": false,
+      "all_leakage_ok": true,
+      "n_eval_seeds": 9,
+      "wmape_by_year": {
+        "2021": 0.09347366288253282,
+        "2022": 0.09288009195897662,
+        "2023": 0.09341178003665136
       }
     }
   },
-  "gate": {
+  "gate_neural": {
+    "country": "NL",
+    "gate_passed": false,
+    "h2_neural_wmape": 0.08794894016004254,
+    "controls": {
+      "graph_specificity": {
+        "h2_wmape": 0.08794894016004254,
+        "h1_wmape": 0.05801175253330414,
+        "diff": 0.0299371876267384,
+        "beats": true
+      },
+      "PC-temporal-neural": {
+        "h2_wmape": 0.08794894016004254,
+        "ctrl_wmape": 0.09813958722751698,
+        "gain": 0.01019064706747444,
+        "beats": true
+      },
+      "PC-territory-neural": {
+        "h2_wmape": 0.08794894016004254,
+        "ctrl_wmape": 0.09325517829272027,
+        "gain": 0.005306238132677735,
+        "beats": false
+      },
+      "no_regression_vs_h0b": {
+        "h2_wmape": 0.08794894016004254,
+        "h0b_wmape": 0.034089217067152226,
+        "max_allowed": 0.03749813877386745,
+        "beats": false
+      }
+    },
+    "note": "HPC_BLOCKED \u2014 smoke gate not cleared"
+  },
+  "gate_linear": {
     "country": "NL",
     "gate_passed": false,
     "h2_wmape": 0.05557932730159169,
@@ -112,26 +216,28 @@
         "gain": -0.02149011023443946,
         "beats": false
       },
-      "H1": {
+      "H1-linear": {
         "h2_wmape": 0.05557932730159169,
-        "ctrl_wmape": 0.05523852218702014,
-        "gain": -0.0003408051145715463,
+        "ctrl_wmape": 0.05523852218702015,
+        "gain": -0.00034080511457153934,
         "beats": false
       },
-      "PC-temporal": {
+      "PC-temporal-linear": {
         "h2_wmape": 0.05557932730159169,
-        "ctrl_wmape": 0.054949174446423145,
-        "gain": -0.000630152855168542,
+        "ctrl_wmape": 0.05518807815916492,
+        "gain": -0.00039124914242676806,
         "beats": false
       },
-      "PC-territory": {
+      "PC-territory-linear": {
         "h2_wmape": 0.05557932730159169,
-        "ctrl_wmape": 0.0551833300775019,
-        "gain": -0.00039599722408978355,
+        "ctrl_wmape": 0.054936453634151575,
+        "gain": -0.0006428736674401123,
         "beats": false
       }
     },
     "note": "NOT_PROMOTED \u2014 H2 does not clear all thresholds"
   },
-  "leakage_ok": true
+  "leakage_ok": true,
+  "any_nan": false,
+  "any_inf": false
 }
