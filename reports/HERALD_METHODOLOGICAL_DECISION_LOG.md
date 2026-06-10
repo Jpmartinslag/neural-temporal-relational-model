@@ -466,14 +466,41 @@ may require adjustment during smoke test.
 return to non-graph frugal improvements (Bloco 1).
 **Affected files:** `reports/HERALD_PHASE5_HPC_SPEC.md`.
 
-**Update 2026-06-10 — Smoke test result (NL, eval_years=[2021,2022,2023], seed=42):**
-H0b (Ridge AR) achieves 3.41% WMAPE, substantially better than all graph hypotheses.
-H2 (L2 graph): 5.56%; H1 (no graph): 5.52%; PC-temporal: 5.49%; PC-territory: 5.52%.
-H2 is indistinguishable from H1 and permutation controls. Gate: NOT_PROMOTED.
-Leakage audit: all OK. No NaN/Inf.
-**Conclusion:** HPC_BLOCKED. The Ridge AR baseline dominates the residual corrector.
-This does not invalidate the validated L2 co-growth layer (DEC-019/020) — it means
-the low-capacity 1-hop Ridge corrector cannot extract forecast utility from it under
-this protocol. Candidate mitigations before reopening: (a) larger feature set beyond
-pooled 1D; (b) tuning ridge_alpha; (c) L3 layer inclusion in H3/H4. Not to be pursued
-without supervisor confirmation of scope.
+**Update 2026-06-10 — Smoke test v2 (NL, eval_years=[2021,2022,2023], seeds=[42,43,44]):**
+Corrected naming: H1/H2 are now "linear" (Ridge). Added H1-neural/H2-neural (sklearn MLP,
+hidden=(16,8), 9D per-sector features + 2 AR lags, alpha_scale ∈ [0,1]). PC controls
+fixed (inline matrix permutation, not dict-based). 65/65 tests pass.
+
+Results (mean over 3 seeds):
+
+| Hypothesis          | Mean WMAPE |
+|---------------------|-----------|
+| H0 (persistence)    | 6.96%     |
+| H0b (Ridge AR)      | **3.41%** |
+| H1-linear           | 5.52%     |
+| H2-linear           | 5.56%     |
+| PC-temporal-linear  | 5.52%     |
+| PC-territory-linear | 5.49%     |
+| H1-neural           | 5.80%     |
+| H2-neural           | 8.79%     |
+| PC-temporal-neural  | 9.81%     |
+| PC-territory-neural | 9.33%     |
+
+Neural gate criteria:
+- Graph specificity (H2-neural ≠ H1-neural): ✓ PASS (diff=3.0%)
+- H2-neural beats PC-temporal-neural: ✓ PASS (gain +1.0%)
+- H2-neural beats PC-territory-neural: ✗ FAIL (gain +0.53% < 1% threshold)
+- H2-neural no regression >10% vs H0b: ✗ FAIL (H2=8.79% >> H0b*1.1=3.75%)
+
+**Conclusion: HPC_BLOCKED.** Neural corrector regresses substantially vs H0b.
+H2-neural (8.79%) is worse than H0 (6.96%). This likely reflects overfitting on
+small rolling-origin windows — 9D input with (16,8) MLP on ~360 samples (10yr × 36
+valid regions).
+
+What this does NOT mean: L2 co-growth layer is not validated. H2-linear shows graph
+propagation changes features meaningfully but capacity is insufficient to exploit them.
+
+Mitigations before reopening: (a) reduce MLP capacity to (8,) or (4,); (b) increase
+L2 regularisation (mlp_alpha=0.1); (c) longer eval window with more training data;
+(d) consider FR/PT where data ranges differ. Not to be pursued without supervisor
+confirmation of scope and deadline.

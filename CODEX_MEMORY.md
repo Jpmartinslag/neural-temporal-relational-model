@@ -122,12 +122,15 @@ L4 mobility and L5 geography remain unvalidated.
 Artifacts: `data/processed/economic_graph/g1_l2_cogrowth/`; `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md`.
 HPC spec: `reports/HERALD_PHASE5_HPC_SPEC.md` (DEC-022). Community failure
 does not invalidate L2.
-**Phase 5 smoke test (NL, 2021-2023, seed=42): HPC_BLOCKED.**
-H0b 3.41%, H1 5.52%, H2 5.56%, PC-temporal 5.49%, PC-territory 5.52%.
-H2 does NOT beat H0b (−2.15%) or controls. Gate: NOT_PROMOTED.
-H2 indistinguishable from H1 and permuted graphs — no graph-specific signal.
-Leakage OK; no NaN/Inf. Bug fixed: permute_growth_temporal/territory (dict API)
-replaced by inline matrix permutation in l2_pool.py. 47/47 tests pass.
+**Phase 5 smoke v2 (NL, 2021-2023, seeds=[42,43,44]): HPC_BLOCKED.**
+Linear: H0b 3.41%, H1-linear 5.52%, H2-linear 5.56%, PC-linear ~5.49-5.52%.
+Neural: H1-neural 5.80%, H2-neural 8.79%, PC-neural ~9.3-9.8%.
+H2-neural shows graph specificity (diff vs H1-neural=3%), but regresses vs H0b.
+Gate NOT cleared: PC-territory-neural gain only +0.53% (<1%), H2>H0b*1.1.
+Nomenclature corrected: H1/H2 renamed to H1/H2-linear (Ridge, NOT neural).
+H1/H2-neural = sklearn MLP (16,8) on 9D per-sector features + 2 AR lags.
+65/65 tests pass. Leakage OK. No NaN/Inf.
+Blocker: MLP likely overfits small windows; reduce capacity before reopen.
 See `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md`.
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)

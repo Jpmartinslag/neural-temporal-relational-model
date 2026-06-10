@@ -182,4 +182,4 @@ def test_gate_missing_h2_returns_not_passed():
     summary = {"H0": {"mean_wmape": 0.10}}
     gate = gate_h2_vs_controls(summary, "TS")
     assert not gate["gate_passed"]
-    assert "H2 not in results" in gate["reason"]
+    assert "not in results" in gate.get("reason", "")

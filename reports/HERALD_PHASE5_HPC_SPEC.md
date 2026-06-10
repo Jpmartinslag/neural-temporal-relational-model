@@ -1,25 +1,38 @@
 # HERALD Phase 5 — HPC Battery Specification
 
-**Status:** SMOKE TESTED — HPC_BLOCKED (gate not cleared, see §11)
-**Drafted:** 2026-06-10  **Smoke test:** 2026-06-10
+**Status:** SMOKE TESTED v2 — HPC_BLOCKED (smoke gate not cleared, see §11)
+**Drafted:** 2026-06-10  **Smoke test v2:** 2026-06-10 (3 seeds, linear + neural)
 **Gate:** requires corrected L2 artifacts, a local smoke test and supervisor
-confirmation of deadline before submission. The failed community hypothesis is
-documented but does not invalidate the L2 edge layer.
+confirmation of deadline before submission.
 
-**Smoke result (NL, eval_years=[2021,2022,2023], seed=42):**
+**Smoke result v2 (NL, eval_years=[2021,2022,2023], seeds=[42,43,44], mean):**
 
-| Hypothesis | Mean WMAPE | Std | Alpha ratio |
-|---|---|---|---|
-| H0 (persistence) | 6.96% | 2.85% | — |
-| H0b (Ridge AR) | **3.41%** | 1.08% | — |
-| H1 (corrector, no graph) | 5.52% | 1.68% | 3.72% |
-| H2 (L2 graph) | 5.56% | 1.75% | 3.56% |
-| PC-temporal | 5.49% | 1.74% | 3.66% |
-| PC-territory | 5.52% | 1.81% | 3.51% |
+| Hypothesis | Mean WMAPE | Std | Alpha ratio | Type |
+|---|---|---|---|---|
+| H0 (persistence) | 6.96% | 2.47% | — | baseline |
+| H0b (Ridge AR) | **3.41%** | 0.94% | — | baseline |
+| H1-linear (Ridge, no graph) | 5.52% | 1.45% | 3.72% | linear |
+| H2-linear (Ridge, L2 graph) | 5.56% | 1.51% | 3.56% | linear |
+| PC-temporal-linear | 5.52% | 1.54% | 3.57% | control |
+| PC-territory-linear | 5.49% | 1.57% | 3.54% | control |
+| H1-neural (MLP, no graph) | 5.80% | 0.62% | 7.08% | neural |
+| H2-neural (MLP, L2 graph) | 8.79% | 3.16% | 7.98% | neural |
+| PC-temporal-neural | 9.81% | 4.85% | 5.50% | control |
+| PC-territory-neural | 9.33% | 2.47% | 8.11% | control |
 
-Gate result: **NOT_PROMOTED**. H2 beats H0 by +1.4% but loses to H0b by −2.2%.
-H2 is indistinguishable from H1 (+0.04% vs no graph) and from permutation controls.
-Leakage: OK (all years). No NaN/Inf.
+**Neural gate:** H2-neural shows graph specificity (diff vs H1-neural = 3.0% ✓) and
+beats PC-temporal-neural (+1.02% ✓). Fails: PC-territory gain only +0.53% ✗;
+regression vs H0b: H2=8.79% >> H0b*1.1=3.75% ✗.
+
+**Naming note:** H1/H2-linear are Ridge regressors on 1D pooled graph features (NOT neural).
+H1/H2-neural are sklearn MLPRegressor(hidden=(16,8)) on 9D per-sector features + 2 AR lags.
+The term "neural" refers to the MLP, not a GNN or STGNN.
+
+Leakage: OK all years/seeds. No NaN/Inf.
+
+**HPC_BLOCKED.** MLP corrector regresses vs H0b (overfitting on small rolling-origin
+windows, ~360 valid samples per eval year). Blocker: reduce capacity or increase
+regularisation before resubmit.
 
 ---
 
