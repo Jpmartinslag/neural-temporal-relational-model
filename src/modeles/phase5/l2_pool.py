@@ -168,6 +168,9 @@ def message_pass_1hop(
         row = adj[r]
         valid = (row > 0) & np.isfinite(x)
         if not valid.any():
+            # No valid neighbours: fall back to own value (identity pass).
+            # Preserves sample validity; NaN only if x[r] is also NaN.
+            h[r] = x[r]
             continue
         h[r] = float(np.average(x[valid], weights=row[valid]))
     return h

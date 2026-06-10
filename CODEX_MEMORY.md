@@ -122,16 +122,22 @@ L4 mobility and L5 geography remain unvalidated.
 Artifacts: `data/processed/economic_graph/g1_l2_cogrowth/`; `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md`.
 HPC spec: `reports/HERALD_PHASE5_HPC_SPEC.md` (DEC-022). Community failure
 does not invalidate L2.
-**Phase 5 smoke v2 (NL, 2021-2023, seeds=[42,43,44]): HPC_BLOCKED.**
-Linear: H0b 3.41%, H1-linear 5.52%, H2-linear 5.56%, PC-linear ~5.49-5.52%.
-Neural: H1-neural 5.80%, H2-neural 8.79%, PC-neural ~9.3-9.8%.
-H2-neural shows graph specificity (diff vs H1-neural=3%), but regresses vs H0b.
-Gate NOT cleared: PC-territory-neural gain only +0.53% (<1%), H2>H0b*1.1.
-Nomenclature corrected: H1/H2 renamed to H1/H2-linear (Ridge, NOT neural).
-H1/H2-neural = sklearn MLP (16,8) on 9D per-sector features + 2 AR lags.
-65/65 tests pass. Leakage OK. No NaN/Inf.
-Blocker: MLP likely overfits small windows; reduce capacity before reopen.
-See `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md`.
+**Phase 5 ablation v3 (NL, 2021-2023, 5 seeds, widths (2,)(4,)(8,)(16,8)): NOT_SUPPORTED.**
+Two root-cause fixes before ablation:
+  1. `message_pass_1hop` self-value fallback for isolated regions (OQ sector: zero edges
+     t=2012-2019 → h=NaN for all 40 NL regions).
+  2. Column-mean imputation in `predict_neural_corrector` for sectors with missing growth
+     data (OQ t=2011-2016: all-NaN → imputed from t=2017-2020 means, training only).
+     n_train: 39 → 440 for eval=2021.
+Best H2-neural (width=(8,)): 5.53% vs H0b 3.41% (62% regression), vs H1=5.14% (H2 WORSE).
+H2 beats permuted controls (6.34%, 5.94%) confirming graph specificity, but fails regression
+gate (H2>H0b×1.1=3.75%) and fails to beat H1-neural. NOT_SUPPORTED all widths.
+Linear correctors also fail: H2-linear=5.56% vs H0b=3.41%.
+Conclusion: L2 co-growth graph does NOT improve territorial forecasting over AR-Ridge.
+H0b remains best; all corrector branches closed.
+65/65 tests pass. 15/65 tests updated (zero-edge semantics, self-value fallback).
+See `reports/HERALD_PHASE5_HPC_SPEC.md` (status: NOT_SUPPORTED).
+DEC-023 added to decision log.
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)
 Terminal use case. Requires Bloco 1 + Bloco 2 complete.

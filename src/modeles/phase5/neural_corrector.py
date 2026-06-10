@@ -141,6 +141,10 @@ def predict_neural_corrector(
     # ------------------------------------------------------------------ #
     # 1. Collect training samples                                          #
     # ------------------------------------------------------------------ #
+    # Collect all region-year pairs with a finite residual, even if some
+    # feature columns are NaN (e.g. OQ sector has no edges in early years).
+    # NaN features are imputed with column means computed from training data
+    # (step 1b), so no eval-year information leaks into imputation.
     X_rows: list[np.ndarray] = []
     y_rows: list[float] = []
 
@@ -156,10 +160,17 @@ def predict_neural_corrector(
             rng=rng,
         )
         for r in range(n_r):
-            row = feat_t[r]
-            if np.isfinite(resid_t[r]) and np.isfinite(row).all():
-                X_rows.append(row)
+            if np.isfinite(resid_t[r]):  # require valid target only
+                X_rows.append(feat_t[r].copy())
                 y_rows.append(float(resid_t[r]))
+
+    # ------------------------------------------------------------------ #
+    # 1b. Column-mean imputation (training data only, no leakage)          #
+    # ------------------------------------------------------------------ #
+    X_raw = np.array(X_rows)  # (n_samples, n_features) — may contain NaN
+    col_means = np.nanmean(X_raw, axis=0)
+    col_means = np.where(np.isfinite(col_means), col_means, 0.0)  # all-NaN col → 0
+    X_rows_imp = np.where(np.isfinite(X_raw), X_raw, col_means[np.newaxis, :])
 
     # ------------------------------------------------------------------ #
     # 2. Fallback when insufficient training data                          #
@@ -167,7 +178,7 @@ def predict_neural_corrector(
     y_base_test = _territory_totals(panel, country, region_order, eval_year)
     y_true_test = _territory_totals(panel, country, region_order, eval_year + 1)
 
-    if len(X_rows) < max(4, n_input):
+    if len(X_rows_imp) < max(4, n_input):
         warnings.warn(
             f"{hypothesis}/{country}/{eval_year}: insufficient training samples "
             f"({len(X_rows)}); falling back to baseline"
@@ -178,7 +189,7 @@ def predict_neural_corrector(
             correction=np.zeros(n_r),
             wmape=wmape(y_base_test, y_true_test),
             wmape_baseline=wmape(y_base_test, y_true_test),
-            alpha_ratio=0.0, n_train_samples=len(X_rows),
+            alpha_ratio=0.0, n_train_samples=len(X_rows_imp),
             any_nan_in_hat=bool(np.isnan(y_base_test).any()),
             any_inf_in_hat=bool(np.isinf(y_base_test).any()),
             metadata={
@@ -188,7 +199,7 @@ def predict_neural_corrector(
             },
         )
 
-    X_train = np.array(X_rows)
+    X_train = X_rows_imp
     y_train = np.array(y_rows)
 
     # ------------------------------------------------------------------ #
@@ -242,16 +253,18 @@ def predict_neural_corrector(
         permute_mode=permute_mode,
         rng=rng,
     )
+    # Impute test NaN with training column means (no leakage).
+    feat_test_imp = np.where(np.isfinite(feat_test), feat_test, col_means[np.newaxis, :])
 
     corr = np.zeros(n_r)
     for r in range(n_r):
-        row = feat_test[r]
+        row = feat_test_imp[r]
         if np.isfinite(row).all():
             row_sc = scaler_X.transform(row[None, :])
             pred_sc = mlp.predict(row_sc)[0]
             pred = float(scaler_y.inverse_transform([[pred_sc]])[0, 0])
             corr[r] = alpha_scale * pred
-        # else: no correction (NaN features → 0)
+        # else: no correction (still-NaN features → 0)
 
     y_hat = np.clip(y_base_test + corr, 0.0, None)
     alpha_r = _alpha_ratio(corr, y_base_test)
@@ -267,7 +280,7 @@ def predict_neural_corrector(
         wmape=wmape(y_hat, y_true_test),
         wmape_baseline=wmape(y_base_test, y_true_test),
         alpha_ratio=alpha_r,
-        n_train_samples=len(X_rows),
+        n_train_samples=len(X_train),
         any_nan_in_hat=bool(np.isnan(y_hat).any()),
         any_inf_in_hat=bool(np.isinf(y_hat).any()),
         metadata={

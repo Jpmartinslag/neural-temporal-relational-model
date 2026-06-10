@@ -504,3 +504,67 @@ Mitigations before reopening: (a) reduce MLP capacity to (8,) or (4,); (b) incre
 L2 regularisation (mlp_alpha=0.1); (c) longer eval window with more training data;
 (d) consider FR/PT where data ranges differ. Not to be pursued without supervisor
 confirmation of scope and deadline.
+
+---
+
+## DEC-023 — 2026-06-10 — Phase 5 graph corrector: NOT_SUPPORTED
+
+**Phase:** Phase 5 ablation v3
+**Question:** Do smaller MLP widths and corrected training set construction change
+the NOT_SUPPORTED verdict for the graph residual corrector?
+**Evidence:**
+Root causes fixed before ablation:
+1. `message_pass_1hop` returned NaN for all regions when sector had zero edges
+   (OQ sector, NL, t=2012-2019). Fix: self-value fallback when no valid neighbours.
+   NaN only if x[r] is itself NaN (genuine data absence).
+2. `predict_neural_corrector` used `np.isfinite(row).all()` requiring all 11 features
+   to be finite; OQ growth data missing for 2011-2016 dropped entire training years.
+   Fix: collect all region-years with finite residuals; impute NaN feature columns with
+   column-mean from training data (training-only, no leakage). n_train: 39 → 440
+   for eval_year=2021.
+3. Test semantics updated: zero-edge adj → self-value (not NaN). 65/65 tests pass.
+
+Ablation (NL, eval_years=[2021,2022,2023], 5 seeds, widths (2,)(4,)(8,)(16,8)):
+
+| Hypothesis | (2,) | (4,) | (8,) | (16,8) |
+|---|---|---|---|---|
+| H0b (Ridge AR baseline) | 3.41% | 3.41% | 3.41% | 3.41% |
+| H1-neural (no graph) | 5.67% | 5.22% | 5.14% | 5.30% |
+| H2-neural (L2 graph) | 5.87% | 5.64% | 5.53% | 5.57% |
+| PC-temporal-neural | 6.25% | 6.08% | 6.34% | 6.26% |
+| PC-territory-neural | 6.41% | 6.13% | 5.94% | 6.63% |
+
+Best width=(8,): H2-neural=5.53%, H0b×1.1=3.75%. Gate status:
+- H2 ≠ H1 (0.39%): ✓ graph specificity confirmed
+- H2 < PC-temporal (6.34%): ✓
+- H2 < PC-territory (5.94%): ✓
+- H2 < H1-neural: ✗ (H2=5.53% > H1=5.14% — H2 WORSE, graph adds noise)
+- H2 ≤ H0b×1.1=3.75%: ✗ (5.53% — 62% regression vs H0b)
+
+Linear correctors also fail: H2-linear=5.56% vs H0b=3.41%.
+
+**Decision: Phase 5 graph corrector branch CLOSED — NOT_SUPPORTED.**
+No capacity variant passes all gate criteria. The L2 co-growth graph encodes
+statistically significant co-movement signal (beats permuted controls) but this
+signal does not improve out-of-sample WMAPE over the AR-Ridge baseline. The residual
+corrector architecture fails regardless of whether the graph is linear or neural.
+
+**What this means:**
+- L2 graph validation (DEC-019/020, G-10 SUPPORTED) stands. The graph exists and is
+  statistically non-trivial.
+- The forecasting claim is different: graph-augmented corrector does NOT improve
+  territorial forecasting over H0b Ridge for NL 2021-2023.
+- H0b (AR-Ridge) remains the best local baseline.
+
+**What this does NOT mean:**
+- L2 graph is useless for all purposes (Bloco 2 stands: graph representation,
+  evolution tracking, dynamics description — separate from forecast utility).
+- Results cannot be extrapolated to FR/PT without running those experiments.
+
+**Reopen condition:** Closed. Phase 5 graph corrector experiment terminated.
+Only reopen if: (1) substantially different architecture (e.g. global AR-graph
+interaction, not residual correction), OR (2) new harmonized multi-country panel
+with longer windows, OR (3) supervisor directive with explicit justification.
+
+**Affected files:** `reports/HERALD_PHASE5_HPC_SPEC.md`, `CODEX_MEMORY.md`,
+`src/modeles/phase5/neural_corrector.py`, `src/modeles/phase5/l2_pool.py`.

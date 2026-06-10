@@ -7,8 +7,9 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --constraint="mpi"
 # Array index = flat index over (country × hypothesis × seed)
-# Set N before submit: sbatch --array=0-<N-1> run_phase5_array.sbatch
-#SBATCH --array=0-0
+# Full run: 3 countries × 10 hypotheses × 5 seeds = 150 jobs (all eval_years per job)
+# Set before submit: sbatch --array=0-149 run_phase5_array.sbatch
+#SBATCH --array=0-0   # placeholder; HPC_BLOCKED until gate cleared
 
 # ---- Environment ----
 source ~/.bashrc

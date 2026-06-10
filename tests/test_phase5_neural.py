@@ -311,8 +311,8 @@ def test_real_vs_permuted_graph_messages_differ():
 
 
 def test_zero_edges_changes_h2():
-    """If we zero the adjacency, message_pass_1hop returns NaN (no neighbors).
-    This confirms H2-neural's features are edge-dependent.
+    """Zero adj → self-value fallback (h = x). Real adj → neighbour aggregation.
+    H2-neural features are edge-dependent: real ≠ zero-edge.
     """
     x = np.array([0.05, 0.03, -0.01, 0.02])
     adj_real = np.array([
@@ -327,9 +327,11 @@ def test_zero_edges_changes_h2():
     h_zero = message_pass_1hop(x, adj_zero)
 
     assert np.isfinite(h_real).all(), "real adj must produce finite messages"
-    assert np.all(np.isnan(h_zero)), "zero adj must produce NaN (no neighbors)"
-    assert not np.allclose(h_real, np.where(np.isnan(h_zero), 0, h_zero)), \
-        "zero-edge and real-edge predictions must differ"
+    # Zero edges → identity pass (self-value), NOT NaN
+    np.testing.assert_array_equal(h_zero, x, err_msg="zero adj → self-value fallback")
+    # Real aggregation of neighbours differs from self-value
+    assert not np.allclose(h_real, h_zero), \
+        "zero-edge (self) and real-edge (neighbour avg) predictions must differ"
 
 
 # ---------------------------------------------------------------------------

@@ -118,15 +118,29 @@ The MVP must be achievable even if the deadline is tight:
 
 ---
 
-## Phase 5 — Forecast Integration G6 (conditional on G1–G5 + gate)
+## Phase 5 — Forecast Integration G6 — CLOSED NOT_SUPPORTED (2026-06-10)
 
-| Task | Start | End | Depends | Deliverable | Done when | Risk | Contingency |
-|------|-------|-----|---------|-------------|-----------|------|-------------|
-| 5.1 Pre-register G6 gate | W+44 | W+45 | 4.3 | Pre-registered protocol | Gate document signed before any run | None | — |
-| 5.2 G6 graph-augmented forecast experiment | W+45 | W+52 | 5.1 | Results + audit | Rolling-origin WMAPE; permuted-graph control | Graph may not improve WMAPE | Report honestly; graph remains interpretive tool |
-| 5.3 G6 audit | W+52 | W+54 | 5.2 | `HERALD_G6_FORECAST_INTEGRATION_AUDIT.md` | Gate pass/fail documented | None | — |
+**Status:** Ablation v3 NL 2021-2023 (5 seeds, widths (2,)(4,)(8,)(16,8)) → NOT_SUPPORTED.
+H2-neural best 5.53% vs H0b 3.41%. H2 worse than H1-neural (no graph). DEC-023.
+Fixed-L2 residual corrector branch closed. L2 remains validated as analytical graph (G-10).
+Ridge AR (H0b) remains best predictive baseline. No HPC submission.
 
-**Phase 5 is OPTIONAL for MVP.** The graph has scientific value as an interpretive tool even if G6 fails.
+| Task | Start | End | Status | Deliverable | Notes |
+|------|-------|-----|--------|-------------|-------|
+| 5.1 Pre-register G6 gate | 2026-06-10 | 2026-06-10 | DONE | `HERALD_PHASE5_HPC_SPEC.md` | Gate pre-registered |
+| 5.2 G6 fixed-L2 corrector | 2026-06-10 | 2026-06-10 | **CLOSED** | Ablation v3 results | NOT_SUPPORTED — G-12 |
+| 5.3 G6 audit | 2026-06-10 | 2026-06-10 | **CLOSED** | DEC-023 in decision log | HPC not submitted |
+
+## Phase 5b — Bloco 2 Descritivo: G2 Temporal Graph Dynamics
+
+Separate from forecast utility. L2 graph as analytical tool for characterising sector-territory
+economic relations, their evolution, and temporal patterns. NOT forecast improvement.
+
+| Task | Status | Deliverable |
+|------|--------|-------------|
+| G2 Preflight: inventory, density, persistence, turnover, sensitivity | Planned | `HERALD_G2_PREFLIGHT.md` |
+| G2 Main: edge evolution, growth waves, COVID rupture, sector patterns | Planned | `HERALD_G2_DYNAMICS_AUDIT.md` |
+| G2 Evidence: falsifiable criteria, controls, country/sector separation | Planned | Evidence matrix G-13+ |
 
 ---
 

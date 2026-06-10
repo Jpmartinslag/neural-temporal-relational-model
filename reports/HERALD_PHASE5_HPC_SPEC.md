@@ -1,38 +1,43 @@
 # HERALD Phase 5 — HPC Battery Specification
 
-**Status:** SMOKE TESTED v2 — HPC_BLOCKED (smoke gate not cleared, see §11)
-**Drafted:** 2026-06-10  **Smoke test v2:** 2026-06-10 (3 seeds, linear + neural)
-**Gate:** requires corrected L2 artifacts, a local smoke test and supervisor
-confirmation of deadline before submission.
+**Status:** ABLATION v3 — NOT_SUPPORTED (all variants fail gate, see §11)
+**Drafted:** 2026-06-10  **Smoke v2:** 2026-06-10  **Ablation v3:** 2026-06-10
 
-**Smoke result v2 (NL, eval_years=[2021,2022,2023], seeds=[42,43,44], mean):**
+**Ablation v3 (NL, eval_years=[2021,2022,2023], seeds=[42,43,44,45,46], mean WMAPE):**
 
-| Hypothesis | Mean WMAPE | Std | Alpha ratio | Type |
-|---|---|---|---|---|
-| H0 (persistence) | 6.96% | 2.47% | — | baseline |
-| H0b (Ridge AR) | **3.41%** | 0.94% | — | baseline |
-| H1-linear (Ridge, no graph) | 5.52% | 1.45% | 3.72% | linear |
-| H2-linear (Ridge, L2 graph) | 5.56% | 1.51% | 3.56% | linear |
-| PC-temporal-linear | 5.52% | 1.54% | 3.57% | control |
-| PC-territory-linear | 5.49% | 1.57% | 3.54% | control |
-| H1-neural (MLP, no graph) | 5.80% | 0.62% | 7.08% | neural |
-| H2-neural (MLP, L2 graph) | 8.79% | 3.16% | 7.98% | neural |
-| PC-temporal-neural | 9.81% | 4.85% | 5.50% | control |
-| PC-territory-neural | 9.33% | 2.47% | 8.11% | control |
+Two fixes applied before ablation v3:
+1. `message_pass_1hop` self-value fallback for isolated regions (OQ sector had zero edges →
+   NaN propagated through all 40 regions for t=2012-2019).
+2. Column-mean imputation in `predict_neural_corrector` (OQ growth data missing 2011-2016 →
+   imputed from t=2017-2020 column means, training set only, no leakage).
+   Result: n_train increased from 39 to 440 samples for eval_year=2021.
 
-**Neural gate:** H2-neural shows graph specificity (diff vs H1-neural = 3.0% ✓) and
-beats PC-temporal-neural (+1.02% ✓). Fails: PC-territory gain only +0.53% ✗;
-regression vs H0b: H2=8.79% >> H0b*1.1=3.75% ✗.
+| Hypothesis | (2,) | (4,) | (8,) | (16,8) | Gate |
+|---|---|---|---|---|---|
+| H0b (Ridge AR) | **3.41±0.88%** | **3.41%** | **3.41%** | **3.41%** | baseline |
+| H1-neural (no graph) | 5.67±2.58% | 5.22% | 5.14% | 5.30% | — |
+| H2-neural (L2 graph) | 5.87±2.48% | 5.64% | 5.53% | 5.57% | ✗ |
+| PC-temporal-neural | 6.25% | 6.08% | 6.34% | 6.26% | — |
+| PC-territory-neural | 6.41% | 6.13% | 5.94% | 6.63% | — |
+
+Gate analysis (width=(8,), best H2):
+- H2 ≠ H1-neural (0.39% diff): ✓ graph specificity confirmed
+- H2 beats PC-temporal (6.34% > 5.53%): ✓
+- H2 beats PC-territory (5.94% > 5.53%): ✓
+- H2 beats H1-neural: ✗ (H2=5.53% > H1=5.14% — H2 WORSE than no-graph)
+- H2 ≤ H0b×1.1=3.75%: ✗ (5.53% >> 3.75% — 62% regression vs H0b)
+
+**Phase 5 graph corrector: NOT_SUPPORTED.** No width passes all gate criteria.
+The L2 graph encodes real co-movement signal (beats permuted controls) but this
+signal does not improve out-of-sample WMAPE over H0b Ridge. The residual corrector
+architecture adds no value even with 440 training samples and small MLP capacity.
+
+**HPC job count:** 3 countries × 10 hypotheses × 5 seeds = 150 jobs (all eval_years
+per job). Array: `--array=0-149`. Submission blocked; NOT_SUPPORTED closes the battery.
 
 **Naming note:** H1/H2-linear are Ridge regressors on 1D pooled graph features (NOT neural).
-H1/H2-neural are sklearn MLPRegressor(hidden=(16,8)) on 9D per-sector features + 2 AR lags.
-The term "neural" refers to the MLP, not a GNN or STGNN.
-
-Leakage: OK all years/seeds. No NaN/Inf.
-
-**HPC_BLOCKED.** MLP corrector regresses vs H0b (overfitting on small rolling-origin
-windows, ~360 valid samples per eval year). Blocker: reduce capacity or increase
-regularisation before resubmit.
+H1/H2-neural are sklearn MLPRegressor on 9D per-sector features + 2 AR lags.
+Not a GNN or STGNN. Graph aggregation is fixed, non-trainable 1-hop weighted mean.
 
 ---
 
