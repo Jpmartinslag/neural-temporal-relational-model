@@ -1,0 +1,137 @@
+{
+  "smoke_test": {
+    "country": "NL",
+    "eval_years": [
+      2021,
+      2022,
+      2023
+    ],
+    "seed": 42,
+    "runtime_seconds": 28.02
+  },
+  "summary": {
+    "H0": {
+      "mean_wmape": 0.06955176019285274,
+      "std_wmape": 0.028524274705800528,
+      "mean_alpha_ratio": 0.0,
+      "any_nan_any_year": false,
+      "any_inf_any_year": false,
+      "all_leakage_ok": true,
+      "n_eval_years": 3,
+      "wmape_by_year": {
+        "2021": 0.10145305271388545,
+        "2022": 0.046504290762241295,
+        "2023": 0.06069793710243149
+      }
+    },
+    "H0b": {
+      "mean_wmape": 0.034089217067152226,
+      "std_wmape": 0.010832063981179203,
+      "mean_alpha_ratio": 0.0,
+      "any_nan_any_year": false,
+      "any_inf_any_year": false,
+      "all_leakage_ok": true,
+      "n_eval_years": 3,
+      "wmape_by_year": {
+        "2021": 0.04211382695027478,
+        "2022": 0.03838581321178331,
+        "2023": 0.02176801103939858
+      }
+    },
+    "H1": {
+      "mean_wmape": 0.05523852218702014,
+      "std_wmape": 0.016751351104769007,
+      "mean_alpha_ratio": 0.03718951398254299,
+      "any_nan_any_year": false,
+      "any_inf_any_year": false,
+      "all_leakage_ok": true,
+      "n_eval_years": 3,
+      "wmape_by_year": {
+        "2021": 0.07366263964059126,
+        "2022": 0.051127609005894685,
+        "2023": 0.04092531791457449
+      }
+    },
+    "H2": {
+      "mean_wmape": 0.05557932730159169,
+      "std_wmape": 0.017471481926380743,
+      "mean_alpha_ratio": 0.035555548396698215,
+      "any_nan_any_year": false,
+      "any_inf_any_year": false,
+      "all_leakage_ok": true,
+      "n_eval_years": 3,
+      "wmape_by_year": {
+        "2021": 0.07495465480399234,
+        "2022": 0.05075994803621249,
+        "2023": 0.04102337906457024
+      }
+    },
+    "PC-temporal": {
+      "mean_wmape": 0.054949174446423145,
+      "std_wmape": 0.01741965221056534,
+      "mean_alpha_ratio": 0.03655993243497855,
+      "any_nan_any_year": false,
+      "any_inf_any_year": false,
+      "all_leakage_ok": true,
+      "n_eval_years": 3,
+      "wmape_by_year": {
+        "2021": 0.0744918040642136,
+        "2022": 0.0493019963779196,
+        "2023": 0.04105372289713625
+      }
+    },
+    "PC-territory": {
+      "mean_wmape": 0.0551833300775019,
+      "std_wmape": 0.018126658620181445,
+      "mean_alpha_ratio": 0.03508948979627741,
+      "any_nan_any_year": false,
+      "any_inf_any_year": false,
+      "all_leakage_ok": true,
+      "n_eval_years": 3,
+      "wmape_by_year": {
+        "2021": 0.0758191543005405,
+        "2022": 0.04789820904178862,
+        "2023": 0.0418326268901766
+      }
+    }
+  },
+  "gate": {
+    "country": "NL",
+    "gate_passed": false,
+    "h2_wmape": 0.05557932730159169,
+    "controls": {
+      "H0": {
+        "h2_wmape": 0.05557932730159169,
+        "ctrl_wmape": 0.06955176019285274,
+        "gain": 0.013972432891261051,
+        "beats": true
+      },
+      "H0b": {
+        "h2_wmape": 0.05557932730159169,
+        "ctrl_wmape": 0.034089217067152226,
+        "gain": -0.02149011023443946,
+        "beats": false
+      },
+      "H1": {
+        "h2_wmape": 0.05557932730159169,
+        "ctrl_wmape": 0.05523852218702014,
+        "gain": -0.0003408051145715463,
+        "beats": false
+      },
+      "PC-temporal": {
+        "h2_wmape": 0.05557932730159169,
+        "ctrl_wmape": 0.054949174446423145,
+        "gain": -0.000630152855168542,
+        "beats": false
+      },
+      "PC-territory": {
+        "h2_wmape": 0.05557932730159169,
+        "ctrl_wmape": 0.0551833300775019,
+        "gain": -0.00039599722408978355,
+        "beats": false
+      }
+    },
+    "note": "NOT_PROMOTED \u2014 H2 does not clear all thresholds"
+  },
+  "leakage_ok": true
+}
