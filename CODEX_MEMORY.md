@@ -139,6 +139,20 @@ H0b remains best; all corrector branches closed.
 See `reports/HERALD_PHASE5_HPC_SPEC.md` (status: NOT_SUPPORTED).
 DEC-023 added to decision log.
 
+**G2 Preflight (2026-06-10): G2_READY for population-level descriptive analysis.**
+Script: `src/data/european_panel/build_g2_temporal_preflight.py`. 21+1 tests pass.
+Artefacts: `data/processed/economic_graph/g2_preflight/` (compact, no raw edges).
+Key findings (FR/NL/PT, top-k=5, criteria pre-registered per DEC-024):
+- LOYO Pearson: 0.10-0.19; LOYO Jaccard: 0.07-0.26 — all FAIL ≥0.70 threshold
+- Persistent edges (≥70% years): 0.4% of 58,242 — highly transient
+- Mean turnover: 59%/yr (FR: 77%, NL: 56%, PT: 48%) — 0/295 year-pairs stable
+- COVID: no step-change in density or weight (below thresholds)
+- Top-k Jaccard(3,5)=0.62; Jaccard(5,10)=0.52 — moderate k sensitivity
+High dynamism IS a finding: L2 neighborhoods time-varying. Does NOT invalidate G-10.
+Individual edge claims NOT reliable. Population/distributional statistics appropriate.
+G-13 added to evidence matrix (EXPLORATORY). DEC-024 in decision log.
+Next: negative control (temporal permutation baseline for LOYO Jaccard).
+
 ### Bloco 3 — Economic Recommendation (NOT STARTED)
 Terminal use case. Requires Bloco 1 + Bloco 2 complete.
 Cannot be claimed as a current capability.
