@@ -63,13 +63,13 @@ The MVP must be achievable even if the deadline is tight:
 
 | Task | Start | End | Depends | Deliverable | Done when | Risk | Contingency |
 |------|-------|-----|---------|-------------|-----------|------|-------------|
-| 1.1 Build clean unlagged sector preflight | 2026-06-10 | 2026-06-11 | G0 | `sector_panel_fr_nl_pt.csv` | Agriculture excluded; keys and masks audited | Source mismatch | Keep national sources and explicit concepts |
+| 1.1 Build clean unlagged sector preflight | 2026-06-10 | 2026-06-10 | G0 | `sector_panel_fr_nl_pt.csv` | Agriculture excluded; keys and masks audited | Source mismatch | DONE |
 | 1.2 Write G0 node + edge definition (formal) | 2026-06-10 | 2026-06-10 | — | `HERALD_G0_FORMAL_CONTRACT.md` | territory×sector pair committed; 5 edge layers documented | None | DONE |
-| 1.3 Write G0 null model specification | 2026-06-12 | 2026-06-13 | 1.2 | G0 contract § null | Priority null model list formalized | None | — |
-| 1.4 Write G0 falsifiable hypothesis | 2026-06-12 | 2026-06-13 | 1.2 | G0 contract § hypothesis | One testable hypothesis per edge layer | None | — |
-| 1.5 Pre-specify stability metrics + acceptance criteria | 2026-06-13 | 2026-06-14 | 1.3, 1.4 | G0 contract § validation | Thresholds written with justification before any experiment | None | — |
-| 1.6 Write post-experiment audit plan | 2026-06-14 | 2026-06-14 | 1.5 | G0 contract § audit plan | Checklist of audit steps after G1 experiment | None | — |
-| 1.7 G0 gate review | 2026-06-10 | 2026-06-10 | 1.2–1.6 | G0 gate at 10/10 | All items checked | Supervisor review pending | Proceed only to data preflight |
+| 1.3 Write G0 null model specification | 2026-06-10 | 2026-06-10 | 1.2 | G0 contract § null | Priority null model list formalized | None | DONE |
+| 1.4 Write G0 falsifiable hypothesis | 2026-06-10 | 2026-06-10 | 1.2 | G0 contract § hypothesis | One testable hypothesis per edge layer | None | DONE |
+| 1.5 Pre-specify stability metrics + acceptance criteria | 2026-06-10 | 2026-06-10 | 1.3, 1.4 | G0 contract § validation | Thresholds written with justification before any experiment | None | DONE |
+| 1.6 Write post-experiment audit plan | 2026-06-10 | 2026-06-10 | 1.5 | G0 contract § audit plan | Checklist of audit steps after G1 experiment | None | DONE |
+| 1.7 G0 gate review | 2026-06-10 | 2026-06-10 | 1.2–1.6 | G0 gate at 10/10 | All items checked | Supervisor review pending | DONE technically; supervisor sign-off pending |
 | 1.8 Literature review complete | 2026-06-11 | 2026-06-18 | 0.8 | `HERALD_DYNAMIC_ECONOMIC_GRAPH_LITERATURE_REVIEW.md` | ≥30 papers in table; refs in bibliography | None | Reduce to 25 if time-constrained |
 
 **Criterion for Phase 1 completion:** G0 gate 10/10 in `HERALD_G0_FORMAL_CONTRACT.md`; supervisor sign-off; literature review done.
@@ -87,7 +87,8 @@ The MVP must be achievable even if the deadline is tight:
 | 2.5 Economic-coherence review + L1 sector relatedness | 2026-06-10 | 2026-06-10 | 2.4 | `HERALD_G1_L1_SECTOR_GRAPH_AUDIT.md` | FAIL: NL passes, FR fails, PT ineligible | Stable composition dominates FR nulls | Keep L3 descriptive; do not retune L1 |
 | 2.6 Resolve PT KZ source semantics | 2026-06-10 | 2026-06-10 | 2.5 | INE 0009703 audit: K absent in all years (DEC-018) | K is definitional exclusion per Eurostat/OECD convention | Financial sector excluded by INE | PT eligible for L2 with 8 sectors; excluded from 9-sector gate | DONE |
 | 2.7 Build and validate L2 causal co-growth | 2026-06-10 | 2026-06-10 | 2.6 | `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md`; `data/processed/economic_graph/g1_l2_cogrowth/` | PASS: FR 0.782, NL 0.789, PT 0.778; temporal q=0.005, territory q=0.005, LOYO pass, COVID-robust (DEC-019) | Rolling correlation ≠ causality; MAUP | L4 mobility and L5 geography next | DONE |
-| 2.8 Community detection (static baseline) | after 2.7 | after 2.7 | validated layer | Community labels | Louvain only on a validated layer; DSBM deferred | None | Use L3 FR/NL if L2 fails |
+| 2.8 Community detection (static baseline) | 2026-06-10 | 2026-06-10 | 2.7 | `reports/HERALD_G1_COMMUNITIES_AUDIT.md`; aggregate community artefacts | FAIL 0/3 under valid temporal/territory nulls and modularity+AMI FDR gate | Louvain communities not distinguishable from nulls | Keep L2 as stable edge layer; do not promote communities | DONE |
+| 2.9 COVID sensitivity L2 correction (DEC-020) | 2026-06-10 | 2026-06-10 | 2.7 | Corrected builder; tests pass | Full L2 gate applied; `COVID_ROBUST` | Bootstrap propagates exclusion; eval_year 2020 retained | DEC-020 | DONE |
 
 **W = week when G0 gate is approved (depends on 0.9 deadline confirmation)**
 
@@ -197,5 +198,5 @@ Planning estimate, not an empirical metric:
 - Full product through economic recommendation: approximately **25% complete**.
 
 Completed: temporal baselines, G0, sector preflight, G1-L3, G1-L1, PT KZ audit,
-G1-L2 and G4-lite validation. Remaining MVP: community detection baseline (2.8),
-G5 visualization/explanation and report completion.
+G1-L2 and G4-lite validation. Community baseline was tested and rejected.
+Remaining MVP: bounded L2/L3 visualization/explanation and report completion.

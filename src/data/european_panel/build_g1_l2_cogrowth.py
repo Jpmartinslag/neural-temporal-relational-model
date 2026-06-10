@@ -9,9 +9,15 @@ satisfying the causal temporal protocol in the G0 formal contract.
 
 Agriculture is excluded.  PT KZ is structurally absent from INE 0009703
 (section K not reported); this is a verified definitional exclusion, not a
-data error (DEC-015).  PT participates with 8 sectors.
+data error (DEC-018).  PT participates with 8 sectors.
 
-Null models (finite-sample corrected p = (1 + sum(null >= obs)) / (1 + N)):
+COVID sensitivity: 2020 is excluded from window observation years (not from
+eval_year selection).  eval_year=2020's window covers [2015..2019] which
+contains no COVID data; excluding 2020 from observation years leaves it
+unaffected.  eval_year=2021 uses [2016..2019] (4 years, ≥ MIN_PERIODS).
+Gaps in windows are tracked explicitly in validation output.
+
+Null models (finite-sample corrected p = (1 + count(null >= obs)) / (1 + N)):
   1. Temporal permutation: shuffle years within territory-sector.
   2. Territory permutation: shuffle territories within year-sector.
 
@@ -76,6 +82,23 @@ def build_growth_matrix(
     return region_ids, growth_years, wide.to_numpy(dtype=float)
 
 
+def window_years_used(
+    growth_years: list[int],
+    eval_year: int,
+    window: int = WINDOW,
+    exclude_years: frozenset[int] = frozenset(),
+) -> list[int]:
+    """Return the actual observation years that enter the window for eval_year t.
+
+    Window is [t-window, t-1] minus explicitly excluded years.
+    Years with no observation in growth_years are also absent.
+    """
+    return [
+        y for y in growth_years
+        if eval_year - window <= y <= eval_year - 1 and y not in exclude_years
+    ]
+
+
 def window_matrix(
     growth_years: list[int],
     matrix: np.ndarray,
@@ -83,13 +106,16 @@ def window_matrix(
     window: int = WINDOW,
     exclude_years: frozenset[int] = frozenset(),
 ) -> np.ndarray:
-    """Extract rows for [eval_year-window, eval_year-1], optionally excluding years."""
-    target = [
+    """Extract rows for the causal window [t-window, t-1] minus excluded years.
+
+    Returns an empty 2-D array (shape 0×n_regions) if no rows qualify,
+    which downstream pairwise_corr interprets as all-NaN.
+    """
+    indices = [
         growth_years.index(y)
-        for y in growth_years
-        if eval_year - window <= y <= eval_year - 1 and y not in exclude_years
+        for y in window_years_used(growth_years, eval_year, window, exclude_years)
     ]
-    return matrix[target, :] if target else np.empty((0, matrix.shape[1]))
+    return matrix[indices, :] if indices else np.empty((0, matrix.shape[1]))
 
 
 def pairwise_corr(mat: np.ndarray, min_periods: int = MIN_PERIODS) -> np.ndarray:
@@ -131,15 +157,15 @@ def eval_years_for_country(
     sectors: list[str],
     window: int = WINDOW,
 ) -> list[int]:
-    """Return years where at least one sector has a full window available."""
+    """Return evaluation years where at least one sector can produce a window.
+
+    Evaluation years are NOT filtered by exclude_years — only the window data
+    for each eval_year is filtered.  This preserves eval_year=2020, whose
+    window covers [t-window, t-1] = pre-COVID years.
+    """
     all_years: set[int] = set()
     for sector in sectors:
         _, growth_years, _ = sector_data[sector]
-        for y in growth_years:
-            # eval_year = y+1 .. y can be used in windows ending at y
-            pass
-        # The latest growth year is the last element; earliest eval_year
-        # needs window years starting at growth_years[0]+window
         first = growth_years[0] + window
         last = growth_years[-1] + 1
         all_years.update(range(first, last + 1))
@@ -260,22 +286,26 @@ def bootstrap_edge_stability(
     window: int = WINDOW,
     top_k: int = TOP_K,
     n_bootstraps: int = N_BOOTSTRAPS,
+    exclude_years: frozenset[int] = frozenset(),
 ) -> pd.DataFrame:
-    """Bootstrap by resampling eval_years; track top-k edge frequency per sector."""
+    """Bootstrap by resampling eval_years; track top-k edge frequency per sector.
+
+    exclude_years is propagated to window_matrix so that COVID-excluded years
+    do not enter any bootstrap window.
+    """
     counts: dict[tuple[str, str, str], int] = {}
 
     for _ in range(n_bootstraps):
         sampled = rng.integers(0, len(eval_years), size=len(eval_years))
         for sector in sectors:
             region_ids, growth_years, matrix = sector_data[sector]
-            # Aggregate correlation matrices over bootstrapped eval_years
-            corr_sum = np.zeros(
-                (len(region_ids), len(region_ids)), dtype=float
-            )
+            corr_sum = np.zeros((len(region_ids), len(region_ids)), dtype=float)
             valid_count = 0
             for idx in sampled:
                 t = eval_years[idx]
-                w_mat = window_matrix(growth_years, matrix, t, window)
+                w_mat = window_matrix(
+                    growth_years, matrix, t, window, exclude_years
+                )
                 corr = pairwise_corr(w_mat)
                 if not np.all(np.isnan(corr)):
                     where = np.isfinite(corr)
@@ -284,22 +314,15 @@ def bootstrap_edge_stability(
             if valid_count == 0:
                 continue
             mean_corr = corr_sum / valid_count
-            # Top-k edges by absolute weight
             n = len(region_ids)
-            pairs_idx = np.array(list(zip(*np.triu_indices(n, k=1))))
-            if len(pairs_idx) == 0:
-                continue
-            weights = np.abs(
-                [mean_corr[i, j] for i, j in pairs_idx if np.isfinite(mean_corr[i, j])]
-            )
-            valid_pairs = [
-                (i, j) for i, j in pairs_idx if np.isfinite(mean_corr[i, j])
-            ]
+            all_pairs = list(zip(*np.triu_indices(n, k=1)))
+            valid_pairs = [(i, j) for i, j in all_pairs if np.isfinite(mean_corr[i, j])]
             if not valid_pairs:
                 continue
+            weights = np.abs([mean_corr[i, j] for i, j in valid_pairs])
             order = np.argsort(-weights)
-            top_edges = [valid_pairs[k] for k in order[:top_k]]
-            for i, j in top_edges:
+            for k in order[:top_k]:
+                i, j = valid_pairs[k]
                 key = (sector, region_ids[i], region_ids[j])
                 counts[key] = counts.get(key, 0) + 1
 
@@ -334,6 +357,12 @@ def validate_country(
     n_perm: int = N_PERMUTATIONS,
     exclude_years: frozenset[int] = frozenset(),
 ) -> tuple[dict, pd.DataFrame]:
+    """Validate L2 co-growth for one country.
+
+    exclude_years controls which observation years are removed from windows.
+    It does NOT filter eval_years: eval_year=2020's window is [2015..2019]
+    which never contains 2020, so that eval_year is unaffected by exclusion.
+    """
     sectors = eligible_sectors(panel, country)
     if not sectors:
         raise ValueError(f"{country}: no eligible sectors")
@@ -342,12 +371,12 @@ def validate_country(
         s: build_growth_matrix(panel, country, s) for s in sectors
     }
 
+    # eval_years are NOT filtered by exclude_years
     eval_yrs = eval_years_for_country(sector_data, sectors, window)
-    eval_yrs = [t for t in eval_yrs if t not in exclude_years]
     if len(eval_yrs) < 2:
         raise ValueError(f"{country}: fewer than 2 evaluation years available")
 
-    # Observed edge vectors
+    # Observed edge vectors (exclude_years propagated to window_matrix)
     obs_vectors = [
         l2_edge_vector(sector_data, sectors, t, window, exclude_years)
         for t in eval_yrs
@@ -359,7 +388,10 @@ def validate_country(
     temporal_pairs_list = []
     for _ in range(n_perm):
         perm_data = permute_growth_temporal(sector_data, rng)
-        vecs = [l2_edge_vector(perm_data, sectors, t, window, exclude_years) for t in eval_yrs]
+        vecs = [
+            l2_edge_vector(perm_data, sectors, t, window, exclude_years)
+            for t in eval_yrs
+        ]
         s, pairs = consecutive_stability(vecs)
         temporal_stabilities.append(s)
         temporal_pairs_list.append(pairs)
@@ -369,7 +401,10 @@ def validate_country(
     territory_pairs_list = []
     for _ in range(n_perm):
         perm_data = permute_growth_territory(sector_data, rng)
-        vecs = [l2_edge_vector(perm_data, sectors, t, window, exclude_years) for t in eval_yrs]
+        vecs = [
+            l2_edge_vector(perm_data, sectors, t, window, exclude_years)
+            for t in eval_yrs
+        ]
         s, pairs = consecutive_stability(vecs)
         territory_stabilities.append(s)
         territory_pairs_list.append(pairs)
@@ -380,16 +415,32 @@ def validate_country(
         obs_pairs, temporal_pairs_list, territory_pairs_list, len(eval_yrs)
     )
 
-    # Bootstrap
-    bootstrap = bootstrap_edge_stability(sector_data, sectors, eval_yrs, rng, window)
+    # Bootstrap — exclude_years propagated so bootstrap windows honour exclusion
+    bootstrap = bootstrap_edge_stability(
+        sector_data, sectors, eval_yrs, rng, window,
+        exclude_years=exclude_years,
+    )
     stable_count = int(bootstrap["promoted_stable_edge"].sum()) if not bootstrap.empty else 0
+
+    # Record explicit gap information so the output is never misleading
+    window_gaps: list[int] = []
+    for t in eval_yrs:
+        for sector in sectors:
+            _, gy, _ = sector_data[sector]
+            used = window_years_used(gy, t, window, exclude_years)
+            expected = set(range(t - window, t)) & set(gy)
+            window_gaps.extend(sorted(expected - set(used)))
+    window_gaps_unique = sorted(set(window_gaps))
 
     row = {
         "country": country,
         "sectors": ",".join(sectors),
         "n_sectors": len(sectors),
+        "eval_years_list": eval_yrs,
         "eval_years": f"{eval_yrs[0]}-{eval_yrs[-1]}",
         "n_eval_years": len(eval_yrs),
+        "window_years_excluded": sorted(exclude_years),
+        "window_gaps_detected": window_gaps_unique,
         "observed_stability": obs_stability,
         "temporal_null_median": float(np.nanmedian(temporal_stabilities)),
         "temporal_p": temporal_p,
@@ -403,14 +454,16 @@ def validate_country(
 
 
 # ---------------------------------------------------------------------------
-# Edge output (mean correlation across eval_years, per country-sector)
+# Edge output
 # ---------------------------------------------------------------------------
 
 def build_edge_list(
     panel: pd.DataFrame,
     country: str,
     window: int = WINDOW,
+    exclude_years: frozenset[int] = frozenset(),
 ) -> pd.DataFrame:
+    """Build per-(sector, eval_year) edge list with explicit window year lists."""
     sectors = eligible_sectors(panel, country)
     sector_data = {s: build_growth_matrix(panel, country, s) for s in sectors}
     eval_yrs = eval_years_for_country(sector_data, sectors, window)
@@ -420,7 +473,8 @@ def build_edge_list(
         region_ids, growth_years, matrix = sector_data[sector]
         n = len(region_ids)
         for t in eval_yrs:
-            w_mat = window_matrix(growth_years, matrix, t, window)
+            used = window_years_used(growth_years, t, window, exclude_years)
+            w_mat = window_matrix(growth_years, matrix, t, window, exclude_years)
             corr = pairwise_corr(w_mat)
             for i, j in zip(*np.triu_indices(n, k=1)):
                 w = corr[i, j]
@@ -433,8 +487,8 @@ def build_edge_list(
                             "source_region": region_ids[i],
                             "target_region": region_ids[j],
                             "weight_cogrowth": float(w),
-                            "window_start": t - window,
-                            "window_end": t - 1,
+                            "window_years_used": ",".join(map(str, used)),
+                            "n_window_years": len(used),
                         }
                     )
     return pd.DataFrame(records)
@@ -443,6 +497,16 @@ def build_edge_list(
 # ---------------------------------------------------------------------------
 # Main build
 # ---------------------------------------------------------------------------
+
+def _country_pass_gate(row: dict) -> bool:
+    """Full gate: temporal q, territory q, LOYO, bootstrap stable edge > 0."""
+    return bool(
+        row.get("temporal_q", 1.0) <= 0.05
+        and row.get("territory_q", 1.0) <= 0.05
+        and row.get("leave_one_year_direction_pass", False)
+        and row.get("stable_edge_count", 0) > 0
+    )
+
 
 def build(panel: pd.DataFrame, out_dir: Path) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -463,14 +527,20 @@ def build(panel: pd.DataFrame, out_dir: Path) -> dict:
             ineligible.append({"country": country, "reason": str(exc)})
             continue
 
-        # COVID sensitivity (separate rng draw for reproducibility)
+        # COVID sensitivity — separate deterministic rng; exclude_years propagated
         rng2 = np.random.default_rng(SEED + 1)
         try:
             row_nc, _ = validate_country(
                 panel, country, rng2, exclude_years=exclude_covid
             )
         except ValueError:
-            row_nc = {**row, "exclude_covid": True, "observed_stability": np.nan}
+            row_nc = {
+                **row,
+                "exclude_covid": True,
+                "observed_stability": float("nan"),
+                "stable_edge_count": 0,
+                "leave_one_year_direction_pass": False,
+            }
 
         validation_rows.append(row)
         validation_nocovid.append(row_nc)
@@ -481,42 +551,62 @@ def build(panel: pd.DataFrame, out_dir: Path) -> dict:
     if not validation_rows:
         raise RuntimeError("No country produced validation results")
 
+    # --- Main validation ---
     validation = pd.DataFrame(validation_rows)
     p_vals = validation[["temporal_p", "territory_p"]].to_numpy().ravel().tolist()
     q_vals = bh_fdr(p_vals)
     validation[["temporal_q", "territory_q"]] = np.array(q_vals).reshape(
         len(validation), 2
     )
-    validation["country_pass"] = (
-        validation["temporal_q"].le(0.05)
-        & validation["territory_q"].le(0.05)
-        & validation["leave_one_year_direction_pass"]
-        & validation["stable_edge_count"].gt(0)
+    validation["country_pass"] = validation.apply(
+        lambda r: _country_pass_gate(r.to_dict()), axis=1
     )
 
+    # --- COVID sensitivity — identical gate ---
     validation_nc = pd.DataFrame(validation_nocovid)
     p_vals_nc = validation_nc[["temporal_p", "territory_p"]].to_numpy().ravel().tolist()
     q_vals_nc = bh_fdr(p_vals_nc)
     validation_nc[["temporal_q", "territory_q"]] = np.array(q_vals_nc).reshape(
         len(validation_nc), 2
     )
-    validation_nc["country_pass_nocovid"] = (
-        validation_nc["temporal_q"].le(0.05)
-        & validation_nc["territory_q"].le(0.05)
-        & validation_nc["leave_one_year_direction_pass"]
+    validation_nc["country_pass_nocovid"] = validation_nc.apply(
+        lambda r: _country_pass_gate(r.to_dict()), axis=1
     )
+
+    # Classify overall COVID sensitivity
+    main_pass = set(
+        validation.loc[validation["country_pass"], "country"].tolist()
+    )
+    nocovid_pass = set(
+        validation_nc.loc[validation_nc["country_pass_nocovid"], "country"].tolist()
+    )
+    countries_passing = len(main_pass)
+    required = 2
+    l2_status = "PASS" if countries_passing >= required else "FAIL"
+
+    if l2_status == "PASS" and nocovid_pass >= main_pass:
+        covid_classification = "COVID_ROBUST"
+    elif l2_status == "PASS":
+        covid_classification = "COVID_SENSITIVE"
+    else:
+        covid_classification = "FAIL"
 
     bootstrap = pd.concat(bootstrap_frames, ignore_index=True) if bootstrap_frames else pd.DataFrame()
     edges = pd.concat(edge_frames, ignore_index=True) if edge_frames else pd.DataFrame()
 
-    validation.to_csv(out_dir / "g1_l2_validation_by_country.csv", index=False)
-    validation_nc.to_csv(out_dir / "g1_l2_validation_nocovid.csv", index=False)
+    # Drop eval_years_list from CSV (it's a Python list, not CSV-friendly)
+    validation_csv = validation.drop(
+        columns=["eval_years_list", "window_gaps_detected", "window_years_excluded"],
+        errors="ignore",
+    )
+    validation_nc_csv = validation_nc.drop(
+        columns=["eval_years_list", "window_gaps_detected", "window_years_excluded"],
+        errors="ignore",
+    )
+    validation_csv.to_csv(out_dir / "g1_l2_validation_by_country.csv", index=False)
+    validation_nc_csv.to_csv(out_dir / "g1_l2_validation_nocovid.csv", index=False)
     bootstrap.to_csv(out_dir / "g1_l2_bootstrap.csv", index=False)
     edges.to_csv(out_dir / "g1_l2_edges.csv", index=False)
-
-    countries_passing = int(validation["country_pass"].sum())
-    required = 2
-    l2_status = "PASS" if countries_passing >= required else "FAIL"
 
     summary = {
         "validated_layer": "L2_same_sector_cross_territory_cogrowth",
@@ -526,6 +616,7 @@ def build(panel: pd.DataFrame, out_dir: Path) -> dict:
         "n_bootstraps": N_BOOTSTRAPS,
         "bootstrap_threshold": BOOTSTRAP_THRESHOLD,
         "l2_status": l2_status,
+        "covid_classification": covid_classification,
         "countries_passing": countries_passing,
         "required_countries": required,
         "validation": validation.to_dict(orient="records"),
@@ -535,8 +626,15 @@ def build(panel: pd.DataFrame, out_dir: Path) -> dict:
         "pt_kz_note": (
             "PT sector KZ is structurally absent from INE indicator 0009703 "
             "(section K not published in enterprise demography statistics). "
-            "This is a verified definitional exclusion per DEC-015. "
+            "Verified definitional exclusion per DEC-018. "
             "PT participates in L2 with 8 sectors."
+        ),
+        "covid_note": (
+            f"COVID sensitivity excludes observation year {COVID_YEAR} from all windows. "
+            f"eval_year={COVID_YEAR} is retained: its window covers "
+            f"[{COVID_YEAR - WINDOW}..{COVID_YEAR - 1}] which predates the shock. "
+            f"Windows spanning {COVID_YEAR} lose one year but remain >= {MIN_PERIODS} periods. "
+            f"Classification: {covid_classification}."
         ),
     }
     (out_dir / "g1_l2_decision.json").write_text(
@@ -554,18 +652,25 @@ def render_report(summary: dict) -> str:
         "# HERALD G1-L2 Causal Co-Growth Graph Audit",
         "",
         f"**Decision:** `{summary['l2_status']}`",
+        f"**COVID classification:** `{summary['covid_classification']}`",
         f"**Layer:** `{summary['validated_layer']}`",
         "",
         "L2 edges connect territory pairs within the same sector based on",
         "Pearson correlation of their past sector growth rates over a rolling",
-        f"window of {summary['window']} years.  Only data from observation_year",
-        "<= t-1 is used (causal temporal protocol).",
+        f"window of {summary['window']} years (min {summary['min_periods']} periods).",
+        "Only observation_year <= t-1 is used (causal temporal protocol).",
         "",
         "## PT KZ note",
         "",
         summary["pt_kz_note"],
         "",
-        "## Validation (full window including 2020)",
+        "## COVID sensitivity note",
+        "",
+        summary["covid_note"],
+        "",
+        "## Validation (full window, 2020 included as observation year)",
+        "",
+        "Gate: temporal q ≤ 0.05, territory q ≤ 0.05, LOYO direction pass, ≥ 1 stable bootstrap edge.",
         "",
         "| Country | Sectors | Eval years | Stability | Temporal q | Territory q | LOYO | Stable edges | Pass |",
         "|---|---|---|---:|---:|---:|---|---:|---|",
@@ -585,19 +690,30 @@ def render_report(summary: dict) -> str:
         "",
         f"Countries passing: {summary['countries_passing']}/{summary['required_countries']} required.",
         "",
-        "## COVID sensitivity (2020 excluded from all windows)",
+        "## COVID sensitivity (2020 excluded from observation windows)",
         "",
-        "| Country | Eval years | Stability | Temporal q | Territory q | Pass |",
-        "|---|---|---:|---:|---:|---|",
+        (
+            "eval_year=2020 is retained (window covers pre-COVID years). "
+            "Windows containing 2020 lose that year but remain ≥ min_periods. "
+            "Same full gate applied."
+        ),
+        "",
+        "| Country | Eval years | Gaps | Stability | Temporal q | Territory q | LOYO | Stable edges | Pass |",
+        "|---|---|---|---:|---:|---:|---|---:|---|",
     ]
     for row in summary["validation_nocovid"]:
         stab = row.get("observed_stability", float("nan"))
-        stab_str = f"{stab:.4f}" if isinstance(stab, float) and not pd.isna(stab) else "N/A"
+        stab_str = f"{stab:.4f}" if isinstance(stab, float) and stab == stab else "N/A"
+        gaps = row.get("window_gaps_detected", [])
+        gaps_str = ",".join(map(str, gaps)) if gaps else "none"
         lines.append(
             f"| {row['country']} | {row.get('eval_years', 'N/A')}"
+            f" | {gaps_str}"
             f" | {stab_str}"
             f" | {row.get('temporal_q', float('nan')):.4f}"
             f" | {row.get('territory_q', float('nan')):.4f}"
+            f" | {row.get('leave_one_year_direction_pass', False)}"
+            f" | {row.get('stable_edge_count', 0)}"
             f" | {row.get('country_pass_nocovid', False)} |"
         )
 

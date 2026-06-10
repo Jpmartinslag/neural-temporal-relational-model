@@ -30,9 +30,11 @@ gantt
     Spatial Durbin 4Q (FAIL — branche géogr. fermée) :done, p4q, 2026-06-10, 2026-06-10
 
     section Phase 5 — Grafo Econômico Dinâmico (planejado)
-    G0 Contrato conceptual           :p5g0, 2026-06-11, 2026-06-16
-    G1 Grafo observável              :p5g1, 2026-06-16, 2026-07-07
-    G2-G3 Grafo aprendido + dinâmica :p5g2, 2026-07-07, 2026-08-18
+    G0 Contrato conceptual           :done, p5g0, 2026-06-10, 2026-06-10
+    G1-L3 observável FR/NL           :done, p5g1a, 2026-06-10, 2026-06-10
+    G1-L2 co-croissance causal PASS  :done, p5g1b, 2026-06-10, 2026-06-10
+    G1 communautés baseline FAIL     :done, p5g1c, 2026-06-10, 2026-06-10
+    G2-G3 Grafo aprendido + dinâmica :p5g2, after p5g1b, 2026-08-18
     G4-G5 Validação + explicação     :p5g4, 2026-08-04, 2026-09-01
 
     section Redação e publicação
@@ -309,14 +311,42 @@ Le graphe économique dynamique répond à : **quelles relations économiques se
 - Une preuve de causalité économique
 - Un système de recommandation opérationnel
 
-**Implémentation BLOQUÉE** jusqu'à validation du contrat G0 (10 critères). Voir :
+Le contrat G0 est validé (10/10). L'implémentation reste limitée aux couches
+observables auditées. Voir :
 - `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` — roadmap complet G0→G6→Bloco 3
 - `reports/HERALD_RESEARCH_GANTT.md` — Gantt réaliste avec DATE_LIMITE_A_CONFIRMER
-- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — log de décisions DEC-001→DEC-014
+- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — log de décisions DEC-001→DEC-017
 - `reports/HERALD_EVIDENCE_MATRIX.md` — matrice de claims et statuts
 
 **Visualisation (DEC-014) :**  
-`reports/dashboards/herald_france_final_dashboard.html` est la **base visuelle officielle**. Pas de nouveau dashboard from scratch. Adaptation incrémentale après validation de G1 uniquement. Ne pas modifier ce fichier ni générer un nouveau HTML avant G1 validé.
+`reports/dashboards/herald_france_final_dashboard.html` est la **base visuelle
+officielle**. Pas de nouveau dashboard from scratch. Adaptation incrémentale
+seulement après validation des couches L1, L2 et L3. L3 et L2 sont maintenant
+validés; ne pas modifier ce fichier ni générer un nouveau HTML avant autorisation
+explicite.
+
+**État du graphe économique dynamique (2026-06-10) :**
+
+- **G0:** contrat formel complet, 10/10 items.
+- **L3 territoire-structure:** PASS pour FR/NL (q=0.005, LOYO=True, bootstrap stable).
+  PT exclu du gate 9-secteurs (KZ absent par définition INE — DEC-018).
+- **L1 RCA secteur-secteur:** FAIL au gate commun (NL pass, FR fail, PT inéligible).
+- **L2 co-croissance temporellement causale:** PASS pour FR/NL/PT (q=0.005, LOYO=True, COVID-robuste — DEC-019).
+  PT participe avec 8 secteurs. Arêtes = corrélations de co-mouvement calculées
+  sans données futures, ni prédictibilité de Granger ni causalité structurelle.
+- **Détection de communautés (L2):** FAIL 0/3 sous contrôles corrigés; la
+  modularité est reproductible par les nulls malgré quelques signaux AMI.
+- **L4 mobilité, L5 géographie:** non encore validés.
+- **Phase 5 (résidu neural + graphe):** spec HPC corrigée mais encore en draft.
+  L2 sera propagé séparément par secteur puis agrégé par territoire. L'échec
+  des communautés interdit d'utiliser leurs labels, mais n'invalide pas les
+  arêtes L2. Entraînement HPC bloqué jusqu'aux tests locaux, au gel des
+  artefacts, à la confirmation du délai et au smoke test.
+
+Ces résultats autorisent l'implémentation locale et les tests unitaires du
+correcteur graphé, mais pas encore l'entraînement HPC ni la recommandation.
+Voir `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md` et
+`reports/HERALD_PHASE5_HPC_SPEC.md`.
 
 ---
 
