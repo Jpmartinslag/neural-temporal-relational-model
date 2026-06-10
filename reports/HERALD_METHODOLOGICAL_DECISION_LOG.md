@@ -568,3 +568,51 @@ with longer windows, OR (3) supervisor directive with explicit justification.
 
 **Affected files:** `reports/HERALD_PHASE5_HPC_SPEC.md`, `CODEX_MEMORY.md`,
 `src/modeles/phase5/neural_corrector.py`, `src/modeles/phase5/l2_pool.py`.
+
+---
+
+## DEC-024 — 2026-06-10 — G2 Preflight: falsifiable criteria and temporal dynamics findings
+
+**Phase:** Bloco 2 — G2 Temporal Dynamics
+**Question:** Are there falsifiable criteria for characterising L2 co-growth graph dynamics,
+and what do the G2 preflight metrics reveal?
+**Evidence:**
+G2 preflight run on 3,645,230 L2 edges (FR/NL/PT, 9 sectors, 15 eval years).
+Top-k=5 filtering (same as Phase 5). PT KZ excluded (DEC-018).
+Criteria pre-registered before analysis:
+
+| Criterion | Threshold | Finding |
+|-----------|-----------|---------|
+| Persistent edge (≥70% year presence) | 70% | 0.4% of edges qualify |
+| LOYO Pearson | ≥ 0.70 | 0.10-0.19 (all FAIL) |
+| LOYO Jaccard | ≥ 0.70 | 0.07-0.26 (all FAIL) |
+| Stable neighbourhood (turnover ≤ 30%) | 30% | 0/295 year-pairs stable |
+| Mean turnover | — | 59% (FR: 77%, NL: 56%, PT: 48%) |
+| COVID density disruption (|Δ| ≥ 0.05) | 0.05 | 0/25 combos exceed |
+| COVID weight disruption (|Δ| ≥ 0.15) | 0.15 | 0/25 combos exceed |
+| Top-k Jaccard k=3 vs k=5 | — | 0.616 |
+| Top-k Jaccard k=5 vs k=10 | — | 0.519 |
+
+**Decision:** Accept G2 preflight as COMPLETE. Findings constitute scientifically valid
+characterisation of the L2 graph dynamics:
+1. The top-k=5 graph is highly dynamic (low persistence, high turnover).
+2. Individual edge-level claims are NOT reliable (persistence 0.4%).
+3. Population-level statistics (density, weight distribution, period comparisons) are
+   the appropriate level of analysis for G2 descriptive work.
+4. COVID did not cause a step-change in L2 structure at these thresholds.
+5. High dynamism in FR (280 regions) is partly structural (large n → sparse top-k).
+
+**What this does NOT mean:**
+- L2 graph is uninformative. G-10 (global correlation structure) remains SUPPORTED.
+- The G2 finding invalidates Phase 5 NOT_SUPPORTED result.
+- Economic relationships are unstable (rolling-window corr with annual shift is expected
+  to produce graph churn).
+
+**Authorised next steps:**
+- Population-level density/weight trend analysis per country × sector × period
+- Negative control: temporal permutation baseline for LOYO Jaccard
+- No individual edge claims; no community claims; no recommendation claims
+
+**Affected files:** `src/data/european_panel/build_g2_temporal_preflight.py`,
+`data/processed/economic_graph/g2_preflight/`, `reports/HERALD_G2_PREFLIGHT.md`,
+`tests/test_g2_preflight.py`.

@@ -35,6 +35,7 @@
 | G-10 | Same-sector cross-territory co-growth patterns are temporally stable across the country nucleus | G1-L2 causal co-growth | G1/G4-lite | FR (9 sectors), NL (9 sectors), PT (8 sectors; KZ excluded per DEC-018) | Temporal and territory nulls, BH/FDR, LOYO, bootstrap, COVID sensitivity | `HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md` | Strong: 3/3 pass, q=0.005, COVID-robust; FR 0.782, NL 0.789, PT 0.778 | Rolling Pearson conflates co-movement with shared trends; MAUP applies; heterogeneous territorial systems | Edges are statistical associations, not structural causality | `SUPPORTED` |
 | G-11 | The L2 co-growth graph exhibits community structure significantly exceeding temporal and territory permutation nulls | Corrected G1-L2 community baseline | G1 / task 2.8 | FR, NL, PT | Symmetric top-k=5; L2 rebuilt from 99 temporal + 99 territory series permutations; equal Louvain budget; modularity and AMI with BH/FDR; COVID sensitivity | `HERALD_G1_COMMUNITIES_AUDIT.md` | 0/3 pass: modularity is reproducible by nulls; some AMI evidence survives but full gate fails | Three heterogeneous territorial systems | L2 stability remains supported, but Louvain communities are not validated | `NOT_SUPPORTED` |
 | G-12 | Fixed-L2 residual corrector (sklearn MLP on pre-aggregated L2 features) improves out-of-sample territorial forecasting over AR-Ridge baseline | Phase 5 ablation v3 | Phase 5 | NL 40 COROP, eval 2021-2023 | Rolling-origin; 5 seeds; widths (2,)(4,)(8,)(16,8); temporal+territory permuted-graph controls; gate: H2 ≤ H0b×1.1, beats H1, beats both controls | `HERALD_PHASE5_HPC_SPEC.md`; DEC-023 | H2-neural (best width=(8,)) 5.53% vs H0b 3.41% — 62% regression. Beats permuted controls but worse than H1-neural (no graph). Linear H2 also fails (5.56%). n_train fixed (39→440 after imputation). Architecture confirmed NOT a GNN: fixed non-trainable 1-hop aggregation. | NL only; other countries not run | Residual corrector architecture may be insufficient; result does not preclude trainable GNN on other data | `NOT_SUPPORTED` |
+| G-13 | The L2 top-k=5 co-growth graph has persistent individual edges (≥70% year presence) and stable LOYO Jaccard (≥0.70) across countries | G2 preflight — temporal dynamics | Bloco 2 / G2 | FR/NL/PT; 2012-2026 (sector-dependent); top-k=5; COVID window excluded | LOYO Pearson and Jaccard of top-k adj matrices; consecutive year turnover; persistence fraction; top-k sensitivity Jaccard(3,5)/(5,10) | `HERALD_G2_PREFLIGHT.md` | No: LOYO Pearson 0.10-0.19 (all fail ≥0.70); LOYO Jaccard 0.07-0.26; persistence 0.4%; turnover 59%. COVID disruption below thresholds (Δdensity<0.05, Δweight<0.15). | Large n (FR 280 regions) makes top-k unstable by construction; smaller k may show higher persistence | High dynamism is genuine structural finding, not an artefact; does NOT invalidate G-10 (different question) | `EXPLORATORY` |
 | G-09 | Functional/mobility network provides predictive signal for enterprise births | Not yet run | — | — | — | — | None | — | Data availability not confirmed at NUTS3 level | `NOT_TESTED` |
 
 ---
@@ -75,11 +76,11 @@
 |--------|------:|
 | `SUPPORTED` | 8 |
 | `PARTIALLY_SUPPORTED` | 2 |
-| `EXPLORATORY` | 1 |
+| `EXPLORATORY` | 2 |
 | `NOT_SUPPORTED` | 4 |
 | `REFUTED_UNDER_CURRENT_PROTOCOL` | 6 |
 | `NOT_TESTED` | 5 |
-| **Total** | **26** |
+| **Total** | **27** |
 
 ---
 
