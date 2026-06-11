@@ -1,5 +1,5 @@
 # HERALD Codex Memory
-Updated 2026-06-11 (DEC-027: causal tensor preflight + E0 NL smoke E0_PASS). Read first; verify drift with `rtk git status --short`.
+Updated 2026-06-11 (DEC-027: E0_STATIC_SNAPSHOT_PASS superseded; DEC-028: schema 2.0 E0_V2_PASS; S1_FR_BLOCKED). Read first; verify drift with `rtk git status --short`.
 
 ## Rules
 - Repo `/home/jpdark/Downloads/project_recomm/dataset`.
@@ -187,7 +187,8 @@ Next: G4-G5 explanation/visualization.
 Reports written: HERALD_G2_REPORT_SECTION_FR.md, HERALD_G2_REPORT_FIGURE_SELECTION.md, HERALD_G2_DASHBOARD_INTEGRATION_SPEC.md
 No dashboard modification (DEC-014). No HPC, GNN, recommendation.
 
-**Graph-temporal tensor preflight and E0 smoke (DEC-027): E0_PASS (2026-06-11).**
+**Graph-temporal tensor preflight and E0 smoke (DEC-027): E0_STATIC_SNAPSHOT_PASS (reclassified).**
+**Graph-temporal schema 2.0 and E0-v2 smoke (DEC-028): E0_V2_PASS (2026-06-11).**
 - EconoGNN: `REFERENCE_ONLY`; dynamic observed trade graph, different task,
   scale and evaluation; public GitHub incomplete.
 - A0 remains country-specific AR/Ridge.
@@ -196,14 +197,19 @@ No dashboard modification (DEC-014). No HPC, GNN, recommendation.
   features, not a separate target.
 - NL is engineering smoke only (COVID-sensitive). FR is first scientific local
   test because only FR is robust under both G2 COVID scenarios.
-- E0 PASS: 1.32s runtime, 0.023 GB memory, 311/311 tests, zero leakage, zero
-  mask errors, deterministic outputs. One defect found and corrected: Inf growth
-  for NL/CR02/LZ/2020 (birth from zero); fixed with isfinite guard in obs_mask.
-- Tensors: `data/processed/graph_temporal_preflight/` — 3 NL folds, (40,9,3)
-  features, (9,40,40) adjacency.
-- Evidence matrix corrected: 31 claims (was 29); counts: SUPPORTED=11,
+- E0_V2_PASS: 13.92s runtime, 0.035 GB RSS delta, 57/57 tests, zero leakage,
+  zero mask errors, deterministic outputs. Schema 2.0 corrects 5 schema 1.0 defects.
+- Schema 2.0 tensors: `data/processed/graph_temporal_v2/` — 3 NL folds,
+  features_seq (5,40,9,3), adjacency_seq (5,9,40,40). Canonical H0b Ridge
+  (corrector.py port), per-feature masks, positive_topk adjacency.
+- Schema 1.0 tensors: `data/processed/graph_temporal_preflight/` — SUPERSEDED
+  by schema 2.0; kept for audit trail only.
+- Evidence matrix corrected: 31 claims; counts: SUPPORTED=11,
   PARTIALLY_SUPPORTED=3, NOT_SUPPORTED=5, NOT_TESTED=5.
-- FR scientific local test (S1) is AUTHORIZED. HPC remains BLOCKED.
+- **S1_FR_BLOCKED**: FR scientific local test is BLOCKED until GConvGRU/EvolveGCN
+  are implemented using schema 2.0 tensors. HPC remains BLOCKED.
+- Adjacency audit (NL): 29–36% negative correlations; 0–1 isolated regions at
+  k=5 (NL/2019 is sparse: 40 isolated across one sector). Primary repr: positive_topk.
 
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)
