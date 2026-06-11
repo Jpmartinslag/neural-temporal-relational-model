@@ -1,8 +1,14 @@
 # HERALD — Graph-Temporal E0 Preflight Audit
 
 **Date:** 2026-06-11
-**Decision:** `E0_PASS`
-**FR scientific local test:** AUTHORIZED
+**Decision:** ~~`E0_PASS`~~ → **SUPERSEDED by `E0_STATIC_SNAPSHOT_PASS`** (see DEC-028)
+**FR scientific local test:** **BLOCKED** — see `HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md` for `E0_V2_PASS`
+
+> **SUPERSEDED NOTICE (DEC-028, 2026-06-11):** This audit validated schema 1.0 (static snapshot).
+> Schema 1.0 is NOT sufficient for GConvGRU/EvolveGCN, which require temporal sequences.
+> The result is reclassified as `E0_STATIC_SNAPSHOT_PASS`. The schema 2.0 gate is
+> `E0_V2_PASS` (see `reports/HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md`).
+> The FR scientific local test (S1) remains **BLOCKED** until `E0_V2_PASS` is confirmed.
 
 ---
 
@@ -170,42 +176,29 @@ These numbers are engineering artefacts only. NL is COVID-sensitive and does not
 
 ---
 
-## 12. Decision
+## 12. Decision (schema 1.0 — superseded)
 
-**`E0_PASS`**
+~~**`E0_PASS`**~~ → **`E0_STATIC_SNAPSHOT_PASS`** (reclassified by DEC-028)
 
-All 6 checks pass. Runtime 1.32s. Memory 0.023 GB. 311 tests pass. Zero leakage violations. Zero mask errors. Deterministic outputs.
+Schema 1.0 tensors (static snapshot) passed all 6 checks. However, schema 1.0 is
+insufficient for temporal GNN architectures. Reclassified; see E0-v2 audit for
+the temporal sequence validation.
 
 ---
 
 ## 13. Authorization for FR Scientific Test
 
-**FR local scientific test (S1) is AUTHORIZED** conditional on:
-
-1. Implementing A1a (GConvGRU) and A1b (EvolveGCN-H) with the output architecture specified in `HERALD_GRAPH_TEMPORAL_ARCHITECTURE_DECISION.md` §4.
-2. Equal-capacity no-graph control (A0-GRU or Ridge) included.
-3. Zero-adjacency control included.
-4. Both temporal and territory permuted-graph controls included.
-5. Five seeds; at least five FR eval years.
-6. WMAPE reported per-country; no pooled cross-country mean.
-7. `git diff --check` clean before FR run.
-8. HPC remains BLOCKED until FR passes locally.
+**FR local scientific test (S1) is BLOCKED** pending `E0_V2_PASS` confirmation.
+See `reports/HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md` for the schema 2.0 gate.
 
 ---
 
-## 14. Next Exact Files and Experiments
+## 14. What Was Superseded
 
-**Immediately authorized:**
+Schema 1.0 defects (fixed in schema 2.0):
 
-- `src/modeles/graph_temporal_a1a_gcongru.py` — implement GConvGRU A1a (max 5000 params, width ∈ {4,8}, 1 layer, dropout ≥ 0.3, bounded residual head).
-- `src/modeles/graph_temporal_a1b_evolvegcn.py` — implement EvolveGCN-H A1b with same output head.
-- `src/modeles/run_s1_fr_local.py` — FR scientific local test harness, 5 seeds, ≥5 eval years, all controls, COVID sensitivity.
-- `tests/test_graph_temporal_a1.py` — unit tests for A1 implementations (parameter count, mask propagation, bounded residual).
-
-**Not authorized yet:**
-
-- HPC Slurm submission.
-- S2 replication on NL or PT.
-- A2 learned edge gates.
-- Any dashboard modification.
-- Any recommendation or promotion claim.
+1. **Static snapshot**: exported only (R,S,F) and (S,R,R) — GNNs require temporal sequences.
+2. **Simplified Ridge**: used country panel `target_births` and extra features; schema 2.0 uses canonical H0b from sector panel `business_sector_total`.
+3. **Single obs_mask**: one binary mask per (region, sector) discarded all features when growth was Inf; schema 2.0 has independent per-feature masks.
+4. **Signed dense adjacency**: 29–36% of off-diagonal correlations were negative; schema 2.0 defaults to positive_topk.
+5. **tracemalloc memory**: unreliable for native NumPy; schema 2.0 uses `resource.getrusage` RSS.
