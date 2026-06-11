@@ -138,9 +138,10 @@ economic relations, their evolution, and temporal patterns. NOT forecast improve
 
 | Task | Status | Deliverable |
 |------|--------|-------------|
-| G2 Preflight: inventory, density, persistence, turnover, sensitivity | Planned | `HERALD_G2_PREFLIGHT.md` |
-| G2 Main: edge evolution, growth waves, COVID rupture, sector patterns | Planned | `HERALD_G2_DYNAMICS_AUDIT.md` |
-| G2 Evidence: falsifiable criteria, controls, country/sector separation | Planned | Evidence matrix G-13+ |
+| G2 Preflight: inventory, density, persistence, turnover, sensitivity | DONE 2026-06-10 | `HERALD_G2_PREFLIGHT.md` |
+| G2 Negative control: 199 temporal permutations, BH/FDR, gate | DONE 2026-06-11 — G2_EDGE_DYNAMICS_SUPPORTED | `HERALD_G2_PREFLIGHT.md` §7; `g2_negative_control.csv` |
+| G2 Main: aggregate variation, period comparisons, sector patterns | Authorised | `HERALD_G2_DYNAMICS_AUDIT.md` |
+| G2 Evidence: G-13 SUPPORTED (DEC-024 updated) | DONE 2026-06-11 | Evidence matrix G-13 |
 
 ---
 

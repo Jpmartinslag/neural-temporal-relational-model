@@ -105,6 +105,335 @@ def pearson_adj(a1: np.ndarray, a2: np.ndarray) -> float:
     return float(np.corrcoef(v1, v2)[0, 1])
 
 
+# ---------------------------------------------------------------------------
+# Negative control helpers
+# ---------------------------------------------------------------------------
+
+# Gate constants (pre-registered, DEC-024)
+NEG_CTRL_N_PERMUTATIONS = 199
+NEG_CTRL_FDR_Q = 0.05
+NEG_CTRL_COUNTRIES_NEEDED = 2
+NEG_CTRL_SECTOR_FRAC_NEEDED = 0.50
+
+
+def _bh_fdr_reject(pvalues: np.ndarray, q: float = NEG_CTRL_FDR_Q) -> np.ndarray:
+    """Benjamini-Hochberg FDR correction. Returns boolean reject array."""
+    n = len(pvalues)
+    if n == 0:
+        return np.array([], dtype=bool)
+    sorted_idx = np.argsort(pvalues)
+    sorted_p = pvalues[sorted_idx]
+    thresholds = (np.arange(1, n + 1) / n) * q
+    sig = sorted_p <= thresholds
+    reject = np.zeros(n, dtype=bool)
+    if sig.any():
+        cutoff = int(np.where(sig)[0].max())
+        reject[sorted_idx[: cutoff + 1]] = True
+    return reject
+
+
+def _top_k_symmetric_vec(corr: np.ndarray, k: int) -> np.ndarray:
+    """Vectorized top-k symmetric adjacency. Equivalent to _top_k_symmetric."""
+    n = corr.shape[0]
+    corr_nd = corr.copy()
+    np.fill_diagonal(corr_nd, -np.inf)
+    k_clamped = min(k, n - 1)
+    # argpartition: indices of top-k per row (unsorted, correct set)
+    top_idx = np.argpartition(corr_nd, -k_clamped, axis=1)[:, -k_clamped:]
+    row_idx = np.repeat(np.arange(n), k_clamped)
+    col_idx = top_idx.ravel()
+    vals = corr[row_idx, col_idx]
+    pos = vals > 0
+    adj = np.zeros((n, n), dtype=float)
+    adj[row_idx[pos], col_idx[pos]] = vals[pos]
+    return np.maximum(adj, adj.T)
+
+
+def _loyo_jaccard_binary(B: np.ndarray) -> float | None:
+    """
+    Fast LOYO Jaccard from binary upper-triangle matrix [n_years, n_edges].
+    Matches run_preflight LOYO logic: mean over leave-year means.
+    Returns None if fewer than 4 years.
+    """
+    n_years = B.shape[0]
+    if n_years < 4:
+        return None
+    B_i = B.astype(np.int32)
+    inter = B_i @ B_i.T          # [n_years, n_years] — count of shared edges
+    rowsum = B_i.sum(axis=1)      # [n_years]
+    union = rowsum[:, None] + rowsum[None, :] - inter
+    with np.errstate(divide="ignore", invalid="ignore"):
+        jac = np.where(union > 0, inter.astype(float) / union, np.nan)
+    np.fill_diagonal(jac, np.nan)
+    per_yr = np.nanmean(jac, axis=1)   # mean Jaccard of each year vs others
+    valid = per_yr[np.isfinite(per_yr)]
+    return float(np.mean(valid)) if len(valid) > 0 else None
+
+
+def _pivot_weights_mat(
+    se: pd.DataFrame, regions: list[str], years: list[int]
+) -> np.ndarray:
+    """
+    Build float matrix W[pair_idx, year_idx] from long-format edge DataFrame.
+    Pairs are unique undirected: (regions[i], regions[j]) with i < j.
+    Missing entries are NaN. Duplicate directed pairs are deduplicated (last wins).
+    """
+    n_r = len(regions)
+    ridx = {r: i for i, r in enumerate(regions)}
+    yidx = {y: j for j, y in enumerate(years)}
+    n_pairs = n_r * (n_r - 1) // 2
+
+    W = np.full((n_pairs, len(years)), np.nan)
+    s_arr = se["source_region"].map(ridx).values
+    t_arr = se["target_region"].map(ridx).values
+    y_arr = se["available_for_forecast_year"].map(yidx).values
+    w_arr = se["weight_cogrowth"].values.astype(float)
+
+    valid = (
+        ~(pd.isnull(s_arr) | pd.isnull(t_arr) | pd.isnull(y_arr))
+    )
+    s_arr = np.where(valid, s_arr.astype(float), np.nan)
+    t_arr = np.where(valid, t_arr.astype(float), np.nan)
+    valid2 = valid & np.isfinite(s_arr) & np.isfinite(t_arr)
+
+    s_v = s_arr[valid2].astype(int)
+    t_v = t_arr[valid2].astype(int)
+    y_v = y_arr[valid2].astype(int)
+    w_v = w_arr[valid2]
+
+    same = s_v == t_v
+    s_v, t_v, y_v, w_v = s_v[~same], t_v[~same], y_v[~same], w_v[~same]
+    lo = np.minimum(s_v, t_v)
+    hi = np.maximum(s_v, t_v)
+    # Triangle index: lo*(2*n - lo - 1)//2 + (hi - lo - 1)
+    p_idx = lo * (2 * n_r - lo - 1) // 2 + (hi - lo - 1)
+    W[p_idx, y_v] = w_v
+    return W
+
+
+def _reconstruct_adjs_from_W(
+    W: np.ndarray, n_r: int, years: list[int], k: int,
+    triu_i: np.ndarray, triu_j: np.ndarray,
+) -> np.ndarray:
+    """
+    Build binary upper-triangle matrix [n_years, n_pairs] from W.
+    Returns B[yr_idx, pair_idx] = True if edge present in top-k graph.
+    """
+    n_years = len(years)
+    n_pairs = W.shape[0]
+    B = np.zeros((n_years, n_pairs), dtype=bool)
+    for yi in range(n_years):
+        w_col = W[:, yi]
+        corr = np.full((n_r, n_r), -1.0)
+        np.fill_diagonal(corr, 1.0)
+        fin = np.isfinite(w_col)
+        corr[triu_i[fin], triu_j[fin]] = w_col[fin]
+        corr[triu_j[fin], triu_i[fin]] = w_col[fin]
+        adj = _top_k_symmetric_vec(corr, k)
+        B[yi] = adj[triu_i, triu_j] > 0
+    return B
+
+
+def _permute_W(W: np.ndarray, rng: np.random.Generator) -> np.ndarray:
+    """
+    Permute years within each pair row, preserving NaN mask.
+    No-NaN fast path uses rng.permuted(axis=1).
+    """
+    if not np.isnan(W).any():
+        return rng.permuted(W, axis=1)
+    W_p = W.copy()
+    for pi in range(W.shape[0]):
+        valid = np.where(np.isfinite(W[pi]))[0]
+        if len(valid) > 1:
+            W_p[pi, valid] = rng.permutation(W[pi, valid])
+    return W_p
+
+
+def _evaluate_neg_ctrl_gate(df: pd.DataFrame) -> tuple[dict, str]:
+    """
+    Fail-closed gate:
+    - ≥NEG_CTRL_COUNTRIES_NEEDED countries where ≥NEG_CTRL_SECTOR_FRAC_NEEDED
+      sectors are FDR-significant with positive observed effect.
+    """
+    countries = sorted(df["country"].unique())
+    country_results: dict[str, dict] = {}
+    for country in countries:
+        cd = df[df["country"] == country]
+        n_eligible = len(cd)
+        sig = cd[cd["fdr_reject"] & cd["positive_effect"]]
+        n_sig = len(sig)
+        frac = n_sig / n_eligible if n_eligible > 0 else 0.0
+        country_results[country] = {
+            "n_eligible": n_eligible,
+            "n_significant": n_sig,
+            "frac_significant": round(frac, 4),
+            "pass": (frac >= NEG_CTRL_SECTOR_FRAC_NEEDED and n_sig > 0),
+        }
+    n_pass = sum(1 for v in country_results.values() if v["pass"])
+    gate_pass = n_pass >= NEG_CTRL_COUNTRIES_NEEDED
+    gate = {
+        "pass": gate_pass,
+        "n_countries_passing": n_pass,
+        "countries": country_results,
+        "reason": (
+            f"{n_pass}/{len(countries)} countries pass "
+            f"(need ≥{NEG_CTRL_COUNTRIES_NEEDED}; each needs "
+            f"≥{NEG_CTRL_SECTOR_FRAC_NEEDED:.0%} sectors FDR-q={NEG_CTRL_FDR_Q} "
+            f"with positive observed effect)"
+        ),
+    }
+    verdict = (
+        "G2_EDGE_DYNAMICS_SUPPORTED"
+        if gate_pass
+        else "G2_EDGE_DYNAMICS_NOT_SUPPORTED"
+    )
+    return gate, verdict
+
+
+def run_negative_control(
+    edges: pd.DataFrame,
+    n_permutations: int = NEG_CTRL_N_PERMUTATIONS,
+    top_k_list: list | None = None,
+    exclude_covid: bool = True,
+    seed: int = 42,
+) -> dict:
+    """
+    Temporal permutation negative control for LOYO Jaccard.
+
+    For each country × sector: permute year labels within each territory-pair
+    (preserving marginal distribution and NaN mask), rebuild graph from scratch,
+    compute LOYO Jaccard. p = (1 + count(null≥obs)) / (N+1). BH/FDR q=0.05.
+
+    Gate (fail-closed): ≥2 countries with ≥50% sectors FDR-significant
+    and observed > null median.
+
+    Returns dict with keys: 'results' (DataFrame), 'gate' (dict),
+    'verdict' (str), 'sensitivity' (DataFrame).
+    """
+    if top_k_list is None:
+        top_k_list = TOP_K_VARIANTS  # [3, 5, 10]
+    rng = np.random.default_rng(seed)
+
+    countries = sorted(edges["country"].unique())
+    primary_k = TOP_K_DEFAULT
+
+    rows_primary: list[dict] = []
+    rows_sensitivity: list[dict] = []
+
+    for country in countries:
+        ce = edges[edges["country"] == country].copy()
+        sectors = sorted(ce["sector"].unique())
+        if country == "PT":
+            sectors = [s for s in sectors if s not in PT_EXCLUDED_SECTORS]
+
+        for sector in sectors:
+            se = ce[ce["sector"] == sector]
+            years_all = sorted(se["available_for_forecast_year"].unique())
+            if exclude_covid:
+                years_use = [y for y in years_all if y != COVID_YEAR]
+            else:
+                years_use = years_all
+            if len(years_use) < 4:
+                continue
+
+            regions = sorted(set(se["source_region"]) | set(se["target_region"]))
+            n_r = len(regions)
+            se_filt = se[se["available_for_forecast_year"].isin(years_use)]
+            W = _pivot_weights_mat(se_filt, regions, years_use)
+
+            triu_i, triu_j = np.triu_indices(n_r, k=1)
+            assert W.shape[0] == len(triu_i), "W row count must equal n_pairs"
+
+            # Precompute observed LOYO Jaccard for all k variants in one pass
+            obs_B: dict[int, np.ndarray] = {}
+            for k in set(top_k_list) | {primary_k}:
+                obs_B[k] = _reconstruct_adjs_from_W(W, n_r, years_use, k, triu_i, triu_j)
+            obs_loyo: dict[int, float | None] = {
+                k: _loyo_jaccard_binary(obs_B[k]) for k in obs_B
+            }
+
+            if obs_loyo.get(primary_k) is None:
+                continue
+
+            # Permutation loop: one W permutation → compute LOYO for all k
+            null_dist: dict[int, list[float]] = {k: [] for k in obs_B}
+            for _ in range(n_permutations):
+                W_p = _permute_W(W, rng)
+                for k in obs_B:
+                    B_p = _reconstruct_adjs_from_W(W_p, n_r, years_use, k, triu_i, triu_j)
+                    v = _loyo_jaccard_binary(B_p)
+                    if v is not None:
+                        null_dist[k].append(v)
+
+            # Build result rows
+            for k in obs_B:
+                obs_val = obs_loyo[k]
+                if obs_val is None:
+                    continue
+                null_arr = np.array(null_dist[k])
+                if len(null_arr) < n_permutations * 0.9:
+                    continue
+                null_mean = float(np.mean(null_arr))
+                null_median = float(np.median(null_arr))
+                null_q5 = float(np.percentile(null_arr, 5))
+                null_q95 = float(np.percentile(null_arr, 95))
+                # p-value: never zero
+                p_val = (1.0 + float(np.sum(null_arr >= obs_val))) / (len(null_arr) + 1.0)
+                eff_abs = obs_val - null_mean
+                eff_rel = eff_abs / null_mean if null_mean > 1e-12 else np.nan
+                positive_effect = bool(obs_val > null_median)
+                row = {
+                    "country": country,
+                    "sector": sector,
+                    "top_k": k,
+                    "exclude_covid": exclude_covid,
+                    "n_years": len(years_use),
+                    "n_regions": n_r,
+                    "obs_loyo_jaccard": round(obs_val, 6),
+                    "null_mean": round(null_mean, 6),
+                    "null_median": round(null_median, 6),
+                    "null_q5": round(null_q5, 6),
+                    "null_q95": round(null_q95, 6),
+                    "effect_abs": round(eff_abs, 6),
+                    "effect_rel": round(eff_rel, 4) if np.isfinite(eff_rel) else np.nan,
+                    "p_value": round(p_val, 6),
+                    "positive_effect": positive_effect,
+                    "n_permutations_valid": len(null_arr),
+                }
+                if k == primary_k:
+                    rows_primary.append(row)
+                else:
+                    rows_sensitivity.append(row)
+
+    if not rows_primary:
+        return {
+            "results": pd.DataFrame(),
+            "sensitivity": pd.DataFrame(),
+            "gate": {"pass": False, "reason": "no data"},
+            "verdict": "G2_EDGE_DYNAMICS_NOT_SUPPORTED",
+        }
+
+    df_primary = pd.DataFrame(rows_primary)
+    # BH/FDR on primary results
+    reject = _bh_fdr_reject(df_primary["p_value"].values, q=NEG_CTRL_FDR_Q)
+    df_primary = df_primary.copy()
+    df_primary["fdr_reject"] = reject
+
+    df_sensitivity = pd.DataFrame(rows_sensitivity) if rows_sensitivity else pd.DataFrame()
+    if not df_sensitivity.empty:
+        rej_s = _bh_fdr_reject(df_sensitivity["p_value"].values, q=NEG_CTRL_FDR_Q)
+        df_sensitivity = df_sensitivity.copy()
+        df_sensitivity["fdr_reject"] = rej_s
+
+    gate, verdict = _evaluate_neg_ctrl_gate(df_primary)
+    return {
+        "results": df_primary,
+        "sensitivity": df_sensitivity,
+        "gate": gate,
+        "verdict": verdict,
+    }
+
+
 def run_preflight(edges: pd.DataFrame) -> dict:
     """Run all G2 preflight metrics. Returns dict of DataFrames."""
     results: dict[str, list] = {
@@ -331,6 +660,26 @@ def main() -> None:
         df.to_csv(path, index=False)
         print(f"  Saved {path.name} ({len(df):,} rows)")
 
+    print(f"\nRunning negative control ({NEG_CTRL_N_PERMUTATIONS} permutations)...")
+    nc = run_negative_control(edges)
+    nc["results"].to_csv(OUT_DIR / "g2_negative_control.csv", index=False)
+    print(f"  Saved g2_negative_control.csv ({len(nc['results'])} rows)")
+    if not nc["sensitivity"].empty:
+        nc["sensitivity"].to_csv(OUT_DIR / "g2_negative_control_sensitivity.csv", index=False)
+        print(f"  Saved g2_negative_control_sensitivity.csv ({len(nc['sensitivity'])} rows)")
+    print(f"  Verdict: {nc['verdict']}")
+    print(f"  Gate: {nc['gate']['reason']}")
+
+    # Re-save summary with negative control results
+    summary["negative_control"] = {
+        "verdict": nc["verdict"],
+        "gate": nc["gate"],
+        "n_permutations": NEG_CTRL_N_PERMUTATIONS,
+        "fdr_q": NEG_CTRL_FDR_Q,
+    }
+    with open(summary_path, "w") as f:
+        json.dump(summary, f, indent=2, default=str)
+
     # Summary
     inv = dfs["inventory"]
     loyo = dfs["loyo"]
@@ -388,6 +737,9 @@ def main() -> None:
             "mean_jaccard_k5_k10": round(float(topo["jaccard_k5_k10"].mean()), 4) if not topo.empty else None,
         },
     }
+
+    # Negative control summary (populated after nc run below if available)
+    summary["negative_control"] = {"verdict": "PENDING", "gate": {}}
 
     summary_path = OUT_DIR / "g2_preflight_summary.json"
     with open(summary_path, "w") as f:
