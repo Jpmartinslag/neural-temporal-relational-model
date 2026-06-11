@@ -139,7 +139,7 @@ H0b remains best; all corrector branches closed.
 See `reports/HERALD_PHASE5_HPC_SPEC.md` (status: NOT_SUPPORTED).
 DEC-023 added to decision log.
 
-**G2 Preflight + Negative Control (2026-06-10/11): G2_EDGE_DYNAMICS_SUPPORTED.**
+**G2 Preflight (2026-06-10): descriptive findings valid.**
 Script: `src/data/european_panel/build_g2_temporal_preflight.py`. 42+1 tests pass.
 Artefacts: `data/processed/economic_graph/g2_preflight/` (compact, no raw edges).
 Preflight findings (FR/NL/PT, top-k=5, criteria pre-registered per DEC-024):
@@ -147,17 +147,24 @@ Preflight findings (FR/NL/PT, top-k=5, criteria pre-registered per DEC-024):
 - Persistent edges (≥70% years): 0.4% — highly transient; turnover 59%/yr
 - COVID: no measurable step-change in density or weight
 
-Negative control (199 temporal permutations, BH/FDR q=0.05):
-- Gate: 3/3 countries pass; 26/26 combos FDR-significant (p=0.005 = minimum)
-- FR: obs 0.069 vs null 0.053 (+23-40%); NL: 0.172 vs 0.127 (+18-81%); PT: 0.260 vs 0.207 (+12-30%)
-- Sensitivity k=3,10: consistent, all significant
-- Verdict: temporal signal GENUINE — not finite-sample artefact
+**G2 Corrected controls (DEC-024c, 2026-06-11): COMPLETE.**
+Module: `src/data/european_panel/build_g2_corrected_controls.py`. 25 tests pass.
+Source: `sector_panel_fr_nl_pt.csv`. 199 perms N1 (temporal) + 199 perms N2 (row-wise territory).
+Seeds: N1=42, N2=137. COVID: obs_year=2020 excluded from windows; eval_year=2020 retained.
+N2 column permutation verified DEGENERATE for M1/M2 Jaccard (null std=0, p=1.0 always).
+Metrics: M1 consecutive Jaccard · M2 mean pairwise Jaccard · M3 LOYO observed only (null BLOCKED).
 
-Authorised scope: aggregate variation in density/weights by country × sector × period.
-Language: "observed aggregate variation", NOT "structural evolution".
-Prohibited: individual edge claims, cross-country pooling, causal attribution.
-G-13 upgraded EXPLORATORY → SUPPORTED. DEC-024 updated.
-Next: G2 main descriptive analysis (density/weight trends per period).
+Verdicts:
+- G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED — FR 9/9 + NL 5/9 sectors FDR-sig (N1+N2); 2/3 countries.
+- G2_EDGE_STABILITY_NOT_SUPPORTED — M2 0.06-0.26, far below 0.70 threshold; 0/3 countries.
+- PT: 0/8 sectors significant → temporal signal not validated for PT.
+- M3 LOYO observed: FR 0.287 · NL 0.500 · PT 0.578. Null BLOCKED.
+- G-13: PARTIALLY_SUPPORTED.
+
+Prior control (commit cc48924) INVALID: permuted pre-computed edge weights — p=0.005/26/26 invalid.
+Language: "associação estatística temporal observada", NOT causal attribution.
+No individual edge claims. No cross-country pooling. No recommendation.
+Next: G2 main descriptive (density/weight trends per period) — authorised for FR+NL.
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)
 Terminal use case. Requires Bloco 1 + Bloco 2 complete.

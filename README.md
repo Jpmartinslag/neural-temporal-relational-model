@@ -346,11 +346,13 @@ explicite.
   H0b (Ridge AR) reste la meilleure baseline. Pas de soumettre au HPC.
   65/65 tests passent. Leakage OK. Déterministe. Masques PT KZ corrects.
   Correcteur résiduel fixed-L2 fermé. L2 reste validé comme graphe analytique (G-10 SUPPORTED).
-  Bloco 2 G2 preflight (2026-06-10) + contrôle négatif (2026-06-11) : G2_EDGE_DYNAMICS_SUPPORTED.
-  199 permutations temporelles, BH/FDR q=0.05; 26/26 combos significatifs (p=0.005); 3/3 pays.
-  Signal temporel dans LOYO Jaccard est réel (pas artéfact). G-13 EXPLORATORY→SUPPORTED (DEC-024).
-  Portée autorisée : variation agrégée observée densité/poids par pays × secteur × période.
+  Bloco 2 G2 preflight (2026-06-10) : résultats descriptifs valides (M2 Jaccard 0.06-0.26, turnover 59%).
+  Contrôle corrigé (DEC-024c, 2026-06-11) : `build_g2_corrected_controls.py`, 199 perms N1+N2, pipeline complet.
+  G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED : FR 9/9, NL 5/9 secteurs FDR-sig (N1+N2). PT 0/8 — non validé.
+  G2_EDGE_STABILITY_NOT_SUPPORTED : M2 0.06-0.26, loin du seuil 0.70. M3 null BLOCKED.
+  G-13 : PARTIALLY_SUPPORTED. Portée autorisée : variation agrégée observée densité/poids FR/NL.
   Interdit : claims arêtes individuelles, pooling pays, causalité, communautés, recommandation.
+  Ancien contrôle (commit cc48924) INVALIDE : permutait des poids pré-calculés. Ne pas citer p=0.005.
 
 Voir `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md` et
 `reports/HERALD_PHASE5_HPC_SPEC.md`.

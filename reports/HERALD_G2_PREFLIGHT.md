@@ -1,10 +1,10 @@
 # HERALD G2 Preflight — Temporal Dynamics of the L2 Co-Growth Graph
 
-**Date:** 2026-06-10  
-**Status:** COMPLETE — negative control run 2026-06-11; verdict: G2_EDGE_DYNAMICS_SUPPORTED
-**Artefacts:** `data/processed/economic_graph/g2_preflight/`  
-**Builder:** `src/data/european_panel/build_g2_temporal_preflight.py`  
-**Tests:** `tests/test_g2_preflight.py` — 42 pass, 1 skip  
+**Date:** 2026-06-10 (preflight) / 2026-06-11 (corrected controls)
+**Status:** COMPLETE — corrected controls run 2026-06-11 (DEC-024c); G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED (FR+NL); G2_EDGE_STABILITY_NOT_SUPPORTED
+**Artefacts:** `data/processed/economic_graph/g2_preflight/`
+**Builder:** `src/data/european_panel/build_g2_temporal_preflight.py`
+**Tests:** `tests/test_g2_preflight.py` — 42 pass, 1 skip
 
 **Constraints:** No causal attribution. No economic recommendation. No community labels
 (DEC-021: NOT_SUPPORTED). No country pooling. L2 edges are statistical co-movement
@@ -191,51 +191,106 @@ means:
 
 ---
 
-## 7. Negative Control Results (2026-06-11)
+## 7. Corrected Controls (DEC-024c, 2026-06-11)
 
-**Method:** 199 temporal permutations per country × sector. For each permutation: year labels
-are shuffled within each territory-pair row of the weight matrix (preserving NaN masks and
-marginal weight distributions); top-k graph is rebuilt from scratch; LOYO Jaccard recomputed.
-p = (1 + count(null ≥ observed)) / (N+1). BH/FDR q=0.05 over all 26 tests.
+**Builder:** `src/data/european_panel/build_g2_corrected_controls.py`
+**Source:** `sector_panel_fr_nl_pt.csv` (NOT `g1_l2_edges.csv` — see prior control §7.2)
+**Protocol:** 199 permutations N1 + 199 permutations N2, full pipeline per permutation;
+BH/FDR q=0.05 per metric × null family; seeds N1=42, N2=137.
 
-| Country | n sectors | FDR-significant | Positive effect | Country gate |
-|---------|-----------|-----------------|-----------------|--------------|
-| FR | 9 | 9/9 | 9/9 | ✓ PASS |
-| NL | 9 | 9/9 | 9/9 | ✓ PASS |
-| PT | 8 | 8/8 | 8/8 | ✓ PASS |
+### 7.1 Metrics
 
-**Gate: PASS** — 3/3 countries, all sectors FDR-significant with positive effect.
+| Metric | Definition | Values (k=5) |
+|--------|------------|-------------|
+| **M1** | Consecutive Jaccard J(G_t, G_{t+1}); mean/median/min | FR 0.18–0.19 · NL 0.37–0.49 · PT 0.45–0.51 |
+| **M2** | Mean pairwise Jaccard over ALL (t,s) year pairs | FR 0.06–0.06 · NL 0.16–0.26 · PT 0.24–0.26 |
+| **M3** | True LOYO reconstruction (obs only, null BLOCKED) | FR 0.287 · NL 0.500 · PT 0.578 |
 
-**Observed vs null (top-k=5, COVID excluded):**
+M1/M2 all far below 0.70 stability threshold. M3 null is BLOCKED.
 
-| Country | Obs LOYO Jaccard (mean) | Null mean | Effect (relative) |
-|---------|------------------------|-----------|-------------------|
-| FR | 0.069 | 0.053 | +23-40% |
-| NL | 0.172 | 0.127 | +18-81% (OQ: +64%) |
-| PT | 0.260 | 0.207 | +12-30% |
+### 7.2 Null families
 
-All 26 p-values = 0.005 (= 1/200, minimum with 199 permutations). All positive effects
-(observed > null median). Effect relative magnitude 12–81%.
+**N1 — Temporal:** permute `observation_year` within each territory × sector column in the source
+growth matrix (reuses `permute_growth_temporal` from `build_g1_l2_cogrowth.py`). Tests whether
+temporal ordering of growth rates is necessary for the observed Jaccard values.
 
-**Sensitivity (top-k=3 and k=10):** All 52 additional tests also FDR-significant (p=0.005).
-Results consistent across k: the temporal signal is not k-specific.
+**N2 — Territory row-wise:** within each `observation_year`, permute which territory receives
+which growth value (reuses `permute_growth_territory` from `build_g1_l2_cogrowth.py`). Tests
+whether specific territory co-movement identities are necessary.
 
-**Interpretation:** The low-but-positive LOYO Jaccard values (0.07–0.26) are **not** a
-finite-sample artefact. They reflect genuine temporal signal — the top-k graph structure
-carries more cross-year coherence than would be expected from random year ordering. However,
-this does not raise the LOYO Jaccard above the 0.70 stability threshold; the graph remains
-highly dynamic in absolute terms.
+**N2 column permutation — DEGENERATE (documented):** Permuting entire territory columns
+uniformly across all years is mathematically equivalent to graph relabeling. For M1/M2
+Jaccard metrics, the null variance = 0.0 and p = 1.0 always (verified empirically for
+NL and PT; null std = 0.0 to 8 decimal places). Column permutation is kept in the module
+for documentation; the gate uses N2 row-wise.
 
-**Verdict: G2_EDGE_DYNAMICS_SUPPORTED**
+### 7.3 Results
 
-The temporal signal in LOYO Jaccard is statistically validated. Authorised scope:
-- Population-level aggregate variation in density and edge weights by country × sector × period
-- Cross-period comparisons using distribution statistics (not individual edge claims)
-- Documentation of the high-dynamism finding as a structural observation
+| Country | Sectors | N1+N2 FDR-sig (M2) | Country signal gate | Stability gate (M2≥0.70) |
+|---------|---------|---------------------|---------------------|--------------------------|
+| FR | 9 | 9/9 (all p=0.005=floor) | ✓ PASS | ✗ FAIL (max 0.064) |
+| NL | 9 | 5/9 (BE,FZ,GI,LZ,MN) | ✓ PASS (55.6%≥50%) | ✗ FAIL (max 0.260) |
+| PT | 8 | 0/8 | ✗ FAIL | ✗ FAIL (max 0.261) |
 
-Prohibited (unchanged): individual edge claims, cross-country pooling, causal attribution,
-community claims, recommendation. The term "structural evolution" is replaced by
-"observed aggregate variation" throughout.
+**Global — Signal:** 2/3 countries pass (≥2 required) → **G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED**
+**Global — Stability:** 0/3 countries pass → **G2_EDGE_STABILITY_NOT_SUPPORTED**
+
+### 7.4 Floor-p diagnostics (FR)
+
+FR all p=0.005 (minimum with 199 perms). Mandatory check:
+- Null variance: std ~0.0013–0.0015 (NOT zero; 199 unique values per sector)
+- obs_above_all_null: True for all FR sectors under N1 and N2
+- No degeneracy — the floor values reflect genuine signal (FR observed M2 above all 199 nulls)
+
+### 7.5 Sensitivities (k=3,5,10)
+
+| k | FR M2 range | NL M2 range | PT M2 range |
+|---|------------|------------|------------|
+| 3 | 0.043–0.051 | 0.103–0.191 | 0.168–0.185 |
+| 5 | 0.059–0.064 | 0.155–0.260 | 0.243–0.261 |
+| 10 | 0.087–0.093 | 0.259–0.387 | 0.422–0.445 |
+
+M2 increases with k (larger top-k sets share more edges). Direction consistent across k.
+
+### 7.6 Reconciliation: G1-L2 0.78 vs G2 M2 0.06–0.26
+
+| | G1-L2 | G2 M2 |
+|-|-------|-------|
+| Object | Dense Pearson of ALL region-pair correlations | Binary top-k=5 adjacency per country×sector |
+| Metric | Pearson of consecutive dense upper-triangle vectors | Mean Jaccard over all year pairs |
+| Sparsification | None (all pairs, including negative) | Top-k=5 only |
+| Granularity | Per country (all sectors pooled) | Per country × sector |
+| Values | FR 0.782 · NL 0.789 · PT 0.778 | FR 0.06 · NL 0.17 · PT 0.25 |
+
+**Compatible finding:** Full Pearson structure is smooth and stable (0.78) while specific top-5
+connections are volatile (0.06–0.26). G1-L2 measures aggregate co-movement; G2 measures
+identity of extreme edges. Not a contradiction.
+
+### 7.7 Verdict
+
+**G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED** — observed temporal Jaccard exceeds both N1 and N2
+nulls (BH q=0.05) for FR (9/9 sectors) and NL (5/9 sectors). Signal is statistically genuine
+but modest (FR M2 ~12% above null; NL varies 2–35% above null).
+
+**G2_EDGE_STABILITY_NOT_SUPPORTED** — M2 ranges 0.06–0.26 for all sectors across all countries,
+far below the 0.70 threshold. Individual top-k connections are highly transient.
+
+**PT:** No sector achieves significance under both N1 and N2. PT temporal signal cannot be validated
+under this protocol.
+
+**M3 null: BLOCKED.** M3 observed values (FR 0.287, NL 0.500, PT 0.578) indicate moderate LOYO
+reconstruction stability, but these cannot be contrasted against a null distribution.
+
+Language: "associação estatística temporal observada"; NOT "estrutura estável" or "causalidade".
+Individual edge claims remain NOT authorised. Cross-country pooling prohibited.
+
+---
+
+### 7.8 Prior control (superseded, preserved as historical record)
+
+**Method (INVALID, commit cc48924):** Permuted pre-computed Pearson weights (territory-pair rows
+of matrix W from `g1_l2_edges.csv`), NOT source growth series. Invalid null distribution.
+p=0.005, 26/26 FDR-significant — **not valid evidence; do not cite.**
 
 ---
 

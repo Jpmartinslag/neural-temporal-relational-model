@@ -139,9 +139,10 @@ economic relations, their evolution, and temporal patterns. NOT forecast improve
 | Task | Status | Deliverable |
 |------|--------|-------------|
 | G2 Preflight: inventory, density, persistence, turnover, sensitivity | DONE 2026-06-10 | `HERALD_G2_PREFLIGHT.md` |
-| G2 Negative control: 199 temporal permutations, BH/FDR, gate | DONE 2026-06-11 — G2_EDGE_DYNAMICS_SUPPORTED | `HERALD_G2_PREFLIGHT.md` §7; `g2_negative_control.csv` |
-| G2 Main: aggregate variation, period comparisons, sector patterns | Authorised | `HERALD_G2_DYNAMICS_AUDIT.md` |
-| G2 Evidence: G-13 SUPPORTED (DEC-024 updated) | DONE 2026-06-11 | Evidence matrix G-13 |
+| G2 Negative control: 199 temporal permutations, BH/FDR, gate | SUPERSEDED — prior control permuted pre-computed weights (invalid); corrected control pending (`build_g2_corrected_controls.py`) | `HERALD_G2_PREFLIGHT.md` §7 (DEC-024b/c) |
+| G2 Corrected controls: N1+N2 from source series, M1/M2/M3, gate | DONE 2026-06-11 — G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED (FR+NL); G2_EDGE_STABILITY_NOT_SUPPORTED | `build_g2_corrected_controls.py`; DEC-024c; `g2_corrected_controls*.csv` |
+| G2 Main: aggregate variation, period comparisons, sector patterns | Authorised (signal validated FR+NL) | `HERALD_G2_DYNAMICS_AUDIT.md` |
+| G2 Evidence: G-13 PARTIALLY_SUPPORTED (DEC-024c) | DONE 2026-06-11 | Evidence matrix G-13 |
 
 ---
 

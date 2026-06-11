@@ -1,0 +1,173 @@
+{
+  "protocol": {
+    "top_k_default": 5,
+    "top_k_variants": [
+      3,
+      5,
+      10
+    ],
+    "pre_covid_years": [
+      2015,
+      2016,
+      2017,
+      2018,
+      2019
+    ],
+    "covid_years": [
+      2020
+    ],
+    "post_covid_years": [
+      2021,
+      2022,
+      2023
+    ],
+    "falsifiable_criteria": {
+      "persistence_threshold": 0.7,
+      "weight_change_threshold": 0.15,
+      "loyo_stability_min": 0.7,
+      "turnover_stable_max": 0.3,
+      "sectoral_wave_threshold": 0.25
+    }
+  },
+  "inventory": {
+    "n_country_sector_combos": 26,
+    "by_country": {
+      "FR": 280,
+      "NL": 40,
+      "PT": 25
+    }
+  },
+  "loyo_stability": {
+    "FR/BE": {
+      "mean_pearson": 0.1014,
+      "stable": false
+    },
+    "FR/FZ": {
+      "mean_pearson": 0.1,
+      "stable": false
+    },
+    "FR/GI": {
+      "mean_pearson": 0.0964,
+      "stable": false
+    },
+    "FR/JZ": {
+      "mean_pearson": 0.1074,
+      "stable": false
+    },
+    "FR/KZ": {
+      "mean_pearson": 0.1078,
+      "stable": false
+    },
+    "FR/LZ": {
+      "mean_pearson": 0.104,
+      "stable": false
+    },
+    "FR/MN": {
+      "mean_pearson": 0.1084,
+      "stable": false
+    },
+    "FR/OQ": {
+      "mean_pearson": 0.104,
+      "stable": false
+    },
+    "FR/RU": {
+      "mean_pearson": 0.1059,
+      "stable": false
+    },
+    "NL/BE": {
+      "mean_pearson": 0.1312,
+      "stable": false
+    },
+    "NL/FZ": {
+      "mean_pearson": 0.1397,
+      "stable": false
+    },
+    "NL/GI": {
+      "mean_pearson": 0.1333,
+      "stable": false
+    },
+    "NL/JZ": {
+      "mean_pearson": 0.1422,
+      "stable": false
+    },
+    "NL/KZ": {
+      "mean_pearson": 0.1371,
+      "stable": false
+    },
+    "NL/LZ": {
+      "mean_pearson": 0.1413,
+      "stable": false
+    },
+    "NL/MN": {
+      "mean_pearson": 0.1423,
+      "stable": false
+    },
+    "NL/OQ": {
+      "mean_pearson": 0.2609,
+      "stable": false
+    },
+    "NL/RU": {
+      "mean_pearson": 0.1383,
+      "stable": false
+    },
+    "PT/BE": {
+      "mean_pearson": 0.1856,
+      "stable": false
+    },
+    "PT/FZ": {
+      "mean_pearson": 0.1913,
+      "stable": false
+    },
+    "PT/GI": {
+      "mean_pearson": 0.1904,
+      "stable": false
+    },
+    "PT/JZ": {
+      "mean_pearson": 0.2321,
+      "stable": false
+    },
+    "PT/LZ": {
+      "mean_pearson": 0.2096,
+      "stable": false
+    },
+    "PT/MN": {
+      "mean_pearson": 0.172,
+      "stable": false
+    },
+    "PT/OQ": {
+      "mean_pearson": 0.1576,
+      "stable": false
+    },
+    "PT/RU": {
+      "mean_pearson": 0.1742,
+      "stable": false
+    }
+  },
+  "persistence": {
+    "total_edges_seen": 58242,
+    "persistent_frac": 0.0042,
+    "by_country": {
+      "FR": 0.0017,
+      "NL": 0.0156,
+      "PT": 0.0385
+    }
+  },
+  "turnover": {
+    "mean_turnover_by_country": {
+      "FR": 0.7726,
+      "NL": 0.5606,
+      "PT": 0.4826
+    },
+    "stable_frac": 0.0
+  },
+  "covid_comparison": {
+    "disrupted_density_frac": 0.0,
+    "disrupted_weight_frac": 0.0,
+    "mean_delta_density": -0.0001,
+    "mean_delta_w": 0.0105
+  },
+  "topk_sensitivity": {
+    "mean_jaccard_k3_k5": 0.6155,
+    "mean_jaccard_k5_k10": 0.5187
+  }
+}
