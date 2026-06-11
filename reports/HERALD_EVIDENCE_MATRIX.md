@@ -69,6 +69,7 @@
 | MET-03 | Pooled WMAPE is an admissible primary result for European panel | Phase 4J semantic audit | 4J | FR/NL/BE/PT | — | `HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md` | Strong refutation | Universal | Incommensurable targets cannot be pooled | `REFUTED_UNDER_CURRENT_PROTOCOL` |
 | MET-04 | Graph attention weights are interpretable explanations of economic relations | Not tested | — | — | — | — | None | — | Requires validation against null model and economic ground truth | `NOT_TESTED` |
 | MET-05 | GConvGRU or EvolveGCN-H is the correct graph-temporal architecture for HERALD | Literature preflight only (DEC-027) | Pre-implementation | FR/NL/PT sector panel | Same-target rolling-origin protocol and fail-closed gates specified; no model run | `HERALD_GRAPH_TEMPORAL_ARCHITECTURE_DECISION.md` | Methodological candidate selection only | Not established | Phase 5 fixed-L2 corrector failed; trainable graph-temporal candidates remain untested | `NOT_TESTED` |
+| MET-06 | The schema 2.0 pipeline exports causal, deterministic graph-temporal sequences aligned with the canonical H0b Ridge | E0-v2 smoke (DEC-028): 8 checks pass, 57 tests pass, 2-run determinism, FR adjacency audit 5 folds | DEC-027/028 | NL 40 COROP (smoke); FR 280 ZE (adjacency audit) | LeakageError assertions; 57 invariant tests; two-run NPZ checksum comparison; FR 8 fail-closed adjacency criteria | `HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md`; `HERALD_GRAPH_TEMPORAL_FR_ADJACENCY_PREFLIGHT.md` | Strong for data infrastructure | NL and FR only; architecture not yet trained | Does not imply GConvGRU or EvolveGCN-H improves forecasting; tensor pipeline is a necessary not sufficient condition | `SUPPORTED` |
 
 ---
 
@@ -76,13 +77,15 @@
 
 | Status | Count |
 |--------|------:|
-| `SUPPORTED` | 11 |
+| `SUPPORTED` | 12 |
 | `PARTIALLY_SUPPORTED` | 3 |
 | `EXPLORATORY` | 1 |
 | `NOT_SUPPORTED` | 5 |
 | `REFUTED_UNDER_CURRENT_PROTOCOL` | 6 |
 | `NOT_TESTED` | 5 |
-| **Total** | **31** |
+| **Total** | **32** |
+
+_Counts verified programmatically (2026-06-11, DEC-028): F=7, G=10, GEN=3, REC=2, MET=6; status sums match._
 
 ---
 

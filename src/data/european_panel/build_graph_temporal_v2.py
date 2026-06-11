@@ -942,3 +942,42 @@ def export_v2(
         json.dump(manifest, f, indent=2)
 
     return manifest
+
+
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+def _parse_args() -> "argparse.Namespace":
+    import argparse
+    p = argparse.ArgumentParser(
+        description="Build schema 2.0 causal graph-temporal tensors."
+    )
+    p.add_argument("--countries", nargs="+", default=["NL"])
+    p.add_argument("--eval-years", nargs="+", type=int, default=[2019, 2020, 2021])
+    p.add_argument("--out-dir", type=Path, default=DEFAULT_OUT.parent / "graph_temporal_v2")
+    p.add_argument("--sector-panel", type=Path, default=DEFAULT_SECTOR_PANEL)
+    p.add_argument("--t-seq", type=int, default=T_SEQ)
+    p.add_argument("--k", type=int, default=TOP_K)
+    p.add_argument("--no-audit", action="store_true", help="Skip adjacency audit")
+    return p.parse_args()
+
+
+def main() -> None:
+    args = _parse_args()
+    eval_years_map = {c: args.eval_years for c in args.countries}
+    manifest = export_v2(
+        countries=args.countries,
+        eval_years_by_country=eval_years_map,
+        sector_panel_path=args.sector_panel,
+        out_dir=args.out_dir,
+        t_seq=args.t_seq,
+        k=args.k,
+        run_adjacency_audit=not args.no_audit,
+    )
+    print(f"Exported {manifest['n_folds']} folds in {manifest['build_time_s']}s")
+    print(f"Manifest: {args.out_dir / 'manifest_v2.json'}")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,5 +1,5 @@
 # HERALD Codex Memory
-Updated 2026-06-11 (DEC-027: E0_STATIC_SNAPSHOT_PASS superseded; DEC-028: schema 2.0 E0_V2_PASS; S1_FR_BLOCKED). Read first; verify drift with `rtk git status --short`.
+Updated 2026-06-11 (DEC-028 CLOSED: E0_V2_PASS; FR_ADJACENCY_READY; A1 contract frozen; S1_FR_BLOCKED until A1 implementation). Read first; verify drift with `rtk git status --short`.
 
 ## Rules
 - Repo `/home/jpdark/Downloads/project_recomm/dataset`.
@@ -188,11 +188,14 @@ Reports written: HERALD_G2_REPORT_SECTION_FR.md, HERALD_G2_REPORT_FIGURE_SELECTI
 No dashboard modification (DEC-014). No HPC, GNN, recommendation.
 
 **Graph-temporal tensor preflight and E0 smoke (DEC-027): E0_STATIC_SNAPSHOT_PASS (reclassified).**
-**Graph-temporal schema 2.0 and E0-v2 smoke (DEC-028): E0_V2_PASS (2026-06-11).**
+**Graph-temporal schema 2.0 and E0-v2 smoke (DEC-028): E0_V2_PASS (2026-06-11). CLOSED.**
+**FR adjacency audit (DEC-028): FR_ADJACENCY_READY (2026-06-11).**
+**A1 implementation contract: FROZEN (DEC-028, 2026-06-11).**
 - EconoGNN: `REFERENCE_ONLY`; dynamic observed trade graph, different task,
   scale and evaluation; public GitHub incomplete.
 - A0 remains country-specific AR/Ridge.
-- A1 candidates: low-capacity GConvGRU and EvolveGCN-H over per-year causal L2.
+- A1 candidates: low-capacity GConvGRU (A1a) and EvolveGCN-H (A1b) over per-year causal L2.
+- A0-neural (GRU without message passing): equal-capacity control — mandatory for S1-FR.
 - All candidates predict the same territorial total; sector births are graph
   features, not a separate target.
 - NL is engineering smoke only (COVID-sensitive). FR is first scientific local
@@ -204,12 +207,20 @@ No dashboard modification (DEC-014). No HPC, GNN, recommendation.
   (corrector.py port), per-feature masks, positive_topk adjacency.
 - Schema 1.0 tensors: `data/processed/graph_temporal_preflight/` — SUPERSEDED
   by schema 2.0; kept for audit trail only.
-- Evidence matrix corrected: 31 claims; counts: SUPPORTED=11,
-  PARTIALLY_SUPPORTED=3, NOT_SUPPORTED=5, NOT_TESTED=5.
-- **S1_FR_BLOCKED**: FR scientific local test is BLOCKED until GConvGRU/EvolveGCN
-  are implemented using schema 2.0 tensors. HPC remains BLOCKED.
+- FR adjacency (5 eval years 2021–2025): 280 ZE, 9 sectors, 0 isolated nodes at k=3/5/10,
+  1 connected component (all years), perfect symmetry, 26–39% raw negative correlations.
+  All 8 fail-closed criteria pass. Tensors ready for GConvGRU/EvolveGCN-H.
+- A1 contract: interface (B,T,R,S,F), bounded residual head (clamp_frac∈{0.10,0.15}),
+  masked pooling, ≤5,000 params, shared weights across sectors, 11 mandatory tests in
+  `tests/test_graph_temporal_a1.py`, 5 seeds {42–46}, rolling-origin folds, masked WMAPE loss.
+- Evidence matrix: 32 claims; SUPPORTED=12, PARTIALLY_SUPPORTED=3, NOT_SUPPORTED=5,
+  NOT_TESTED=5. MET-06 added (schema 2.0 pipeline: causal, deterministic, aligned with H0b).
+- **S1_FR_BLOCKED**: FR scientific local test is BLOCKED until A1a, A1b, A0-neural
+  implemented and all 11 mandatory tests pass. HPC remains BLOCKED.
 - Adjacency audit (NL): 29–36% negative correlations; 0–1 isolated regions at
   k=5 (NL/2019 is sparse: 40 isolated across one sector). Primary repr: positive_topk.
+
+**Pending: A1 implementation only.** All other DEC-028 artifacts complete.
 
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)
@@ -221,8 +232,18 @@ Cannot be claimed as a current capability.
 - `src/modeles/run_e0_smoke_nl.py` — E0 engineering smoke (NL, 3 eval years)
 - `tests/test_graph_temporal_preflight.py` — 33 tests, 18 methodological invariants
 - `data/processed/graph_temporal_preflight/` — 3 NL fold artifacts + manifest
-- `reports/HERALD_GRAPH_TEMPORAL_E0_PREFLIGHT_AUDIT.md` — E0_PASS audit report
-- `reports/HERALD_EVIDENCE_MATRIX.md` — corrected to 31 claims (was 29)
+- `reports/HERALD_GRAPH_TEMPORAL_E0_PREFLIGHT_AUDIT.md` — E0_STATIC_SNAPSHOT_PASS (reclassified)
+
+## Documents créés/révisés 2026-06-11 (DEC-028 schema 2.0 + FR adjacency + A1 contract)
+- `src/data/european_panel/build_graph_temporal_v2.py` — schema 2.0 tensor builder + CLI
+- `src/modeles/run_e0_smoke_nl_v2.py` — E0-v2 smoke harness (RSS, 8 checks, E0_V2_PASS)
+- `tests/test_graph_temporal_v2.py` — 24 schema 2.0 tests (T19–T42)
+- `data/processed/graph_temporal_v2/` — 3 NL + 5 FR fold NPZs + manifest_v2.json
+- `reports/HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md` — E0_V2_PASS audit
+- `reports/HERALD_GRAPH_TEMPORAL_FR_ADJACENCY_PREFLIGHT.md` — FR_ADJACENCY_READY (280 ZE, 5 eval years)
+- `reports/HERALD_GRAPH_TEMPORAL_A1_IMPLEMENTATION_CONTRACT.md` — FROZEN A1 spec
+- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — DEC-028 appended
+- `reports/HERALD_EVIDENCE_MATRIX.md` — MET-06 added; 32 claims; SUPPORTED=12
 
 ## Documents créés/révisés 2026-06-10
 - `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — DEC-001 to DEC-027
