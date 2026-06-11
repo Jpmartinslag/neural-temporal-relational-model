@@ -221,8 +221,11 @@ EvolveGCN evolves the GCN weight matrix through a GRU mechanism, not the adjacen
 # At each time step t:
 # 1. Evolve GCN weight W via GRU:
 W_t = GRU_cell(W_{t-1}, context_t)   # W is the GCN weight matrix, treated as hidden state
-# 2. GCN with evolved weights:
-h_t[r, s] = activation(W_t × (features_seq[b, t, r, s, :] || agg_neighbours[r, s]))
+# 2. Budget-preserving shared projection and GCN with evolved weights:
+z_t[r, s] = Linear_shared(features_seq[b, t, r, s, :]
+                          || agg_neighbours[r, s]
+                          || sector_embed[s])                    # 2F+E -> F
+h_t[r, s] = activation(z_t[r, s] × W_t)
 
 # After last time step:
 territory_state[b, r] = MaskedPool_s(h_T[r, s])
@@ -238,6 +241,13 @@ delta_raw[b, r] = Linear(territory_state[b, r])
 ### Implementation note
 
 EvolveGCN-H uses the GCN weight matrix as the GRU hidden state. The GRU input at each step can be a summary of node features (e.g., mean of `features_seq[b, t, :, s, :]`). See the original EvolveGCN paper (Pareja et al., 2020) for the H variant formulation.
+
+**DEC-028 implementation amendment:** directly evolving a `(2F+E) x H`
+matrix exceeds the fixed 5,000-parameter budget at `H=8`. A shared linear
+projection `(2F+E) -> F` is therefore applied before the evolved `F x H`
+matrix. This preserves explicit concatenation of local features, neighbour
+features and sector identity while respecting the pre-registered capacity
+limit. Additive `x + agg_x` is not authorized.
 
 ---
 
@@ -270,9 +280,9 @@ For each model (A0-neural, A1a, A1b):
 | T-zero-alpha | With `clamp_frac=0`, `y_hat = y_ridge_canonical` exactly |
 | T-params | `n_trainable_params <= 5000` |
 | T-determinism | Same seed → identical outputs and loss |
-| T-zero-adj | Zero-adjacency run produces same `y_hat` as persistence (for H=0 initial state) |
+| T-zero-adj | Zero-adjacency run produces exactly `y_ridge_canonical` (zero residual correction) |
 | T-real-adj | Real adjacency changes `y_hat` relative to zero-adjacency |
-| T-no-leakage | Future fold data does not alter past-fold predictions |
+| T-no-leakage | A future-fold forward call does not alter a repeated past-fold prediction; chronological fold construction remains enforced by the schema 2.0 builder |
 | T-no-nan | No NaN or Inf in `y_hat`, `delta_bounded`, or loss where target_mask=1 |
 | T-shared-loss | A0, A1a, A1b use identical `masked_wmape` loss and identical fold loading |
 
