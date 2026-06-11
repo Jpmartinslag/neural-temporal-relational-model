@@ -1,0 +1,96 @@
+{
+  "checks": {
+    "all_leakage_checks_pass": true,
+    "all_metrics_finite": true,
+    "all_parameter_budgets_pass": true,
+    "deterministic_metrics": true,
+    "deterministic_state": true,
+    "rss_within_limit": true,
+    "runtime_within_limit": true
+  },
+  "config": {
+    "clamp_frac": 0.15,
+    "dropout": 0.3,
+    "hidden_dim": 4,
+    "max_epochs": 200,
+    "patience": 20,
+    "sector_embed_dim": 4
+  },
+  "country": "FR",
+  "decision": "S0_FR_PASS",
+  "eval_year": 2025,
+  "results": {
+    "A0Neural": {
+      "best_epoch": 1,
+      "best_validation_wmape": 0.027128692716360092,
+      "country": "FR",
+      "epochs_ran": 21,
+      "eval_year": 2025,
+      "evaluation_wmape": 0.03115416318178177,
+      "leakage_ok": true,
+      "model_name": "A0Neural",
+      "n_evaluation_targets": 280,
+      "n_parameters": 197,
+      "n_train_targets": 840,
+      "n_validation_targets": 280,
+      "ridge_wmape": 0.031215885654091835,
+      "seed": 42,
+      "state_checksum": "b1c50a8d42a59d0a012751dbafc35a80d3929345514a8d453d5c2309de0cc4cc",
+      "train_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "validation_year": 2024
+    },
+    "EvolveGCNH": {
+      "best_epoch": 1,
+      "best_validation_wmape": 0.027159906923770905,
+      "country": "FR",
+      "epochs_ran": 21,
+      "eval_year": 2025,
+      "evaluation_wmape": 0.031193789094686508,
+      "leakage_ok": true,
+      "model_name": "EvolveGCNH",
+      "n_evaluation_targets": 280,
+      "n_parameters": 690,
+      "n_train_targets": 840,
+      "n_validation_targets": 280,
+      "ridge_wmape": 0.031215885654091835,
+      "seed": 42,
+      "state_checksum": "9e4b1673636f00cb3a3066ccf8350fe11496f9a4490dcfea4a511107677925aa",
+      "train_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "validation_year": 2024
+    },
+    "GConvGRU": {
+      "best_epoch": 186,
+      "best_validation_wmape": 0.027071107178926468,
+      "country": "FR",
+      "epochs_ran": 200,
+      "eval_year": 2025,
+      "evaluation_wmape": 0.031081760302186012,
+      "leakage_ok": true,
+      "model_name": "GConvGRU",
+      "n_evaluation_targets": 280,
+      "n_parameters": 245,
+      "n_train_targets": 840,
+      "n_validation_targets": 280,
+      "ridge_wmape": 0.031215885654091835,
+      "seed": 42,
+      "state_checksum": "52ee3cad00a62b245d4e0514d9f9eb5d075fea1cb002fb30a46b0ce3384fc932",
+      "train_years": [
+        2021,
+        2022,
+        2023
+      ],
+      "validation_year": 2024
+    }
+  },
+  "rss_delta_gb": 0.32985687255859375,
+  "runtime_seconds": 24.872826666000037,
+  "seed": 42
+}
