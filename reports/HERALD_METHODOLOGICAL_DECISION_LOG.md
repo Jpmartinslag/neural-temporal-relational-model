@@ -751,3 +751,41 @@ complete.  New analysis questions require new pre-registration.
 **Limitations:** The report section remains a draft component. The dashboard specification is conceptual and not yet implemented.
 **Reopen condition:** Future dashboard implementation.
 **Affected files:** `HERALD_G2_REPORT_SECTION_FR.md`, `HERALD_G2_REPORT_FIGURE_SELECTION.md`, `HERALD_G2_DASHBOARD_INTEGRATION_SPEC.md`, `CODEX_MEMORY.md`.
+
+---
+
+## DEC-027 — 2026-06-11 — Graph-temporal architecture preflight
+
+**Question:** Which architecture may be tested after the fixed-L2 Phase 5
+corrector failed?
+
+**Evidence:** Twenty-method graph-temporal review, EconoGNN primary-source
+audit, current G2 evidence, Phase 5 ablation v3 and the canonical sector panel.
+
+**Corrections made during audit:**
+
+- EconoGNN is an observed dynamic trade graph reference, not a fixed graph and
+  not a reusable HERALD implementation.
+- A0 and A1 must predict the same territorial total. Sector observations are
+  graph-node features, not a different target.
+- EvolveGCN evolves graph-convolution parameters; it does not recurrently
+  update the adjacency matrix.
+- Exact parameter counts must come from implemented code.
+- NL is an engineering smoke only; FR is the first scientific test because
+  only FR is robust under both G2 COVID scenarios.
+
+**Decision:** Keep country-specific AR/Ridge as A0. Permit a future local
+preflight comparing low-capacity GConvGRU and EvolveGCN-H over per-year causal
+L2 graphs, with shared sector weights and a bounded residual head. A2 learned
+edge gates remain blocked.
+
+**Gate:** HPC remains blocked. The next authorized task is only tensor export,
+leakage/mask tests, parameter counting and the NL engineering smoke harness.
+Scientific training starts with FR only after that audit. No architecture is
+promoted.
+
+**Affected files:** `HERALD_GRAPH_TEMPORAL_ARCHITECTURE_REVIEW.md`;
+`HERALD_ECONOGNN_TRANSFERABILITY_AUDIT.md`;
+`HERALD_GRAPH_TEMPORAL_ARCHITECTURE_DECISION.md`;
+`reports/bibliography/herald_graph_temporal_references.bib`;
+`reports/bibliography/HERALD_GRAPH_TEMPORAL_REFERENCE_AUDIT.csv`.

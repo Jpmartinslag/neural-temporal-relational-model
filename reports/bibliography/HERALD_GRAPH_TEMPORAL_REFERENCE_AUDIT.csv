@@ -1,0 +1,23 @@
+key,year,type,primary_source,status,HERALD_use,main_limit
+araujo2026econognn,2026,Journal,https://doi.org/10.1371/journal.pone.0343683,VERIFIED_PRIMARY,Economic temporal-graph reference,Different task scale and evaluation
+seo2018gcrn,2018,Conference,https://arxiv.org/abs/1612.07659,VERIFIED_PRIMARY,GConvGRU/GConvLSTM candidate,Short annual panel not validated
+li2018dcrnn,2018,Conference,https://openreview.net/forum?id=SJiHXGWAZ,VERIFIED_PRIMARY,Architecture comparison,Dense traffic data regime
+yu2018stgcn,2018,Conference,https://doi.org/10.24963/ijcai.2018/505,VERIFIED_PRIMARY,Architecture comparison,Dense traffic data regime
+zhao2020tgcn,2020,Journal,https://doi.org/10.1109/TITS.2019.2935152,VERIFIED_PRIMARY,EconoGNN baseline context,Dense traffic data regime
+wu2019graphwavenet,2019,Conference,https://doi.org/10.24963/ijcai.2019/264,VERIFIED_PRIMARY,Learned-graph negative design reference,Too many degrees of freedom
+bai2020agcrn,2020,Conference,https://proceedings.neurips.cc/paper/2020/hash/ce1aad92b939420fc17005e5461e6f48-Abstract.html,VERIFIED_PRIMARY,Learned-graph negative design reference,Node-adaptive model needs dense data
+wu2020mtgnn,2020,Conference,https://doi.org/10.1145/3394486.3403118,VERIFIED_PRIMARY,Learned-graph negative design reference,Large temporal-convolution model
+shang2021gts,2021,Conference,https://openreview.net/forum?id=WEHSlH5mOk,VERIFIED_PRIMARY,Graph-learning negative design reference,Graph distribution unidentifiable at short T
+pareja2020evolvegcn,2020,Conference,https://doi.org/10.1609/aaai.v34i04.5984,VERIFIED_PRIMARY,Dynamic observed-graph candidate,Different tasks and node semantics
+rossi2020tgn,2020,Preprint,https://arxiv.org/abs/2006.10637,PREPRINT,Continuous-time comparison,Requires event-stream data
+xu2020tgat,2020,Conference,https://openreview.net/forum?id=rJeW1yHYwH,VERIFIED_PRIMARY,Continuous-time comparison,Requires dense temporal events
+cini2022grin,2022,Conference,https://openreview.net/forum?id=kOu3-S3wJ7,VERIFIED_PRIMARY,Missingness design reference,Bidirectional imputation not causal forecasting
+gordon2021tsignn,2021,Journal,https://doi.org/10.3389/fdata.2021.693869,VERIFIED_PRIMARY,Bipartite missingness reference,Health-domain architecture mismatch
+xu2023timegnn,2023,Preprint,https://arxiv.org/abs/2307.14680,PREPRINT,Efficient dynamic-graph comparison,No short-panel evidence
+hallac2017tvgl,2017,Conference,https://doi.org/10.1145/3097983.3098037,VERIFIED_PRIMARY,Dynamic sparse-graph baseline,Strong regularization required
+matias2017dynsbm,2017,Journal,https://doi.org/10.1111/rssb.12200,VERIFIED_PRIMARY,Dynamic-community baseline,Community signal failed in HERALD
+hamilton2017graphsage,2017,Conference,https://proceedings.neurips.cc/paper/2017/hash/5dd9db5e033da9c6fb5ba83c7a7ebea9-Abstract.html,VERIFIED_PRIMARY,Static graph baseline,No temporal memory
+ying2019gnnexplainer,2019,Conference,https://proceedings.neurips.cc/paper/2019/hash/d80b7040b773199015de6d3b4293c8ff-Abstract.html,VERIFIED_PRIMARY,Explainability reference,Explanation requires independent validation
+zeng2023dlinear,2023,Conference,https://doi.org/10.1609/aaai.v37i9.26317,VERIFIED_PRIMARY,Simple neural time-series baseline,Not graph-based
+oreshkin2020nbeats,2020,Conference,https://openreview.net/forum?id=r1ecqn4YwB,VERIFIED_PRIMARY,Frugal neural forecasting baseline,Not graph-based
+bergmeir2018cv,2018,Journal,https://doi.org/10.1016/j.csda.2017.11.003,VERIFIED_PRIMARY,Temporal evaluation protocol,Does not define HERALD graph model
