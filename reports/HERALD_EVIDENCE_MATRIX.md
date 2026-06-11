@@ -36,6 +36,7 @@
 | G-11 | The L2 co-growth graph exhibits community structure significantly exceeding temporal and territory permutation nulls | Corrected G1-L2 community baseline | G1 / task 2.8 | FR, NL, PT | Symmetric top-k=5; L2 rebuilt from 99 temporal + 99 territory series permutations; equal Louvain budget; modularity and AMI with BH/FDR; COVID sensitivity | `HERALD_G1_COMMUNITIES_AUDIT.md` | 0/3 pass: modularity is reproducible by nulls; some AMI evidence survives but full gate fails | Three heterogeneous territorial systems | L2 stability remains supported, but Louvain communities are not validated | `NOT_SUPPORTED` |
 | G-12 | Fixed-L2 residual corrector (sklearn MLP on pre-aggregated L2 features) improves out-of-sample territorial forecasting over AR-Ridge baseline | Phase 5 ablation v3 | Phase 5 | NL 40 COROP, eval 2021-2023 | Rolling-origin; 5 seeds; widths (2,)(4,)(8,)(16,8); temporal+territory permuted-graph controls; gate: H2 ≤ H0b×1.1, beats H1, beats both controls | `HERALD_PHASE5_HPC_SPEC.md`; DEC-023 | H2-neural (best width=(8,)) 5.53% vs H0b 3.41% — 62% regression. Beats permuted controls but worse than H1-neural (no graph). Linear H2 also fails (5.56%). n_train fixed (39→440 after imputation). Architecture confirmed NOT a GNN: fixed non-trainable 1-hop aggregation. | NL only; other countries not run | Residual corrector architecture may be insufficient; result does not preclude trainable GNN on other data | `NOT_SUPPORTED` |
 | G-13 | The sparse L2 top-k=5 graph shows aggregate temporal coherence above permutation nulls | G2 corrected controls + COVID sensitivity (DEC-024c/d) | Bloco 2 / G2 | FR 9 sectors · NL 9 sectors · PT 8 sectors; top-k=5; 199 perms N1+N2 in both COVID scenarios | M1 consecutive Jaccard; M2 mean pairwise Jaccard; main includes obs-year 2020; sensitivity excludes only obs-year 2020; BH/FDR q=0.05 | `HERALD_G2_PREFLIGHT.md` §7; `HERALD_G2_COVID_SENSITIVITY_AUDIT.md` | FR is robust (9/9 in both). NL changes 4/9 to 5/9 and crosses the country gate only without 2020. PT changes 4/8 to 0/8 and crosses the gate only with 2020. Seven of 26 sector decisions change. Edge stability remains unsupported (M2 0.06–0.28; threshold 0.70); M3 null blocked. | Global 2/3 gate passes in both scenarios but with different countries, so two-country replication is not COVID-robust | Aggregate evidence is robust only for FR; NL/PT are COVID-sensitive. No individual-edge, causal, pooled-country or recommendation claim. | `PARTIALLY_SUPPORTED` |
+| G-14 | The positive top-k L2 graph's aggregate density and weight distributions vary modestly across rolling windows ending before, during and after 2020 | G2 aggregate dynamics (DEC-025) | Bloco 2 / G2 | FR 9 sectors · NL 9 sectors · PT 8 sectors; top-k=5; 200 pair-resampling sensitivity draws; period defined by last observation year in each five-year window | Density, mean/median weight, turnover, Jaccard, period comparisons, COVID sensitivity, top-k 3/5/10 | `HERALD_G2_AGGREGATE_DYNAMICS_AUDIT.md` | FR: Δdensity <0.001, Δweight <0.01; NL: Δdensity +0.006, Δweight +0.011; PT: Δdensity +0.001, Δweight +0.048. Turnover high (FR 79%, NL 59%, PT 51%). Pair-resampling intervals are descriptive, not confidence intervals. | FR COVID-robust under G-13; NL/PT COVID-sensitive; no cross-country replication | Descriptive only. Overlapping rolling windows; positive-edge selection by construction; no causal, individual-edge, community, forecast or recommendation claim. | `SUPPORTED` |
 | G-09 | Functional/mobility network provides predictive signal for enterprise births | Not yet run | — | — | — | — | None | — | Data availability not confirmed at NUTS3 level | `NOT_TESTED` |
 
 ---
@@ -74,13 +75,13 @@
 
 | Status | Count |
 |--------|------:|
-| `SUPPORTED` | 9 |
+| `SUPPORTED` | 10 |
 | `PARTIALLY_SUPPORTED` | 2 |
 | `EXPLORATORY` | 1 |
 | `NOT_SUPPORTED` | 4 |
 | `REFUTED_UNDER_CURRENT_PROTOCOL` | 6 |
 | `NOT_TESTED` | 5 |
-| **Total** | **27** |
+| **Total** | **28** |
 
 ---
 

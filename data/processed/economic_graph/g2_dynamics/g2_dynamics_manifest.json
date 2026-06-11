@@ -1,0 +1,100 @@
+{
+  "builder": "src/data/european_panel/build_g2_aggregate_dynamics.py",
+  "source": "data/processed/economic_graph/sector_panel_fr_nl_pt.csv",
+  "source_checksum": "86fe5bedaa4fe8fe",
+  "generated_from_commit": "b3244ef4ff77",
+  "artifacts": {
+    "g2_annual_metrics.csv": {
+      "size_bytes": 160838,
+      "checksum_sha256_16": "385e084119582ea9"
+    },
+    "g2_covid_sensitivity.csv": {
+      "size_bytes": 50189,
+      "checksum_sha256_16": "07ae56531688c079"
+    },
+    "g2_dynamics_manifest.json": {
+      "size_bytes": 918,
+      "checksum_sha256_16": "44d0917a02628391"
+    },
+    "g2_dynamics_summary.json": {
+      "size_bytes": 3847,
+      "checksum_sha256_16": "d6eb592421339b9e"
+    },
+    "g2_period_comparisons.csv": {
+      "size_bytes": 13357,
+      "checksum_sha256_16": "545c82b02e593784"
+    },
+    "g2_period_metrics.csv": {
+      "size_bytes": 28962,
+      "checksum_sha256_16": "43421b5b3c174fca"
+    },
+    "g2_topk_sensitivity.csv": {
+      "size_bytes": 42785,
+      "checksum_sha256_16": "b7e7d97bd6e6dd7b"
+    },
+    "figures/g2_comparative_panel.png": {
+      "size_bytes": 1937910,
+      "checksum_sha256_16": "53fe5e7de51bcc85"
+    },
+    "figures/g2_density_temporal_FR.png": {
+      "size_bytes": 462800,
+      "checksum_sha256_16": "15a94916a7dce1db"
+    },
+    "figures/g2_density_temporal_NL.png": {
+      "size_bytes": 489484,
+      "checksum_sha256_16": "4503ee5b669ae631"
+    },
+    "figures/g2_density_temporal_PT.png": {
+      "size_bytes": 561898,
+      "checksum_sha256_16": "445b28e6fa9dbc8d"
+    },
+    "figures/g2_heatmap_FR.png": {
+      "size_bytes": 102749,
+      "checksum_sha256_16": "6677ae9a1e8ade29"
+    },
+    "figures/g2_heatmap_NL.png": {
+      "size_bytes": 106965,
+      "checksum_sha256_16": "20017c22a41c6a0d"
+    },
+    "figures/g2_heatmap_PT.png": {
+      "size_bytes": 109339,
+      "checksum_sha256_16": "7aa95fe21fbfc6db"
+    },
+    "figures/g2_post_minus_pre_FR.png": {
+      "size_bytes": 115868,
+      "checksum_sha256_16": "da7e25dfcb860a4d"
+    },
+    "figures/g2_post_minus_pre_NL.png": {
+      "size_bytes": 94227,
+      "checksum_sha256_16": "e5b8644a9b918721"
+    },
+    "figures/g2_post_minus_pre_PT.png": {
+      "size_bytes": 95975,
+      "checksum_sha256_16": "a9bb78c82b4c833d"
+    },
+    "figures/g2_turnover_jaccard_FR.png": {
+      "size_bytes": 846958,
+      "checksum_sha256_16": "10038cb8c8e7332c"
+    },
+    "figures/g2_turnover_jaccard_NL.png": {
+      "size_bytes": 888151,
+      "checksum_sha256_16": "448c04d45dccb40c"
+    },
+    "figures/g2_turnover_jaccard_PT.png": {
+      "size_bytes": 917957,
+      "checksum_sha256_16": "7d104a596a3dc482"
+    },
+    "figures/g2_weight_temporal_FR.png": {
+      "size_bytes": 711331,
+      "checksum_sha256_16": "c41e2b99f15df7a5"
+    },
+    "figures/g2_weight_temporal_NL.png": {
+      "size_bytes": 786485,
+      "checksum_sha256_16": "7a2155f3239ddbb0"
+    },
+    "figures/g2_weight_temporal_PT.png": {
+      "size_bytes": 691563,
+      "checksum_sha256_16": "1a03163ff1b612f1"
+    }
+  }
+}

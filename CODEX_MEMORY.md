@@ -167,8 +167,25 @@ Verdicts:
 Prior control (commit cc48924) INVALID: permuted pre-computed edge weights — p=0.005/26/26 invalid.
 Language: "associação estatística temporal observada", NOT causal attribution.
 No individual edge claims. No cross-country pooling. No recommendation.
-Next: G2 main descriptive (density/weight trends per period) for all countries;
-only FR may carry a COVID-robust inferential claim.
+
+**G2 Aggregate Dynamics (DEC-025, 2026-06-11): COMPLETE.**
+Module: `src/data/european_panel/build_g2_aggregate_dynamics.py`. 45 tests pass.
+Source: `sector_panel_fr_nl_pt.csv`. 321 annual metric rows. Pair-resampling
+sensitivity intervals use 200 draws; they are not confidence intervals because
+territory pairs share nodes.
+Artifacts: `data/processed/economic_graph/g2_dynamics/` (7 CSVs/JSONs + 16 figures).
+Findings:
+- FR: density Δ < 0.001, weight Δ < 0.01, turnover 79%. COVID_ROBUST.
+- NL: density +0.006, weight +0.011, turnover 59%. COVID_SENSITIVE.
+- PT: density +0.001, weight +0.048 (RU/MN sectors Δ > 0.13), turnover 51%. COVID_SENSITIVE.
+- G-14 SUPPORTED as a descriptive computed statement.
+  G2_CROSS_COUNTRY_REPLICATION_NOT_SUPPORTED.
+- FR_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED.
+Period `2020` means a five-year rolling graph ending in observation year 2020
+(available at eval_year=2021), not a graph based only on 2020.
+Next: G4-G5 explanation/visualization or report writing.
+No dashboard modification (DEC-014). No HPC, GNN, recommendation.
+
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)
 Terminal use case. Requires Bloco 1 + Bloco 2 complete.

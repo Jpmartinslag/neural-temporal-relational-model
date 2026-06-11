@@ -142,8 +142,8 @@ economic relations, their evolution, and temporal patterns. NOT forecast improve
 | G2 Negative control: 199 temporal permutations, BH/FDR, gate | SUPERSEDED — prior control permuted pre-computed weights (invalid); corrected control pending (`build_g2_corrected_controls.py`) | `HERALD_G2_PREFLIGHT.md` §7 (DEC-024b/c) |
 | G2 Corrected controls: N1+N2 from source series, M1/M2/M3, gate | DONE 2026-06-11 — edge stability NOT_SUPPORTED; aggregate result requires COVID sensitivity interpretation | `build_g2_corrected_controls.py`; DEC-024c/d; `g2_corrected_controls*.csv` |
 | G2 COVID sensitivity | DONE 2026-06-11 — FR robust; NL/PT sensitive; no robust two-country replication | `HERALD_G2_COVID_SENSITIVITY_AUDIT.md`; DEC-024d |
-| G2 Main: aggregate variation, period comparisons, sector patterns | Authorised descriptively for all; inferential claim robust only for FR | `HERALD_G2_DYNAMICS_AUDIT.md` |
-| G2 Evidence: G-13 PARTIALLY_SUPPORTED (DEC-024c) | DONE 2026-06-11 | Evidence matrix G-13 |
+| G2 Main: aggregate variation, period comparisons, sector patterns | DONE 2026-06-11 — descriptive rolling-window analysis; FR stable, NL/PT modest variation, PT largest Δweight. 45 tests pass. DEC-025. | `HERALD_G2_AGGREGATE_DYNAMICS_AUDIT.md`; `build_g2_aggregate_dynamics.py`; `g2_dynamics/` |
+| G2 Evidence: G-13 PARTIALLY_SUPPORTED (DEC-024c); G-14 SUPPORTED as a descriptive computed statement (DEC-025) | DONE 2026-06-11 | Evidence matrix G-13, G-14 |
 
 ---
 

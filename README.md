@@ -316,7 +316,7 @@ Le contrat G0 est validé (10/10). L'implémentation reste limitée aux couches
 observables auditées. Voir :
 - `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` — roadmap complet G0→G6→Bloco 3
 - `reports/HERALD_RESEARCH_GANTT.md` — Gantt réaliste avec DATE_LIMITE_A_CONFIRMER
-- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — log de décisions DEC-001→DEC-017
+- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — log de décisions DEC-001→DEC-025
 - `reports/HERALD_EVIDENCE_MATRIX.md` — matrice de claims et statuts
 
 **Visualisation (DEC-014) :**  
@@ -326,13 +326,13 @@ seulement après validation des couches L1, L2 et L3. L3 et L2 sont maintenant
 validés; ne pas modifier ce fichier ni générer un nouveau HTML avant autorisation
 explicite.
 
-**État du graphe économique dynamique (2026-06-10) :**
+**État du graphe économique dynamique (2026-06-11) :**
 
 - **G0:** contrat formel complet, 10/10 items.
 - **L3 territoire-structure:** PASS pour FR/NL (q=0.005, LOYO=True, bootstrap stable).
   PT exclu du gate 9-secteurs (KZ absent par définition INE — DEC-018).
 - **L1 RCA secteur-secteur:** FAIL au gate commun (NL pass, FR fail, PT inéligible).
-- **L2 co-croissance temporellement causale:** PASS pour FR/NL/PT (q=0.005, LOYO=True, COVID-robuste — DEC-019).
+- **L2 co-croissance sans fuite temporelle:** PASS pour FR/NL/PT (q=0.005, LOYO=True, COVID-robuste — DEC-019).
   PT participe avec 8 secteurs. Arêtes = corrélations de co-mouvement calculées
   sans données futures, ni prédictibilité de Granger ni causalité structurelle.
 - **Détection de communautés (L2):** FAIL 0/3 sous contrôles corrigés; la
@@ -352,6 +352,14 @@ explicite.
   4/9→5/9 et PT 4/8→0/8. Le gate 2/3 passe dans les deux scénarios mais avec
   des pays différents; seule la France est COVID_ROBUST.
   G2_EDGE_STABILITY_NOT_SUPPORTED : M2 0.06-0.26, loin du seuil 0.70. M3 null BLOCKED.
+
+  G2 dynamique agrégée (DEC-025, 2026-06-11) : analyse descriptive terminée
+  pour FR/NL/PT. Les densités changent peu; les poids moyens sont stables en
+  FR, augmentent légèrement aux NL et davantage au PT. Les périodes sont des
+  fenêtres mobiles de cinq ans classées par leur dernière année observée:
+  «2020» signifie fenêtre terminant en 2020, disponible en 2021. G-14 est
+  `SUPPORTED` uniquement comme constat descriptif calculé. Les intervalles par
+  rééchantillonnage de paires ne sont pas des intervalles de confiance.
   G-13 : PARTIALLY_SUPPORTED et COVID_SENSITIVE hors FR. Portée autorisée :
   description agrégée pour tous les pays; claim inférentiel robuste uniquement pour FR.
   Interdit : claims arêtes individuelles, pooling pays, causalité, communautés, recommandation.
