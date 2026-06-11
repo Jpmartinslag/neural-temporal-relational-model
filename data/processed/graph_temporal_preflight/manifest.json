@@ -1,0 +1,139 @@
+{
+  "schema_version": "1.0",
+  "contract": {
+    "causal": "max(source_observation_year) < eval_year",
+    "no_cross_country_edges": true,
+    "no_country_pooling": true,
+    "pt_kz_always_masked": true,
+    "missing_not_zero": true,
+    "deterministic_ordering": true
+  },
+  "sources": {
+    "sector_panel": "/home/jpdark/Downloads/project_recomm/dataset/data/processed/economic_graph/sector_panel_fr_nl_pt.csv",
+    "sector_panel_checksum": "0dbe2320e05143d4bc6da2aa0b9b1a9a",
+    "panel_NL": "/home/jpdark/Downloads/project_recomm/dataset/data/processed/european_panel/nl_panel.csv",
+    "panel_NL_checksum": "ff34d1fb2f1cc582ed779112fa227f9a"
+  },
+  "window": 5,
+  "min_periods": 4,
+  "feature_names": [
+    "sector_growth_1y",
+    "sector_share",
+    "births_norm"
+  ],
+  "folds": [
+    {
+      "country": "NL",
+      "eval_year": 2019,
+      "n_regions": 40,
+      "n_sectors": 9,
+      "sectors": [
+        "BE",
+        "FZ",
+        "GI",
+        "JZ",
+        "KZ",
+        "LZ",
+        "MN",
+        "OQ",
+        "RU"
+      ],
+      "max_train_obs_year": 2018,
+      "adj_shape": [
+        9,
+        40,
+        40
+      ],
+      "features_shape": [
+        40,
+        9,
+        3
+      ],
+      "n_observed_targets": 40,
+      "checksums": {
+        "node_features": "bbd5896cab0d7a09366a8ccd770382cb",
+        "adjacency_l2": "e563493ac2f7f4e7b24c786c7ba42771",
+        "masks": "ffebd2a52d7b70c3b86e2555579bf20f",
+        "targets": "ce3b439baa86cd69757114c67efe58f0"
+      }
+    },
+    {
+      "country": "NL",
+      "eval_year": 2020,
+      "n_regions": 40,
+      "n_sectors": 9,
+      "sectors": [
+        "BE",
+        "FZ",
+        "GI",
+        "JZ",
+        "KZ",
+        "LZ",
+        "MN",
+        "OQ",
+        "RU"
+      ],
+      "max_train_obs_year": 2019,
+      "adj_shape": [
+        9,
+        40,
+        40
+      ],
+      "features_shape": [
+        40,
+        9,
+        3
+      ],
+      "n_observed_targets": 40,
+      "checksums": {
+        "node_features": "7f148b330d977fc713795b41332135b6",
+        "adjacency_l2": "c54c3e90e1eabdbe22acd09a4a9c5bba",
+        "masks": "ffebd2a52d7b70c3b86e2555579bf20f",
+        "targets": "8ed528bee3b9215e1bd29be08b6fdf1b"
+      }
+    },
+    {
+      "country": "NL",
+      "eval_year": 2021,
+      "n_regions": 40,
+      "n_sectors": 9,
+      "sectors": [
+        "BE",
+        "FZ",
+        "GI",
+        "JZ",
+        "KZ",
+        "LZ",
+        "MN",
+        "OQ",
+        "RU"
+      ],
+      "max_train_obs_year": 2020,
+      "adj_shape": [
+        9,
+        40,
+        40
+      ],
+      "features_shape": [
+        40,
+        9,
+        3
+      ],
+      "n_observed_targets": 40,
+      "checksums": {
+        "node_features": "6cde6fe3047155b0fd1dc4ab8e2a79b8",
+        "adjacency_l2": "ae88a5a3ef0fcb80114a54965f564433",
+        "masks": "ffebd2a52d7b70c3b86e2555579bf20f",
+        "targets": "ccca198d1176fdba39ee8e3c34c77993"
+      }
+    }
+  ],
+  "structural_absent": [
+    [
+      "PT",
+      "KZ"
+    ]
+  ],
+  "build_time_s": 0.63,
+  "n_folds": 3
+}

@@ -1,0 +1,4 @@
+country,eval_year,n_regions,n_sectors,max_train_obs_year,n_observed_targets,adj_checksum,features_checksum
+NL,2019,40,9,2018,40,e563493ac2f7f4e7b24c786c7ba42771,bbd5896cab0d7a09366a8ccd770382cb
+NL,2020,40,9,2019,40,c54c3e90e1eabdbe22acd09a4a9c5bba,7f148b330d977fc713795b41332135b6
+NL,2021,40,9,2020,40,ae88a5a3ef0fcb80114a54965f564433,6cde6fe3047155b0fd1dc4ab8e2a79b8

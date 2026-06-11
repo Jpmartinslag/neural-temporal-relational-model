@@ -1,5 +1,5 @@
 # HERALD Codex Memory
-Updated 2026-06-10 (Phase 4Q + strategic reorientation). Read first; verify drift with `rtk git status --short`.
+Updated 2026-06-11 (DEC-027: causal tensor preflight + E0 NL smoke E0_PASS). Read first; verify drift with `rtk git status --short`.
 
 ## Rules
 - Repo `/home/jpdark/Downloads/project_recomm/dataset`.
@@ -187,18 +187,45 @@ Next: G4-G5 explanation/visualization.
 Reports written: HERALD_G2_REPORT_SECTION_FR.md, HERALD_G2_REPORT_FIGURE_SELECTION.md, HERALD_G2_DASHBOARD_INTEGRATION_SPEC.md
 No dashboard modification (DEC-014). No HPC, GNN, recommendation.
 
+**Graph-temporal tensor preflight and E0 smoke (DEC-027): E0_PASS (2026-06-11).**
+- EconoGNN: `REFERENCE_ONLY`; dynamic observed trade graph, different task,
+  scale and evaluation; public GitHub incomplete.
+- A0 remains country-specific AR/Ridge.
+- A1 candidates: low-capacity GConvGRU and EvolveGCN-H over per-year causal L2.
+- All candidates predict the same territorial total; sector births are graph
+  features, not a separate target.
+- NL is engineering smoke only (COVID-sensitive). FR is first scientific local
+  test because only FR is robust under both G2 COVID scenarios.
+- E0 PASS: 1.32s runtime, 0.023 GB memory, 311/311 tests, zero leakage, zero
+  mask errors, deterministic outputs. One defect found and corrected: Inf growth
+  for NL/CR02/LZ/2020 (birth from zero); fixed with isfinite guard in obs_mask.
+- Tensors: `data/processed/graph_temporal_preflight/` — 3 NL folds, (40,9,3)
+  features, (9,40,40) adjacency.
+- Evidence matrix corrected: 31 claims (was 29); counts: SUPPORTED=11,
+  PARTIALLY_SUPPORTED=3, NOT_SUPPORTED=5, NOT_TESTED=5.
+- FR scientific local test (S1) is AUTHORIZED. HPC remains BLOCKED.
+
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)
 Terminal use case. Requires Bloco 1 + Bloco 2 complete.
 Cannot be claimed as a current capability.
 
+## Documents créés/révisés 2026-06-11 (DEC-027 tensor + E0)
+- `src/data/european_panel/build_graph_temporal_preflight.py` — causal tensor builder
+- `src/modeles/run_e0_smoke_nl.py` — E0 engineering smoke (NL, 3 eval years)
+- `tests/test_graph_temporal_preflight.py` — 33 tests, 18 methodological invariants
+- `data/processed/graph_temporal_preflight/` — 3 NL fold artifacts + manifest
+- `reports/HERALD_GRAPH_TEMPORAL_E0_PREFLIGHT_AUDIT.md` — E0_PASS audit report
+- `reports/HERALD_EVIDENCE_MATRIX.md` — corrected to 31 claims (was 29)
+
 ## Documents créés/révisés 2026-06-10
-- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — DEC-001 to DEC-019 (DEC-018: PT KZ exclusion; DEC-019: L2 PASS)
-- `reports/HERALD_EVIDENCE_MATRIX.md` — 25 claims (G-10: L2 SUPPORTED; G-11: community NOT_SUPPORTED), all classified
+- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — DEC-001 to DEC-027
+- `reports/HERALD_EVIDENCE_MATRIX.md` — 31 claims (G-10: L2 SUPPORTED; G-11: community NOT_SUPPORTED), all classified
 - `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` — G0→G6→Bloco 3; dashboard section added
 - `reports/HERALD_RESEARCH_GANTT.md` — Gantt with DATE_LIMITE_A_CONFIRMER; task 4.4 updated
 - `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_LITERATURE_REVIEW.md` — ≥30 works
-- `reports/bibliography/HERALD_REFERENCES_MASTER.md` — 25 refs, 9 axes
+- `reports/bibliography/HERALD_REFERENCES_MASTER.md` — 25 master refs, 9 axes; EconoGNN verified
+- `reports/bibliography/herald_graph_temporal_references.bib` — 22 architecture/evaluation sources
 - `reports/bibliography/herald_references.bib` — BibTeX; Friedman 2008 VERIFIED_PRIMARY
 - `reports/bibliography/HERALD_REFERENCE_AUDIT.csv` — audit table; Friedman 2008 VERIFIED_PRIMARY
 
