@@ -687,3 +687,53 @@ and PT as sensitivity findings. Edge stability remains `NOT_SUPPORTED`.
 **Reconciliation:** G-10 concerns stability of the complete dense Pearson
 weight field. G-13 concerns identity overlap in sparse top-k graphs. G-10 does
 not validate stable individual edges.
+
+---
+
+## DEC-025 — 2026-06-11 — G2 aggregate dynamics characterization complete
+
+**Phase:** Bloco 2 — G2 Descriptive
+**Question:** How does the aggregate structure of the L2 co-growth graph vary
+over time by country and sector?
+**Evidence:** Builder `src/data/european_panel/build_g2_aggregate_dynamics.py`
+produces 321 annual metric rows (FR 90, NL 127, PT 104) across density, weight
+distribution (mean, median, std, quantiles), turnover, Jaccard,
+pair-resampling sensitivity intervals, period summaries, and period
+comparisons. The top-k graph contains positive correlations only, so sign
+fractions are structural diagnostics. 45 tests pass.
+
+Key findings:
+- FR: density stable (Δ < 0.001), weight stable (Δ < 0.01), turnover 79%.
+- NL: slight density increase (+0.006), modest weight increase (+0.011),
+  turnover 59%.
+- PT: negligible density change (+0.001), largest weight increase (+0.048),
+  turnover 51%.  RU and MN sectors show Δweight > 0.13.
+- The rolling graph ending in 2020 shows slight weight dips for FR and NL but
+  not PT. This is not a single-year graph or a COVID-effect estimate.
+- COVID sensitivity: FR COVID_ROBUST, NL and PT COVID_SENSITIVE.
+- G2_CROSS_COUNTRY_REPLICATION_NOT_SUPPORTED.
+
+**Alternatives considered:** Inferential tests on period differences.
+Rejected: small number of years per period, non-independent observations,
+no pre-registered hypothesis for sector-level differences.
+**Decision:** G2 aggregate dynamics descriptive characterization is complete.
+G-14 is `SUPPORTED` strictly as a computed descriptive statement. The limited
+FR inferential claim comes from the corrected controls in G-13/DEC-024d, not
+from the period summaries or pair-resampling intervals. NL and PT remain
+descriptive and sensitivity results only.
+**Rationale:** Descriptive characterization of an already-validated graph
+(G-10 SUPPORTED) does not require new statistical gates.  The analysis is
+scope-constrained: no individual-edge, causal, community, forecast, or
+recommendation claims.
+**Limitations:** Small year counts per period. Periods contain overlapping
+five-year rolling windows. Pair-resampling intervals are not confidence
+intervals because territory pairs share nodes. Positive-edge top-k selection
+makes sign fractions non-inferential. Pearson rolling correlation conflates
+co-movement with shared trends. MAUP applies. Cross-country replication not
+achieved.
+**Reopen condition:** Not applicable — descriptive characterization is
+complete.  New analysis questions require new pre-registration.
+**Affected files:** `src/data/european_panel/build_g2_aggregate_dynamics.py`;
+`tests/test_g2_aggregate_dynamics.py`;
+`data/processed/economic_graph/g2_dynamics/`;
+`reports/HERALD_G2_AGGREGATE_DYNAMICS_AUDIT.md`.

@@ -1,0 +1,136 @@
+{
+  "protocol": "G2 Aggregate Dynamics \u2014 descriptive characterization of L2 temporal graph",
+  "source_panel": "data/processed/economic_graph/sector_panel_fr_nl_pt.csv",
+  "source_checksum_sha256_16": "86fe5bedaa4fe8fe",
+  "generated_from_commit": "b3244ef4ff77",
+  "parameters": {
+    "window": 5,
+    "min_periods": 4,
+    "top_k_principal": 5,
+    "top_k_variants": [
+      3,
+      5,
+      10
+    ],
+    "near_zero_threshold": 0.05,
+    "pair_resample_n": 200,
+    "pair_resample_frac": 0.8,
+    "pair_resample_seed": 42,
+    "pair_resample_interpretation": "descriptive sensitivity interval; territory pairs share nodes and are not independent",
+    "period_definition": "period is classified by the last observation year in the rolling window; observation_year_last=2020 maps to eval_year=2021",
+    "top_k_edge_sign": "positive correlations only"
+  },
+  "countries": {
+    "FR": {
+      "n_sectors": 9,
+      "sectors": [
+        "BE",
+        "FZ",
+        "GI",
+        "JZ",
+        "KZ",
+        "LZ",
+        "MN",
+        "OQ",
+        "RU"
+      ],
+      "n_eval_years": 10,
+      "eval_year_range": [
+        2017,
+        2026
+      ],
+      "mean_density_overall": 0.02273425499231951,
+      "mean_weight_overall": 0.946657149894724,
+      "mean_turnover_overall": 0.790275179153818,
+      "mean_density_pre": 0.022433435739887354,
+      "mean_density_post": 0.02299425385446891,
+      "mean_weight_pre": 0.9500889509796091,
+      "mean_weight_post": 0.9453398854665985
+    },
+    "NL": {
+      "n_sectors": 9,
+      "sectors": [
+        "BE",
+        "FZ",
+        "GI",
+        "JZ",
+        "KZ",
+        "LZ",
+        "MN",
+        "OQ",
+        "RU"
+      ],
+      "n_eval_years": 15,
+      "eval_year_range": [
+        2012,
+        2026
+      ],
+      "mean_density_overall": 0.1671512214819301,
+      "mean_weight_overall": 0.8405785400757855,
+      "mean_turnover_overall": 0.5898867208064259,
+      "mean_density_pre": 0.165331928345627,
+      "mean_density_post": 0.17142450142450144,
+      "mean_weight_pre": 0.8385643739862908,
+      "mean_weight_post": 0.8495545267994145
+    },
+    "PT": {
+      "n_sectors": 8,
+      "sectors": [
+        "BE",
+        "FZ",
+        "GI",
+        "JZ",
+        "LZ",
+        "MN",
+        "OQ",
+        "RU"
+      ],
+      "n_eval_years": 13,
+      "eval_year_range": [
+        2013,
+        2025
+      ],
+      "mean_density_overall": 0.2763782051282051,
+      "mean_weight_overall": 0.812977719953087,
+      "mean_turnover_overall": 0.5069849698328897,
+      "mean_density_pre": 0.27619791666666665,
+      "mean_density_post": 0.2775,
+      "mean_weight_pre": 0.7983831406409945,
+      "mean_weight_post": 0.8463425977520721
+    }
+  },
+  "scope_constraints": {
+    "edges_are": "statistical co-movement associations, not causality",
+    "individual_edges_stable": false,
+    "communities_validated": false,
+    "forecast_utility": "NOT_SUPPORTED (DEC-023)",
+    "cross_country_pooling": "PROHIBITED",
+    "fr_aggregate_signal": "COVID_ROBUST",
+    "nl_aggregate_signal": "COVID_SENSITIVE",
+    "pt_aggregate_signal": "COVID_SENSITIVE",
+    "cross_country_replication": "NOT_SUPPORTED (gate passes with different countries)"
+  },
+  "n_annual_rows": 321,
+  "n_period_rows": 78,
+  "n_comparison_rows": 52,
+  "n_topk_rows": 321,
+  "n_covid_rows": 321,
+  "figures": [
+    "g2_density_temporal_FR.png",
+    "g2_weight_temporal_FR.png",
+    "g2_heatmap_FR.png",
+    "g2_post_minus_pre_FR.png",
+    "g2_turnover_jaccard_FR.png",
+    "g2_density_temporal_NL.png",
+    "g2_weight_temporal_NL.png",
+    "g2_heatmap_NL.png",
+    "g2_post_minus_pre_NL.png",
+    "g2_turnover_jaccard_NL.png",
+    "g2_density_temporal_PT.png",
+    "g2_weight_temporal_PT.png",
+    "g2_heatmap_PT.png",
+    "g2_post_minus_pre_PT.png",
+    "g2_turnover_jaccard_PT.png",
+    "g2_comparative_panel.png"
+  ]
+}
