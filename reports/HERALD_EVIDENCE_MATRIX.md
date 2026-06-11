@@ -68,6 +68,7 @@
 | MET-02 | Moran's I with 999 permutations and BH/FDR correction is the correct spatial autocorrelation protocol | Phase 4O-C protocol | 4O-C | IT/PT/AT | Pre-registered gate | `HERALD_PHASE4O_B_RESIDUAL_SPATIAL_AUDIT.md` | Moderate | Standard for spatial econometrics | LOO threshold (50%) is ad-hoc | `SUPPORTED` |
 | MET-03 | Pooled WMAPE is an admissible primary result for European panel | Phase 4J semantic audit | 4J | FR/NL/BE/PT | — | `HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md` | Strong refutation | Universal | Incommensurable targets cannot be pooled | `REFUTED_UNDER_CURRENT_PROTOCOL` |
 | MET-04 | Graph attention weights are interpretable explanations of economic relations | Not tested | — | — | — | — | None | — | Requires validation against null model and economic ground truth | `NOT_TESTED` |
+| MET-05 | GConvGRU or EvolveGCN-H is the correct graph-temporal architecture for HERALD | Literature preflight only (DEC-027) | Pre-implementation | FR/NL/PT sector panel | Same-target rolling-origin protocol and fail-closed gates specified; no model run | `HERALD_GRAPH_TEMPORAL_ARCHITECTURE_DECISION.md` | Methodological candidate selection only | Not established | Phase 5 fixed-L2 corrector failed; trainable graph-temporal candidates remain untested | `NOT_TESTED` |
 
 ---
 
@@ -75,13 +76,13 @@
 
 | Status | Count |
 |--------|------:|
-| `SUPPORTED` | 10 |
-| `PARTIALLY_SUPPORTED` | 2 |
+| `SUPPORTED` | 11 |
+| `PARTIALLY_SUPPORTED` | 3 |
 | `EXPLORATORY` | 1 |
-| `NOT_SUPPORTED` | 4 |
+| `NOT_SUPPORTED` | 5 |
 | `REFUTED_UNDER_CURRENT_PROTOCOL` | 6 |
 | `NOT_TESTED` | 5 |
-| **Total** | **28** |
+| **Total** | **31** |
 
 ---
 
