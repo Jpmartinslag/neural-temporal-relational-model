@@ -183,7 +183,8 @@ Findings:
 - FR_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED.
 Period `2020` means a five-year rolling graph ending in observation year 2020
 (available at eval_year=2021), not a graph based only on 2020.
-Next: G4-G5 explanation/visualization or report writing.
+Next: G4-G5 explanation/visualization.
+Reports written: HERALD_G2_REPORT_SECTION_FR.md, HERALD_G2_REPORT_FIGURE_SELECTION.md, HERALD_G2_DASHBOARD_INTEGRATION_SPEC.md
 No dashboard modification (DEC-014). No HPC, GNN, recommendation.
 
 
