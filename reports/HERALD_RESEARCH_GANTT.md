@@ -145,6 +145,20 @@ economic relations, their evolution, and temporal patterns. NOT forecast improve
 | G2 Main: aggregate variation, period comparisons, sector patterns | DONE 2026-06-11 — descriptive rolling-window analysis; FR stable, NL/PT modest variation, PT largest Δweight. 45 tests pass. DEC-025. | `HERALD_G2_AGGREGATE_DYNAMICS_AUDIT.md`; `build_g2_aggregate_dynamics.py`; `g2_dynamics/` |
 | G2 Evidence: G-13 PARTIALLY_SUPPORTED (DEC-024c); G-14 SUPPORTED as a descriptive computed statement (DEC-025) | DONE 2026-06-11 | Evidence matrix G-13, G-14 |
 
+### Graph-temporal architecture preflight
+
+| Task | Status | Deliverable |
+|------|--------|-------------|
+| Literature and EconoGNN audit | DONE 2026-06-11 | 20-method matrix + 22-source audited bibliography |
+| Same-target architecture decision | DONE 2026-06-11 | DEC-027; A0 Ridge, A1a GConvGRU, A1b EvolveGCN-H |
+| E0 schema 1.0 tensor preflight | DONE 2026-06-11 — reclassified `E0_STATIC_SNAPSHOT_PASS` (DEC-028) | `HERALD_GRAPH_TEMPORAL_E0_PREFLIGHT_AUDIT.md` |
+| E0-v2 schema 2.0 smoke (NL, 3 folds) | DONE 2026-06-11 — **`E0_V2_PASS`**: 13.92s, 0.035 GB RSS, 57/57 tests (DEC-028) | `reports/HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md` |
+| FR adjacency audit (5 eval years, schema 2.0) | DONE 2026-06-11 — **`FR_ADJACENCY_READY`**: 280 ZE, 0 isolated @k=3/5/10, all 8 criteria pass | `reports/HERALD_GRAPH_TEMPORAL_FR_ADJACENCY_PREFLIGHT.md` |
+| A1 implementation contract | DONE 2026-06-11 — **FROZEN** (DEC-028): interface, rules, A0/A1a/A1b specs, 11 mandatory tests | `reports/HERALD_GRAPH_TEMPORAL_A1_IMPLEMENTATION_CONTRACT.md` |
+| GConvGRU A1a + EvolveGCN-H A1b + A0-neural | **NEXT** | `src/modeles/graph_temporal_models.py`, `tests/test_graph_temporal_a1.py` |
+| FR scientific local test (S1-FR) | BLOCKED — awaits A1 implementation + 11 tests pass | 5 seeds, 5 eval years, all controls |
+| HPC confirmatory battery | BLOCKED | Requires S1-FR local gate + supervisor approval |
+
 ---
 
 ## Phase 6 — Report Writing
@@ -197,9 +211,9 @@ economic relations, their evolution, and temporal patterns. NOT forecast improve
 | Phase 0: Organisation | 8/9 complete; deadline confirmation pending | ✅ Required | 1 day |
 | Phase 1: G0 + data audit + literature | Technically complete; supervisor sign-off pending | ✅ Required | Complete |
 | Phase 2: G1 observable graph | In progress (L3 FR/NL PASS; L1 FAIL; L2 FR/NL/PT PASS) | ✅ Required | Community detection baseline (2.8) remaining |
-| Phase 3: G2/G3 dynamic graph | Not started | Optional | 4–6 weeks |
+| Phase 3: G2/G3 dynamic graph | G2 descriptive complete; edge stability not supported; G3 not started | Optional | Remaining scope depends on report deadline |
 | Phase 4: G5 explanation + visualization | Not started | ✅ Required | 3–4 weeks |
-| Phase 5: G6 forecast integration | Not started | Optional | 2–3 weeks |
+| Phase 5: G6 forecast integration | Fixed-L2 corrector closed NOT_SUPPORTED; DEC-027 preflight only | Optional | Local E0/S1 gates before any HPC |
 | Phase 6: Report | Not started | ✅ Required | 10 weeks before deadline |
 | Phase 7: Article | Not started | Optional | Parallel with Phase 4+ |
 

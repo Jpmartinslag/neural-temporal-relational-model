@@ -789,3 +789,90 @@ promoted.
 `HERALD_GRAPH_TEMPORAL_ARCHITECTURE_DECISION.md`;
 `reports/bibliography/herald_graph_temporal_references.bib`;
 `reports/bibliography/HERALD_GRAPH_TEMPORAL_REFERENCE_AUDIT.csv`.
+
+---
+
+## DEC-028 — 2026-06-11 — Graph-temporal schema 2.0 and E0-v2 engineering gate
+
+**Phase:** Pre-A1 implementation (graph-temporal)
+**Question:** Is schema 1.0 (static snapshot tensors) sufficient for GConvGRU/EvolveGCN-H training, and what corrections are required?
+
+**Evidence:** Schema 1.0 (commit 58a4e43) passed engineering smoke E0 but produced only static (R,S,F) and (S,R,R) tensors. Five defects were identified:
+
+1. **Static snapshot**: GConvGRU and EvolveGCN-H require temporal input sequences (T,R,S,F) and (T,S,R,R). Schema 1.0 exported only the most recent snapshot before each eval_year.
+2. **Simplified Ridge**: Used `target_births` from the country panel with 3 features (lag1, lag2, growth_1y) and target normalization — not the canonical H0b Ridge from `corrector.py`.
+3. **Single obs_mask**: One binary mask per (region, sector) caused growth=Inf to silently discard births and share features at the same position. Features with independent validity semantics must carry independent masks.
+4. **Signed dense adjacency**: 29–36% of off-diagonal Pearson correlations are negative across NL eval years, and 26–39% across FR eval years. A positive_topk representation is required as the primary; signed_split and shrinkage_dense are available for ablation.
+5. **tracemalloc memory**: Python-heap-only measurement is unreliable for NumPy native buffers. `resource.getrusage(RUSAGE_SELF).ru_maxrss` is used instead.
+
+**Corrected schema 2.0 tensors (per fold):**
+
+| Tensor | Shape | Description |
+|--------|-------|-------------|
+| `features_seq` | (T, R, S, F) | T=5 causal time steps before eval_year; F=3 (growth, share, births_norm) |
+| `feature_mask_seq` | (T, R, S, F) | Per-feature binary masks (int8); 0/1 independently per feature |
+| `struct_mask` | (R, S) | Static structural mask; 0 for PT-KZ; cannot be overwritten |
+| `adjacency_seq` | (T, S, R, R) | Positive_topk (k=5), symmetric, non-negative; per-step causal window |
+| `observation_years` | (T,) | Explicit obs year for each step; all < eval_year |
+| `y_true` | (R,) | `business_sector_total` from sector panel at obs_year=eval_year |
+| `y_ridge_canonical` | (R,) | Canonical H0b Ridge; ≥0; port of `corrector.py::predict_h0b` |
+| `residual` | (R,) | `y_true - y_ridge_canonical` where target_mask=1; NaN elsewhere |
+| `target_mask` | (R,) | 1 where y_true is finite |
+
+**Causal contract (all enforced by `LeakageError` assertions):**
+- `observation_years[t] < eval_year` for all t
+- `adjacency_seq[t]` uses only `sector_growth_1y` at obs_years ≤ `observation_years[t]`
+- Ridge trains only on `available_for_forecast_year < fold_eval_year`
+- PT-KZ is always `struct_mask=0`; no observation loop can overwrite it
+- `y_true` and `y_ridge_canonical` share the same source (`business_sector_total`)
+
+**Canonical Ridge H0b** (`corrector.py::predict_h0b` exact port):
+- Source: `sector_panel_fr_nl_pt.csv`, column `business_sector_total`
+- AR lags: n_lags=2 (avail_year offsets)
+- Normalization: StandardScaler on features only (not target)
+- Clip: `np.clip(y_hat, 0, None)` — births cannot be negative
+- Alpha: RIDGE_ALPHA_H0B=10.0
+
+**E0-v2 smoke (NL, 3 eval years [2019,2020,2021], 2 runs):**
+
+| Check | Description | Result |
+|-------|-------------|--------|
+| C1 | Causal ordering (all obs_years < eval_year) | PASS |
+| C2 | Sequence shapes (T,R,S,F) and (T,S,R,R) | PASS |
+| C3 | Per-feature mask independence, values ∈ {0,1} | PASS |
+| C4 | Adjacency per-step symmetric non-negative | PASS |
+| C5 | No NaN/Inf where feature_mask=1 | PASS |
+| C6 | y_ridge_canonical ≥ 0; canonical WMAPE (NL/2019=0.098, NL/2020=0.038, NL/2021=0.042) | PASS |
+| C7 | residual = y_true - y_ridge_canonical | PASS (max_diff=0) |
+| C8 | Two-run determinism (identical NPZ checksums) | PASS |
+
+Runtime 13.92s; RSS delta 0.035 GB; 57/57 tests pass.
+
+**FR adjacency audit (eval_years 2021–2025, 5 folds, k=5):**
+- 280 FR ZE regions, 9 sectors. 0 isolated nodes. 1 connected component (280 nodes) for every sector and eval_year. Perfect symmetry. No negative edges. No NaN/Inf. All 5 eval years pass all 8 fail-closed criteria. Neg_fraction in raw Pearson: 26–39% (positive_topk filters correctly). Mean degree ≈ 6 (before/after symmetrization). Max degree ≤ 14. Adjacency sequence varies temporally. Decision: `FR_ADJACENCY_READY`.
+
+**Tests (57 total):**
+- `tests/test_graph_temporal_preflight.py` — 33 schema 1.0 tests (T01–T18 + 15 additional) — all PASS
+- `tests/test_graph_temporal_v2.py` — 24 schema 2.0 tests (T19–T42) — all PASS
+
+**Decision:** Schema 2.0 adopted. Schema 1.0 tensors (`data/processed/graph_temporal_preflight/`) retained as audit trail, superseded for GNN use. Schema 2.0 tensors: `data/processed/graph_temporal_v2/`. **E0_V2_PASS**.
+
+**Authorization:** GConvGRU (A1a) and EvolveGCN-H (A1b) implementation is authorized under the contract in `reports/HERALD_GRAPH_TEMPORAL_A1_IMPLEMENTATION_CONTRACT.md`. **S1-FR remains BLOCKED** until models are implemented and pass the A1 implementation gate. **HPC remains BLOCKED** until S1-FR passes locally.
+
+**Conditions for opening S1-FR:**
+1. A1a (GConvGRU) and A1b (EvolveGCN-H) implemented with schema 2.0 tensors.
+2. A0-neural (equal-capacity no-graph control) implemented.
+3. Zero-adjacency control implemented.
+4. Both temporal and territory permutation controls implemented.
+5. At least 5 FR eval years; at least 5 seeds.
+6. Per-architecture tests pass (shape, mask propagation, bounded residual, ≤5,000 params, determinism).
+7. `git diff --check` clean.
+
+**Limitations:**
+- NL OQ sector has sparse co-growth data before 2019: 40 regions isolated at k=5 in NL/2019 audit (all 40 in OQ sector). This matches the Phase 5 finding (OQ zero edges 2012-2019). FR does not exhibit this issue (0 isolated at all k values and all eval years).
+- T=5 sequence length is a hyperparameter. Sensitivity to T not tested in E0.
+- Adjacency covers only positive top-k correlations; negative-correlation pairs are not represented in the primary artifact.
+
+**Reopen condition:** If both A1a and A1b fail the S1-FR gate, close the graph-temporal prediction branch and return to non-graph frugal improvements (Bloco 1). The L2 co-growth graph remains valid as an analytical (Bloco 2) artefact.
+
+**Affected files:** `src/data/european_panel/build_graph_temporal_v2.py`; `src/modeles/run_e0_smoke_nl_v2.py`; `tests/test_graph_temporal_v2.py`; `reports/HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md`; `reports/HERALD_GRAPH_TEMPORAL_E0_PREFLIGHT_AUDIT.md` (superseded notice); `reports/HERALD_GRAPH_TEMPORAL_FR_ADJACENCY_PREFLIGHT.md`; `reports/HERALD_GRAPH_TEMPORAL_A1_IMPLEMENTATION_CONTRACT.md`; `CODEX_MEMORY.md`.

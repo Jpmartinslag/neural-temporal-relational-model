@@ -316,8 +316,12 @@ Le contrat G0 est validé (10/10). L'implémentation reste limitée aux couches
 observables auditées. Voir :
 - `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` — roadmap complet G0→G6→Bloco 3
 - `reports/HERALD_RESEARCH_GANTT.md` — Gantt réaliste avec DATE_LIMITE_A_CONFIRMER
-- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — log de décisions DEC-001→DEC-025
-- `reports/HERALD_EVIDENCE_MATRIX.md` — matrice de claims et statuts
+- `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — log de décisions DEC-001→DEC-028
+- `reports/HERALD_EVIDENCE_MATRIX.md` — matrice de claims et statuts (32 claims, MET-06 ajouté)
+- `reports/HERALD_GRAPH_TEMPORAL_ARCHITECTURE_DECISION.md` — DEC-027: preflight méthodologique
+- `reports/HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md` — DEC-028: E0_V2_PASS; schema 2.0; 57 tests
+- `reports/HERALD_GRAPH_TEMPORAL_FR_ADJACENCY_PREFLIGHT.md` — FR_ADJACENCY_READY (280 ZE, 5 folds)
+- `reports/HERALD_GRAPH_TEMPORAL_A1_IMPLEMENTATION_CONTRACT.md` — contrat A1 FROZEN (DEC-028)
 
 **Visualisation (DEC-014) :**  
 `reports/dashboards/herald_france_final_dashboard.html` est la **base visuelle
@@ -364,6 +368,26 @@ explicite.
   description agrégée pour tous les pays; claim inférentiel robuste uniquement pour FR.
   Interdit : claims arêtes individuelles, pooling pays, causalité, communautés, recommandation.
   Ancien contrôle (commit cc48924) INVALIDE : permutait des poids pré-calculés. Ne pas citer p=0.005.
+
+  Préflight architecture graphe-temporelle (DEC-027, 2026-06-11) :
+  EconoGNN est une référence méthodologique, pas une base réutilisable.
+  A0 reste AR/Ridge. Les candidats A1 sont GConvGRU et EvolveGCN-H à faible
+  capacité, avec la même cible territoriale et des graphes L2 causaux par
+  fenêtre.
+
+  **DEC-028 (2026-06-11) — FERMÉ :**
+  - **E0_V2_PASS** : schema 2.0 corrige 5 défauts du schema 1.0 (séquences temporelles,
+    Ridge canonique, masques par feature, positive_topk, RSS mémoire). 13.92s, 0.035 GB,
+    57/57 tests, déterministe, zéro fuite. Artefacts : `data/processed/graph_temporal_v2/`.
+  - **FR_ADJACENCY_READY** : 280 ZE, 9 secteurs, 5 années d'évaluation (2021–2025),
+    0 nœuds isolés à k=3/5/10, 1 composante connexe, symétrie parfaite, 8 critères
+    fail-closed OK. Tenseurs prêts pour GConvGRU/EvolveGCN-H.
+  - **Contrat A1 FROZEN** : interface commune, tête résiduelle bornée (clamp_frac∈{0.10,0.15}),
+    pooling masqué, ≤5 000 paramètres, 11 tests obligatoires avant S1-FR.
+  - **S1_FR_BLOCKED** : bloqué jusqu'à implémentation de A1a (GConvGRU), A1b (EvolveGCN-H),
+    A0-neural, et passage des 11 tests dans `tests/test_graph_temporal_a1.py`.
+  - **HPC_BLOCKED** : bloqué jusqu'à passage de S1-FR en local.
+  - Prochaine étape : implémenter `src/modeles/graph_temporal_models.py` + tests.
 
 Voir `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md` et
 `reports/HERALD_PHASE5_HPC_SPEC.md`.

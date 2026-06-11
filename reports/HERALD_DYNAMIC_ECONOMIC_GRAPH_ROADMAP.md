@@ -1,9 +1,9 @@
 # HERALD — Dynamic Economic Graph Roadmap
 
-**Created:** 2026-06-10  
-**Revised:** 2026-06-10 (data inventory corrected after panel inspection)  
-**Status:** G0 COMPLETE — G1-L3 validated for FR/NL; G1-L1 common gate failed
-**Audit classification:** `PASS_WITH_LIMITATIONS` (G0 complete; G1-L3 validated for FR/NL)
+**Created:** 2026-06-10
+**Revised:** 2026-06-11 (DEC-028: E0_V2_PASS; FR_ADJACENCY_READY; A1 contract frozen)
+**Status:** G0 COMPLETE — G1-L3 validated for FR/NL; G1-L1 common gate failed; E0_V2_PASS; A1 NEXT
+**Audit classification:** `PASS_WITH_LIMITATIONS` (G0 complete; G1-L3 validated for FR/NL; DEC-028 schema 2.0 authorized)
 
 ---
 
@@ -147,8 +147,8 @@ Edges are organized in layers, from most to least interpretable:
 | 4. Commuting / mobility | Functional area connection (worker flows) | NL/BE/PT commuting files | Yes (static or lagged) |
 | 5. Geographic adjacency | Queen contiguity control | NUTS3 shapefile | Yes (static) |
 
-> **Geographic adjacency (layer 5)** is kept only as a **spatial control and null model baseline** — it was tested and rejected as a predictive feature in Phase 4P/4Q.  
-> **Edge weights** represent association or similarity, never structural economic causality.  
+> **Geographic adjacency (layer 5)** is kept only as a **spatial control and null model baseline** — it was tested and rejected as a predictive feature in Phase 4P/4Q.
+> **Edge weights** represent association or similarity, never structural economic causality.
 > **Negative edges** are permitted only when the method (e.g. partial correlation) and economic interpretation explicitly justify them.
 
 ### Country nucleus for G1
@@ -259,11 +259,11 @@ L2 co-growth are validated under G4.** L3 alone is insufficient.
 | 2 | Sparse VAR-Granger (L1) with **explicit causality disclaimer** | Low-rank; regularized | T≥2p needed; aggregate sectors to reduce p |
 | 3 | GLASSO with strong regularization (λ >> default) | Sparse; T>p if sector-aggregated | p must be << T; test at country-sector level |
 | 4 | TVGL (Hallac et al. 2017) | Detects structural change | T≥15 recommended; treat as experimental |
-| 5 | DSBM (Matias & Miele 2017) | Community evolution | K≤5 communities; T≥10 | 
+| 5 | DSBM (Matias & Miele 2017) | Community evolution | K≤5 communities; T≥10 |
 | 6 | NMF (temporal) | Interpretable factors | Low-rank; always feasible |
 | 7 | Graph structure learning / GNN end-to-end | Rich but overparameterized | T>>100 required; treat as future work |
 
-> Methods 1–3 are **primary candidates** for this project. Methods 4–6 are **conditional experiments**. Method 7 is **future work** only.  
+> Methods 1–3 are **primary candidates** for this project. Methods 4–6 are **conditional experiments**. Method 7 is **future work** only.
 > **Granger predictability ≠ economic causality**. All Granger/VAR edges must be labeled "Granger-predictive edge" in every output.
 
 ---
@@ -393,7 +393,7 @@ co-growth (PASS FR/NL/PT; DEC-019), and corrected Louvain community baseline
 
 | Track | Status | Immediate action |
 |-------|--------|-----------------|
-| Bloco 1: Temporal forecasting | Active | Non-graph improvements; conformal intervals; no architecture restart |
-| Bloco 2: Economic dynamic graph | L3 PASS FR/NL; L1 FAIL; L2 PASS FR/NL/PT | Community detection baseline (2.8), then L4/L5 |
+| Bloco 1: Temporal forecasting | Active | AR/Ridge remains canonical; no promoted architecture restart |
+| Bloco 2: Economic dynamic graph | L3 PASS FR/NL; L1 FAIL; L2 analytical layer supported; G2 robust only in FR under COVID sensitivity; **E0_V2_PASS (DEC-028); FR_ADJACENCY_READY; A1 contract frozen** | Implement A1a GConvGRU + A1b EvolveGCN-H + A0-neural; run 11 mandatory tests; then S1-FR |
 | Bloco 3: Recommendation | Not started | Deferred until Bloco 2 complete |
 | Visualization | France dashboard is official base | No new HTML; adapt incrementally after L1/L2/L3 validation (DEC-014) |
