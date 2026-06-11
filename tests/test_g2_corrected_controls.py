@@ -13,7 +13,10 @@
 """
 from __future__ import annotations
 
+import json
+
 import numpy as np
+import pandas as pd
 import pytest
 
 from src.data.european_panel.build_g2_corrected_controls import (
@@ -33,6 +36,7 @@ from src.data.european_panel.build_g2_corrected_controls import (
     top_k_adjacency,
     floor_p_diagnostics,
     RECONCILIATION_G1_VS_G2,
+    build_covid_comparison,
 )
 from src.data.european_panel.build_g1_l2_cogrowth import (
     permute_growth_temporal,
@@ -331,3 +335,55 @@ def test_stability_gate_passes_at_threshold():
     assert result["sector_pass"]["FZ"] is False
     # 1/2 = 0.50 >= SECTOR_FRAC_NEEDED (0.50) -> country passes
     assert result["country_pass"] is True
+
+
+def test_covid_comparison_classifies_unchanged_decision_as_robust(tmp_path):
+    base = {
+        "country": ["FR"],
+        "sector": ["BE"],
+        "top_k": [5],
+        "m1_obs_mean": [0.20],
+        "m2_obs_mean": [0.10],
+        "sector_signal_pass": [True],
+    }
+    included = tmp_path / "included.csv"
+    excluded = tmp_path / "excluded.csv"
+    pd.DataFrame(base).to_csv(included, index=False)
+    changed = dict(base)
+    changed["m1_obs_mean"] = [0.19]
+    changed["m2_obs_mean"] = [0.09]
+    pd.DataFrame(changed).to_csv(excluded, index=False)
+
+    out_csv = tmp_path / "comparison.csv"
+    out_json = tmp_path / "summary.json"
+    summary = build_covid_comparison(included, excluded, out_csv, out_json)
+
+    result = pd.read_csv(out_csv)
+    assert result.loc[0, "covid_classification"] == "COVID_ROBUST"
+    assert summary["covid_has_special_weight"] is False
+    assert json.loads(out_json.read_text())["n_sector_decisions_changed"] == 0
+
+
+def test_covid_comparison_classifies_changed_decision_as_sensitive(tmp_path):
+    included = pd.DataFrame({
+        "country": ["NL"],
+        "sector": ["GI"],
+        "top_k": [5],
+        "m1_obs_mean": [0.20],
+        "m2_obs_mean": [0.10],
+        "sector_signal_pass": [True],
+    })
+    excluded = included.copy()
+    excluded["sector_signal_pass"] = False
+    included_path = tmp_path / "included.csv"
+    excluded_path = tmp_path / "excluded.csv"
+    included.to_csv(included_path, index=False)
+    excluded.to_csv(excluded_path, index=False)
+
+    summary = build_covid_comparison(
+        included_path,
+        excluded_path,
+        tmp_path / "comparison.csv",
+        tmp_path / "summary.json",
+    )
+    assert summary["country_summary"]["NL"]["classification"] == "COVID_SENSITIVE"

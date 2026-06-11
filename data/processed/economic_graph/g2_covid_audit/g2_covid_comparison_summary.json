@@ -1,0 +1,37 @@
+{
+  "protocol": "same corrected G2 controls; only observation_year=2020 exclusion differs",
+  "covid_has_special_weight": false,
+  "included_artifact": "data/processed/economic_graph/g2_covid_audit/include_observation_2020/g2_corrected_controls.csv",
+  "excluded_artifact": "data/processed/economic_graph/g2_covid_audit/exclude_observation_2020/g2_corrected_controls.csv",
+  "country_summary": {
+    "FR": {
+      "n_sectors": 9,
+      "included_pass_sectors": 9,
+      "excluded_pass_sectors": 9,
+      "changed_sectors": 0,
+      "country_pass_included": true,
+      "country_pass_excluded": true,
+      "classification": "COVID_ROBUST"
+    },
+    "NL": {
+      "n_sectors": 9,
+      "included_pass_sectors": 4,
+      "excluded_pass_sectors": 5,
+      "changed_sectors": 3,
+      "country_pass_included": false,
+      "country_pass_excluded": true,
+      "classification": "COVID_SENSITIVE"
+    },
+    "PT": {
+      "n_sectors": 8,
+      "included_pass_sectors": 4,
+      "excluded_pass_sectors": 0,
+      "changed_sectors": 4,
+      "country_pass_included": true,
+      "country_pass_excluded": false,
+      "classification": "COVID_SENSITIVE"
+    }
+  },
+  "n_sector_decisions_changed": 7,
+  "n_sector_comparisons": 26
+}

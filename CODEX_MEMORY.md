@@ -155,16 +155,20 @@ N2 column permutation verified DEGENERATE for M1/M2 Jaccard (null std=0, p=1.0 a
 Metrics: M1 consecutive Jaccard · M2 mean pairwise Jaccard · M3 LOYO observed only (null BLOCKED).
 
 Verdicts:
-- G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED — FR 9/9 + NL 5/9 sectors FDR-sig (N1+N2); 2/3 countries.
+- Corrected COVID comparison (DEC-024d): FR 9/9 with and without obs-year
+  2020 (`COVID_ROBUST`); NL 4/9→5/9 and PT 4/8→0/8
+  (`COVID_SENSITIVE`). The 2/3 gate passes with different country pairs, so
+  there is no robust two-country replication.
 - G2_EDGE_STABILITY_NOT_SUPPORTED — M2 0.06-0.26, far below 0.70 threshold; 0/3 countries.
 - PT: 0/8 sectors significant → temporal signal not validated for PT.
 - M3 LOYO observed: FR 0.287 · NL 0.500 · PT 0.578. Null BLOCKED.
-- G-13: PARTIALLY_SUPPORTED.
+- G-13: PARTIALLY_SUPPORTED; inferential aggregate claim robust only for FR.
 
 Prior control (commit cc48924) INVALID: permuted pre-computed edge weights — p=0.005/26/26 invalid.
 Language: "associação estatística temporal observada", NOT causal attribution.
 No individual edge claims. No cross-country pooling. No recommendation.
-Next: G2 main descriptive (density/weight trends per period) — authorised for FR+NL.
+Next: G2 main descriptive (density/weight trends per period) for all countries;
+only FR may carry a COVID-robust inferential claim.
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)
 Terminal use case. Requires Bloco 1 + Bloco 2 complete.

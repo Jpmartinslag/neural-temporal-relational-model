@@ -348,9 +348,12 @@ explicite.
   Correcteur résiduel fixed-L2 fermé. L2 reste validé comme graphe analytique (G-10 SUPPORTED).
   Bloco 2 G2 preflight (2026-06-10) : résultats descriptifs valides (M2 Jaccard 0.06-0.26, turnover 59%).
   Contrôle corrigé (DEC-024c, 2026-06-11) : `build_g2_corrected_controls.py`, 199 perms N1+N2, pipeline complet.
-  G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED : FR 9/9, NL 5/9 secteurs FDR-sig (N1+N2). PT 0/8 — non validé.
+  Sensibilité COVID (DEC-024d) : FR reste 9/9 avec et sans 2020. NL change
+  4/9→5/9 et PT 4/8→0/8. Le gate 2/3 passe dans les deux scénarios mais avec
+  des pays différents; seule la France est COVID_ROBUST.
   G2_EDGE_STABILITY_NOT_SUPPORTED : M2 0.06-0.26, loin du seuil 0.70. M3 null BLOCKED.
-  G-13 : PARTIALLY_SUPPORTED. Portée autorisée : variation agrégée observée densité/poids FR/NL.
+  G-13 : PARTIALLY_SUPPORTED et COVID_SENSITIVE hors FR. Portée autorisée :
+  description agrégée pour tous les pays; claim inférentiel robuste uniquement pour FR.
   Interdit : claims arêtes individuelles, pooling pays, causalité, communautés, recommandation.
   Ancien contrôle (commit cc48924) INVALIDE : permutait des poids pré-calculés. Ne pas citer p=0.005.
 

@@ -367,9 +367,11 @@ def compute_signal_gate_country(
     for metric, null_lbl in metrics_nulls:
         dists = n1_dists if null_lbl == "n1" else n2_dists
         pvals = [empirical_p(obs[s][metric], dists[s][metric]) for s in sectors]
-        rejects = _bh_reject(pvals, fdr_q)
+        qvals = bh_fdr(pvals)
+        rejects = [float(qv) <= fdr_q for qv in qvals]
         for i, s in enumerate(sectors):
             raw_p[s][f"{metric}_{null_lbl}_p"] = pvals[i]
+            raw_p[s][f"{metric}_{null_lbl}_q"] = float(qvals[i])
             raw_p[s][f"{metric}_{null_lbl}_reject"] = rejects[i]
             null_arr = np.array([v for v in dists[s][metric] if np.isfinite(v)])
             raw_p[s][f"{metric}_{null_lbl}_pos"] = bool(
@@ -510,6 +512,8 @@ def run_corrected_controls(
     top_k_list: list[int] | None = None,
     seed_n1: int = SEED_N1,
     seed_n2: int = SEED_N2,
+    exclude_years: frozenset[int] = COVID_EXCLUDE,
+    scenario: str = "exclude_observation_2020",
     verbose: bool = True,
 ) -> dict:
     """Run corrected G2 temporal controls. Returns summary dict."""
@@ -543,7 +547,7 @@ def run_corrected_controls(
             print(f"  Sectors: {sectors}")
             print(f"  Eval years: {eval_years[0]}-{eval_years[-1]} ({len(eval_years)})")
 
-        exclude = COVID_EXCLUDE
+        exclude = exclude_years
 
         # Observed metrics for all k variants (k=principal needed for nulls)
         obs_by_k: dict[int, dict[str, dict]] = {}
@@ -624,6 +628,7 @@ def run_corrected_controls(
             rows_main.append({
                 "country": country,
                 "sector": s,
+                "scenario": scenario,
                 "top_k": TOP_K_PRINCIPAL,
                 "m1_obs_mean": obs_s["m1_mean"],
                 "m1_obs_median": obs_s["m1_median"],
@@ -639,6 +644,10 @@ def run_corrected_controls(
                 "p_m1_n2": empirical_p(obs_s["m1_mean"], n2_dists[s]["m1_mean"]),
                 "p_m2_n1": empirical_p(obs_s["m2_mean"], n1_dists[s]["m2_mean"]),
                 "p_m2_n2": empirical_p(obs_s["m2_mean"], n2_dists[s]["m2_mean"]),
+                "q_m1_n1": sig_gate["per_sector_detail"][s]["m1_mean_n1_q"],
+                "q_m1_n2": sig_gate["per_sector_detail"][s]["m1_mean_n2_q"],
+                "q_m2_n1": sig_gate["per_sector_detail"][s]["m2_mean_n1_q"],
+                "q_m2_n2": sig_gate["per_sector_detail"][s]["m2_mean_n2_q"],
                 "sector_signal_pass": sig_gate["sector_pass"][s],
                 "sector_stability_pass": stab_gate["sector_pass"][s],
             })
@@ -649,6 +658,7 @@ def run_corrected_controls(
                 rows_sensitivity.append({
                     "country": country,
                     "sector": s,
+                    "scenario": scenario,
                     "top_k": k,
                     "m1_obs_mean": obs_by_k[k][s]["m1_mean"],
                     "m2_obs_mean": obs_by_k[k][s]["m2_mean"],
@@ -700,6 +710,7 @@ def run_corrected_controls(
             "This tests whether co-movement identity depends on specific territory assignments."
         ),
         "params": {
+            "scenario": scenario,
             "top_k_principal": TOP_K_PRINCIPAL,
             "top_k_variants": top_k_list,
             "window": WINDOW,
@@ -708,7 +719,7 @@ def run_corrected_controls(
             "seed_n1": seed_n1,
             "seed_n2_row_wise": seed_n2,
             "fdr_q": FDR_Q,
-            "covid_excluded_from_windows": sorted(list(COVID_EXCLUDE)),
+            "observation_years_excluded_from_windows": sorted(list(exclude_years)),
             "eval_year_2020_retained": True,
             "m2_stability_threshold": M2_STABILITY_THRESHOLD,
             "countries_needed": COUNTRIES_NEEDED,
@@ -750,6 +761,82 @@ def run_corrected_controls(
     return summary
 
 
+def build_covid_comparison(
+    included_csv: Path,
+    excluded_csv: Path,
+    out_csv: Path,
+    out_json: Path,
+) -> dict:
+    """Compare identical corrected-control runs with and without obs-year 2020."""
+    inc = pd.read_csv(included_csv)
+    exc = pd.read_csv(excluded_csv)
+    keys = ["country", "sector", "top_k"]
+    merged = inc.merge(exc, on=keys, suffixes=("_included", "_excluded"), validate="one_to_one")
+
+    for metric in ["m1_obs_mean", "m2_obs_mean"]:
+        merged[f"{metric}_delta_excluded_minus_included"] = (
+            merged[f"{metric}_excluded"] - merged[f"{metric}_included"]
+        )
+        denom = merged[f"{metric}_included"].abs().replace(0, np.nan)
+        merged[f"{metric}_relative_delta"] = (
+            merged[f"{metric}_delta_excluded_minus_included"] / denom
+        )
+
+    merged["decision_changed"] = (
+        merged["sector_signal_pass_included"].astype(bool)
+        != merged["sector_signal_pass_excluded"].astype(bool)
+    )
+    merged["covid_classification"] = np.select(
+        [
+            merged["decision_changed"],
+            merged[
+                [
+                    "m1_obs_mean_included",
+                    "m1_obs_mean_excluded",
+                    "m2_obs_mean_included",
+                    "m2_obs_mean_excluded",
+                ]
+            ].isna().any(axis=1),
+        ],
+        ["COVID_SENSITIVE", "INSUFFICIENT_DATA"],
+        default="COVID_ROBUST",
+    )
+    merged.to_csv(out_csv, index=False)
+
+    country_summary = {}
+    for country, group in merged.groupby("country", sort=True):
+        included_pass = int(group["sector_signal_pass_included"].astype(bool).sum())
+        excluded_pass = int(group["sector_signal_pass_excluded"].astype(bool).sum())
+        changed = int(group["decision_changed"].sum())
+        n = len(group)
+        country_summary[country] = {
+            "n_sectors": n,
+            "included_pass_sectors": included_pass,
+            "excluded_pass_sectors": excluded_pass,
+            "changed_sectors": changed,
+            "country_pass_included": included_pass / n >= SECTOR_FRAC_NEEDED,
+            "country_pass_excluded": excluded_pass / n >= SECTOR_FRAC_NEEDED,
+            "classification": (
+                "COVID_ROBUST"
+                if changed == 0 and (included_pass / n >= SECTOR_FRAC_NEEDED)
+                == (excluded_pass / n >= SECTOR_FRAC_NEEDED)
+                else "COVID_SENSITIVE"
+            ),
+        }
+
+    summary = {
+        "protocol": "same corrected G2 controls; only observation_year=2020 exclusion differs",
+        "covid_has_special_weight": False,
+        "included_artifact": str(included_csv),
+        "excluded_artifact": str(excluded_csv),
+        "country_summary": country_summary,
+        "n_sector_decisions_changed": int(merged["decision_changed"].sum()),
+        "n_sector_comparisons": int(len(merged)),
+    }
+    out_json.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    return summary
+
+
 def main() -> None:
     import argparse
 
@@ -761,6 +848,11 @@ def main() -> None:
     parser.add_argument("--n-permutations", type=int, default=N_PERMUTATIONS)
     parser.add_argument("--seed-n1", type=int, default=SEED_N1)
     parser.add_argument("--seed-n2", type=int, default=SEED_N2)
+    parser.add_argument(
+        "--include-observation-year-2020",
+        action="store_true",
+        help="Include observation_year=2020 in rolling windows (main scenario).",
+    )
     args = parser.parse_args()
     run_corrected_controls(
         panel_path=args.panel,
@@ -768,6 +860,16 @@ def main() -> None:
         n_permutations=args.n_permutations,
         seed_n1=args.seed_n1,
         seed_n2=args.seed_n2,
+        exclude_years=(
+            frozenset()
+            if args.include_observation_year_2020
+            else COVID_EXCLUDE
+        ),
+        scenario=(
+            "include_observation_2020"
+            if args.include_observation_year_2020
+            else "exclude_observation_2020"
+        ),
     )
 
 

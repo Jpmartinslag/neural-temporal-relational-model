@@ -637,7 +637,9 @@ Source: `sector_panel_fr_nl_pt.csv` (NOT `g1_l2_edges.csv`).
 | PT | 0.447–0.509 | 0.243–0.261 | 0/8 | ✗ FAIL | ✗ FAIL |
 
 **Global verdicts:**
-- `G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED` — 2/3 countries pass (FR+NL; ≥2 required).
+- In the sensitivity scenario excluding observation year 2020, 2/3 countries
+  pass (FR+NL). DEC-024d supersedes an unconditional promotion because the
+  main scenario including 2020 passes with FR+PT instead.
 - `G2_EDGE_STABILITY_NOT_SUPPORTED` — M2 0.06–0.26 universally; 0/3 countries pass.
 
 **M3 LOYO reconstruction (observed, null BLOCKED):** FR 0.287 · NL 0.500 · PT 0.578.
@@ -647,7 +649,10 @@ Source: `sector_panel_fr_nl_pt.csv` (NOT `g1_l2_edges.csv`).
 
 **Sensitivity (k=3,5,10):** M2 increases with k; direction consistent across k for all countries.
 
-**G-13 status: PARTIALLY_SUPPORTED** — signal exceeds nulls for FR+NL; stability NOT supported.
+**G-13 status: PARTIALLY_SUPPORTED** — in the sensitivity scenario (exclude observation year 2020)
+signal exceeds nulls for FR (9/9) and NL (5/9); in the main scenario (include 2020) for FR (9/9)
+and PT (4/8). DEC-024d supersedes any unconditional reading: only FR is COVID-robust across both
+scenarios. Stability NOT supported (0/3 countries).
 
 **Scope restrictions (unchanged):**
 - Language: "associação estatística temporal observada", NOT causal attribution
@@ -658,3 +663,27 @@ Source: `sector_panel_fr_nl_pt.csv` (NOT `g1_l2_edges.csv`).
 `data/processed/economic_graph/g2_preflight/` (g2_corrected_controls*.csv, g2_corrected_m3_loyo.csv,
 g2_corrected_controls_summary.json), `tests/test_g2_corrected_controls.py`,
 `reports/HERALD_G2_PREFLIGHT.md`.
+
+### DEC-024d — COVID is a sensitivity factor, not a model weight (2026-06-11)
+
+**Question:** Does the G2 aggregate temporal-coherence decision depend on the
+2020 observation?
+
+**Protocol:** Repeat the full corrected N1/N2 experiment twice with identical
+parameters and seeds. Main includes `observation_year=2020`; sensitivity
+excludes only that observation from rolling windows. No feature, loss, sample
+or metric receives a COVID weight. `available_for_forecast_year=2020` remains.
+
+**Result:** FR remains 9/9 in both scenarios (`COVID_ROBUST`). NL changes from
+4/9 with 2020 to 5/9 without it; BE, LZ and RU change decision. PT changes from
+4/8 with 2020 to 0/8 without it; BE, GI, JZ and LZ change decision. NL and PT
+are `COVID_SENSITIVE`.
+
+**Decision:** The global 2/3 gate is not robust because it passes with FR+PT
+when 2020 is included and FR+NL when it is excluded. Promote only the FR
+aggregate signal as COVID-robust. Keep G-13 `PARTIALLY_SUPPORTED`; report NL
+and PT as sensitivity findings. Edge stability remains `NOT_SUPPORTED`.
+
+**Reconciliation:** G-10 concerns stability of the complete dense Pearson
+weight field. G-13 concerns identity overlap in sparse top-k graphs. G-10 does
+not validate stable individual edges.
