@@ -737,3 +737,17 @@ complete.  New analysis questions require new pre-registration.
 `tests/test_g2_aggregate_dynamics.py`;
 `data/processed/economic_graph/g2_dynamics/`;
 `reports/HERALD_G2_AGGREGATE_DYNAMICS_AUDIT.md`.
+
+---
+
+## DEC-026: G2 Scientific Reporting and Dashboard Specification
+**Date:** 2026-06-11
+**Context:** The G2 descriptive dynamics analysis was completed and validated in DEC-025. These results needed to be documented for the final scientific report and a specification needed to be defined for future dashboard integration.
+**Decision:**
+1. A report section (`HERALD_G2_REPORT_SECTION_FR.md`) was written in academic French, strictly adhering to the permitted claims (no causality, no Granger, no stable individual edges, no forecast improvement).
+2. Four figures were selected (`g2_comparative_panel.png`, `g2_weight_temporal_FR.png`, `g2_turnover_jaccard_FR.png`, `g2_post_minus_pre_PT.png`) and documented in `HERALD_G2_REPORT_FIGURE_SELECTION.md` with explicit allowed/prohibited interpretations.
+3. A dashboard integration specification (`HERALD_G2_DASHBOARD_INTEGRATION_SPEC.md`) was created, defining how to incorporate these findings without modifying the current HTML.
+**Rationale:** Preserves the boundary between verified descriptive results and unsupported inferential/causal claims during the transition to the report phase.
+**Limitations:** The report section remains a draft component. The dashboard specification is conceptual and not yet implemented.
+**Reopen condition:** Future dashboard implementation.
+**Affected files:** `HERALD_G2_REPORT_SECTION_FR.md`, `HERALD_G2_REPORT_FIGURE_SELECTION.md`, `HERALD_G2_DASHBOARD_INTEGRATION_SPEC.md`, `CODEX_MEMORY.md`.

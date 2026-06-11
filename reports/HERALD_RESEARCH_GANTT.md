@@ -153,6 +153,7 @@ economic relations, their evolution, and temporal patterns. NOT forecast improve
 |------|-------|-----|---------|-------------|-----------|------|-------------|
 | 6.1 Report outline | DATE_LIMITE_A_CONFIRMER − 10w | − 9w | 4.3 | Outline approved | Supervisor sign-off | None | — |
 | 6.2 Methods chapter | − 9w | − 7w | 6.1 | Draft chapter | Causal protocol and graph methodology | None | — |
+| 6.2b G2 Dynamics section | DRAFT 2026-06-11 | — | — | `HERALD_G2_REPORT_SECTION_FR.md` | Draft written in French | None | — |
 | 6.3 Results chapter | − 7w | − 5w | 6.2, all experiments | Draft chapter | Phase 4N/4O/G1/G4 results | Missing results | Describe planned experiments explicitly |
 | 6.4 Discussion / limitations | − 5w | − 4w | 6.3 | Draft chapter | Honest limitations, permitted claims | None | — |
 | 6.5 Introduction / abstract | − 4w | − 3w | 6.4 | Draft chapter | Scientific problem framed correctly | None | — |
