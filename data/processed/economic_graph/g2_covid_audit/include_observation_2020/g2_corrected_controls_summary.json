@@ -1,0 +1,1179 @@
+{
+  "protocol": "DEC-024c \u2014 corrected controls from source growth series",
+  "source": "data/processed/economic_graph/sector_panel_fr_nl_pt.csv",
+  "supersedes": "commit cc48924 (permuted pre-computed edge weights \u2014 invalid null)",
+  "n2_implementation_note": "N2 column permutation (permute_growth_territory_cols) was verified degenerate for M1/M2 Jaccard: null std=0.0, p=1.0 always (mathematically equivalent to node relabeling; Jaccard is label-invariant). N2 uses row-wise territory permutation (permute_growth_territory from build_g1_l2_cogrowth.py): within each observation_year, shuffle which territory receives which growth value. This tests whether co-movement identity depends on specific territory assignments.",
+  "params": {
+    "scenario": "include_observation_2020",
+    "top_k_principal": 5,
+    "top_k_variants": [
+      3,
+      5,
+      10
+    ],
+    "window": 5,
+    "min_periods": 4,
+    "n_permutations": 199,
+    "seed_n1": 42,
+    "seed_n2_row_wise": 137,
+    "fdr_q": 0.05,
+    "observation_years_excluded_from_windows": [],
+    "eval_year_2020_retained": true,
+    "m2_stability_threshold": 0.7,
+    "countries_needed": 2,
+    "sector_frac_needed": 0.5
+  },
+  "gate": {
+    "signal_country_results": {
+      "FR": true,
+      "NL": false,
+      "PT": true
+    },
+    "stability_country_results": {
+      "FR": false,
+      "NL": false,
+      "PT": false
+    },
+    "n_signal_pass": 2,
+    "n_stability_pass": 0,
+    "n_countries": 3,
+    "verdict_signal": "G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED",
+    "verdict_stability": "G2_EDGE_STABILITY_NOT_SUPPORTED",
+    "g13_status": "G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED"
+  },
+  "floor_p_diagnostics": {
+    "FR": {
+      "BE": {
+        "m1_mean_n1": {
+          "obs": 0.20568819181081835,
+          "null_mean": 0.1894615620119332,
+          "null_std": 0.003795681153207789,
+          "null_min": 0.18034413528811113,
+          "null_max": 0.19828920051750046,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m1_mean_n2": {
+          "obs": 0.20568819181081835,
+          "null_mean": 0.19406225021074475,
+          "null_std": 0.003245740826959816,
+          "null_min": 0.1832574254048922,
+          "null_max": 0.20162971677474786,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.06925783865652461,
+          "null_mean": 0.06175826044807696,
+          "null_std": 0.0015617546655824,
+          "null_min": 0.05764825748872778,
+          "null_max": 0.06806845836524358,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.06925783865652461,
+          "null_mean": 0.0633398594995457,
+          "null_std": 0.0013540731886450103,
+          "null_min": 0.059822541903177276,
+          "null_max": 0.06630304120151267,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        }
+      },
+      "FZ": {
+        "m1_mean_n1": {
+          "obs": 0.20605732692996617,
+          "null_mean": 0.18867626865283516,
+          "null_std": 0.0037951958974920107,
+          "null_min": 0.1774263613618511,
+          "null_max": 0.19793581646791442,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m1_mean_n2": {
+          "obs": 0.20605732692996617,
+          "null_mean": 0.18665366842502162,
+          "null_std": 0.0035939838915917746,
+          "null_min": 0.17822503245555119,
+          "null_max": 0.1952869699909866,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.06849197410489778,
+          "null_mean": 0.06144931682185985,
+          "null_std": 0.00155236890669911,
+          "null_min": 0.05690983768871863,
+          "null_max": 0.06543188955992829,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.06849197410489778,
+          "null_mean": 0.061485234061109964,
+          "null_std": 0.0014006214204596613,
+          "null_min": 0.05784264021314065,
+          "null_max": 0.0647519070641643,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        }
+      },
+      "GI": {
+        "m1_mean_n1": {
+          "obs": 0.2009757047241527,
+          "null_mean": 0.18861493218279982,
+          "null_std": 0.0038420768744491358,
+          "null_min": 0.17523245766728252,
+          "null_max": 0.19829912624854218,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m1_mean_n2": {
+          "obs": 0.2009757047241527,
+          "null_mean": 0.18561776117543008,
+          "null_std": 0.0035805581668426757,
+          "null_min": 0.1755592968996939,
+          "null_max": 0.1938821593766141,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.06641886651795735,
+          "null_mean": 0.06149722424534949,
+          "null_std": 0.0015980998266815994,
+          "null_min": 0.056109817748495626,
+          "null_max": 0.06625049081663874,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.06641886651795735,
+          "null_mean": 0.06134378775804493,
+          "null_std": 0.0014175179148001812,
+          "null_min": 0.057708488416667335,
+          "null_max": 0.06519882126358917,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        }
+      },
+      "JZ": {
+        "m1_mean_n1": {
+          "obs": 0.21417422946863554,
+          "null_mean": 0.1903160194034733,
+          "null_std": 0.0037514174836793803,
+          "null_min": 0.18039496500995572,
+          "null_max": 0.2024213697690569,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m1_mean_n2": {
+          "obs": 0.21417422946863554,
+          "null_mean": 0.1939446865409856,
+          "null_std": 0.003804092330431967,
+          "null_min": 0.18340513856508442,
+          "null_max": 0.2023169624925352,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.07225416541274202,
+          "null_mean": 0.06218079396249056,
+          "null_std": 0.001600070718228177,
+          "null_min": 0.056852791051401334,
+          "null_max": 0.06786299957492267,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.07225416541274202,
+          "null_mean": 0.06398944694406515,
+          "null_std": 0.0016241187663927528,
+          "null_min": 0.05987048812143359,
+          "null_max": 0.06882901248446174,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        }
+      },
+      "KZ": {
+        "m1_mean_n1": {
+          "obs": 0.2163859133977096,
+          "null_mean": 0.19023417482216337,
+          "null_std": 0.003844348352744105,
+          "null_min": 0.18134064696715643,
+          "null_max": 0.20634070355361508,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m1_mean_n2": {
+          "obs": 0.2163859133977096,
+          "null_mean": 0.19332915604848902,
+          "null_std": 0.0035842483087001097,
+          "null_min": 0.18412126286079086,
+          "null_max": 0.20322894327194638,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.07289271477076387,
+          "null_mean": 0.062149570545338824,
+          "null_std": 0.001468843166418998,
+          "null_min": 0.058319914916286957,
+          "null_max": 0.06620996413021675,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.07289271477076387,
+          "null_mean": 0.06374984524786016,
+          "null_std": 0.0014264614228076192,
+          "null_min": 0.05978549399571003,
+          "null_max": 0.06778911628389477,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        }
+      },
+      "LZ": {
+        "m1_mean_n1": {
+          "obs": 0.211569667912214,
+          "null_mean": 0.18894224402021548,
+          "null_std": 0.0038873983522371477,
+          "null_min": 0.17858756447687066,
+          "null_max": 0.1990227971378089,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m1_mean_n2": {
+          "obs": 0.211569667912214,
+          "null_mean": 0.19161890366773804,
+          "null_std": 0.0034839137747104815,
+          "null_min": 0.1795505111252968,
+          "null_max": 0.20340824711448516,
+          "n_finite": 199,
+          "n_unique": 198,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.0703944015932482,
+          "null_mean": 0.06156542573607364,
+          "null_std": 0.0015914777230164828,
+          "null_min": 0.05772179053156529,
+          "null_max": 0.06578706604186049,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.0703944015932482,
+          "null_mean": 0.06319252909933402,
+          "null_std": 0.0014472380908081793,
+          "null_min": 0.05955756175236125,
+          "null_max": 0.06779080923254785,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        }
+      },
+      "MN": {
+        "m1_mean_n1": {
+          "obs": 0.20991811489961743,
+          "null_mean": 0.18907727768284904,
+          "null_std": 0.0037683996475261043,
+          "null_min": 0.17869652624670396,
+          "null_max": 0.19822290486953298,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m1_mean_n2": {
+          "obs": 0.20991811489961743,
+          "null_mean": 0.19113254724121698,
+          "null_std": 0.0035121857524627927,
+          "null_min": 0.18276473586984707,
+          "null_max": 0.19981408133347234,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.07302561580947044,
+          "null_mean": 0.06152080587449683,
+          "null_std": 0.001546668048807265,
+          "null_min": 0.05749048343903009,
+          "null_max": 0.06547069944513913,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.07302561580947044,
+          "null_mean": 0.06299626284870179,
+          "null_std": 0.0014644054427836411,
+          "null_min": 0.059134310080858385,
+          "null_max": 0.06726115159258848,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        }
+      },
+      "OQ": {
+        "m1_mean_n1": {
+          "obs": 0.20854129007124023,
+          "null_mean": 0.18877997363777627,
+          "null_std": 0.0035616295148163165,
+          "null_min": 0.17745718617613018,
+          "null_max": 0.19923962199799639,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m1_mean_n2": {
+          "obs": 0.20854129007124023,
+          "null_mean": 0.18904796304521249,
+          "null_std": 0.003774321216875559,
+          "null_min": 0.17897672892481606,
+          "null_max": 0.2017183384110736,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.07055307269235793,
+          "null_mean": 0.061567423459487985,
+          "null_std": 0.001423966485647984,
+          "null_min": 0.05680561659632236,
+          "null_max": 0.0647655561086193,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.07055307269235793,
+          "null_mean": 0.06179789864939842,
+          "null_std": 0.0015052204957137641,
+          "null_min": 0.058597640570622084,
+          "null_max": 0.06655643109977416,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        }
+      },
+      "RU": {
+        "m1_mean_n1": {
+          "obs": 0.21421294840128413,
+          "null_mean": 0.1895453234423417,
+          "null_std": 0.003956884203609918,
+          "null_min": 0.17975776491354648,
+          "null_max": 0.20062362366451134,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m1_mean_n2": {
+          "obs": 0.21421294840128413,
+          "null_mean": 0.1868746533375296,
+          "null_std": 0.0035414073628609534,
+          "null_min": 0.17766240698522334,
+          "null_max": 0.19660375501650443,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.07297191885201747,
+          "null_mean": 0.061761849336953514,
+          "null_std": 0.0015588109767084423,
+          "null_min": 0.05828900023137331,
+          "null_max": 0.06601789602759942,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.07297191885201747,
+          "null_mean": 0.061576812249253356,
+          "null_std": 0.0014105388607015693,
+          "null_min": 0.058328180421605896,
+          "null_max": 0.06632166512897254,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        }
+      }
+    },
+    "NL": {
+      "BE": {
+        "m1_mean_n1": {
+          "obs": 0.41214662333062496,
+          "null_mean": 0.3953190458249097,
+          "null_std": 0.013090838366680463,
+          "null_min": 0.36337394929384476,
+          "null_max": 0.43628503282489317,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.41214662333062496,
+          "null_mean": 0.3849572601924108,
+          "null_std": 0.010967580356405255,
+          "null_min": 0.348479684802601,
+          "null_max": 0.4174089750907922,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.16792934372918453,
+          "null_mean": 0.15603285689959712,
+          "null_std": 0.005847796212177397,
+          "null_min": 0.1412497858914259,
+          "null_max": 0.17591616774764016,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n2": {
+          "obs": 0.16792934372918453,
+          "null_mean": 0.15908185712089812,
+          "null_std": 0.00533588853660848,
+          "null_min": 0.1414327585121455,
+          "null_max": 0.17604930013385947,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "FZ": {
+        "m1_mean_n1": {
+          "obs": 0.41061413593074203,
+          "null_mean": 0.39361750308357935,
+          "null_std": 0.011284271144852722,
+          "null_min": 0.36564594690448476,
+          "null_max": 0.42271776993220167,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.41061413593074203,
+          "null_mean": 0.3757192222494343,
+          "null_std": 0.010892292278236137,
+          "null_min": 0.345604451190134,
+          "null_max": 0.40947595913476625,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.17592955428726462,
+          "null_mean": 0.15602761893355663,
+          "null_std": 0.005782825941737934,
+          "null_min": 0.1437143909027225,
+          "null_max": 0.1731203834257344,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.17592955428726462,
+          "null_mean": 0.16018874957808785,
+          "null_std": 0.004908658904224932,
+          "null_min": 0.1476738103058303,
+          "null_max": 0.17782251376187735,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "GI": {
+        "m1_mean_n1": {
+          "obs": 0.40740961637132334,
+          "null_mean": 0.39587781645725817,
+          "null_std": 0.01062957789359994,
+          "null_min": 0.36858760284876474,
+          "null_max": 0.42799157130920584,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.40740961637132334,
+          "null_mean": 0.37825824149319526,
+          "null_std": 0.012099003109712592,
+          "null_min": 0.34220617202961817,
+          "null_max": 0.4087036899660551,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.1718292717080506,
+          "null_mean": 0.15617322745420756,
+          "null_std": 0.005707864795334371,
+          "null_min": 0.14179002628602141,
+          "null_max": 0.18335448096702348,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n2": {
+          "obs": 0.1718292717080506,
+          "null_mean": 0.1606056871109582,
+          "null_std": 0.0054647906476540725,
+          "null_min": 0.1430984490596094,
+          "null_max": 0.17577677747822035,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "JZ": {
+        "m1_mean_n1": {
+          "obs": 0.4100817348294469,
+          "null_mean": 0.39533601517810174,
+          "null_std": 0.012075835063663711,
+          "null_min": 0.36942507196373925,
+          "null_max": 0.4501064836794065,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.4100817348294469,
+          "null_mean": 0.39380352538250374,
+          "null_std": 0.011556688497466694,
+          "null_min": 0.36735551492979507,
+          "null_max": 0.4243138618653043,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.1705765985066066,
+          "null_mean": 0.15593579110248176,
+          "null_std": 0.006099013359582579,
+          "null_min": 0.14151623374785094,
+          "null_max": 0.1754664995601452,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n2": {
+          "obs": 0.1705765985066066,
+          "null_mean": 0.16091656502559176,
+          "null_std": 0.00549342957337003,
+          "null_min": 0.14822868523207713,
+          "null_max": 0.1764190559822414,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "KZ": {
+        "m1_mean_n1": {
+          "obs": 0.4106369259141506,
+          "null_mean": 0.4019790550446712,
+          "null_std": 0.011350436147519474,
+          "null_min": 0.37138629695615294,
+          "null_max": 0.4345199299564638,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.4106369259141506,
+          "null_mean": 0.3885581358366765,
+          "null_std": 0.011160051451353145,
+          "null_min": 0.35982754899797,
+          "null_max": 0.42061323818896224,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.17039551191822783,
+          "null_mean": 0.15734234329263216,
+          "null_std": 0.005256030100498435,
+          "null_min": 0.14412002634017895,
+          "null_max": 0.17139252827317183,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n2": {
+          "obs": 0.17039551191822783,
+          "null_mean": 0.16073213147554724,
+          "null_std": 0.005412102679743314,
+          "null_min": 0.14724762211467038,
+          "null_max": 0.17420163513634176,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "LZ": {
+        "m1_mean_n1": {
+          "obs": 0.4127039828123949,
+          "null_mean": 0.3786826564404704,
+          "null_std": 0.01230239613731371,
+          "null_min": 0.34891174818311005,
+          "null_max": 0.41387175610085997,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.4127039828123949,
+          "null_mean": 0.3825853253544325,
+          "null_std": 0.011930594356093612,
+          "null_min": 0.35029922647619127,
+          "null_max": 0.4203422369335648,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.15141531431600247,
+          "null_mean": 0.14456496146831296,
+          "null_std": 0.005715343861375845,
+          "null_min": 0.1305250713359213,
+          "null_max": 0.15980977083277825,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n2": {
+          "obs": 0.15141531431600247,
+          "null_mean": 0.1564311879768344,
+          "null_std": 0.005795136899421753,
+          "null_min": 0.14273540025124587,
+          "null_max": 0.17397988689697153,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "MN": {
+        "m1_mean_n1": {
+          "obs": 0.409973680595593,
+          "null_mean": 0.39448746940945556,
+          "null_std": 0.012065781881057053,
+          "null_min": 0.35902147980367405,
+          "null_max": 0.42957205343529287,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.409973680595593,
+          "null_mean": 0.38763738351347105,
+          "null_std": 0.01132881479606231,
+          "null_min": 0.3544209547509896,
+          "null_max": 0.4173214885092979,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.1753933392770398,
+          "null_mean": 0.15612610959578874,
+          "null_std": 0.005768102334435701,
+          "null_min": 0.13870981597783866,
+          "null_max": 0.17281169533492863,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.1753933392770398,
+          "null_mean": 0.16083418733132443,
+          "null_std": 0.004786723964272564,
+          "null_min": 0.14787529731480764,
+          "null_max": 0.1756105653962681,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "OQ": {
+        "m1_mean_n1": {
+          "obs": 0.42687190549468906,
+          "null_mean": 0.40586062742635415,
+          "null_std": 0.01766429624937475,
+          "null_min": 0.3557557477883144,
+          "null_max": 0.46657745648480137,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.42687190549468906,
+          "null_mean": 0.4026702518304714,
+          "null_std": 0.018469043585274205,
+          "null_min": 0.35157514092331016,
+          "null_max": 0.46098618758372156,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.2529299574071358,
+          "null_mean": 0.23251571148176717,
+          "null_std": 0.012781810006680043,
+          "null_min": 0.2002073838909019,
+          "null_max": 0.27318358529984504,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n2": {
+          "obs": 0.2529299574071358,
+          "null_mean": 0.2336129382808969,
+          "null_std": 0.0116501694938283,
+          "null_min": 0.19973051595586083,
+          "null_max": 0.2680561090617753,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "RU": {
+        "m1_mean_n1": {
+          "obs": 0.4001572653495545,
+          "null_mean": 0.3963897391685265,
+          "null_std": 0.010924890993001804,
+          "null_min": 0.36610736197544025,
+          "null_max": 0.42111024809684217,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.4001572653495545,
+          "null_mean": 0.3848691001415005,
+          "null_std": 0.01044145505347319,
+          "null_min": 0.3499393991924992,
+          "null_max": 0.4147904934444501,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.17054349490897444,
+          "null_mean": 0.15590618499235553,
+          "null_std": 0.005567351207170719,
+          "null_min": 0.14017962885599122,
+          "null_max": 0.17287356804087595,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n2": {
+          "obs": 0.17054349490897444,
+          "null_mean": 0.1599644775609558,
+          "null_std": 0.004972659506982493,
+          "null_min": 0.1465607211672309,
+          "null_max": 0.17299431784017746,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      }
+    },
+    "PT": {
+      "BE": {
+        "m1_mean_n1": {
+          "obs": 0.5153290470212711,
+          "null_mean": 0.4801408595959803,
+          "null_std": 0.0193954025891765,
+          "null_min": 0.420680657474497,
+          "null_max": 0.5323307828434131,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.5153290470212711,
+          "null_mean": 0.455612910395818,
+          "null_std": 0.015084019419372478,
+          "null_min": 0.4119063144908088,
+          "null_max": 0.4960510179897719,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.26096726592557085,
+          "null_mean": 0.23655391321243055,
+          "null_std": 0.011111106024122484,
+          "null_min": 0.20960698012711318,
+          "null_max": 0.2670485994233682,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n2": {
+          "obs": 0.26096726592557085,
+          "null_mean": 0.23730141132795862,
+          "null_std": 0.00925075862720396,
+          "null_min": 0.21804269442999472,
+          "null_max": 0.2618725915166942,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "FZ": {
+        "m1_mean_n1": {
+          "obs": 0.4918295683634639,
+          "null_mean": 0.48039979273072353,
+          "null_std": 0.018051723149554732,
+          "null_min": 0.42550375138926366,
+          "null_max": 0.5242609050486283,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.4918295683634639,
+          "null_mean": 0.4690260244670398,
+          "null_std": 0.01701596494997115,
+          "null_min": 0.41513369889454227,
+          "null_max": 0.519000383825437,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.2665283370887606,
+          "null_mean": 0.23699345012720788,
+          "null_std": 0.010593731924594212,
+          "null_min": 0.21101744083244986,
+          "null_max": 0.2646697241531888,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.2665283370887606,
+          "null_mean": 0.2488364439666701,
+          "null_std": 0.00902471893544533,
+          "null_min": 0.2279983326166204,
+          "null_max": 0.2722313587986865,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "GI": {
+        "m1_mean_n1": {
+          "obs": 0.4636854189421192,
+          "null_mean": 0.478124712437176,
+          "null_std": 0.01673208441639544,
+          "null_min": 0.42315618112537184,
+          "null_max": 0.5269176956318059,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.4636854189421192,
+          "null_mean": 0.45174249338747924,
+          "null_std": 0.016793992439322687,
+          "null_min": 0.4072680627370698,
+          "null_max": 0.4996354083367897,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.2671827015038576,
+          "null_mean": 0.2360187324428753,
+          "null_std": 0.00976188463084493,
+          "null_min": 0.21287485078250548,
+          "null_max": 0.2645236101824143,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.2671827015038576,
+          "null_mean": 0.24071956799493976,
+          "null_std": 0.009344298841838487,
+          "null_min": 0.2218650154763831,
+          "null_max": 0.28485724551000446,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "JZ": {
+        "m1_mean_n1": {
+          "obs": 0.526015554597577,
+          "null_mean": 0.4812734100899553,
+          "null_std": 0.01724299246548443,
+          "null_min": 0.4356950406269733,
+          "null_max": 0.5208848058584773,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m1_mean_n2": {
+          "obs": 0.526015554597577,
+          "null_mean": 0.4880821166837933,
+          "null_std": 0.014282629223458547,
+          "null_min": 0.45590483611544536,
+          "null_max": 0.5193591076038271,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.2777306937284371,
+          "null_mean": 0.23593063799144642,
+          "null_std": 0.01028400744922678,
+          "null_min": 0.20995112772190636,
+          "null_max": 0.2687546987542993,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n2": {
+          "obs": 0.2777306937284371,
+          "null_mean": 0.24804916925002596,
+          "null_std": 0.010028439418430036,
+          "null_min": 0.22509371181875898,
+          "null_max": 0.27464409816386925,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        }
+      },
+      "LZ": {
+        "m1_mean_n1": {
+          "obs": 0.4837821419410823,
+          "null_mean": 0.47908329218665296,
+          "null_std": 0.017493040300620315,
+          "null_min": 0.43377001539680005,
+          "null_max": 0.5368955643141188,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.4837821419410823,
+          "null_mean": 0.47435535421454667,
+          "null_std": 0.015434660028444288,
+          "null_min": 0.43782100535795987,
+          "null_max": 0.5154386690414768,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.26228321805462,
+          "null_mean": 0.2364263231879236,
+          "null_std": 0.011136217224679007,
+          "null_min": 0.21068132644199786,
+          "null_max": 0.26554511238607437,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n2": {
+          "obs": 0.26228321805462,
+          "null_mean": 0.242129859944664,
+          "null_std": 0.009172545847992403,
+          "null_min": 0.22075688390840403,
+          "null_max": 0.27904020124587553,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "MN": {
+        "m1_mean_n1": {
+          "obs": 0.4880739807045407,
+          "null_mean": 0.4815492043099842,
+          "null_std": 0.01728185157719534,
+          "null_min": 0.44399622291043733,
+          "null_max": 0.5406835179650953,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.4880739807045407,
+          "null_mean": 0.4726204182915721,
+          "null_std": 0.015392667735065384,
+          "null_min": 0.42992760327402807,
+          "null_max": 0.5093449709023964,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.25956200471712004,
+          "null_mean": 0.23700262249063514,
+          "null_std": 0.011053306652972593,
+          "null_min": 0.2098322456110121,
+          "null_max": 0.27028629861309184,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n2": {
+          "obs": 0.25956200471712004,
+          "null_mean": 0.2480526820497168,
+          "null_std": 0.008205300874607743,
+          "null_min": 0.22558851819115036,
+          "null_max": 0.2715869512792329,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "OQ": {
+        "m1_mean_n1": {
+          "obs": 0.4953760658982958,
+          "null_mean": 0.4801568171906034,
+          "null_std": 0.017262460394733625,
+          "null_min": 0.43586262398780967,
+          "null_max": 0.5273681772436002,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.4953760658982958,
+          "null_mean": 0.45549441575122973,
+          "null_std": 0.01547598945526198,
+          "null_min": 0.40810573409828566,
+          "null_max": 0.49362893437611394,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": true
+        },
+        "m2_mean_n1": {
+          "obs": 0.24885790741838823,
+          "null_mean": 0.23619646425777402,
+          "null_std": 0.01050035929150818,
+          "null_min": 0.21198526696024267,
+          "null_max": 0.26771479184647073,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n2": {
+          "obs": 0.24885790741838823,
+          "null_mean": 0.2428971066028562,
+          "null_std": 0.009487016402479037,
+          "null_min": 0.22121451494224914,
+          "null_max": 0.2766792049080485,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      },
+      "RU": {
+        "m1_mean_n1": {
+          "obs": 0.4800284638685326,
+          "null_mean": 0.4796845050682525,
+          "null_std": 0.017319168183823584,
+          "null_min": 0.4416471125555374,
+          "null_max": 0.5324113126663432,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m1_mean_n2": {
+          "obs": 0.4800284638685326,
+          "null_mean": 0.4766137122659482,
+          "null_std": 0.014716473743803938,
+          "null_min": 0.4309298706389735,
+          "null_max": 0.5162921276990446,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n1": {
+          "obs": 0.255344786982478,
+          "null_mean": 0.23670146667951028,
+          "null_std": 0.009771660879943155,
+          "null_min": 0.21212780512186816,
+          "null_max": 0.267003157650162,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        },
+        "m2_mean_n2": {
+          "obs": 0.255344786982478,
+          "null_mean": 0.2490524955525717,
+          "null_std": 0.009513708275893113,
+          "null_min": 0.22506573336183863,
+          "null_max": 0.2763998402119376,
+          "n_finite": 199,
+          "n_unique": 199,
+          "obs_above_all_null": false
+        }
+      }
+    }
+  },
+  "reconciliation_g1_l2_vs_g2": {
+    "note": "G1-L2 0.78 and G2 M2 0.07-0.26 measure different aspects of the same graph. Both are correct. They are NOT contradictory.",
+    "table": [
+      {
+        "result": "G1-L2",
+        "object": "Dense Pearson matrix of ALL region-pair correlations",
+        "metric": "Pearson of consecutive dense upper-triangle weight vectors",
+        "sparsification": "None (all pairs including negative)",
+        "granularity": "Per country (all sectors concatenated)",
+        "values": {
+          "FR": 0.782,
+          "NL": 0.789,
+          "PT": 0.778
+        },
+        "interpretation": "Full correlation STRUCTURE is stable year-to-year (0.78)"
+      },
+      {
+        "result": "G2 M2",
+        "object": "Binary top-k=5 adjacency matrix per country x sector",
+        "metric": "Mean Jaccard over ALL year pairs (M2)",
+        "sparsification": "Top-k=5 (only top 5 connections per region retained)",
+        "granularity": "Per country x sector",
+        "values_range": "FR ~0.07, NL ~0.17, PT ~0.26 (sector-dependent)",
+        "interpretation": "Specific top-5 CONNECTIONS are volatile. With FR=280 regions, many candidates compete for 5 slots; small rank changes in correlation rotate top-5 set."
+      }
+    ],
+    "compatible_finding": "Full Pearson correlation structure is smooth and stable (0.78), while the specific identity of top-5 connections is volatile (0.07-0.26). These measure different things: aggregate co-movement vs extreme-edge identity."
+  },
+  "m3_null_status": "BLOCKED \u2014 199 perms x n_obs_years x n_affected_evals x full pipeline is prohibitive",
+  "artifacts": {
+    "g2_corrected_controls.csv": "per country x sector, principal k=5, N1+N2 results",
+    "g2_corrected_controls_sensitivity.csv": "k=3,5,10 observed metrics",
+    "g2_corrected_m3_loyo.csv": "M3 LOYO reconstruction (observed only, null BLOCKED)",
+    "g2_corrected_controls_summary.json": "this file"
+  }
+}

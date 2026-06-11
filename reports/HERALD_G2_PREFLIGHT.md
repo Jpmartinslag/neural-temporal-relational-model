@@ -1,7 +1,9 @@
 # HERALD G2 Preflight — Temporal Dynamics of the L2 Co-Growth Graph
 
 **Date:** 2026-06-10 (preflight) / 2026-06-11 (corrected controls)
-**Status:** COMPLETE — corrected controls run 2026-06-11 (DEC-024c); G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED (FR+NL); G2_EDGE_STABILITY_NOT_SUPPORTED
+**Status:** COMPLETE — corrected controls and COVID audit run 2026-06-11
+(DEC-024c/d); aggregate signal is COVID-robust only for FR;
+G2_EDGE_STABILITY_NOT_SUPPORTED
 **Artefacts:** `data/processed/economic_graph/g2_preflight/`
 **Builder:** `src/data/european_panel/build_g2_temporal_preflight.py`
 **Tests:** `tests/test_g2_preflight.py` — 42 pass, 1 skip
@@ -232,7 +234,9 @@ for documentation; the gate uses N2 row-wise.
 | NL | 9 | 5/9 (BE,FZ,GI,LZ,MN) | ✓ PASS (55.6%≥50%) | ✗ FAIL (max 0.260) |
 | PT | 8 | 0/8 | ✗ FAIL | ✗ FAIL (max 0.261) |
 
-**Global — Signal:** 2/3 countries pass (≥2 required) → **G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED**
+**Sensitivity scenario without observation year 2020 — Signal:** 2/3 countries
+pass (FR+NL). DEC-024d shows that the main scenario with 2020 instead passes
+with FR+PT; this result is not a COVID-robust global promotion.
 **Global — Stability:** 0/3 countries pass → **G2_EDGE_STABILITY_NOT_SUPPORTED**
 
 ### 7.4 Floor-p diagnostics (FR)
@@ -268,9 +272,10 @@ identity of extreme edges. Not a contradiction.
 
 ### 7.7 Verdict
 
-**G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED** — observed temporal Jaccard exceeds both N1 and N2
-nulls (BH q=0.05) for FR (9/9 sectors) and NL (5/9 sectors). Signal is statistically genuine
-but modest (FR M2 ~12% above null; NL varies 2–35% above null).
+**Scenario result without observation year 2020:** observed temporal Jaccard
+exceeds both N1 and N2 nulls for FR (9/9) and NL (5/9). The COVID audit below
+supersedes any unconditional interpretation: only FR retains the same country
+decision in both scenarios.
 
 **G2_EDGE_STABILITY_NOT_SUPPORTED** — M2 ranges 0.06–0.26 for all sectors across all countries,
 far below the 0.70 threshold. Individual top-k connections are highly transient.
@@ -283,6 +288,26 @@ reconstruction stability, but these cannot be contrasted against a null distribu
 
 Language: "associação estatística temporal observada"; NOT "estrutura estável" or "causalidade".
 Individual edge claims remain NOT authorised. Cross-country pooling prohibited.
+
+### 7.9 COVID sensitivity audit (DEC-024d)
+
+The corrected control was rerun with identical seeds and parameters in two
+scenarios. The main scenario includes `observation_year=2020`; the sensitivity
+scenario excludes only that observation from later rolling windows.
+`available_for_forecast_year=2020` remains in both.
+
+| Country | With 2020 | Without 2020 | Changed sectors | Classification |
+|---|---:|---:|---|---|
+| FR | 9/9 | 9/9 | none | COVID_ROBUST |
+| NL | 4/9 | 5/9 | BE, LZ, RU | COVID_SENSITIVE |
+| PT | 4/8 | 0/8 | BE, GI, JZ, LZ | COVID_SENSITIVE |
+
+Although the global 2/3 gate passes in both scenarios, the passing countries
+change from FR+PT to FR+NL. Therefore, only FR supports a COVID-robust aggregate
+temporal-coherence claim. G-13 remains `PARTIALLY_SUPPORTED`, with NL and PT
+reported as sensitivity results rather than general evidence.
+
+Full audit: `reports/HERALD_G2_COVID_SENSITIVITY_AUDIT.md`.
 
 ---
 
