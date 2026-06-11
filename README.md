@@ -346,7 +346,11 @@ explicite.
   H0b (Ridge AR) reste la meilleure baseline. Pas de soumettre au HPC.
   65/65 tests passent. Leakage OK. Déterministe. Masques PT KZ corrects.
   Correcteur résiduel fixed-L2 fermé. L2 reste validé comme graphe analytique (G-10 SUPPORTED).
-  Prochaine étape : Bloco 2 descritivo (G2 preflight — caractérisation temporelle du graphe L2).
+  Bloco 2 G2 preflight (2026-06-10) + contrôle négatif (2026-06-11) : G2_EDGE_DYNAMICS_SUPPORTED.
+  199 permutations temporelles, BH/FDR q=0.05; 26/26 combos significatifs (p=0.005); 3/3 pays.
+  Signal temporel dans LOYO Jaccard est réel (pas artéfact). G-13 EXPLORATORY→SUPPORTED (DEC-024).
+  Portée autorisée : variation agrégée observée densité/poids par pays × secteur × période.
+  Interdit : claims arêtes individuelles, pooling pays, causalité, communautés, recommandation.
 
 Voir `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md` et
 `reports/HERALD_PHASE5_HPC_SPEC.md`.

@@ -571,15 +571,18 @@ with longer windows, OR (3) supervisor directive with explicit justification.
 
 ---
 
-## DEC-024 — 2026-06-10 — G2 Preflight: falsifiable criteria and temporal dynamics findings
+## DEC-024 — 2026-06-10/11 — G2 Preflight + Negative Control: falsifiable criteria and temporal dynamics
 
 **Phase:** Bloco 2 — G2 Temporal Dynamics
-**Question:** Are there falsifiable criteria for characterising L2 co-growth graph dynamics,
-and what do the G2 preflight metrics reveal?
+**Question:** Are the L2 graph's LOYO Jaccard values genuine temporal signal or finite-sample
+artefact? What is the scope-correct characterisation of G2 aggregate variation?
 **Evidence:**
 G2 preflight run on 3,645,230 L2 edges (FR/NL/PT, 9 sectors, 15 eval years).
-Top-k=5 filtering (same as Phase 5). PT KZ excluded (DEC-018).
-Criteria pre-registered before analysis:
+Top-k=5 (same as Phase 5). PT KZ excluded (DEC-018).
+Negative control: 199 temporal permutations per country×sector; year labels shuffled within
+each territory-pair row; graph rebuilt from scratch; BH/FDR q=0.05.
+
+**Preflight findings:**
 
 | Criterion | Threshold | Finding |
 |-----------|-----------|---------|
@@ -588,31 +591,35 @@ Criteria pre-registered before analysis:
 | LOYO Jaccard | ≥ 0.70 | 0.07-0.26 (all FAIL) |
 | Stable neighbourhood (turnover ≤ 30%) | 30% | 0/295 year-pairs stable |
 | Mean turnover | — | 59% (FR: 77%, NL: 56%, PT: 48%) |
-| COVID density disruption (|Δ| ≥ 0.05) | 0.05 | 0/25 combos exceed |
-| COVID weight disruption (|Δ| ≥ 0.15) | 0.15 | 0/25 combos exceed |
-| Top-k Jaccard k=3 vs k=5 | — | 0.616 |
-| Top-k Jaccard k=5 vs k=10 | — | 0.519 |
+| COVID density disruption (\|Δ\| ≥ 0.05) | 0.05 | 0/25 combos exceed |
+| COVID weight disruption (\|Δ\| ≥ 0.15) | 0.15 | 0/25 combos exceed |
 
-**Decision:** Accept G2 preflight as COMPLETE. Findings constitute scientifically valid
-characterisation of the L2 graph dynamics:
-1. The top-k=5 graph is highly dynamic (low persistence, high turnover).
-2. Individual edge-level claims are NOT reliable (persistence 0.4%).
-3. Population-level statistics (density, weight distribution, period comparisons) are
-   the appropriate level of analysis for G2 descriptive work.
-4. COVID did not cause a step-change in L2 structure at these thresholds.
-5. High dynamism in FR (280 regions) is partly structural (large n → sparse top-k).
+**Negative control results (2026-06-11):**
 
-**What this does NOT mean:**
-- L2 graph is uninformative. G-10 (global correlation structure) remains SUPPORTED.
-- The G2 finding invalidates Phase 5 NOT_SUPPORTED result.
-- Economic relationships are unstable (rolling-window corr with annual shift is expected
-  to produce graph churn).
+Gate: ≥2 countries × ≥50% sectors FDR-significant with obs > null median.
+Result: 3/3 countries pass; 26/26 combos FDR-significant (p=0.005); all positive effects.
 
-**Authorised next steps:**
-- Population-level density/weight trend analysis per country × sector × period
-- Negative control: temporal permutation baseline for LOYO Jaccard
-- No individual edge claims; no community claims; no recommendation claims
+| Country | Obs LOYO Jaccard (mean) | Null mean | Effect relative | Gate |
+|---------|------------------------|-----------|-----------------|------|
+| FR | 0.069 | 0.053 | +23–40% | ✓ PASS 9/9 sectors |
+| NL | 0.172 | 0.127 | +18–81% | ✓ PASS 9/9 sectors |
+| PT | 0.260 | 0.207 | +12–30% | ✓ PASS 8/8 sectors |
+
+Sensitivity (k=3,10): consistent results, all FDR-significant.
+
+**Decision:**
+1. LOYO Jaccard values are NOT finite-sample artefact — temporal signal is genuine.
+2. Individual edge-level claims remain NOT reliable (persistence 0.4%, LOYO Jaccard <0.70).
+3. Scope for G2 descriptive work: aggregate statistics by country × sector × period.
+4. Language: use "observed aggregate variation in density and weights", NOT "structural evolution".
+5. COVID produced no measurable step-change at these thresholds.
+
+**G-13 status upgraded: EXPLORATORY → SUPPORTED** (negative control passed).
+
+**Scope restrictions (unchanged):**
+- No individual edge claims, no cross-country pooling, no causal attribution
+- No community claims (DEC-021: NOT_SUPPORTED), no recommendation claims
 
 **Affected files:** `src/data/european_panel/build_g2_temporal_preflight.py`,
-`data/processed/economic_graph/g2_preflight/`, `reports/HERALD_G2_PREFLIGHT.md`,
-`tests/test_g2_preflight.py`.
+`data/processed/economic_graph/g2_preflight/` (+ g2_negative_control*.csv),
+`reports/HERALD_G2_PREFLIGHT.md`, `tests/test_g2_preflight.py`.

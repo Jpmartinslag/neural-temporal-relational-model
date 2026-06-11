@@ -139,19 +139,25 @@ H0b remains best; all corrector branches closed.
 See `reports/HERALD_PHASE5_HPC_SPEC.md` (status: NOT_SUPPORTED).
 DEC-023 added to decision log.
 
-**G2 Preflight (2026-06-10): G2_READY for population-level descriptive analysis.**
-Script: `src/data/european_panel/build_g2_temporal_preflight.py`. 21+1 tests pass.
+**G2 Preflight + Negative Control (2026-06-10/11): G2_EDGE_DYNAMICS_SUPPORTED.**
+Script: `src/data/european_panel/build_g2_temporal_preflight.py`. 42+1 tests pass.
 Artefacts: `data/processed/economic_graph/g2_preflight/` (compact, no raw edges).
-Key findings (FR/NL/PT, top-k=5, criteria pre-registered per DEC-024):
-- LOYO Pearson: 0.10-0.19; LOYO Jaccard: 0.07-0.26 — all FAIL ≥0.70 threshold
-- Persistent edges (≥70% years): 0.4% of 58,242 — highly transient
-- Mean turnover: 59%/yr (FR: 77%, NL: 56%, PT: 48%) — 0/295 year-pairs stable
-- COVID: no step-change in density or weight (below thresholds)
-- Top-k Jaccard(3,5)=0.62; Jaccard(5,10)=0.52 — moderate k sensitivity
-High dynamism IS a finding: L2 neighborhoods time-varying. Does NOT invalidate G-10.
-Individual edge claims NOT reliable. Population/distributional statistics appropriate.
-G-13 added to evidence matrix (EXPLORATORY). DEC-024 in decision log.
-Next: negative control (temporal permutation baseline for LOYO Jaccard).
+Preflight findings (FR/NL/PT, top-k=5, criteria pre-registered per DEC-024):
+- LOYO Pearson: 0.10-0.19; LOYO Jaccard: 0.07-0.26 — all FAIL ≥0.70 stability threshold
+- Persistent edges (≥70% years): 0.4% — highly transient; turnover 59%/yr
+- COVID: no measurable step-change in density or weight
+
+Negative control (199 temporal permutations, BH/FDR q=0.05):
+- Gate: 3/3 countries pass; 26/26 combos FDR-significant (p=0.005 = minimum)
+- FR: obs 0.069 vs null 0.053 (+23-40%); NL: 0.172 vs 0.127 (+18-81%); PT: 0.260 vs 0.207 (+12-30%)
+- Sensitivity k=3,10: consistent, all significant
+- Verdict: temporal signal GENUINE — not finite-sample artefact
+
+Authorised scope: aggregate variation in density/weights by country × sector × period.
+Language: "observed aggregate variation", NOT "structural evolution".
+Prohibited: individual edge claims, cross-country pooling, causal attribution.
+G-13 upgraded EXPLORATORY → SUPPORTED. DEC-024 updated.
+Next: G2 main descriptive analysis (density/weight trends per period).
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)
 Terminal use case. Requires Bloco 1 + Bloco 2 complete.
