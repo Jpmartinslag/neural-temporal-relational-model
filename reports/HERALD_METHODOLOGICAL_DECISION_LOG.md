@@ -1,205 +1,205 @@
 # HERALD — Methodological Decision Log
 
-**Created:** 2026-06-10  
-**Rule:** Never delete old entries. Corrections add new entries pointing to superseded ones.  
+**Created:** 2026-06-10
+**Rule:** Never delete old entries. Corrections add new entries pointing to superseded ones.
 **Format:** date · phase · question · evidence · alternatives · decision · rationale · limitations · reopen condition · affected files
 
 ---
 
 ## DEC-001 — 2026-06-03 — Temporal leakage in growth_1y
 
-**Phase:** 4A / 4D  
-**Question:** Are Phase 4A/4D WMAPE results valid as scientific baselines?  
-**Evidence:** `growth_1y[t] = (y[t] − y[t-1]) / y[t-1]` uses the forecast target `y[t]` directly. The feature is computed at training time and therefore leaks the target into all models that use it.  
-**Alternatives considered:** Partial correction keeping some features; full recompute.  
-**Decision:** Classify Phase 4A/4D results as LEGACY/LEAKAGE-AFFECTED. All baseline comparisons must use Phase 4E-B (causal recompute) or later.  
-**Rationale:** Any model using a leaky feature in its training or evaluation is invalid as a scientific claim of predictive performance. The error is systematic and affects all countries.  
-**Limitations:** Historical runs cannot be retroactively fixed; only reran results qualify.  
-**Reopen condition:** Cannot be reopened; decisions from this phase must be re-executed under causal protocol.  
+**Phase:** 4A / 4D
+**Question:** Are Phase 4A/4D WMAPE results valid as scientific baselines?
+**Evidence:** `growth_1y[t] = (y[t] − y[t-1]) / y[t-1]` uses the forecast target `y[t]` directly. The feature is computed at training time and therefore leaks the target into all models that use it.
+**Alternatives considered:** Partial correction keeping some features; full recompute.
+**Decision:** Classify Phase 4A/4D results as LEGACY/LEAKAGE-AFFECTED. All baseline comparisons must use Phase 4E-B (causal recompute) or later.
+**Rationale:** Any model using a leaky feature in its training or evaluation is invalid as a scientific claim of predictive performance. The error is systematic and affects all countries.
+**Limitations:** Historical runs cannot be retroactively fixed; only reran results qualify.
+**Reopen condition:** Cannot be reopened; decisions from this phase must be re-executed under causal protocol.
 **Affected files:** `reports/HERALD_PHASE4E_A2_DEGRADATION_AUDIT.md`; `src/data/ingest_belgium_panel.py`; `src/data/ingest_netherlands_panel.py`; `src/data/ingest_portugal_panel_nuts3.py`
 
 ---
 
 ## DEC-002 — 2026-06-04 — Causal baseline per country (Phase 4E-B)
 
-**Phase:** 4E-B  
-**Question:** What is the correct per-country causal baseline for enterprise-birth forecasting?  
-**Evidence:** Feature-policy ablation (180 runs, 12 configs × 10 seeds per country) with `growth_1y[t] = (y[t-1] − y[t-2]) / y[t-2]` (past-only). Best per-country configs identified.  
-**Alternatives considered:** Single global config; pooled selection.  
-**Decision:** Best per-country configs adopted as canonical baseline. Per-country WMAPE is the primary metric; pooled WMAPE is not admissible as a main result.  
-**Rationale:** Countries differ in data availability, region counts and economic dynamics. A single pooled config would hide country-level failures.  
-**Limitations:** n=4 countries; seeds are not independent domains; no power for universal generalization claim.  
-**Reopen condition:** New countries added to the panel.  
+**Phase:** 4E-B
+**Question:** What is the correct per-country causal baseline for enterprise-birth forecasting?
+**Evidence:** Feature-policy ablation (180 runs, 12 configs × 10 seeds per country) with `growth_1y[t] = (y[t-1] − y[t-2]) / y[t-2]` (past-only). Best per-country configs identified.
+**Alternatives considered:** Single global config; pooled selection.
+**Decision:** Best per-country configs adopted as canonical baseline. Per-country WMAPE is the primary metric; pooled WMAPE is not admissible as a main result.
+**Rationale:** Countries differ in data availability, region counts and economic dynamics. A single pooled config would hide country-level failures.
+**Limitations:** n=4 countries; seeds are not independent domains; no power for universal generalization claim.
+**Reopen condition:** New countries added to the panel.
 **Affected files:** `reports/HERALD_PHASE4E_B_RESULTS_AUDIT.md`; `hpc/phase4/`
 
 ---
 
 ## DEC-003 — 2026-06-06 — Semantic target gate FAIL for unified European target
 
-**Phase:** 4J  
-**Question:** Can FR / NL / BE / PT targets be treated as semantically equivalent for a unified generalization claim?  
-**Evidence:** FR = établissement creations (SIDE/SIRENE), NL = local unit openings (CBS), BE = first VAT registrations (StatBel), PT = enterprise births (INE). Conceptual differences documented in `HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md`.  
-**Alternatives considered:** Continue with heterogeneous targets using Path M; build Path H harmonized panel.  
-**Decision:** Gate FAIL for unified target. Path M = heterogeneous multitask with explicit per-target framing. Path H = harmonized `enterprise_birth` subpanel (Eurostat `bd_size_r3`, OECD demographic concept).  
-**Rationale:** A mean WMAPE over incommensurable targets does not constitute evidence of generalization.  
-**Limitations:** Path H currently limited to PT + IT + AT (3 countries); FR/NL/BE remain in Path M only.  
-**Reopen condition:** Documentary proof of equivalence for FR or NL target under a declared shared definition.  
+**Phase:** 4J
+**Question:** Can FR / NL / BE / PT targets be treated as semantically equivalent for a unified generalization claim?
+**Evidence:** FR = établissement creations (SIDE/SIRENE), NL = local unit openings (CBS), BE = first VAT registrations (StatBel), PT = enterprise births (INE). Conceptual differences documented in `HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md`.
+**Alternatives considered:** Continue with heterogeneous targets using Path M; build Path H harmonized panel.
+**Decision:** Gate FAIL for unified target. Path M = heterogeneous multitask with explicit per-target framing. Path H = harmonized `enterprise_birth` subpanel (Eurostat `bd_size_r3`, OECD demographic concept).
+**Rationale:** A mean WMAPE over incommensurable targets does not constitute evidence of generalization.
+**Limitations:** Path H currently limited to PT + IT + AT (3 countries); FR/NL/BE remain in Path M only.
+**Reopen condition:** Documentary proof of equivalence for FR or NL target under a declared shared definition.
 **Affected files:** `reports/HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md`; `reports/HERALD_PHASE4J_TARGET_EQUIVALENCE_TABLE.md`
 
 ---
 
 ## DEC-004 — 2026-06-07 — Forecast combination (50/50) not promoted
 
-**Phase:** 4J-A  
-**Question:** Does equal-weight `0.5 × persistence + 0.5 × Ridge` qualify as a promoted model?  
-**Evidence:** Balanced WMAPE drops from 0.0939 to 0.0871 (−7.3%). But worst-year performance degrades in FR and PT; learned weights from source countries do not transfer safely to target country.  
-**Alternatives considered:** Learned combination weights; adaptive weighting.  
-**Decision:** Combination result is EXPLORATORY. Not promoted. Persistence remains best-balanced baseline.  
-**Rationale:** Tail-risk regression and non-transferable weights disqualify as a safe general model.  
-**Limitations:** n=4 country domains; combination not tested on held-out countries.  
-**Reopen condition:** New target country with demonstrated safe weight transfer.  
+**Phase:** 4J-A
+**Question:** Does equal-weight `0.5 × persistence + 0.5 × Ridge` qualify as a promoted model?
+**Evidence:** Balanced WMAPE drops from 0.0939 to 0.0871 (−7.3%). But worst-year performance degrades in FR and PT; learned weights from source countries do not transfer safely to target country.
+**Alternatives considered:** Learned combination weights; adaptive weighting.
+**Decision:** Combination result is EXPLORATORY. Not promoted. Persistence remains best-balanced baseline.
+**Rationale:** Tail-risk regression and non-transferable weights disqualify as a safe general model.
+**Limitations:** n=4 country domains; combination not tested on held-out countries.
+**Reopen condition:** New target country with demonstrated safe weight transfer.
 **Affected files:** `reports/HERALD_PHASE4J_A_FORECAST_COMBINATION_AUDIT.md`
 
 ---
 
 ## DEC-005 — 2026-06-09 — Austria selected as third harmonized country; FR/ES/CZ blocked
 
-**Phase:** 4K / 4M  
-**Question:** Which Eurostat `bd_size_r3` country qualifies for the harmonized Path H panel (2008–2020, stable mainland NUTS3)?  
-**Evidence:** AT: 35 stable mainland NUTS3, complete 2008–2020, same `V11920 TOTAL` indicator. FR: only 8 codes survive without crosswalk. ES: no region complete for full window. CZ: <20 regions, starts 2010.  
-**Alternatives considered:** Shorter window for FR; crosswalk for ES.  
-**Decision:** Austria integrated. FR/ES/CZ remain BLOCKED without explicit crosswalk or revised window.  
-**Rationale:** Pre-registered gate required complete stable NUTS3 coverage for 2008–2020. No exceptions post-hoc.  
-**Limitations:** 3-country panel (PT/IT/AT) still limited for LOCO claims. 3 domains provide weak domain power.  
-**Reopen condition:** Documented NUTS crosswalk for FR or ES; or revised window (e.g. 2010–2020) re-preregistered before analysis.  
+**Phase:** 4K / 4M
+**Question:** Which Eurostat `bd_size_r3` country qualifies for the harmonized Path H panel (2008–2020, stable mainland NUTS3)?
+**Evidence:** AT: 35 stable mainland NUTS3, complete 2008–2020, same `V11920 TOTAL` indicator. FR: only 8 codes survive without crosswalk. ES: no region complete for full window. CZ: <20 regions, starts 2010.
+**Alternatives considered:** Shorter window for FR; crosswalk for ES.
+**Decision:** Austria integrated. FR/ES/CZ remain BLOCKED without explicit crosswalk or revised window.
+**Rationale:** Pre-registered gate required complete stable NUTS3 coverage for 2008–2020. No exceptions post-hoc.
+**Limitations:** 3-country panel (PT/IT/AT) still limited for LOCO claims. 3 domains provide weak domain power.
+**Reopen condition:** Documented NUTS crosswalk for FR or ES; or revised window (e.g. 2010–2020) re-preregistered before analysis.
 **Affected files:** `reports/HERALD_PHASE4M_THIRD_COUNTRY_PREFLIGHT.md`; `data/processed/european_panel/at_panel.csv`
 
 ---
 
 ## DEC-006 — 2026-06-09 — Phase 4N: persistence is best-balanced baseline; no model promoted
 
-**Phase:** 4N  
-**Question:** Does the residual Ridge or nested mix model transfer across PT/IT/AT under LOCO?  
-**Evidence:** Balanced WMAPE: persistence 0.0874, n3_residual 0.0865, n4_mix 0.0881. n3 gain concentrated in PT only (1/3 countries). IT and AT degrade under n3. Promotion gate requires ≥2/3 countries improve.  
-**Alternatives considered:** Promoting n3 on PT-specific basis.  
-**Decision:** No model promoted. Persistence is the canonical LOCO baseline. n3 improvement in PT is real but not robust.  
-**Rationale:** A balanced baseline claim requires consistent improvement across all domains, not concentration in one.  
-**Limitations:** 3 countries; Ridge direct fails catastrophically due to scale mismatch (not a model failure per se, a protocol issue).  
-**Reopen condition:** Scale-invariant direct model or ≥4 harmonized countries.  
+**Phase:** 4N
+**Question:** Does the residual Ridge or nested mix model transfer across PT/IT/AT under LOCO?
+**Evidence:** Balanced WMAPE: persistence 0.0874, n3_residual 0.0865, n4_mix 0.0881. n3 gain concentrated in PT only (1/3 countries). IT and AT degrade under n3. Promotion gate requires ≥2/3 countries improve.
+**Alternatives considered:** Promoting n3 on PT-specific basis.
+**Decision:** No model promoted. Persistence is the canonical LOCO baseline. n3 improvement in PT is real but not robust.
+**Rationale:** A balanced baseline claim requires consistent improvement across all domains, not concentration in one.
+**Limitations:** 3 countries; Ridge direct fails catastrophically due to scale mismatch (not a model failure per se, a protocol issue).
+**Reopen condition:** Scale-invariant direct model or ≥4 harmonized countries.
 **Affected files:** `reports/HERALD_PHASE4N_RESULTS_AUDIT.md`; `hpc/phase4/run_phase4n_harmonized_loco.py`
 
 ---
 
 ## DEC-007 — 2026-06-09 — Phase 4O-C: multi-country Phase 4P not authorized (1/3 gate)
 
-**Phase:** 4O-C  
-**Question:** Do residuals show robust spatial autocorrelation across ≥2/3 countries (IT/PT/AT)?  
-**Evidence:** IT: PASS (robust relative + causal Moran's I, multiple years, LOO-stable). PT: FAIL (LOO instability in 3–3 of significant years). AT: FAIL (signal only in absolute residuals, likely heteroscedasticity). Pre-specified gate: ≥2/3. Observed: 1/3.  
-**Alternatives considered:** Relaxing LOO threshold; accepting AT absolute signal.  
-**Decision:** Multi-country Phase 4P NOT authorized. Italy-only linear spatial-lag diagnostic authorized.  
-**Rationale:** Pre-specified gate not met. Relaxing post-hoc would be cherry-picking.  
-**Limitations:** PT's failure is partly structural (23 NUTS3; 1 region = 4% of panel). AT failure may reflect genuine heteroscedasticity, not absence of spatial structure.  
-**Reopen condition:** New evidence: ≥1 additional harmonized country with robust relative residual spatial signal.  
+**Phase:** 4O-C
+**Question:** Do residuals show robust spatial autocorrelation across ≥2/3 countries (IT/PT/AT)?
+**Evidence:** IT: PASS (robust relative + causal Moran's I, multiple years, LOO-stable). PT: FAIL (LOO instability in 3–3 of significant years). AT: FAIL (signal only in absolute residuals, likely heteroscedasticity). Pre-specified gate: ≥2/3. Observed: 1/3.
+**Alternatives considered:** Relaxing LOO threshold; accepting AT absolute signal.
+**Decision:** Multi-country Phase 4P NOT authorized. Italy-only linear spatial-lag diagnostic authorized.
+**Rationale:** Pre-specified gate not met. Relaxing post-hoc would be cherry-picking.
+**Limitations:** PT's failure is partly structural (23 NUTS3; 1 region = 4% of panel). AT failure may reflect genuine heteroscedasticity, not absence of spatial structure.
+**Reopen condition:** New evidence: ≥1 additional harmonized country with robust relative residual spatial signal.
 **Affected files:** `reports/HERALD_PHASE4O_B_RESIDUAL_SPATIAL_AUDIT.md`; `hpc/phase4/run_phase4o_c_residual_spatial_diagnostic.py`
 
 ---
 
 ## DEC-008 — 2026-06-10 — Phase 4P FAIL: queen-contiguity birth lag rejected
 
-**Phase:** 4P  
-**Question:** Does adding `W × births[t-1]` (queen-neighbour lag) improve Italy rolling-origin WMAPE?  
-**Evidence:** Real graph WMAPE 0.056185 vs persistence 0.054946 (+2.26%) and Ridge 0.056204 (marginal). 18/99 permuted controls tie/beat real graph (p=0.19). Real graph wins only 4/9 years vs persistence. Moran's I does not decrease.  
-**Alternatives considered:** Extending to multi-country; using different weight normalization.  
-**Decision:** FAIL. Tested feature rejected. Final bounded ablation (Spatial-Durbin) authorized.  
-**Rationale:** p=0.19 is not significant; the real graph has no advantage over topology-randomized controls.  
-**Limitations:** Only one type of spatial lag (birth count at t-1) tested. Does not prove all graph representations are useless.  
-**Reopen condition:** New independent evidence (new country, justified functional/mobility network, new data window).  
+**Phase:** 4P
+**Question:** Does adding `W × births[t-1]` (queen-neighbour lag) improve Italy rolling-origin WMAPE?
+**Evidence:** Real graph WMAPE 0.056185 vs persistence 0.054946 (+2.26%) and Ridge 0.056204 (marginal). 18/99 permuted controls tie/beat real graph (p=0.19). Real graph wins only 4/9 years vs persistence. Moran's I does not decrease.
+**Alternatives considered:** Extending to multi-country; using different weight normalization.
+**Decision:** FAIL. Tested feature rejected. Final bounded ablation (Spatial-Durbin) authorized.
+**Rationale:** p=0.19 is not significant; the real graph has no advantage over topology-randomized controls.
+**Limitations:** Only one type of spatial lag (birth count at t-1) tested. Does not prove all graph representations are useless.
+**Reopen condition:** New independent evidence (new country, justified functional/mobility network, new data window).
 **Affected files:** `reports/HERALD_PHASE4P_ITALY_SPATIAL_LAG_AUDIT.md`; `hpc/phase4/run_phase4p_italy_spatial_lag.py`
 
 ---
 
 ## DEC-009 — 2026-06-10 — Phase 4Q FAIL: Spatial-Durbin block rejected; geographic graph branch closed
 
-**Phase:** 4Q  
-**Question:** Does a fixed Spatial-Durbin block (neighbour means of all common covariates) improve Italy forecasts?  
-**Evidence:** Real block WMAPE 0.058214 vs persistence 0.054946 (−5.95%) and Ridge 0.056204 (−3.58%). p=0.32 (31/99 controls tie/beat). Relative Moran barely decreases (0.2642 → 0.2602).  
-**Alternatives considered:** Feature-selected spatial lags; non-linear spatial model.  
-**Decision:** FAIL. Geographic queen-contiguity graph branch CLOSED under current 2008–2020 PT/IT/AT data. No STGNN, no HERALD graph training, no multi-country graph.  
-**Rationale:** Both pre-registered geographic ablations (4P + 4Q) failed the gate. Further search without new evidence would be p-hacking.  
-**Limitations:** Covers only linear geographic lags. Does not cover: sector-similarity graphs, commuting networks, functional economic area networks, learned sparse graphs.  
-**Reopen condition:** New harmonized country; separately justified functional/mobility network; new data window post-2020.  
+**Phase:** 4Q
+**Question:** Does a fixed Spatial-Durbin block (neighbour means of all common covariates) improve Italy forecasts?
+**Evidence:** Real block WMAPE 0.058214 vs persistence 0.054946 (−5.95%) and Ridge 0.056204 (−3.58%). p=0.32 (31/99 controls tie/beat). Relative Moran barely decreases (0.2642 → 0.2602).
+**Alternatives considered:** Feature-selected spatial lags; non-linear spatial model.
+**Decision:** FAIL. Geographic queen-contiguity graph branch CLOSED under current 2008–2020 PT/IT/AT data. No STGNN, no HERALD graph training, no multi-country graph.
+**Rationale:** Both pre-registered geographic ablations (4P + 4Q) failed the gate. Further search without new evidence would be p-hacking.
+**Limitations:** Covers only linear geographic lags. Does not cover: sector-similarity graphs, commuting networks, functional economic area networks, learned sparse graphs.
+**Reopen condition:** New harmonized country; separately justified functional/mobility network; new data window post-2020.
 **Affected files:** `reports/HERALD_PHASE4Q_ITALY_SPATIAL_DURBIN_AUDIT.md`; `hpc/phase4/run_phase4q_italy_spatial_durbin.py`
 
 ---
 
 ## DEC-010 — 2026-06-10 — New strategic direction: economic dynamic graph (not geographic)
 
-**Phase:** Post-4Q  
-**Question:** What is the next scientific direction after geographic graph closure?  
-**Evidence:** Geographic contiguity lags (4P/4Q) failed. However: (1) spatial residual autocorrelation in IT is real (4O-C); (2) sector and employment data exist partially; (3) economic complexity and relatedness literature provides principled graph definitions beyond geography.  
-**Alternatives considered:** (A) Add a new harmonized country. (B) Develop non-geographic economic dynamic graph. (C) Move to synthetic data experiments. (D) Abandon graph entirely.  
-**Decision:** Pursue Bloco 2 (economic dynamic graph) as a separate scientific track, parallel to Bloco 1 (temporal forecasting improvements). Geographic graph branch remains closed; economic graph is a new track requiring G0 conceptual gate before any implementation.  
-**Rationale:** The rejection of geographic contiguity lags (which test one specific and arguably weak form of spatial dependence) does not invalidate the economic rationale for sector-territory relational graphs. The two tracks serve different scientific purposes: Bloco 1 = forecasting accuracy; Bloco 2 = economic interpretation and eventual recommendation.  
-**Limitations:** Economic dynamic graph requires new data (sector A10, commuting, input-output) and new methodology. Italy lacks NUTS3 sector employment coverage in `bd_size_r3`.  
-**Reopen condition:** Not applicable — this is an opening, not a closure.  
+**Phase:** Post-4Q
+**Question:** What is the next scientific direction after geographic graph closure?
+**Evidence:** Geographic contiguity lags (4P/4Q) failed. However: (1) spatial residual autocorrelation in IT is real (4O-C); (2) sector and employment data exist partially; (3) economic complexity and relatedness literature provides principled graph definitions beyond geography.
+**Alternatives considered:** (A) Add a new harmonized country. (B) Develop non-geographic economic dynamic graph. (C) Move to synthetic data experiments. (D) Abandon graph entirely.
+**Decision:** Pursue Bloco 2 (economic dynamic graph) as a separate scientific track, parallel to Bloco 1 (temporal forecasting improvements). Geographic graph branch remains closed; economic graph is a new track requiring G0 conceptual gate before any implementation.
+**Rationale:** The rejection of geographic contiguity lags (which test one specific and arguably weak form of spatial dependence) does not invalidate the economic rationale for sector-territory relational graphs. The two tracks serve different scientific purposes: Bloco 1 = forecasting accuracy; Bloco 2 = economic interpretation and eventual recommendation.
+**Limitations:** Economic dynamic graph requires new data (sector A10, commuting, input-output) and new methodology. Italy lacks NUTS3 sector employment coverage in `bd_size_r3`.
+**Reopen condition:** Not applicable — this is an opening, not a closure.
 **Affected files:** `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` (new); `reports/HERALD_RESEARCH_GANTT.md` (new)
 
 ---
 
 ## DEC-011 — 2026-06-10 — Gate: no economic graph implementation authorized without G0 contract
 
-**Phase:** Post-4Q / Pre-G1  
-**Question:** Under what conditions may implementation of the economic dynamic graph begin?  
-**Evidence:** Decision DEC-010. No formal node/edge definition yet. No data inventory. No null model specified.  
-**Decision:** Implementation BLOCKED until all 10 G0 gate items are satisfied (see `HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` § Gate).  
+**Phase:** Post-4Q / Pre-G1
+**Question:** Under what conditions may implementation of the economic dynamic graph begin?
+**Evidence:** Decision DEC-010. No formal node/edge definition yet. No data inventory. No null model specified.
+**Decision:** Implementation BLOCKED until all 10 G0 gate items are satisfied (see `HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` § Gate).
 **Items required:**
-1. Formal node and edge definition with semantic meaning  
-2. Data availability confirmed for ≥2 countries  
-3. Falsifiable hypothesis  
-4. Baseline (persistence or Ridge)  
-5. Null model (permuted graph)  
-6. Causal temporal protocol (no leakage)  
-7. Stability metrics defined  
-8. Acceptance criteria pre-registered  
-9. Permitted claims listed  
-10. Post-experiment audit plan  
-**Rationale:** Phase 4P/4Q taught that graph experiments without pre-registered gates lead to ambiguous closure. G0 contract prevents this.  
+1. Formal node and edge definition with semantic meaning
+2. Data availability confirmed for ≥2 countries
+3. Falsifiable hypothesis
+4. Baseline (persistence or Ridge)
+5. Null model (permuted graph)
+6. Causal temporal protocol (no leakage)
+7. Stability metrics defined
+8. Acceptance criteria pre-registered
+9. Permitted claims listed
+10. Post-experiment audit plan
+**Rationale:** Phase 4P/4Q taught that graph experiments without pre-registered gates lead to ambiguous closure. G0 contract prevents this.
 **Affected files:** `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md`
 
 ---
 
 ## DEC-012 — 2026-06-10 — Sector A10 nucleus corrected: FR+NL+PT, not PT/IT/AT
 
-**Phase:** Post-4Q / G0 preparation  
-**Question:** Which countries provide sector A10 enterprise births at NUTS3 for the dynamic economic graph nucleus?  
-**Evidence:** Panel inspection 2026-06-10 — `mask_sector_a10`: FR=0.923, NL=1.000, PT=0.941, BE=0.000, IT=0.000, AT=0.000. `bd_size_r3` for IT/AT uses aggregate NACE `B-S_X_K642`. `bd_hgnace_r_raw.csv` provides FR/NL/PT sector births 2019–2023. Commuting files confirmed for NL, BE, PT.  
-**Alternatives considered:** Include IT/AT with aggregate only; wait for new Eurostat sector release.  
-**Decision:** Sector graph nucleus = FR + NL + PT. BE = employment-only complement. IT and AT remain in Path H aggregate LOCO but not in sector graph nucleus.  
-**Rationale:** Cannot build a sector graph without sector data. Masks are unambiguous.  
-**Limitations:** FR/NL/PT graph may not generalize to IT/AT economic structures.  
-**Reopen condition:** Eurostat releases NUTS3-level A10 births for IT or AT via `bd_hgnace_r` or equivalent.  
+**Phase:** Post-4Q / G0 preparation
+**Question:** Which countries provide sector A10 enterprise births at NUTS3 for the dynamic economic graph nucleus?
+**Evidence:** Panel inspection 2026-06-10 — `mask_sector_a10`: FR=0.923, NL=1.000, PT=0.941, BE=0.000, IT=0.000, AT=0.000. `bd_size_r3` for IT/AT uses aggregate NACE `B-S_X_K642`. `bd_hgnace_r_raw.csv` provides FR/NL/PT sector births 2019–2023. Commuting files confirmed for NL, BE, PT.
+**Alternatives considered:** Include IT/AT with aggregate only; wait for new Eurostat sector release.
+**Decision:** Sector graph nucleus = FR + NL + PT. BE = employment-only complement. IT and AT remain in Path H aggregate LOCO but not in sector graph nucleus.
+**Rationale:** Cannot build a sector graph without sector data. Masks are unambiguous.
+**Limitations:** FR/NL/PT graph may not generalize to IT/AT economic structures.
+**Reopen condition:** Eurostat releases NUTS3-level A10 births for IT or AT via `bd_hgnace_r` or equivalent.
 **Affected files:** `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md`; `reports/HERALD_RESEARCH_GANTT.md`; `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_LITERATURE_REVIEW.md`
 
 ---
 
 ## DEC-013 — 2026-06-10 — AT and IT A10 claims removed
 
-**Phase:** G0 preparation  
-**Question:** Does AT or IT provide complete A10 sector births at NUTS3?  
-**Evidence:** Panel inspection: `at_panel.csv` `mask_sector_a10=0.000`, `sector_BE not-null=0.000`; same for `it_panel.csv`. Source is `bd_size_r3` with NACE aggregate `B-S_X_K642`. No territorial sector disaggregation.  
-**Decision:** All claims that "AT has complete A10" or "IT has sufficient A10 for G1" are incorrect and removed. AT and IT provide total enterprise births and stock for Path H aggregate only.  
-**Rationale:** Panel mask is authoritative. Mask=0 is unambiguous.  
-**Reopen condition:** New Eurostat `bd_hgnace_r` extract covers AT or IT at NUTS3 with sector disaggregation.  
+**Phase:** G0 preparation
+**Question:** Does AT or IT provide complete A10 sector births at NUTS3?
+**Evidence:** Panel inspection: `at_panel.csv` `mask_sector_a10=0.000`, `sector_BE not-null=0.000`; same for `it_panel.csv`. Source is `bd_size_r3` with NACE aggregate `B-S_X_K642`. No territorial sector disaggregation.
+**Decision:** All claims that "AT has complete A10" or "IT has sufficient A10 for G1" are incorrect and removed. AT and IT provide total enterprise births and stock for Path H aggregate only.
+**Rationale:** Panel mask is authoritative. Mask=0 is unambiguous.
+**Reopen condition:** New Eurostat `bd_hgnace_r` extract covers AT or IT at NUTS3 with sector disaggregation.
 **Affected files:** `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` (corrected); `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_LITERATURE_REVIEW.md`
 
 ---
 
 ## DEC-014 — 2026-06-10 — Official visualization base: France dashboard
 
-**Phase:** G0 preparation / Bloco 2  
-**Question:** Should a new dashboard be created from scratch for the economic graph, or should the existing France dashboard be adapted?  
-**Evidence:** `reports/dashboards/herald_france_final_dashboard.html` implements: interactive choropleth map, territory selection, A10 sector breakdown, time series navigation, and rolling forecast visualization. Separate European panel dashboard also exists (`herald_phase4e_europe_dashboard.html`). Recreating map/navigation/sector components from scratch is unnecessary work.  
-**Decision:** `herald_france_final_dashboard.html` is the official visual base. No new dashboard from scratch. Incremental adaptations only.  
+**Phase:** G0 preparation / Bloco 2
+**Question:** Should a new dashboard be created from scratch for the economic graph, or should the existing France dashboard be adapted?
+**Evidence:** `reports/dashboards/herald_france_final_dashboard.html` implements: interactive choropleth map, territory selection, A10 sector breakdown, time series navigation, and rolling forecast visualization. Separate European panel dashboard also exists (`herald_phase4e_europe_dashboard.html`). Recreating map/navigation/sector components from scratch is unnecessary work.
+**Decision:** `herald_france_final_dashboard.html` is the official visual base. No new dashboard from scratch. Incremental adaptations only.
 **Rationale:** Reuse tested components. Avoid parallel dashboard fragmentation.
 Graph layer added only after L1, L2 and L3 are validated under G4; the current
 L3 result alone is insufficient.
@@ -210,10 +210,10 @@ L3 result alone is insufficient.
 - Edge type legend: geographic, economic, mobility, learned
 - Territory click → sector breakdown + time series + forecast + graph neighbors
 - Real geometries with declared granularity
-- All labels must distinguish association from causality  
+- All labels must distinguish association from causality
 **Forbidden in this task and any task until L1/L2/L3 are validated:** modify
 `herald_france_final_dashboard.html`; generate a new HTML dashboard.
-**Limitations:** Adaptation scope and complexity unknown until G1 graph structure is finalized.  
+**Limitations:** Adaptation scope and complexity unknown until G1 graph structure is finalized.
 **Reopen condition:** L1/L2/L3 validated; supervisor confirms dashboard
 requirements.
 
@@ -574,15 +574,13 @@ with longer windows, OR (3) supervisor directive with explicit justification.
 ## DEC-024 — 2026-06-10/11 — G2 Preflight + Negative Control: falsifiable criteria and temporal dynamics
 
 **Phase:** Bloco 2 — G2 Temporal Dynamics
-**Question:** Are the L2 graph's LOYO Jaccard values genuine temporal signal or finite-sample
+**Question:** Are the L2 graph's temporal-Jaccard metrics genuine temporal signal or finite-sample
 artefact? What is the scope-correct characterisation of G2 aggregate variation?
-**Evidence:**
+
+### DEC-024a — Preflight findings (2026-06-10, valid)
+
 G2 preflight run on 3,645,230 L2 edges (FR/NL/PT, 9 sectors, 15 eval years).
 Top-k=5 (same as Phase 5). PT KZ excluded (DEC-018).
-Negative control: 199 temporal permutations per country×sector; year labels shuffled within
-each territory-pair row; graph rebuilt from scratch; BH/FDR q=0.05.
-
-**Preflight findings:**
 
 | Criterion | Threshold | Finding |
 |-----------|-----------|---------|
@@ -594,32 +592,69 @@ each territory-pair row; graph rebuilt from scratch; BH/FDR q=0.05.
 | COVID density disruption (\|Δ\| ≥ 0.05) | 0.05 | 0/25 combos exceed |
 | COVID weight disruption (\|Δ\| ≥ 0.15) | 0.15 | 0/25 combos exceed |
 
-**Negative control results (2026-06-11):**
+These descriptive findings are valid and unaffected by the negative-control bug below.
 
-Gate: ≥2 countries × ≥50% sectors FDR-significant with obs > null median.
-Result: 3/3 countries pass; 26/26 combos FDR-significant (p=0.005); all positive effects.
+### DEC-024b — Prior negative control (2026-06-11, SUPERSEDED)
 
-| Country | Obs LOYO Jaccard (mean) | Null mean | Effect relative | Gate |
-|---------|------------------------|-----------|-----------------|------|
-| FR | 0.069 | 0.053 | +23–40% | ✓ PASS 9/9 sectors |
-| NL | 0.172 | 0.127 | +18–81% | ✓ PASS 9/9 sectors |
-| PT | 0.260 | 0.207 | +12–30% | ✓ PASS 8/8 sectors |
+> **SUPERSEDED.** The negative control in commit cc48924 permuted pre-computed Pearson
+> correlation weights (territory-pair rows of the weight matrix W from `g1_l2_edges.csv`),
+> NOT the original growth time series from `sector_panel_fr_nl_pt.csv`. This is
+> methodologically invalid: the null distribution does not correspond to the hypothesis
+> being tested (temporal randomness in source co-movement series). The p=0.005 values and
+> "26/26 significant" result are NOT valid evidence. G-13 reverted to
+> EXPLORATORY_PENDING_REVALIDATION.
 
-Sensitivity (k=3,10): consistent results, all FDR-significant.
+Preserved for historical record:
+- Gate: 3/3 countries, 26/26 combos FDR-significant (p=0.005 min), all positive effects.
+- Sensitivity k=3,10: also all p=0.005 (same bug applies).
+- These numbers must not be cited as evidence.
 
-**Decision:**
-1. LOYO Jaccard values are NOT finite-sample artefact — temporal signal is genuine.
-2. Individual edge-level claims remain NOT reliable (persistence 0.4%, LOYO Jaccard <0.70).
-3. Scope for G2 descriptive work: aggregate statistics by country × sector × period.
-4. Language: use "observed aggregate variation in density and weights", NOT "structural evolution".
-5. COVID produced no measurable step-change at these thresholds.
+### DEC-024c — Corrected control (2026-06-11, COMPLETE)
 
-**G-13 status upgraded: EXPLORATORY → SUPPORTED** (negative control passed).
+Module: `src/data/european_panel/build_g2_corrected_controls.py`.
+Tests: `tests/test_g2_corrected_controls.py` (25 tests, all pass).
+Source: `sector_panel_fr_nl_pt.csv` (NOT `g1_l2_edges.csv`).
+
+**Protocol:**
+- N1: permute `observation_year` within each territory × sector column (temporal null).
+- N2: row-wise territory permutation — within each observation_year, shuffle which territory
+  receives which growth value. Tests territory co-movement identity.
+- N2 column permutation DEGENERATE: uniform column shuffle = graph relabeling → null std=0, p=1.0.
+  Verified empirically for NL and PT. N2 row-wise used in gate.
+- Full pipeline per permutation: rolling windows → pairwise_corr → top-k → adjacency → metrics.
+- Metrics: M1 consecutive Jaccard J(G_t, G_{t+1}); M2 mean pairwise Jaccard (all year pairs);
+  M3 LOYO reconstruction (remove obs_year y, rebuild affected windows) — observed only, null BLOCKED.
+- COVID: `exclude_years=frozenset({2020})` excludes obs_year=2020 from windows; eval_year=2020 retained.
+- 199 permutations per null family. p=(1+count(null≥obs))/(N+1). BH/FDR by metric×null family.
+- Seeds: N1=42, N2=137.
+
+**Results (k=5 principal):**
+
+| Country | M1 obs (mean) | M2 obs (mean) | N1+N2 sig sectors | Signal gate | Stability gate (M2≥0.70) |
+|---------|--------------|--------------|-------------------|-------------|--------------------------|
+| FR | 0.181–0.195 | 0.059–0.064 | 9/9 (p=0.005) | ✓ PASS | ✗ FAIL |
+| NL | 0.373–0.493 | 0.155–0.260 | 5/9 (BE,FZ,GI,LZ,MN) | ✓ PASS | ✗ FAIL |
+| PT | 0.447–0.509 | 0.243–0.261 | 0/8 | ✗ FAIL | ✗ FAIL |
+
+**Global verdicts:**
+- `G2_AGGREGATE_TEMPORAL_SIGNAL_SUPPORTED` — 2/3 countries pass (FR+NL; ≥2 required).
+- `G2_EDGE_STABILITY_NOT_SUPPORTED` — M2 0.06–0.26 universally; 0/3 countries pass.
+
+**M3 LOYO reconstruction (observed, null BLOCKED):** FR 0.287 · NL 0.500 · PT 0.578.
+
+**Floor-p diagnostics (FR p=0.005):** obs_above_all_null=True; null std ~0.0013–0.0015;
+199 unique null values → legitimate signal, not degeneracy.
+
+**Sensitivity (k=3,5,10):** M2 increases with k; direction consistent across k for all countries.
+
+**G-13 status: PARTIALLY_SUPPORTED** — signal exceeds nulls for FR+NL; stability NOT supported.
 
 **Scope restrictions (unchanged):**
-- No individual edge claims, no cross-country pooling, no causal attribution
-- No community claims (DEC-021: NOT_SUPPORTED), no recommendation claims
+- Language: "associação estatística temporal observada", NOT causal attribution
+- No individual edge claims, no cross-country pooling
+- No community claims (DEC-021), no recommendation claims
 
-**Affected files:** `src/data/european_panel/build_g2_temporal_preflight.py`,
-`data/processed/economic_graph/g2_preflight/` (+ g2_negative_control*.csv),
-`reports/HERALD_G2_PREFLIGHT.md`, `tests/test_g2_preflight.py`.
+**Affected files:** `src/data/european_panel/build_g2_corrected_controls.py`,
+`data/processed/economic_graph/g2_preflight/` (g2_corrected_controls*.csv, g2_corrected_m3_loyo.csv,
+g2_corrected_controls_summary.json), `tests/test_g2_corrected_controls.py`,
+`reports/HERALD_G2_PREFLIGHT.md`.
