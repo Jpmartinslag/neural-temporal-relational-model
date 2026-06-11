@@ -623,3 +623,37 @@ def test_T42_struct_mask_static_shape():
     assert struct.ndim == 2
     # NL has no structural absences — all should be 1
     assert np.all(struct == 1), "NL has no STRUCTURAL_ABSENT sectors"
+
+
+def test_T43_exclude_year_affects_only_adjacency():
+    """COVID sensitivity removes a year from graph windows, not node features."""
+    sp = _make_sector_panel(
+        regions=["R1", "R2", "R3", "R4"],
+        sectors=["BE"],
+        obs_years=list(range(2015, 2022)),
+    )
+    patterns = {
+        2017: [0.1, 0.2, 0.3, 0.4],
+        2018: [0.2, 0.4, 0.1, 0.3],
+        2019: [0.3, 0.1, 0.4, 0.2],
+        2020: [10.0, -10.0, 10.0, -10.0],
+    }
+    for year, values in patterns.items():
+        for region, value in zip(["R1", "R2", "R3", "R4"], values):
+            sp.loc[
+                (sp["observation_year"] == year)
+                & (sp["region_id"] == region),
+                "sector_growth_1y",
+            ] = value
+
+    regions = country_regions_from_sector(sp, "TE")
+    sectors = country_sectors(sp, "TE")
+    main = build_fold_tensors_v2(
+        "TE", 2022, sp, sectors, regions, t_seq=5, window=5, min_periods=2, k=2
+    )
+    no_covid = build_fold_tensors_v2(
+        "TE", 2022, sp, sectors, regions, t_seq=5, window=5, min_periods=2, k=2,
+        exclude_adjacency_years=frozenset({2020}),
+    )
+    np.testing.assert_equal(main["features_seq"], no_covid["features_seq"])
+    assert not np.array_equal(main["adjacency_seq"], no_covid["adjacency_seq"])

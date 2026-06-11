@@ -182,6 +182,7 @@ def build_adjacency_at_step(
     min_periods: int = MIN_PERIODS,
     repr_: str = "positive_topk",
     k: int = TOP_K,
+    exclude_years: frozenset[int] = frozenset(),
 ) -> np.ndarray:
     """Build L2 adjacency for one time step.
 
@@ -205,6 +206,7 @@ def build_adjacency_at_step(
     sp_window = sp_c[
         (sp_c["observation_year"] >= window_min)
         & (sp_c["observation_year"] <= obs_year)
+        & (~sp_c["observation_year"].isin(exclude_years))
         & (sp_c["mask_sector_supported"] == 1)
     ]
     _assert_no_leakage(sp_window["observation_year"].values, eval_year,
@@ -257,6 +259,7 @@ def build_adjacency_seq(
     window: int = WINDOW,
     min_periods: int = MIN_PERIODS,
     k: int = TOP_K,
+    exclude_years: frozenset[int] = frozenset(),
 ) -> np.ndarray:
     """Build (T, S, R, R) adjacency sequence — positive_topk representation.
 
@@ -275,7 +278,7 @@ def build_adjacency_seq(
             sector_panel, country, sectors, region_ids,
             obs_year=obs_year, eval_year=eval_year,
             window=window, min_periods=min_periods,
-            repr_="positive_topk", k=k,
+            repr_="positive_topk", k=k, exclude_years=exclude_years,
         )
     return adj_seq
 
@@ -687,6 +690,7 @@ def build_fold_tensors_v2(
     window: int = WINDOW,
     min_periods: int = MIN_PERIODS,
     k: int = TOP_K,
+    exclude_adjacency_years: frozenset[int] = frozenset(),
 ) -> dict:
     """Build all schema 2.0 tensors for one (country, eval_year) fold.
 
@@ -711,7 +715,8 @@ def build_fold_tensors_v2(
     # Adjacency sequence (T, S, R, R) — positive_topk
     adjacency_seq = build_adjacency_seq(
         sector_panel, country, sectors, region_ids, obs_years, eval_year,
-        window=window, min_periods=min_periods, k=k
+        window=window, min_periods=min_periods, k=k,
+        exclude_years=exclude_adjacency_years,
     )
 
     # Canonical H0b Ridge
@@ -750,6 +755,7 @@ def build_fold_tensors_v2(
         "max_train_obs_year": eval_year - 1,
         "t_seq": t_seq,
         "top_k": k,
+        "exclude_adjacency_years": sorted(exclude_adjacency_years),
     }
 
 
@@ -845,6 +851,7 @@ def export_v2(
     min_periods: int = MIN_PERIODS,
     k: int = TOP_K,
     run_adjacency_audit: bool = True,
+    exclude_adjacency_years: frozenset[int] = frozenset(),
     _sector_panel_override: "pd.DataFrame | None" = None,
 ) -> dict:
     """Export schema 2.0 fold tensors and write manifest_v2.json.
@@ -886,6 +893,7 @@ def export_v2(
             "window": window,
             "min_periods": min_periods,
             "top_k": k,
+            "exclude_adjacency_years": sorted(exclude_adjacency_years),
             "ridge_alpha": RIDGE_ALPHA_H0B,
             "ar_lags": AR_LAGS,
         },
@@ -903,7 +911,8 @@ def export_v2(
         for eval_year in eval_years:
             fold = build_fold_tensors_v2(
                 country, eval_year, sector_panel, sectors, region_ids,
-                t_seq=t_seq, window=window, min_periods=min_periods, k=k
+                t_seq=t_seq, window=window, min_periods=min_periods, k=k,
+                exclude_adjacency_years=exclude_adjacency_years,
             )
             checksums = save_fold_v2(fold, out_dir)
 
