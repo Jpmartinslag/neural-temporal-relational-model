@@ -647,6 +647,58 @@ def generate_dashboard(v03_dir: Path, output_path: Path) -> None:
     nl_geo_js = json.dumps(nl_geo)
     pt_geo_js = json.dumps(pt_geo)
 
+    # Phase 8 — territorial influence layer (optional, loaded if artifacts exist)
+    p8_csv = REPO_ROOT / "data/processed/herald_observatory_v04/territorial_sector_movements.csv"
+    p8_data_js = "[]"
+    p8_robust_relations_js = "{}"
+    if p8_csv.exists():
+        p8_df = pd.read_csv(p8_csv)
+        p8_records = []
+        for _, row in p8_df.iterrows():
+            p8_records.append({
+                "country": row["country"],
+                "territory_id": row["territory_id"],
+                "window_start": int(row["window_start"]),
+                "window_end": int(row["window_end"]),
+                "source_sector": row["source_sector"],
+                "target_sector": row["target_sector"],
+                "global_beta": round(float(row["global_beta"]), 6) if pd.notna(row["global_beta"]) else None,
+                "territorial_influence": round(float(row["territorial_influence"]), 6) if pd.notna(row["territorial_influence"]) else None,
+                "influence_sign": str(row["influence_sign"]) if pd.notna(row["influence_sign"]) else None,
+                "influence_share": round(float(row["influence_share"]), 6) if pd.notna(row["influence_share"]) else None,
+                "bootstrap_sign_stability": round(float(row["bootstrap_sign_stability"]), 4) if pd.notna(row["bootstrap_sign_stability"]) else None,
+                "loyo_consistent": bool(row["loyo_consistent"]),
+                "loyo_n_consistent": int(row["loyo_n_consistent"]),
+                "loyo_n_total": int(row["loyo_n_total"]),
+                "evidence_level": str(row["evidence_level"]),
+                "insufficient_data": bool(row["insufficient_data"]),
+                "n_pairs_in_window": int(row["n_pairs_in_window"]),
+            })
+        p8_data_js = json.dumps(p8_records)
+        p8_robust_relations: dict = {}
+        for c in p8_df["country"].unique():
+            sub = p8_df[p8_df["country"] == c]
+            seen: set = set()
+            rels = []
+            for _, row in sub.iterrows():
+                k = f'{row["source_sector"]}_{row["target_sector"]}_{int(row["window_start"])}_{int(row["window_end"])}'
+                if k not in seen:
+                    seen.add(k)
+                    rels.append({
+                        "source": row["source_sector"],
+                        "target": row["target_sector"],
+                        "window_start": int(row["window_start"]),
+                        "window_end": int(row["window_end"]),
+                        "key": k,
+                        "label": f'{row["source_sector"]}→{row["target_sector"]} ({int(row["window_start"])}-{int(row["window_end"])})',
+                        "global_beta": round(float(row["global_beta"]), 4),
+                    })
+            p8_robust_relations[c] = rels
+        p8_robust_relations_js = json.dumps(p8_robust_relations)
+        logger.info("Phase 8 data loaded: %d records", len(p8_records))
+    else:
+        logger.warning("Phase 8 CSV not found, territorial layer will be absent from dashboard")
+
     plotly_tag = _plotly_js_tag()
 
     html = f"""<!DOCTYPE html>
@@ -700,6 +752,12 @@ def generate_dashboard(v03_dir: Path, output_path: Path) -> None:
   .legend-dot{{width:11px;height:11px;border-radius:50%;flex-shrink:0;}}
   .legend-line{{width:22px;height:3px;flex-shrink:0;}}
   .assoc-warn{{background:#1a1206;border:1px solid #7a5c10;border-radius:6px;padding:8px 12px;font-size:12px;color:#ffd180;margin-bottom:8px;}}
+  .p8-warn{{background:#1a1206;border:1px solid #7a5c10;border-radius:6px;padding:8px 12px;font-size:12px;color:#ffd180;margin-bottom:8px;}}
+  .badge-high{{color:#4aa3ff;border-color:#4aa3ff;background:#0a1a2e;}}
+  .badge-moderate{{color:#ffd180;border-color:#ffd180;background:#1e1a0a;}}
+  .badge-low{{color:#9aa4bf;border-color:#9aa4bf;background:#16181f;}}
+  .badge-descriptive{{color:#b084f5;border-color:#b084f5;background:#16102a;}}
+  .p8-toggle-hdr{{cursor:pointer;display:flex;align-items:center;gap:8px;user-select:none;}}
   @media(max-width:950px){{
     .map-layout,.graph-layout,.grid2{{grid-template-columns:1fr;}}
     .kpis{{grid-template-columns:repeat(2,1fr);}}
@@ -876,7 +934,59 @@ def generate_dashboard(v03_dir: Path, output_path: Path) -> None:
   <div class="card"><div id="terr-heatmap" style="height:480px"></div></div>
 </div>
 
-<!-- ── SECTION 6: Provenance ──────────────────────────────────────────────── -->
+<!-- ── SECTION 6: Territorial Statistical Contribution (Phase 8) ──────── -->
+<div class="section" style="margin-top:24px">
+  <div class="section-title p8-toggle-hdr" onclick="toggleP8Section()">
+    <span id="p8-toggle-icon" style="font-size:12px;width:14px;display:inline-block">▶</span>
+    6. Territorial Statistical Contribution
+    <span style="font-size:12px;color:var(--muted);font-weight:normal">(Phase 8 — LOTO, descriptive)</span>
+    <span class="badge badge-descriptive" style="font-size:10px">DESCRIPTIVE ONLY</span>
+  </div>
+  <div id="p8-section" style="display:none;margin-top:10px">
+    <div class="section-note">
+      For each COVID-robust sector-precedence association, shows how much removing each territory
+      changes the national regression coefficient (leave-one-territory-out, LOTO).
+      <strong>This is a descriptive influence statistic only.</strong>
+      It does not identify a causal effect, geographic origin, transmission, or flow.
+      Evidence levels reflect relative influence within each national relation;
+      they are not scientific promotions. Overlapping windows are not independent replications.
+    </div>
+    <div class="p8-warn" id="p8-fr-warn" style="display:none">
+      &#9888; France has 0 COVID-robust sector-precedence associations in Phase 7. No territorial influence layer available for France.
+    </div>
+    <div class="p8-warn" id="p8-pt-warn" style="display:none">
+      &#9888; Portugal: Azores (PT_200) and Madeira (PT_300) are included in the national regression estimation but are not shown on this map (23 mainland territories only).
+    </div>
+    <div class="controls" id="p8-controls">
+      <label>Country
+        <select id="p8-country" onchange="handleP8CountryChange()">
+          <option value="NL">Netherlands (COROP)</option>
+          <option value="PT">Portugal (NUTS3)</option>
+          <option value="FR">France (ZE2020)</option>
+        </select>
+      </label>
+      <label id="p8-relation-label">Relation
+        <select id="p8-relation" onchange="renderP8Map()"></select>
+      </label>
+    </div>
+    <div class="legend-row" id="p8-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#ef5350"></div>Large negative influence</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#1e2640"></div>Neutral (&#x2248;0)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#4aa3ff"></div>Large positive influence</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#30364f"></div>Insufficient data</div>
+    </div>
+    <div class="map-layout">
+      <div class="card" style="min-height:520px"><div id="p8-map-plot" style="height:520px"></div></div>
+      <div class="side-panel" id="p8-side">
+        <h3>Territorial contribution</h3>
+        <div class="side-empty" id="p8-side-empty">Click a territory on the map to see its statistical contribution.</div>
+        <div id="p8-side-content" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SECTION 7: Provenance ──────────────────────────────────────────────── -->
 <div class="section" style="margin-top:32px;margin-bottom:20px;">
   <div class="section-title" style="font-size:14px;color:var(--muted)">Provenance</div>
   <div id="provenance-block" style="color:var(--muted);font-size:12px;line-height:1.7;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;margin-top:6px;"></div>
@@ -898,6 +1008,16 @@ const GEO_FR = {fr_geo_js};
 const GEO_NL = {nl_geo_js};
 const GEO_PT = {pt_geo_js};
 const GEO = {{FR: GEO_FR, NL: GEO_NL, PT: GEO_PT}};
+const P8_DATA = {p8_data_js};
+const P8_ROBUST_RELATIONS = {p8_robust_relations_js};
+// Build P8 index: country → territory_id → relation_key → record
+const P8_IDX = {{}};
+P8_DATA.forEach(r => {{
+  const rk = r.source_sector + '_' + r.target_sector + '_' + r.window_start + '_' + r.window_end;
+  if (!P8_IDX[r.country]) P8_IDX[r.country] = {{}};
+  if (!P8_IDX[r.country][r.territory_id]) P8_IDX[r.country][r.territory_id] = {{}};
+  P8_IDX[r.country][r.territory_id][rk] = r;
+}});
 
 // ── Constants ─────────────────────────────────────────────────────────────
 const SECTORS = ['BE','FZ','GI','JZ','KZ','LZ','MN','OQ','RU'];
@@ -1377,6 +1497,181 @@ function renderProvenance() {{
     <b>Dependency:</b> ${{dep}}<br>
     <b>Robust windows (derived from Phase 7):</b> ${{rwStr||'—'}}<br>
     <b>Note:</b> ${{MANIFEST.provenance_note||''}}`;
+}}
+
+// ── Phase 8: Territorial statistical contribution ────────────────────────
+const P8_DIVERGENT = [
+  [0,'#ef5350'],[0.25,'#b084f5'],[0.5,'#1e2640'],
+  [0.75,'#26a69a'],[1,'#4aa3ff']
+];
+
+function toggleP8Section() {{
+  const sec = document.getElementById('p8-section');
+  const icon = document.getElementById('p8-toggle-icon');
+  if (sec.style.display === 'none') {{
+    sec.style.display = '';
+    icon.textContent = '▼';
+    initP8();
+  }} else {{
+    sec.style.display = 'none';
+    icon.textContent = '▶';
+  }}
+}}
+
+function initP8() {{
+  handleP8CountryChange();
+}}
+
+function handleP8CountryChange() {{
+  const country = document.getElementById('p8-country').value;
+  const frWarn = document.getElementById('p8-fr-warn');
+  const ptWarn = document.getElementById('p8-pt-warn');
+  const relLabel = document.getElementById('p8-relation-label');
+  frWarn.style.display = country === 'FR' ? '' : 'none';
+  ptWarn.style.display = country === 'PT' ? '' : 'none';
+  const rels = P8_ROBUST_RELATIONS[country] || [];
+  const sel = document.getElementById('p8-relation');
+  if (!rels.length) {{
+    sel.innerHTML = '<option value="">— no ROBUST relations —</option>';
+    relLabel.style.display = 'none';
+    Plotly.purge('p8-map-plot');
+    return;
+  }}
+  relLabel.style.display = '';
+  sel.innerHTML = rels.map(r =>
+    `<option value="${{r.key}}">${{r.label}} &nbsp; &#946;=${{r.global_beta.toFixed(3)}}</option>`
+  ).join('');
+  clearP8SidePanel();
+  renderP8Map();
+}}
+
+function renderP8Map() {{
+  const country = document.getElementById('p8-country').value;
+  const relKey = document.getElementById('p8-relation').value;
+  if (!relKey) return;
+  const geo = GEO[country];
+  if (!geo || !geo.features || !geo.features.length) return;
+  const countryIdx = P8_IDX[country] || {{}};
+  const locations = [], z = [], customdata = [], text = [];
+  let globalBeta = null;
+  geo.features.forEach(f => {{
+    const pid = f.properties.panel_id;
+    const name = f.properties.territory_name || pid;
+    const rec = (countryIdx[pid] || {{}})[relKey];
+    locations.push(pid);
+    if (!rec || rec.insufficient_data || rec.territorial_influence == null) {{
+      z.push(null);
+      customdata.push({{pid, name, rec: null}});
+      text.push(name + '<br>Insufficient data');
+    }} else {{
+      if (globalBeta === null) globalBeta = rec.global_beta;
+      z.push(rec.territorial_influence);
+      const infl = rec.territorial_influence.toFixed(4);
+      const bss = rec.bootstrap_sign_stability != null ? (rec.bootstrap_sign_stability*100).toFixed(0)+'%' : '—';
+      const loyo = rec.loyo_consistent ? `${{rec.loyo_n_consistent}}/${{rec.loyo_n_total}} splits` : `${{rec.loyo_n_consistent}}/${{rec.loyo_n_total}} (inconsistent)`;
+      customdata.push({{pid, name, rec}});
+      text.push(
+        `<b>${{name}}</b><br>` +
+        `Territory: ${{pid}}<br>` +
+        `Influence: ${{infl}}<br>` +
+        `Sign: ${{rec.influence_sign}}<br>` +
+        `Share: ${{rec.influence_share != null ? (rec.influence_share*100).toFixed(1)+'%' : '—'}}<br>` +
+        `BSS: ${{bss}}<br>` +
+        `LOYO: ${{loyo}}<br>` +
+        `Level: ${{rec.evidence_level}}<br>` +
+        `n: ${{rec.n_pairs_in_window}}<br>` +
+        `<i>Descriptive only — not causal</i>`
+      );
+    }}
+  }});
+  const rels = P8_ROBUST_RELATIONS[country] || [];
+  const relMeta = rels.find(r => r.key === relKey) || {{}};
+  const relLabel = relMeta.label || relKey;
+  const allZ = z.filter(v => v != null);
+  const absMax = allZ.length ? Math.max(Math.abs(Math.min(...allZ)), Math.abs(Math.max(...allZ))) : 1;
+  const trace = {{
+    type: 'choropleth',
+    geojson: geo,
+    featureidkey: 'properties.panel_id',
+    locations: locations,
+    z: z,
+    text: text,
+    customdata: customdata,
+    colorscale: P8_DIVERGENT,
+    zmid: 0,
+    zmin: -absMax,
+    zmax: absMax,
+    colorbar: {{
+      title: 'Influence',
+      tickfont: {{color:'#eef2ff', size:10}},
+      thickness: 14, len: 0.8,
+    }},
+    hovertemplate: '%{{text}}<extra></extra>',
+    marker: {{line: {{width: 0.5, color: '#30364f'}}}},
+    showscale: true,
+  }};
+  const layout = Object.assign({{}}, BASE_LAYOUT, {{
+    geo: {{fitbounds:'geojson', visible:false, bgcolor:'#0f1220',
+          showframe:false, showcoastlines:false}},
+    margin: {{l:0, r:0, t:40, b:0}},
+    title: {{
+      text: country + ' — ' + relLabel
+        + (globalBeta !== null ? ' — national &#946;=' + globalBeta.toFixed(3) : ''),
+      font: {{size:13, color:'#eef2ff'}},
+    }},
+  }});
+  Plotly.newPlot('p8-map-plot', [trace], layout, {{responsive:true, displayModeBar:false}});
+  document.getElementById('p8-map-plot').on('plotly_click', function(data) {{
+    const pt = data.points[0];
+    if (pt && pt.customdata) showP8SidePanel(pt.customdata, relLabel);
+  }});
+}}
+
+function showP8SidePanel(d, relLabel) {{
+  document.getElementById('p8-side-empty').style.display = 'none';
+  const content = document.getElementById('p8-side-content');
+  content.style.display = 'block';
+  const r = d.rec;
+  if (!r || r.insufficient_data) {{
+    content.innerHTML = `
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px">${{d.name}}</div>
+      <div style="color:var(--muted);font-size:12px">Insufficient data for this territory in this relation window.</div>
+    `;
+    return;
+  }}
+  const levelBadge = r.evidence_level.startsWith('HIGH')
+    ? `<span class="badge badge-high">${{r.evidence_level}}</span>`
+    : r.evidence_level.startsWith('MODERATE')
+    ? `<span class="badge badge-moderate">${{r.evidence_level}}</span>`
+    : r.evidence_level.startsWith('LOW')
+    ? `<span class="badge badge-low">${{r.evidence_level}}</span>`
+    : `<span class="badge badge-descriptive">${{r.evidence_level}}</span>`;
+  const bss = r.bootstrap_sign_stability != null ? (r.bootstrap_sign_stability*100).toFixed(0)+'%' : '—';
+  const loyoStr = `${{r.loyo_n_consistent}}/${{r.loyo_n_total}} year-splits same sign`;
+  content.innerHTML = `
+    <div style="font-size:13px;font-weight:700;margin-bottom:6px">${{d.name}}</div>
+    <div style="margin-bottom:8px">${{levelBadge}}</div>
+    <div class="side-field"><span class="lbl">Territory</span><span class="val">${{d.pid}}</span></div>
+    <div class="side-field"><span class="lbl">Relation</span><span class="val">${{relLabel}}</span></div>
+    <div class="side-field"><span class="lbl">National &#946; (full)</span><span class="val">${{r.global_beta.toFixed(4)}}</span></div>
+    <div class="side-field"><span class="lbl">Territorial influence</span><span class="val">${{r.territorial_influence.toFixed(4)}}</span></div>
+    <div class="side-field"><span class="lbl">Influence sign</span><span class="val">${{r.influence_sign}}</span></div>
+    <div class="side-field"><span class="lbl">Influence share</span><span class="val">${{r.influence_share != null ? (r.influence_share*100).toFixed(1)+'%' : '—'}}</span></div>
+    <div class="side-field"><span class="lbl">Bootstrap sign stab.</span><span class="val">${{bss}}</span></div>
+    <div class="side-field"><span class="lbl">LOYO</span><span class="val">${{loyoStr}}</span></div>
+    <div class="side-field"><span class="lbl">n pairs</span><span class="val">${{r.n_pairs_in_window}}</span></div>
+    <div class="side-note">
+      Removing this territory changes the national coefficient by <b>${{r.territorial_influence.toFixed(4)}}</b>.
+      This is a descriptive influence statistic. It does not identify a causal effect, origin,
+      transmission, or geographic flow.
+    </div>
+  `;
+}}
+
+function clearP8SidePanel() {{
+  document.getElementById('p8-side-empty').style.display = '';
+  document.getElementById('p8-side-content').style.display = 'none';
+  document.getElementById('p8-side-content').innerHTML = '';
 }}
 
 // ── Init ─────────────────────────────────────────────────────────────────

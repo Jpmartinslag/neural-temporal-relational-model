@@ -90,7 +90,7 @@
 | `PENDING_REAUDIT` | 1 |
 | **Total** | **33** |
 
-_Updated 2026-06-12 (DEC-035): Observatory v0.3 integrates G-18 SUPPORTED result. Sector→sector layer: 12 ROBUST + 13 MAIN_ONLY_EXPLORATORY edges. Dashboard: `reports/dashboards/herald_observatory_v03_dashboard.html`. F=7, G=12, GEN=3, REC=2, MET=6; total=34._
+_Updated 2026-06-12 (DEC-037 addendum): Phase 8 territorial influence layer complete. Evidence levels corrected to HIGH/MODERATE/LOW DESCRIPTIVE INFLUENCE. Dashboard Section 6 integrated. F=7, G=12, GEN=3, REC=2, MET=6; total=34. No new promoted claims beyond DEC-034._
 
 ---
 

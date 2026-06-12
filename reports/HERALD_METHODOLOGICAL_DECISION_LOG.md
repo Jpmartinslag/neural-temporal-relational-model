@@ -1154,9 +1154,15 @@ Provenance note required on all outputs: *"Edges are predictive associations (ob
 
 ---
 
-## DEC-037 — 2026-06-12 — Phase 8: Territorial Sector Movement Attribution
+## DEC-037 — 2026-06-12 — Phase 8: Territorial Sector Statistical Influence
 
-**Phase:** Phase 8 — Territorial Sector Movement Attribution (DESCRIPTIVE_ONLY layer)
+**Addendum (2026-06-12):** Evidence level nomenclature corrected. Old names (STRONG/MODERATE/WEAK) replaced throughout code, tests, artifacts, and documentation with:
+- `HIGH_DESCRIPTIVE_INFLUENCE` (was STRONG) — above Q75 + stable + LOYO + wo20
+- `MODERATE_DESCRIPTIVE_INFLUENCE` (was MODERATE) — above Q50 + stable + LOYO + wo20
+- `LOW_DESCRIPTIVE_INFLUENCE` (was WEAK) — above Q50 + stable, LOYO or wo20 inconclusive
+Decision record fields added: `interpretation_scope=descriptive_relative_influence`, `independent_replication=false`, `spatial_flow_supported=false`, `causal_effect_supported=false`, `threshold_status=defined_before_execution_not_formally_preregistered`. Overlapping windows explicitly documented as non-independent. Gate keys renamed: `evidence_strong_percentile→high_descriptive_percentile`, `evidence_moderate_percentile→moderate_descriptive_percentile`. Numeric results unchanged. Territorial influence layer integrated into Observatory v0.3 dashboard as Section 6 (toggle, divergent colorscale). Manifest version bumped to 0.2.
+
+**Phase:** Phase 8 — Territorial Sector Statistical Influence (DESCRIPTIVE_ONLY layer)
 
 **Question:** Can the 12 COVID-robust Phase 7 sector-precedence associations be localised to specific territories? For each relation, which territories contribute most to the global beta?
 
@@ -1178,9 +1184,9 @@ where `beta_full` replicates Phase 7 exactly (two-way demean → standardize →
 
 | Level | Count | Meaning |
 |-------|-------|---------|
-| STRONG | 91 | Q75 + bootstrap ≥ 0.60 + LOYO consistent + without-2020 consistent |
-| MODERATE | 78 | Q50 + bootstrap ≥ 0.60 + LOYO consistent + without-2020 consistent |
-| WEAK | 8 | Q50 + bootstrap ≥ 0.60, LOYO or without-2020 inconclusive |
+| HIGH_DESCRIPTIVE_INFLUENCE | 91 | Q75 + bootstrap ≥ 0.60 + LOYO consistent + without-2020 consistent |
+| MODERATE_DESCRIPTIVE_INFLUENCE | 78 | Q50 + bootstrap ≥ 0.60 + LOYO consistent + without-2020 consistent |
+| LOW_DESCRIPTIVE_INFLUENCE | 8 | Q50 + bootstrap ≥ 0.60, LOYO or without-2020 inconclusive |
 | DESCRIPTIVE_ONLY | 168 | Influence measurable but below gates |
 | INSUFFICIENT_DATA | 0 | All territories had sufficient data |
 
@@ -1202,8 +1208,8 @@ The 12 Phase 7 global betas are validated scientific results (permutation-tested
 | min_loto_pairs | 30 |
 | bootstrap_sign_stability_threshold | 0.60 |
 | loyo_min_consistent_splits | 4 of 5 |
-| evidence_strong_percentile | Q75 |
-| evidence_moderate_percentile | Q50 |
+| high_descriptive_percentile | Q75 |
+| moderate_descriptive_percentile | Q50 |
 
 **Rationale:** Phase 7 already validates the existence of sector-precedence associations at the national level. This layer answers "where?" using the most interpretable method (LOTO = remove one territory, measure beta change). Bootstrap and LOYO provide stability checks without re-running HPC. The descriptive label prevents over-interpretation.
 

@@ -1,5 +1,5 @@
 # HERALD Current State
-**Updated:** 2026-06-12 (post DEC-037, Phase 8 territorial sector movement attribution)
+**Updated:** 2026-06-12 (post DEC-037 addendum: nomenclature correction + dashboard integration)
 **Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-037), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
@@ -15,9 +15,9 @@
 | Economic states | **60%** | Deterministic observed states exported for aggregate PT/IT/AT and sector FR/NL/PT |
 | Sector→sector graph | **90%** | SECTOR_PRECEDENCE_PROTOTYPE_READY: 12 COVID-robust edges (NL=3, PT=9); integrated in Observatory v0.3 (DEC-034/035) |
 | Explanation | **30%** | Descriptive co-growth associations; no attention/associative explanation validated |
-| Dashboard | **80%** | Observatory v0.3: choropleth map (FR=ZE2020/NL=COROP/PT=NUTS3), sector graph, economic states, territory heatmaps; Plotly self-contained (DEC-036) |
+| Dashboard | **85%** | Observatory v0.3: choropleth map + sector graph + economic states + territory heatmaps + Phase 8 territorial contribution layer (Section 6, toggle, divergent scale); 14,095 KB self-contained (DEC-036/037) |
 | Recommendation | **35%** | Intelligence layer structure exists; weights/claims not validated |
-| Territorial movement attribution | **30%** | Phase 8 DESCRIPTIVE_ONLY: 91 STRONG + 78 MODERATE territories localised per ROBUST relation (DEC-037); no causal claim |
+| Territorial movement attribution | **55%** | Phase 8 DESCRIPTIVE_ONLY: 91 HIGH + 78 MODERATE + 8 LOW DESCRIPTIVE territories localised per ROBUST relation; integrated in dashboard; no causal claim (DEC-037 + addendum) |
 | **Integrated prototype** | **~82%** | Sector→sector layer validated; territorial attribution descriptive layer added; explanation and recommendation remain |
 | **European product** | **~40%** | Multi-country sector observations integrated; influence and recommendation layers remain |
 

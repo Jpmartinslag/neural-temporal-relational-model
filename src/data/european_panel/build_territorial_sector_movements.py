@@ -1,18 +1,24 @@
-"""Phase 8 — Territorial Sector Movement Attribution.
+"""Phase 8 — Territorial Sector Statistical Influence.
 
 For each of the 12 COVID-robust Phase 7 edges, decomposes the global beta
 into per-territory contributions using leave-one-territory-out (LOTO):
 
     influence_r = beta_full - beta_without_territory_r
 
-This is a descriptive attribution layer. It shows WHERE within the country the
-sector-precedence association concentrates. It does NOT claim:
-- causal transmission between territories
-- propagation of enterprise-birth shocks
-- that removing a territory would change the economy
+This is a DESCRIPTIVE_ONLY layer. It shows the spatial distribution of
+statistical influence — where the sector-precedence association concentrates
+within each country. It does NOT claim:
+- causal effect between territories
+- geographic flow of enterprise creation
+- that removing a territory would change the real economy
 
-Gates are pre-specified in decision.json and sealed before results are observed.
-Association language only: "predictive precedence" not "causation" or "transmission".
+Evidence levels (HIGH/MODERATE/LOW DESCRIPTIVE INFLUENCE) reflect relative
+influence magnitude within each national relation. They are NOT scientific
+promotions and do NOT constitute replication. Overlapping windows are NOT
+independent results.
+
+Thresholds defined and sealed before execution (not formally pre-registered
+as a publicly deposited document).
 """
 
 from __future__ import annotations
@@ -43,20 +49,22 @@ PHASE7_DECISION = (
 )
 OUTPUT_DIR = REPO_ROOT / "data/processed/herald_observatory_v04"
 
-# Pre-specified gates — sealed before observing any result
+# Thresholds defined and sealed before execution
+# (Not formally pre-registered as a publicly deposited document)
 GATES = {
     "beta_integrity_tol": 0.01,
     "min_territory_own_pairs": 3,   # territory must have ≥ 3 complete pairs in window
     "min_loto_pairs": 30,           # LOTO dataset (all other territories) must have ≥ 30 pairs
-    # keep for backward compatibility in classify_evidence call sites
+    # kept for backward compatibility in classify_evidence call sites
     "min_territory_pairs": 3,
     "bootstrap_sign_stability_threshold": 0.60,
     "loyo_min_consistent_splits": 4,
-    "evidence_strong_percentile": 75,
-    "evidence_moderate_percentile": 50,
+    # Percentile thresholds rank relative influence WITHIN each national relation only
+    "high_descriptive_percentile": 75,
+    "moderate_descriptive_percentile": 50,
     "n_bootstrap": 500,
     "bootstrap_seed": 42,
-    "provenance": "pre-specified before Phase 8 execution; not revised after observing results",
+    "threshold_status": "defined_before_execution_not_formally_preregistered",
 }
 
 TERRITORY_SYSTEMS = {"NL": "COROP", "PT": "NUTS3_2021", "FR": "ZE2020"}
@@ -431,9 +439,18 @@ def classify_evidence(
     q50: float,
     gates: dict,
 ) -> str:
-    """Apply pre-specified gates to assign evidence level.
+    """Apply sealed thresholds to assign descriptive evidence level.
 
-    Returns: STRONG | MODERATE | WEAK | DESCRIPTIVE_ONLY | INSUFFICIENT_DATA
+    Evidence levels reflect relative statistical influence WITHIN each national
+    relation only. They do NOT constitute scientific promotion, independent
+    replication, or causal validation.
+
+    Returns:
+        HIGH_DESCRIPTIVE_INFLUENCE   — above Q75 + stable + LOYO + wo20 consistent
+        MODERATE_DESCRIPTIVE_INFLUENCE — above Q50 + stable + LOYO + wo20 consistent
+        LOW_DESCRIPTIVE_INFLUENCE    — above Q50 + stable, LOYO or wo20 inconclusive
+        DESCRIPTIVE_ONLY             — below thresholds; influence measurable
+        INSUFFICIENT_DATA            — territory has too few pairs or non-finite influence
     """
     if n_pairs < gates["min_territory_pairs"]:
         return "INSUFFICIENT_DATA"
@@ -452,16 +469,16 @@ def classify_evidence(
         and wo20_ok
         and abs_infl >= q75
     ):
-        return "STRONG"
+        return "HIGH_DESCRIPTIVE_INFLUENCE"
     if (
         has_stab
         and loyo_consistent
         and wo20_ok
         and abs_infl >= q50
     ):
-        return "MODERATE"
+        return "MODERATE_DESCRIPTIVE_INFLUENCE"
     if has_stab and abs_infl >= q50:
-        return "WEAK"
+        return "LOW_DESCRIPTIVE_INFLUENCE"
     return "DESCRIPTIVE_ONLY"
 
 
@@ -484,19 +501,31 @@ def build_phase8(
     # Seal decision record
     decision_path = output_dir / "territorial_sector_movement_decision.json"
     decision = {
-        "phase": "Phase8_TerritorialSectorMovementAttribution",
+        "phase": "Phase8_TerritorialSectorStatisticalInfluence",
         "method": "LOTO (leave-one-territory-out) regression influence decomposition",
         "equation": "influence_r = beta_full - beta_without_territory_r",
         "interpretation": (
-            "Descriptive attribution only. Indicates where the sector-precedence "
-            "association concentrates territorially. Does NOT imply causal transmission, "
-            "geographic propagation, or enterprise-birth flow between territories."
+            "DESCRIPTIVE_ONLY. Quantifies the spatial distribution of statistical influence "
+            "for each national sector-precedence association. "
+            "LOTO measures how much removing a territory changes the national coefficient. "
+            "It does NOT identify a causal effect, geographic flow, origin, or transmission."
         ),
+        "interpretation_scope": "descriptive_relative_influence",
+        "independent_replication": False,
+        "overlapping_windows_note": (
+            "Windows for the same country-relation pair overlap and are NOT independent "
+            "replications. Recurrence of a territory across windows is persistent "
+            "descriptive concentration, not confirmation."
+        ),
+        "spatial_flow_supported": False,
+        "causal_effect_supported": False,
         "input_edges": "covid_robust_edges.csv — Phase 7 ROBUST associations only",
         "gates": GATES,
+        "threshold_status": "defined_before_execution_not_formally_preregistered",
         "provenance_note": (
-            "Gates are pre-specified before execution (sealed in decision.json). "
-            "Phase 7 global betas are IMMUTABLE; this layer only localises them."
+            "Thresholds defined and sealed before execution. "
+            "Phase 7 global betas are IMMUTABLE; this layer only localises them. "
+            "Evidence levels reflect relative influence within each national relation."
         ),
         "sealed_at": datetime.now(timezone.utc).isoformat(),
     }
@@ -580,13 +609,13 @@ def build_phase8(
             min_pairs=GATES["min_loto_pairs"],
         )
 
-        # Compute percentile thresholds for this relation
+        # Compute relative-influence percentile thresholds within this relation
         valid_influences = loto.loc[
             np.isfinite(loto["influence"]) & ~loto["insufficient_data"],
             "influence"
         ].abs().values
-        q75 = float(np.percentile(valid_influences, GATES["evidence_strong_percentile"])) if len(valid_influences) else 0.0
-        q50 = float(np.percentile(valid_influences, GATES["evidence_moderate_percentile"])) if len(valid_influences) else 0.0
+        q75 = float(np.percentile(valid_influences, GATES["high_descriptive_percentile"])) if len(valid_influences) else 0.0
+        q50 = float(np.percentile(valid_influences, GATES["moderate_descriptive_percentile"])) if len(valid_influences) else 0.0
         total_abs_influence = float(valid_influences.sum())
 
         # Assemble per-territory records
@@ -672,9 +701,9 @@ def build_phase8(
             })
 
         # Relation summary
-        n_strong = sum(1 for r in all_records[-len(loto):] if r["evidence_level"] == "STRONG")
-        n_moderate = sum(1 for r in all_records[-len(loto):] if r["evidence_level"] == "MODERATE")
-        n_weak = sum(1 for r in all_records[-len(loto):] if r["evidence_level"] == "WEAK")
+        n_high = sum(1 for r in all_records[-len(loto):] if r["evidence_level"] == "HIGH_DESCRIPTIVE_INFLUENCE")
+        n_moderate = sum(1 for r in all_records[-len(loto):] if r["evidence_level"] == "MODERATE_DESCRIPTIVE_INFLUENCE")
+        n_low = sum(1 for r in all_records[-len(loto):] if r["evidence_level"] == "LOW_DESCRIPTIVE_INFLUENCE")
         top3_conc = float(
             np.sort(valid_influences)[::-1][:3].sum() / total_abs_influence
         ) if total_abs_influence > 0 and len(valid_influences) >= 3 else float("nan")
@@ -689,9 +718,9 @@ def build_phase8(
             "global_beta": round(beta_full, 6),
             "n_territories": int(loto["territory_id"].nunique()),
             "n_total_pairs": len(df_full),
-            "n_strong": n_strong,
-            "n_moderate": n_moderate,
-            "n_weak": n_weak,
+            "n_high_descriptive": n_high,
+            "n_moderate_descriptive": n_moderate,
+            "n_low_descriptive": n_low,
             "n_insufficient": int(loto["insufficient_data"].sum()),
             "total_abs_influence": round(total_abs_influence, 6),
             "top3_concentration": round(top3_conc, 4) if np.isfinite(top3_conc) else None,
@@ -721,28 +750,42 @@ def build_phase8(
     csv_sha256 = hashlib.sha256(csv_path.read_bytes()).hexdigest()
     v02_sha256 = hashlib.sha256(V02_PANEL.read_bytes()).hexdigest()
 
-    promoted_summary = {
+    influence_level_summary = {
         level: int((movements_df["evidence_level"] == level).sum())
-        for level in ["STRONG", "MODERATE", "WEAK", "DESCRIPTIVE_ONLY", "INSUFFICIENT_DATA"]
+        for level in [
+            "HIGH_DESCRIPTIVE_INFLUENCE",
+            "MODERATE_DESCRIPTIVE_INFLUENCE",
+            "LOW_DESCRIPTIVE_INFLUENCE",
+            "DESCRIPTIVE_ONLY",
+            "INSUFFICIENT_DATA",
+        ]
     }
 
     manifest = {
-        "phase": "Phase8_TerritorialSectorMovementAttribution",
-        "version": "0.1",
+        "phase": "Phase8_TerritorialSectorStatisticalInfluence",
+        "version": "0.2",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "input_panel_sha256": v02_sha256,
         "n_robust_relations": len(edges),
         "n_territory_relation_records": len(movements_df),
-        "promoted_summary": promoted_summary,
+        "influence_level_summary": influence_level_summary,
         "output_csv_sha256": csv_sha256,
         "n_bootstrap": n_bootstrap,
         "bootstrap_seed": bootstrap_seed,
         "gates": GATES,
+        "threshold_status": "defined_before_execution_not_formally_preregistered",
+        "interpretation_scope": "descriptive_relative_influence",
+        "independent_replication": False,
+        "spatial_flow_supported": False,
+        "causal_effect_supported": False,
         "integrity_failures": integrity_failures,
         "association_disclaimer": (
-            "This layer decomposes validated Phase 7 sector-precedence associations "
-            "into per-territory contributions. It does NOT imply causal transmission, "
-            "real business-creation flows, or policy recommendations."
+            "This layer decomposes Phase 7 national sector-precedence associations "
+            "into per-territory statistical influence (LOTO). "
+            "Evidence levels rank relative influence WITHIN each national relation. "
+            "They are not scientific promotions. "
+            "Overlapping windows are not independent. "
+            "It does NOT imply causal effects, geographic flows, or policy claims."
         ),
     }
     manifest_path = output_dir / "territorial_sector_movement_manifest.json"
@@ -758,6 +801,6 @@ def build_phase8(
 
 if __name__ == "__main__":
     df, mf = build_phase8()
-    print("\n=== Phase 8 Summary ===")
+    print("\n=== Phase 8 Territorial Statistical Influence — Summary ===")
     print(f"Total territory-relation records: {len(df)}")
-    print(f"Evidence breakdown: {mf['promoted_summary']}")
+    print(f"Influence level distribution: {mf['influence_level_summary']}")
