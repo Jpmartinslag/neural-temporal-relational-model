@@ -916,3 +916,36 @@ Runtime 13.92s; RSS delta 0.035 GB; 57/57 tests pass.
 **Limitations:** Observatory v0.1 is not yet implemented. Sector→sector graph method is not yet selected. A1 model (GConvGRU/EvolveGCN-H) is authorized but not yet implemented. The 85% data coverage gap is primarily Spain, Czech Republic, and full cross-country harmonization.
 **Reopen condition for direction change:** Explicit DEC-* entry with new evidence or new data. Performance failure in any single branch is not sufficient to revise the overall observatory direction.
 **Affected files:** `reports/HERALD_PROJECT_CHARTER.md` (new); `reports/HERALD_CURRENT_STATE.md` (new); `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` (new); `reports/herald_artifact_registry.json` (new); `CODEX_MEMORY.md` (updated); `README.md` (updated).
+
+---
+
+## DEC-031 — 2026-06-12 — S1_FR_FAIL: GConvGRU and EvolveGCN-H fail frozen FR gate; graph-temporal prediction branch closed
+
+**Phase:** Graph-temporal A1 / S1-FR local test
+**Question:** Do GConvGRU (A1a) or EvolveGCN-H (A1b) improve territorial enterprise-birth prediction over AR-Ridge for France (280 ZE, eval 2021–2025) under the frozen fail-closed gate from DEC-028?
+**Evidence:** `data/processed/graph_temporal_s1/s1_fr_results.json`; `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md`. 5 seeds {42–46}, 5 eval years {2021–2025}, rolling-origin folds.
+
+Results:
+
+| Model | Mean WMAPE | Years > Ridge | p_temporal | p_territory |
+|---|---:|---:|---:|---:|
+| AR-Ridge | 0.064856 | — | — | — |
+| A0-neural (no graph) | 0.064888 | — | — | — |
+| GConvGRU | 0.064922 | 1/5 | 1.0000 | 1.0000 |
+| EvolveGCN-H | 0.064973 | 1/5 | 1.0000 | 0.2927 |
+
+Gate criteria (all frozen at DEC-028; all evaluated for both models):
+- `improves_ridge_at_least_1pct`: FAIL — GConvGRU +0.1% vs Ridge, EvolveGCN-H +0.2%
+- `improves_a0_at_least_1pct`: FAIL — neither model improves over equal-capacity no-graph control
+- `wins_at_least_half_years`: FAIL — both models win only 1 of 5 eval years
+- `beats_temporal_null_p_le_005`: FAIL — both models, p=1.0 (graph permutation nulls not rejected)
+- `beats_territory_null_p_le_005`: FAIL — GConvGRU p=1.0; EvolveGCN-H p=0.293
+
+Leakage, seed-stability (`seed_std_le_0005`), and tail-risk (`no_year_over_10pct_worse`) checks all pass. COVID-sensitivity (excluding 2020 from adjacency) does not materially change the result (Δ WMAPE < 0.000004 for both models).
+
+**Alternatives considered:** (1) HPC battery — rejected; local gate failed on all 5 criteria; no reopen condition is met. (2) New architecture (higher capacity) — deferred; requires new information hypothesis, not a performance retry. (3) New feature set — deferred; ARDECO direct predictor also failed (`ARDECO_RIDGE_NOT_PROMOTED`); any new features require a new DEC-*.
+**Decision:** S1_FR_FAIL. Graph-temporal prediction branch CLOSED. The tested architectures (GConvGRU, EvolveGCN-H) cannot be justified as replacements for AR-Ridge under the current 3-feature tensor (sector growth, sector share, normalized sector births). No HPC submission authorized. Observatory v0.1 proceeds without graph-temporal correction.
+**Rationale:** The fail-closed gate was pre-registered at DEC-028. All 5 gate criteria are independently falsified. Both models perform within noise of AR-Ridge and are indistinguishable from temporal and territory permutation nulls, confirming that the recurrent graph architecture adds no exploitable information under the current feature set. This is a feature-set limitation, not necessarily an architecture limitation.
+**Limitations:** The tested feature set is narrow (3 features). Wider economic features (ARDECO, mobility) may provide a different signal, but must first be validated as direct predictors before being combined with graph architectures. The null-permutation test has limited statistical power at n=5 eval years and n=5 seeds.
+**Reopen condition:** New information hypothesis demonstrated to improve over AR-Ridge without a graph (new DEC-* required). Documented operational failure in protocol or data integrity. Performance failure on this narrow feature set alone is not a reopen condition.
+**Affected files:** `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` (committed); `data/processed/graph_temporal_s1/s1_fr_results.json` (committed); `data/processed/graph_temporal_s1/s1_fr_checkpoint.json` (committed); `reports/HERALD_CURRENT_STATE.md`; `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`; `reports/HERALD_EVIDENCE_MATRIX.md`; `reports/HERALD_RESEARCH_GANTT.md`; `reports/herald_artifact_registry.json`; `CODEX_MEMORY.md`.

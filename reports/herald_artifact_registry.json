@@ -104,8 +104,8 @@
       "origin_decision": "DEC-028",
       "generator_script": "src/data/european_panel/build_graph_temporal_v2.py",
       "input_data": ["data/processed/economic_graph/sector_panel_fr_nl_pt.csv"],
-      "claim_authorized": "Schema 2.0 tensors: 3 NL folds + 5 FR folds. E0_V2_PASS: 57/57 tests, zero leakage, deterministic. FR adjacency READY (280 ZE, 9 sectors, 5 eval years, 0 isolated nodes, 1 connected component, perfect symmetry). Ready for GConvGRU/EvolveGCN-H under A1 contract.",
-      "claim_forbidden": "Predictive results (S1-FR BLOCKED until A1 implementation). NL scientific claim (COVID-sensitive; engineering smoke only).",
+      "claim_authorized": "Schema 2.0 tensors: 3 NL folds + 5 FR folds. E0_V2_PASS: 57/57 tests, zero leakage, deterministic. FR adjacency READY (280 ZE, 9 sectors, 5 eval years, 0 isolated nodes, 1 connected component, perfect symmetry).",
+      "claim_forbidden": "Predictive results — S1_FR_FAIL (DEC-031): GConvGRU/EvolveGCN-H both failed frozen gate. NL scientific claim (COVID-sensitive; engineering smoke only). No HPC submission authorized.",
       "can_regenerate": true,
       "notes": "3 NL + 5 FR NPZ folds. Sector names confirmed: BE, FZ, GI, JZ, KZ, LZ, MN, OQ, RU (from sector panel sorted unique). Schema 1.0 at data/processed/graph_temporal_preflight/ is SUPERSEDED."
     },
@@ -193,6 +193,23 @@
       "claim_forbidden": "Any GNN training. Schema 1.0 has 5 documented defects (DEC-028).",
       "can_regenerate": true,
       "notes": "Schema 1.0 defects: static snapshot, simplified Ridge, single obs_mask, signed dense adjacency, unreliable tracemalloc."
+    },
+    {
+      "id": "S1_FR_RESULTS",
+      "phase": "A1/S1-FR",
+      "path": "data/processed/graph_temporal_s1/s1_fr_results.json",
+      "type": "gate_result_json",
+      "status": "FROZEN",
+      "tracked_in_git": true,
+      "size_bytes": null,
+      "sha256_prefix": "dd17167363602f46b712",
+      "origin_decision": "DEC-031",
+      "generator_script": "src/modeles/run_s1_fr_local.py",
+      "input_data": ["data/processed/graph_temporal_v2/"],
+      "claim_authorized": "S1_FR_FAIL: GConvGRU WMAPE 0.064922 (vs Ridge 0.064856, p_temporal=1.0, p_territory=1.0); EvolveGCN-H WMAPE 0.064973 (p_temporal=1.0, p_territory=0.293). Both fail all 5 frozen gate criteria. Leakage/seed-stability checks pass.",
+      "claim_forbidden": "Any positive predictive claim for GConvGRU or EvolveGCN-H. HPC authorization. Architecture generalisation claim beyond France 3-feature tensor.",
+      "can_regenerate": false,
+      "notes": "5 seeds {42-46}, eval years 2021-2025, rolling-origin. Decision: S1_FR_FAIL. Graph-temporal prediction branch CLOSED per DEC-031."
     },
     {
       "id": "RIDGE_PERSISTENCE_LOCO_RESULTS",

@@ -11,7 +11,7 @@
 | `CODEX_MEMORY.md` | Session handoff; points to all key documents | ACTIVE |
 | `reports/HERALD_PROJECT_CHARTER.md` | Official direction, scope, permitted/forbidden claims | ACTIVE |
 | `reports/HERALD_CURRENT_STATE.md` | State per component, blockers, next step | ACTIVE |
-| `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` | All decisions DEC-001→DEC-030 | ACTIVE |
+| `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` | All decisions DEC-001→DEC-031 | ACTIVE |
 | `reports/HERALD_EVIDENCE_MATRIX.md` | All claims and their evidentiary status (32 claims) | ACTIVE |
 | `reports/HERALD_RESEARCH_GANTT.md` | Timeline and task dependencies | ACTIVE |
 | `hpc/HPC_PHASE_INDEX.md` | HPC phase registry and status | ACTIVE |
@@ -62,6 +62,7 @@
 | `reports/HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md` | E0-v2 PASS, schema 2.0 (DEC-028) | ACTIVE |
 | `reports/HERALD_GRAPH_TEMPORAL_FR_ADJACENCY_PREFLIGHT.md` | FR adjacency READY (DEC-028) | ACTIVE |
 | `reports/HERALD_GRAPH_TEMPORAL_ARCHITECTURE_DECISION.md` | DEC-027 preflight decision | ACTIVE |
+| `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` | S1_FR_FAIL (DEC-031) — GConvGRU/EvolveGCN-H fail frozen gate | ACTIVE (closed branch) |
 
 ### Bibliography
 | Document | Covers | Status |
@@ -101,9 +102,9 @@ The following documents are retained for audit trail but are superseded for acti
 - `reports/archive/herald_v4/`, `reports/archive/herald_v5/` — archived
 - `reports/ATLAS_IAT_*.md` — pre-HERALD project, historical only
 
-### Documents with P6 / A1 pending language (status corrected by DEC-029/030)
-- `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` — S1-FR still BLOCKED; not superseded but forward-looking
-- Any document referencing "P6 pending" or "A1 pending" must be read in light of DEC-029 (P6 FAIL) and DEC-028 (A1 FROZEN/BLOCKED)
+### Documents with P6 / A1 language (status corrected by DEC-029/030/031)
+- Any document referencing "P6 pending" must be read in light of DEC-029 (P6 FAIL).
+- Any document referencing "S1-FR BLOCKED" or "A1 pending implementation" must be read in light of DEC-031 (S1_FR_FAIL; branch closed).
 
 ---
 
