@@ -12,10 +12,11 @@ Do not move anything without consulting `HPC_PATH_MIGRATION_PLAN.md`.
 
 | ID | Phase | Status | Scripts | Results |
 |----|-------|--------|---------|---------|
-| **P6_DDEG_S1** | Phase 6 — Dynamic Dual Economic Graph | **frozen/FAIL** | `hpc/phase6_dynamic_dual_graph/` | `hpc_results/dual_graph_s1/raw/` |
+| **P7_SECTOR_PRECEDENCE** | Phase 7 — Sector Precedence Distributed Study | **READY_FOR_HPC** | `hpc/phase7_sector_precedence/` | `hpc_results/phase7_sector_precedence/` |
 
-Full study complete: job 7453691, 275/275 COMPLETED (2026-06-12). Gate: **DUAL_GRAPH_S1_FAIL** (all 7 criteria fail).
-C5_dual MAE 0.1424 vs C1_ridge +14.6%, C2_no_graph +7.2%. Seed Jaccard 0.3353. Predictive branch CLOSED (DEC-029).
+710 tasks (FR=198, NL=288, PT=224). Panel: `herald_observatory_v02`, 45,945 rows.
+Predictive precedence (associative), not structural causality. Pre-registered gates frozen (DEC-033).
+Submit: `sbatch hpc/phase7_sector_precedence/scripts/run_sector_precedence_array.sbatch`
 
 ---
 
@@ -23,6 +24,7 @@ C5_dual MAE 0.1424 vs C1_ridge +14.6%, C2_no_graph +7.2%. Seed Jaccard 0.3353. P
 
 | ID | Phase | Status | Scripts | Key result |
 |----|-------|--------|---------|------------|
+| P6_DDEG_S1 | Phase 6 — Dynamic Dual Economic Graph | **frozen/FAIL** | `hpc/phase6_dynamic_dual_graph/` | `hpc_results/dual_graph_s1/raw/` |
 | P2P3_REGIME_FRANCE | Phase 2+3 — Regime France | frozen | `hpc/regime/` | `hpc_results/herald_regime_phase3e_*` |
 | P2P3_SEMIV2_VALIDATION | Phase 2+3 — Semi V2 Validation | frozen | `hpc/validation/` | `hpc_results/herald_semi_total_253_geo2025` |
 | P_AUDIT_EXANTE | Cross-phase Audit | frozen | `hpc/audit/` | `reports/HERALD_PHASE2R_CONFIRMATORY_AUDIT.md` |
