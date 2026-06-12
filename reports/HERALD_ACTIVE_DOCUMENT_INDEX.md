@@ -64,6 +64,11 @@
 | `reports/HERALD_GRAPH_TEMPORAL_ARCHITECTURE_DECISION.md` | DEC-027 preflight decision | ACTIVE |
 | `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` | S1_FR_FAIL (DEC-031) — GConvGRU/EvolveGCN-H fail frozen gate | ACTIVE (closed branch) |
 
+### Observatory v0.1
+| Document | Covers | Status |
+|----------|--------|--------|
+| `reports/HERALD_OBSERVATORY_V01_DATA_CONTRACT.md` | Data contract, schema, permitted claims, causal guarantees (DEC-030) | ACTIVE |
+
 ### Bibliography
 | Document | Covers | Status |
 |----------|--------|--------|
