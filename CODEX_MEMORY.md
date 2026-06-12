@@ -1,5 +1,5 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-12 (DEC-037: Phase 8 territorial sector movement attribution, DESCRIPTIVE_ONLY).
+**LEIA PRIMEIRO.** Updated 2026-06-12 (DEC-037 addendum: nomenclature correction + dashboard integration).
 Read this file, then verify drift with `rtk git status --short`.
 
 ## Quick orientation (start here)
@@ -12,8 +12,8 @@ Read this file, then verify drift with `rtk git status --short`.
 - **S1_FR_FAIL (DEC-031):** GConvGRU and EvolveGCN-H fail all 5 frozen gate criteria on France (GConvGRU WMAPE 0.064922 vs Ridge 0.064856; p_temporal=1.0). Graph-temporal prediction branch CLOSED. No HPC authorized.
 - **Observatory exports:** aggregate PT/IT/AT v0.1.1 (1,963 rows); sector FR/NL/PT v0.2 (45,945 rows) via `build_observatory_export.py`; Observatory v0.3 (45,945 rows + sector relations) via `src/data/european_panel/build_observatory_v03.py`.
 - **Phase 7 result (DEC-034):** SECTOR_PRECEDENCE_PROTOTYPE_READY — 12 COVID-robust edges (NL=3, PT=9); 25 total promoted main edges. Slurm 7455266, meso. Audit PASS.
-- **Observatory v0.3 (DEC-035/036):** Sector precedence layer integrated. Geographic map (FR=ZE2020/NL=COROP/PT=NUTS3 mainland), Plotly self-contained. Dashboard: `reports/dashboards/herald_observatory_v03_dashboard.html`. 48 tests pass.
-- **Phase 8 (DEC-037):** TERRITORIAL_MOVEMENT_LAYER = DESCRIPTIVE_ONLY. LOTO influence decomposition for 12 ROBUST relations. NL: 40 territories/relation; PT: 25 territories/relation. 91 STRONG + 78 MODERATE + 8 WEAK + 168 DESCRIPTIVE_ONLY. No HPC. Builder: `src/data/european_panel/build_territorial_sector_movements.py`. 34 tests pass. Data in `data/processed/herald_observatory_v04/` (not committed — regenerable).
+- **Observatory v0.3 (DEC-035/036):** Sector precedence layer integrated. Geographic map (FR=ZE2020/NL=COROP/PT=NUTS3 mainland), Plotly self-contained. Dashboard includes Phase 8 territorial contribution layer (Section 6 toggle, divergent colorscale): `reports/dashboards/herald_observatory_v03_dashboard.html` (14,095 KB). 48 tests pass.
+- **Phase 8 (DEC-037 + addendum):** TERRITORIAL_MOVEMENT_LAYER = DESCRIPTIVE_ONLY. LOTO influence decomposition for 12 ROBUST relations. Nomenclature: HIGH_DESCRIPTIVE_INFLUENCE (91) + MODERATE_DESCRIPTIVE_INFLUENCE (78) + LOW_DESCRIPTIVE_INFLUENCE (8) + DESCRIPTIVE_ONLY (168). No HPC. Builder: `src/data/european_panel/build_territorial_sector_movements.py`. 44 tests pass. Data in `data/processed/herald_observatory_v04/` (not committed — regenerable). Decision fields: interpretation_scope=descriptive_relative_influence, independent_replication=false, spatial_flow_supported=false, causal_effect_supported=false.
 - **Immediate next step:** extend sector panel to AT/BE (pre-register hypothesis first); OR report writing (Phase 6).
 
 ## DO NOT change direction without a new DEC-* entry

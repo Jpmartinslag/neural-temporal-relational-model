@@ -1,20 +1,20 @@
-"""Tests for Phase 8 — Territorial Sector Movement Attribution.
+"""Tests for Phase 8 — Territorial Sector Statistical Influence.
 
 Coverage:
 - Leakage / temporal alignment (t-1 → t)
 - Beta equivalence to Phase 7
 - LOTO decomposition identity
-- Permutation destroys association in synthetic fixture
+- Permutation destroys source-lag association in synthetic fixture
 - Known contribution recovered in controlled fixture
-- Null not promoted (DESCRIPTIVE_ONLY when association is random)
+- Null influence below saturation (DESCRIPTIVE_ONLY or LOW)
 - Structural masks respected (PT KZ excluded)
-- Mainland PT on map (islands present in panel, absent from GeoJSON)
 - Territory system separation (no NL/PT mixing)
 - Determinism
 - No NaN/Inf for eligible territories
-- Evidence levels consistent with pre-specified gates
-- Bootstrap stability and LOYO consistency recorded
-- Decision record sealed before run
+- Evidence level nomenclature: HIGH/MODERATE/LOW DESCRIPTIVE, not STRONG/MODERATE/WEAK
+- No causal/propagation/origin/transmission language in output
+- Overlapping windows not described as independent replications
+- Decision record contains required interpretation fields
 - Output schema complete
 """
 
@@ -385,8 +385,8 @@ class TestKnownContributionRecovery:
 # ---------------------------------------------------------------------------
 
 class TestNullNotPromoted:
-    def test_pure_noise_all_descriptive_or_weak(self):
-        """On a pure-noise panel, very few territories should reach STRONG."""
+    def test_pure_noise_all_descriptive_or_low(self):
+        """On a pure-noise panel, very few territories should reach HIGH_DESCRIPTIVE_INFLUENCE."""
         from src.data.european_panel.build_territorial_sector_movements import (
             compute_beta_on_samples,
             compute_loto_influences,
@@ -395,7 +395,7 @@ class TestNullNotPromoted:
             classify_evidence,
             GATES,
         )
-        strong_count = 0
+        high_count = 0
         total_checked = 0
         for seed in range(5):
             raw = _synthetic_raw_panel(n_territories=20, n_years=6, rng_seed=seed + 100)
@@ -429,15 +429,16 @@ class TestNullNotPromoted:
                     gates=GATES,
                 )
                 total_checked += 1
-                if level == "STRONG":
-                    strong_count += 1
-        # In noise, STRONG must be clearly below saturation.
+                if level == "HIGH_DESCRIPTIVE_INFLUENCE":
+                    high_count += 1
+        # In noise, HIGH_DESCRIPTIVE_INFLUENCE must be clearly below saturation.
         # By construction, q75 threshold means ≤25% can be above it.
-        # Additional gates (loyo, bootstrap) mean STRONG rate should be well below 50%.
+        # Additional gates (loyo, bootstrap) mean HIGH rate should be well below 50%.
         if total_checked > 0:
-            rate = strong_count / total_checked
+            rate = high_count / total_checked
             assert rate < 0.50, (
-                f"Too many STRONG in pure noise: {strong_count}/{total_checked} = {rate:.2f}"
+                f"Too many HIGH_DESCRIPTIVE_INFLUENCE in pure noise: "
+                f"{high_count}/{total_checked} = {rate:.2f}"
             )
 
 
@@ -563,21 +564,43 @@ class TestNoNaNInfEligible:
 # ---------------------------------------------------------------------------
 
 class TestEvidenceLevels:
-    def test_strong_requires_high_stability(self, movements):
-        """STRONG evidence must have bootstrap_sign_stability >= threshold."""
-        from src.data.european_panel.build_territorial_sector_movements import GATES
-        strong = movements[movements["evidence_level"] == "STRONG"]
-        violations = strong[strong["bootstrap_sign_stability"] < GATES["bootstrap_sign_stability_threshold"]]
-        assert len(violations) == 0, (
-            f"{len(violations)} STRONG records have bootstrap_sign_stability below threshold"
+    VALID_LEVELS = {
+        "HIGH_DESCRIPTIVE_INFLUENCE",
+        "MODERATE_DESCRIPTIVE_INFLUENCE",
+        "LOW_DESCRIPTIVE_INFLUENCE",
+        "DESCRIPTIVE_ONLY",
+        "INSUFFICIENT_DATA",
+    }
+    OLD_LEVELS = {"STRONG", "MODERATE", "WEAK"}
+
+    def test_no_old_level_names_in_output(self, movements):
+        """Old evidence level names (STRONG/MODERATE/WEAK) must not appear in output."""
+        levels_present = set(movements["evidence_level"].unique())
+        old_present = levels_present & self.OLD_LEVELS
+        assert old_present == set(), (
+            f"Old evidence level names found in output: {old_present}"
         )
 
-    def test_strong_requires_loyo_consistent(self, movements):
-        """STRONG evidence must have loyo_consistent = True."""
-        strong = movements[movements["evidence_level"] == "STRONG"]
-        violations = strong[~strong["loyo_consistent"]]
+    def test_all_levels_are_valid_new_names(self, movements):
+        """All evidence_level values must be from the new descriptive nomenclature."""
+        unknown = set(movements["evidence_level"].unique()) - self.VALID_LEVELS
+        assert unknown == set(), f"Unknown evidence levels: {unknown}"
+
+    def test_high_requires_bootstrap_stability(self, movements):
+        """HIGH_DESCRIPTIVE_INFLUENCE must have bootstrap_sign_stability >= threshold."""
+        from src.data.european_panel.build_territorial_sector_movements import GATES
+        high = movements[movements["evidence_level"] == "HIGH_DESCRIPTIVE_INFLUENCE"]
+        violations = high[high["bootstrap_sign_stability"] < GATES["bootstrap_sign_stability_threshold"]]
         assert len(violations) == 0, (
-            f"{len(violations)} STRONG records have loyo_consistent = False"
+            f"{len(violations)} HIGH_DESCRIPTIVE records have bootstrap_sign_stability below threshold"
+        )
+
+    def test_high_requires_loyo_consistent(self, movements):
+        """HIGH_DESCRIPTIVE_INFLUENCE must have loyo_consistent = True."""
+        high = movements[movements["evidence_level"] == "HIGH_DESCRIPTIVE_INFLUENCE"]
+        violations = high[~high["loyo_consistent"]]
+        assert len(violations) == 0, (
+            f"{len(violations)} HIGH_DESCRIPTIVE records have loyo_consistent = False"
         )
 
     def test_insufficient_data_has_no_influence(self, movements):
@@ -588,7 +611,7 @@ class TestEvidenceLevels:
         )
 
     def test_zero_insufficient_data_in_output(self, movements):
-        """All 345 territory-relation records must have sufficient data."""
+        """All territory-relation records must have sufficient data."""
         n_insuff = (movements["evidence_level"] == "INSUFFICIENT_DATA").sum()
         assert n_insuff == 0, f"{n_insuff} records flagged INSUFFICIENT_DATA"
 
@@ -615,10 +638,42 @@ class TestOutputSchema:
         assert (movements["provenance"] == "Phase8_LOTO").all()
 
     def test_decision_sealed_before_run(self, decision):
-        """Decision record must exist and declare pre-specified gates."""
+        """Decision record must declare thresholds were defined before execution."""
         assert "gates" in decision, "Decision must contain gates"
         assert "provenance_note" in decision
-        assert "pre-specified" in decision["provenance_note"]
+        note = decision["provenance_note"]
+        assert "defined" in note and "before execution" in note, (
+            f"provenance_note must say 'defined ... before execution', got: {note!r}"
+        )
+        assert "pre-specified" not in note or "not formally pre-registered" in note, (
+            "If 'pre-specified' appears it must be qualified as 'not formally pre-registered'"
+        )
+
+    def test_decision_has_interpretation_fields(self, decision):
+        """Decision must contain all required interpretation scope fields."""
+        assert decision.get("interpretation_scope") == "descriptive_relative_influence", (
+            f"interpretation_scope wrong: {decision.get('interpretation_scope')}"
+        )
+        assert decision.get("independent_replication") is False, (
+            "independent_replication must be False (overlapping windows)"
+        )
+        assert decision.get("spatial_flow_supported") is False, (
+            "spatial_flow_supported must be False"
+        )
+        assert decision.get("causal_effect_supported") is False, (
+            "causal_effect_supported must be False"
+        )
+        assert decision.get("threshold_status") == "defined_before_execution_not_formally_preregistered", (
+            f"threshold_status wrong: {decision.get('threshold_status')}"
+        )
+
+    def test_decision_overlapping_windows_note(self, decision):
+        """Decision must document that overlapping windows are not independent replications."""
+        note = decision.get("overlapping_windows_note", "")
+        assert note, "overlapping_windows_note missing from decision"
+        assert "overlap" in note.lower() or "overlapping" in note.lower(), (
+            f"overlapping_windows_note must mention overlap: {note!r}"
+        )
 
     def test_manifest_integrity_fields(self, manifest):
         assert "input_panel_sha256" in manifest
@@ -626,6 +681,43 @@ class TestOutputSchema:
         assert manifest["n_robust_relations"] == 12
         assert manifest["n_territory_relation_records"] == 345
         assert manifest["integrity_failures"] == []
+
+    def test_manifest_has_new_interpretation_fields(self, manifest):
+        """Manifest must contain interpretation scope and independence flags."""
+        assert manifest.get("interpretation_scope") == "descriptive_relative_influence", (
+            f"manifest interpretation_scope: {manifest.get('interpretation_scope')}"
+        )
+        assert manifest.get("independent_replication") is False
+        assert manifest.get("spatial_flow_supported") is False
+        assert manifest.get("causal_effect_supported") is False
+        assert manifest.get("threshold_status") == "defined_before_execution_not_formally_preregistered"
+
+    def test_manifest_uses_influence_level_summary_key(self, manifest):
+        """Manifest must use 'influence_level_summary' not the old 'promoted_summary'."""
+        assert "influence_level_summary" in manifest, (
+            "manifest missing 'influence_level_summary' key"
+        )
+        assert "promoted_summary" not in manifest, (
+            "manifest still has deprecated 'promoted_summary' key"
+        )
+        ils = manifest["influence_level_summary"]
+        expected_keys = {
+            "HIGH_DESCRIPTIVE_INFLUENCE",
+            "MODERATE_DESCRIPTIVE_INFLUENCE",
+            "LOW_DESCRIPTIVE_INFLUENCE",
+            "DESCRIPTIVE_ONLY",
+            "INSUFFICIENT_DATA",
+        }
+        assert set(ils.keys()) == expected_keys, (
+            f"influence_level_summary keys wrong: {set(ils.keys())}"
+        )
+
+    def test_manifest_no_old_level_keys(self, manifest):
+        """Manifest influence_level_summary must not have old STRONG/MODERATE/WEAK keys."""
+        ils = manifest.get("influence_level_summary", {})
+        old_keys = {"STRONG", "MODERATE", "WEAK"}
+        present_old = set(ils.keys()) & old_keys
+        assert present_old == set(), f"Old keys in influence_level_summary: {present_old}"
 
     def test_manifest_checksums_match_file(self, manifest):
         sha = hashlib.sha256(MOVEMENTS_CSV.read_bytes()).hexdigest()
@@ -637,22 +729,56 @@ class TestOutputSchema:
 # ---------------------------------------------------------------------------
 
 class TestNoCausalLanguage:
-    CAUSAL_TERMS = ["causes", "causation", "causal", "propagation", "transmission", "flow"]
+    # Terms that must not appear as affirmative claims
+    FORBIDDEN_AFFIRMATIVE = ["propagation", "origin", "transmission", "local impact"]
+    # Structural causal terms forbidden everywhere (not just affirmatively)
+    FORBIDDEN_EVERYWHERE = ["causes ", "causation"]
 
-    def test_decision_no_causal_language(self, decision):
+    def _affirms(self, text: str, term: str) -> bool:
+        """Return True if term appears without a nearby negation."""
+        import re
+        lower = text.lower()
+        for m in re.finditer(re.escape(term.lower()), lower):
+            # Check 60 chars before the term for a negation
+            prefix = lower[max(0, m.start() - 60):m.start()]
+            if not any(neg in prefix for neg in ["not ", "no ", "does not", "without", "cannot", "non-"]):
+                return True
+        return False
+
+    def test_decision_no_affirmative_causal_claims(self, decision):
+        """Decision must not make affirmative causal/propagation claims."""
+        text = json.dumps(decision)
+        for term in self.FORBIDDEN_AFFIRMATIVE:
+            assert not self._affirms(text, term), (
+                f"Affirmative use of '{term}' in decision record"
+            )
+
+    def test_decision_no_causation_anywhere(self, decision):
+        """Terms 'causes' and 'causation' must not appear in decision."""
         text = json.dumps(decision).lower()
-        hits = [t for t in self.CAUSAL_TERMS if t in text]
-        # "association_disclaimer" may mention these in a negation context
-        # The disclaimer says "Does NOT imply causal transmission" → allowed
-        # Check that no affirmative causal claim is present
-        interpretation = decision.get("interpretation", "").lower()
-        affirm_hits = [t for t in self.CAUSAL_TERMS if t in interpretation and "not" not in interpretation[:interpretation.index(t)]]
-        assert affirm_hits == [], f"Affirmative causal language in decision: {affirm_hits}"
+        for term in self.FORBIDDEN_EVERYWHERE:
+            assert term not in text, f"'{term.strip()}' found in decision record"
+
+    def test_movements_evidence_level_no_causal_terms(self, movements):
+        """Old evidence level language (STRONG/MODERATE/WEAK) must not appear in CSV."""
+        level_vals = movements["evidence_level"].unique().tolist()
+        for val in level_vals:
+            assert val not in {"STRONG", "MODERATE", "WEAK"}, (
+                f"Old evidence level name '{val}' found in movements CSV"
+            )
 
     def test_manifest_disclaimer_present(self, manifest):
         assert "association_disclaimer" in manifest
         disclaimer = manifest["association_disclaimer"].lower()
         assert "does not" in disclaimer or "not imply" in disclaimer
+
+    def test_manifest_no_propagation_language(self, manifest):
+        """Manifest must not contain affirmative propagation/transmission claims."""
+        text = json.dumps(manifest)
+        for term in self.FORBIDDEN_AFFIRMATIVE:
+            assert not self._affirms(text, term), (
+                f"Affirmative use of '{term}' in manifest"
+            )
 
 
 # ---------------------------------------------------------------------------
