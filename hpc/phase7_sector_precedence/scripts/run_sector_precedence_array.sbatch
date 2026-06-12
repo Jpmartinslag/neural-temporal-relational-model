@@ -7,12 +7,12 @@
 #SBATCH --constraint=mpi
 #SBATCH --output=/home/jpdark/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_sector_precedence/logs/task_%06a.out
 #SBATCH --error=/home/jpdark/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_sector_precedence/logs/task_%06a.err
-#SBATCH --partition=cpu
+#SBATCH --partition=normal
 
 set -euo pipefail
 
-REPO=/home/jpdark/project_recomm_herald_v6_2025_20260430/dataset
-PYTHON=/home/jpdark/miniconda3/envs/mineru/bin/python
+REPO=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset
+PYTHON=/home/jpmartinsd/.conda/envs/herald-v5/bin/python
 MANIFEST="${REPO}/hpc/phase7_sector_precedence/configs/task_manifest.json"
 PANEL="${REPO}/data/processed/herald_observatory_v02/herald_observatory_v02_panel.csv"
 OUT_DIR="${REPO}/hpc_results/phase7_sector_precedence/raw"
