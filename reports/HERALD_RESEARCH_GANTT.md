@@ -241,9 +241,11 @@ economic relations, their evolution, and temporal patterns. NOT forecast improve
 
 Planning estimate, not an empirical metric:
 
-- MVP scientific product: approximately **40% complete**.
-- Full product through economic recommendation: approximately **25% complete**.
+- Integrated Observatory prototype: approximately **70% complete**.
+- Full product through economic recommendation: approximately **40% complete**.
 
 Completed: temporal baselines, G0, sector preflight, G1-L3, G1-L1, PT KZ audit,
-G1-L2 and G4-lite validation. Community baseline was tested and rejected.
-Remaining MVP: bounded L2/L3 visualization/explanation and report completion.
+G1-L2 and G4-lite validation, aggregate Observatory v0.1.1 and sector
+Observatory v0.2. Community and predictive graph branches were tested and
+rejected. Remaining prototype work: signed lagged sector association layer,
+bounded visualization/explanation, uncertainty intervals and report completion.

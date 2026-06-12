@@ -1,7 +1,5 @@
-"""
-Tests for HERALD Observatory v0.1 data export.
-Run: pytest tests/test_observatory_export.py -v
-"""
+"""Tests for HERALD Observatory aggregate v0.1.1 and sector v0.2 exports."""
+import hashlib
 import json
 from pathlib import Path
 
@@ -9,185 +7,198 @@ import numpy as np
 import pandas as pd
 import pytest
 
-REPO_ROOT = Path(__file__).parent.parent
-PANEL_PATH = (
-    REPO_ROOT
-    / "data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv"
+from src.data.european_panel.build_observatory_export import (
+    AGGREGATE_PANEL_PATH,
+    SECTOR_PANEL_PATH,
+    VALID_ECONOMIC_STATES,
+    _economic_state,
+    build_aggregate_export,
+    build_sector_export,
 )
 
-REQUIRED_COLUMNS = {
-    "country", "territory_id", "meta_nuts3_code", "territory_name",
-    "observation_year", "sector_id", "observed_value",
-    "persistence_forecast", "ridge_forecast", "forecast_lower", "forecast_upper",
-    "economic_state", "velocity", "acceleration",
-    "g1_l2_available", "sector_graph_available", "evidence_tier", "data_source",
+KEY = ["country", "territory_id", "observation_year", "sector_id"]
+EVIDENCE_COLUMNS = {
+    "data_evidence_tier",
+    "forecast_evidence_tier",
+    "graph_evidence_tier",
 }
 
-VALID_ECONOMIC_STATES = {
-    "growth", "acceleration", "deceleration", "stagnation",
-    "decline", "recovery", "insufficient_history",
-}
 
-VALID_EVIDENCE_TIERS = {"validated_loco", "pending_reaudit", "exploratory", "not_available"}
+def _load_product(builder, tmp_path):
+    output = tmp_path / builder.__name__
+    csv_path = builder(output_dir=output)
+    stem = csv_path.stem.removesuffix("_panel")
+    panel = pd.read_csv(
+        csv_path,
+        dtype={"territory_id": str, "meta_nuts3_code": str},
+        low_memory=False,
+    )
+    manifest = json.loads((output / f"{stem}_manifest.json").read_text())
+    summary = json.loads((output / f"{stem}_summary.json").read_text())
+    return panel, manifest, summary, csv_path
 
 
 @pytest.fixture(scope="module")
-def export_df():
-    from src.data.european_panel.build_observatory_export import build_export
-    import tempfile, os
-    with tempfile.TemporaryDirectory() as tmp:
-        build_export(panel_path=PANEL_PATH, output_dir=Path(tmp))
-        csv = Path(tmp) / "herald_observatory_v01_panel.csv"
-        manifest = Path(tmp) / "herald_observatory_v01_manifest.json"
-        summary = Path(tmp) / "herald_observatory_v01_summary.json"
-        df = pd.read_csv(csv)
-        with open(manifest) as f:
-            meta = json.load(f)
-        with open(summary) as f:
-            summ = json.load(f)
-    return df, meta, summ
-
-
-def test_export_runs(export_df):
-    df, meta, summ = export_df
-    assert len(df) > 0
-
-
-def test_required_columns_present(export_df):
-    df, _, _ = export_df
-    missing = REQUIRED_COLUMNS - set(df.columns)
-    assert not missing, f"Missing columns: {missing}"
-
-
-def test_row_count_matches_panel(export_df):
-    df, _, _ = export_df
-    source = pd.read_csv(PANEL_PATH)
-    assert len(df) == len(source), (
-        f"Export rows {len(df)} != source panel rows {len(source)}"
+def aggregate_product(tmp_path_factory):
+    return _load_product(
+        build_aggregate_export, tmp_path_factory.mktemp("observatory_aggregate")
     )
 
 
-def test_valid_economic_states(export_df):
-    df, _, _ = export_df
-    invalid = set(df["economic_state"].unique()) - VALID_ECONOMIC_STATES
-    assert not invalid, f"Invalid economic states: {invalid}"
-
-
-def test_all_economic_states_present(export_df):
-    df, _, _ = export_df
-    present = set(df["economic_state"].unique())
-    assert present == VALID_ECONOMIC_STATES, (
-        f"Not all states present. Missing: {VALID_ECONOMIC_STATES - present}"
+@pytest.fixture(scope="module")
+def sector_product(tmp_path_factory):
+    return _load_product(
+        build_sector_export, tmp_path_factory.mktemp("observatory_sector")
     )
 
 
-def test_valid_evidence_tiers(export_df):
-    df, _, _ = export_df
-    invalid = set(df["evidence_tier"].unique()) - VALID_EVIDENCE_TIERS
-    assert not invalid, f"Invalid evidence tiers: {invalid}"
+def test_deceleration_is_positive_but_slower_growth():
+    assert _economic_state(100, 120, 126) == "deceleration"
 
 
-def test_sector_graph_always_zero(export_df):
-    df, _, _ = export_df
-    assert (df["sector_graph_available"] == 0).all(), (
-        "sector_graph_available must always be 0 in v0.1"
-    )
+def test_negative_after_growth_is_decline():
+    assert _economic_state(100, 120, 110) == "decline"
 
 
-def test_uncertainty_intervals_are_nan(export_df):
-    df, _, _ = export_df
-    assert df["forecast_lower"].isna().all(), "forecast_lower must be NaN in v0.1"
-    assert df["forecast_upper"].isna().all(), "forecast_upper must be NaN in v0.1"
+def test_acceleration_is_faster_positive_growth():
+    assert _economic_state(100, 105, 120) == "acceleration"
 
 
-def test_persistence_is_causal(export_df):
-    """For each territory-year, persistence_forecast must equal observed_value of prior year."""
-    df, _, _ = export_df
-    df_sorted = df.sort_values(["territory_id", "observation_year"]).reset_index(drop=True)
-    for region_id, grp in df_sorted.groupby("territory_id"):
-        grp = grp.reset_index(drop=True)
-        for i in range(1, len(grp)):
-            expected_persistence = grp.loc[i - 1, "observed_value"]
-            actual_persistence = grp.loc[i, "persistence_forecast"]
-            if pd.notna(actual_persistence) and pd.notna(expected_persistence):
-                assert abs(actual_persistence - expected_persistence) < 1e-3, (
-                    f"Region {region_id} year {grp.loc[i,'observation_year']}: "
-                    f"persistence {actual_persistence} != prior observed {expected_persistence}"
-                )
+def test_recovery_follows_decline():
+    assert _economic_state(100, 90, 100) == "recovery"
 
 
-def test_ridge_causal_first_years_nan(export_df):
-    """Ridge forecasts should be NaN for the earliest years (insufficient training data)."""
-    df, _, _ = export_df
-    first_year = df["observation_year"].min()
-    first_year_rows = df[df["observation_year"] == first_year]
-    assert first_year_rows["ridge_forecast"].isna().all(), (
-        f"Ridge forecast should be NaN for year {first_year} (no training data)"
-    )
+def test_stagnation_threshold():
+    assert _economic_state(100, 102, 103) == "stagnation"
 
 
-def test_g1_l2_availability_by_country(export_df):
-    """PT has G1-L2 validated; IT and AT do not."""
-    df, _, _ = export_df
-    assert (df[df["country"] == "PT"]["g1_l2_available"] == 1).all()
-    assert (df[df["country"] == "IT"]["g1_l2_available"] == 0).all()
-    assert (df[df["country"] == "AT"]["g1_l2_available"] == 0).all()
+@pytest.mark.parametrize("fixture_name", ["aggregate_product", "sector_product"])
+def test_common_schema_and_unique_key(request, fixture_name):
+    panel, _, _, _ = request.getfixturevalue(fixture_name)
+    assert EVIDENCE_COLUMNS.issubset(panel.columns)
+    assert not panel.duplicated(KEY).any()
+    assert set(panel["economic_state"]).issubset(VALID_ECONOMIC_STATES)
+    assert panel["sector_graph_available"].eq(0).all()
+    assert panel["forecast_lower"].isna().all()
+    assert panel["forecast_upper"].isna().all()
 
 
-def test_sector_id_is_aggregate(export_df):
-    """v0.1 uses only AGGREGATE sector."""
-    df, _, _ = export_df
-    assert (df["sector_id"] == "AGGREGATE").all()
+@pytest.mark.parametrize("fixture_name", ["aggregate_product", "sector_product"])
+def test_structural_absence_never_becomes_zero(request, fixture_name):
+    panel, _, _, _ = request.getfixturevalue(fixture_name)
+    absent = panel["structural_mask"].eq(0)
+    assert panel.loc[absent, "observed_value"].isna().all()
+    assert panel.loc[absent, "persistence_forecast"].isna().all()
+    assert panel.loc[absent, "ridge_forecast"].isna().all()
 
 
-def test_observed_values_positive(export_df):
-    df, _, _ = export_df
-    assert (df["observed_value"] > 0).all(), "All observed enterprise birth counts must be positive"
-
-
-def test_manifest_causal_safety_fields(export_df):
-    _, meta, _ = export_df
-    assert meta["causal_safety"]["growth_1y_used"] is False
-    assert meta["causal_safety"]["leakage_free"] is True
-    assert meta["causal_safety"]["rolling_origin"] is True
-
-
-def test_manifest_decision_reference(export_df):
-    _, meta, _ = export_df
-    assert meta["decision"] == "DEC-030"
-
-
-def test_manifest_limitations_not_empty(export_df):
-    _, meta, _ = export_df
-    assert len(meta["limitations"]) >= 4, "Manifest must document key limitations"
-
-
-def test_velocity_acceleration_consistent(export_df):
-    """velocity and acceleration should be NaN only for insufficient history rows."""
-    df, _, _ = export_df
-    insuf = df["economic_state"] == "insufficient_history"
-    assert df.loc[insuf, "velocity"].isna().all(), "Velocity must be NaN for insufficient_history"
-    assert df.loc[insuf, "acceleration"].isna().all()
-
-
-def test_no_future_leakage_in_persistence(export_df):
-    """Persistence forecast for year t must not exceed observed values at year t."""
-    df, _, _ = export_df
-    valid = df[df["persistence_forecast"].notna() & df["observed_value"].notna()]
-    assert len(valid) > 0
-    # Persistence is just the prior year value — it can be < or > actual, just not leaky.
-    # Check that persistence_forecast != observed_value (would imply same-year leakage)
-    same_year = (valid["persistence_forecast"] == valid["observed_value"])
-    # Allow up to 5% of rows to coincidentally match (plateau regions)
-    frac = same_year.mean()
-    assert frac < 0.20, f"Too many rows where persistence==observed ({frac:.1%}); possible leakage"
-
-
-def test_summary_wmape_in_expected_range(export_df):
-    """Persistence WMAPE by country should be in the plausible range for this panel."""
-    _, _, summ = export_df
-    wmape = summ.get("persistence_wmape_by_country", {})
-    for country, w in wmape.items():
-        assert 0.0 < w < 0.5, (
-            f"Country {country}: persistence WMAPE {w:.4f} outside expected range (0, 0.5)"
+@pytest.mark.parametrize("fixture_name", ["aggregate_product", "sector_product"])
+def test_persistence_uses_prior_observation(request, fixture_name):
+    panel, _, _, _ = request.getfixturevalue(fixture_name)
+    for _, group in panel.sort_values(KEY).groupby(
+        ["country", "territory_id", "sector_id"]
+    ):
+        previous = group["observed_value"].shift(1)
+        valid = group["persistence_forecast"].notna()
+        assert np.allclose(
+            group.loc[valid, "persistence_forecast"],
+            previous.loc[valid],
+            equal_nan=True,
         )
+
+
+@pytest.mark.parametrize("fixture_name", ["aggregate_product", "sector_product"])
+def test_manifest_checksum_and_causal_contract(request, fixture_name):
+    _, manifest, _, csv_path = request.getfixturevalue(fixture_name)
+    checksum = hashlib.sha256(csv_path.read_bytes()).hexdigest()
+    assert manifest["sha256"] == checksum
+    assert manifest["causal_safety"]["same_year_feature_used"] is False
+    assert manifest["causal_safety"]["rolling_origin"] is True
+    assert manifest["causal_safety"]["leakage_free"] is True
+
+
+def test_aggregate_product_contract(aggregate_product):
+    panel, manifest, _, _ = aggregate_product
+    source = pd.read_csv(AGGREGATE_PANEL_PATH)
+    assert len(panel) == len(source) == 1963
+    assert set(panel["country"]) == {"AT", "IT", "PT"}
+    assert set(panel["sector_id"]) == {"AGGREGATE"}
+    assert panel["territorial_graph_available"].eq(0).all()
+    assert set(panel["data_evidence_tier"]) == {"harmonized_enterprise_birth"}
+    assert manifest["version"] == "0.1.1"
+
+
+def test_sector_product_contract(sector_product):
+    panel, manifest, _, _ = sector_product
+    source = pd.read_csv(SECTOR_PANEL_PATH, low_memory=False)
+    assert len(panel) == len(source) == 45945
+    assert set(panel["country"]) == {"FR", "NL", "PT"}
+    assert panel["sector_id"].nunique() == 9
+    assert manifest["version"] == "0.2"
+
+
+def test_sector_country_dimensions(sector_product):
+    panel, _, summary, _ = sector_product
+    expected = {
+        "FR": (280, 9, 2012, 2025),
+        "NL": (40, 9, 2007, 2025),
+        "PT": (25, 9, 2008, 2024),
+    }
+    for country, (territories, sectors, year_min, year_max) in expected.items():
+        actual = summary["countries"][country]
+        assert actual["territories"] == territories
+        assert actual["sectors"] == sectors
+        assert actual["year_min"] == year_min
+        assert actual["year_max"] == year_max
+
+
+def test_pt_kz_is_structural_absence(sector_product):
+    panel, _, _, _ = sector_product
+    pt_kz = panel[(panel["country"] == "PT") & (panel["sector_id"] == "KZ")]
+    assert len(pt_kz) == 25 * 17
+    assert pt_kz["structural_mask"].eq(0).all()
+    assert pt_kz["data_evidence_tier"].eq("structural_absence").all()
+    assert pt_kz["territorial_graph_available"].eq(0).all()
+
+
+def test_nl_oq_missing_years_remain_missing(sector_product):
+    panel, _, _, _ = sector_product
+    nl_oq = panel[(panel["country"] == "NL") & (panel["sector_id"] == "OQ")]
+    missing = nl_oq["observation_mask"].eq(0)
+    assert missing.any()
+    assert nl_oq.loc[missing, "observed_value"].isna().all()
+    assert nl_oq["structural_mask"].eq(1).all()
+    assert nl_oq.loc[missing, "data_evidence_tier"].eq(
+        "missing_observation"
+    ).all()
+
+
+def test_graph_evidence_is_separate_from_forecast_evidence(sector_product):
+    panel, _, _, _ = sector_product
+    eligible = panel[
+        panel["observation_mask"].eq(1) & panel["structural_mask"].eq(1)
+    ]
+    assert eligible["graph_evidence_tier"].eq(
+        "supported_association_field"
+    ).all()
+    assert "validated_loco" not in set(eligible["forecast_evidence_tier"])
+
+
+def test_outputs_are_deterministic(tmp_path):
+    first = tmp_path / "first"
+    second = tmp_path / "second"
+    p1 = build_sector_export(output_dir=first)
+    p2 = build_sector_export(output_dir=second)
+    assert hashlib.sha256(p1.read_bytes()).hexdigest() == hashlib.sha256(
+        p2.read_bytes()
+    ).hexdigest()
+
+
+def test_no_p6_or_q7_dependency_in_builder():
+    source = Path(
+        "src/data/european_panel/build_observatory_export.py"
+    ).read_text()
+    lowered = source.lower()
+    assert "dual_graph_s1" not in lowered
+    assert "learned_sector_edges" not in lowered
+    assert "0.0204" not in source

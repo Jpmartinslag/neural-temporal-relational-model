@@ -1,154 +1,143 @@
-# HERALD Economic Observatory v0.1 — Data Contract
+# HERALD Economic Observatory — Data Contract
 
-**Version:** 0.1
-**Created:** 2026-06-12
-**Decision:** DEC-030 (Observatory v0.1 authorized)
+**Version:** aggregate v0.1.1 + sector v0.2
+**Updated:** 2026-06-12
+**Decision:** DEC-032
 **Generator:** `src/data/european_panel/build_observatory_export.py`
-**Output:** `data/processed/herald_observatory_v01/`
 
----
+## Products
 
-## Purpose
+| Product | Scope | Rows | Output |
+|---|---|---:|---|
+| v0.1.1 aggregate | PT/IT/AT, 151 NUTS3, 2008–2020 | 1,963 | `data/processed/herald_observatory_v01/herald_observatory_v011_*` |
+| v0.2 sector | FR/NL/PT, 345 territories, 9 sectors | 45,945 | `data/processed/herald_observatory_v02/herald_observatory_v02_*` |
 
-This document defines the schema, field semantics, causal-safety guarantees, and
-permitted/forbidden claims for the HERALD Observatory v0.1 unified data export.
-The export assembles validated components (persistence/Ridge forecasting, economic
-state labels, evidence tier metadata) into a single per-territory × per-year table.
+The CSV panels are regenerable and stay outside Git. Their manifests and
+summaries are small provenance artefacts suitable for version control.
 
----
+## Shared Key And Schema
 
-## Output Files
+The unique key is:
 
-| File | Description |
-|------|-------------|
-| `herald_observatory_v01_panel.csv` | Primary export (1963 rows) |
-| `herald_observatory_v01_manifest.json` | Provenance, statistics, causal-safety flags |
-| `herald_observatory_v01_summary.json` | Per-country statistics and WMAPE |
+`country × territory_id × observation_year × sector_id`
 
----
+Core fields:
 
-## Schema (per row)
+- identity: `country`, `territory_id`, `meta_nuts3_code`,
+  `territory_name`, `region_system`, `sector_id`, `sector_label`;
+- semantics: `target_concept`, `source_label`;
+- observations: `observed_value`, `lag1_value`, `velocity`,
+  `acceleration`, `economic_state`;
+- forecasts: `persistence_forecast`, `ridge_forecast`,
+  `forecast_lower`, `forecast_upper`, `forecast_method`,
+  `forecast_status`;
+- evidence: `data_evidence_tier`, `forecast_evidence_tier`,
+  `graph_evidence_tier`;
+- masks: `structural_mask`, `observation_mask`;
+- graph availability: `territorial_graph_available`,
+  `sector_graph_available`;
+- quality: `data_quality_flags`.
 
-| Column | Type | Description |
-|--------|------|-------------|
-| `country` | str | ISO 2-letter country code (AT, IT, PT) |
-| `territory_id` | str | Internal territory identifier (e.g. PT_111) |
-| `meta_nuts3_code` | str | Eurostat NUTS3 code (e.g. PT111) |
-| `territory_name` | str | Human-readable territory name |
-| `observation_year` | int | Year of the observed and forecast value |
-| `sector_id` | str | "AGGREGATE" in v0.1 (sector-level extension is v0.2) |
-| `observed_value` | float | Observed enterprise births for this territory-year |
-| `persistence_forecast` | float | Prior-year observed value as naive baseline forecast (NaN if no prior year) |
-| `ridge_forecast` | float | Rolling-origin Ridge forecast using lag1_births as feature (NaN for early years) |
-| `forecast_lower` | float | Lower uncertainty bound — **NaN in v0.1** (method not selected) |
-| `forecast_upper` | float | Upper uncertainty bound — **NaN in v0.1** (method not selected) |
-| `economic_state` | str | Economic state label (see taxonomy below) |
-| `velocity` | float | Year-on-year fractional change: (y_t − y_{t-1}) / y_{t-1} |
-| `acceleration` | float | Change in velocity: velocity_t − velocity_{t-1} |
-| `g1_l2_available` | int | 1 if country has validated G1-L2 co-growth field (DEC-019/020); else 0 |
-| `sector_graph_available` | int | **Always 0.** Sector→sector graph not yet implemented |
-| `evidence_tier` | str | Evidence classification for this row (see taxonomy below) |
-| `data_source` | str | Source label from the harmonized panel (INE, Eurostat, etc.) |
+Evidence is deliberately separated. Membership in a validated dataset does not
+automatically validate a forecast or graph claim.
 
----
+## Economic States
 
-## Economic State Taxonomy
+States are deterministic descriptions of observations, not predictions.
 
-States are derived from the observed time series only (not from forecasts). They are
-descriptive labels, not predictions.
+| State | Definition |
+|---|---|
+| `insufficient_history` | Current/prior observation unavailable or denominator invalid |
+| `stagnation` | Absolute annual growth ≤ 3% |
+| `growth` | Positive growth >3%, without a clear acceleration/deceleration pattern |
+| `acceleration` | Positive growth >3% and faster than the prior positive growth rate |
+| `deceleration` | Positive growth >3%, but slower than the prior positive growth rate |
+| `decline` | Current annual growth <−3%, including a transition from growth to contraction |
+| `recovery` | Positive growth >3% following prior decline |
 
-| State | Condition |
-|-------|-----------|
-| `insufficient_history` | No prior-year value available (year=2008 for most territories) |
-| `stagnation` | \|delta_t\| ≤ 3% (near-zero annual change) |
-| `growth` | delta_t > 3% and prior year was not declining |
-| `acceleration` | delta_t > 3% and growing faster than prior year |
-| `deceleration` | delta_t < -3% but prior year was growing (positive→negative) |
-| `decline` | delta_t < -3% and prior year was also declining |
-| `recovery` | delta_t > 3% but prior year was declining (negative→positive) |
+This corrects the former v0.1 definition that called a positive-to-negative
+transition “deceleration”. A sector may decelerate while still growing.
 
-Where `delta_t = (y_t − y_{t-1}) / y_{t-1}`.
+## Evidence Tiers
 
-Counts in v0.1: stagnation=550, decline=491, deceleration=266, recovery=209,
-acceleration=202, insufficient_history=151, growth=94 (total=1963).
+### Data
 
----
+- `harmonized_enterprise_birth`
+- `observed_national_sector_panel`
+- `structural_absence`
+- `missing_observation`
 
-## Evidence Tier Taxonomy
+### Forecast
 
-| Tier | Meaning |
-|------|---------|
-| `validated_loco` | Row is from the Phase 4N LOCO-validated harmonized panel (flag_forecast_safe=1) |
-| `pending_reaudit` | Row has results but causal pipeline audit is not yet complete (France Q7 WMAPE) |
-| `exploratory` | Result exists but methodology is exploratory, not promoted |
-| `not_available` | No validated result available for this territory-year |
+- `exploratory_rolling_origin`
+- `causal_persistence_only`
+- `unavailable`
 
----
+### Graph
 
-## Causal-Safety Guarantees
+- `supported_association_field`
+- `structural_absence`
+- `not_available`
 
-1. **No target leakage:** `growth_1y[t]` (leaky in Phase 4A/4D) is NOT used. Only
-   `lag1_births` (= `target_births[t-1]`) is used as a Ridge feature.
-2. **Rolling-origin:** For each territory-year pair (r, t), the Ridge model is trained
-   on observations (r, t') where t' < t. The forecast for year t does not use any
-   data from year t.
-3. **Persistence:** `persistence_forecast[t] = observed_value[t-1]`. Strictly causal.
-4. **Uncertainty intervals:** NaN in v0.1. Method selection (conformal or bootstrap)
-   is required before intervals can be published.
+`supported_association_field` means that G1-L2 exists as a same-sector,
+cross-territory association field. It does not mean predictive improvement or
+causality.
 
----
+## Causal-Safety Contract
 
-## G1-L2 Availability Flag
+1. Persistence at year `t` is the observed value at `t-1`.
+2. Ridge at year `t` is fitted only on earlier pairs and uses only the `t-1`
+   observed value.
+3. State, velocity and acceleration use at most `t`, `t-1` and `t-2`
+   observations. They are descriptive and are not used as same-year forecast
+   features.
+4. Structural absence and missing observations remain distinct, masked and
+   `NaN`, never economic zero. PT/KZ is structural; unavailable NL/OQ years are
+   missing observations.
+5. Forecast intervals remain `NaN`; no uncertainty method is promoted yet.
+6. `sector_graph_available=0` in both products. Sector-to-sector influence is
+   not implemented.
+7. No P6 learned graph or pending France Q7 output is consumed.
 
-| Country | `g1_l2_available` | Justification |
-|---------|:-----------------:|---------------|
-| PT | 1 | G1-L2 PASS (DEC-019/020) |
-| FR | 1 | G1-L2 PASS (DEC-019/020) — not in this panel |
-| NL | 1 | G1-L2 PASS (DEC-019/020) — not in this panel |
-| IT | 0 | G1-L2 not validated for Italy |
-| AT | 0 | G1-L2 not validated for Austria |
+## Product-Specific Scope
 
----
+### Aggregate v0.1.1
 
-## Permitted Claims from this Export
+- Countries: PT, IT, AT.
+- `sector_id=AGGREGATE`.
+- Forecast evidence is separate from Phase 4N panel evidence.
+- No territorial graph is attached to aggregate rows.
 
-- "The harmonized PT/IT/AT panel covers 151 mainland NUTS3 territories, 2008–2020."
-- "Persistence WMAPE (all years, not rolling eval): AT ~0.080, IT ~0.059, PT ~0.143."
-- "Economic state labels are descriptive, derived from observed data, not from forecasts."
-- "G1-L2 co-growth field is validated for PT (DEC-019/020); not validated for IT/AT."
+### Sector v0.2
 
----
+- FR: 280 ZE2020, 2012–2025.
+- NL: 40 COROP, 2007–2025.
+- PT: 25 NUTS3, 2008–2024.
+- Nine A10-compatible business sectors.
+- PT `KZ` is structurally absent and remains masked.
+- Unsupported NL `OQ` years are missing observations, not structural absence.
+- National concepts remain heterogeneous; no pooled-country claim is allowed.
 
-## Forbidden Claims from this Export
+## Permitted Claims
 
-| Forbidden claim | Reason |
-|-----------------|--------|
-| "HERALD v0.1 forecasts beyond 2020" | Panel ends at 2020 |
-| "Ridge WMAPE matches Phase 4N WMAPE 0.0874" | Phase 4N used a different eval protocol and features |
-| "France results are validated" | France WMAPE 0.0204 is PENDING_REAUDIT; France not in this panel |
-| "Sector-level economic states are available" | sector_id = AGGREGATE only in v0.1 |
-| "Uncertainty intervals are available" | forecast_lower/upper = NaN |
-| "G1-L2 provides predictive improvement" | G1-L2 is an associative analytical layer only (DEC-019) |
-| "Sector graph is available" | sector_graph_available = 0 always |
-| "Economic states are forecast results" | States are descriptive labels from observed series |
+- The Observatory now exposes observed territorial-sector trajectories and
+  deterministic state labels for FR/NL/PT.
+- The exports provide causal persistence and exploratory AR(1) Ridge point
+  baselines.
+- G1-L2 availability identifies an existing analytical association layer.
 
----
+## Forbidden Claims
 
-## v0.2 Extensions (Not Yet Implemented)
-
-- Sector-level rows for FR/NL/PT (from `sector_panel_fr_nl_pt.csv`)
-- France integration after causal pipeline audit of WMAPE 0.0204 is complete
-- Uncertainty intervals (conformal or bootstrap, to be selected via DEC-*)
-- Sector→sector graph layer (simple auditable method, to be designed via DEC-*)
-- NL and BE integration
-
----
+- Sector-to-sector influence is implemented.
+- The point forecasts are promoted scientific results.
+- Uncertainty intervals are available.
+- G1-L2 improves prediction or identifies structural causality.
+- National sector targets may be pooled as equivalent.
+- Economic states are forecasts.
 
 ## Regeneration
 
 ```bash
-python3 src/data/european_panel/build_observatory_export.py
+python3 -m src.data.european_panel.build_observatory_export --mode all
+python3 -m pytest -q tests/test_observatory_export.py
 ```
-
-Requires: `data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv`
-Tests: `pytest tests/test_observatory_export.py -v`

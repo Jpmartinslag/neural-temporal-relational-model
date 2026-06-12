@@ -61,6 +61,11 @@ data/processed/dual_graph_tensors/**/*.npz
 data/processed/dual_graph_pilot_all_folds/per_run/
 # Large edge CSV (253 MB, regenerable from sector panel)
 data/processed/economic_graph/g1_l2_cogrowth/g1_l2_edges.csv
+# Observatory CSV panels are deterministic and regenerable; keep JSON provenance.
+data/processed/herald_observatory_v01/*_panel.csv
+data/processed/herald_observatory_v02/*_panel.csv
+data/processed/herald_observatory_v01/herald_observatory_v01_manifest.json
+data/processed/herald_observatory_v01/herald_observatory_v01_summary.json
 # ARDECO extension artefacts (regenerable)
 data/processed/ardeco_extension/
 data/processed/residual_baseline_predictions_core_v0.csv

@@ -1,0 +1,85 @@
+{
+  "version": "0.2",
+  "generated_at": "2026-06-12T10:03:49.308057+00:00",
+  "decision": "DEC-030/DEC-031",
+  "source_panel": "data/processed/economic_graph/sector_panel_fr_nl_pt.csv",
+  "rows": 45945,
+  "countries": [
+    "FR",
+    "NL",
+    "PT"
+  ],
+  "territories": 345,
+  "years_by_country": {
+    "FR": [
+      2012,
+      2025
+    ],
+    "NL": [
+      2007,
+      2025
+    ],
+    "PT": [
+      2008,
+      2024
+    ]
+  },
+  "sector_ids": [
+    "BE",
+    "FZ",
+    "GI",
+    "JZ",
+    "KZ",
+    "LZ",
+    "MN",
+    "OQ",
+    "RU"
+  ],
+  "economic_states_distribution": {
+    "decline": 14233,
+    "recovery": 8482,
+    "stagnation": 5639,
+    "deceleration": 5319,
+    "acceleration": 4582,
+    "growth": 3860,
+    "insufficient_history": 3830
+  },
+  "data_evidence_distribution": {
+    "observed_national_sector_panel": 45200,
+    "structural_absence": 425,
+    "missing_observation": 320
+  },
+  "forecast_evidence_distribution": {
+    "exploratory_rolling_origin": 29800,
+    "causal_persistence_only": 12320,
+    "unavailable": 3825
+  },
+  "graph_evidence_distribution": {
+    "supported_association_field": 45200,
+    "structural_absence": 425,
+    "not_available": 320
+  },
+  "forecast_coverage": {
+    "persistence": 42120,
+    "ridge": 29800,
+    "intervals": 0
+  },
+  "sha256": "a6f8a5b2a34f17fac028518bf7955f7d8931c7a498b0af57b1afae5eb62c742e",
+  "causal_safety": {
+    "same_year_feature_used": false,
+    "ridge_features": [
+      "lag1_value"
+    ],
+    "rolling_origin": true,
+    "state_uses_at_most_t_tminus1_tminus2": true,
+    "leakage_free": true
+  },
+  "limitations": [
+    "Targets are heterogeneous national sector concepts; no country pooling.",
+    "Ridge AR(1) forecasts are exploratory point baselines.",
+    "Intervals are unavailable.",
+    "G1-L2 availability means supported association field, not prediction or causality.",
+    "Sector-to-sector graph is not implemented.",
+    "PT KZ remains structural absence; unsupported NL OQ years remain missing observations, never economic zeros."
+  ]
+}
