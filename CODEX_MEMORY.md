@@ -1,19 +1,20 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-12 (DEC-036: geographic dashboard, derived windows, France ZE documentation).
+**LEIA PRIMEIRO.** Updated 2026-06-12 (DEC-037: Phase 8 territorial sector movement attribution, DESCRIPTIVE_ONLY).
 Read this file, then verify drift with `rtk git status --short`.
 
 ## Quick orientation (start here)
 - **Direction:** `reports/HERALD_PROJECT_CHARTER.md` — official scope, permitted/forbidden claims, frozen decisions.
 - **Current state by component:** `reports/HERALD_CURRENT_STATE.md` — completion %, blockers, next step.
-- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-036).
+- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-037).
 - **Claims classification:** `reports/HERALD_EVIDENCE_MATRIX.md`.
 - **Active document list:** `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`.
 - **Artefact manifest:** `reports/herald_artifact_registry.json`.
 - **S1_FR_FAIL (DEC-031):** GConvGRU and EvolveGCN-H fail all 5 frozen gate criteria on France (GConvGRU WMAPE 0.064922 vs Ridge 0.064856; p_temporal=1.0). Graph-temporal prediction branch CLOSED. No HPC authorized.
 - **Observatory exports:** aggregate PT/IT/AT v0.1.1 (1,963 rows); sector FR/NL/PT v0.2 (45,945 rows) via `build_observatory_export.py`; Observatory v0.3 (45,945 rows + sector relations) via `src/data/european_panel/build_observatory_v03.py`.
 - **Phase 7 result (DEC-034):** SECTOR_PRECEDENCE_PROTOTYPE_READY — 12 COVID-robust edges (NL=3, PT=9); 25 total promoted main edges. Slurm 7455266, meso. Audit PASS.
-- **Observatory v0.3 (DEC-035):** Sector precedence layer integrated. ROBUST/MAIN_ONLY_EXPLORATORY classification. Dashboard: `reports/dashboards/herald_observatory_v03_dashboard.html`. Tests: 649 pass.
-- **Immediate next step:** extend sector panel to AT/BE (pre-register hypothesis first); report writing (Phase 6).
+- **Observatory v0.3 (DEC-035/036):** Sector precedence layer integrated. Geographic map (FR=ZE2020/NL=COROP/PT=NUTS3 mainland), Plotly self-contained. Dashboard: `reports/dashboards/herald_observatory_v03_dashboard.html`. 48 tests pass.
+- **Phase 8 (DEC-037):** TERRITORIAL_MOVEMENT_LAYER = DESCRIPTIVE_ONLY. LOTO influence decomposition for 12 ROBUST relations. NL: 40 territories/relation; PT: 25 territories/relation. 91 STRONG + 78 MODERATE + 8 WEAK + 168 DESCRIPTIVE_ONLY. No HPC. Builder: `src/data/european_panel/build_territorial_sector_movements.py`. 34 tests pass. Data in `data/processed/herald_observatory_v04/` (not committed — regenerable).
+- **Immediate next step:** extend sector panel to AT/BE (pre-register hypothesis first); OR report writing (Phase 6).
 
 ## DO NOT change direction without a new DEC-* entry
 No new GNN architecture search. No geographic graph reopen. No P6 relaunch.

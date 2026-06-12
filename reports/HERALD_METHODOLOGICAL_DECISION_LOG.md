@@ -1151,3 +1151,83 @@ Provenance note required on all outputs: *"Edges are predictive associations (ob
 `tests/test_observatory_v03.py`;
 `reports/dashboards/herald_observatory_v03_dashboard.html`;
 `reports/HERALD_OBSERVATORY_V03_AUDIT.md`.
+
+---
+
+## DEC-037 — 2026-06-12 — Phase 8: Territorial Sector Movement Attribution
+
+**Phase:** Phase 8 — Territorial Sector Movement Attribution (DESCRIPTIVE_ONLY layer)
+
+**Question:** Can the 12 COVID-robust Phase 7 sector-precedence associations be localised to specific territories? For each relation, which territories contribute most to the global beta?
+
+**Method:** Leave-one-territory-out (LOTO) regression influence decomposition:
+
+    influence_r = beta_full - beta_without_territory_r
+
+where `beta_full` replicates Phase 7 exactly (two-way demean → standardize → OLS on velocity, using observation_mask=1 AND structural_mask=1). Beta integrity verified: max deviation from Phase 7 = 3.6e-16 (float precision only).
+
+**Evidence:**
+
+- All 12 ROBUST relations eligible: NL=40 territories/240 pairs, PT=25 territories/150 pairs
+- PT KZ structurally absent (observation_mask=0 entire column) — not eligible, not in ROBUST edges
+- Bootstrap (500 draws, territory resample with replacement): mean sign stability 0.88, range [0.45, 1.00]
+- LOYO consistency (leave-one-year-out): 311/345 = 90% of records consistent across LOYO splits
+- Without-2020 consistency (6 windows containing 2020): 120/150 = 80% consistent
+
+**Evidence breakdown (n=345 territory-relation records):**
+
+| Level | Count | Meaning |
+|-------|-------|---------|
+| STRONG | 91 | Q75 + bootstrap ≥ 0.60 + LOYO consistent + without-2020 consistent |
+| MODERATE | 78 | Q50 + bootstrap ≥ 0.60 + LOYO consistent + without-2020 consistent |
+| WEAK | 8 | Q50 + bootstrap ≥ 0.60, LOYO or without-2020 inconclusive |
+| DESCRIPTIVE_ONLY | 168 | Influence measurable but below gates |
+| INSUFFICIENT_DATA | 0 | All territories had sufficient data |
+
+**Top concentration pattern:** Top-3 territories account for 31–61% of total absolute influence per relation (median ≈ 48%). The associations are not uniformly distributed — some regions consistently drive the statistical patterns.
+
+**Decision:** DESCRIPTIVE_ONLY
+
+The 12 Phase 7 global betas are validated scientific results (permutation-tested, bootstrap-stable, COVID-robust). This Phase 8 layer localises them into per-territory contributions using LOTO. The evidence level DESCRIPTIVE_ONLY applies to the LAYER as a whole — it provides a descriptive territorial lens on the already-validated national associations. It does NOT:
+- Add new promoted scientific claims beyond DEC-034
+- Imply causal transmission, geographic propagation, or enterprise-birth flow between territories
+- Constitute a recommended policy instrument
+
+**Pre-specified gates (sealed before execution):**
+
+| Gate | Threshold |
+|------|-----------|
+| beta_integrity_tol | 0.01 |
+| min_territory_own_pairs | 3 |
+| min_loto_pairs | 30 |
+| bootstrap_sign_stability_threshold | 0.60 |
+| loyo_min_consistent_splits | 4 of 5 |
+| evidence_strong_percentile | Q75 |
+| evidence_moderate_percentile | Q50 |
+
+**Rationale:** Phase 7 already validates the existence of sector-precedence associations at the national level. This layer answers "where?" using the most interpretable method (LOTO = remove one territory, measure beta change). Bootstrap and LOYO provide stability checks without re-running HPC. The descriptive label prevents over-interpretation.
+
+**Limitations:**
+- n_territories is moderate (25-40), making LOTO influence sensitive to outlier territories
+- 6 years per window limits within-territory power; LOTO contributions conflate leverage with genuine local association strength
+- Territorial systems are incommensurable (ZE2020 / COROP / NUTS3); no cross-country comparison
+- Islands/overseas PT_200/PT_300 included in LOTO computation (matching Phase 7), excluded from choropleth map only
+- FR has 0 ROBUST relations; no Phase 8 rows for France
+
+**Alternatives considered:**
+- Score approach (source_growth × target_growth): rejected — not decomposable from the Phase 7 regression
+- Partial correlation per territory: rejected — doesn't have a clean summation property with LOTO
+- Full permutation of LOTO (999 per territory): rejected — computationally expensive for 345 territories, and global beta is already permutation-validated by Phase 7
+
+**HPC:** Not used. All computation local (≈10 min, 12 relations × 500 bootstrap draws).
+
+**Reopen condition:** Evidence can be elevated from DESCRIPTIVE_ONLY if (a) panel is extended to more countries/years with same territorial resolution, or (b) a country shows strong concentration of influence in a specific economic cluster that replicates across independent windows.
+
+**Affected files:**
+`src/data/european_panel/build_territorial_sector_movements.py`;
+`tests/test_territorial_sector_movements.py`;
+`data/processed/herald_observatory_v04/` (not committed — regenerable);
+`reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (this entry);
+`reports/HERALD_CURRENT_STATE.md`;
+`reports/HERALD_EVIDENCE_MATRIX.md`;
+`CODEX_MEMORY.md`.
