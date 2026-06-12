@@ -1,16 +1,16 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-12 (DEC-030: direction frozen; P6 FAIL; Observatory v0.1 next phase).
+**LEIA PRIMEIRO.** Updated 2026-06-12 (DEC-031: S1_FR_FAIL, graph-temporal branch closed; Observatory v0.1 is the only authorized next phase).
 Read this file, then verify drift with `rtk git status --short`.
 
 ## Quick orientation (start here)
 - **Direction:** `reports/HERALD_PROJECT_CHARTER.md` — official scope, permitted/forbidden claims, frozen decisions.
 - **Current state by component:** `reports/HERALD_CURRENT_STATE.md` — completion %, blockers, next step.
-- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-030).
+- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-031).
 - **Claims classification:** `reports/HERALD_EVIDENCE_MATRIX.md`.
 - **Active document list:** `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`.
 - **Artefact manifest:** `reports/herald_artifact_registry.json`.
-- **Working tree state (NOT YET COMMITTED):** `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` (untracked) contains `S1_FR_FAIL` — GConvGRU/EvolveGCN-H fail frozen gate on France. This parallel result must be committed with a DEC-* entry before being cited. If confirmed, graph-temporal correction branch closes and Observatory v0.1 proceeds without it.
-- **Immediate next step:** Begin Observatory v0.1 unified export implementation (`src/data/european_panel/build_observatory_export.py`).
+- **S1_FR_FAIL (DEC-031):** GConvGRU and EvolveGCN-H fail all 5 frozen gate criteria on France (GConvGRU WMAPE 0.064922 vs Ridge 0.064856; p_temporal=1.0). Graph-temporal prediction branch CLOSED. No HPC authorized.
+- **Immediate next step:** Observatory v0.1 unified export implementation (`src/data/european_panel/build_observatory_export.py`).
 
 ## DO NOT change direction without a new DEC-* entry
 No new GNN architecture search. No geographic graph reopen. No P6 relaunch.
@@ -228,14 +228,14 @@ No dashboard modification (DEC-014). No HPC, GNN, recommendation.
 - A1 contract: interface (B,T,R,S,F), bounded residual head (clamp_frac∈{0.10,0.15}),
   masked pooling, ≤5,000 params, shared weights across sectors, 11 mandatory tests in
   `tests/test_graph_temporal_a1.py`, 5 seeds {42–46}, rolling-origin folds, masked WMAPE loss.
-- Evidence matrix: 32 claims; SUPPORTED=12, PARTIALLY_SUPPORTED=3, NOT_SUPPORTED=5,
-  NOT_TESTED=5. MET-06 added (schema 2.0 pipeline: causal, deterministic, aligned with H0b).
+- Evidence matrix: 33 claims; SUPPORTED=11, PARTIALLY_SUPPORTED=3, NOT_SUPPORTED=5,
+  NOT_TESTED=4, REFUTED=8, PENDING_REAUDIT=1. G-17 added (S1_FR_FAIL). MET-05 updated REFUTED.
 - **S1_FR_FAIL (DEC-031)**: FR scientific local test COMPLETED — GConvGRU and EvolveGCN-H
   fail all gate criteria. Graph-temporal prediction branch CLOSED. HPC NOT authorized.
 - Adjacency audit (NL): 29–36% negative correlations; 0–1 isolated regions at
   k=5 (NL/2019 is sparse: 40 isolated across one sector). Primary repr: positive_topk.
 
-**Pending: A1 implementation only.** All other DEC-028 artifacts complete.
+**Branch CLOSED.** S1_FR_FAIL confirmed and committed (DEC-031). No A1 implementation outstanding.
 
 
 ### Bloco 3 — Economic Recommendation (NOT STARTED)

@@ -170,9 +170,9 @@ economic relations, their evolution, and temporal patterns. NOT forecast improve
 | E0-v2 schema 2.0 smoke (NL, 3 folds) | DONE 2026-06-11 — **`E0_V2_PASS`**: 13.92s, 0.035 GB RSS, 57/57 tests (DEC-028) | `reports/HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md` |
 | FR adjacency audit (5 eval years, schema 2.0) | DONE 2026-06-11 — **`FR_ADJACENCY_READY`**: 280 ZE, 0 isolated @k=3/5/10, all 8 criteria pass | `reports/HERALD_GRAPH_TEMPORAL_FR_ADJACENCY_PREFLIGHT.md` |
 | A1 implementation contract | DONE 2026-06-11 — **FROZEN** (DEC-028): interface, rules, A0/A1a/A1b specs, 11 mandatory tests | `reports/HERALD_GRAPH_TEMPORAL_A1_IMPLEMENTATION_CONTRACT.md` |
-| GConvGRU A1a + EvolveGCN-H A1b + A0-neural | **NEXT** | `src/modeles/graph_temporal_models.py`, `tests/test_graph_temporal_a1.py` |
-| FR scientific local test (S1-FR) | BLOCKED — awaits A1 implementation + 11 tests pass | 5 seeds, 5 eval years, all controls |
-| HPC confirmatory battery | BLOCKED | Requires S1-FR local gate + supervisor approval |
+| GConvGRU A1a + EvolveGCN-H A1b + A0-neural | DONE 2026-06-12 — implemented (DEC-031) | `src/modeles/graph_temporal_models.py`, `tests/test_graph_temporal_a1.py` |
+| FR scientific local test (S1-FR) | **DONE 2026-06-12 — S1_FR_FAIL (DEC-031)** — GConvGRU/EvolveGCN-H fail all 5 criteria | `data/processed/graph_temporal_s1/s1_fr_results.json`; `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` |
+| HPC confirmatory battery | NOT AUTHORIZED — S1_FR_FAIL closes prediction branch (DEC-031) | New information hypothesis + new DEC-* required |
 
 ---
 

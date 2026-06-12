@@ -40,6 +40,7 @@
 | G-09 | Functional/mobility network provides predictive signal for enterprise births | Not yet run | — | — | — | — | None | — | Data availability not confirmed at NUTS3 level | `NOT_TESTED` |
 | G-15 | Dynamic dual economic graph (territory graph + learned sector graph, ≤10,000 params) improves territorial enterprise-birth prediction, regime classification, or recovery detection | P6_DDEG_S1 full study — Slurm job 7453691 — 275/275 complete | Phase 6 | FR 101 NUTS3, 9 A10 sectors, eval 2021–2025 | 5-fold rolling-origin, 11 controls, 5 seeds, fail-closed gate §9 | `reports/HERALD_DUAL_GRAPH_S1_RESULTS.md`; `data/processed/dual_graph_s1/gate_result.json` | Strong refutation: all 7 gate criteria fail. C5_dual MAE 0.1424 vs C1_ridge 0.1242 (+14.6%). C5 never beats both graph permutation nulls simultaneously. | FR only; one parameter budget (hidden_dim=8); one horizon | Low-capacity architecture; higher-capacity graph-temporal models (A1 contract) not precluded | `REFUTED_UNDER_CURRENT_PROTOCOL` |
 | G-16 | The P6_DDEG_S1 learned sector adjacency encodes reproducible sector associations across seeds | P6_DDEG_S1 full study (DEC-029) | Phase 6 | FR 101 NUTS3, 9 A10 sectors | Mean seed Jaccard per fold over 5 seeds | `data/processed/dual_graph_s1/learned_sector_edges.csv` | Weak (mean Jaccard 0.3353; threshold 0.50 fails). Descriptively: C↔KZ appears in 80%, FZ↔HZ in 76% of fold×seed runs. | FR only; optimization artifact from failed gate | Jaccard below stability threshold; sectors are L1-regularized optimization outputs, not validated economic structure | `NOT_SUPPORTED` |
+| G-17 | GConvGRU (A1a) or EvolveGCN-H (A1b) improves territorial enterprise-birth prediction over AR-Ridge for France under the fail-closed A1 gate | S1_FR local test (DEC-031) | A1/S1-FR | FR 280 ZE, eval 2021–2025, 5 seeds {42–46} | Rolling-origin, 5 eval years, temporal+territory null permutations (9999 seeds), fail-closed gate pre-registered at DEC-028 | `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md`; `data/processed/graph_temporal_s1/s1_fr_results.json` | Strong refutation: both models fail all 5 gate criteria. GConvGRU WMAPE 0.064922 vs Ridge 0.064856 (+0.1%), p_temporal=1.0, p_territory=1.0, wins 1/5 years. EvolveGCN-H WMAPE 0.064973 (+0.2%), p_temporal=1.0, p_territory=0.293, wins 1/5 years. Both models indistinguishable from null permutations. | FR only; 3-feature tensor | Feature-set limitation, not necessarily architecture limitation. Does not preclude wider economic feature sets. | `REFUTED_UNDER_CURRENT_PROTOCOL` |
 
 ---
 
@@ -70,8 +71,8 @@
 | MET-02 | Moran's I with 999 permutations and BH/FDR correction is the correct spatial autocorrelation protocol | Phase 4O-C protocol | 4O-C | IT/PT/AT | Pre-registered gate | `HERALD_PHASE4O_B_RESIDUAL_SPATIAL_AUDIT.md` | Moderate | Standard for spatial econometrics | LOO threshold (50%) is ad-hoc | `SUPPORTED` |
 | MET-03 | Pooled WMAPE is an admissible primary result for European panel | Phase 4J semantic audit | 4J | FR/NL/BE/PT | — | `HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md` | Strong refutation | Universal | Incommensurable targets cannot be pooled | `REFUTED_UNDER_CURRENT_PROTOCOL` |
 | MET-04 | Graph attention weights are interpretable explanations of economic relations | Not tested | — | — | — | — | None | — | Requires validation against null model and economic ground truth | `NOT_TESTED` |
-| MET-05 | GConvGRU or EvolveGCN-H is the correct graph-temporal architecture for HERALD | Literature preflight only (DEC-027) | Pre-implementation | FR/NL/PT sector panel | Same-target rolling-origin protocol and fail-closed gates specified; no model run | `HERALD_GRAPH_TEMPORAL_ARCHITECTURE_DECISION.md` | Methodological candidate selection only | Not established | Phase 5 fixed-L2 corrector failed; trainable graph-temporal candidates remain untested | `NOT_TESTED` |
-| MET-06 | The schema 2.0 pipeline exports causal, deterministic graph-temporal sequences aligned with the canonical H0b Ridge | E0-v2 smoke (DEC-028): 8 checks pass, 57 tests pass, 2-run determinism, FR adjacency audit 5 folds | DEC-027/028 | NL 40 COROP (smoke); FR 280 ZE (adjacency audit) | LeakageError assertions; 57 invariant tests; two-run NPZ checksum comparison; FR 8 fail-closed adjacency criteria | `HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md`; `HERALD_GRAPH_TEMPORAL_FR_ADJACENCY_PREFLIGHT.md` | Strong for data infrastructure | NL and FR only; architecture not yet trained | Does not imply GConvGRU or EvolveGCN-H improves forecasting; tensor pipeline is a necessary not sufficient condition | `SUPPORTED` |
+| MET-05 | GConvGRU or EvolveGCN-H is the correct graph-temporal architecture for HERALD | S1_FR local test (DEC-031) | A1/S1-FR | FR 280 ZE, eval 2021–2025 | Pre-registered fail-closed gate | `HERALD_GRAPH_TEMPORAL_ARCHITECTURE_DECISION.md`; `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` | Strong refutation for predictive use: both architectures fail all 5 gate criteria under current 3-feature tensor | Not established for other feature sets | Both architectures indistinguishable from null permutations; does not preclude use as representation learning with richer features | `REFUTED_UNDER_CURRENT_PROTOCOL` |
+| MET-06 | The schema 2.0 pipeline exports causal, deterministic graph-temporal sequences aligned with the canonical H0b Ridge | E0-v2 smoke (DEC-028): 8 checks pass, 57 tests pass, 2-run determinism, FR adjacency audit 5 folds | DEC-027/028 | NL 40 COROP (smoke); FR 280 ZE (adjacency audit) | LeakageError assertions; 57 invariant tests; two-run NPZ checksum comparison; FR 8 fail-closed adjacency criteria | `HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md`; `HERALD_GRAPH_TEMPORAL_FR_ADJACENCY_PREFLIGHT.md` | Strong for data infrastructure | NL and FR only; GConvGRU/EvolveGCN-H trained on FR tensors and failed S1 gate (DEC-031) | Does not imply GConvGRU or EvolveGCN-H improves forecasting — confirmed by S1_FR_FAIL; tensor infrastructure remains valid | `SUPPORTED` |
 
 ---
 
@@ -79,15 +80,16 @@
 
 | Status | Count |
 |--------|------:|
-| `SUPPORTED` | 12 |
+| `SUPPORTED` | 11 |
 | `PARTIALLY_SUPPORTED` | 3 |
 | `EXPLORATORY` | 1 |
 | `NOT_SUPPORTED` | 5 |
-| `REFUTED_UNDER_CURRENT_PROTOCOL` | 6 |
-| `NOT_TESTED` | 5 |
-| **Total** | **32** |
+| `REFUTED_UNDER_CURRENT_PROTOCOL` | 8 |
+| `NOT_TESTED` | 4 |
+| `PENDING_REAUDIT` | 1 |
+| **Total** | **33** |
 
-_Counts verified programmatically (2026-06-11, DEC-028): F=7, G=10, GEN=3, REC=2, MET=6; status sums match._
+_Updated 2026-06-12 (DEC-031): +G-17 (REFUTED), MET-05 NOT_TESTED→REFUTED, F-04 SUPPORTED→PENDING_REAUDIT. F=7, G=11, GEN=3, REC=2, MET=6; total=33._
 
 ---
 

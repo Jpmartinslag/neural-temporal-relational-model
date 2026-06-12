@@ -1,6 +1,6 @@
 # HERALD Current State
-**Updated:** 2026-06-12 (post DEC-029, post P6_DDEG_S1 FAIL)
-**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-030), `HERALD_EVIDENCE_MATRIX.md`.
+**Updated:** 2026-06-12 (post DEC-031, S1_FR_FAIL; graph-temporal branch closed)
+**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-031), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
 
@@ -68,10 +68,9 @@
 - **Artefact:** `data/processed/dual_graph_s1/` (frozen, historical only).
 
 #### Graph-temporal tensors (schema 2.0 / A1 contract)
-- **Committed status (HEAD):** E0_V2_PASS; FR_ADJACENCY_READY; A1 contract FROZEN (DEC-028). S1-FR BLOCKED per DEC-028.
-- **Working tree evidence (NOT YET COMMITTED):** `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` (untracked) and `data/processed/graph_temporal_s1/s1_fr_results.json` (untracked) contain `S1_FR_FAIL` result — GConvGRU/EvolveGCN-H fail the frozen gate. This parallel work is not included in the consolidation commit and needs its own DEC-* entry.
-- **If S1_FR_FAIL is confirmed:** The prediction-graph branch is closed. Non-graph frugal improvements (Bloco 1) and descriptive graph (Bloco 2) remain valid. The Observatory v0.1 proceeds without graph-temporal correction.
-- **Artefact:** `data/processed/graph_temporal_v2/` (tensors); `data/processed/graph_temporal_s1/` (untracked S1 results)
+- **Status:** S1_FR_FAIL (DEC-031). GConvGRU and EvolveGCN-H both fail all 5 frozen gate criteria. Mean WMAPE: Ridge 0.06486, GConvGRU 0.06492, EvolveGCN-H 0.06497. Both models indistinguishable from temporal and territory permutation nulls (p=1.0 for GConvGRU). Leakage/seed-stability checks pass.
+- **Branch status:** Graph-temporal prediction branch CLOSED. No HPC authorized. Non-graph frugal improvements (Bloco 1) and descriptive graph (Bloco 2) remain valid. Observatory v0.1 proceeds without graph-temporal correction.
+- **Artefacts:** `data/processed/graph_temporal_v2/` (schema 2.0 tensors, ACTIVE); `data/processed/graph_temporal_s1/` (S1 results, FROZEN/FAIL, DEC-031)
 
 ### Bloco 3 — Economic Recommendation
 - **Status:** NOT STARTED. Requires Bloco 1 + Bloco 2 complete.
@@ -99,7 +98,7 @@
 | Item | Blocker | Reopen condition |
 |------|---------|-----------------|
 | S1-FR result commit | Parallel work must be committed with own DEC-* entry | Commit `HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` + results |
-| HPC new submission | S1-FR committed and gate decision made | If S1_FR_FAIL confirmed, graph-temporal branch closes |
+| HPC new submission | S1_FR_FAIL (DEC-031) — graph-temporal branch closed | New information hypothesis + new DEC-* required |
 | Sector→sector graph (G3+) | Observatory v0.1 first | After unified export exists |
 | Recommendation layer | Bloco 1 + Bloco 2 complete | — |
 | New GNN architecture | Integrated prototype complete | New hypothesis + new data |
