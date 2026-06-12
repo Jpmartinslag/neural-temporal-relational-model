@@ -195,6 +195,23 @@
       "notes": "Schema 1.0 defects: static snapshot, simplified Ridge, single obs_mask, signed dense adjacency, unreliable tracemalloc."
     },
     {
+      "id": "OBSERVATORY_V01_PANEL",
+      "phase": "observatory/v0.1",
+      "path": "data/processed/herald_observatory_v01/herald_observatory_v01_panel.csv",
+      "type": "panel_csv",
+      "status": "ACTIVE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": "61119c9d093438d73580",
+      "origin_decision": "DEC-030",
+      "generator_script": "src/data/european_panel/build_observatory_export.py",
+      "input_data": ["data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv"],
+      "claim_authorized": "Aggregate per-territory-year export: PT/IT/AT, 151 NUTS3, 2008-2020. Persistence and rolling-origin Ridge (lag1 only) forecasts. Economic state labels (7 states). G1-L2 availability flag. Evidence tiers.",
+      "claim_forbidden": "France results (PENDING_REAUDIT, not in this export). Sector-level forecasts. Uncertainty intervals (NaN). Sector graph (0). Ridge WMAPE equivalence to Phase 4N. Post-2020 forecasts.",
+      "can_regenerate": true,
+      "notes": "v0.1 aggregate only (sector_id=AGGREGATE). 1963 rows. Regenerate with build_observatory_export.py. Data contract: reports/HERALD_OBSERVATORY_V01_DATA_CONTRACT.md."
+    },
+    {
       "id": "S1_FR_RESULTS",
       "phase": "A1/S1-FR",
       "path": "data/processed/graph_temporal_s1/s1_fr_results.json",
