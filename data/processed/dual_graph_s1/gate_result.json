@@ -1,0 +1,115 @@
+{
+  "criteria": {
+    "c1_mae_improve": false,
+    "c2_macro_f1_margin": false,
+    "c3_recovery_aucpr_folds": false,
+    "c4_graph_beats_nulls_folds": false,
+    "c5_seed_jaccard": false,
+    "c6_no_fold_regression": false,
+    "c7_holds_without_2021": false
+  },
+  "decision": "DUAL_GRAPH_S1_FAIL",
+  "jaccard_value": 0.33527602956763375,
+  "control_roles": {
+    "dual": "C5_dual",
+    "ridge": "C1_ridge",
+    "no_graph": "C2_no_graph",
+    "territory_null": "C7_territory_graph_perm",
+    "sector_null": "C8_sector_identity_perm"
+  },
+  "criterion4_metric": "primary_regression_mae",
+  "criterion4_direction": "lower_is_better",
+  "study": "P6_DDEG_S1",
+  "slurm_job": "7453691",
+  "n_runs": 275,
+  "folds": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "controls": [
+    "C0_persistence",
+    "C1_ridge",
+    "C2_no_graph",
+    "C3_territory_only",
+    "C4_sector_only",
+    "C5_dual",
+    "C6_territory_temporal_perm",
+    "C7_territory_graph_perm",
+    "C8_sector_identity_perm",
+    "C9_no_ardeco",
+    "C10_ardeco_temporal_perm"
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "gate_thresholds": {
+    "mae_improve_frac": 0.01,
+    "macro_f1_margin": 0.02,
+    "min_folds": 3,
+    "jaccard_min": 0.5,
+    "max_fold_regression": 0.1,
+    "exclude_year": 2021
+  },
+  "gate_no2021": {
+    "criteria": {
+      "c1_mae_improve": false,
+      "c2_macro_f1_margin": false,
+      "c3_recovery_aucpr_folds": false,
+      "c4_graph_beats_nulls_folds": false,
+      "c5_seed_jaccard": false,
+      "c6_no_fold_regression": false,
+      "c7_holds_without_2021": false
+    },
+    "decision": "DUAL_GRAPH_S1_FAIL",
+    "jaccard_value": 0.33527602956763375,
+    "control_roles": {
+      "dual": "C5_dual",
+      "ridge": "C1_ridge",
+      "no_graph": "C2_no_graph",
+      "territory_null": "C7_territory_graph_perm",
+      "sector_null": "C8_sector_identity_perm"
+    },
+    "criterion4_metric": "primary_regression_mae",
+    "criterion4_direction": "lower_is_better"
+  },
+  "jaccard_by_fold": {
+    "2021": 0.37204171052446916,
+    "2022": 0.29618750331793814,
+    "2023": 0.32296193844469706,
+    "2024": 0.35773858186901664,
+    "2025": 0.32745041368204786
+  },
+  "aggregated_mae": {
+    "C0_persistence": 0.17948461472988128,
+    "C1_ridge": 0.12421921521425247,
+    "C2_no_graph": 0.1329000499844551,
+    "C3_territory_only": 0.13733931601047517,
+    "C4_sector_only": 0.13727999925613404,
+    "C5_dual": 0.14240130960941316,
+    "C6_territory_temporal_perm": 0.14371188908815385,
+    "C7_territory_graph_perm": 0.1423305255174637,
+    "C8_sector_identity_perm": 0.13653459072113036,
+    "C9_no_ardeco": 0.13927785366773604,
+    "C10_ardeco_temporal_perm": 0.1415556126832962
+  },
+  "aggregated_macro_f1": {
+    "C0_persistence": null,
+    "C1_ridge": null,
+    "C2_no_graph": 0.28700586310571385,
+    "C3_territory_only": 0.28585366048888455,
+    "C4_sector_only": 0.290937501329066,
+    "C5_dual": 0.288452047920069,
+    "C6_territory_temporal_perm": 0.2832117985667878,
+    "C7_territory_graph_perm": 0.2892760715179529,
+    "C8_sector_identity_perm": 0.28641170530219784,
+    "C9_no_ardeco": 0.29130814566777924,
+    "C10_ardeco_temporal_perm": 0.2901910333260212
+  }
+}

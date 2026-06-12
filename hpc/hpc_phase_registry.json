@@ -153,10 +153,10 @@
       "data/processed/dual_graph_pilot_all_folds/",
       "hpc_results/phase6_dynamic_dual_graph/"
     ],
-    "status": "active",
-    "scientific_scope": "France NUTS3; 101 regions; 9 A10 sectors; eval years 2021-2025. Territory graph (observed causal dynamic) + sector graph (learned sparse). Targets: sector log-growth, regime, recovery, emergence. Representation-learning track; association/early-warning claims only. HPC full study NOT YET LAUNCHED.",
+    "status": "frozen/FAIL",
+    "scientific_scope": "France NUTS3; 101 regions; 9 A10 sectors; eval years 2021-2025. Territory graph (observed causal dynamic) + sector graph (learned sparse). Targets: sector log-growth, regime, recovery, emergence. Representation-learning track; association/early-warning claims only. Full study COMPLETE (job 7453691); gate DUAL_GRAPH_S1_FAIL (all 7 criteria fail). Predictive branch CLOSED.",
     "depends_on": ["P4_GEO_GRAPH", "P5_FIXED_GRAPH_CORRECTOR"],
     "safe_to_move": false,
-    "notes": "Trainer at src/modeles/train_dual_graph_experiment.py (default out: data/processed/dual_graph_s1/). HPC output target: hpc_results/phase6_dynamic_dual_graph/full/ or hpc_results/dual_graph_s1/raw/. HPC scripts to be created at hpc/phase6_dynamic_dual_graph/scripts/. Pilot (5 folds x 11 controls x 2 seeds = 110 runs): data/processed/dual_graph_pilot_all_folds/ — gate DUAL_GRAPH_S1_FAIL (6/7 criteria fail; only c6_no_fold_regression passes). Full study (5x11x5=275 jobs) not yet submitted. Model frozen: dual_graph_models.py commit 9521264. Tensors frozen: dual_graph_tensors/manifest.json. Gate thresholds frozen per contract. Do NOT rerun pilot or modify hyperparameters based on gate result."
+    "notes": "Full study: 5x11x5=275 jobs, Slurm job 7453691, 275/275 COMPLETED. Gate: DUAL_GRAPH_S1_FAIL — all 7 criteria fail (DEC-029). C5_dual MAE 0.1424 vs C1_ridge 0.1242 (+14.6%), vs C2_no_graph 0.1329 (+7.2%). Seed Jaccard 0.3353 (threshold 0.50). No fold where C5 beats both graph permutation nulls (C7, C8) simultaneously. 2023 fold regression +17.4% vs C2 (threshold 10%). Predictive dual-graph branch closed. Descriptive: C<>KZ edges stable in 80% of fold×seed combinations. Trainer frozen at commit 9521264. Key artifacts: data/processed/dual_graph_s1/gate_result.json, reports/HERALD_DUAL_GRAPH_S1_RESULTS.md, reports/HERALD_DUAL_GRAPH_S1_FINAL_AUDIT.md. Do NOT relaunch without documented operational failure in protocol or data integrity."
   }
 ]

@@ -389,6 +389,15 @@ explicite.
   - **HPC_BLOCKED** : bloqué jusqu'à passage de S1-FR en local.
   - Prochaine étape : implémenter `src/modeles/graph_temporal_models.py` + tests.
 
+- **Phase 6 — P6_DDEG_S1 : graphe dual dynamique France — FAIL (2026-06-12) :**
+  - Étude complète : job Slurm 7453691, 275/275 runs complétés (5 folds × 11 contrôles × 5 seeds).
+  - Décision de gate : **DUAL_GRAPH_S1_FAIL** — les 7 critères échouent (DEC-029).
+  - MAE C5_dual 0.1424 vs C1_ridge 0.1242 (+14,6%) et C2_no_graph 0.1329 (+7,2%).
+  - Jaccard graine 0.3353 (seuil 0.50). Fold 2023 : régression +17,4% vs C2.
+  - Branche prédictive graphe-dual **FERMÉE**. Ne pas relancer sans défaillance opérationnelle documentée.
+  - Artefacts clés : `data/processed/dual_graph_s1/gate_result.json`,
+    `reports/HERALD_DUAL_GRAPH_S1_RESULTS.md`, `reports/HERALD_DUAL_GRAPH_S1_FINAL_AUDIT.md`.
+
 Voir `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md` et
 `reports/HERALD_PHASE5_HPC_SPEC.md`.
 

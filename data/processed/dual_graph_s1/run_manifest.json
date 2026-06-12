@@ -1,0 +1,70 @@
+{
+  "study_id": "P6_DDEG_S1",
+  "description": "France NUTS3 dynamic dual economic graph \u2014 full study",
+  "slurm_job": "7453691",
+  "n_total_runs": 275,
+  "folds": [
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "controls": [
+    "C0_persistence",
+    "C1_ridge",
+    "C2_no_graph",
+    "C3_territory_only",
+    "C4_sector_only",
+    "C5_dual",
+    "C6_territory_temporal_perm",
+    "C7_territory_graph_perm",
+    "C8_sector_identity_perm",
+    "C9_no_ardeco",
+    "C10_ardeco_temporal_perm"
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "git_commits": [],
+  "hyperparameters": {
+    "hidden_dim": 8,
+    "sector_embed_dim": 4,
+    "dropout": 0.3,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "max_epochs": 200,
+    "patience": 20,
+    "ridge_alpha": 10.0,
+    "topk_sector": 3,
+    "precision_k": [
+      5,
+      10,
+      20
+    ],
+    "early_stop_metric": "inner_val_mae",
+    "huber_delta": 1.0
+  },
+  "gate_thresholds": {
+    "mae_improve_frac": 0.01,
+    "macro_f1_margin": 0.02,
+    "min_folds": 3,
+    "jaccard_min": 0.5,
+    "max_fold_regression": 0.1,
+    "exclude_year": 2021
+  },
+  "gate_decision": "DUAL_GRAPH_S1_FAIL",
+  "total_runtime_seconds": 2235.1,
+  "mean_runtime_seconds_per_run": 8.1,
+  "peak_rss_kb_slurm": 542988,
+  "platforms": [
+    "Linux-3.10.0-1160.119.1.el7.x86_64-x86_64-with-glibc2.17"
+  ],
+  "raw_dir": "hpc_results/dual_graph_s1/raw",
+  "aggregated_out": "data/processed/dual_graph_s1/",
+  "tensor_manifest": "data/processed/dual_graph_tensors/manifest.json"
+}
