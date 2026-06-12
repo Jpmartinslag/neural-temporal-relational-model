@@ -137,6 +137,21 @@
     "notes": "No external imports from src/ found for these scripts. Results not persisted locally. Safe to archive but not required."
   },
   {
+    "canonical_id": "P7_SECTOR_PRECEDENCE",
+    "canonical_name": "Phase 7 — Sector Precedence Distributed Study",
+    "legacy_names": ["phase7", "sector_precedence", "herald_phase7"],
+    "script_paths": ["hpc/phase7_sector_precedence/scripts/"],
+    "result_paths": [
+      "hpc_results/phase7_sector_precedence/raw/",
+      "hpc_results/phase7_sector_precedence/merged/"
+    ],
+    "status": "READY_FOR_HPC",
+    "scientific_scope": "FR/NL/PT NUTS3; 9 sectors (PT: 8, KZ structurally absent); 710 tasks = country × scenario × window × source_sector. Tests whether lagged growth in sector A associates with sector B growth (predictive precedence, not causality). BH/FDR per family (country × scenario × window). Pre-registered gates: q_fdr≤0.05, |beta|≥0.10, delta_r2≥0.005, sign_stability≥0.70, n≥60. COVID robustness: promoted in main AND without_2020, same sign. Verdict: PROTOTYPE_READY if ≥2 countries have COVID-robust edges.",
+    "depends_on": ["P6_DDEG_S1"],
+    "safe_to_move": false,
+    "notes": "Panel: herald_observatory_v02 (45,945 rows, SHA256=a6f8a5b2a34f17fac028518bf7955f7d8931c7a498b0af57b1afae5eb62c742e). Manifest: 710 tasks (FR=198, NL=288, PT=224). Each task outputs raw p-values to hpc_results/phase7_sector_precedence/raw/task_{id:06d}.json. Merge script applies BH/FDR. Do not alter thresholds after observing results. Do not use rsync --ignore-existing; use --checksum."
+  },
+  {
     "canonical_id": "P6_DDEG_S1",
     "canonical_name": "Phase 6 — Dynamic Dual Economic Graph (S1 France)",
     "legacy_names": ["dual_graph", "dual_graph_s1", "p6_ddeg"],
