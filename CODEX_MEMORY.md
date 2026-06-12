@@ -275,12 +275,15 @@ Index: `hpc/HPC_PHASE_INDEX.md`. Registry: `hpc/hpc_phase_registry.json`.
 | P2P3_REGIME_FRANCE | `hpc/regime/` | frozen |
 | P4_GEO_GRAPH (4P/4Q FAIL, closed) | `hpc/phase4/` | frozen |
 | P5_FIXED_GRAPH_CORRECTOR | `hpc/phase5/` | NOT_SUPPORTED |
-| **P6_DDEG_S1 (active)** | **`hpc/phase6_dynamic_dual_graph/`** | **ACTIVE** |
+| **P6_DDEG_S1 (frozen/FAIL)** | **`hpc/phase6_dynamic_dual_graph/`** | **frozen/FAIL** |
 
 **P6_DDEG_S1:** Dynamic dual economic graph, France NUTS3, 5 folds × 11 controls × 5 seeds = 275 HPC jobs.
-Pilot (5×11×2=110 runs): `data/processed/dual_graph_pilot_all_folds/` — gate **DUAL_GRAPH_S1_FAIL** (6/7 criteria fail).
-HPC full study **NOT YET LAUNCHED**. Trainer frozen at commit `9521264`. Gate thresholds frozen. Do not modify hyperparameters or model based on pilot.
-HPC scripts to be created at `hpc/phase6_dynamic_dual_graph/scripts/`. Output target: `hpc_results/dual_graph_s1/raw/`.
+Full study complete — job 7453691, 275/275 COMPLETED, 0 FAILED.
+Gate: **DUAL_GRAPH_S1_FAIL** — all 7 criteria fail. Predictive dual-graph branch CLOSED. Do not relaunch.
+C5_dual MAE 0.1424 vs C1_ridge 0.1242 (+14.6%) and C2_no_graph 0.1329 (+7.2%). Seed Jaccard 0.3353 (threshold 0.50).
+Descriptive: C↔KZ edges appear in 80% of fold×seed runs; not predictively validated.
+Key artifacts: `data/processed/dual_graph_s1/gate_result.json`, `reports/HERALD_DUAL_GRAPH_S1_RESULTS.md`,
+`reports/HERALD_DUAL_GRAPH_S1_FINAL_AUDIT.md`. Status in registry: frozen/FAIL (DEC-029).
 
 ## HPC Connection
 SSH alias `meso`: host `hpc2.mesocentre.uca.fr`, user `jpmartinsd`, ProxyJump

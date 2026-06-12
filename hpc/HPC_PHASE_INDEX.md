@@ -12,10 +12,10 @@ Do not move anything without consulting `HPC_PATH_MIGRATION_PLAN.md`.
 
 | ID | Phase | Status | Scripts | Results |
 |----|-------|--------|---------|---------|
-| **P6_DDEG_S1** | Phase 6 — Dynamic Dual Economic Graph | **ACTIVE** | `hpc/phase6_dynamic_dual_graph/` | `hpc_results/phase6_dynamic_dual_graph/` |
+| **P6_DDEG_S1** | Phase 6 — Dynamic Dual Economic Graph | **frozen/FAIL** | `hpc/phase6_dynamic_dual_graph/` | `hpc_results/dual_graph_s1/raw/` |
 
-HPC full study not yet launched. Trainer: `src/modeles/train_dual_graph_experiment.py`.
-Pilot (5 folds × 11 controls × 2 seeds): `data/processed/dual_graph_pilot_all_folds/` — gate **DUAL_GRAPH_S1_FAIL**.
+Full study complete: job 7453691, 275/275 COMPLETED (2026-06-12). Gate: **DUAL_GRAPH_S1_FAIL** (all 7 criteria fail).
+C5_dual MAE 0.1424 vs C1_ridge +14.6%, C2_no_graph +7.2%. Seed Jaccard 0.3353. Predictive branch CLOSED (DEC-029).
 
 ---
 

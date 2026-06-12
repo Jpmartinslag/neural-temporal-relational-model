@@ -876,3 +876,24 @@ Runtime 13.92s; RSS delta 0.035 GB; 57/57 tests pass.
 **Reopen condition:** If both A1a and A1b fail the S1-FR gate, close the graph-temporal prediction branch and return to non-graph frugal improvements (Bloco 1). The L2 co-growth graph remains valid as an analytical (Bloco 2) artefact.
 
 **Affected files:** `src/data/european_panel/build_graph_temporal_v2.py`; `src/modeles/run_e0_smoke_nl_v2.py`; `tests/test_graph_temporal_v2.py`; `reports/HERALD_GRAPH_TEMPORAL_E0_V2_AUDIT.md`; `reports/HERALD_GRAPH_TEMPORAL_E0_PREFLIGHT_AUDIT.md` (superseded notice); `reports/HERALD_GRAPH_TEMPORAL_FR_ADJACENCY_PREFLIGHT.md`; `reports/HERALD_GRAPH_TEMPORAL_A1_IMPLEMENTATION_CONTRACT.md`; `CODEX_MEMORY.md`.
+
+---
+
+## DEC-029 — 2026-06-12 — P6_DDEG_S1 full study: DUAL_GRAPH_S1_FAIL; predictive branch closed
+
+**Phase:** 6 — P6_DDEG_S1
+**Question:** Does the dynamic dual economic graph (territory graph + learned sector graph, ≤10,000 params) improve territorial enterprise-birth prediction, regime classification, or recovery detection for France NUTS3 under rolling-origin 5-fold evaluation?
+**Evidence:** Slurm job 7453691; 275/275 tasks COMPLETED; all 7 gate criteria fail.
+- c1 MAE: C5_dual 0.1424 vs C1_ridge 0.1242 (+14.6%) and C2_no_graph 0.1329 (+7.2%). Both FAIL (required ≤-1%).
+- c2 macro-F1: C5=0.2885 vs C2=0.2870 (margin +0.0015, required ≥+0.02). FAIL.
+- c3 recovery AUCPR: C5 beats prevalence in 5/5 folds but loses to C2_no_graph in 5/5 folds. FAIL.
+- c4 graph vs nulls: C5 never beats BOTH C7 and C8 simultaneously in any fold. FAIL (0/5; required 3/5).
+- c5 seed Jaccard: 0.3353 (required ≥0.50). FAIL.
+- c6 fold regression: 2023 fold +17.4% vs C2 (required ≤10%). FAIL. Note: pilot had c6=PASS; full study with 5 seeds reveals the 2023 failure.
+- c7 without 2021: C5 is +10.1% worse than C2 over folds 2022–2025. FAIL.
+**Alternatives considered:** Hyperparameter tuning (rejected per contract §9 — performance failure is not a reopen condition). Architecture revision (deferred to A1 contract track).
+**Decision:** DUAL_GRAPH_S1_FAIL. Predictive dual-graph branch CLOSED. P6_DDEG_S1 status: frozen/FAIL.
+**Rationale:** The fail-closed gate was pre-registered before any training. All 7 criteria are independently falsified by the confirmatory 5-seed run. The model cannot distinguish itself from graph permutation nulls (C7/C8), confirming that the learned structure does not encode predictively useful information under this protocol.
+**Limitations:** The architecture is very low-capacity (hidden_dim=8, 1,035 params); higher-capacity graph-temporal models (GConvGRU, EvolveGCN-H, A1 contract) are not precluded by this result. The learned sector graph has descriptive stability (C↔KZ 80% of fold×seed runs) but this is not validated for prediction.
+**Reopen condition:** Documented operational failure in protocol or data integrity (e.g., tensor leakage discovered post-audit, gate misapplied, wrong control definitions). Performance failure alone is not a reopen condition.
+**Affected files:** `data/processed/dual_graph_s1/gate_result.json`; `data/processed/dual_graph_s1/run_manifest.json`; `hpc_results/dual_graph_s1/raw/` (275 JSON); `reports/HERALD_DUAL_GRAPH_S1_RESULTS.md`; `reports/HERALD_DUAL_GRAPH_S1_FINAL_AUDIT.md`; `hpc/hpc_phase_registry.json`; `hpc/phase6_dynamic_dual_graph/README.md`; `CODEX_MEMORY.md`.

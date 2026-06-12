@@ -118,6 +118,21 @@ The MVP must be achievable even if the deadline is tight:
 
 ---
 
+## Phase 5b-P6 — Dynamic Dual Economic Graph (P6_DDEG_S1) — CLOSED FAIL (2026-06-12)
+
+**Status:** Gate DUAL_GRAPH_S1_FAIL (all 7 criteria fail). Slurm job 7453691, 275/275 complete.
+C5_dual MAE 0.1424 vs C1_ridge 0.1242 (+14.6%), vs C2_no_graph 0.1329 (+7.2%). Seed Jaccard 0.3353.
+Predictive dual-graph branch CLOSED per contract §9. DEC-029.
+
+| Task | Status | Deliverable |
+|------|--------|-------------|
+| P6 pilot (5×11×2) | DONE — DUAL_GRAPH_S1_FAIL (6/7) | `data/processed/dual_graph_pilot_all_folds/gate_result.json` |
+| P6 full HPC study (5×11×5=275 jobs) | **DONE — DUAL_GRAPH_S1_FAIL (7/7)** | `data/processed/dual_graph_s1/gate_result.json` |
+| P6 scientific results report | DONE 2026-06-12 | `reports/HERALD_DUAL_GRAPH_S1_RESULTS.md` |
+| P6 final audit | DONE 2026-06-12 | `reports/HERALD_DUAL_GRAPH_S1_FINAL_AUDIT.md` |
+
+---
+
 ## Phase 5 — Forecast Integration G6 — CLOSED NOT_SUPPORTED (2026-06-10)
 
 **Status:** Ablation v3 NL 2021-2023 (5 seeds, widths (2,)(4,)(8,)(16,8)) → NOT_SUPPORTED.
