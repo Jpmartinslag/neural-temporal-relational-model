@@ -1018,3 +1018,47 @@ before the full run is audited.
 **Affected files:** `src/data/european_panel/build_sector_precedence_graph.py`;
 `tests/test_sector_precedence_graph.py`;
 `reports/HERALD_SECTOR_PRECEDENCE_GRAPH_CONTRACT.md`.
+
+---
+
+## DEC-034 — 2026-06-12 — Phase 7 sector precedence study: SECTOR_PRECEDENCE_PROTOTYPE_READY
+
+**Phase:** HERALD Phase 7 — Distributed Sector Precedence Study
+
+**Question:** Does lagged sector growth predict next-year sector birth growth in FR/NL/PT after permutation-based inference, BH/FDR correction, and COVID robustness filtering?
+
+**Study:** 710 distributed tasks (FR=198, NL=288, PT=224); 5456 edges tested; 368 NaN (n<60, expected). Panel: `herald_observatory_v02`, SHA256=`a6f8a5b2a34f17fac028518bf7955f7d8931c7a498b0af57b1afae5eb62c742e`. All tasks COMPLETED; BH/FDR independently recomputed (max diff 1.11e-16). Slurm job 7455266, meso.
+
+**Gate results (pre-registered, immutable):**
+
+| Gate | Threshold | Result |
+|------|-----------|--------|
+| q_fdr | ≤ 0.05 | Applied per country×scenario×window family |
+| \|beta\| | ≥ 0.10 | Applied to all candidate edges |
+| delta_r2 | ≥ 0.005 | Applied to all candidate edges |
+| bootstrap_sign_stability | ≥ 0.70 | Applied to all candidate edges |
+| n_samples | ≥ 60 | Applied; 368/5456 edges dropped (NaN) |
+
+**Promoted edges (main scenario):** 25 (FR=1, NL=8, PT=16)
+**Promoted edges (without_2020):** 34 (FR=1, NL=6, PT=27)
+**COVID-robust edges (promoted both scenarios, same sign):** 12 (NL=3, PT=9)
+**Countries with COVID-robust edges:** 2 (NL, PT) → **≥2 threshold met**
+
+**FR note:** One promoted edge (RU→MN, 2020-2025, β=−0.108) passes main gates but is not COVID-robust (the without_2020 promoted edge is a different window/pair). FR does not contribute to prototype readiness.
+
+**Decision: SECTOR_PRECEDENCE_PROTOTYPE_READY.**
+The prototype prototype gate (≥2 countries with COVID-robust edges) is satisfied. These associations represent *predictive precedence* only — lagged sector growth explains a small but statistically reliable additional fraction of variance in target sector birth growth after controlling for own lag, in periods unconfounded by COVID-19. No structural economic causality or intervention claim is supported or implied.
+
+**Alternatives considered:** Requiring ≥3 countries (not met; FR contributes 0 COVID-robust). Not met under that criterion — but the pre-registered threshold is ≥2.
+
+**Limitations:** (1) All associations are observational and associative. (2) Sector codes are A10 NACE Rev.2 aggregations; within-sector heterogeneity is unmodeled. (3) PT and NL results dominate; FR contributes only 1 non-robust edge. (4) Short windows (6 years) limit the power for low-frequency dynamics.
+
+**Reopen condition:** New data extending panel to additional countries or years; methodological critique of the demeaning approach or permutation schema; discovery of data integrity issue.
+
+**Affected files:**
+`data/processed/sector_precedence_results/decision.json`;
+`data/processed/sector_precedence_results/all_edges.csv`;
+`data/processed/sector_precedence_results/latest.csv`;
+`data/processed/sector_precedence_results/covid_robust_edges.csv`;
+`data/processed/sector_precedence_results/audit/audit_report.json`;
+`reports/HERALD_PHASE7_SECTOR_PRECEDENCE.md`.

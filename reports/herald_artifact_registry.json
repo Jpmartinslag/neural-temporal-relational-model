@@ -280,6 +280,23 @@
       "notes": "Canonical quantitative baseline for Observatory v0.1."
     },
     {
+      "id": "SECTOR_PRECEDENCE_RESULTS",
+      "phase": "7",
+      "path": "data/processed/sector_precedence_results/",
+      "type": "result_directory",
+      "status": "FROZEN",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "DEC-034",
+      "generator_script": "hpc/phase7_sector_precedence/scripts/",
+      "input_data": ["data/processed/herald_observatory_v02/herald_observatory_v02_panel.csv"],
+      "claim_authorized": "12 COVID-robust sector precedence edges (NL=3, PT=9), 2 countries. SECTOR_PRECEDENCE_PROTOTYPE_READY. Associations only — predictive precedence, not structural causality. Slurm job 7455266, 710/710 COMPLETED. Audit PASS.",
+      "claim_forbidden": "Structural economic causality. Policy intervention claims. Mechanism claims (labour/capital flows). Extension to countries not in the panel without re-running the study.",
+      "can_regenerate": true,
+      "notes": "Panel SHA256=a6f8a5b2a34f17fac028518bf7955f7d8931c7a498b0af57b1afae5eb62c742e. Key files: decision.json (verdict), covid_robust_edges.csv, all_edges.csv, audit/audit_report.json. Not versioned (large CSV); regenerable from panel + manifest."
+    },
+    {
       "id": "HERALD_Q7_FRANCE_RESULT",
       "phase": "3E/2R",
       "path": "reports/HERALD_PHASE3E_QTENSOR_ARCH_AUDIT.md",
