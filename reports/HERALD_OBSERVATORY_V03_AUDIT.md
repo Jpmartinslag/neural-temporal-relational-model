@@ -149,7 +149,7 @@ Observatory data outputs (`data/processed/herald_observatory_v03/`) are **not** 
 
 ---
 
-## 11. DEC-036 Addendum — Geographic Dashboard + Derived Windows + France ZE Finding
+## 11. DEC-036 / v0.3.1 Addendum — Geographic Dashboard + Derived Windows + France ZE Finding + Sector Map
 
 **Decision:** DEC-036
 **Date:** 2026-06-12
@@ -166,15 +166,28 @@ Observatory data outputs (`data/processed/herald_observatory_v03/`) are **not** 
 
 Inspection of `herald_observatory_v02_panel.csv` confirms all FR rows have `region_system = "ZE2020"` (280 functional employment zones). Phase 7 used this panel → Phase 7 FR was already computed at ZE functional scale. No separate P7_FR_ZE_SCALE_SENSITIVITY study is needed or warranted. The territorial system badge in the dashboard explicitly labels FR as ZE2020, NL as COROP (equivalent NUTS3), PT as NUTS3.
 
-### 11.3 Updated outputs
+### 11.3 v0.3.1 patch — Sector map + mainland Portugal
 
-| File | Before DEC-036 | After DEC-036 |
-|------|----------------|---------------|
-| `reports/dashboards/herald_observatory_v03_dashboard.html` | ~902 KB, CDN Plotly, no map | 6,237 KB, Plotly embedded, choropleth map |
-| `src/data/european_panel/build_observatory_v03.py` | `ROBUST_WINDOWS` constant, no GeoJSON, CDN | `derive_robust_windows()`, 3 GeoJSON builders, local embed |
-| `tests/test_observatory_v03.py` | 29 tests | 46 tests |
+Additional fixes applied after DEC-036 (no new DEC required — no scientific decision changed):
 
-### 11.4 Tests added (DEC-036)
+| Change | Detail |
+|--------|--------|
+| Sector filter on map | A10 sector dropdown ("All" or specific sector); "All" shows territory coloured by sector with largest absolute velocity; sector code shown in hover and side panel |
+| Portugal mainland scope | `_build_pt_geojson` filters via `territorial_scope.is_in_scope`; Azores/Madeira excluded from map (PT_200, PT_300) but retained in panel; map badge shows "23 mainland territories" |
+| `dominant_sector` field | Added to `territory_summary` records; JS `dominantSector` field in `TERR_IDX` |
+| `territory_sector_summary` | New per-territory × sector × year precomputed in `summary.json`; `TERR_SECTOR_IDX` JS index in dashboard |
+| `map_scope` in manifest | Records `mapped_territories`, `panel_territories`, `excluded_from_map` |
+| KPI label | "Territories total 345" → "Territories mapped 343" |
+
+### 11.4 Updated outputs
+
+| File | Before | After v0.3.1 |
+|------|--------|--------------|
+| `reports/dashboards/herald_observatory_v03_dashboard.html` | ~902 KB, CDN Plotly, no map | 13,930 KB, Plotly+GeoJSON+sector data embedded |
+| `src/data/european_panel/build_observatory_v03.py` | `ROBUST_WINDOWS` constant, no GeoJSON, CDN | `derive_robust_windows()`, 3 GeoJSON builders, sector filter, mainland PT scope |
+| `tests/test_observatory_v03.py` | 29 tests | 48 tests |
+
+### 11.5 Tests added (DEC-036 + v0.3.1)
 
 | Category | Tests added |
 |----------|-------------|
@@ -186,9 +199,28 @@ Inspection of `herald_observatory_v02_panel.csv` confirms all FR rows have `regi
 | Dashboard: territory click side panel + year/country filter | 2 |
 | FR uses ZE2020, distinct from NUTS3 | 2 |
 | `test_dashboard_no_causal_claim` strips `<script>` blocks | (fix, not new) |
-| **Total new** | **17** |
+| Portugal mainland map (no island panel_ids, "mainland territories" text) | 1 |
+| Sector identification per territory (shownSector, `sector=` in hover) | 1 |
+| **Total new (DEC-036 + v0.3.1)** | **19** |
 
-Full test suite post-DEC-036: **666 passed, 3 skipped**.
+Full test suite post-DEC-036: 666 passed, 3 skipped.
+Full test suite post-v0.3.1: **48/48 observatory tests pass**.
+
+### 11.5 Map interpretation correction
+
+- The map now has an explicit A10 sector selector. When one sector is selected,
+  colour, state and velocity all refer to that sector.
+- In `All sectors`, each territory is represented by the sector with the
+  largest absolute velocity for the selected year. The sector code is shown in
+  the hover and territory detail panel; it is no longer an unexplained
+  cross-sector majority state.
+- The Portugal map uses the pre-declared `continental_mainland` scope:
+  `PT20*` (Azores) and `PT30*` (Madeira) remain in the canonical panel but are
+  excluded from the geographic view. The map therefore contains 23 mainland
+  NUTS3 territories.
+- Sector-to-sector precedence remains a country-level graph. It is not drawn as
+  a territory-to-territory flow because Phase 7 did not estimate spatially
+  localised sector edges.
 
 ---
 
