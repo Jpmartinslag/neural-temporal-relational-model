@@ -1,6 +1,6 @@
 # HERALD Current State
-**Updated:** 2026-06-12 (post DEC-033, sector precedence implementation pending full run)
-**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-033), `HERALD_EVIDENCE_MATRIX.md`.
+**Updated:** 2026-06-12 (post DEC-035, Observatory v0.3 with sector precedence layer complete)
+**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-035), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
 
@@ -13,11 +13,11 @@
 | Territorial graph (G1-L2) | **75%** | FR/NL/PT PASS; community detection NOT_SUPPORTED |
 | Aggregate dynamics (G2) | **75%** | FR robust; NL/PT COVID-sensitive |
 | Economic states | **60%** | Deterministic observed states exported for aggregate PT/IT/AT and sector FR/NL/PT |
-| Sector→sector graph | **35%** | Signed lag-1 partial-association builder implemented and tested; full permutation/bootstrap run pending |
+| Sector→sector graph | **90%** | SECTOR_PRECEDENCE_PROTOTYPE_READY: 12 COVID-robust edges (NL=3, PT=9); integrated in Observatory v0.3 (DEC-034/035) |
 | Explanation | **30%** | Descriptive co-growth associations; no attention/associative explanation validated |
-| Dashboard | **65%** | France base operational; observatory integration pending |
+| Dashboard | **75%** | Observatory v0.3 dashboard with sector graph, economic states, territory heatmaps; full interactive dashboard complete |
 | Recommendation | **35%** | Intelligence layer structure exists; weights/claims not validated |
-| **Integrated prototype** | **~70%** | Unified aggregate and sector exports exist; sector→sector layer and UI integration remain |
+| **Integrated prototype** | **~80%** | Sector→sector layer validated and integrated in v0.3; explanation and recommendation layers remain |
 | **European product** | **~40%** | Multi-country sector observations integrated; influence and recommendation layers remain |
 
 ---
@@ -36,7 +36,7 @@
 
 **Last valid decision:** DEC-006 (Phase 4N persistence baseline); DEC-010 (Phase 4P spatial lag FAIL); DEC-011 (Phase 4Q Spatial Durbin FAIL).
 **Blocker:** Conformal intervals are exploratory; no promoted interval method.
-**Next step:** Implement and audit the signed, lagged sector→sector association layer. Interval selection remains separate and pending.
+**Next step:** Observatory v0.3 complete (DEC-035). Immediate next step: extend sector panel to AT/BE; refine explanation layer; report writing.
 
 ### Bloco 2 — Dynamic Economic Graph
 

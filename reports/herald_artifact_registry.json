@@ -297,6 +297,27 @@
       "notes": "Panel SHA256=a6f8a5b2a34f17fac028518bf7955f7d8931c7a498b0af57b1afae5eb62c742e. Key files: decision.json (verdict), covid_robust_edges.csv, all_edges.csv, audit/audit_report.json. Not versioned (large CSV); regenerable from panel + manifest."
     },
     {
+      "id": "OBSERVATORY_V03",
+      "phase": "7 / Observatory",
+      "path": "data/processed/herald_observatory_v03/",
+      "type": "result_directory",
+      "status": "ACTIVE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "DEC-035",
+      "generator_script": "src/data/european_panel/build_observatory_v03.py",
+      "input_data": [
+        "data/processed/herald_observatory_v02/herald_observatory_v02_panel.csv",
+        "data/processed/sector_precedence_results/latest.csv",
+        "data/processed/sector_precedence_results/covid_robust_edges.csv"
+      ],
+      "claim_authorized": "Observatory v0.3 extends v0.2 with sector precedence layer. 12 ROBUST edges (NL=3, PT=9), 13 MAIN_ONLY_EXPLORATORY. sector_graph_available flag reflects COVID-robust window per country. Associations only — no structural causality.",
+      "claim_forbidden": "Structural causality. Policy intervention claims. Displaying MAIN_ONLY_EXPLORATORY edges as equivalent to ROBUST. Claiming FR has validated sector→sector associations.",
+      "can_regenerate": true,
+      "notes": "Panel: 45,945 rows, same schema as v0.2 plus updated sector_graph_available. Key files: herald_observatory_v03_panel.csv, herald_observatory_v03_sector_relations.json, herald_observatory_v03_manifest.json. Dashboard: reports/dashboards/herald_observatory_v03_dashboard.html (self-contained HTML, 902KB)."
+    },
+    {
       "id": "HERALD_Q7_FRANCE_RESULT",
       "phase": "3E/2R",
       "path": "reports/HERALD_PHASE3E_QTENSOR_ARCH_AUDIT.md",
