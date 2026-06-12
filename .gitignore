@@ -54,6 +54,15 @@ data/raw/employment/urssaf/*
 !data/raw/employment/urssaf/urssaf_emploi_ze_quarterly_raw.csv
 
 # ── data/processed — ficheiros regeneráveis grandes ───────────────
+# Graph-temporal and dual-graph NPZ tensors (regenerable from sector panels)
+data/processed/graph_temporal_v2/**/*.npz
+data/processed/graph_temporal_preflight/**/*.npz
+data/processed/dual_graph_tensors/**/*.npz
+data/processed/dual_graph_pilot_all_folds/per_run/
+# Large edge CSV (253 MB, regenerable from sector panel)
+data/processed/economic_graph/g1_l2_cogrowth/g1_l2_edges.csv
+# ARDECO extension artefacts (regenerable)
+data/processed/ardeco_extension/
 data/processed/residual_baseline_predictions_core_v0.csv
 data/processed/residual_activation_rules_predictions_core_v0.csv
 data/processed/dynamic_feature_panel_baseline_predictions_v1.csv
@@ -91,6 +100,10 @@ hpc_results/**/logs/
 hpc_results/herald_forecast_*/
 hpc_results/herald_leak_stress_*/
 hpc_results/herald_phase2*_smoke_*/
+hpc_results/herald_phase3*_smoke_*/
+hpc_results/herald_phase3*_qtensor_*/
+hpc_results/herald_phase3*_urssaf_*/
+hpc_results/herald_phase3*_labor_*/
 hpc_results/herald_regime_*/
 hpc_results/herald_semi_v2_final_*/
 hpc_results/herald_semiv2_validation_*/
@@ -99,6 +112,8 @@ hpc_results/herald_strict_exante_*/
 hpc_results/project_recomm_herald_v7_*/
 hpc_results/archive/
 hpc_results/phase2h_combined_audit/
+# P6 raw results (275 JSON, local only — manifest/gate tracked separately)
+hpc_results/dual_graph_s1/raw/
 
 # ── Arquivos legados ───────────────────────────────────────────────
 old/

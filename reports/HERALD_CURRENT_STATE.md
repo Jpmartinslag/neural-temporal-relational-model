@@ -1,0 +1,118 @@
+# HERALD Current State
+**Updated:** 2026-06-12 (post DEC-029, post P6_DDEG_S1 FAIL)
+**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-030), `HERALD_EVIDENCE_MATRIX.md`.
+
+---
+
+## Overall Completion
+
+| Layer | Completion | Notes |
+|-------|-----------|-------|
+| Data | **85%** | PT/IT/AT harmonized; FR/NL/BE complete; Spain/CZ blocked |
+| Quantitative forecasting | **75%** | Ridge+persistence validated; conformal intervals exploratory |
+| Territorial graph (G1-L2) | **75%** | FR/NL/PT PASS; community detection NOT_SUPPORTED |
+| Aggregate dynamics (G2) | **75%** | FR robust; NL/PT COVID-sensitive |
+| Economic states | **45%** | Labels defined; regime detection in P2/P3 for France only |
+| Sector→sector graph | **20%** | G2 aggregate only; G1-L1 FAIL; edge-level not validated |
+| Explanation | **30%** | Descriptive co-growth associations; no attention/causal explanation |
+| Dashboard | **65%** | France base operational; observatory integration pending |
+| Recommendation | **35%** | Intelligence layer structure exists; weights/claims not validated |
+| **Integrated prototype** | **~60%** | Components exist; no unified export yet |
+| **European product** | **~35–40%** | Foundation solid; multi-country unification and sector graph missing |
+
+---
+
+## State by Component
+
+### Bloco 1 — Temporal Forecasting
+
+| Country | Best model | WMAPE | Status |
+|---------|-----------|-------|--------|
+| France | HERALD Q7 | 0.0204 (2021–2025) | VALIDATED |
+| PT/IT/AT balanced | Persistence | ~0.0874 | VALIDATED |
+| NL | Persistence | LOCO result | VALIDATED |
+| BE | Persistence (Phase 4E-B b3) | 0.1488 | VALIDATED |
+| Cross-country combination | 50/50 persistence+Ridge | 0.0871 | EXPLORATORY, not promoted |
+
+**Last valid decision:** DEC-006 (Phase 4N persistence baseline); DEC-010 (Phase 4P spatial lag FAIL); DEC-011 (Phase 4Q Spatial Durbin FAIL).
+**Blocker:** Conformal intervals are exploratory; no promoted interval method.
+**Next step:** Uncertainty interval method selection (conformal or bootstrap) before Observatory export.
+
+### Bloco 2 — Dynamic Economic Graph
+
+#### G1-L2 Co-growth (territorial)
+- **Status:** PASS for FR/NL/PT (DEC-019, DEC-020).
+- **Scope:** Dense weight field within each sector; statistical co-movement association.
+- **Forbidden:** Individual edge claims; causal interpretation; Louvain communities.
+- **Artefact:** `data/processed/economic_graph/g1_l2_cogrowth/`
+
+#### G2 Aggregate Dynamics (sector→sector descriptive)
+- **Status:** G-14 SUPPORTED (descriptive); G-13 PARTIALLY_SUPPORTED (aggregate coherence FR-robust only).
+- **Scope:** FR aggregate temporal signal robust. NL/PT COVID-sensitive.
+- **Forbidden:** Individual edge stability; cross-country pooling; causal attribution.
+- **Artefact:** `data/processed/economic_graph/g2_preflight/`
+
+#### G1-L3 Territory-structure projection
+- **Status:** PASS for FR/NL (DEC-016). PT excluded (KZ definitional exclusion, DEC-018).
+
+#### G1-L1 RCA co-specialization
+- **Status:** NOT_SUPPORTED (NL pass, FR fail — DEC-017).
+
+#### Phase 5 fixed-L2 corrector
+- **Status:** NOT_SUPPORTED (DEC-023). Closed.
+
+#### P6_DDEG_S1 Dynamic dual graph
+- **Status:** DUAL_GRAPH_S1_FAIL (DEC-029). All 7 gate criteria fail. Closed.
+- **Sector edge labels:** INVALID_FOR_INTERPRETATION (wrong mapping in CSV, see Charter §6).
+- **Index-based metrics** (MAE, Jaccard) remain numerically valid.
+- **Artefact:** `data/processed/dual_graph_s1/` (frozen, historical only).
+
+#### Graph-temporal tensors (schema 2.0 / A1 contract)
+- **Committed status (HEAD):** E0_V2_PASS; FR_ADJACENCY_READY; A1 contract FROZEN (DEC-028). S1-FR BLOCKED per DEC-028.
+- **Working tree evidence (NOT YET COMMITTED):** `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` (untracked) and `data/processed/graph_temporal_s1/s1_fr_results.json` (untracked) contain `S1_FR_FAIL` result — GConvGRU/EvolveGCN-H fail the frozen gate. This parallel work is not included in the consolidation commit and needs its own DEC-* entry.
+- **If S1_FR_FAIL is confirmed:** The prediction-graph branch is closed. Non-graph frugal improvements (Bloco 1) and descriptive graph (Bloco 2) remain valid. The Observatory v0.1 proceeds without graph-temporal correction.
+- **Artefact:** `data/processed/graph_temporal_v2/` (tensors); `data/processed/graph_temporal_s1/` (untracked S1 results)
+
+### Bloco 3 — Economic Recommendation
+- **Status:** NOT STARTED. Requires Bloco 1 + Bloco 2 complete.
+- **Intelligence layer structure** exists from earlier work. Weights not validated. Rankings are hypotheses.
+
+---
+
+## Data Assets
+
+| Panel | Path | Status | Rows |
+|-------|------|--------|------|
+| FR NUTS3 sector panel | `data/processed/economic_graph/sector_panel_fr_nuts3.csv` | ACTIVE | — |
+| FR/NL/PT sector panel | *(see sector panel builder)* | ACTIVE | — |
+| PT/IT/AT harmonized LOCO | `data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv` | ACTIVE | 1 963 |
+| PT/IT panel (pre-AT) | `data/processed/european_panel/enterprise_birth_pt_it_panel.csv` | SUPERSEDED by AT panel | — |
+| G1-L2 co-growth artefacts | `data/processed/economic_graph/g1_l2_cogrowth/` | ACTIVE (analytical) | — |
+| G2 preflight artefacts | `data/processed/economic_graph/g2_preflight/` | ACTIVE (analytical) | — |
+| Graph-temporal v2 tensors | `data/processed/graph_temporal_v2/` | ACTIVE (A1 blocked) | — |
+| Dual graph S1 artefacts | `data/processed/dual_graph_s1/` | FROZEN/FAIL historical | — |
+
+---
+
+## Blocked Items
+
+| Item | Blocker | Reopen condition |
+|------|---------|-----------------|
+| S1-FR result commit | Parallel work must be committed with own DEC-* entry | Commit `HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` + results |
+| HPC new submission | S1-FR committed and gate decision made | If S1_FR_FAIL confirmed, graph-temporal branch closes |
+| Sector→sector graph (G3+) | Observatory v0.1 first | After unified export exists |
+| Recommendation layer | Bloco 1 + Bloco 2 complete | — |
+| New GNN architecture | Integrated prototype complete | New hypothesis + new data |
+| Conformal intervals | Method selection | Choose between conformal or bootstrap |
+
+---
+
+## Reference Documents
+
+- Direction and claims: `reports/HERALD_PROJECT_CHARTER.md`
+- All decisions: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-030)
+- Claims classification: `reports/HERALD_EVIDENCE_MATRIX.md`
+- Gantt: `reports/HERALD_RESEARCH_GANTT.md`
+- HPC registry: `hpc/hpc_phase_registry.json`
+- Artefact manifest: `reports/herald_artifact_registry.json`
+- Active document index: `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`
