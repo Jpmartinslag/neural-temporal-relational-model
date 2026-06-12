@@ -315,7 +315,28 @@
       "claim_authorized": "Observatory v0.3 extends v0.2 with sector precedence layer. 12 ROBUST edges (NL=3, PT=9), 13 MAIN_ONLY_EXPLORATORY. sector_graph_available flag reflects COVID-robust window per country. Associations only — no structural causality.",
       "claim_forbidden": "Structural causality. Policy intervention claims. Displaying MAIN_ONLY_EXPLORATORY edges as equivalent to ROBUST. Claiming FR has validated sector→sector associations.",
       "can_regenerate": true,
-      "notes": "Panel: 45,945 rows, same schema as v0.2 plus updated sector_graph_available. Key files: herald_observatory_v03_panel.csv, herald_observatory_v03_sector_relations.json, herald_observatory_v03_manifest.json. Dashboard: reports/dashboards/herald_observatory_v03_dashboard.html (self-contained HTML, 6237KB; Plotly 4.7MB embedded, 3 country GeoJSONs, choropleth map, DEC-036). ROBUST_WINDOWS derived from covid_robust_edges.csv (FAIL_CLOSED). FR region_system=ZE2020 confirmed — no separate ZE sensitivity study needed."
+      "notes": "Panel: 45,945 rows, same schema as v0.2 plus updated sector_graph_available. Key files: herald_observatory_v03_panel.csv, herald_observatory_v03_sector_relations.json, herald_observatory_v03_manifest.json. Dashboard: reports/dashboards/herald_observatory_v03_dashboard.html (self-contained HTML, 13930KB; Plotly 4.7MB embedded, 3 country GeoJSONs, choropleth map + sector filter, DEC-036/v0.3.1). ROBUST_WINDOWS derived from covid_robust_edges.csv (FAIL_CLOSED). FR region_system=ZE2020 confirmed. PT choropleth: 23 mainland only."
+    },
+    {
+      "id": "OBSERVATORY_V04_TERRITORIAL_MOVEMENTS",
+      "phase": "8",
+      "path": "data/processed/herald_observatory_v04/",
+      "type": "result_directory",
+      "status": "ACTIVE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "DEC-037",
+      "generator_script": "src/data/european_panel/build_territorial_sector_movements.py",
+      "input_data": [
+        "data/processed/herald_observatory_v02/herald_observatory_v02_panel.csv",
+        "data/processed/sector_precedence_results/covid_robust_edges.csv",
+        "data/processed/sector_precedence_results/latest.csv"
+      ],
+      "claim_authorized": "Descriptive LOTO territorial attribution of 12 Phase 7 ROBUST sector-precedence associations. influence_r = beta_full - beta_without_r. DESCRIPTIVE_ONLY layer: 91 STRONG + 78 MODERATE + 8 WEAK + 168 DESCRIPTIVE_ONLY territories. No causal transmission claim.",
+      "claim_forbidden": "Causal transmission between territories. Geographic propagation. Enterprise-birth flow. Policy intervention. Elevating DESCRIPTIVE_ONLY to validated predictive finding without new pre-registration.",
+      "can_regenerate": true,
+      "notes": "NL: 3 relations × 40 territories = 120 records. PT: 9 relations × 25 territories = 225 records. Total: 345. Bootstrap: 500 draws per relation, seed=42. Beta integrity verified: max deviation from Phase 7 = 3.6e-16. Key files: territorial_sector_movements.csv, territorial_sector_movement_summary.csv, territorial_sector_movement_decision.json, territorial_sector_movement_manifest.json."
     },
     {
       "id": "HERALD_Q7_FRANCE_RESULT",
