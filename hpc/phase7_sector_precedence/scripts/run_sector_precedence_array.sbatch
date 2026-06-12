@@ -5,8 +5,8 @@
 #SBATCH --mem=8G
 #SBATCH --time=04:00:00
 #SBATCH --constraint=mpi
-#SBATCH --output=/home/jpdark/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_sector_precedence/logs/task_%06a.out
-#SBATCH --error=/home/jpdark/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_sector_precedence/logs/task_%06a.err
+#SBATCH --output=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_sector_precedence/logs/task_%a.out
+#SBATCH --error=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_sector_precedence/logs/task_%a.err
 #SBATCH --partition=normal
 
 set -euo pipefail
@@ -21,7 +21,7 @@ SCRIPT="${REPO}/hpc/phase7_sector_precedence/scripts/run_sector_precedence_task.
 TASK_ID="${SLURM_ARRAY_TASK_ID}"
 
 mkdir -p "${OUT_DIR}"
-mkdir -p "$(dirname "${REPO}/hpc_results/phase7_sector_precedence/logs/placeholder")"
+mkdir -p "${REPO}/hpc_results/phase7_sector_precedence/logs"
 
 echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) starting task ${TASK_ID} on $(hostname)"
 
