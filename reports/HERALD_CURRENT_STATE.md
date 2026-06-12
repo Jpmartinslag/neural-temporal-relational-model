@@ -1,6 +1,6 @@
 # HERALD Current State
-**Updated:** 2026-06-12 (post DEC-035, Observatory v0.3 with sector precedence layer complete)
-**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-035), `HERALD_EVIDENCE_MATRIX.md`.
+**Updated:** 2026-06-12 (post DEC-036, geographic dashboard + derived windows + France ZE documentation)
+**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-036), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
 
@@ -15,7 +15,7 @@
 | Economic states | **60%** | Deterministic observed states exported for aggregate PT/IT/AT and sector FR/NL/PT |
 | Sector→sector graph | **90%** | SECTOR_PRECEDENCE_PROTOTYPE_READY: 12 COVID-robust edges (NL=3, PT=9); integrated in Observatory v0.3 (DEC-034/035) |
 | Explanation | **30%** | Descriptive co-growth associations; no attention/associative explanation validated |
-| Dashboard | **75%** | Observatory v0.3 dashboard with sector graph, economic states, territory heatmaps; full interactive dashboard complete |
+| Dashboard | **80%** | Observatory v0.3: choropleth map (FR=ZE2020/NL=COROP/PT=NUTS3), sector graph, economic states, territory heatmaps; Plotly self-contained (DEC-036) |
 | Recommendation | **35%** | Intelligence layer structure exists; weights/claims not validated |
 | **Integrated prototype** | **~80%** | Sector→sector layer validated and integrated in v0.3; explanation and recommendation layers remain |
 | **European product** | **~40%** | Multi-country sector observations integrated; influence and recommendation layers remain |
@@ -110,7 +110,7 @@
 ## Reference Documents
 
 - Direction and claims: `reports/HERALD_PROJECT_CHARTER.md`
-- All decisions: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-033)
+- All decisions: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-036)
 - Claims classification: `reports/HERALD_EVIDENCE_MATRIX.md`
 - Gantt: `reports/HERALD_RESEARCH_GANTT.md`
 - HPC registry: `hpc/hpc_phase_registry.json`

@@ -1101,3 +1101,53 @@ Provenance note required on all outputs: *"Edges are predictive associations (ob
 `reports/dashboards/herald_observatory_v03_dashboard.html`;
 `tests/test_observatory_v03.py`;
 `reports/HERALD_OBSERVATORY_V03_AUDIT.md`.
+
+---
+
+## DEC-036 — 2026-06-12 — Observatory v0.3 corrections: geographic dashboard, derived windows, Plotly embed, France ZE scale
+
+**Phase:** HERALD Observatory v0.3 (corrections to initial v0.3 from DEC-035)
+
+**Question:** Three problems in the initial v0.3 dashboard; and does France show sector precedence at ZE functional scale?
+
+### Problem 1 — ROBUST_WINDOWS hardcoded
+
+**Finding:** `ROBUST_WINDOWS = {"NL": [...], "PT": [...]}` was defined as a module-level constant, creating a risk of drift from `covid_robust_edges.csv`.
+
+**Decision:** Remove the constant. Add `derive_robust_windows(path)` which reads `covid_robust_edges.csv`, performs Phase 7 consistency checks (FAIL_CLOSED if NL≠3, PT≠9, FR≠0 or file missing/empty), and returns the derived per-country windows. All downstream computations (`sector_graph_available`, manifest, dashboard) use the derived value.
+
+**Reopen condition:** Phase 7 is re-run with new data. Requires a new DEC-* entry before changing gate counts.
+
+### Problem 2 — Dashboard not truly self-contained
+
+**Finding:** Dashboard referenced `https://cdn.plot.ly/plotly-2.27.0.min.js` externally.
+
+**Decision:** Embed Plotly JS locally via `_plotly_js_tag()` which reads `plotly/package_data/plotly.min.js` from the installed package. Fallback to CDN if local file not found (logged as WARNING). Dashboard size: ~6.2MB (4.7MB Plotly + data). Manifest records `"plotly_dependency": "local_embedded"` or `"cdn_fallback"`. Test detects whether CDN is declared when used.
+
+### Problem 3 — No real geographic map
+
+**Finding:** Dashboard had no choropleth map; sections were stacked without hierarchy.
+
+**Decision:** Add `go.Choropleth` map as the primary element (Section 1). Map uses `geo.fitbounds: 'geojson'`, `geo.visible: false` — no external map tiles needed. GeoJSON embedded: FR from `ze2020_geometry.geojson` (280 features), NL from `nuts3_2021_eurostat.geojson` (40 COROP features), PT from `nuts3_2021_eurostat.geojson` (25 NUTS3 features). Each GeoJSON feature has a `panel_id` property matching `territory_id` in the panel. NL COROP→NUTS3 mapping via name matching (40/40 matched). Territorial system (ZE2020 / COROP / NUTS3) labeled explicitly per country. Sector graph retained as Section 2 (complementary view). Territory click → side panel with mini time series (state bar chart + velocity line, offline). Warning that sector→sector edges are country-level, not territory-localised.
+
+### Part B — France ZE scale sensitivity
+
+**Finding:** France in Phase 7 (DEC-034) and Observatory v02 already uses ZE2020 (Zones d'Emploi 2020, 280 functional labor market zones), not NUTS3. The `region_system` column confirms `ZE2020` for all FR rows. The Phase 7 FR result (1 promoted main edge, 0 COVID-robust) IS the ZE-scale result.
+
+**Decision:** No separate `P7_FR_ZE_SCALE_SENSITIVITY` HPC study is needed. Phase 7 for France was already conducted at the functional ZE scale. The absence of COVID-robust signal is confirmed at ZE functional scale (280 zones, 6-year windows, 999 permutations, 500 bootstraps).
+
+**Interpretation:** "The absence of COVID-robust sector precedence signal for France holds at both the NUTS3 (sector_panel_fr_nuts3.csv, used in G1-L2 work) and ZE2020 functional scales. The ZE2020 result is the Phase 7 primary result."
+
+**Forbidden interpretation:** "ZE2020 is methodologically superior to NUTS3 merely because it produced significance." The ZE result for France is null (0 robust edges); there is no hierarchy claim.
+
+**Asymmetry note:** The three-country panel uses incommensurable territorial systems (ZE2020/FR, COROP/NL, NUTS3/PT). This is a known limitation; cross-country territory-level comparison is not authorised.
+
+**Alternatives considered:** Running Phase 7 on NUTS3 FR panel (sector_panel_fr_nuts3.csv) as a NUTS3 sensitivity. This would require a new pre-registered hypothesis; not authorised under current DEC-033 scope.
+
+**Limitations:** Dashboard now 6.2MB (larger but offline-capable). COROP→NUTS3 name-matching may be imprecise if names differ between panel and geometry (40/40 matched by inspection). Territory time series in click panel shows aggregated states only (no per-sector per-territory breakdown).
+
+**Affected files:**
+`src/data/european_panel/build_observatory_v03.py`;
+`tests/test_observatory_v03.py`;
+`reports/dashboards/herald_observatory_v03_dashboard.html`;
+`reports/HERALD_OBSERVATORY_V03_AUDIT.md`.

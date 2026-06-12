@@ -147,6 +147,51 @@ Observatory data outputs (`data/processed/herald_observatory_v03/`) are **not** 
 
 ---
 
+---
+
+## 11. DEC-036 Addendum — Geographic Dashboard + Derived Windows + France ZE Finding
+
+**Decision:** DEC-036
+**Date:** 2026-06-12
+
+### 11.1 Problems fixed
+
+| # | Problem | Fix |
+|---|---------|-----|
+| A1 | Dashboard lacked geographic map | Choropleth (Plotly `go.Choropleth`) added as primary section; 3 country GeoJSONs embedded (FR=280 ZE2020, NL=40 COROP, PT=25 NUTS3); territory click → mini side panel with state + velocity time series |
+| A2 | Dashboard depended on CDN Plotly | `plotly.min.js` (4.7 MB) embedded from `plotly/package_data/plotly.min.js`; CDN fallback only if package not installed; manifest records `"plotly_dependency"` field |
+| A3 | `ROBUST_WINDOWS` hardcoded in builder | Replaced by `derive_robust_windows(covid_robust_edges.csv)`; FAIL_CLOSED if counts ≠ NL=3/PT=9/FR=0; manifest records derived windows |
+
+### 11.2 France ZE scale finding
+
+Inspection of `herald_observatory_v02_panel.csv` confirms all FR rows have `region_system = "ZE2020"` (280 functional employment zones). Phase 7 used this panel → Phase 7 FR was already computed at ZE functional scale. No separate P7_FR_ZE_SCALE_SENSITIVITY study is needed or warranted. The territorial system badge in the dashboard explicitly labels FR as ZE2020, NL as COROP (equivalent NUTS3), PT as NUTS3.
+
+### 11.3 Updated outputs
+
+| File | Before DEC-036 | After DEC-036 |
+|------|----------------|---------------|
+| `reports/dashboards/herald_observatory_v03_dashboard.html` | ~902 KB, CDN Plotly, no map | 6,237 KB, Plotly embedded, choropleth map |
+| `src/data/european_panel/build_observatory_v03.py` | `ROBUST_WINDOWS` constant, no GeoJSON, CDN | `derive_robust_windows()`, 3 GeoJSON builders, local embed |
+| `tests/test_observatory_v03.py` | 29 tests | 46 tests |
+
+### 11.4 Tests added (DEC-036)
+
+| Category | Tests added |
+|----------|-------------|
+| ROBUST_WINDOWS not hardcoded (AST check) | 1 |
+| `derive_robust_windows` structure + FAIL_CLOSED | 4 |
+| Manifest records derived windows + Plotly dependency | 3 |
+| Dashboard: choropleth map present, 3 GeoJSONs, system labels | 3 |
+| Dashboard: no undeclared external scripts | 1 |
+| Dashboard: territory click side panel + year/country filter | 2 |
+| FR uses ZE2020, distinct from NUTS3 | 2 |
+| `test_dashboard_no_causal_claim` strips `<script>` blocks | (fix, not new) |
+| **Total new** | **17** |
+
+Full test suite post-DEC-036: **666 passed, 3 skipped**.
+
+---
+
 ## 10. Provenance
 
 | Item | Value |
@@ -154,6 +199,7 @@ Observatory data outputs (`data/processed/herald_observatory_v03/`) are **not** 
 | Builder | `src/data/european_panel/build_observatory_v03.py` |
 | Input panel SHA256 | `a6f8a5b2a34f17fac028518bf7955f7d8931c7a498b0af57b1afae5eb62c742e` |
 | Phase 7 Slurm job | 7455266 |
-| Tests | 649 passed, 3 skipped |
+| Tests (DEC-035) | 649 passed, 3 skipped |
+| Tests (DEC-036) | 666 passed, 3 skipped |
 | Generated | 2026-06-12 |
-| Decisions | DEC-034 (sector precedence), DEC-035 (v0.3 integration) |
+| Decisions | DEC-034 (sector precedence), DEC-035 (v0.3 integration), DEC-036 (geographic dashboard + derived windows + France ZE) |
