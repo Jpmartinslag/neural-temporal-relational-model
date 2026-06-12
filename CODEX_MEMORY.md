@@ -266,7 +266,23 @@ Ne pas modifier ce fichier ni générer un nouveau HTML avant autorisation expli
 Permitted: persistence best baseline PT/IT/AT LOCO; Italian residual spatial autocorrelation robust; geographic lags rejected; FR/NL/BE/PT targets heterogeneous.
 Prohibited: recommendation, geographic graph improves forecast, cold-start LOCO, universal generalization, attention = explanation, Granger = structural causality.
 
-## HPC
+## HPC Taxonomy (2026-06-12)
+
+Index: `hpc/HPC_PHASE_INDEX.md`. Registry: `hpc/hpc_phase_registry.json`.
+
+| Phase | Dir | Status |
+|---|---|---|
+| P2P3_REGIME_FRANCE | `hpc/regime/` | frozen |
+| P4_GEO_GRAPH (4P/4Q FAIL, closed) | `hpc/phase4/` | frozen |
+| P5_FIXED_GRAPH_CORRECTOR | `hpc/phase5/` | NOT_SUPPORTED |
+| **P6_DDEG_S1 (active)** | **`hpc/phase6_dynamic_dual_graph/`** | **ACTIVE** |
+
+**P6_DDEG_S1:** Dynamic dual economic graph, France NUTS3, 5 folds × 11 controls × 5 seeds = 275 HPC jobs.
+Pilot (5×11×2=110 runs): `data/processed/dual_graph_pilot_all_folds/` — gate **DUAL_GRAPH_S1_FAIL** (6/7 criteria fail).
+HPC full study **NOT YET LAUNCHED**. Trainer frozen at commit `9521264`. Gate thresholds frozen. Do not modify hyperparameters or model based on pilot.
+HPC scripts to be created at `hpc/phase6_dynamic_dual_graph/scripts/`. Output target: `hpc_results/dual_graph_s1/raw/`.
+
+## HPC Connection
 SSH alias `meso`: host `hpc2.mesocentre.uca.fr`, user `jpmartinsd`, ProxyJump
 `mesoext`. Remote:
 `~/project_recomm_herald_v6_2025_20260430/dataset`.
