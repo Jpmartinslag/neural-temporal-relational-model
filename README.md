@@ -4,7 +4,7 @@
 
 La naissance d'entreprises est le premier indicateur opérationnel — non l'objectif unique. Voir `reports/HERALD_PROJECT_CHARTER.md` pour la direction officielle et les claims autorisés/interdits.
 
-> **État 2026-06-12 (DEC-030) :** Phase P6_DDEG_S1 — DUAL_GRAPH_S1_FAIL. Direction gelée. Prochain: HERALD Economic Observatory v0.1.
+> **État 2026-06-12 (DEC-032) :** Observatory v0.1.1 agrégé et v0.2 sectoriel construits. Prochaine étape: relations secteur→secteur signées et décalées, sans GNN ni claim causal.
 > Lire d'abord `CODEX_MEMORY.md`, puis `reports/HERALD_CURRENT_STATE.md`.
 
 ---

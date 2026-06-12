@@ -1,0 +1,72 @@
+{
+  "version": "0.1.1",
+  "generated_at": "2026-06-12T09:57:40.230629+00:00",
+  "decision": "DEC-030/DEC-031",
+  "source_panel": "data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv",
+  "rows": 1963,
+  "countries": [
+    "AT",
+    "IT",
+    "PT"
+  ],
+  "territories": 151,
+  "years_by_country": {
+    "AT": [
+      2008,
+      2020
+    ],
+    "IT": [
+      2008,
+      2020
+    ],
+    "PT": [
+      2008,
+      2020
+    ]
+  },
+  "sector_ids": [
+    "AGGREGATE"
+  ],
+  "economic_states_distribution": {
+    "decline": 757,
+    "stagnation": 550,
+    "recovery": 209,
+    "growth": 190,
+    "insufficient_history": 151,
+    "deceleration": 56,
+    "acceleration": 50
+  },
+  "data_evidence_distribution": {
+    "harmonized_enterprise_birth": 1963
+  },
+  "forecast_evidence_distribution": {
+    "exploratory_rolling_origin": 1208,
+    "causal_persistence_only": 604,
+    "unavailable": 151
+  },
+  "graph_evidence_distribution": {
+    "not_available": 1963
+  },
+  "forecast_coverage": {
+    "persistence": 1812,
+    "ridge": 1208,
+    "intervals": 0
+  },
+  "sha256": "cbfe0d79831d619245f90bd19a29a805e9cab98a521afb41aa7006e200986dfd",
+  "causal_safety": {
+    "same_year_feature_used": false,
+    "ridge_features": [
+      "lag1_value"
+    ],
+    "rolling_origin": true,
+    "state_uses_at_most_t_tminus1_tminus2": true,
+    "leakage_free": true
+  },
+  "limitations": [
+    "Aggregate enterprise_birth only; no sector-level interpretation.",
+    "Intervals are unavailable.",
+    "Ridge AR(1) is exploratory and not equivalent to Phase 4N.",
+    "Territorial graph is not attached to aggregate rows.",
+    "France is excluded while its historical headline remains PENDING_REAUDIT."
+  ]
+}

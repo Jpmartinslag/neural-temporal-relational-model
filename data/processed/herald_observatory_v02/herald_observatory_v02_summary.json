@@ -1,0 +1,60 @@
+{
+  "version": "0.2",
+  "total_rows": 45945,
+  "countries": {
+    "FR": {
+      "rows": 35280,
+      "territories": 280,
+      "sectors": 9,
+      "year_min": 2012,
+      "year_max": 2025,
+      "observed_rows": 35280,
+      "structural_absence_rows": 0,
+      "economic_state_dist": {
+        "decline": 10503,
+        "recovery": 6583,
+        "deceleration": 4497,
+        "stagnation": 4167,
+        "acceleration": 3892,
+        "growth": 3117,
+        "insufficient_history": 2521
+      }
+    },
+    "NL": {
+      "rows": 6840,
+      "territories": 40,
+      "sectors": 9,
+      "year_min": 2007,
+      "year_max": 2025,
+      "observed_rows": 6520,
+      "structural_absence_rows": 0,
+      "economic_state_dist": {
+        "decline": 2557,
+        "recovery": 1229,
+        "stagnation": 1041,
+        "insufficient_history": 684,
+        "growth": 512,
+        "deceleration": 460,
+        "acceleration": 357
+      }
+    },
+    "PT": {
+      "rows": 3825,
+      "territories": 25,
+      "sectors": 9,
+      "year_min": 2008,
+      "year_max": 2024,
+      "observed_rows": 3400,
+      "structural_absence_rows": 425,
+      "economic_state_dist": {
+        "decline": 1173,
+        "recovery": 670,
+        "insufficient_history": 625,
+        "stagnation": 431,
+        "deceleration": 362,
+        "acceleration": 333,
+        "growth": 231
+      }
+    }
+  }
+}

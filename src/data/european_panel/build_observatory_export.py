@@ -1,31 +1,20 @@
-"""
-HERALD Economic Observatory v0.1 — Unified causal-safe data export.
+"""Build the causal-safe HERALD Economic Observatory exports.
 
-Produces per-territory × per-year rows with observed enterprise births,
-persistence and Ridge point forecasts (rolling-origin), economic state labels,
-velocity/acceleration signals, and evidence tier metadata.
+Two products are generated:
 
-Output directory: data/processed/herald_observatory_v01/
-  - herald_observatory_v01_panel.csv
-  - herald_observatory_v01_manifest.json
-  - herald_observatory_v01_summary.json
+* v0.1.1: aggregate enterprise-birth panel for PT/IT/AT.
+* v0.2: sector-level panel for FR/NL/PT.
 
-Causal-safety guarantee:
-  Forecast for year t uses ONLY data available through t-1 (lagged features,
-  no growth_1y leakage). Rolling-origin Ridge is trained on all t' < t.
-  Uncertainty intervals are NOT yet implemented (forecast_lower/upper = NaN).
-  Sector-level data is NOT included in v0.1 (sector_id = "AGGREGATE").
-  Sector graph is NOT implemented (sector_graph_available = 0 always).
-
-Data contract: reports/HERALD_OBSERVATORY_V01_DATA_CONTRACT.md
-Decision: DEC-030 (Observatory v0.1 authorized)
+Economic states are descriptive labels derived from observed history. Forecasts
+are causal rolling-origin baselines. No sector-to-sector graph is implemented.
 """
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
@@ -35,12 +24,28 @@ import pandas as pd
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
-REPO_ROOT = Path(__file__).parent.parent.parent.parent
-PANEL_PATH = (
+REPO_ROOT = Path(__file__).resolve().parents[3]
+AGGREGATE_PANEL_PATH = (
     REPO_ROOT
     / "data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv"
 )
-OUTPUT_DIR = REPO_ROOT / "data/processed/herald_observatory_v01"
+SECTOR_PANEL_PATH = (
+    REPO_ROOT / "data/processed/economic_graph/sector_panel_fr_nl_pt.csv"
+)
+OUTPUT_DIR_V01 = REPO_ROOT / "data/processed/herald_observatory_v01"
+OUTPUT_DIR_V02 = REPO_ROOT / "data/processed/herald_observatory_v02"
+
+SECTOR_LABELS = {
+    "BE": "Industry",
+    "FZ": "Construction",
+    "GI": "Trade, transport and hospitality",
+    "JZ": "Information and communication",
+    "KZ": "Financial and insurance activities",
+    "LZ": "Real estate activities",
+    "MN": "Professional and administrative services",
+    "OQ": "Public administration, education and health",
+    "RU": "Arts and other services",
+}
 
 VALID_ECONOMIC_STATES = {
     "growth",
@@ -51,270 +56,487 @@ VALID_ECONOMIC_STATES = {
     "recovery",
     "insufficient_history",
 }
+VALID_DATA_EVIDENCE_TIERS = {
+    "harmonized_enterprise_birth",
+    "observed_national_sector_panel",
+    "structural_absence",
+    "missing_observation",
+}
+VALID_FORECAST_EVIDENCE_TIERS = {
+    "exploratory_rolling_origin",
+    "causal_persistence_only",
+    "unavailable",
+}
+VALID_GRAPH_EVIDENCE_TIERS = {
+    "supported_association_field",
+    "structural_absence",
+    "not_available",
+}
 
-# Countries where G1-L2 co-growth field has been validated (DEC-019/020)
 G1_L2_COUNTRIES = {"PT", "FR", "NL"}
-
-# Minimum absolute fractional change to declare non-stagnation
 STAGNATION_THRESHOLD = 0.03
+RIDGE_MIN_TRAIN = 4
+RIDGE_ALPHA = 1.0
 
 
-def _economic_state(y_tm2: Optional[float], y_tm1: Optional[float], y_t: float) -> str:
-    """Classify the economic state for territory-year based on last 3 observed values."""
-    if y_tm1 is None or np.isnan(y_tm1):
+def _finite(value: object) -> bool:
+    try:
+        return bool(np.isfinite(float(value)))
+    except (TypeError, ValueError):
+        return False
+
+
+def _economic_state(
+    y_tm2: Optional[float],
+    y_tm1: Optional[float],
+    y_t: Optional[float],
+) -> str:
+    """Classify an observed series using only t, t-1 and t-2 values.
+
+    ``deceleration`` means activity is still growing, but the positive growth
+    rate is lower than in the previous period. A transition into negative
+    growth is classified as ``decline``.
+    """
+    if not (_finite(y_t) and _finite(y_tm1)):
         return "insufficient_history"
-    if y_t <= 0 or y_tm1 <= 0:
+    y_t_f = float(y_t)
+    y_tm1_f = float(y_tm1)
+    if y_t_f < 0 or y_tm1_f <= 0:
         return "insufficient_history"
 
-    delta_t = (y_t - y_tm1) / y_tm1
-
-    if y_tm2 is None or np.isnan(y_tm2) or y_tm2 <= 0:
-        if abs(delta_t) <= STAGNATION_THRESHOLD:
-            return "stagnation"
-        return "growth" if delta_t > 0 else "decline"
-
-    delta_tm1 = (y_tm1 - y_tm2) / y_tm2
-
+    delta_t = (y_t_f - y_tm1_f) / y_tm1_f
     if abs(delta_t) <= STAGNATION_THRESHOLD:
         return "stagnation"
 
-    if delta_t > 0:
+    if not _finite(y_tm2) or float(y_tm2) <= 0:
+        return "growth" if delta_t > 0 else "decline"
+
+    delta_tm1 = (y_tm1_f - float(y_tm2)) / float(y_tm2)
+    if delta_t > STAGNATION_THRESHOLD:
         if delta_tm1 < -STAGNATION_THRESHOLD:
             return "recovery"
-        if delta_t > delta_tm1:
-            return "acceleration"
-        return "growth"
-    else:
         if delta_tm1 > STAGNATION_THRESHOLD:
-            return "deceleration"
-        return "decline"
+            return "acceleration" if delta_t > delta_tm1 else "deceleration"
+        return "growth"
+    return "decline"
 
 
 def _rolling_ridge_forecasts(
-    series: pd.Series, min_train: int = 4, alpha: float = 1.0
+    series: pd.Series,
+    min_train: int = RIDGE_MIN_TRAIN,
+    alpha: float = RIDGE_ALPHA,
 ) -> pd.Series:
-    """
-    Rolling-origin Ridge forecast for a single territory.
-    Feature: lag1 of the observed value.
-    Returns a Series aligned with the input index with NaN where unavailable.
-    Causal-safe: forecast at index i uses only values at indices < i.
-    """
+    """Return causal rolling-origin AR(1) Ridge forecasts."""
     from sklearn.linear_model import Ridge
 
-    values = series.values.astype(float)
-    n = len(values)
-    preds = np.full(n, np.nan)
-
-    for i in range(min_train, n):
-        X = values[: i - 1].reshape(-1, 1)
-        y = values[1:i]
-        if np.any(np.isnan(X)) or np.any(np.isnan(y)):
+    values = pd.to_numeric(series, errors="coerce").to_numpy(dtype=float)
+    predictions = np.full(len(values), np.nan)
+    for index in range(1, len(values)):
+        historical_x = values[: index - 1]
+        historical_y = values[1:index]
+        valid = np.isfinite(historical_x) & np.isfinite(historical_y)
+        if int(valid.sum()) < min_train or not np.isfinite(values[index - 1]):
             continue
         model = Ridge(alpha=alpha)
-        model.fit(X, y)
-        feat = np.array([[values[i - 1]]])
-        if not np.isnan(feat).any():
-            preds[i] = model.predict(feat)[0]
-
-    return pd.Series(preds, index=series.index)
-
-
-def _evidence_tier(row: pd.Series) -> str:
-    """Assign evidence tier based on panel metadata."""
-    if row.get("mask_target", 0) != 1.0:
-        return "not_available"
-    if row.get("flag_forecast_safe", 0) != 1:
-        return "not_available"
-    country = row.get("country", "")
-    if country in {"PT", "IT", "AT"}:
-        return "validated_loco"
-    return "not_available"
+        model.fit(historical_x[valid].reshape(-1, 1), historical_y[valid])
+        predictions[index] = max(
+            0.0, float(model.predict([[values[index - 1]]])[0])
+        )
+    return pd.Series(predictions, index=series.index)
 
 
-def build_export(panel_path: Path = PANEL_PATH, output_dir: Path = OUTPUT_DIR) -> Path:
-    """
-    Build Observatory v0.1 export from the harmonized PT/IT/AT panel.
+def _series_rows(
+    group: pd.DataFrame,
+    *,
+    value_col: str,
+    observed_mask_col: str,
+    structural_mask_col: str,
+    base_metadata: dict[str, object],
+) -> list[dict[str, object]]:
+    group = group.sort_values("observation_year").reset_index(drop=True).copy()
+    structural = group[structural_mask_col].fillna(0).astype(int).eq(1)
+    observed = group[observed_mask_col].fillna(0).astype(int).eq(1) & structural
+    values = pd.to_numeric(group[value_col], errors="coerce").where(observed)
+    ridge = _rolling_ridge_forecasts(values)
+    rows: list[dict[str, object]] = []
 
-    Returns path to the output CSV.
-    """
-    panel_path = Path(panel_path)
-    output_dir = Path(output_dir)
+    for index, source in group.iterrows():
+        is_structural = bool(structural.iloc[index])
+        is_observed = bool(observed.iloc[index] and _finite(values.iloc[index]))
+        current = float(values.iloc[index]) if is_observed else np.nan
+        previous = values.iloc[index - 1] if index >= 1 else np.nan
+        previous2 = values.iloc[index - 2] if index >= 2 else np.nan
 
-    logger.info("Loading panel: %s", panel_path)
-    df = pd.read_csv(panel_path)
+        velocity = np.nan
+        acceleration = np.nan
+        if is_observed and _finite(previous) and float(previous) > 0:
+            velocity = (current - float(previous)) / float(previous)
+        if (
+            _finite(velocity)
+            and _finite(previous)
+            and _finite(previous2)
+            and float(previous2) > 0
+        ):
+            prior_velocity = (float(previous) - float(previous2)) / float(previous2)
+            acceleration = float(velocity) - prior_velocity
 
-    required_cols = {
-        "country", "region_id", "region_name", "meta_nuts3_code",
-        "year", "target_births", "lag1_births", "lag2_births",
-        "mask_target", "flag_forecast_safe",
-    }
-    missing = required_cols - set(df.columns)
-    if missing:
-        raise ValueError(f"Panel missing required columns: {missing}")
+        persistence = (
+            float(previous)
+            if is_structural and _finite(previous)
+            else np.nan
+        )
+        ridge_value = (
+            float(ridge.iloc[index])
+            if is_structural and _finite(ridge.iloc[index])
+            else np.nan
+        )
 
-    df = df.sort_values(["region_id", "year"]).reset_index(drop=True)
-
-    rows = []
-    for region_id, grp in df.groupby("region_id"):
-        grp = grp.sort_values("year").reset_index(drop=True)
-        country = grp["country"].iloc[0]
-        region_name = grp["region_name"].iloc[0]
-        nuts3 = grp["meta_nuts3_code"].iloc[0]
-
-        observed = grp.set_index("year")["target_births"]
-        lag1 = grp.set_index("year")["lag1_births"]
-
-        ridge_raw = _rolling_ridge_forecasts(observed, min_train=4)
-        ridge_by_year = dict(zip(grp["year"], ridge_raw.values))
-
-        for _, row in grp.iterrows():
-            yr = row["year"]
-            obs = row["target_births"]
-            y_tm1 = row.get("lag1_births")
-            y_tm2 = row.get("lag2_births")
-
-            y_tm1_val = float(y_tm1) if pd.notna(y_tm1) else None
-            y_tm2_val = float(y_tm2) if pd.notna(y_tm2) else None
-
-            persistence = float(y_tm1) if pd.notna(y_tm1) else np.nan
-            ridge = float(ridge_by_year.get(yr, np.nan))
-
-            velocity = (
-                (obs - y_tm1_val) / y_tm1_val
-                if (y_tm1_val is not None and y_tm1_val > 0)
-                else np.nan
-            )
-            if y_tm1_val is not None and y_tm2_val is not None and y_tm2_val > 0:
-                vel_prev = (y_tm1_val - y_tm2_val) / y_tm2_val
-                acceleration = velocity - vel_prev if pd.notna(velocity) else np.nan
+        if not is_structural:
+            data_tier = "structural_absence"
+            forecast_tier = "unavailable"
+            graph_tier = "structural_absence"
+            quality_flags = "STRUCTURAL_ABSENCE"
+        elif not is_observed:
+            data_tier = "missing_observation"
+            forecast_tier = "unavailable"
+            graph_tier = "not_available"
+            quality_flags = "MISSING_OBSERVATION"
+        else:
+            data_tier = str(base_metadata["observed_data_tier"])
+            if _finite(ridge_value):
+                forecast_tier = "exploratory_rolling_origin"
+            elif _finite(persistence):
+                forecast_tier = "causal_persistence_only"
             else:
-                acceleration = np.nan
-
-            state = _economic_state(y_tm2_val, y_tm1_val, obs)
-
-            rows.append(
-                {
-                    "country": country,
-                    "territory_id": region_id,
-                    "meta_nuts3_code": nuts3,
-                    "territory_name": region_name,
-                    "observation_year": yr,
-                    "sector_id": "AGGREGATE",
-                    "observed_value": obs,
-                    "persistence_forecast": persistence,
-                    "ridge_forecast": ridge,
-                    "forecast_lower": np.nan,
-                    "forecast_upper": np.nan,
-                    "economic_state": state,
-                    "velocity": round(velocity, 6) if pd.notna(velocity) else np.nan,
-                    "acceleration": (
-                        round(acceleration, 6) if pd.notna(acceleration) else np.nan
-                    ),
-                    "g1_l2_available": int(country in G1_L2_COUNTRIES),
-                    "sector_graph_available": 0,
-                    "evidence_tier": _evidence_tier(row),
-                    "data_source": row.get("meta_source_label", ""),
-                }
+                forecast_tier = "unavailable"
+            graph_tier = (
+                "supported_association_field"
+                if bool(base_metadata["graph_eligible"])
+                else "not_available"
             )
+            quality_flags = "OK"
 
-    export = pd.DataFrame(rows)
+        rows.append(
+            {
+                **base_metadata,
+                "observation_year": int(source["observation_year"]),
+                "observed_value": current,
+                "lag1_value": persistence,
+                "persistence_forecast": persistence,
+                "ridge_forecast": ridge_value,
+                "forecast_lower": np.nan,
+                "forecast_upper": np.nan,
+                "forecast_method": (
+                    "ridge_ar1"
+                    if _finite(ridge_value)
+                    else "persistence"
+                    if _finite(persistence)
+                    else "unavailable"
+                ),
+                "forecast_status": (
+                    "POINT_ONLY"
+                    if _finite(ridge_value) or _finite(persistence)
+                    else "UNAVAILABLE"
+                ),
+                "economic_state": _economic_state(previous2, previous, current),
+                "velocity": round(float(velocity), 6) if _finite(velocity) else np.nan,
+                "acceleration": (
+                    round(float(acceleration), 6)
+                    if _finite(acceleration)
+                    else np.nan
+                ),
+                "data_evidence_tier": data_tier,
+                "forecast_evidence_tier": forecast_tier,
+                "graph_evidence_tier": graph_tier,
+                "territorial_graph_available": int(
+                    graph_tier == "supported_association_field"
+                ),
+                "sector_graph_available": 0,
+                "structural_mask": int(is_structural),
+                "observation_mask": int(is_observed),
+                "data_quality_flags": quality_flags,
+            }
+        )
+    return rows
 
-    assert set(export["economic_state"]).issubset(
-        VALID_ECONOMIC_STATES
-    ), "Invalid economic states produced"
-    assert (export["sector_graph_available"] == 0).all(), "sector_graph_available must be 0"
-    assert (export["forecast_lower"].isna() & export["forecast_upper"].isna()).all(), (
-        "Uncertainty intervals must be NaN in v0.1"
-    )
 
+def _validate_export(export: pd.DataFrame, key: list[str]) -> None:
+    if export.duplicated(key).any():
+        raise ValueError(f"Duplicate Observatory keys: {key}")
+    if not set(export["economic_state"]).issubset(VALID_ECONOMIC_STATES):
+        raise ValueError("Invalid economic state")
+    if not set(export["data_evidence_tier"]).issubset(VALID_DATA_EVIDENCE_TIERS):
+        raise ValueError("Invalid data evidence tier")
+    if not set(export["forecast_evidence_tier"]).issubset(
+        VALID_FORECAST_EVIDENCE_TIERS
+    ):
+        raise ValueError("Invalid forecast evidence tier")
+    if not set(export["graph_evidence_tier"]).issubset(
+        VALID_GRAPH_EVIDENCE_TIERS
+    ):
+        raise ValueError("Invalid graph evidence tier")
+    if export.loc[export["structural_mask"].eq(0), "observed_value"].notna().any():
+        raise ValueError("Structural absence encoded as an observed value")
+    if not export["sector_graph_available"].eq(0).all():
+        raise ValueError("Sector graph is not implemented")
+    if export[["forecast_lower", "forecast_upper"]].notna().any().any():
+        raise ValueError("Forecast intervals are not implemented")
+
+
+def _write_outputs(
+    export: pd.DataFrame,
+    output_dir: Path,
+    *,
+    stem: str,
+    version: str,
+    source_panel: Path,
+    decision: str,
+    limitations: list[str],
+) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
-    csv_path = output_dir / "herald_observatory_v01_panel.csv"
+    export = export.sort_values(
+        ["country", "territory_id", "sector_id", "observation_year"]
+    ).reset_index(drop=True)
+    csv_path = output_dir / f"{stem}_panel.csv"
     export.to_csv(csv_path, index=False)
-    logger.info("Wrote %d rows to %s", len(export), csv_path)
+    checksum = hashlib.sha256(csv_path.read_bytes()).hexdigest()
 
-    sha256 = hashlib.sha256(csv_path.read_bytes()).hexdigest()[:20]
     manifest = {
-        "version": "0.1",
-        "generated_at": datetime.utcnow().isoformat() + "Z",
-        "decision": "DEC-030",
-        "source_panel": str(PANEL_PATH.relative_to(REPO_ROOT)),
-        "rows": len(export),
+        "version": version,
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "decision": decision,
+        "source_panel": str(source_panel.relative_to(REPO_ROOT)),
+        "rows": int(len(export)),
         "countries": sorted(export["country"].unique().tolist()),
-        "territories": int(export["territory_id"].nunique()),
-        "years": sorted(export["observation_year"].unique().tolist()),
-        "sector_ids": sorted(export["sector_id"].unique().tolist()),
-        "economic_states_distribution": (
-            export["economic_state"].value_counts().to_dict()
+        "territories": int(
+            export[["country", "territory_id"]].drop_duplicates().shape[0]
         ),
-        "evidence_tier_distribution": (
-            export["evidence_tier"].value_counts().to_dict()
+        "years_by_country": {
+            country: [
+                int(group["observation_year"].min()),
+                int(group["observation_year"].max()),
+            ]
+            for country, group in export.groupby("country")
+        },
+        "sector_ids": sorted(export["sector_id"].unique().tolist()),
+        "economic_states_distribution": export["economic_state"].value_counts().to_dict(),
+        "data_evidence_distribution": export["data_evidence_tier"].value_counts().to_dict(),
+        "forecast_evidence_distribution": (
+            export["forecast_evidence_tier"].value_counts().to_dict()
+        ),
+        "graph_evidence_distribution": (
+            export["graph_evidence_tier"].value_counts().to_dict()
         ),
         "forecast_coverage": {
             "persistence": int(export["persistence_forecast"].notna().sum()),
             "ridge": int(export["ridge_forecast"].notna().sum()),
             "intervals": 0,
         },
-        "sha256_prefix": sha256,
+        "sha256": checksum,
         "causal_safety": {
-            "growth_1y_used": False,
-            "features": ["lag1_births"],
+            "same_year_feature_used": False,
+            "ridge_features": ["lag1_value"],
             "rolling_origin": True,
+            "state_uses_at_most_t_tminus1_tminus2": True,
             "leakage_free": True,
         },
-        "limitations": [
-            "Sector-level data not included (v0.1 aggregate only, sector_id='AGGREGATE').",
-            "Uncertainty intervals not yet implemented (forecast_lower/upper = NaN).",
-            "France not included (WMAPE 0.0204 PENDING_REAUDIT; separate data source).",
-            "Ridge trained on lag1 feature only; not equivalent to Phase 4N causal config.",
-            "sector_graph_available=0: sector->sector graph not yet implemented.",
-            "G1-L2 flag marks countries with validated co-growth field (PT=1, IT/AT=0).",
-        ],
+        "limitations": limitations,
     }
-    manifest_path = output_dir / "herald_observatory_v01_manifest.json"
-    manifest_path.write_text(json.dumps(manifest, indent=2))
-    logger.info("Wrote manifest to %s", manifest_path)
+    (output_dir / f"{stem}_manifest.json").write_text(
+        json.dumps(manifest, indent=2) + "\n"
+    )
 
-    validated = export[export["evidence_tier"] == "validated_loco"]
     summary = {
-        "version": "0.1",
-        "total_rows": len(export),
-        "validated_rows": len(validated),
+        "version": version,
+        "total_rows": int(len(export)),
         "countries": {
-            c: {
-                "territories": int(
-                    export[export["country"] == c]["territory_id"].nunique()
-                ),
-                "years": sorted(
-                    export[export["country"] == c]["observation_year"]
-                    .unique()
-                    .tolist()
-                ),
-                "economic_state_dist": (
-                    export[export["country"] == c]["economic_state"]
-                    .value_counts()
-                    .to_dict()
-                ),
+            country: {
+                "rows": int(len(group)),
+                "territories": int(group["territory_id"].nunique()),
+                "sectors": int(group["sector_id"].nunique()),
+                "year_min": int(group["observation_year"].min()),
+                "year_max": int(group["observation_year"].max()),
+                "observed_rows": int(group["observation_mask"].sum()),
+                "structural_absence_rows": int(group["structural_mask"].eq(0).sum()),
+                "economic_state_dist": group["economic_state"].value_counts().to_dict(),
             }
-            for c in sorted(export["country"].unique())
+            for country, group in export.groupby("country")
         },
-        "persistence_wmape_by_country": {},
     }
-    for c, grp_c in export[export["persistence_forecast"].notna()].groupby("country"):
-        wmape = float(
-            (
-                (grp_c["observed_value"] - grp_c["persistence_forecast"]).abs()
-                / grp_c["observed_value"].clip(lower=1)
-            ).mean()
-        )
-        summary["persistence_wmape_by_country"][c] = round(wmape, 6)
-
-    summary_path = output_dir / "herald_observatory_v01_summary.json"
-    summary_path.write_text(json.dumps(summary, indent=2))
-    logger.info("Wrote summary to %s", summary_path)
-
+    (output_dir / f"{stem}_summary.json").write_text(
+        json.dumps(summary, indent=2) + "\n"
+    )
+    logger.info("Wrote %s (%d rows)", csv_path, len(export))
     return csv_path
 
 
+def build_aggregate_export(
+    panel_path: Path = AGGREGATE_PANEL_PATH,
+    output_dir: Path = OUTPUT_DIR_V01,
+) -> Path:
+    """Build corrected aggregate Observatory v0.1.1."""
+    panel = pd.read_csv(panel_path, dtype={"region_id": str})
+    required = {
+        "country",
+        "region_id",
+        "region_name",
+        "meta_nuts3_code",
+        "year",
+        "target_births",
+        "mask_target",
+    }
+    missing = required - set(panel.columns)
+    if missing:
+        raise ValueError(f"Aggregate panel missing columns: {sorted(missing)}")
+    panel = panel.rename(columns={"year": "observation_year"})
+
+    rows: list[dict[str, object]] = []
+    for (country, region_id), group in panel.groupby(["country", "region_id"]):
+        first = group.iloc[0]
+        rows.extend(
+            _series_rows(
+                group,
+                value_col="target_births",
+                observed_mask_col="mask_target",
+                structural_mask_col="mask_target",
+                base_metadata={
+                    "country": country,
+                    "territory_id": str(region_id),
+                    "meta_nuts3_code": str(first["meta_nuts3_code"]),
+                    "territory_name": str(first["region_name"]),
+                    "region_system": str(first.get("meta_region_system", "NUTS3")),
+                    "sector_id": "AGGREGATE",
+                    "sector_label": "All business sectors",
+                    "target_concept": str(
+                        first.get("flag_target_concept", "enterprise_birth")
+                    ),
+                    "source_label": str(first.get("meta_source_label", "")),
+                    "observed_data_tier": "harmonized_enterprise_birth",
+                    "graph_eligible": False,
+                },
+            )
+        )
+    export = pd.DataFrame(rows).drop(columns=["observed_data_tier", "graph_eligible"])
+    key = ["country", "territory_id", "observation_year", "sector_id"]
+    _validate_export(export, key)
+    return _write_outputs(
+        export,
+        Path(output_dir),
+        stem="herald_observatory_v011",
+        version="0.1.1",
+        source_panel=Path(panel_path),
+        decision="DEC-030/DEC-031",
+        limitations=[
+            "Aggregate enterprise_birth only; no sector-level interpretation.",
+            "Intervals are unavailable.",
+            "Ridge AR(1) is exploratory and not equivalent to Phase 4N.",
+            "Territorial graph is not attached to aggregate rows.",
+            "France is excluded while its historical headline remains PENDING_REAUDIT.",
+        ],
+    )
+
+
+def build_sector_export(
+    panel_path: Path = SECTOR_PANEL_PATH,
+    output_dir: Path = OUTPUT_DIR_V02,
+) -> Path:
+    """Build sector-level Observatory v0.2 for FR/NL/PT."""
+    panel = pd.read_csv(panel_path, dtype={"region_id": str})
+    required = {
+        "country",
+        "region_id",
+        "region_name",
+        "observation_year",
+        "sector_a10",
+        "sector_births",
+        "mask_sector_births",
+        "mask_sector_supported",
+    }
+    missing = required - set(panel.columns)
+    if missing:
+        raise ValueError(f"Sector panel missing columns: {sorted(missing)}")
+    panel["_structural_mask"] = (
+        ~(panel["country"].eq("PT") & panel["sector_a10"].eq("KZ"))
+    ).astype(int)
+    panel["_observation_mask"] = (
+        panel["mask_sector_births"].fillna(0).astype(int).eq(1)
+        & panel["mask_sector_supported"].fillna(0).astype(int).eq(1)
+        & panel["_structural_mask"].eq(1)
+    ).astype(int)
+
+    rows: list[dict[str, object]] = []
+    for (country, region_id, sector), group in panel.groupby(
+        ["country", "region_id", "sector_a10"]
+    ):
+        first = group.iloc[0]
+        graph_eligible = country in G1_L2_COUNTRIES
+        rows.extend(
+            _series_rows(
+                group,
+                value_col="sector_births",
+                observed_mask_col="_observation_mask",
+                structural_mask_col="_structural_mask",
+                base_metadata={
+                    "country": country,
+                    "territory_id": str(region_id),
+                    "meta_nuts3_code": str(
+                        first.get("meta_nuts3_code", first["region_id"])
+                    ),
+                    "territory_name": str(first["region_name"]),
+                    "region_system": str(
+                        first.get("meta_region_system", first.get("region_level", ""))
+                    ),
+                    "sector_id": str(sector),
+                    "sector_label": SECTOR_LABELS.get(str(sector), str(sector)),
+                    "target_concept": str(first.get("flag_target_concept", "")),
+                    "source_label": str(
+                        first.get("meta_source_label", first.get("source_label", ""))
+                    ),
+                    "observed_data_tier": "observed_national_sector_panel",
+                    "graph_eligible": graph_eligible,
+                },
+            )
+        )
+    export = pd.DataFrame(rows).drop(columns=["observed_data_tier", "graph_eligible"])
+    key = ["country", "territory_id", "observation_year", "sector_id"]
+    _validate_export(export, key)
+    return _write_outputs(
+        export,
+        Path(output_dir),
+        stem="herald_observatory_v02",
+        version="0.2",
+        source_panel=Path(panel_path),
+        decision="DEC-030/DEC-031",
+        limitations=[
+            "Targets are heterogeneous national sector concepts; no country pooling.",
+            "Ridge AR(1) forecasts are exploratory point baselines.",
+            "Intervals are unavailable.",
+            "G1-L2 availability means supported association field, not prediction or causality.",
+            "Sector-to-sector graph is not implemented.",
+            "PT KZ remains structural absence; unsupported NL OQ years remain missing observations, never economic zeros.",
+        ],
+    )
+
+
+def build_export(
+    panel_path: Path = AGGREGATE_PANEL_PATH,
+    output_dir: Path = OUTPUT_DIR_V01,
+) -> Path:
+    """Backward-compatible alias for the corrected aggregate export."""
+    return build_aggregate_export(panel_path=panel_path, output_dir=output_dir)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--mode", choices=["all", "aggregate", "sector"], default="all"
+    )
+    args = parser.parse_args()
+    if args.mode in {"all", "aggregate"}:
+        build_aggregate_export()
+    if args.mode in {"all", "sector"}:
+        build_sector_export()
+
+
 if __name__ == "__main__":
-    out = build_export()
-    print(f"Observatory v0.1 export complete: {out}")
+    main()

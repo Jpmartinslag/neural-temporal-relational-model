@@ -949,3 +949,45 @@ Leakage, seed-stability (`seed_std_le_0005`), and tail-risk (`no_year_over_10pct
 **Limitations:** The tested feature set is narrow (3 features). Wider economic features (ARDECO, mobility) may provide a different signal, but must first be validated as direct predictors before being combined with graph architectures. The null-permutation test has limited statistical power at n=5 eval years and n=5 seeds.
 **Reopen condition:** New information hypothesis demonstrated to improve over AR-Ridge without a graph (new DEC-* required). Documented operational failure in protocol or data integrity. Performance failure on this narrow feature set alone is not a reopen condition.
 **Affected files:** `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` (committed); `data/processed/graph_temporal_s1/s1_fr_results.json` (committed); `data/processed/graph_temporal_s1/s1_fr_checkpoint.json` (committed); `reports/HERALD_CURRENT_STATE.md`; `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`; `reports/HERALD_EVIDENCE_MATRIX.md`; `reports/HERALD_RESEARCH_GANTT.md`; `reports/herald_artifact_registry.json`; `CODEX_MEMORY.md`.
+
+---
+
+## DEC-032 — 2026-06-12 — Observatory v0.1.1/v0.2: corrected states and sector export
+
+**Phase:** HERALD Economic Observatory
+
+**Question:** Can the validated data components be exposed in one causal-safe,
+sector-aware prototype without conflating dataset, forecast and graph evidence?
+
+**Evidence:** Aggregate PT/IT/AT panel (1,963 rows) and national sector panel
+FR/NL/PT (45,945 rows). Twenty-one Observatory tests cover state semantics,
+causal persistence, rolling-origin provenance, masks, dimensions, evidence
+separation and deterministic output.
+
+**Decision:**
+1. Aggregate v0.1 is superseded by v0.1.1. `deceleration` now means positive
+growth that is slower than the prior positive growth rate; contraction is
+`decline`.
+2. Data, forecast and graph evidence are separate fields. Dataset inclusion
+does not validate a forecast or graph claim.
+3. Sector v0.2 is ACTIVE/REGENERABLE for FR/NL/PT: 345 territories, nine
+sectors and 45,945 rows.
+4. Structural absence and missing observations remain masked and `NaN`, never
+economic zero.
+5. Point Ridge forecasts are exploratory. Intervals remain unavailable.
+6. G1-L2 availability means an analytical same-sector territorial association
+field only. `sector_graph_available=0`.
+7. The next authorized implementation is a signed, lagged sector-to-sector
+association layer with stability and permutation controls. No GNN and no
+structural-causality claim.
+
+**Limitations:** National target concepts remain heterogeneous. The export does
+not validate pooling, recommendation, uncertainty intervals or sector
+influence.
+
+**Affected files:** `src/data/european_panel/build_observatory_export.py`;
+`tests/test_observatory_export.py`;
+`reports/HERALD_OBSERVATORY_V01_DATA_CONTRACT.md`;
+`reports/herald_artifact_registry.json`; `reports/HERALD_CURRENT_STATE.md`;
+`reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`; `reports/HERALD_RESEARCH_GANTT.md`;
+`README.md`; `CODEX_MEMORY.md`.

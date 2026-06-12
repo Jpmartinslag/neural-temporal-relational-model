@@ -1,6 +1,6 @@
 # HERALD Current State
-**Updated:** 2026-06-12 (post DEC-031, S1_FR_FAIL; graph-temporal branch closed)
-**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-031), `HERALD_EVIDENCE_MATRIX.md`.
+**Updated:** 2026-06-12 (post DEC-032, Observatory sector export v0.2)
+**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-032), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
 
@@ -12,13 +12,13 @@
 | Quantitative forecasting | **75%** | Ridge+persistence validated; conformal intervals exploratory |
 | Territorial graph (G1-L2) | **75%** | FR/NL/PT PASS; community detection NOT_SUPPORTED |
 | Aggregate dynamics (G2) | **75%** | FR robust; NL/PT COVID-sensitive |
-| Economic states | **45%** | Labels defined; regime detection in P2/P3 for France only |
+| Economic states | **60%** | Deterministic observed states exported for aggregate PT/IT/AT and sector FR/NL/PT |
 | Sector→sector graph | **0%** | Not yet implemented. G2 is territorial co-growth evolution (territory↔territory within sector), not sector→sector. G1-L1 FAIL. |
 | Explanation | **30%** | Descriptive co-growth associations; no attention/associative explanation validated |
 | Dashboard | **65%** | France base operational; observatory integration pending |
 | Recommendation | **35%** | Intelligence layer structure exists; weights/claims not validated |
-| **Integrated prototype** | **~60%** | Components exist; no unified export yet |
-| **European product** | **~35–40%** | Foundation solid; multi-country unification and sector graph missing |
+| **Integrated prototype** | **~70%** | Unified aggregate and sector exports exist; sector→sector layer and UI integration remain |
+| **European product** | **~40%** | Multi-country sector observations integrated; influence and recommendation layers remain |
 
 ---
 
@@ -36,7 +36,7 @@
 
 **Last valid decision:** DEC-006 (Phase 4N persistence baseline); DEC-010 (Phase 4P spatial lag FAIL); DEC-011 (Phase 4Q Spatial Durbin FAIL).
 **Blocker:** Conformal intervals are exploratory; no promoted interval method.
-**Next step:** Uncertainty interval method selection (conformal or bootstrap) before Observatory export.
+**Next step:** Implement and audit the signed, lagged sector→sector association layer. Interval selection remains separate and pending.
 
 ### Bloco 2 — Dynamic Economic Graph
 
@@ -83,7 +83,9 @@
 | Panel | Path | Status | Rows |
 |-------|------|--------|------|
 | FR NUTS3 sector panel | `data/processed/economic_graph/sector_panel_fr_nuts3.csv` | ACTIVE | — |
-| FR/NL/PT sector panel | *(see sector panel builder)* | ACTIVE | — |
+| FR/NL/PT sector panel | `data/processed/economic_graph/sector_panel_fr_nl_pt.csv` | ACTIVE | 45 945 |
+| Observatory aggregate v0.1.1 | `data/processed/herald_observatory_v01/` | ACTIVE/REGENERABLE | 1 963 |
+| Observatory sector v0.2 | `data/processed/herald_observatory_v02/` | ACTIVE/REGENERABLE | 45 945 |
 | PT/IT/AT harmonized LOCO | `data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv` | ACTIVE | 1 963 |
 | PT/IT panel (pre-AT) | `data/processed/european_panel/enterprise_birth_pt_it_panel.csv` | SUPERSEDED by AT panel | — |
 | G1-L2 co-growth artefacts | `data/processed/economic_graph/g1_l2_cogrowth/` | ACTIVE (analytical) | — |
@@ -97,9 +99,8 @@
 
 | Item | Blocker | Reopen condition |
 |------|---------|-----------------|
-| S1-FR result commit | Parallel work must be committed with own DEC-* entry | Commit `HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` + results |
 | HPC new submission | S1_FR_FAIL (DEC-031) — graph-temporal branch closed | New information hypothesis + new DEC-* required |
-| Sector→sector graph (G3+) | Observatory v0.1 first | After unified export exists |
+| Sector→sector graph | Method and fail-closed gate not yet implemented | Next authorized Observatory task |
 | Recommendation layer | Bloco 1 + Bloco 2 complete | — |
 | New GNN architecture | Integrated prototype complete | New hypothesis + new data |
 | Conformal intervals | Method selection | Choose between conformal or bootstrap |
@@ -109,7 +110,7 @@
 ## Reference Documents
 
 - Direction and claims: `reports/HERALD_PROJECT_CHARTER.md`
-- All decisions: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-030)
+- All decisions: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-032)
 - Claims classification: `reports/HERALD_EVIDENCE_MATRIX.md`
 - Gantt: `reports/HERALD_RESEARCH_GANTT.md`
 - HPC registry: `hpc/hpc_phase_registry.json`
