@@ -32,6 +32,8 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from src.data.european_panel.territorial_scope import is_in_scope
+
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -114,7 +116,7 @@ MAP_CONFIG: dict[str, dict] = {
            "note": "Netherlands uses COROP regions (n=40), equivalent to NUTS3 level 3."},
     "PT": {"lat": 39.5, "lon": -8.1, "zoom": 5.6,
            "system": "NUTS3", "system_label": "NUTS3 2021",
-           "note": "Portugal uses NUTS3 2021 regions (n=25)."},
+           "note": "Portugal map uses mainland NUTS3 2021 (n=23); Azores and Madeira remain in the canonical panel."},
 }
 
 
@@ -252,10 +254,14 @@ def _build_pt_geojson(
     pt_territory_ids: list[str],
     nuts3_geojson_path: Path,
 ) -> dict:
-    """Build PT GeoJSON with panel_id = PT_111 etc. from PT111 geometry."""
+    """Build mainland PT GeoJSON with panel_id = PT_111 etc."""
     raw = json.loads(nuts3_geojson_path.read_text(encoding="utf-8"))
     # panel territory_id = PT_111; geometry NUTS_ID = PT111
-    panel_set = {tid.replace("_", ""): tid for tid in pt_territory_ids}
+    panel_set = {
+        tid.replace("_", ""): tid
+        for tid in pt_territory_ids
+        if is_in_scope("PT", tid)
+    }
     features = []
     for feat in raw["features"]:
         nuts_id = feat["properties"]["NUTS_ID"]
@@ -390,24 +396,52 @@ def build_v03(output_dir: Path | None = None) -> tuple[pd.DataFrame, dict]:
         velocities = grp["velocity"].dropna()
         finite_vel = velocities[np.isfinite(velocities)]
         avg_vel = float(finite_vel.mean()) if len(finite_vel) > 0 else None
+        ranked = grp.loc[np.isfinite(grp["velocity"]), ["sector_id", "velocity"]].copy()
+        dominant_sector = None
+        if not ranked.empty:
+            dominant_sector = str(
+                ranked.loc[ranked["velocity"].abs().idxmax(), "sector_id"]
+            )
         terr_records.append({
             "territory_id": territory_id,
             "observation_year": int(year),
             "country": country,
             "state": dominant_state,
             "avg_velocity": avg_vel,
+            "dominant_sector": dominant_sector,
             "sector_count": len(grp),
+            "territory_name": str(grp["territory_name"].iloc[0]),
+        })
+
+    terr_sector_records: list[dict] = []
+    terr_sector_grp = structural.groupby(
+        ["territory_id", "observation_year", "sector_id"]
+    )
+    for (territory_id, year, sector_id), grp in terr_sector_grp:
+        velocities = grp["velocity"].dropna()
+        finite_vel = velocities[np.isfinite(velocities)]
+        terr_sector_records.append({
+            "territory_id": territory_id,
+            "observation_year": int(year),
+            "country": str(grp["country"].iloc[0]),
+            "sector_id": str(sector_id),
+            "state": _dominant_state(grp["economic_state"]),
+            "avg_velocity": (
+                float(finite_vel.mean()) if len(finite_vel) > 0 else None
+            ),
             "territory_name": str(grp["territory_name"].iloc[0]),
         })
 
     summary = {
         "state_summary": state_records,
         "territory_summary": terr_records,
+        "territory_sector_summary": terr_sector_records,
         "meta": {
             "version": "0.3",
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "n_state_records": len(state_records),
             "n_territory_records": len(terr_records),
+            "n_territory_sector_records": len(terr_sector_records),
         },
     }
 
@@ -450,6 +484,12 @@ def build_v03(output_dir: Path | None = None) -> tuple[pd.DataFrame, dict]:
         },
         "panel_rows": len(panel),
         "countries": sorted(panel["country"].unique().tolist()),
+        "map_scope": {
+            "name": "continental_mainland",
+            "mapped_territories": {"FR": 280, "NL": 40, "PT": 23},
+            "panel_territories": {"FR": 280, "NL": 40, "PT": 25},
+            "excluded_from_map": {"PT": ["PT_200", "PT_300"]},
+        },
         "gate_thresholds": decision.get("gate_thresholds", {}),
         "robust_windows": {k: [list(w) for w in v] for k, v in robust_windows.items()},
         "plotly_dependency": "local_embedded",
@@ -589,6 +629,7 @@ def generate_dashboard(v03_dir: Path, output_path: Path) -> None:
     edges_js = json.dumps(rel["edges"])
     state_summary_js = json.dumps(summary["state_summary"])
     territory_summary_js = json.dumps(summary["territory_summary"])
+    territory_sector_summary_js = json.dumps(summary["territory_sector_summary"])
     node_pos_js = json.dumps(node_pos)
     sector_labels_js = json.dumps(SECTOR_LABELS)
     map_config_js = json.dumps(MAP_CONFIG)
@@ -600,6 +641,7 @@ def generate_dashboard(v03_dir: Path, output_path: Path) -> None:
         "robust_windows": manifest.get("robust_windows", {}),
         "edge_counts": manifest.get("edge_counts", {}),
         "plotly_dependency": manifest.get("plotly_dependency", "local_embedded"),
+        "map_scope": manifest.get("map_scope", {}),
     })
     fr_geo_js = json.dumps(fr_geo)
     nl_geo_js = json.dumps(nl_geo)
@@ -681,10 +723,13 @@ def generate_dashboard(v03_dir: Path, output_path: Path) -> None:
 <div class="section">
   <div class="section-title">1. Territorial Map</div>
   <div class="section-note">
-    Dominant economic state per territory per year, aggregated over all sectors.
+    Select a sector to map its state directly. In “All sectors”, each territory
+    is coloured by the sector with the largest absolute velocity in that year;
+    the sector code is shown in the hover and detail panel.
     Select a territory on the map to view its economic trajectory.
     Territorial systems differ by country: France uses functional employment zones (ZE2020),
-    Netherlands uses COROP regions (NUTS3), Portugal uses NUTS3 2021.
+    Netherlands uses COROP regions (NUTS3), and the Portugal map uses mainland
+    NUTS3 2021 only (Azores and Madeira remain in the source panel but are not mapped).
   </div>
   <div class="assoc-warn">
     ⚠ Associations between sector graph and map are descriptive. Sector→sector edges show
@@ -701,6 +746,20 @@ def generate_dashboard(v03_dir: Path, output_path: Path) -> None:
     </label>
     <label>Year
       <select id="map-year" onchange="renderMap()"></select>
+    </label>
+    <label>Sector
+      <select id="map-sector" onchange="handleMapSectorChange()">
+        <option value="ALL">All sectors (largest absolute change shown)</option>
+        <option value="BE">BE — Industry</option>
+        <option value="FZ">FZ — Construction</option>
+        <option value="GI">GI — Trade, transport, hospitality</option>
+        <option value="JZ">JZ — Information, communication</option>
+        <option value="KZ">KZ — Financial activities</option>
+        <option value="LZ">LZ — Real estate</option>
+        <option value="MN">MN — Professional services</option>
+        <option value="OQ">OQ — Public services</option>
+        <option value="RU">RU — Arts and other services</option>
+      </select>
     </label>
     <label>Metric
       <select id="map-metric" onchange="renderMap()">
@@ -830,6 +889,7 @@ def generate_dashboard(v03_dir: Path, output_path: Path) -> None:
 const EDGES = {edges_js};
 const STATE_SUMMARY = {state_summary_js};
 const TERRITORY_SUMMARY = {territory_summary_js};
+const TERRITORY_SECTOR_SUMMARY = {territory_sector_summary_js};
 const NODE_POS = {node_pos_js};
 const SECTOR_LABELS = {sector_labels_js};
 const MANIFEST = {manifest_js};
@@ -871,7 +931,18 @@ TERRITORY_SUMMARY.forEach(r => {{
   if (!TERR_IDX[r.country]) TERR_IDX[r.country] = {{}};
   if (!TERR_IDX[r.country][r.territory_id]) TERR_IDX[r.country][r.territory_id] = {{}};
   TERR_IDX[r.country][r.territory_id][r.observation_year] = {{
-    state: r.state, vel: r.avg_velocity, name: r.territory_name
+    state: r.state, vel: r.avg_velocity, name: r.territory_name,
+    dominantSector: r.dominant_sector
+  }};
+}});
+const TERR_SECTOR_IDX = {{}};
+TERRITORY_SECTOR_SUMMARY.forEach(r => {{
+  if (!TERR_SECTOR_IDX[r.country]) TERR_SECTOR_IDX[r.country] = {{}};
+  if (!TERR_SECTOR_IDX[r.country][r.territory_id]) TERR_SECTOR_IDX[r.country][r.territory_id] = {{}};
+  if (!TERR_SECTOR_IDX[r.country][r.territory_id][r.sector_id]) TERR_SECTOR_IDX[r.country][r.territory_id][r.sector_id] = {{}};
+  TERR_SECTOR_IDX[r.country][r.territory_id][r.sector_id][r.observation_year] = {{
+    state: r.state, vel: r.avg_velocity, name: r.territory_name,
+    sector: r.sector_id
   }};
 }});
 
@@ -888,7 +959,7 @@ function renderKPIs() {{
   const ec = MANIFEST.edge_counts || {{}};
   const kpiData = [
     {{v: 3, l:'Countries (FR/NL/PT)'}},
-    {{v: 345, l:'Territories total'}},
+    {{v: 343, l:'Territories mapped'}},
     {{v: 9, l:'Sectors (A10 NACE)'}},
     {{v: ec.robust||12, l:'ROBUST associations', cls:'color:var(--robust)'}},
     {{v: ec.main_only_exploratory||13, l:'Exploratory (main only)', cls:'color:var(--explor)'}},
@@ -924,32 +995,45 @@ function handleMapCountryChange() {{
   renderMap();
 }}
 
+function handleMapSectorChange() {{
+  clearMapSidePanel();
+  renderMap();
+}}
+
 function updateMapSystemBadge(country) {{
   const cfg = MAP_CONFIG[country];
   const cls = country==='FR' ? 'ze' : country==='NL' ? 'corop' : 'nuts3';
   document.getElementById('map-system-badge').innerHTML =
     `<span class="badge badge-${{cls}}">${{cfg.system}}: ${{cfg.system_label}}</span>`;
-  const n = country==='FR' ? 280 : country==='NL' ? 40 : 25;
-  document.getElementById('map-terr-count').textContent = n + ' territories';
+  const n = GEO[country]?.features?.length || 0;
+  const suffix = country === 'PT' ? ' mainland territories' : ' territories';
+  document.getElementById('map-terr-count').textContent = n + suffix;
 }}
 
 function renderMap() {{
   const country = document.getElementById('map-country').value;
   const year = parseInt(document.getElementById('map-year').value);
   const metric = document.getElementById('map-metric').value;
+  const sector = document.getElementById('map-sector').value;
   const cfg = MAP_CONFIG[country];
   const geo = GEO[country];
   if (!geo || !geo.features || !geo.features.length) return;
 
-  const ctData = TERR_IDX[country] || {{}};
+  const ctData = sector === 'ALL'
+    ? (TERR_IDX[country] || {{}})
+    : (TERR_SECTOR_IDX[country] || {{}});
   const locations = [], z = [], customdata = [], text = [];
   geo.features.forEach(f => {{
     const pid = f.properties.panel_id;
     const name = f.properties.territory_name || pid;
-    const yd = (ctData[pid]||{{}})[year];
+    const aggregate = (TERR_IDX[country]?.[pid]||{{}})[year];
+    const dominantSector = aggregate?.dominantSector;
+    const yd = sector === 'ALL'
+      ? (((TERR_SECTOR_IDX[country]?.[pid]||{{}})[dominantSector]||{{}})[year])
+      : (((ctData[pid]||{{}})[sector]||{{}})[year]);
     if (!yd) {{
       locations.push(pid); z.push(null);
-      customdata.push({{pid, name, state:'no data', vel:null, year}});
+      customdata.push({{pid, name, state:'no data', vel:null, year, sector}});
       text.push(name + ': no data');
       return;
     }}
@@ -959,8 +1043,11 @@ function renderMap() {{
     }} else {{
       z.push(yd.vel != null ? yd.vel : null);
     }}
-    customdata.push({{pid, name, state: yd.state, vel: yd.vel, year}});
+    const shownSector = sector === 'ALL' ? dominantSector : sector;
+    customdata.push({{pid, name, state: yd.state, vel: yd.vel, year,
+      sector, shownSector}});
     text.push(name + '<br>' + (yd.state||'').replace('_',' ')
+      + '<br>sector=' + (shownSector || 'aggregate')
       + (yd.vel != null ? '<br>vel=' + yd.vel.toFixed(3) : ''));
   }});
 
@@ -998,7 +1085,9 @@ function renderMap() {{
     }},
     margin: {{l:0,r:0,t:30,b:0}},
     title: {{
-      text: country + ' — ' + year + ' — ' + metric,
+      text: country + ' — ' + year + ' — '
+        + (sector === 'ALL' ? 'all sectors' : sector + ' / ' + SECTOR_LABELS[sector])
+        + ' — ' + metric,
       font: {{size:13, color:'#eef2ff'}},
     }},
   }});
@@ -1029,10 +1118,26 @@ function renderMapLegend(metric) {{
 
 function showTerritorySidePanel(d) {{
   const country = document.getElementById('map-country').value;
+  const selectedSector = document.getElementById('map-sector').value;
   document.getElementById('map-side-empty').style.display = 'none';
   const content = document.getElementById('map-side-content');
   content.style.display = 'block';
-  const timeData = TERR_IDX[country]?.[d.pid] || {{}};
+  let timeData;
+  if (selectedSector === 'ALL') {{
+    timeData = {{}};
+    const aggregate = TERR_IDX[country]?.[d.pid] || {{}};
+    Object.entries(aggregate).forEach(([year, record]) => {{
+      const dynamicSector = record.dominantSector;
+      const sectorRecord = TERR_SECTOR_IDX[country]?.[d.pid]?.[dynamicSector]?.[year];
+      if (sectorRecord) {{
+        timeData[year] = Object.assign({{}}, sectorRecord, {{
+          dominantSector: dynamicSector
+        }});
+      }}
+    }});
+  }} else {{
+    timeData = TERR_SECTOR_IDX[country]?.[d.pid]?.[selectedSector] || {{}};
+  }}
   const years = Object.keys(timeData).map(Number).sort((a,b)=>a-b);
   const states = years.map(y => timeData[y].state || 'insufficient_history');
   const vels = years.map(y => timeData[y].vel);
@@ -1046,6 +1151,7 @@ function showTerritorySidePanel(d) {{
     <div class="side-field"><span class="lbl">Territory ID</span><span class="val">${{d.pid}}</span></div>
     <div class="side-field"><span class="lbl">Country</span><span class="val">${{country}}</span></div>
     <div class="side-field"><span class="lbl">Selected year</span><span class="val">${{d.year}}</span></div>
+    <div class="side-field"><span class="lbl">${{selectedSector==='ALL'?'Largest absolute change':'Selected sector'}}</span><span class="val">${{(d.shownSector||selectedSector)!=='ALL' ? (d.shownSector||selectedSector)+' — '+(SECTOR_LABELS[d.shownSector||selectedSector]||'') : 'Aggregate'}}</span></div>
     <div class="side-field"><span class="lbl">State (${{d.year}})</span><span class="val" style="color:${{STATE_COLORS[d.state]||'#eef2ff'}}">${{(d.state||'—').replace('_',' ')}}</span></div>
     <div class="side-field"><span class="lbl">Avg velocity (${{d.year}})</span><span class="val">${{d.vel!=null ? d.vel.toFixed(4) : '—'}}</span></div>
     <div style="margin-top:10px;font-size:11px;color:var(--muted)">Economic state over time:</div>

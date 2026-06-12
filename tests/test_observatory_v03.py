@@ -222,6 +222,7 @@ def test_dashboard_has_year_country_filter():
     html = DASH_PATH.read_text(encoding="utf-8")
     assert "map-country" in html, "map-country filter missing"
     assert "map-year" in html, "map-year filter missing"
+    assert "map-sector" in html, "map-sector filter missing"
     assert "map-metric" in html, "map-metric filter missing"
 
 
@@ -230,6 +231,26 @@ def test_dashboard_territory_click_side_panel():
     html = DASH_PATH.read_text(encoding="utf-8")
     assert "plotly_click" in html, "No plotly_click handler found"
     assert "map-side" in html, "map-side panel missing"
+
+
+def test_portugal_map_is_mainland_only(v03_products):
+    """The map excludes Azores/Madeira without deleting them from the panel."""
+    panel, *_ = v03_products
+    pt_ids = panel.loc[panel["country"].eq("PT"), "territory_id"].astype(str)
+    assert pt_ids.str.startswith(("PT_20", "PT_30")).any()
+
+    html = DASH_PATH.read_text(encoding="utf-8")
+    assert '"panel_id": "PT_200"' not in html
+    assert '"panel_id": "PT_300"' not in html
+    assert "mainland territories" in html
+
+
+def test_map_identifies_sector_for_each_territory():
+    """Map colour must be traceable to a selected or most-dynamic sector."""
+    html = DASH_PATH.read_text(encoding="utf-8")
+    assert "largest absolute change shown" in html
+    assert "shownSector" in html
+    assert "sector=" in html
 
 
 # ---------------------------------------------------------------------------
