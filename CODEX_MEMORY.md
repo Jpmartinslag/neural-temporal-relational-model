@@ -1,5 +1,20 @@
 # HERALD Codex Memory
-Updated 2026-06-11 (DEC-028 CLOSED: E0_V2_PASS; FR_ADJACENCY_READY; A1 contract frozen; S1_FR_BLOCKED until A1 implementation). Read first; verify drift with `rtk git status --short`.
+**LEIA PRIMEIRO.** Updated 2026-06-12 (DEC-030: direction frozen; P6 FAIL; Observatory v0.1 next phase).
+Read this file, then verify drift with `rtk git status --short`.
+
+## Quick orientation (start here)
+- **Direction:** `reports/HERALD_PROJECT_CHARTER.md` — official scope, permitted/forbidden claims, frozen decisions.
+- **Current state by component:** `reports/HERALD_CURRENT_STATE.md` — completion %, blockers, next step.
+- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-030).
+- **Claims classification:** `reports/HERALD_EVIDENCE_MATRIX.md`.
+- **Active document list:** `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`.
+- **Artefact manifest:** `reports/herald_artifact_registry.json`.
+- **Working tree state (NOT YET COMMITTED):** `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` (untracked) contains `S1_FR_FAIL` — GConvGRU/EvolveGCN-H fail frozen gate on France. This parallel result must be committed with a DEC-* entry before being cited. If confirmed, graph-temporal correction branch closes and Observatory v0.1 proceeds without it.
+- **Immediate next steps:** (1) Commit the parallel S1-FR work with a DEC-031 entry. (2) Begin Observatory v0.1 unified export implementation.
+
+## DO NOT change direction without a new DEC-* entry
+No new GNN architecture search. No geographic graph reopen. No P6 relaunch.
+P6 sector-edge CSV (`data/processed/dual_graph_s1/learned_sector_edges.csv`) is **INVALID_FOR_INTERPRETATION** — wrong sector names, see Charter §6 and DEC-030.
 
 ## Rules
 - Repo `/home/jpdark/Downloads/project_recomm/dataset`.

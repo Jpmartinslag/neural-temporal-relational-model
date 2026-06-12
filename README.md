@@ -1,12 +1,17 @@
-# HERALD — Prévision économique territoriale
+# HERALD — Système européen d'intelligence économique territoriale
 
-**HERALD** (*Heterogeneous Economic Relational Adaptive Learning for territorial Dynamics*) est un modèle hybride de prévision territoriale. Il estime les créations d'établissements par zone d'emploi, produit des cartes de dynamisme, ralentissement et structure sectorielle, et apprend les régimes économiques (choc, rebond, tendance) sans flags manuelles.
+**HERALD** (*Heterogeneous Economic Relational Adaptive Learning for territorial Dynamics*) est un **système européen d'intelligence économique territoriale** qui combine prévision quantitative, détection d'états économiques, graphe territorial, graphe sectoriel, explication et (à terme) recommandation.
+
+La naissance d'entreprises est le premier indicateur opérationnel — non l'objectif unique. Voir `reports/HERALD_PROJECT_CHARTER.md` pour la direction officielle et les claims autorisés/interdits.
+
+> **État 2026-06-12 (DEC-030) :** Phase P6_DDEG_S1 — DUAL_GRAPH_S1_FAIL. Direction gelée. Prochain: HERALD Economic Observatory v0.1.
+> Lire d'abord `CODEX_MEMORY.md`, puis `reports/HERALD_CURRENT_STATE.md`.
 
 ---
 
 ## Trajectoire du projet
 
-> **Mise à jour 2026-06-10 :** Le plan Gantt ci-dessous reflète l'état à jour. Le Gantt détaillé avec toutes les tâches, dépendances, risques et critères de conclusion est dans `reports/HERALD_RESEARCH_GANTT.md`.
+> **Mise à jour 2026-06-12 :** Le plan Gantt ci-dessous reflète l'état à la clôture de P6. Le Gantt détaillé avec toutes les tâches, dépendances, risques et critères de conclusion est dans `reports/HERALD_RESEARCH_GANTT.md`.
 
 ```mermaid
 gantt
