@@ -8,7 +8,7 @@
 
 **HERALD** — *Heterogeneous Economic Relational Adaptive Learning for territorial Dynamics*
 
-HERALD is a **European territorial economic intelligence system** that combines quantitative forecasting, economic state detection, territorial and sector graph analysis, causal explanation, and decision-support layers.
+HERALD is a **European territorial economic intelligence system** that combines quantitative forecasting, economic state detection, territorial and sector graph analysis, associative explanation, and decision-support layers.
 
 The birth of enterprises is **one indicator** of territorial dynamics. It is the first operational target because it is measurable and harmonisable across countries. It is not the sole objective of the system.
 
@@ -19,7 +19,7 @@ The birth of enterprises is **one indicator** of territorial dynamics. It is the
 ### 2.1 Quantitative Forecasting
 - Persistence and Ridge/AR estimate how much enterprise activity is expected.
 - Uncertainty intervals must accompany point forecasts.
-- Current validated scope: France (WMAPE 0.0204), PT/IT/AT harmonized LOCO (persistence ~0.087 balanced).
+- Current validated scope: PT/IT/AT harmonized LOCO (persistence ~0.087 balanced). France WMAPE 0.0204 (HERALD Q7, Phase 3E) is PENDING_REAUDIT — potential pipeline dependency on pre-causal growth features; not usable as headline claim until causal audit is completed.
 
 ### 2.2 Economic States
 The system must be able to label the economic state of a territory-sector pair:
@@ -44,7 +44,7 @@ States are descriptive labels derived from observed series. They are not predict
 - Attributes to track: direction (positive/negative), intensity, temporal lag, stability, uncertainty, variance/covariance.
 - **Permitted language:** association, co-movement, predictive precedence.
 - **Forbidden language:** structural economic causality, Granger causality as structural proof.
-- Current status: descriptive layer only; G2 aggregate dynamics valid for FR (DEC-025).
+- Current status: **not yet implemented**. G2 territorial aggregate dynamics (territory↔territory within sector) exist but are not a sector→sector layer. Individual sector→sector associations remain untested.
 
 ### 2.5 Explanation
 - Identify which variables, sectors, and territories are associated with observed changes.
@@ -83,7 +83,7 @@ States are descriptive labels derived from observed series. They are not predict
 | Persistence is best LOCO baseline for PT/IT/AT | 2008–2020, 151 NUTS3, 1-year horizon | Phase 4N |
 | Italian residuals show robust spatial autocorrelation | Moran's I, FDR, LOO-stable | Phase 4O-C |
 | Geographic lags (queen-contiguity) do not improve forecasts | Italy, 2008–2020 | Phase 4P/4Q |
-| HERALD Q7 achieves WMAPE 0.0204 in France | 306 ZE, 2021–2025 | Phase 3E/2R |
+| HERALD Q7 reported WMAPE 0.0204 in France (PENDING_REAUDIT) | 306 ZE, 2021–2025, rolling-window. **Not usable as headline claim** until causal pipeline audit is complete. | Phase 3E/2R |
 | FR/NL/BE/PT targets are semantically heterogeneous | Documented by official sources | Phase 4J |
 | G1-L2 co-growth field is temporally stable (FR/NL/PT) | 3/3 pass, q=0.005 | DEC-019/020 |
 | G2 aggregate temporal signal robust for France | FR 9/9 COVID-robust | DEC-024c/d |
@@ -131,7 +131,7 @@ The following decisions are **closed** and require a new DEC-* entry to reopen:
 | Phase 5 fixed-L2 corrector: NOT_SUPPORTED | CLOSED |
 | No new GNN before integrated prototype | FROZEN |
 | No relaunch of P6 or architecture tuning | FROZEN |
-| No new HPC submission before S1-FR passes locally | FROZEN |
+| No new HPC submission — S1_FR_FAIL closes graph-temporal prediction branch | CLOSED |
 
 ---
 

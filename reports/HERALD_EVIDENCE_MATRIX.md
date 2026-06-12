@@ -2,7 +2,7 @@
 
 **Created:** 2026-06-10  
 **Rule:** Claims are classified by their current evidentiary status. Status reflects the strongest current evidence; do not retroactively upgrade claims using superseded or leaky runs.  
-**Status vocabulary:** `SUPPORTED` · `PARTIALLY_SUPPORTED` · `EXPLORATORY` · `NOT_SUPPORTED` · `REFUTED_UNDER_CURRENT_PROTOCOL` · `NOT_TESTED`
+**Status vocabulary:** `SUPPORTED` · `PARTIALLY_SUPPORTED` · `EXPLORATORY` · `NOT_SUPPORTED` · `REFUTED_UNDER_CURRENT_PROTOCOL` · `NOT_TESTED` · `PENDING_REAUDIT`
 
 ---
 
@@ -13,7 +13,7 @@
 | F-01 | Persistence (`lag1_births`) is the best single predictor for Italy and Austria in rolling-origin LOCO | Phase 4N results | 4N | PT/IT/AT 2008-2020, 151 NUTS3 | Rolling-origin LOCO, causal features | `HERALD_PHASE4N_RESULTS_AUDIT.md` | Strong within protocol | Limited (3 countries, 1 horizon) | Only 2008–2020 window; 1-year horizon only | `SUPPORTED` |
 | F-02 | Residual Ridge improves PT under LOCO but degrades IT and AT | Phase 4N | 4N | PT/IT/AT | LOCO rolling-origin | `HERALD_PHASE4N_RESULTS_AUDIT.md` | Moderate | Low (n=3 countries) | Gain concentrated in scale-invariance, not transferable dynamics | `PARTIALLY_SUPPORTED` |
 | F-03 | Country-balanced WMAPE is protocol-specific: Phase 4N PT/IT/AT persistence ~0.0874; broader heterogeneous-target LOCO is not directly comparable | Phase 4N harmonized + Phase 4G-4I broader LOCO | 4N/4H-B | PT/IT/AT or FR/NL/BE/PT | Rolling-origin LOCO | `HERALD_PHASE4N_RESULTS_AUDIT.md`; `HERALD_PHASE4H_B_RESULTS_AUDIT.md` | Moderate | Protocol-specific | Different country sets and target semantics must not be pooled into one headline metric | `SUPPORTED` |
-| F-04 | HERALD Q7 (France) achieves WMAPE 0.0204 mean 2021–2025 | Phase 3E France confirmatory | 3E / 2R | 306 French ZE, 2021–2025 | Rolling-window, 240 runs, 12 configs × 20 seeds | `HERALD_PHASE3E_QTENSOR_ARCH_AUDIT.md`; `HERALD_PHASE2R_CONFIRMATORY_AUDIT.md` | Strong for France | France only; French institutional data | Not tested on non-French geographies | `SUPPORTED` |
+| F-04 | HERALD Q7 (France) achieves WMAPE 0.0204 mean 2021–2025 | Phase 3E France confirmatory | 3E / 2R | 306 French ZE, 2021–2025 | Rolling-window, 240 runs, 12 configs × 20 seeds | `HERALD_PHASE3E_QTENSOR_ARCH_AUDIT.md`; `HERALD_PHASE2R_CONFIRMATORY_AUDIT.md` | Strong for France | France only; French institutional data | Causal audit of Phase 3E/2R pipeline features (`growth_1y/2y`, `effectifs_lag1`) not yet formally complete for French track | `PENDING_REAUDIT` |
 | F-05 | 50/50 forecast combination improves balanced WMAPE by ~7% vs persistence | Phase 4J-A exploratory | 4J-A | FR/NL/BE/PT | Balanced WMAPE across 4 countries | `HERALD_PHASE4J_A_FORECAST_COMBINATION_AUDIT.md` | Weak (tail degradation) | Not safe for transfer | Worst-year regression; weights not transferable; not promoted | `EXPLORATORY` |
 | F-06 | Ridge direct fails catastrophically on Austria (WMAPE 0.302) due to target-scale mismatch | Phase 4N | 4N | AT | LOCO Ridge direct | `HERALD_PHASE4N_RESULTS_AUDIT.md` | Strong | Any cross-country direct regression without scale normalization | Architecture limitation, not data limitation | `SUPPORTED` |
 | F-07 | FR + NL + BE + PT together constitute a generalizable European panel under a single target definition | Phase 4J semantic audit | 4J | FR/NL/BE/PT | Target concept review | `HERALD_PHASE4J_SEMANTIC_TARGET_AUDIT.md` | Strong refutation | Documented by official source definitions | Cannot be fixed by rerunning — requires new data agreement | `REFUTED_UNDER_CURRENT_PROTOCOL` |

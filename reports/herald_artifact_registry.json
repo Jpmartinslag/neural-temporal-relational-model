@@ -47,7 +47,7 @@
       "path": "data/processed/economic_graph/sector_panel_fr_nl_pt.csv",
       "type": "panel_csv",
       "status": "ACTIVE",
-      "tracked_in_git": false,
+      "tracked_in_git": true,
       "size_bytes": null,
       "sha256_prefix": null,
       "origin_decision": "DEC-015",
@@ -81,7 +81,7 @@
       "path": "data/processed/economic_graph/g2_preflight/",
       "type": "graph_artefact_dir",
       "status": "ACTIVE",
-      "tracked_in_git": false,
+      "tracked_in_git": true,
       "size_bytes": null,
       "sha256_prefix": null,
       "origin_decision": "DEC-024 / DEC-024c / DEC-024d / DEC-025",
@@ -183,7 +183,7 @@
       "path": "data/processed/graph_temporal_preflight/",
       "type": "tensor_dir",
       "status": "SUPERSEDED",
-      "tracked_in_git": false,
+      "tracked_in_git": true,
       "size_bytes": null,
       "sha256_prefix": null,
       "origin_decision": "DEC-027 (schema 1.0); superseded by DEC-028 (schema 2.0)",
@@ -200,7 +200,7 @@
       "path": "reports/HERALD_PHASE4N_RESULTS_AUDIT.md",
       "type": "result_report_md",
       "status": "ACTIVE",
-      "tracked_in_git": true,
+      "tracked_in_git": false,
       "size_bytes": null,
       "sha256_prefix": null,
       "origin_decision": "DEC-006",
@@ -223,10 +223,10 @@
       "origin_decision": "DEC-002 (baseline); Q7 selection confirmed in Phase 3E",
       "generator_script": "hpc/regime/",
       "input_data": ["data/raw/", "data/external/france/"],
-      "claim_authorized": "HERALD Q7 WMAPE 0.0204 (mean 2021-2025), 0.0115 (2025), France 306 ZE.",
-      "claim_forbidden": "Extension to non-French geographies. LOCO claim. Leakage-free claim extended to growth_1y Phase 4A/4D versions.",
+      "claim_authorized": "HERALD Q7 WMAPE 0.0204 (mean 2021-2025), 0.0115 (2025), France 306 ZE. Status: PENDING_REAUDIT — causal audit of Phase 3E/2R pipeline features (growth_1y/2y, effectifs_lag1) not yet formally complete for French track. Not usable as headline claim until audit is done.",
+      "claim_forbidden": "Extension to non-French geographies. LOCO claim. Leakage-free claim extended to growth_1y Phase 4A/4D versions. Citing WMAPE 0.0204 as a headline validated result before causal pipeline audit is complete.",
       "can_regenerate": true,
-      "notes": "French institutional data (SIDE/SIRENE, URSSAF effectifs). Causal protocol confirmed in Phase 3E. Note: growth_1y leakage issue is a Phase 4A/4D problem only."
+      "notes": "French institutional data (SIDE/SIRENE, URSSAF effectifs). Causal protocol confirmed in Phase 3E. Note: growth_1y leakage issue is a Phase 4A/4D problem only. PENDING_REAUDIT status added DEC-030."
     }
   ]
 }
