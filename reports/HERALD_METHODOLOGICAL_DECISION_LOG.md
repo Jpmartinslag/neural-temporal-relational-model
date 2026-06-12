@@ -1062,3 +1062,42 @@ The prototype prototype gate (≥2 countries with COVID-robust edges) is satisfi
 `data/processed/sector_precedence_results/covid_robust_edges.csv`;
 `data/processed/sector_precedence_results/audit/audit_report.json`;
 `reports/HERALD_PHASE7_SECTOR_PRECEDENCE.md`.
+
+---
+
+## DEC-035 — 2026-06-12 — Observatory v0.3: integrate validated sector precedence layer
+
+**Phase:** HERALD Observatory v0.3
+
+**Question:** How should the validated Phase 7 sector precedence results be integrated into the observatory export and dashboard?
+
+**Evidence:** DEC-034 confirms SECTOR_PRECEDENCE_PROTOTYPE_READY: 12 COVID-robust edges (NL=3, PT=9), 25 total promoted main edges (FR=1, NL=8, PT=16). Audit PASS; BH/FDR discrepancy max 1.11e-16.
+
+**Decision:** Observatory v0.3 integrates validated results as a new sector→sector relations layer. Panel row count unchanged (45,945). Schema updated with `sector_graph_available` field reflecting COVID-robust window coverage per country:
+- NL: years 2014–2019 (structural_mask=1)
+- PT: years 2014–2019, 2015–2020, 2017–2022 (structural_mask=1)
+- FR: always 0 (0 COVID-robust edges)
+
+Edges classified:
+- `ROBUST` (12 edges): promoted in main AND without_2020, same sign — safe to display by default
+- `MAIN_ONLY_EXPLORATORY` (13 edges): promoted in main only — hidden by default, user opt-in in dashboard
+
+Provenance note required on all outputs: *"Edges are predictive associations (observational precedence). No structural causality, mechanism, or intervention claim is supported. DEC-034 (2026-06-12)."*
+
+**Alternatives considered:** Showing all 25 main edges by default (rejected — exploratory edges should not be presented with same weight as COVID-robust ones). Showing only the 12 robust edges (rejected — 13 exploratory edges have scientific value if clearly labelled). Separate dashboard file (rejected — integrated in v0.3 to maintain single source of truth).
+
+**Rationale:** Separation of ROBUST and MAIN_ONLY_EXPLORATORY preserves scientific integrity while enabling transparent exploration of preliminary signals.
+
+**Limitations:** (1) Sector graph available only for NL/PT in specific windows. (2) FR contributions are exploratory only. (3) Dashboard is read-only; no claim of actionable policy recommendation.
+
+**Reopen condition:** New panel data, new countries, or discovery of issue in Phase 7 execution.
+
+**Affected files:**
+`src/data/european_panel/build_observatory_v03.py`;
+`data/processed/herald_observatory_v03/herald_observatory_v03_panel.csv`;
+`data/processed/herald_observatory_v03/herald_observatory_v03_sector_relations.json`;
+`data/processed/herald_observatory_v03/herald_observatory_v03_manifest.json`;
+`data/processed/herald_observatory_v03/herald_observatory_v03_summary.json`;
+`reports/dashboards/herald_observatory_v03_dashboard.html`;
+`tests/test_observatory_v03.py`;
+`reports/HERALD_OBSERVATORY_V03_AUDIT.md`.

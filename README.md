@@ -4,7 +4,7 @@
 
 La naissance d'entreprises est le premier indicateur opérationnel — non l'objectif unique. Voir `reports/HERALD_PROJECT_CHARTER.md` pour la direction officielle et les claims autorisés/interdits.
 
-> **État 2026-06-12 (DEC-032) :** Observatory v0.1.1 agrégé et v0.2 sectoriel construits. Prochaine étape: relations secteur→secteur signées et décalées, sans GNN ni claim causal.
+> **État 2026-06-12 (DEC-035) :** Observatory v0.3 complet — couche secteur→secteur validée intégrée (12 arêtes COVID-robustes NL=3/PT=9, DEC-034). Dashboard interactif disponible : `reports/dashboards/herald_observatory_v03_dashboard.html`. Aucun claim causal.
 > Lire d'abord `CODEX_MEMORY.md`, puis `reports/HERALD_CURRENT_STATE.md`.
 
 ---

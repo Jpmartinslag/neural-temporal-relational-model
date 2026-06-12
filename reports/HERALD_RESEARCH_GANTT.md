@@ -229,8 +229,10 @@ economic relations, their evolution, and temporal patterns. NOT forecast improve
 | Phase 3: G2/G3 dynamic graph | G2 descriptive complete; edge stability not supported; G3 not started | Optional | Remaining scope depends on report deadline |
 | Phase 4: G5 explanation + visualization | Not started | ✅ Required | 3–4 weeks |
 | Phase 5: G6 forecast integration | Fixed-L2 corrector closed NOT_SUPPORTED; DEC-027 preflight only | Optional | Local E0/S1 gates before any HPC |
+| **Phase 7: Sector Precedence** | **DONE 2026-06-12 — SECTOR_PRECEDENCE_PROTOTYPE_READY (DEC-034)** | ✅ Done | Complete |
+| **Observatory v0.3** | **DONE 2026-06-12 — sector layer integrated, dashboard generated (DEC-035)** | ✅ Done | Complete |
 | Phase 6: Report | Not started | ✅ Required | 10 weeks before deadline |
-| Phase 7: Article | Not started | Optional | Parallel with Phase 4+ |
+| Article Writing | Not started | Optional | Parallel with Phase 4+ |
 
 **Total minimum viable timeline (Phases 0+1+2+4+6):** ~20 weeks from today  
 **Full timeline (all phases):** ~30+ weeks  

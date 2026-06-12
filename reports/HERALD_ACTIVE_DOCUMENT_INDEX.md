@@ -11,7 +11,7 @@
 | `CODEX_MEMORY.md` | Session handoff; points to all key documents | ACTIVE |
 | `reports/HERALD_PROJECT_CHARTER.md` | Official direction, scope, permitted/forbidden claims | ACTIVE |
 | `reports/HERALD_CURRENT_STATE.md` | State per component, blockers, next step | ACTIVE |
-| `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` | All decisions DEC-001→DEC-031 | ACTIVE |
+| `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` | All decisions DEC-001→DEC-035 | ACTIVE |
 | `reports/HERALD_EVIDENCE_MATRIX.md` | All claims and their evidentiary status (32 claims) | ACTIVE |
 | `reports/HERALD_RESEARCH_GANTT.md` | Timeline and task dependencies | ACTIVE |
 | `hpc/HPC_PHASE_INDEX.md` | HPC phase registry and status | ACTIVE |
@@ -68,7 +68,15 @@
 | Document | Covers | Status |
 |----------|--------|--------|
 | `reports/HERALD_OBSERVATORY_V01_DATA_CONTRACT.md` | Aggregate v0.1.1 + sector v0.2 contract, evidence separation and causal guarantees (DEC-032) | ACTIVE |
-| `reports/HERALD_SECTOR_PRECEDENCE_GRAPH_CONTRACT.md` | Signed lag-1 sector→sector method and fail-closed execution gate (DEC-033) | ACTIVE — full run pending |
+| `reports/HERALD_SECTOR_PRECEDENCE_GRAPH_CONTRACT.md` | Signed lag-1 sector→sector method and fail-closed execution gate (DEC-033) | ACTIVE |
+| `reports/HERALD_PHASE7_SECTOR_PRECEDENCE.md` | Phase 7 full HPC study audit; SECTOR_PRECEDENCE_PROTOTYPE_READY (DEC-034) | ACTIVE |
+| `reports/HERALD_OBSERVATORY_V03_AUDIT.md` | Observatory v0.3 integration audit: sector relations, dashboard, tests (DEC-035) | ACTIVE |
+
+### Dashboard
+| Document | Covers | Status |
+|----------|--------|--------|
+| `reports/dashboards/herald_france_final_dashboard.html` | France operational dashboard | ACTIVE — do not modify without explicit decision |
+| `reports/dashboards/herald_observatory_v03_dashboard.html` | Observatory v0.3: sector graph + states + territory + provenance (DEC-035) | ACTIVE |
 
 ### Bibliography
 | Document | Covers | Status |
@@ -76,11 +84,6 @@
 | `reports/bibliography/HERALD_REFERENCES_MASTER.md` | 25 master references | ACTIVE |
 | `reports/bibliography/herald_references.bib` | BibTeX (Friedman 2008 verified) | ACTIVE |
 | `reports/bibliography/HERALD_REFERENCE_AUDIT.csv` | Reference audit | ACTIVE |
-
-### Dashboard
-| Document | Covers | Status |
-|----------|--------|--------|
-| `reports/dashboards/herald_france_final_dashboard.html` | France operational dashboard | ACTIVE — do not modify without explicit decision |
 
 ---
 
