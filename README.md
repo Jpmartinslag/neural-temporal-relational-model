@@ -389,9 +389,7 @@ explicite.
     fail-closed OK. Tenseurs prêts pour GConvGRU/EvolveGCN-H.
   - **Contrat A1 FROZEN** : interface commune, tête résiduelle bornée (clamp_frac∈{0.10,0.15}),
     pooling masqué, ≤5 000 paramètres, 11 tests obligatoires avant S1-FR.
-  - **S1_FR_BLOCKED** : bloqué jusqu'à implémentation de A1a (GConvGRU), A1b (EvolveGCN-H),
-    A0-neural, et passage des 11 tests dans `tests/test_graph_temporal_a1.py`.
-  - **HPC_BLOCKED** : bloqué jusqu'à passage de S1-FR en local.
+  - **S1_FR_FAIL (DEC-031)** : test scientifique local COMPLETÉ — GConvGRU et EvolveGCN-H échouent tous les critères. Branche graphe-temporel FERMÉE. HPC NON autorisé.
   - Prochaine étape : implémenter `src/modeles/graph_temporal_models.py` + tests.
 
 - **Phase 6 — P6_DDEG_S1 : graphe dual dynamique France — FAIL (2026-06-12) :**
@@ -415,7 +413,7 @@ Voir `reports/HERALD_G1_L2_CAUSAL_COGROWTH_AUDIT.md` et
 - Les résidus italiens montrent une autocorrélation spatiale robuste (Moran's I, FDR, LOO-stable, 7/9 ans).
 - Les lags géographiques linéaires (queen-contiguité) n'améliorent pas les prévisions sous le protocole actuel.
 - FR/NL/BE/PT ont des targets sémantiquement hétérogènes ; le WMAPE poolé n'est pas une métrique de généralisation valide.
-- HERALD Q7 atteint WMAPE moyen 0.0204 sur les ZE françaises 2021–2025.
+- HERALD Q7 a atteint WMAPE moyen 0.0204 sur les ZE françaises 2021–2025 (PENDING_REAUDIT — audit causal du pipeline Phase 3E non encore formalisé).
 
 **Interdits :**
 - « HERALD fournit des recommandations économiques. » (module inexistant)

@@ -115,9 +115,9 @@ The following documents are retained for audit trail but are superseded for acti
 
 ---
 
-## Deprecated WMAPE 0.0204 France — Leakage Note
+## WMAPE 0.0204 France — PENDING_REAUDIT
 
-The French WMAPE 0.0204 (HERALD Q7, Phase 3E) uses French SIDE/SIRENE data with causal lag features. It does not use the `growth_1y` leakage from Phase 4A/4D. The result is valid within its declared scope: 306 French ZE, 2021–2025, rolling-window protocol. Do not extend this claim to other countries or cite it as a LOCO result.
+The French WMAPE 0.0204 (HERALD Q7, Phase 3E) uses French SIDE/SIRENE data. **Status: PENDING_REAUDIT.** The causal audit of the full Phase 3E/2R pipeline features (`growth_1y/2y`, `effectifs_lag1`) is not yet formally complete for the French track. This result must not be cited as a headline claim until the audit is done. Scope limitation still applies: France only, 2021–2025, rolling-window.
 
 ---
 

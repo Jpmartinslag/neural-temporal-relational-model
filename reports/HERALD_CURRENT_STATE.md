@@ -13,8 +13,8 @@
 | Territorial graph (G1-L2) | **75%** | FR/NL/PT PASS; community detection NOT_SUPPORTED |
 | Aggregate dynamics (G2) | **75%** | FR robust; NL/PT COVID-sensitive |
 | Economic states | **45%** | Labels defined; regime detection in P2/P3 for France only |
-| Sector→sector graph | **20%** | G2 aggregate only; G1-L1 FAIL; edge-level not validated |
-| Explanation | **30%** | Descriptive co-growth associations; no attention/causal explanation |
+| Sector→sector graph | **0%** | Not yet implemented. G2 is territorial co-growth evolution (territory↔territory within sector), not sector→sector. G1-L1 FAIL. |
+| Explanation | **30%** | Descriptive co-growth associations; no attention/associative explanation validated |
 | Dashboard | **65%** | France base operational; observatory integration pending |
 | Recommendation | **35%** | Intelligence layer structure exists; weights/claims not validated |
 | **Integrated prototype** | **~60%** | Components exist; no unified export yet |
@@ -28,7 +28,7 @@
 
 | Country | Best model | WMAPE | Status |
 |---------|-----------|-------|--------|
-| France | HERALD Q7 | 0.0204 (2021–2025) | VALIDATED |
+| France | HERALD Q7 | 0.0204 (2021–2025) | PENDING_REAUDIT — potential pre-causal growth feature dependency; not headline-ready |
 | PT/IT/AT balanced | Persistence | ~0.0874 | VALIDATED |
 | NL | Persistence | LOCO result | VALIDATED |
 | BE | Persistence (Phase 4E-B b3) | 0.1488 | VALIDATED |
@@ -46,7 +46,7 @@
 - **Forbidden:** Individual edge claims; causal interpretation; Louvain communities.
 - **Artefact:** `data/processed/economic_graph/g1_l2_cogrowth/`
 
-#### G2 Aggregate Dynamics (sector→sector descriptive)
+#### G2 Aggregate Dynamics (territorial co-growth temporal evolution)
 - **Status:** G-14 SUPPORTED (descriptive); G-13 PARTIALLY_SUPPORTED (aggregate coherence FR-robust only).
 - **Scope:** FR aggregate temporal signal robust. NL/PT COVID-sensitive.
 - **Forbidden:** Individual edge stability; cross-country pooling; causal attribution.

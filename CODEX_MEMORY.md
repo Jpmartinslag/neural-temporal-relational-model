@@ -10,7 +10,7 @@ Read this file, then verify drift with `rtk git status --short`.
 - **Active document list:** `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`.
 - **Artefact manifest:** `reports/herald_artifact_registry.json`.
 - **Working tree state (NOT YET COMMITTED):** `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` (untracked) contains `S1_FR_FAIL` — GConvGRU/EvolveGCN-H fail frozen gate on France. This parallel result must be committed with a DEC-* entry before being cited. If confirmed, graph-temporal correction branch closes and Observatory v0.1 proceeds without it.
-- **Immediate next steps:** (1) Commit the parallel S1-FR work with a DEC-031 entry. (2) Begin Observatory v0.1 unified export implementation.
+- **Immediate next step:** Begin Observatory v0.1 unified export implementation (`src/data/european_panel/build_observatory_export.py`).
 
 ## DO NOT change direction without a new DEC-* entry
 No new GNN architecture search. No geographic graph reopen. No P6 relaunch.
@@ -230,8 +230,8 @@ No dashboard modification (DEC-014). No HPC, GNN, recommendation.
   `tests/test_graph_temporal_a1.py`, 5 seeds {42–46}, rolling-origin folds, masked WMAPE loss.
 - Evidence matrix: 32 claims; SUPPORTED=12, PARTIALLY_SUPPORTED=3, NOT_SUPPORTED=5,
   NOT_TESTED=5. MET-06 added (schema 2.0 pipeline: causal, deterministic, aligned with H0b).
-- **S1_FR_BLOCKED**: FR scientific local test is BLOCKED until A1a, A1b, A0-neural
-  implemented and all 11 mandatory tests pass. HPC remains BLOCKED.
+- **S1_FR_FAIL (DEC-031)**: FR scientific local test COMPLETED — GConvGRU and EvolveGCN-H
+  fail all gate criteria. Graph-temporal prediction branch CLOSED. HPC NOT authorized.
 - Adjacency audit (NL): 29–36% negative correlations; 0–1 isolated regions at
   k=5 (NL/2019 is sparse: 40 isolated across one sector). Primary repr: positive_topk.
 
@@ -296,7 +296,7 @@ Index: `hpc/HPC_PHASE_INDEX.md`. Registry: `hpc/hpc_phase_registry.json`.
 Full study complete — job 7453691, 275/275 COMPLETED, 0 FAILED.
 Gate: **DUAL_GRAPH_S1_FAIL** — all 7 criteria fail. Predictive dual-graph branch CLOSED. Do not relaunch.
 C5_dual MAE 0.1424 vs C1_ridge 0.1242 (+14.6%) and C2_no_graph 0.1329 (+7.2%). Seed Jaccard 0.3353 (threshold 0.50).
-Descriptive: C↔KZ edges appear in 80% of fold×seed runs; not predictively validated.
+Descriptive: named-edge artefact INVALID_FOR_INTERPRETATION (sector label mapping unverifiable); index-based stability not predictively validated.
 Key artifacts: `data/processed/dual_graph_s1/gate_result.json`, `reports/HERALD_DUAL_GRAPH_S1_RESULTS.md`,
 `reports/HERALD_DUAL_GRAPH_S1_FINAL_AUDIT.md`. Status in registry: frozen/FAIL (DEC-029).
 
