@@ -1,0 +1,162 @@
+[
+  {
+    "canonical_id": "P2P3_REGIME_FRANCE",
+    "canonical_name": "Phase 2+3 — Regime Learning France",
+    "legacy_names": ["herald_phase2", "herald_phase3", "regime", "phase2a", "phase3c", "phase3d", "phase3e"],
+    "script_paths": ["hpc/regime/"],
+    "result_paths": [
+      "hpc_results/herald_regime_phase2*",
+      "hpc_results/herald_regime_phase3*",
+      "hpc_results/herald_regime_discovery_*",
+      "hpc_results/final_model_comparison_20260429"
+    ],
+    "status": "frozen",
+    "scientific_scope": "France NUTS3; regime learning, feature minimality, architecture selection. Q7_effectifs_lag1 selected in Phase 3E. Phase 2R confirmatory complete.",
+    "depends_on": [],
+    "safe_to_move": false,
+    "notes": "Many scripts import from src/ via relative BASE paths. Results have per-seed CSVs and NPZs — do not version. Safe to read scripts in-place. hpc/validation/ (Semi V2) belongs to this phase."
+  },
+  {
+    "canonical_id": "P2P3_SEMIV2_VALIDATION",
+    "canonical_name": "Phase 2+3 — Semi V2 Validation",
+    "legacy_names": ["semiv2_validation", "herald_semiv2"],
+    "script_paths": ["hpc/validation/"],
+    "result_paths": [
+      "hpc_results/herald_semi_total_253_geo2025",
+      "hpc_results/herald_semi_v2_final_20260504"
+    ],
+    "status": "frozen",
+    "scientific_scope": "France; Semi V2 baseline validation battery.",
+    "depends_on": ["P2P3_REGIME_FRANCE"],
+    "safe_to_move": false,
+    "notes": "Final dashboard is hpc_results/herald_semi_v2_final_20260504/. Results referenced by visualisation scripts."
+  },
+  {
+    "canonical_id": "P_AUDIT_EXANTE",
+    "canonical_name": "Cross-Phase Audit — Strict Ex-Ante + Leak Stress",
+    "legacy_names": ["strict_exante", "leak_stress", "herald_audit"],
+    "script_paths": ["hpc/audit/"],
+    "result_paths": [
+      "hpc_results/herald_strict_exante_*",
+      "hpc_results/herald_leak_stress_*"
+    ],
+    "status": "frozen",
+    "scientific_scope": "Cross-phase; strict ex-ante causal audit + target-shuffle leak stress. France NUTS3.",
+    "depends_on": ["P2P3_REGIME_FRANCE"],
+    "safe_to_move": false,
+    "notes": "Key results already exported to reports/. Scripts reusable for future phases."
+  },
+  {
+    "canonical_id": "P_FORECAST_2026_2027",
+    "canonical_name": "Prospective Forecast 2026-2027",
+    "legacy_names": ["herald_forecast"],
+    "script_paths": ["hpc/forecast/"],
+    "result_paths": [
+      "hpc_results/herald_forecast_*",
+      "hpc_results/herald_v6_observed2025_*",
+      "hpc_results/imported_from_vm_20260501"
+    ],
+    "status": "frozen",
+    "scientific_scope": "France; prospective enterprise-birth forecast 2026/2027 using HERALD V6.",
+    "depends_on": ["P2P3_REGIME_FRANCE"],
+    "safe_to_move": false,
+    "notes": "DEFAULT_HPC path hardcoded in src/visualisation/plot_herald_v6_2025_dashboard.py. Do not move hpc_results/herald_v6_observed2025_20260430_142920/."
+  },
+  {
+    "canonical_id": "P4_GEO_GRAPH",
+    "canonical_name": "Phase 4 — Geographic Graph (NL/BE/PT/FR) — CLOSED",
+    "legacy_names": [
+      "phase4", "phase4a", "phase4b", "phase4c", "phase4d",
+      "phase4e", "phase4f", "phase4g", "phase4h", "phase4p", "phase4q",
+      "herald_phase4", "herald_phase4e", "herald_phase4g", "herald_phase4h"
+    ],
+    "script_paths": ["hpc/phase4/"],
+    "result_paths": [
+      "hpc_results/herald_phase4_*",
+      "hpc_results/herald_phase4c_*",
+      "hpc_results/herald_phase4d_*",
+      "hpc_results/herald_phase4e_a_*",
+      "hpc_results/herald_phase4e_b_*",
+      "hpc_results/herald_phase4e_c_*",
+      "hpc_results/herald_phase4h_b_*",
+      "hpc_results/herald_phase4i_a_*",
+      "hpc_results/herald_phase4j_a_*",
+      "hpc_results/herald_phase4n_a_*",
+      "hpc_results/herald_phase4o_*",
+      "hpc_results/herald_phase4p_it_spatial_lag_*",
+      "hpc_results/herald_phase4q_it_spatial_durbin_*",
+      "hpc_results/smoke_phase4*"
+    ],
+    "status": "frozen",
+    "scientific_scope": "NL/BE/PT/FR NUTS3; international baselines, geographic queen-contiguity graph tests. Phase 4A-D leaky (superseded). Phase 4E-N causal. Phase 4P: Italy spatial-lag FAIL (p=.19). Phase 4Q: Italy Spatial-Durbin FAIL (p=.32). Geographic queen-contiguity branch CLOSED.",
+    "depends_on": ["P2P3_REGIME_FRANCE"],
+    "safe_to_move": false,
+    "notes": "Phase 4A-D use growth_1y[t] as input (leaky) — scientific baseline starts at 4E. Results from 4P/4Q define the FAIL decision on geographic graph. hpc/phase4/README.md preserved. Many scripts import from src/ using BASE = Path(__file__).resolve().parents[2]. Do not move scripts; they are referenced in CODEX_MEMORY.md and README.md."
+  },
+  {
+    "canonical_id": "P4_HARMONIZED_LOCO",
+    "canonical_name": "Phase 4N/4O-C — Harmonized LOCO + Spatial Residuals",
+    "legacy_names": ["phase4n", "phase4o", "phase4o_b", "phase4o_c", "harmonized_loco"],
+    "script_paths": [
+      "hpc/phase4/run_phase4n_harmonized_loco.py",
+      "hpc/phase4/run_phase4o_c_residual_spatial_diagnostic.py",
+      "hpc/phase4/audit_phase4o_b_results.py"
+    ],
+    "result_paths": [
+      "hpc_results/herald_phase4n_a_local_r1",
+      "hpc_results/herald_phase4o_*"
+    ],
+    "status": "frozen",
+    "scientific_scope": "PT/IT/AT 151 NUTS3 regions; LOCO harmonized target enterprise_birth; Moran's I spatial residual audit. IT PASS; PT/AT FAIL. Multi-country Phase 4P NOT authorized (1/3).",
+    "depends_on": ["P4_GEO_GRAPH"],
+    "safe_to_move": false,
+    "notes": "Subcomponent of P4_GEO_GRAPH. Separated here because the harmonized LOCO track continues on Path H. Italy-only results are canonical references."
+  },
+  {
+    "canonical_id": "P5_FIXED_GRAPH_CORRECTOR",
+    "canonical_name": "Phase 5 — Fixed L2 Co-growth Graph Corrector",
+    "legacy_names": ["phase5", "phase5_h2", "fixed_graph_corrector"],
+    "script_paths": ["hpc/phase5/"],
+    "result_paths": [],
+    "status": "NOT_SUPPORTED",
+    "scientific_scope": "FR/NL NUTS3; neural corrector with fixed L2 co-growth adjacency. NL ablation: H2-neural (8,) WMAPE 5.53% vs H0b 3.41% — fails regression gate. Best H0b remains. All corrector branches closed.",
+    "depends_on": ["P4_HARMONIZED_LOCO"],
+    "safe_to_move": false,
+    "notes": "HPC jobs ran on remote meso; results were NOT persisted locally in hpc_results/ (run checked locally). Script hpc/phase5/run_phase5_job.py imports from src/modeles/phase5/. Do not delete scripts — they document the NOT_SUPPORTED decision (DEC-023). hpc/phase5/__init__.py required for Python import."
+  },
+  {
+    "canonical_id": "P_RESEARCH_EXPLORATORY",
+    "canonical_name": "Research Track — V7 / Showdown (Exploratory)",
+    "legacy_names": ["herald_v7", "showdown", "research"],
+    "script_paths": ["hpc/research/"],
+    "result_paths": [],
+    "status": "exploratory",
+    "scientific_scope": "France; exploratory V7 architecture search and winner showdown (not in main scientific track).",
+    "depends_on": [],
+    "safe_to_move": true,
+    "notes": "No external imports from src/ found for these scripts. Results not persisted locally. Safe to archive but not required."
+  },
+  {
+    "canonical_id": "P6_DDEG_S1",
+    "canonical_name": "Phase 6 — Dynamic Dual Economic Graph (S1 France)",
+    "legacy_names": ["dual_graph", "dual_graph_s1", "p6_ddeg"],
+    "script_paths": [
+      "src/modeles/train_dual_graph_experiment.py",
+      "src/modeles/dual_graph_models.py",
+      "src/modeles/run_dual_graph_pilot.py",
+      "src/modeles/run_dual_graph_smoke.py",
+      "hpc/phase6_dynamic_dual_graph/scripts/"
+    ],
+    "result_paths": [
+      "data/processed/dual_graph_tensors/",
+      "data/processed/dual_graph_s1/",
+      "data/processed/dual_graph_pilot_all_folds/",
+      "hpc_results/phase6_dynamic_dual_graph/"
+    ],
+    "status": "active",
+    "scientific_scope": "France NUTS3; 101 regions; 9 A10 sectors; eval years 2021-2025. Territory graph (observed causal dynamic) + sector graph (learned sparse). Targets: sector log-growth, regime, recovery, emergence. Representation-learning track; association/early-warning claims only. HPC full study NOT YET LAUNCHED.",
+    "depends_on": ["P4_GEO_GRAPH", "P5_FIXED_GRAPH_CORRECTOR"],
+    "safe_to_move": false,
+    "notes": "Trainer at src/modeles/train_dual_graph_experiment.py (default out: data/processed/dual_graph_s1/). HPC output target: hpc_results/phase6_dynamic_dual_graph/full/ or hpc_results/dual_graph_s1/raw/. HPC scripts to be created at hpc/phase6_dynamic_dual_graph/scripts/. Pilot (5 folds x 11 controls x 2 seeds = 110 runs): data/processed/dual_graph_pilot_all_folds/ — gate DUAL_GRAPH_S1_FAIL (6/7 criteria fail; only c6_no_fold_regression passes). Full study (5x11x5=275 jobs) not yet submitted. Model frozen: dual_graph_models.py commit 9521264. Tensors frozen: dual_graph_tensors/manifest.json. Gate thresholds frozen per contract. Do NOT rerun pilot or modify hyperparameters based on gate result."
+  }
+]

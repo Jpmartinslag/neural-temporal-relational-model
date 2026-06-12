@@ -3,6 +3,25 @@
 Ce dossier est une archive de calcul. Il peut contenir beaucoup de fichiers lourds, logs, CSV de
 prédiction et `.npz` internes. Il ne doit pas être la structure principale du projet.
 
+## Phase index et taxonomie
+
+Voir `hpc/HPC_PHASE_INDEX.md` pour la carte complète des phases et `hpc/hpc_phase_registry.json`
+pour le registre machine-readable.
+
+### Phase 6 — Graphe Économique Dual Dynamique (P6_DDEG_S1) — ACTIVE
+
+```text
+hpc_results/phase6_dynamic_dual_graph/
+├── pilot/    ← sorties du pilote réduit (local, data/processed/dual_graph_pilot_all_folds/)
+├── smoke/    ← smoke test distant (avant soumission array)
+├── full/     ← sorties array complètes (5 folds × 11 contrôles × 5 seeds = 275 jobs)
+└── logs/     ← fichiers Slurm .out / .err
+```
+
+Pilote local (5 folds × 11 contrôles × 2 seeds = 110 runs) : **gate DUAL_GRAPH_S1_FAIL**.
+Étude complète HPC : **non encore soumise**.
+Résultats du pilote : `data/processed/dual_graph_pilot_all_folds/gate_result.json`.
+
 ## Runs récents importants
 
 - `herald_regime_phase2r_confirmatory_20260526_2r_confirm_r1_r1/` — Phase 2R confirmatoire,
