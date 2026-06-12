@@ -68,6 +68,7 @@
 | Document | Covers | Status |
 |----------|--------|--------|
 | `reports/HERALD_OBSERVATORY_V01_DATA_CONTRACT.md` | Aggregate v0.1.1 + sector v0.2 contract, evidence separation and causal guarantees (DEC-032) | ACTIVE |
+| `reports/HERALD_SECTOR_PRECEDENCE_GRAPH_CONTRACT.md` | Signed lag-1 sector→sector method and fail-closed execution gate (DEC-033) | ACTIVE — full run pending |
 
 ### Bibliography
 | Document | Covers | Status |

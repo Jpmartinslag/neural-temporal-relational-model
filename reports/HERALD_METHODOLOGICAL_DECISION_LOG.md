@@ -991,3 +991,30 @@ influence.
 `reports/herald_artifact_registry.json`; `reports/HERALD_CURRENT_STATE.md`;
 `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`; `reports/HERALD_RESEARCH_GANTT.md`;
 `README.md`; `CODEX_MEMORY.md`.
+
+---
+
+## DEC-033 — 2026-06-12 — Signed lagged sector precedence graph contract
+
+**Phase:** HERALD Economic Observatory, sector→sector layer
+
+**Question:** Does lagged growth in sector A add information about next-year
+growth in sector B after controlling B's own lag?
+
+**Method frozen before execution:** Directed lag-1 partial regression in
+six-year country windows; territory/year demeaning; standardized signed
+coefficient; incremental R²; within-year territory permutation; BH/FDR;
+territory bootstrap sign stability; main and 2020-excluded scenarios.
+
+**Promotion gate:** `q≤0.05`, `|beta|≥0.10`, `delta_r2≥0.005`, sign stability
+`≥0.70`, at least 60 observations. Prototype promotion additionally requires
+COVID-robust promoted edges in at least two countries.
+
+**Decision:** Implementation and unit tests are authorized. Full execution is
+pending. Outputs are predictive-precedence associations, never structural
+causality or economic intervention effects. No dashboard edge may be displayed
+before the full run is audited.
+
+**Affected files:** `src/data/european_panel/build_sector_precedence_graph.py`;
+`tests/test_sector_precedence_graph.py`;
+`reports/HERALD_SECTOR_PRECEDENCE_GRAPH_CONTRACT.md`.

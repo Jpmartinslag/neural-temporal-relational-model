@@ -1,6 +1,6 @@
 # HERALD Current State
-**Updated:** 2026-06-12 (post DEC-032, Observatory sector export v0.2)
-**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-032), `HERALD_EVIDENCE_MATRIX.md`.
+**Updated:** 2026-06-12 (post DEC-033, sector precedence implementation pending full run)
+**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-033), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
 
@@ -13,7 +13,7 @@
 | Territorial graph (G1-L2) | **75%** | FR/NL/PT PASS; community detection NOT_SUPPORTED |
 | Aggregate dynamics (G2) | **75%** | FR robust; NL/PT COVID-sensitive |
 | Economic states | **60%** | Deterministic observed states exported for aggregate PT/IT/AT and sector FR/NL/PT |
-| Sector→sector graph | **0%** | Not yet implemented. G2 is territorial co-growth evolution (territory↔territory within sector), not sector→sector. G1-L1 FAIL. |
+| Sector→sector graph | **35%** | Signed lag-1 partial-association builder implemented and tested; full permutation/bootstrap run pending |
 | Explanation | **30%** | Descriptive co-growth associations; no attention/associative explanation validated |
 | Dashboard | **65%** | France base operational; observatory integration pending |
 | Recommendation | **35%** | Intelligence layer structure exists; weights/claims not validated |
@@ -100,7 +100,7 @@
 | Item | Blocker | Reopen condition |
 |------|---------|-----------------|
 | HPC new submission | S1_FR_FAIL (DEC-031) — graph-temporal branch closed | New information hypothesis + new DEC-* required |
-| Sector→sector graph | Method and fail-closed gate not yet implemented | Next authorized Observatory task |
+| Sector→sector graph | Full 999-permutation/500-bootstrap run pending | Execute DEC-033 contract, then audit before visualization |
 | Recommendation layer | Bloco 1 + Bloco 2 complete | — |
 | New GNN architecture | Integrated prototype complete | New hypothesis + new data |
 | Conformal intervals | Method selection | Choose between conformal or bootstrap |
@@ -110,7 +110,7 @@
 ## Reference Documents
 
 - Direction and claims: `reports/HERALD_PROJECT_CHARTER.md`
-- All decisions: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-032)
+- All decisions: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-033)
 - Claims classification: `reports/HERALD_EVIDENCE_MATRIX.md`
 - Gantt: `reports/HERALD_RESEARCH_GANTT.md`
 - HPC registry: `hpc/hpc_phase_registry.json`
