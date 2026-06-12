@@ -1,11 +1,11 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-12 (DEC-035: Observatory v0.3 complete with sector precedence layer).
+**LEIA PRIMEIRO.** Updated 2026-06-12 (DEC-036: geographic dashboard, derived windows, France ZE documentation).
 Read this file, then verify drift with `rtk git status --short`.
 
 ## Quick orientation (start here)
 - **Direction:** `reports/HERALD_PROJECT_CHARTER.md` — official scope, permitted/forbidden claims, frozen decisions.
 - **Current state by component:** `reports/HERALD_CURRENT_STATE.md` — completion %, blockers, next step.
-- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-035).
+- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-036).
 - **Claims classification:** `reports/HERALD_EVIDENCE_MATRIX.md`.
 - **Active document list:** `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`.
 - **Artefact manifest:** `reports/herald_artifact_registry.json`.
