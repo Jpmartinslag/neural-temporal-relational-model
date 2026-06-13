@@ -1772,3 +1772,49 @@ L3 failure is **structural** (signal ceiling ~2% under these dynamics), not a co
 Recommendation: Option C is scientifically defensible. The improvement is real, consistent, and specific to true graph structure. The 5% gate was protective; it should remain in the log as a benchmark for future work.
 
 **Full results:** `reports/HERALD_PHASE10_LAGGED_RESULTS.md`
+
+---
+
+## DEC-044 — 2026-06-13 — Phase 10 Metric Reconciliation + Signal Sensitivity Experiment
+
+**Phase:** 10 (post-audit)  
+**Question:** (1) Is the AUC discrepancy between DEC-042 (0.727) and Phase 10 herald_contemp (0.40) a metric bug or a model difference? (2) Does the herald_lagged MAE improvement scale with cross-sector signal strength?
+
+**Evidence:**  
+- Full edge metric audit from 20 Phase 10 JSON result files (7457885):
+  - herald_contemp: AUC 0.39–0.43, precision@k ≈ prevalence (no structure recovery above chance)
+  - herald_lagged: AUC 0.64–0.71, precision@k 0.35–0.43 (3–4× prevalence)
+  - oracle_lagged: AUC 1.000 in all 20 tasks (wiring verified, gate L2 PASS confirmed)
+- AUC convention confirmed: `y_score = learned_attn[target, source]`. Bug B1 changed `[rows,cols]` → `[cols,rows]`. Fixed before Phase 10.
+- Phase 9 retroactive correction (1-0.273=0.727) and Phase 10 herald_contemp (0.406) are different training runs under symmetric adjacency (B2), not a metric inconsistency.
+- Fixture test validates: perfect attention at `attn[target,source]` → AUC=1.0; wrong indexing → AUC<0.5.
+
+**Alternatives considered:**  
+- Metric bug in Phase 10 computation → ruled out by oracle_lagged AUC=1.000 and fixture tests.
+- Re-running Phase 9 with B1 fix → not done (unnecessary given oracle proof; Phase 9 result stands as LEGACY).
+
+**Decision:**  
+- **PHASE10_PARTIAL_CONFIRMED.** No retroactive reclassification.
+- **PHASE10_REPORTING_CORRECTED:** The DEC-042 "corrected AUC=0.727" refers to Phase 9 retroactive only. Phase 10 herald_contemp AUC=0.40 is the current benchmark. These are MODEL_DIFFERENCE, not contradictory.
+- New experiment **PHASE10_SIGNAL_SENSITIVITY** launched (gates S1-S7 frozen before execution). Runner: `src/modeles/synthetic/run_signal_sensitivity.py`. Gates: `src/modeles/synthetic/gates_sensitivity.py`. Grid: 324 tasks (cs_force × AR × noise × lag × 2 scenarios × 3 seeds). Smoke test passed (3.6s, oracle AUC=1.000, wiring confirmed). Full run requires explicit HPC authorization.
+- `forced_lag` parameter added to `SyntheticConfig` (backward compatible, default=None). Used by sensitivity runner to force lag-1-only or lag-2-only true relations.
+- Generalization scenario renamed conceptually to `shifted_dynamics_scenario` in documentation. True cross-scenario generalization (train on {linear,mixed}, test on {shifted_dynamics}) is GENERALIZATION_NOT_YET_TESTED.
+
+**Rationale:**  
+- Symmetric adjacency (B2) makes direction learning non-deterministic. Different runs converge to different local optima. Phase 9 learned the forward direction; Phase 10 learned the reverse (for herald_contemp). The oracle_lagged AUC=1.000 confirms correct metric implementation — if the metric were wrong, the oracle would not score 1.0.
+- Signal sensitivity experiment is needed to determine if the L3 failure (MAE +1–2%, threshold 5%) is a generator artifact (AR dominance) or a fundamental model limitation. S7 (monotonicity gate) specifically tests whether stronger cross-sector signal increases oracle utility.
+
+**Limitations:**  
+- Sensitivity full run not yet executed (HPC authorization pending). Pilot/smoke test only confirms wiring.
+- Calibration contract documented but not implemented (C1-C4 deferred until L3 PASS).
+- B2 (symmetric adj direction ambiguity) is not resolved; sensitivity experiment does not address it.
+
+**Reopen condition:** Sensitivity full run PASS/PARTIAL determination after HPC authorization.
+
+**Affected files:**  
+- `src/data/synthetic/generate_herald_synthetic.py` (forced_lag field added)
+- `src/modeles/synthetic/run_signal_sensitivity.py` (new — sensitivity runner)
+- `src/modeles/synthetic/gates_sensitivity.py` (new — S1-S7 frozen gates)
+- `tests/test_phase10_metric_reconciliation.py` (new — AUC fixture + forced_lag tests)
+- `reports/HERALD_PHASE10_METRIC_RECONCILIATION.md` (new)
+- `reports/HERALD_PHASE10_SIGNAL_SENSITIVITY.md` (new — contract with S1-S7 + smoke test results)
