@@ -1538,4 +1538,75 @@ This does not require architecture changes.
 `src/modeles/synthetic/run_convergence_probe.py` (NEW);
 `data/processed/synthetic_benchmark/convergence_probe/` (4 task JSONs + summary);
 `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (this entry);
+
+---
+
+## DEC-042 — 2026-06-13 — Graph Usage Diagnostic
+
+**Phase:** Phase 9 — diagnostic sub-task (post HPC full run)
+**Question:** Why does the HERALD neural architecture fail to exploit the true graph signal?
+HPC full run results: herald MAE=0.308, oracle MAE=0.307, ffill MAE=0.255. All G1 FAIL, G2
+falsely reported FAIL (AUC=0.27), ffill dominates. Diagnose before changing architecture.
+
+**Evidence:** Code audit + pre-specified diagnostic gates D1-D5 + trivial scenario (5T×3S×30Y,
+1 edge, seed=42).
+
+**Bugs identified:**
+
+B1 (CRITICAL — evaluation): `compute_edge_recovery_metrics` in `evaluate_imputation.py:260`
+used `y_score = learned_attn[rows, cols]` where rows=source, cols=target. But
+`learned_attn[i,j]` = weight for target i from source j (j→i). Correct: `learned_attn[cols,rows]`.
+This transposed AUC from 0.27 (reported) to 0.73 (corrected). G2 was always passing; the
+metric was wrong. Symmetry check: `|0.273 + 0.727 − 1.0| ≈ 0.0`.
+
+B2 (METHODOLOGICAL): `_sector_adj_from_relations` returns symmetric adjacency (both s→t and
+t→s set to 1 for any directed true edge). Oracle is initialised with this undirected matrix;
+cannot distinguish source from target. MLP can break symmetry via gradient; oracle cannot.
+
+B3 (ARCHITECTURAL): Graph aggregation uses contemporaneous values at year y. True cross-sector
+effects use lagged values at year y−lag. Structural evidence: `corr(src[t-1],tgt[t]) >>
+corr(src[t],tgt[t])` for the true relation. Empirical: oracle-lagged MAE=0.0595 <
+oracle-contemp MAE=0.0623 on trivial scenario (−4.5%). On full benchmark (φ=0.3-0.6 AR),
+contemp oracle cannot beat ffill.
+
+**Diagnostic gate results:**
+- D1 PASS: oracle MAE (0.062) < no-graph MAE (0.069)
+- D2 PASS: |MAE_zero − MAE_oracle| = 0.006 > 1e-3
+- D3 PASS: directed oracle AUC=1.0 (corrected); HPC corrected mean=0.727
+- D4 FAIL: ceiling effect (AUC=1.0 at λ=0 on trivial); test non-discriminating at this scale
+- D5 PASS: oracle-lagged MAE=0.060 < ffill MAE=0.078
+- D6: NOT EVALUATED (D4 non-discriminating)
+
+**Decision:**
+Verdict: IMPLEMENTATION_BUG_FIXED + ARCHITECTURE_STRUCTURALLY_INADEQUATE
+
+Action 1 (B1): Fix applied immediately — `y_score = learned_attn[cols, rows]`. No gate
+thresholds changed. G2 PASS is now the correct evaluation. Minimum criterion (G2 + G5 + G3):
+PASS after fix.
+
+Action 2 (B3): Architectural fix (`HERALDGraphImputerLagged` — lag-1 sector aggregation)
+provided as diagnostic prototype in `run_diagnostic.py`. NOT authorised for full benchmark
+without new DEC specifying new gates and HPC budget.
+
+Action 3 (B2): Documented only. No immediate change to `sector_adj` or oracle wiring.
+
+**G2 gate revision:** HPC run with corrected evaluation → G2 PASS (0.727 > 0.60 threshold).
+G1 remains FAIL. G5 PASS. Minimum criterion: PASS.
+
+**Limitations:**
+- B3 diagnosis on trivial scenario (1 edge, φ=0.2, σ=0.05); full benchmark has 8 edges, φ=0.3-0.6.
+- Corrected G2 does not affect HPC MAE results (imputation accuracy unchanged).
+- D4 non-discriminating on trivial; future DEC should evaluate at full-benchmark scale.
+- Conformal calibration: unchanged; still requires post-HPC DEC.
+
+**Reopen condition:**
+- D6 (architecture reopen): new DEC authorising B3 fix with new gates and HPC budget.
+
+**Affected files:**
+`src/modeles/synthetic/evaluate_imputation.py` (B1 fix: line 260);
+`src/modeles/synthetic/run_diagnostic.py` (NEW — HERALDGraphImputerLagged + all diagnostic code);
+`tests/test_diagnostic.py` (NEW — 12 pre-specified tests, 12/12 PASS);
+`data/processed/synthetic_benchmark/diagnostic/diagnostic_results.json` (NEW);
+`reports/HERALD_PHASE9_GRAPH_USAGE_DIAGNOSTIC.md` (NEW);
+`reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (this entry);
 `reports/HERALD_SYNTHETIC_BENCHMARK_CONTRACT.md` (G4 calibration spec added).
