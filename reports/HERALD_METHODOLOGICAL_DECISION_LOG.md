@@ -1291,3 +1291,65 @@ Status per country:
 `data/processed/european_panel/european_sector_coverage_summary.json`;
 `data/processed/european_panel/european_sector_source_manifest.json`;
 `reports/HERALD_EUROPEAN_SECTOR_COVERAGE_PREFLIGHT.md`.
+
+## DEC-039 — 2026-06-13 — Synthetic Controlled Benchmark for Imputation Validation
+
+**Status:** IMPLEMENTED — smoke PASS
+
+**Scope:** Phase 9 — synthetic controlled benchmark to validate HERALD's capability for (a) missing label reconstruction and (b) recovery of non-linear economic dynamics with known ground truth.
+
+**Contract (pre-specified, falsifiable):**
+- H1: HERALD (B7) achieves lower MAE at hidden cells than Ridge (B5) by ≥5% on average across seeds and mask levels (G1).
+- H2: Sector-sector edge recovery AUC ≥ 0.60 for HERALD with true graph (B7) (G2).
+- H3: 90% predictive interval achieves ≥0.80 empirical coverage at hidden cells (G3 calibration).
+- G3: Permuted graph (B8) MAE ≥ HERALD with graph (B7) MAE — graph must help.
+- G5: Temporal feature leakage check passes (verified causal features, no future information).
+- G6: False positive edge rate (top-k attention on non-edges) < 0.30 on average.
+
+**Advance criterion:** HERALD advances only if (G1 PASS OR G2 PASS) AND G5 PASS AND G3 PASS.
+
+**Smoke test results (10T × 5S × 12Y, MCAR 20%, 2 seeds, 100 epochs):**
+- No-NaN: PASS
+- Leakage check: PASS
+- Elapsed: 1.7s (< 3 min limit)
+- G1 preview: False (not conclusive at smoke scale)
+- G3 preview: False (not conclusive at smoke scale)
+
+**Baselines:**
+- B1 Mean, B3 ForwardFill, B5 Ridge (temporal only), B6 Neural-no-graph
+- B7 HERALD-graph, B8 HERALD-permuted graph
+
+**Architecture notes:**
+- All temporal features strictly causal (running cumsum, no future information)
+- Mask-explicit: zeros at hidden cells only for neighbour aggregation denominator
+- Gaussian NLL loss on observed cells only; loss never divides by hidden cells
+- MC Dropout for predictive uncertainty (50 forward passes)
+
+**Bugs fixed during implementation:**
+- `_build_temporal_features`: whole-series mean/std (Features 0, 2) and whole-series AR1 mean (Feature 3) were non-causal; replaced with causal running statistics
+- `train_herald_imputer`: `true_t` built from NaN panel caused NaN loss; fixed with `nan_to_num`
+
+**Rationale:** Cannot claim neural architecture resolves missing data without controlled experiment. This benchmark provides falsifiable evidence of benefit (or lack thereof) compared to simple statistical baselines.
+
+**Limitations:**
+- Smoke scale (10T × 5S × 12Y) is insufficient to evaluate G1–G4; full evaluation requires HPC run (see HPC estimate below)
+- edge AUC interpretation requires sufficient signal in the panel; highly noisy synthetic panels may produce uninformative results
+- Calibration quality (G3) depends on dropout rate and training duration
+
+**HPC estimate for full run:**
+- Config space: 5 seeds × 3 mask mechanisms (MCAR/MAR/block) × 3 levels = 45 configs per model × 6 models = 270 jobs
+- Expected: ~5–10 min/job on 1 CPU. Total: ~22–45 CPU-hours. Parallelizable to ~1–2 h wall time with 20+ cores.
+- Full command (not yet authorised): `python src/modeles/synthetic/run_full_benchmark.py` (not yet implemented)
+- **HPC NOT AUTHORISED until full benchmark script is written, reviewed, and smoke passed on larger scale**
+
+**Affected files:**
+`reports/HERALD_SYNTHETIC_BENCHMARK_CONTRACT.md`;
+`src/data/synthetic/__init__.py`;
+`src/data/synthetic/generate_herald_synthetic.py`;
+`src/modeles/synthetic/__init__.py`;
+`src/modeles/synthetic/imputation_baselines.py`;
+`src/modeles/synthetic/herald_graph_imputer.py`;
+`src/modeles/synthetic/evaluate_imputation.py`;
+`src/modeles/synthetic/run_smoke.py`;
+`tests/test_synthetic_benchmark.py`;
+`data/processed/synthetic_benchmark/smoke_results.json`.
