@@ -1,37 +1,57 @@
+from __future__ import annotations
+
 """
-run_signal_sensitivity.py — PHASE10_SIGNAL_SENSITIVITY experiment (DEC-044)
+run_signal_sensitivity.py — PHASE10_SIGNAL_SENSITIVITY factorial runner (DEC-044)
 
-Separate from Phase 10. Does NOT substitute or reclassify PHASE10_PARTIAL.
-Tests graph utility under varying signal conditions.
+STATUS: NOT_AUTHORIZED
+  The full 324-task factorial grid is NOT authorized for execution.
+  Use run_ofat_sensitivity.py (OFAT design, 48 tasks) instead.
 
-Grid:
-  cross_sector_force × AR × noise × lag × scenario × seed × mask
-  3        × 3  × 2     × 3   × 2        × 3    × 2
+  Launching the full factorial requires the explicit flag:
+      --i-understand-this-is-the-324-task-factorial
+
+  Without this flag, any --task-id or full-grid run will be blocked.
+  --smoke-test and --local-pilot remain allowed for wiring checks.
+
+Grid (NOT AUTHORIZED):
+  cross_sector_force × AR × noise × lag × scenario × seed
+  3        × 3  × 2     × 3   × 2        × 3
   = 324 tasks, each running 7 models on 2 masks
 
-Models (7): ffill, ridge, no_graph, herald_contemp, herald_lagged,
-            herald_lagged_permuted, oracle_lagged
+Authorized alternative:
+  python -m src.modeles.synthetic.run_ofat_sensitivity --run-all
 
 Gates S1-S7 frozen in gates_sensitivity.py BEFORE execution.
 
 Usage:
-    # Smoke test (1 task, 50 epochs)
+    # Smoke test (1 task, 50 epochs) — ALLOWED
     python -m src.modeles.synthetic.run_signal_sensitivity --smoke-test
 
-    # Local pilot (original config only, 2 seeds, 100 epochs)
+    # Local pilot (original config only, 2 seeds, 100 epochs) — ALLOWED
     python -m src.modeles.synthetic.run_signal_sensitivity --local-pilot \\
         --output-dir data/processed/synthetic_benchmark/sensitivity_pilot
 
-    # Single task (for HPC array)
-    python -m src.modeles.synthetic.run_signal_sensitivity \\
-        --task-id $SLURM_ARRAY_TASK_ID \\
-        --output-dir data/processed/synthetic_benchmark/sensitivity_full
-
-    # Dry run
+    # Dry run — ALLOWED
     python -m src.modeles.synthetic.run_signal_sensitivity --dry-run
+
+    # Full factorial — BLOCKED unless explicit authorization flag provided
+    # python -m src.modeles.synthetic.run_signal_sensitivity \\
+    #     --task-id $SLURM_ARRAY_TASK_ID \\
+    #     --i-understand-this-is-the-324-task-factorial \\
+    #     --output-dir data/processed/synthetic_benchmark/sensitivity_full
 """
 
-from __future__ import annotations
+_FACTORIAL_NOT_AUTHORIZED_MSG = """
+ERROR: Full 324-task factorial grid is NOT AUTHORIZED.
+
+Use the OFAT runner instead:
+    python -m src.modeles.synthetic.run_ofat_sensitivity --run-all
+
+If you have explicit authorization to run the full factorial, pass:
+    --i-understand-this-is-the-324-task-factorial
+
+This flag must be explicitly provided; it is never set by default.
+"""
 
 import argparse
 import dataclasses
@@ -370,7 +390,7 @@ def run_task(task: dict, output_dir: Path, n_epochs: int, verbose=False, resume=
 # ── CLI ───────────────────────────────────────────────────────────────────────
 
 def main():
-    ap = argparse.ArgumentParser(description="PHASE10_SIGNAL_SENSITIVITY runner")
+    ap = argparse.ArgumentParser(description="PHASE10_SIGNAL_SENSITIVITY factorial runner [NOT_AUTHORIZED]")
     ap.add_argument("--task-id", type=int, default=None)
     ap.add_argument("--output-dir", type=Path, default=Path("data/processed/synthetic_benchmark/sensitivity_full"))
     ap.add_argument("--n-epochs", type=int, default=200)
@@ -379,6 +399,13 @@ def main():
     ap.add_argument("--local-pilot", action="store_true")
     ap.add_argument("--no-resume", action="store_true")
     ap.add_argument("--verbose", action="store_true")
+    # Authorization flag — must be explicitly provided to run the full factorial
+    ap.add_argument(
+        "--i-understand-this-is-the-324-task-factorial",
+        dest="factorial_authorized",
+        action="store_true",
+        default=False,
+    )
     args = ap.parse_args()
 
     if args.smoke_test:
@@ -389,7 +416,16 @@ def main():
         tasks = pilot_manifest()
         n_epochs = args.n_epochs or PILOT_EPOCHS
         out_dir = args.output_dir
+    elif args.dry_run:
+        # dry-run: show full manifest without authorization
+        tasks = full_manifest()
+        n_epochs = args.n_epochs
+        out_dir = args.output_dir
     else:
+        # Full factorial — require explicit authorization
+        if not args.factorial_authorized:
+            print(_FACTORIAL_NOT_AUTHORIZED_MSG, file=sys.stderr)
+            sys.exit(2)
         tasks = full_manifest()
         n_epochs = args.n_epochs
         out_dir = args.output_dir
@@ -404,6 +440,9 @@ def main():
         return
 
     if args.task_id is not None:
+        if not args.factorial_authorized:
+            print(_FACTORIAL_NOT_AUTHORIZED_MSG, file=sys.stderr)
+            sys.exit(2)
         if args.task_id >= len(tasks):
             print(f"ERROR: task_id={args.task_id} >= n_tasks={len(tasks)}", file=sys.stderr)
             sys.exit(1)
