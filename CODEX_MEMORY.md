@@ -1,11 +1,11 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-13 (DEC-038: European sector coverage preflight).
+**LEIA PRIMEIRO.** Updated 2026-06-13 (DEC-039: Phase 9 synthetic benchmark, smoke PASS).
 Read this file, then verify drift with `rtk git status --short`.
 
 ## Quick orientation (start here)
 - **Direction:** `reports/HERALD_PROJECT_CHARTER.md` — official scope, permitted/forbidden claims, frozen decisions.
 - **Current state by component:** `reports/HERALD_CURRENT_STATE.md` — completion %, blockers, next step.
-- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-038).
+- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-039).
 - **Claims classification:** `reports/HERALD_EVIDENCE_MATRIX.md`.
 - **Active document list:** `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`.
 - **Artefact manifest:** `reports/herald_artifact_registry.json`.
@@ -15,6 +15,7 @@ Read this file, then verify drift with `rtk git status --short`.
 - **Observatory v0.3 (DEC-035/036):** Sector precedence layer integrated. Geographic map (FR=ZE2020/NL=COROP/PT=NUTS3 mainland), Plotly self-contained. Dashboard includes Phase 8 territorial contribution layer (Section 6 toggle, divergent colorscale): `reports/dashboards/herald_observatory_v03_dashboard.html` (14,095 KB). 48 tests pass.
 - **Phase 8 (DEC-037 + addendum):** TERRITORIAL_MOVEMENT_LAYER = DESCRIPTIVE_ONLY. LOTO influence decomposition for 12 ROBUST relations. Nomenclature: HIGH_DESCRIPTIVE_INFLUENCE (91) + MODERATE_DESCRIPTIVE_INFLUENCE (78) + LOW_DESCRIPTIVE_INFLUENCE (8) + DESCRIPTIVE_ONLY (168). No HPC. Builder: `src/data/european_panel/build_territorial_sector_movements.py`. 44 tests pass. Data in `data/processed/herald_observatory_v04/` (not committed — regenerable). Decision fields: interpretation_scope=descriptive_relative_influence, independent_replication=false, spatial_flow_supported=false, causal_effect_supported=false.
 - **DEC-038 — European sector coverage preflight:** 27 countries evaluated. IN_OBSERVATORY: FR/NL/PT. ELIGIBLE_WITH_MAPPING: FI (19 NUTS3, 2013-2021, Eurostat BD_HGNACE_R, K_L combined). ELIGIBLE_WITH_DOWNLOAD: AT, CZ, DE, DK, ES, IT, PL, RO, SE. BLOCKED_SEMANTICS: BE (vat_first_registration). PARTIAL: 13 small EU countries (only 2021-2023 in Eurostat, no national source documented). KEY LIMIT: Eurostat BD_HGNACE_R has only 3 years (2021-2023) for all countries except FI; K_L always combined. Script: `src/data/european_panel/audit_european_sector_coverage.py`. 53 tests pass.
+- **DEC-039 — Phase 9 synthetic benchmark (smoke PASS):** Controlled benchmark with known ground truth. Generator: AR(1) + cross-sector effects (lags 1-2, linear/tanh) + territory propagation + crises + structural breaks; MCAR/MAR/block masking. 6 baselines (B1 mean, B3 ffill, B5 Ridge, B6 neural-no-graph, B7 HERALD-graph, B8 HERALD-permuted). All temporal features strictly causal (verified). Smoke: 10T×5S×12Y, 2 seeds, MCAR 20%, 100 epochs → 1.7s, no NaN, leakage PASS. G1/G3 not evaluable at smoke scale. NEXT: run_full_benchmark.py (not yet implemented); HPC not yet authorised. 37 tests pass. Contract: `reports/HERALD_SYNTHETIC_BENCHMARK_CONTRACT.md`.
 - **Immediate next step:** Phase 7 extension (download national source for ES/IT/FI mapping), OR report writing (Phase 6).
 
 ## DO NOT change direction without a new DEC-* entry

@@ -1,6 +1,6 @@
 # HERALD Current State
-**Updated:** 2026-06-13 (DEC-038: European sector coverage preflight complete)
-**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-038), `HERALD_EVIDENCE_MATRIX.md`.
+**Updated:** 2026-06-13 (DEC-039: Phase 9 synthetic benchmark implemented, smoke PASS)
+**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-039), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
 
@@ -105,13 +105,28 @@
 | Recommendation layer | Bloco 1 + Bloco 2 complete | — |
 | New GNN architecture | Integrated prototype complete | New hypothesis + new data |
 | Conformal intervals | Method selection | Choose between conformal or bootstrap |
+| Phase 9 HPC full run | Smoke PASS (DEC-039) — full benchmark script not yet written | Implement run_full_benchmark.py, review, authorise |
+
+---
+
+## Phase 9 — Synthetic Benchmark (DEC-039)
+
+**Status:** SMOKE PASS (2026-06-13). Architecture validated.
+
+- Generator: 10T × 5S × 12Y synthetic economic panel with ground truth relations, crises, structural breaks, MCAR/MAR/block missing patterns
+- Baselines B1–B8 implemented and tested
+- Temporal features: strictly causal (no future leakage, verified)
+- Smoke: 2 seeds, MCAR 20%, 100 epochs → 1.7s, no NaN, leakage PASS
+- G1/G3 gates NOT yet evaluable at smoke scale (require full HPC run, not yet authorised)
+
+**Next:** Implement `run_full_benchmark.py`; authorise HPC after review.
 
 ---
 
 ## Reference Documents
 
 - Direction and claims: `reports/HERALD_PROJECT_CHARTER.md`
-- All decisions: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-037)
+- All decisions: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-039)
 - Claims classification: `reports/HERALD_EVIDENCE_MATRIX.md`
 - Gantt: `reports/HERALD_RESEARCH_GANTT.md`
 - HPC registry: `hpc/hpc_phase_registry.json`

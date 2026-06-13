@@ -1,0 +1,177 @@
+{
+  "smoke_config": {
+    "n_territories": 10,
+    "n_sectors": 5,
+    "n_years": 12,
+    "mask": "mcar_20",
+    "seeds": [
+      42,
+      123
+    ],
+    "epochs": 100
+  },
+  "elapsed_seconds": 1.7,
+  "smoke_pass": true,
+  "gates": {
+    "no_nan": true,
+    "leakage": true,
+    "g1_preview": false,
+    "g3_preview": false
+  },
+  "aggregated": {
+    "mean": {
+      "mean_mae": 0.20400397610877402,
+      "std_mae": 0.004463486936811381,
+      "mean_rmse": 0.26339907549210423
+    },
+    "ffill": {
+      "mean_mae": 0.2059225440966623,
+      "std_mae": 0.012205354926114631,
+      "mean_rmse": 0.26747471485676894
+    },
+    "ridge": {
+      "mean_mae": 0.20294550303758113,
+      "std_mae": 0.012141654976728852,
+      "mean_rmse": 0.26443599773021836
+    },
+    "neural_no_graph": {
+      "mean_mae": 0.21938656153139646,
+      "std_mae": 0.017370446465127073,
+      "mean_rmse": 0.2840741079062134
+    },
+    "herald_graph": {
+      "mean_mae": 0.20255737613500835,
+      "std_mae": 0.01215373774898891,
+      "mean_rmse": 0.26557132213628787
+    },
+    "herald_permuted": {
+      "mean_mae": 0.2011301548813993,
+      "std_mae": 0.01273581167606569,
+      "mean_rmse": 0.26426775355107024
+    }
+  },
+  "per_seed": [
+    {
+      "seed": 42,
+      "n_hidden": 112,
+      "baselines": {
+        "mean": {
+          "mae": 0.2084674630455854,
+          "rmse": 0.26827020951775665,
+          "pearson_r": 0.3999320143600075,
+          "sign_acc": 0.6160714285714286
+        },
+        "ffill": {
+          "mae": 0.21812789902277693,
+          "rmse": 0.27778531244318944,
+          "pearson_r": 0.49743726965117735,
+          "sign_acc": 0.6785714285714286
+        },
+        "ridge": {
+          "mae": 0.21508715801430997,
+          "rmse": 0.27549366381171625,
+          "pearson_r": 0.3474941226503592,
+          "sign_acc": 0.5446428571428571
+        },
+        "neural_no_graph": {
+          "mae": 0.23675700799652352,
+          "rmse": 0.30484995152290256,
+          "pearson_r": 0.0740359996771634,
+          "sign_acc": 0.44642857142857145,
+          "train_seconds": 0.91
+        },
+        "herald_graph": {
+          "mae": 0.21471111388399727,
+          "rmse": 0.2856646039890854,
+          "pearson_r": 0.23582604922423162,
+          "sign_acc": 0.5267857142857143,
+          "edge_auc": 0.375,
+          "edge_f1_at_k": 0.25,
+          "edge_precision": 0.25,
+          "calibration_90": 0.25892857142857145,
+          "train_seconds": 0.15
+        },
+        "herald_permuted": {
+          "mae": 0.21386596655746498,
+          "rmse": 0.2815223008855293,
+          "pearson_r": 0.30306564812932796,
+          "sign_acc": 0.5803571428571429,
+          "train_seconds": 0.15
+        }
+      },
+      "leakage_check": {
+        "leakage_check": "causal_temporal_features",
+        "max_diff_at_past_years": 0.0,
+        "perturbed_future_years": [
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "passed": true
+      }
+    },
+    {
+      "seed": 123,
+      "n_hidden": 131,
+      "baselines": {
+        "mean": {
+          "mae": 0.19954048917196263,
+          "rmse": 0.2585279414664518,
+          "pearson_r": 0.2083987177553585,
+          "sign_acc": 0.5648854961832062
+        },
+        "ffill": {
+          "mae": 0.19371718917054767,
+          "rmse": 0.25716411727034844,
+          "pearson_r": 0.42293138836089034,
+          "sign_acc": 0.6641221374045801
+        },
+        "ridge": {
+          "mae": 0.19080384806085227,
+          "rmse": 0.2533783316487205,
+          "pearson_r": 0.20573866999286708,
+          "sign_acc": 0.5954198473282443
+        },
+        "neural_no_graph": {
+          "mae": 0.20201611506626937,
+          "rmse": 0.26329826428952424,
+          "pearson_r": 0.16727960018479493,
+          "sign_acc": 0.5801526717557252,
+          "train_seconds": 0.14
+        },
+        "herald_graph": {
+          "mae": 0.19040363838601945,
+          "rmse": 0.24547804028349035,
+          "pearson_r": 0.28057386623019526,
+          "sign_acc": 0.549618320610687,
+          "edge_auc": 0.953125,
+          "edge_f1_at_k": 0.75,
+          "edge_precision": 0.75,
+          "calibration_90": 0.1297709923664122,
+          "train_seconds": 0.16
+        },
+        "herald_permuted": {
+          "mae": 0.1883943432053336,
+          "rmse": 0.2470132062166111,
+          "pearson_r": 0.2507129161240713,
+          "sign_acc": 0.5572519083969466,
+          "train_seconds": 0.14
+        }
+      },
+      "leakage_check": {
+        "leakage_check": "causal_temporal_features",
+        "max_diff_at_past_years": 0.0,
+        "perturbed_future_years": [
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "passed": true
+      }
+    }
+  ]
+}
