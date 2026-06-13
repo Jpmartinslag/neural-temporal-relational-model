@@ -1237,3 +1237,57 @@ The 12 Phase 7 global betas are validated scientific results (permutation-tested
 `reports/HERALD_CURRENT_STATE.md`;
 `reports/HERALD_EVIDENCE_MATRIX.md`;
 `CODEX_MEMORY.md`.
+
+---
+
+## DEC-038 — 2026-06-13 — European Territorial Sector Coverage Preflight
+
+**Phase:** Pre-Phase 7 extension — eligibility assessment
+
+**Question:** Which European countries have data compatible with extending the HERALD Observatory before the neural graph layer? Compatibility requires: territory × year × A10 sector enterprise birth series; ≥6 consecutive years; NUTS3 or documented territorial unit; ≥8 A10-comparable sectors; n_samples ≥ 60; official geometry; concept comparability with FR/NL/PT.
+
+**Evidence:** Audit of all local data (Eurostat BD_HGNACE_R bd_hgnace_r_raw_full.csv, Eurostat BD_SIZE_R3, local adapted panels for AT/BE/IT, Observatory panels for FR/NL/PT) plus documented external national sources. 27 countries evaluated. Script: `src/data/european_panel/audit_european_sector_coverage.py`.
+
+**Critical findings:**
+
+1. Eurostat BD_HGNACE_R provides ENT_BRTH_NR at NUTS3 for 26 EU countries, but **only Finland has data before 2021**. All others: 2021-2023 only (3 years — insufficient).
+2. **K_L combined in BD_HGNACE_R for all countries**: KZ (financial) and LZ (real estate) are inseparable. Phase 7 relations involving KZ or LZ individually cannot be tested from Eurostat BD alone.
+3. **Finland (FI)** is the only non-Observatory country eligible from existing Eurostat data. 19 stable NUTS3 territories, 2013-2021 (9 years), 8 effective A10 sectors. Status: ELIGIBLE_WITH_MAPPING.
+4. **Belgium** is definitively blocked: `flag_target_concept=vat_first_registration` (≠ enterprise_birth). This is a permanent semantic blocker; no sector births available from any local source.
+5. Nine countries (ES, IT, DE, SE, PL, RO, CZ, DK, AT) have national statistical agency sources with ≥6 years of NUTS3 sector births; all classified ELIGIBLE_WITH_DOWNLOAD.
+6. The direct PT→ES→FR→BE→NL geographic corridor is broken by Belgium. Viable sub-corridor: PT–ES–FR–NL via France; FR–IT–AT separately.
+
+**Decision:** ELIGIBILITY CLASSIFICATION COMPLETE — NO INTEGRATION IN THIS TASK
+
+Status per country:
+- `IN_OBSERVATORY`: FR (280 ZE2020), NL (40 COROP), PT (25 NUTS3)
+- `ELIGIBLE_WITH_MAPPING`: FI (19 NUTS3, Eurostat BD, K_L documented)
+- `ELIGIBLE_WITH_DOWNLOAD`: AT, CZ, DE, DK, ES, IT, PL, RO, SE
+- `PARTIAL_DESCRIPTIVE_ONLY`: BG, CY, EE, EL, HR, HU, IE, LT, LU, LV, MT, SI, SK
+- `BLOCKED_SEMANTICS`: BE
+
+**Panel proposals:**
+
+| Proposal | Countries | Condition |
+|----------|-----------|-----------|
+| CORE_CONTIGUOUS | AT, ES, FR, IT, NL, PT | Download + mapping required for AT, ES, IT |
+| EU_EXTENDED | AT, CZ, DE, DK, ES, FI, FR, IT, NL, PL, PT, RO, SE | Download required for non-FI, non-Observatory |
+| DESCRIPTIVE_ONLY | BG, CY, EE, EL, HR, HU, IE, LT, LU, LV, MT, SI, SK | Total births only (BD_SIZE_R3 3 years) |
+| BLOCKED | BE | Permanent semantic blocker |
+
+**Rationale:** The preflight establishes a firm evidence-based classification before any integration work. Downloading national sources for ELIGIBLE_WITH_DOWNLOAD countries is an explicit future task; it cannot be pre-authorised in this decision.
+
+**Limitations:**
+- External source URLs and metadata are documented but not downloaded. Actual coverage may differ.
+- Germany (DE): semantic verification of Gewerbemeldungen vs enterprise_birth concept required.
+- Finland K_L mapping decision (single KL sector vs imputation) must be pre-specified before integration.
+
+**Reopen condition:** A country's status may be upgraded to ELIGIBLE_NOW once its national source data is downloaded, validated, and its concept verified against FR/NL/PT baseline.
+
+**Affected files:**
+`src/data/european_panel/audit_european_sector_coverage.py`;
+`tests/test_european_sector_coverage.py`;
+`data/processed/european_panel/european_sector_coverage_matrix.csv`;
+`data/processed/european_panel/european_sector_coverage_summary.json`;
+`data/processed/european_panel/european_sector_source_manifest.json`;
+`reports/HERALD_EUROPEAN_SECTOR_COVERAGE_PREFLIGHT.md`.

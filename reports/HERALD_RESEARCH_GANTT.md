@@ -1,8 +1,8 @@
 # HERALD — Research Gantt
 
 **Created:** 2026-06-10  
-**Current date:** 2026-06-12
-**Last update:** DEC-037 addendum — Phase 8 territorial influence layer complete; Observatory v0.3 dashboard updated (Section 6). 92 tests pass (48 observatory + 44 Phase 8). Immediate next: AT/BE extension or report writing.
+**Current date:** 2026-06-13
+**Last update:** DEC-038 — European sector coverage preflight complete. 27 countries evaluated. FI: ELIGIBLE_WITH_MAPPING. BE: BLOCKED_SEMANTICS. 9 countries ELIGIBLE_WITH_DOWNLOAD. 53 tests pass. Total tests: 145 (48 observatory + 44 Phase 8 + 53 European coverage).
 
 **End date / defence / internship deadline:** `DATE_LIMITE_A_CONFIRMER`  
 **Note:** No end date found in project documentation. Confirm with supervisors before fixing milestones.

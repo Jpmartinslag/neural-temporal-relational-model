@@ -1,0 +1,116 @@
+{
+  "generated": "2026-06-13",
+  "decision": "DEC-038",
+  "n_countries_evaluated": 27,
+  "status_counts": {
+    "PARTIAL_DESCRIPTIVE_ONLY": 13,
+    "ELIGIBLE_WITH_DOWNLOAD": 9,
+    "IN_OBSERVATORY": 3,
+    "BLOCKED_SEMANTICS": 1,
+    "ELIGIBLE_WITH_MAPPING": 1
+  },
+  "status_groups": {
+    "IN_OBSERVATORY": [
+      "FR",
+      "NL",
+      "PT"
+    ],
+    "ELIGIBLE_WITH_MAPPING": [
+      "FI"
+    ],
+    "ELIGIBLE_WITH_DOWNLOAD": [
+      "AT",
+      "CZ",
+      "DE",
+      "DK",
+      "ES",
+      "IT",
+      "PL",
+      "RO",
+      "SE"
+    ],
+    "PARTIAL_DESCRIPTIVE_ONLY": [
+      "BG",
+      "CY",
+      "EE",
+      "EL",
+      "HR",
+      "HU",
+      "IE",
+      "LT",
+      "LU",
+      "LV",
+      "MT",
+      "SI",
+      "SK"
+    ],
+    "BLOCKED": [
+      "BE"
+    ]
+  },
+  "panel_proposals": {
+    "CORE_CONTIGUOUS": {
+      "description": "Geographically connected corridor PT-ES-FR-NL plus contiguous IT/AT",
+      "countries": [
+        "AT",
+        "ES",
+        "FR",
+        "IT",
+        "NL",
+        "PT"
+      ],
+      "note": "BE blocks the direct PT\u2192ES\u2192FR\u2192BE\u2192NL corridor (VAT concept). Sub-corridors: PT-ES-FR-NL via France; FR-IT-AT contiguous."
+    },
+    "EU_EXTENDED": {
+      "description": "All technically eligible countries regardless of geography",
+      "countries": [
+        "AT",
+        "CZ",
+        "DE",
+        "DK",
+        "ES",
+        "FI",
+        "FR",
+        "IT",
+        "NL",
+        "PL",
+        "PT",
+        "RO",
+        "SE"
+      ],
+      "note": "Includes FI (Nordic, ELIGIBLE_WITH_MAPPING) and all ELIGIBLE_WITH_DOWNLOAD countries. DE requires semantic concept verification before integration."
+    },
+    "DESCRIPTIVE_ONLY": {
+      "description": "Countries with sufficient total births but no sector breakdown",
+      "countries": [
+        "BG",
+        "CY",
+        "EE",
+        "EL",
+        "HR",
+        "HU",
+        "IE",
+        "LT",
+        "LU",
+        "LV",
+        "MT",
+        "SI",
+        "SK"
+      ]
+    },
+    "BLOCKED": {
+      "description": "Countries definitively blocked by semantic concept or insufficient data",
+      "countries": [
+        "BE"
+      ]
+    }
+  },
+  "critical_findings": [
+    "Eurostat BD_HGNACE_R provides only 2021-2023 (3 years) for all countries except Finland.",
+    "K_L combined in BD_HGNACE_R: KZ (financial) and LZ (real estate) cannot be separated for any country.",
+    "OQ partial: BD_HGNACE_R P_Q excludes O (public administration); affects OQ comparability.",
+    "Finland (FI): only European country with NUTS3 sector births \u22656 years from Eurostat. 19 stable NUTS3, 2013-2021. Status: ELIGIBLE_WITH_MAPPING (K_L documented).",
+    "Belgium definitively blocked: vat_first_registration concept incompatible with enterprise_birth baseline used in FR/NL/PT.",
+    "Spain, Italy, Germany, Sweden, Poland, Romania: insufficient years from Eurostat BD_HGNACE_R but national sources with 6+ year sector NUTS3 series exist (ELIGIBLE_WITH_DOWNLOAD)."
+  ]
+}
