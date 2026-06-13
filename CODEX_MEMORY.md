@@ -1,5 +1,5 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-13 (DEC-040/041: Phase 9 full infra + HPC run COMPLETE; DEC-042: graph usage diagnostic — B1 fix applied, B3 documented).
+**LEIA PRIMEIRO.** Updated 2026-06-13 (DEC-043: Phase 10 lagged graph arch — HPC_AUTHORIZED. Commit 97d9e56).
 Read this file, then verify drift with `rtk git status --short`.
 
 ## Quick orientation (start here)
@@ -20,7 +20,8 @@ Read this file, then verify drift with `rtk git status --short`.
 - **DEC-041 — G3 block-masking convergence probe (G3_NOT_CONFIRMED):** Block masking G3 failure STRUCTURAL and SEED-SPECIFIC for linear/seed=123. FULL_HPC_AUTHORIZED (500 epochs). Script: `src/modeles/synthetic/run_convergence_probe.py`.
 - **HPC full run COMPLETE (job 7457617):** 20/20 tasks completed, 4-7 min each. Results: `data/processed/synthetic_benchmark/full/`. All G1 FAIL, oracle MAE=0.307, herald MAE=0.308, ffill MAE=0.255 (ffill dominates all scenarios). G2 falsely FAIL (AUC evaluation bug B1). G5 PASS. G4 FAIL (cal90≈0.27 vs 0.80 threshold).
 - **DEC-042 — Graph usage diagnostic (IMPLEMENTATION_BUG_FIXED + ARCHITECTURE_STRUCTURALLY_INADEQUATE):** Three bugs found: B1=AUC transposition in evaluate_imputation.py (FIXED: `attn[cols,rows]`; corrected AUC=0.727, G2 PASS), B2=symmetric adj passed to oracle (documented), B3=contemporaneous aggregation misses lag-1/lag-2 effects (architectural; prototype HERALDGraphImputerLagged in run_diagnostic.py). Diagnostic gates: D1/D2/D3/D5 PASS, D4 ceiling effect on trivial. 12/12 tests PASS. Report: `reports/HERALD_PHASE9_GRAPH_USAGE_DIAGNOSTIC.md`.
-- **Immediate next step (Phase 9):** New DEC authorising B3 architectural fix (HERALDGraphImputerLagged: lag-1 sector aggregation) with new gates and HPC budget. OR: conformal calibration DEC (post-HPC, per contract). OR: Phase 7 extension (ES/IT/FI national data download).
+- **DEC-043 — Phase 10 lagged graph benchmark (HPC_AUTHORIZED):** `HERALDGraphImputerLagged` (lag-1+lag-2 directed sector attention, MLP 10→64→32→2). 15 models (7 baselines + 5 contemp neural + 3 lagged neural). Directed oracle AUC=1.000 (wiring verified). Pilot gates (200 epochs, 2 scenarios × 3 seeds): L1 PASS, L2 PASS, L4 PASS, L5 PASS, L7 PASS (NaN=0, leakage PASS). HPC_AUTHORIZED=True (L1+L2+L7). Pilot decision=PHASE10_PARTIAL (L3 requires >5% MAE improvement not visible at 200 epochs). 34/34 tests PASS. Contract: `reports/HERALD_PHASE10_LAGGED_CONTRACT.md`. Next: `git push` + rsync to meso + smoke + sbatch.
+- **Immediate next step:** `git push origin main` → rsync dataset to meso (no --delete) → smoke test on meso (1 task, 50 epochs) → sbatch hpc/phase10_synthetic_lagged/run_phase10_meso.slurm (array 0-19).
 
 ## DO NOT change direction without a new DEC-* entry
 No new GNN architecture search. No geographic graph reopen. No P6 relaunch.
