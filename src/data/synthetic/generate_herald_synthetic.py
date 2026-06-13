@@ -75,6 +75,9 @@ class SyntheticConfig:
     mar_rates: tuple = (0.10, 0.20, 0.30, 0.50)
     block_rates: tuple = (0.10, 0.20, 0.30, 0.50)
 
+    # Optional: force all true relations to a single lag (1 or 2). None = random mix.
+    forced_lag: int | None = None
+
 
 def _build_territory_adjacency(n_territories: int, radius: float, rng: np.random.Generator) -> np.ndarray:
     """
@@ -104,7 +107,7 @@ def _build_true_relations(n_sectors: int, config: SyntheticConfig, rng: np.rando
 
     for idx in selected:
         src, tgt = all_pairs[int(idx)]
-        lag = int(rng.choice([1, 2]))
+        lag = config.forced_lag if config.forced_lag is not None else int(rng.choice([1, 2]))
         w = float(rng.uniform(*config.weight_range))
         if rng.random() < config.frac_negative:
             w = -w
