@@ -1956,3 +1956,49 @@ Two sub-problems with different generalization behaviour:
 - `reports/bibliography/herald_references.bib` (updated: new BibTeX entries)
 - `reports/bibliography/HERALD_REFERENCE_AUDIT.csv` (updated: 17 new rows)
 - `CODEX_MEMORY.md` (updated)
+
+---
+
+## DEC-047 — Few-shot adaptation benchmark: frozen attention + decoder/adapter adaptation
+**Date:** 2026-06-13 | **Status:** PILOT_COMPLETE | **Decision:** FEWSHOT_ADAPTATION_FAILED
+
+**Context:** Following DEC-046 diagnosis (attention transfers, MLP does not), DEC-047 tests whether few-shot adaptation of the MLP decoder (with frozen attention) improves imputation on novel OOD scenarios. Protocol: A1-A10 gates frozen before execution.
+
+**What was done:**
+- Implemented `src/modeles/synthetic/phase12_few_shot/` package: splits, adapter, decoder_ablation, graph_metrics, adaptation_trainer, evaluator, gates_dec047, run_pilot.
+- AdapterBottleneck(dim=32, bottleneck=16): bottleneck with residual, 1072 params.
+- Temporal splits: support=65%, val=15%, test=20% (n_years=20 → 13/3/4 years).
+- 9 strategies: Z0 (frozen), A1 (decoder FT), A2 (adapter only), A3 (attn+decoder), A4 (full FT), C0 (no graph), P0 (permuted), B0 (ffill), B1 (Ridge).
+- Pilot: novel_lag2, seeds=[1000,2000,3000], k=[0.0,0.05,0.10], 8 strategies, 2 masks. 432 records, 85s.
+- 49 tests PASS.
+
+**Gate outcomes (3/10 PASS):**
+
+| Gate | Outcome |
+|------|---------|
+| A1 SAFETY | PASS — NaN=0, leakage=0 |
+| A2 ADAPTATION_BENEFIT | FAIL — no strategy reliably < Z0 |
+| A3 GRAPH_CONTRIBUTION | FAIL — neural ≈ C0 ≈ P0 in MAE |
+| A4 BASELINE_RELEVANCE | FAIL — ffill (B0) dominates all neural |
+| A5 FEWSHOT_EFFICIENCY | FAIL — no benefit at k≤0.10 |
+| A6 GRAPH_PRESERVATION | PASS — auc_change ≈ 0 for all strategies |
+| A7 BLOCK_ROBUSTNESS | PASS — consistent result in block_30 |
+| A8 REPLICATION | FAIL — no consistent direction across seeds |
+| A9 ADAPTER_VALUE | FAIL — A2 not better than A1 |
+| A10 FINETUNING_TRADEOFF | FAIL — A4 not better than A1 |
+
+**Key finding:** B0 (ffill) MAE=0.244 vs all neural ~0.281. Adaptation does not help. Root cause: same as DEC-045 — distribution gap (0-30% → 85% nonlinear) too large for 50-epoch fine-tuning of a decoder trained on linear data. PATH 1 (adapter) is insufficient without PATH 2 (masked pretraining first).
+
+**HPC assessment:** HPC NOT REQUIRED. Pilot is structurally unambiguous.
+
+**Recommended next DEC:** DEC-048 — Masked pretraining on diverse synthetic scenarios (frac_nonlinear ∈ U[0, 0.90]) covering PATH 2 from DEC-046.
+
+**Reopen condition:** If DEC-048 masked pretraining achieves MAE < ffill at zero-shot, then few-shot adapter (A2) is worth revisiting.
+
+**Affected files:**
+- `src/modeles/synthetic/phase12_few_shot/` (new package)
+- `tests/test_phase12_fewshot.py` (new — 49 tests)
+- `reports/HERALD_FEWSHOT_ADAPTATION_CONTRACT.md` (new)
+- `reports/HERALD_FEWSHOT_ADAPTATION_PILOT.md` (new)
+- `reports/HERALD_POST_DEC045_ARCHITECTURE_RESEARCH.md` (corrections: causal language, GRIN/SAITS to SECONDARY_BASELINE, NRI/GTS T-requirement fix, section separator)
+- `CODEX_MEMORY.md` (updated)
