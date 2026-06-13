@@ -257,7 +257,11 @@ def compute_edge_recovery_metrics(
 
     rows, cols = np.where(~np.eye(n_sectors, dtype=bool))
     y_true = true_adj[rows, cols]
-    y_score = learned_attn[rows, cols]
+    # learned_attn[i,j] = weight for target i from source j (j→i).
+    # true_adj[s,t]=1 means s→t, so the correct score for edge s→t is
+    # learned_attn[t,s] = learned_attn[cols, rows].
+    # Original code used [rows,cols] which was transposed → AUC=0.27 instead of 0.73.
+    y_score = learned_attn[cols, rows]
 
     n_true = int(y_true.sum())
     n_off = len(y_true)
