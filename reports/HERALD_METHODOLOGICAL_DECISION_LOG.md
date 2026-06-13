@@ -1727,7 +1727,7 @@ L8 UNCERTAINTY: UNCERTAINTY_NOT_CALIBRATED (expected: cal90 < 0.80 with MC Dropo
 
 ## DEC-043 ADDENDUM — Phase 10 HPC Results (2026-06-13)
 
-**Job:** 7457885 (meso) — 20/20 tasks complete, 500 epochs  
+**Job:** 7457885 (meso) — 20/20 tasks complete, 500 epochs
 **Outcome: PHASE10_PARTIAL**
 
 ### Gate outcomes (full HPC, 4 scenarios × 5 seeds)
@@ -1777,10 +1777,10 @@ Recommendation: Option C is scientifically defensible. The improvement is real, 
 
 ## DEC-044 — 2026-06-13 — Phase 10 Metric Reconciliation + Signal Sensitivity Experiment
 
-**Phase:** 10 (post-audit)  
+**Phase:** 10 (post-audit)
 **Question:** (1) Is the AUC discrepancy between DEC-042 (0.727) and Phase 10 herald_contemp (0.40) a metric bug or a model difference? (2) Does the herald_lagged MAE improvement scale with cross-sector signal strength?
 
-**Evidence:**  
+**Evidence:**
 - Full edge metric audit from 20 Phase 10 JSON result files (7457885):
   - herald_contemp: AUC 0.39–0.43, precision@k ≈ prevalence (no structure recovery above chance)
   - herald_lagged: AUC 0.64–0.71, precision@k 0.35–0.43 (3–4× prevalence)
@@ -1789,32 +1789,87 @@ Recommendation: Option C is scientifically defensible. The improvement is real, 
 - Phase 9 retroactive correction (1-0.273=0.727) and Phase 10 herald_contemp (0.406) are different training runs under symmetric adjacency (B2), not a metric inconsistency.
 - Fixture test validates: perfect attention at `attn[target,source]` → AUC=1.0; wrong indexing → AUC<0.5.
 
-**Alternatives considered:**  
+**Alternatives considered:**
 - Metric bug in Phase 10 computation → ruled out by oracle_lagged AUC=1.000 and fixture tests.
 - Re-running Phase 9 with B1 fix → not done (unnecessary given oracle proof; Phase 9 result stands as LEGACY).
 
-**Decision:**  
+**Decision:**
 - **PHASE10_PARTIAL_CONFIRMED.** No retroactive reclassification.
 - **PHASE10_REPORTING_CORRECTED:** The DEC-042 "corrected AUC=0.727" refers to Phase 9 retroactive only. Phase 10 herald_contemp AUC=0.40 is the current benchmark. These are MODEL_DIFFERENCE, not contradictory.
 - New experiment **PHASE10_SIGNAL_SENSITIVITY** launched (gates S1-S7 frozen before execution). Runner: `src/modeles/synthetic/run_signal_sensitivity.py`. Gates: `src/modeles/synthetic/gates_sensitivity.py`. Grid: 324 tasks (cs_force × AR × noise × lag × 2 scenarios × 3 seeds). Smoke test passed (3.6s, oracle AUC=1.000, wiring confirmed). Full run requires explicit HPC authorization.
 - `forced_lag` parameter added to `SyntheticConfig` (backward compatible, default=None). Used by sensitivity runner to force lag-1-only or lag-2-only true relations.
 - Generalization scenario renamed conceptually to `shifted_dynamics_scenario` in documentation. True cross-scenario generalization (train on {linear,mixed}, test on {shifted_dynamics}) is GENERALIZATION_NOT_YET_TESTED.
 
-**Rationale:**  
+**Rationale:**
 - Symmetric adjacency (B2) makes direction learning non-deterministic. Different runs converge to different local optima. Phase 9 learned the forward direction; Phase 10 learned the reverse (for herald_contemp). The oracle_lagged AUC=1.000 confirms correct metric implementation — if the metric were wrong, the oracle would not score 1.0.
 - Signal sensitivity experiment is needed to determine if the L3 failure (MAE +1–2%, threshold 5%) is a generator artifact (AR dominance) or a fundamental model limitation. S7 (monotonicity gate) specifically tests whether stronger cross-sector signal increases oracle utility.
 
-**Limitations:**  
+**Limitations:**
 - Sensitivity full run not yet executed (HPC authorization pending). Pilot/smoke test only confirms wiring.
 - Calibration contract documented but not implemented (C1-C4 deferred until L3 PASS).
 - B2 (symmetric adj direction ambiguity) is not resolved; sensitivity experiment does not address it.
 
 **Reopen condition:** Sensitivity full run PASS/PARTIAL determination after HPC authorization.
 
-**Affected files:**  
+**Affected files:**
 - `src/data/synthetic/generate_herald_synthetic.py` (forced_lag field added)
 - `src/modeles/synthetic/run_signal_sensitivity.py` (new — sensitivity runner)
 - `src/modeles/synthetic/gates_sensitivity.py` (new — S1-S7 frozen gates)
 - `tests/test_phase10_metric_reconciliation.py` (new — AUC fixture + forced_lag tests)
 - `reports/HERALD_PHASE10_METRIC_RECONCILIATION.md` (new)
 - `reports/HERALD_PHASE10_SIGNAL_SENSITIVITY.md` (new — contract with S1-S7 + smoke test results)
+
+---
+
+## DEC-044 ADDENDUM — OFAT Diagnostic (2026-06-13)
+
+**Supersedes:** The 324-task factorial grid design in DEC-044. Replaces it with an OFAT diagnostic.
+
+**Question:** Is the Phase 10 MAE ceiling structural (AR-dynamics) or regime-specific?
+
+**What was done:**
+8-configuration OFAT design (1 reference + 7 non-reference, one axis at a time) × 2 scenarios × 3 seeds = **48 tasks** executed locally, 200 epochs, 6.0 min total. Runner: `src/modeles/synthetic/run_ofat_sensitivity.py`. Gates O1-O8 frozen in `src/modeles/synthetic/gates_ofat.py` before execution.
+
+**Factorial runner status:** `run_signal_sensitivity.py` marked `NOT_AUTHORIZED`. Blocked at CLI without explicit flag `--i-understand-this-is-the-324-task-factorial`.
+
+**OFAT Gate outcomes (O1-O8):** 4/8 PASS — OFAT_PARTIAL
+
+| Gate | Outcome |
+|------|---------|
+| O1 SAFETY | PASS |
+| O2 GRAPH_SPECIFICITY | FAIL — permuted occasionally ≥ lagged at 200 epochs; D_lag1/D_lag2 only configs to pass 6/6 |
+| O3 EDGE_RECOVERY | PASS — mean AUC=0.617, AUPRC > prevalence |
+| O4 SEED_REPLICATION | PASS |
+| O5 MASK_ROBUSTNESS | FAIL — A_low and B_low fail block_30 (degenerate low-signal regime) |
+| O6 MONOTONIC_SIGNAL | PASS — oracle gap: A_low=0.005, A_original=0.017, A_high=0.045 |
+| O7 AR_DIAGNOSIS | FAIL — hypothesis inverted: high AR → MORE graph contribution, not less |
+| O8 ORACLE_CEILING | FAIL — oracle fails vs no_graph in block_30 for A_low and A_high (200 epochs insufficient) |
+
+**Key quantitative findings:**
+
+- **B_high (AR=high, φ=0.5–0.8):** Largest absolute benefit. herald_lagged MAE=0.528 vs no_graph=0.609 (Δ=−0.081, +13%). Both masks. 3/3 seeds.
+- **D_lag1, D_lag2 (pure lag):** AUC 0.67–0.71, AUPRC 0.53–0.60 (vs prevalence 0.111). Only configs with 0/6 O2 failures. Demonstrates that pure lag structure is cleanly recoverable.
+- **A_low (cs=low):** Cross-sector signal too weak. Graph uninformative. Block masking fails entirely (0/6).
+- **B_low (ar=low, φ=0.1–0.3):** Low AR reduces graph contribution. Block masking fails (0/6). ffill no longer dominant (neural models beat ffill).
+- **O7 finding corrected:** Graph utility INCREASES with AR strength, contrary to prior hypothesis. The corrected model: stronger AR creates harder temporal extrapolation; the graph provides cross-sector signal that no_graph cannot access.
+
+**Decisions:**
+
+- `OFAT_NO_EXTENSION_NEEDED`: 48-task OFAT is sufficient for mechanistic understanding.
+- `GRAPH_SIGNAL_LIMIT_CONFIRMED` at Phase 10 parameters: +1–2% MAE is the ceiling at φ∈[0.3,0.6] mixed lag.
+- `ARCHITECTURE_NOT_RESPONSIVE` is **ruled out**: B_high shows +13%, D_lag1/D_lag2 show consistent improvements with AUC=0.70.
+- `PHASE10_PARTIAL_CONFIRMED`: unchanged. OFAT results do not alter Phase 10 decisions.
+
+**Limitations:**
+- 200 epochs (vs 500 in Phase 10) → partial convergence; O2 specificity vs permuted is sensitive to epoch count.
+- O8 failures in A_high and A_low block_30 are convergence artifacts (extreme weight ranges need more epochs).
+- B_high × D_lag interaction (strongest signal + pure lag) not measured directly in OFAT. Potential future experiment.
+
+**Reopen condition:** OFAT_HPC_EXTENSION_JUSTIFIED only if B_high × D_lag grid (small, targeted, 500 epochs) is specifically authorized.
+
+**Affected files:**
+- `src/modeles/synthetic/run_ofat_sensitivity.py` (new — OFAT runner, 48 tasks)
+- `src/modeles/synthetic/gates_ofat.py` (new — O1-O8 frozen gates)
+- `src/modeles/synthetic/run_signal_sensitivity.py` (modified — NOT_AUTHORIZED guard added)
+- `tests/test_ofat_sensitivity.py` (new — manifest, guard, gates, result tests)
+- `reports/HERALD_PHASE10_SIGNAL_SENSITIVITY.md` (updated — sections 10-13 added)

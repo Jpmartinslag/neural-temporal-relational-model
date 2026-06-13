@@ -1,5 +1,5 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-13 (DEC-043 ADDENDUM: Phase 10 HPC COMPLETE — PHASE10_PARTIAL. L1+L2+L4+L5+L7 PASS. AUC +70%, MAE +1–2%).
+**LEIA PRIMEIRO.** Updated 2026-06-13 (DEC-044 ADDENDUM: OFAT 48 tasks complete locally. OFAT_PARTIAL 4/8. GRAPH_SIGNAL_LIMIT_CONFIRMED original params. B_high +13% MAE, D_lag AUC=0.71. Factorial NOT_AUTHORIZED).
 Read this file, then verify drift with `rtk git status --short`.
 
 ## Quick orientation (start here)
