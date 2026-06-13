@@ -1,0 +1,126 @@
+{
+  "generated": "2026-06-13",
+  "decision": "DEC-038",
+  "local_sources": [
+    {
+      "id": "eurostat_bd_hgnace_r",
+      "path": "data/external/eurostat_business_demography/bd_hgnace_r_raw_full.csv",
+      "description": "Eurostat BD_HGNACE_R: enterprise births by NACE and NUTS3, ENT_BRTH_NR",
+      "rows": 1446202,
+      "sha256_head": "130ff37d352fc4c5",
+      "limitations": [
+        "Only Finland has data from 2013; all other countries 2021-2023 only.",
+        "K_L combined: KZ (financial) and LZ (real estate) inseparable.",
+        "P_Q excludes O (public administration); OQ sector is partial."
+      ]
+    },
+    {
+      "id": "eurostat_bd_size_r3",
+      "path": "data/external/eurostat_business_demography/bd_size_r3_raw.csv",
+      "description": "Eurostat BD_SIZE_R3: enterprise births/stock by size class and NUTS3, total NACE only",
+      "sha256_head": "1be7e3de0b668579",
+      "limitations": [
+        "Total births only (NACE B-S_X_K642); no sector breakdown.",
+        "Years 2008-2020 for most countries."
+      ]
+    },
+    {
+      "id": "nuts3_2021_geojson",
+      "path": "data/external/nuts3_2021_eurostat.geojson",
+      "description": "Eurostat NUTS3 2021 geometry for all EU countries",
+      "sha256_head": "fb537bab985795ee"
+    }
+  ],
+  "external_sources_not_downloaded": {
+    "ES": {
+      "country": "Spain",
+      "source": "INE DIRCE (Directorio Central de Empresas)",
+      "url": "https://www.ine.es/dyngs/INEbase/es/operacion.htm?c=Estadistica_C&cid=1254736160707",
+      "indicator": "Altas de empresas por secci\u00f3n CNAE-2009 y provincia",
+      "concept": "enterprise_birth",
+      "n_territories_expected": 50,
+      "year_range_expected": "2007-2023",
+      "semantic_risk": null
+    },
+    "IT": {
+      "country": "Italy",
+      "source": "ISTAT ASIA (Archivio Statistico delle Imprese Attive)",
+      "url": "https://dati.istat.it/",
+      "indicator": "Nati di impresa per sezione ATECO e provincia",
+      "concept": "enterprise_birth",
+      "n_territories_expected": 107,
+      "year_range_expected": "2010-2022",
+      "semantic_risk": null
+    },
+    "DE": {
+      "country": "Germany",
+      "source": "Destatis Unternehmensregister",
+      "url": "https://www.destatis.de/EN/Themes/Economic-Sectors-Enterprises/Enterprises/Business-Notifications/_node.html",
+      "indicator": "Unternehmensgr\u00fcndungen nach Wirtschaftszweig und Kreis",
+      "concept": "enterprise_birth_verify_required",
+      "n_territories_expected": 401,
+      "year_range_expected": "2008-2022",
+      "semantic_risk": "Gewerbemeldungen concept may differ from Eurostat enterprise_birth; verification against Eurostat counts required before integration."
+    },
+    "SE": {
+      "country": "Sweden",
+      "source": "Statistics Sweden SCB",
+      "url": "https://www.statistikdatabasen.scb.se/",
+      "indicator": "Nyregistrerade f\u00f6retag efter SNI2007 och region",
+      "concept": "enterprise_birth",
+      "n_territories_expected": 21,
+      "year_range_expected": "2007-2023",
+      "semantic_risk": null
+    },
+    "PL": {
+      "country": "Poland",
+      "source": "GUS BDL (Bank Danych Lokalnych)",
+      "url": "https://bdl.stat.gov.pl/",
+      "indicator": "Nowo zarejestrowane przedsi\u0119biorstwa NACE \u00d7 powiat",
+      "concept": "enterprise_birth",
+      "n_territories_expected": 380,
+      "year_range_expected": "2003-2023",
+      "semantic_risk": null
+    },
+    "RO": {
+      "country": "Romania",
+      "source": "INS TEMPO",
+      "url": "http://statistici.insse.ro/shop/",
+      "indicator": "Firme nou \u00eenregistrate CAEN \u00d7 jude\u021b",
+      "concept": "enterprise_birth",
+      "n_territories_expected": 42,
+      "year_range_expected": "2005-2023",
+      "semantic_risk": null
+    },
+    "CZ": {
+      "country": "Czech Republic",
+      "source": "Czech Statistical Office (CSO)",
+      "url": "https://www.czso.cz/csu/czso/business-statistics",
+      "indicator": "Nov\u00e9 firmy NACE \u00d7 kraj",
+      "concept": "enterprise_birth",
+      "n_territories_expected": 14,
+      "year_range_expected": "2005-2023",
+      "semantic_risk": null
+    },
+    "DK": {
+      "country": "Denmark",
+      "source": "Statistics Denmark (DST)",
+      "url": "https://www.dst.dk/en/Statistik/emner/erhvervslivets-sektorer/virksomheder",
+      "indicator": "Nyregistrerede virksomheder NACE \u00d7 landsdel",
+      "concept": "enterprise_birth",
+      "n_territories_expected": 12,
+      "year_range_expected": "2007-2023",
+      "semantic_risk": null
+    },
+    "AT": {
+      "country": "Austria",
+      "source": "Statistics Austria (Unternehmensdemografie)",
+      "url": "https://www.statistik.at/en/statistics/trade-and-services/enterprise-demography/newly-established-enterprises",
+      "indicator": "Unternehmensgr\u00fcndungen nach Sektion und Region",
+      "concept": "enterprise_birth",
+      "n_territories_expected": 35,
+      "year_range_expected": "2007-2022",
+      "semantic_risk": null
+    }
+  }
+}

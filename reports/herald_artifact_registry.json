@@ -4,7 +4,17 @@
     "created": "2026-06-12",
     "decision": "DEC-030",
     "rule": "Never delete scientific artefacts. Update status; do not remove entries.",
-    "status_vocabulary": ["ACTIVE", "FROZEN", "SUPERSEDED", "INVALID_FOR_CLAIMS", "INVALID_FOR_INTERPRETATION", "REGENERABLE", "ARCHIVED"]
+    "status_vocabulary": [
+      "ACTIVE",
+      "FROZEN",
+      "SUPERSEDED",
+      "INVALID_FOR_CLAIMS",
+      "INVALID_FOR_INTERPRETATION",
+      "REGENERABLE",
+      "ARCHIVED"
+    ],
+    "last_updated": "2026-06-13",
+    "last_decision": "DEC-038"
   },
   "artifacts": [
     {
@@ -18,7 +28,11 @@
       "sha256_prefix": "fd21eb2997019dde09d2",
       "origin_decision": "DEC-005 / DEC-008",
       "generator_script": "src/data/european_panel/build_enterprise_birth_subpanel.py",
-      "input_data": ["data/external/portugal/", "data/external/italy/processed/", "data/external/austria/"],
+      "input_data": [
+        "data/external/portugal/",
+        "data/external/italy/processed/",
+        "data/external/austria/"
+      ],
       "claim_authorized": "PT/IT/AT harmonized enterprise_birth, 151 NUTS3 mainland, 2008-2020. Primary input for Phase 4N LOCO.",
       "claim_forbidden": "Cross-country generalization beyond these 3 countries. Include as 4-country panel with FR/NL/BE.",
       "can_regenerate": true,
@@ -35,7 +49,10 @@
       "sha256_prefix": "d8c25d21da410d9dc0c8",
       "origin_decision": "DEC-013 (G0 contract)",
       "generator_script": "src/data/european_panel/build_sector_panel_fr_nl_pt.py",
-      "input_data": ["data/raw/", "data/external/france/"],
+      "input_data": [
+        "data/raw/",
+        "data/external/france/"
+      ],
       "claim_authorized": "Canonical FR NUTS3 sector panel (BE/FZ/GI/JZ/KZ/LZ/MN/OQ/RU sectors). Primary input for G1-L2, G2, P6 tensors.",
       "claim_forbidden": "None specific; see G1-L2 and G2 individual claim restrictions.",
       "can_regenerate": true,
@@ -52,7 +69,11 @@
       "sha256_prefix": null,
       "origin_decision": "DEC-015",
       "generator_script": "src/data/european_panel/build_sector_panel_fr_nl_pt.py",
-      "input_data": ["data/external/france/", "data/external/netherlands/", "data/external/portugal/"],
+      "input_data": [
+        "data/external/france/",
+        "data/external/netherlands/",
+        "data/external/portugal/"
+      ],
       "claim_authorized": "Canonical FR/NL/PT 9-sector panel for G1-L2 and G2 analysis.",
       "claim_forbidden": "PT KZ sector (definitionally absent per DEC-018).",
       "can_regenerate": true,
@@ -69,7 +90,9 @@
       "sha256_prefix": null,
       "origin_decision": "DEC-019 / DEC-020",
       "generator_script": "src/data/european_panel/build_g1_l2_cogrowth.py",
-      "input_data": ["data/processed/economic_graph/sector_panel_fr_nl_pt.csv"],
+      "input_data": [
+        "data/processed/economic_graph/sector_panel_fr_nl_pt.csv"
+      ],
       "claim_authorized": "Dense same-sector cross-territory co-growth weight field: FR 0.782, NL 0.789, PT 0.778 (8 sectors). Temporally stable, COVID-robust (FR, NL), COVID-sensitive (PT). Statistical co-movement association, not Granger predictability.",
       "claim_forbidden": "Individual top-k edge stability. Louvain community validity (NOT_SUPPORTED, DEC-021). Causal attribution. Predictive improvement over AR-Ridge (NOT_SUPPORTED, Phase 5 / DEC-023).",
       "can_regenerate": true,
@@ -86,7 +109,9 @@
       "sha256_prefix": null,
       "origin_decision": "DEC-024 / DEC-024c / DEC-024d / DEC-025",
       "generator_script": "src/data/european_panel/build_g2_corrected_controls.py",
-      "input_data": ["data/processed/economic_graph/sector_panel_fr_nl_pt.csv"],
+      "input_data": [
+        "data/processed/economic_graph/sector_panel_fr_nl_pt.csv"
+      ],
       "claim_authorized": "G-13 PARTIALLY_SUPPORTED: FR aggregate temporal coherence robust (9/9 COVID-robust). G-14 SUPPORTED: descriptive aggregate density/weight variation. M2 Jaccard 0.06-0.26 (edge instability confirmed). No individual edge, no cross-country pooling.",
       "claim_forbidden": "Individual edge stability (NOT_SUPPORTED). G2 cross-country replication (NOT_SUPPORTED). PT G-13 inference (0/8 sectors with 2020 excluded). NL G-13 robust claim (COVID-sensitive).",
       "can_regenerate": true,
@@ -103,9 +128,11 @@
       "sha256_prefix": "1d48a1a0d92143cb025e",
       "origin_decision": "DEC-028",
       "generator_script": "src/data/european_panel/build_graph_temporal_v2.py",
-      "input_data": ["data/processed/economic_graph/sector_panel_fr_nl_pt.csv"],
+      "input_data": [
+        "data/processed/economic_graph/sector_panel_fr_nl_pt.csv"
+      ],
       "claim_authorized": "Schema 2.0 tensors: 3 NL folds + 5 FR folds. E0_V2_PASS: 57/57 tests, zero leakage, deterministic. FR adjacency READY (280 ZE, 9 sectors, 5 eval years, 0 isolated nodes, 1 connected component, perfect symmetry).",
-      "claim_forbidden": "Predictive results — S1_FR_FAIL (DEC-031): GConvGRU/EvolveGCN-H both failed frozen gate. NL scientific claim (COVID-sensitive; engineering smoke only). No HPC submission authorized.",
+      "claim_forbidden": "Predictive results \u2014 S1_FR_FAIL (DEC-031): GConvGRU/EvolveGCN-H both failed frozen gate. NL scientific claim (COVID-sensitive; engineering smoke only). No HPC submission authorized.",
       "can_regenerate": true,
       "notes": "3 NL + 5 FR NPZ folds. Sector names confirmed: BE, FZ, GI, JZ, KZ, LZ, MN, OQ, RU (from sector panel sorted unique). Schema 1.0 at data/processed/graph_temporal_preflight/ is SUPERSEDED."
     },
@@ -120,9 +147,11 @@
       "sha256_prefix": "495cff5770997ec56f3a",
       "origin_decision": "DEC-029",
       "generator_script": "hpc/phase6_dynamic_dual_graph/scripts/audit_dual_graph_hpc_results.py",
-      "input_data": ["hpc_results/dual_graph_s1/raw/ (275 JSON, local only)"],
+      "input_data": [
+        "hpc_results/dual_graph_s1/raw/ (275 JSON, local only)"
+      ],
       "claim_authorized": "DUAL_GRAPH_S1_FAIL: all 7 gate criteria fail. C5_dual MAE 0.1424 vs C1_ridge 0.1242 (+14.6%), C2_no_graph 0.1329 (+7.2%). Seed Jaccard 0.3353. 2023 fold regression +17.4%.",
-      "claim_forbidden": "Any positive predictive claim. Named sector edge claims (sector label mapping invalid — see INVALID_FOR_INTERPRETATION entry below).",
+      "claim_forbidden": "Any positive predictive claim. Named sector edge claims (sector label mapping invalid \u2014 see INVALID_FOR_INTERPRETATION entry below).",
       "can_regenerate": false,
       "notes": "Authoritative gate result. Do not modify. Raw HPC results are in hpc_results/dual_graph_s1/ (local, not in git)."
     },
@@ -137,7 +166,9 @@
       "sha256_prefix": "cfc58ab9919c37ca9d9b",
       "origin_decision": "DEC-029 / DEC-030",
       "generator_script": "hpc/phase6_dynamic_dual_graph/scripts/audit_dual_graph_hpc_results.py (inferred)",
-      "input_data": ["hpc_results/dual_graph_s1/raw/ (per-run JSON with integer index-based edges)"],
+      "input_data": [
+        "hpc_results/dual_graph_s1/raw/ (per-run JSON with integer index-based edges)"
+      ],
       "claim_authorized": "None. File is preserved as historical artefact only.",
       "claim_forbidden": "Any claim referencing named sector edges (AZ, BE, C, DE, GI, JZ, KZ, LZ, MN). These names do not match the actual tensor sector_ids (BE, FZ, GI, JZ, KZ, LZ, MN, OQ, RU). The mapping source is unverifiable.",
       "can_regenerate": false,
@@ -154,7 +185,10 @@
       "sha256_prefix": "c594a37068c464be3d2b",
       "origin_decision": "DEC-014",
       "generator_script": "src/visualisation/generate_herald_semi_v2_dashboard.py",
-      "input_data": ["data/processed/", "hpc_results/ (France Phase 3E run)"],
+      "input_data": [
+        "data/processed/",
+        "hpc_results/ (France Phase 3E run)"
+      ],
       "claim_authorized": "France operational dashboard. HERALD Q7 WMAPE 0.0204. Official visual base for incremental adaptation.",
       "claim_forbidden": "Non-French territories. Recommendation claims. Post-2025 forecasts without new run.",
       "can_regenerate": true,
@@ -188,7 +222,9 @@
       "sha256_prefix": null,
       "origin_decision": "DEC-027 (schema 1.0); superseded by DEC-028 (schema 2.0)",
       "generator_script": "src/data/european_panel/build_graph_temporal_preflight.py",
-      "input_data": ["data/processed/economic_graph/sector_panel_fr_nl_pt.csv"],
+      "input_data": [
+        "data/processed/economic_graph/sector_panel_fr_nl_pt.csv"
+      ],
       "claim_authorized": "Historical audit trail only. E0_STATIC_SNAPSHOT_PASS (reclassified as engineering note).",
       "claim_forbidden": "Any GNN training. Schema 1.0 has 5 documented defects (DEC-028).",
       "can_regenerate": true,
@@ -205,7 +241,9 @@
       "sha256_prefix": "61119c9d093438d73580",
       "origin_decision": "DEC-030",
       "generator_script": "src/data/european_panel/build_observatory_export.py",
-      "input_data": ["data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv"],
+      "input_data": [
+        "data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv"
+      ],
       "claim_authorized": "Historical Observatory v0.1 export only.",
       "claim_forbidden": "France results (PENDING_REAUDIT, not in this export). Sector-level forecasts. Uncertainty intervals (NaN). Sector graph (0). Ridge WMAPE equivalence to Phase 4N. Post-2020 forecasts.",
       "can_regenerate": true,
@@ -222,7 +260,9 @@
       "sha256_prefix": "cbfe0d79831d619245f9",
       "origin_decision": "DEC-032",
       "generator_script": "src/data/european_panel/build_observatory_export.py",
-      "input_data": ["data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv"],
+      "input_data": [
+        "data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv"
+      ],
       "claim_authorized": "Aggregate PT/IT/AT observed states and causal baseline point forecasts, with data/forecast/graph evidence separated.",
       "claim_forbidden": "Sector interpretation, uncertainty interval, graph availability on aggregate rows, equivalence to Phase 4N Ridge.",
       "can_regenerate": true,
@@ -239,7 +279,9 @@
       "sha256_prefix": "a6f8a5b2a34f17fac028",
       "origin_decision": "DEC-032",
       "generator_script": "src/data/european_panel/build_observatory_export.py",
-      "input_data": ["data/processed/economic_graph/sector_panel_fr_nl_pt.csv"],
+      "input_data": [
+        "data/processed/economic_graph/sector_panel_fr_nl_pt.csv"
+      ],
       "claim_authorized": "Observed sector trajectories and deterministic economic states for FR/NL/PT; causal persistence and exploratory AR(1) Ridge point baselines; G1-L2 association availability.",
       "claim_forbidden": "Pooled-country equivalence, sector-to-sector influence, uncertainty intervals, predictive graph benefit, structural causality.",
       "can_regenerate": true,
@@ -256,7 +298,9 @@
       "sha256_prefix": "dd17167363602f46b712",
       "origin_decision": "DEC-031",
       "generator_script": "src/modeles/run_s1_fr_local.py",
-      "input_data": ["data/processed/graph_temporal_v2/"],
+      "input_data": [
+        "data/processed/graph_temporal_v2/"
+      ],
       "claim_authorized": "S1_FR_FAIL: GConvGRU WMAPE 0.064922 (vs Ridge 0.064856, p_temporal=1.0, p_territory=1.0); EvolveGCN-H WMAPE 0.064973 (p_temporal=1.0, p_territory=0.293). Both fail all 5 frozen gate criteria. Leakage/seed-stability checks pass.",
       "claim_forbidden": "Any positive predictive claim for GConvGRU or EvolveGCN-H. HPC authorization. Architecture generalisation claim beyond France 3-feature tensor.",
       "can_regenerate": false,
@@ -273,7 +317,9 @@
       "sha256_prefix": null,
       "origin_decision": "DEC-006",
       "generator_script": "hpc/phase4/run_phase4n_harmonized_loco.py",
-      "input_data": ["data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv"],
+      "input_data": [
+        "data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv"
+      ],
       "claim_authorized": "Persistence balanced WMAPE ~0.0939 (PT/IT/AT LOCO). Persistence best balanced baseline. Ridge improves PT only (1/3, not promoted).",
       "claim_forbidden": "Cold-start LOCO. Cross-country generalisation beyond 3-country scope.",
       "can_regenerate": true,
@@ -290,8 +336,10 @@
       "sha256_prefix": null,
       "origin_decision": "DEC-034",
       "generator_script": "hpc/phase7_sector_precedence/scripts/",
-      "input_data": ["data/processed/herald_observatory_v02/herald_observatory_v02_panel.csv"],
-      "claim_authorized": "12 COVID-robust sector precedence edges (NL=3, PT=9), 2 countries. SECTOR_PRECEDENCE_PROTOTYPE_READY. Associations only — predictive precedence, not structural causality. Slurm job 7455266, 710/710 COMPLETED. Audit PASS.",
+      "input_data": [
+        "data/processed/herald_observatory_v02/herald_observatory_v02_panel.csv"
+      ],
+      "claim_authorized": "12 COVID-robust sector precedence edges (NL=3, PT=9), 2 countries. SECTOR_PRECEDENCE_PROTOTYPE_READY. Associations only \u2014 predictive precedence, not structural causality. Slurm job 7455266, 710/710 COMPLETED. Audit PASS.",
       "claim_forbidden": "Structural economic causality. Policy intervention claims. Mechanism claims (labour/capital flows). Extension to countries not in the panel without re-running the study.",
       "can_regenerate": true,
       "notes": "Panel SHA256=a6f8a5b2a34f17fac028518bf7955f7d8931c7a498b0af57b1afae5eb62c742e. Key files: decision.json (verdict), covid_robust_edges.csv, all_edges.csv, audit/audit_report.json. Not versioned (large CSV); regenerable from panel + manifest."
@@ -312,8 +360,8 @@
         "data/processed/sector_precedence_results/latest.csv",
         "data/processed/sector_precedence_results/covid_robust_edges.csv"
       ],
-      "claim_authorized": "Observatory v0.3 extends v0.2 with sector precedence layer. 12 ROBUST edges (NL=3, PT=9), 13 MAIN_ONLY_EXPLORATORY. sector_graph_available flag reflects COVID-robust window per country. Associations only — no structural causality.",
-      "claim_forbidden": "Structural causality. Policy intervention claims. Displaying MAIN_ONLY_EXPLORATORY edges as equivalent to ROBUST. Claiming FR has validated sector→sector associations.",
+      "claim_authorized": "Observatory v0.3 extends v0.2 with sector precedence layer. 12 ROBUST edges (NL=3, PT=9), 13 MAIN_ONLY_EXPLORATORY. sector_graph_available flag reflects COVID-robust window per country. Associations only \u2014 no structural causality.",
+      "claim_forbidden": "Structural causality. Policy intervention claims. Displaying MAIN_ONLY_EXPLORATORY edges as equivalent to ROBUST. Claiming FR has validated sector\u2192sector associations.",
       "can_regenerate": true,
       "notes": "Panel: 45,945 rows, same schema as v0.2 plus updated sector_graph_available. Key files: herald_observatory_v03_panel.csv, herald_observatory_v03_sector_relations.json, herald_observatory_v03_manifest.json. Dashboard: reports/dashboards/herald_observatory_v03_dashboard.html (self-contained HTML, 14095KB; Plotly 4.7MB + Phase 8 345-record territorial influence layer embedded; choropleth map + sector filter + Section 6 territorial contribution toggle, DEC-036/v0.3.1 + DEC-037 addendum). ROBUST_WINDOWS derived from covid_robust_edges.csv (FAIL_CLOSED). FR region_system=ZE2020 confirmed. PT choropleth: 23 mainland only."
     },
@@ -336,7 +384,7 @@
       "claim_authorized": "Descriptive LOTO territorial attribution of 12 Phase 7 ROBUST sector-precedence associations. influence_r = beta_full - beta_without_r. DESCRIPTIVE_ONLY layer: 91 HIGH_DESCRIPTIVE_INFLUENCE + 78 MODERATE_DESCRIPTIVE_INFLUENCE + 8 LOW_DESCRIPTIVE_INFLUENCE + 168 DESCRIPTIVE_ONLY. No causal transmission claim.",
       "claim_forbidden": "Causal transmission between territories. Geographic propagation. Enterprise-birth flow. Policy intervention. Elevating DESCRIPTIVE_ONLY to validated predictive finding without new pre-registration.",
       "can_regenerate": true,
-      "notes": "NL: 3 relations × 40 territories = 120 records. PT: 9 relations × 25 territories = 225 records. Total: 345. Bootstrap: 500 draws per relation, seed=42. Beta integrity verified: max deviation from Phase 7 = 3.6e-16. Manifest version=0.2 (nomenclature addendum). Key files: territorial_sector_movements.csv, territorial_sector_movement_summary.csv, territorial_sector_movement_decision.json, territorial_sector_movement_manifest.json. Dashboard integration: Observatory v0.3 Section 6."
+      "notes": "NL: 3 relations \u00d7 40 territories = 120 records. PT: 9 relations \u00d7 25 territories = 225 records. Total: 345. Bootstrap: 500 draws per relation, seed=42. Beta integrity verified: max deviation from Phase 7 = 3.6e-16. Manifest version=0.2 (nomenclature addendum). Key files: territorial_sector_movements.csv, territorial_sector_movement_summary.csv, territorial_sector_movement_decision.json, territorial_sector_movement_manifest.json. Dashboard integration: Observatory v0.3 Section 6."
     },
     {
       "id": "HERALD_Q7_FRANCE_RESULT",
@@ -349,11 +397,29 @@
       "sha256_prefix": null,
       "origin_decision": "DEC-002 (baseline); Q7 selection confirmed in Phase 3E",
       "generator_script": "hpc/regime/",
-      "input_data": ["data/raw/", "data/external/france/"],
-      "claim_authorized": "HERALD Q7 WMAPE 0.0204 (mean 2021-2025), 0.0115 (2025), France 306 ZE. Status: PENDING_REAUDIT — causal audit of Phase 3E/2R pipeline features (growth_1y/2y, effectifs_lag1) not yet formally complete for French track. Not usable as headline claim until audit is done.",
+      "input_data": [
+        "data/raw/",
+        "data/external/france/"
+      ],
+      "claim_authorized": "HERALD Q7 WMAPE 0.0204 (mean 2021-2025), 0.0115 (2025), France 306 ZE. Status: PENDING_REAUDIT \u2014 causal audit of Phase 3E/2R pipeline features (growth_1y/2y, effectifs_lag1) not yet formally complete for French track. Not usable as headline claim until audit is done.",
       "claim_forbidden": "Extension to non-French geographies. LOCO claim. Leakage-free claim extended to growth_1y Phase 4A/4D versions. Citing WMAPE 0.0204 as a headline validated result before causal pipeline audit is complete.",
       "can_regenerate": true,
       "notes": "French institutional data (SIDE/SIRENE, URSSAF effectifs). Causal protocol confirmed in Phase 3E. Note: growth_1y leakage issue is a Phase 4A/4D problem only. PENDING_REAUDIT status added DEC-030."
+    },
+    {
+      "id": "EUROPEAN_SECTOR_COVERAGE_PREFLIGHT",
+      "decision": "DEC-038",
+      "date": "2026-06-13",
+      "description": "European territorial sector coverage preflight. 27 countries evaluated. FI: ELIGIBLE_WITH_MAPPING (19 NUTS3, 2013-2021). BE: BLOCKED_SEMANTICS. AT/CZ/DE/DK/ES/IT/PL/RO/SE: ELIGIBLE_WITH_DOWNLOAD. Key limitation: Eurostat BD_HGNACE_R only 3 years (2021-2023) except FI; K_L always combined.",
+      "files": [
+        "data/processed/european_panel/european_sector_coverage_matrix.csv",
+        "data/processed/european_panel/european_sector_coverage_summary.json",
+        "data/processed/european_panel/european_sector_source_manifest.json",
+        "reports/HERALD_EUROPEAN_SECTOR_COVERAGE_PREFLIGHT.md"
+      ],
+      "script": "src/data/european_panel/audit_european_sector_coverage.py",
+      "tests": "tests/test_european_sector_coverage.py (53 tests)",
+      "status": "COMPLETE"
     }
   ]
 }

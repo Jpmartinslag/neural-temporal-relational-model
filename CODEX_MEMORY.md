@@ -1,11 +1,11 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-12 (DEC-037 addendum: nomenclature correction + dashboard integration).
+**LEIA PRIMEIRO.** Updated 2026-06-13 (DEC-038: European sector coverage preflight).
 Read this file, then verify drift with `rtk git status --short`.
 
 ## Quick orientation (start here)
 - **Direction:** `reports/HERALD_PROJECT_CHARTER.md` — official scope, permitted/forbidden claims, frozen decisions.
 - **Current state by component:** `reports/HERALD_CURRENT_STATE.md` — completion %, blockers, next step.
-- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-037).
+- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-038).
 - **Claims classification:** `reports/HERALD_EVIDENCE_MATRIX.md`.
 - **Active document list:** `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`.
 - **Artefact manifest:** `reports/herald_artifact_registry.json`.
@@ -14,7 +14,8 @@ Read this file, then verify drift with `rtk git status --short`.
 - **Phase 7 result (DEC-034):** SECTOR_PRECEDENCE_PROTOTYPE_READY — 12 COVID-robust edges (NL=3, PT=9); 25 total promoted main edges. Slurm 7455266, meso. Audit PASS.
 - **Observatory v0.3 (DEC-035/036):** Sector precedence layer integrated. Geographic map (FR=ZE2020/NL=COROP/PT=NUTS3 mainland), Plotly self-contained. Dashboard includes Phase 8 territorial contribution layer (Section 6 toggle, divergent colorscale): `reports/dashboards/herald_observatory_v03_dashboard.html` (14,095 KB). 48 tests pass.
 - **Phase 8 (DEC-037 + addendum):** TERRITORIAL_MOVEMENT_LAYER = DESCRIPTIVE_ONLY. LOTO influence decomposition for 12 ROBUST relations. Nomenclature: HIGH_DESCRIPTIVE_INFLUENCE (91) + MODERATE_DESCRIPTIVE_INFLUENCE (78) + LOW_DESCRIPTIVE_INFLUENCE (8) + DESCRIPTIVE_ONLY (168). No HPC. Builder: `src/data/european_panel/build_territorial_sector_movements.py`. 44 tests pass. Data in `data/processed/herald_observatory_v04/` (not committed — regenerable). Decision fields: interpretation_scope=descriptive_relative_influence, independent_replication=false, spatial_flow_supported=false, causal_effect_supported=false.
-- **Immediate next step:** extend sector panel to AT/BE (pre-register hypothesis first); OR report writing (Phase 6).
+- **DEC-038 — European sector coverage preflight:** 27 countries evaluated. IN_OBSERVATORY: FR/NL/PT. ELIGIBLE_WITH_MAPPING: FI (19 NUTS3, 2013-2021, Eurostat BD_HGNACE_R, K_L combined). ELIGIBLE_WITH_DOWNLOAD: AT, CZ, DE, DK, ES, IT, PL, RO, SE. BLOCKED_SEMANTICS: BE (vat_first_registration). PARTIAL: 13 small EU countries (only 2021-2023 in Eurostat, no national source documented). KEY LIMIT: Eurostat BD_HGNACE_R has only 3 years (2021-2023) for all countries except FI; K_L always combined. Script: `src/data/european_panel/audit_european_sector_coverage.py`. 53 tests pass.
+- **Immediate next step:** Phase 7 extension (download national source for ES/IT/FI mapping), OR report writing (Phase 6).
 
 ## DO NOT change direction without a new DEC-* entry
 No new GNN architecture search. No geographic graph reopen. No P6 relaunch.

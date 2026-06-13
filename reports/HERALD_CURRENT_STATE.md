@@ -1,6 +1,6 @@
 # HERALD Current State
-**Updated:** 2026-06-12 (post DEC-037 addendum: nomenclature correction + dashboard integration)
-**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-037), `HERALD_EVIDENCE_MATRIX.md`.
+**Updated:** 2026-06-13 (DEC-038: European sector coverage preflight complete)
+**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-038), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Layer | Completion | Notes |
 |-------|-----------|-------|
-| Data | **85%** | PT/IT/AT harmonized; FR/NL/BE complete; Spain/CZ blocked |
+| Data | **87%** | PT/IT/AT harmonized; FR/NL/BE complete; European preflight DEC-038 complete; FI eligible, ES/IT/DE eligible with download |
 | Quantitative forecasting | **75%** | Ridge+persistence validated; conformal intervals exploratory |
 | Territorial graph (G1-L2) | **75%** | FR/NL/PT PASS; community detection NOT_SUPPORTED |
 | Aggregate dynamics (G2) | **75%** | FR robust; NL/PT COVID-sensitive |
