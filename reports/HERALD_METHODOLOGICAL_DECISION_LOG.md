@@ -1916,3 +1916,43 @@ Recommendation: Option C is scientifically defensible. The improvement is real, 
 - `src/modeles/synthetic/phase11_generalization/` (new package — splits, trainer, evaluator, gates, pilot runner)
 - `tests/test_phase11_generalization.py` (new — 51 tests)
 - `reports/HERALD_PHASE11_SYNTHETIC_GENERALIZATION.md` (new)
+
+---
+
+## DEC-046 — Pesquisa Arquitetural pós-DEC-045 (RESEARCH_ONLY)
+**Date:** 2026-06-13 | **Status:** RESEARCH_COMPLETE | **No implementation**
+
+**Context:** DEC-045 revealed that edge structure transfers (AUC=0,611 OOD) but the MLP decoder does not generalize under extreme dynamics shift (85-90% nonlinear vs 0-30% training). This is a research-only entry to document the methodological investigation and establish the direction for DEC-047.
+
+**Diagnosis (root cause):**
+Two sub-problems with different generalization behaviour:
+- `[A] Structure identification (attention)` → TRANSFERS (AUC=0,611 on OOD scenarios)
+- `[B] Reconstruction function (MLP)` → DOES NOT TRANSFER without domain adaptation
+
+**Methods surveyed (5 axes, 18 verified references, R-026 to R-042):**
+- Axis A (graph imputation): GRIN/SAITS/CSDI/PriSTI/GRAPE
+- Axis B (domain adaptation for graphs): UDAGCN/GTrans/few-shot node classification
+- Axis C (relational inference): NRI/GTS/SLAPS
+- Axis D (self-supervised pretraining): GraphMAE/PatchTST/SimMTM
+- Axis E (conformal uncertainty): EnbPI/SPCI/Barber et al./Angelopoulos tutorial
+
+**Three paths proposed:**
+
+| Path | Classification | Description |
+|------|---------------|-------------|
+| PATH 1 | `RECOMMENDED_NOW` | Frozen attention + adapter MLP (bottleneck 32→16→32) trained with K% labels of target domain. Pretraining: masked reconstruction + edge/lag/sign prediction multi-task. Conformal uncertainty (EnbPI) as output layer. |
+| PATH 2 | `SECONDARY` | Masked multi-task pretraining on 800-2000 synthetic mini-datasets (including frac_nonlinear 0-0.9). Better zero-shot before any fine-tuning. |
+| PATH 3 | `FUTURE_ONLY` | Graph structure learning end-to-end (NRI/GTS). Requires T≥50, N≥20 sectors. Opens when N_countries≥8. |
+
+**Rejected methods:** GRIN (T>>200), CSDI/PriSTI (high compute, low interpretability), GTrans (topology shift not dynamics shift), UDAGCN (node classification), MAML (too few meta-tasks with 3-4 countries).
+
+**New finding (lacuna bibliográfica):** No published method combines directed + signed + lagged graph learning for short economic panels (T=10-20). This is a potential original contribution of HERALD.
+
+**Recommended next DEC:** DEC-047 — Few-shot adapter evaluation experiment (synthetic, K ∈ {1%, 5%, 10%, 20%}, gates A1-A5 pre-defined).
+
+**Affected files:**
+- `reports/HERALD_POST_DEC045_ARCHITECTURE_RESEARCH.md` (new)
+- `reports/bibliography/HERALD_REFERENCES_MASTER.md` (updated: R-026 to R-042, 42 total)
+- `reports/bibliography/herald_references.bib` (updated: new BibTeX entries)
+- `reports/bibliography/HERALD_REFERENCE_AUDIT.csv` (updated: 17 new rows)
+- `CODEX_MEMORY.md` (updated)
