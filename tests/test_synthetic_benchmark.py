@@ -291,8 +291,12 @@ class TestHERALDImputer:
         losses = train_herald_imputer(model, obs_panel, small_mask, n_epochs=20)
         assert len(losses) == 20
         assert not any(np.isnan(l) for l in losses)
-        # Loss should generally decrease
-        assert losses[-1] < losses[0] * 2, "Loss exploded"
+        # NLL loss can be negative; check it did not diverge upward
+        # last-5 average should be ≤ first-5 average + |first-5 average| (i.e., not doubling)
+        first_mean = float(np.mean(losses[:5]))
+        last_mean = float(np.mean(losses[-5:]))
+        assert last_mean <= first_mean + abs(first_mean), \
+            f"Training diverged: {first_mean:.4f} → {last_mean:.4f}"
 
     def test_impute_no_nan(self, small_ds, small_mask, obs_panel):
         n_S, n_T = SMALL_CONFIG.n_sectors, SMALL_CONFIG.n_territories
@@ -322,10 +326,12 @@ class TestHERALDImputer:
         adj_s = small_ds["sector_adj"]
         adj_t = small_ds["territory_adj"]
         rng = np.random.default_rng(0)
-        adj_s_p, adj_t_p = build_permuted_adj(adj_s, adj_t, rng)
+        adj_s_p, adj_t_p, perm_s, perm_t = build_permuted_adj(adj_s, adj_t, rng)
         assert adj_s_p.shape == adj_s.shape
         assert adj_t_p.shape == adj_t.shape
-        # Permuted matrices should have same eigenvalues (same spectrum)
+        assert len(perm_s) == adj_s.shape[0]
+        assert len(perm_t) == adj_t.shape[0]
+        # Permuted matrices have same eigenvalues (same spectrum)
         np.testing.assert_allclose(
             sorted(np.linalg.eigvalsh(adj_s)), sorted(np.linalg.eigvalsh(adj_s_p)), atol=1e-8
         )

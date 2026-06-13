@@ -1353,3 +1353,106 @@ Status per country:
 `src/modeles/synthetic/run_smoke.py`;
 `tests/test_synthetic_benchmark.py`;
 `data/processed/synthetic_benchmark/smoke_results.json`.
+
+## DEC-040 — 2026-06-13 — Synthetic Benchmark: Extended Grid, Null Controls, Full Runner, Pilot
+
+**Status:** IMPLEMENTED — pilot PASS (6/6 tasks, 86s, no NaN, no leakage failures)
+
+**Scope:** Phase 9 extension — expanded benchmark from DEC-039 with full null-control suite,
+4 benchmark scenarios, 5 seeds, 3 mask types × 3 levels, 12 models, fail-closed gate evaluation,
+run_full_benchmark.py with atomic writes and resume, local pilot executed and passed.
+
+**Changes from DEC-039:**
+
+1. **50% masking level added** to all mask type tuples (previously 10%/20%/30% → now 10%/30%/50%).
+
+2. **Four benchmark scenarios defined** (sealed in contract):
+   - `linear` (frac_nonlinear=0.0): validates that HERALD does not degrade on simple case (G7)
+   - `nonlinear_heavy` (0.8): primary stress test for non-linear dynamics
+   - `mixed_default` (0.3): reference configuration
+   - `generalization` (12 relations, frac_nonlinear=0.6, higher noise): tests out-of-distribution recovery (G8)
+
+3. **Null control suite expanded:**
+   - B9: Node-permuted adjacency (genuine structural mismatch — permutes rows+cols of adj only, NOT panel)
+   - B10: Random Erdős-Rényi graph (density-preserving, symmetric)
+   - B11: Oracle (frozen sector attention = log(true_adj), non-trainable)
+   - **Copermutation proof (sealed):** copermuting adj+panel with same permutation = pure relabeling
+     (max diff ≤ 5.5e-17). B9 permutes adj only to produce genuine mismatch.
+
+4. **KNN baseline (B5) added** with strictly causal features:
+   - Feature: running mean up to year y-1 for each (territory, sector)
+   - Fallback at year 0 or no-history: causal_mean (not MeanImputer — verified not to use future years)
+   - Tested: perturbing year 6 does not affect fill at year 5 (test_causal_knn_not_using_future)
+
+5. **evaluate_imputation.py extended:**
+   - Spearman r added alongside Pearson r
+   - BreakdownMetrics (per sector, territory, regime)
+   - StateMetrics (macro-F1, balanced accuracy, AUCPR for 4 economic states)
+   - EdgeRecoveryMetrics now includes false_positive_rate and lag_accuracy
+
+6. **gates.py created (G1–G8, fail-closed, pre-specified):**
+   - G7: no regression >10% on linear scenario
+   - G8: G1 passes on generalization scenario
+   - Outcome flags: ARCHITECTURE_RECONSTRUCTION_SUPPORTED, DYNAMIC_RELATION_RECOVERY_SUPPORTED,
+     UNCERTAINTY_CALIBRATED, SYNTHETIC_GENERALIZATION_SUPPORTED
+
+7. **run_full_benchmark.py created:**
+   - CLI: --dry-run, --task-id, --local-pilot, --confirm-full-run, --output-dir, --n-epochs
+   - Atomic writes (write to .tmp then os.rename)
+   - Resume: skip task if output JSON is valid (has "baselines" and "leakage_check" keys)
+   - Deterministic manifest: 20 tasks (4 scenarios × 5 seeds), ordered lexicographically
+   - Config hash (SHA-256 of serialised config) stored in each output for audit
+
+8. **49 new tests added** (tests/test_full_benchmark.py):
+   - Manifest completeness and determinism; generator extension (50% rate); atomic write; resume
+   - Null controls: copermutation proof; random graph density preservation; oracle frozen
+   - KNN causality (future-blindness test); extended metrics (Spearman, state metrics)
+   - Gates: fixture PASS/FAIL for G1, G3, G5; gate threshold freeze; end-to-end run_task
+
+**Pilot results (20T × 7S × 16Y, 200 epochs, seeds 42/123/456, linear + nonlinear_heavy):**
+- 6/6 tasks PASS, 86s total (< 3 min limit), no NaN, no Inf
+- herald_graph MAE: 0.2342–0.2675 (linear), 0.2034–0.2126 (nonlinear) — consistently < ridge
+- G3 (permuted ≥ herald): 5/6 pass; linear/seed123 narrowly fails (to monitor at HPC scale)
+- G4 (cal90 ≥ 0.80): 0/6 pass (MC Dropout undercalibrated: 0.26–0.29); documented, expected
+- G5 (leakage): 6/6 PASS
+- Oracle marginally better than herald_graph (expected)
+- **HPC verdict: HPC_READY**
+
+**Bugs fixed during implementation (all verified by tests):**
+- build_permuted_adj: now returns 4 values (adj_s_perm, adj_t_perm, perm_s, perm_t)
+- KNN fallback was non-causal (MeanImputer uses future years); replaced with causal_mean
+- Gate fixture: best_non_graph was computed incorrectly (neural_no_graph was set better than ridge)
+- NLL training loss assertion invalid for negative values; replaced with abs-tolerance check
+- Permuted adj test used trivial zero sector_adj; replaced with forced non-identity rotation
+
+**Rationale:** DEC-039 established architecture validity. DEC-040 provides the full evaluation
+infrastructure (null controls, expanded scenarios, fail-closed gates, batch runner) needed for
+a scientifically credible benchmark. HPC submission authorisation is deferred to explicit review
+of this pilot output.
+
+**Limitations:**
+- G4 (calibration) expected to fail at current training scale; MC Dropout calibration requires
+  larger training budget or post-hoc calibration (Platt scaling, temperature scaling)
+- Pilot scale (200 epochs, 20T) insufficient to draw conclusions on G2 (AUC); HPC run required
+- G3 narrowly fails in one pilot seed (linear/seed123); marginal difference (0.2632 vs 0.2675)
+  attributed to insufficient training at pilot scale
+
+**HPC estimate (full run, 500 epochs, 30T × 9S × 20Y):**
+- 20 tasks × ~10 min/task = ~200 min total sequential
+- With 20-core parallelism: ~12–15 min wall time
+- Memory: < 2 GB/task
+
+**Affected files:**
+`reports/HERALD_SYNTHETIC_BENCHMARK_CONTRACT.md`;
+`src/data/synthetic/generate_herald_synthetic.py`;
+`src/modeles/synthetic/imputation_baselines.py` (KNN added);
+`src/modeles/synthetic/herald_graph_imputer.py` (random graph, permuted returns 4 values);
+`src/modeles/synthetic/evaluate_imputation.py` (full rewrite with Spearman, state, breakdown);
+`src/modeles/synthetic/gates.py` (NEW);
+`src/modeles/synthetic/run_full_benchmark.py` (NEW);
+`src/modeles/synthetic/run_smoke.py` (fix build_permuted_adj call);
+`tests/test_synthetic_benchmark.py` (fix permuted_adj unpacking, loss assertion);
+`tests/test_full_benchmark.py` (NEW, 49 tests);
+`hpc/phase9_synthetic_generalization/README.md` (NEW);
+`hpc/phase9_synthetic_generalization/run_phase9.slurm` (NEW);
+`data/processed/synthetic_benchmark/pilot/` (6 JSON task outputs).

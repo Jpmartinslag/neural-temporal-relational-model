@@ -304,3 +304,68 @@ class GraphRidgeImputer(_BaseImputer):
         preds = self._ridge.predict(feats)
         imputed = preds.reshape(panel.shape)
         return self._apply_observed(imputed, panel, mask)
+
+
+class KNNPanelImputer(_BaseImputer):
+    """
+    Causal cross-sectional KNN imputer.
+
+    For each missing cell (t, s, y):
+      - feature = causal_mean up to y-1 for each (territory, sector) series
+      - find k nearest observed (t', s', y) cells by feature distance
+      - fill with inverse-distance-weighted mean of their values
+
+    Causal guarantee: only uses past observations to compute similarity features.
+    """
+
+    def __init__(self, k: int = 5):
+        self.k = k
+        self._global_mean: float = 0.0
+
+    def fit(self, panel: np.ndarray, mask: np.ndarray) -> "KNNPanelImputer":
+        # Global mean of observed cells — causal super-fallback for year 0
+        obs_vals = panel[mask == 1]
+        self._global_mean = float(np.nanmean(obs_vals)) if len(obs_vals) > 0 else 0.0
+        return self
+
+    def transform(self, panel: np.ndarray, mask: np.ndarray) -> np.ndarray:
+        n_T, n_S, n_Y = panel.shape
+        result = panel.copy()
+
+        # Causal feature: running mean up to year y-1 (strictly causal, no future)
+        safe_fill = np.where(mask, panel, 0.0)
+        cumsum = (safe_fill * mask).cumsum(axis=2)
+        cumcount = mask.cumsum(axis=2).clip(min=1)
+        running_mean = cumsum / cumcount
+        causal_mean = np.zeros_like(running_mean)
+        causal_mean[:, :, 1:] = running_mean[:, :, :-1]
+
+        feat_flat = causal_mean.reshape(n_T * n_S, n_Y)
+        panel_flat = panel.reshape(n_T * n_S, n_Y)
+        mask_flat = mask.reshape(n_T * n_S, n_Y)
+
+        for y in range(n_Y):
+            missing_series = [(t, s) for t in range(n_T) for s in range(n_S)
+                              if mask[t, s, y] == 0]
+            if not missing_series:
+                continue
+
+            obs_idx = [i for i in range(n_T * n_S) if mask_flat[i, y] == 1]
+            obs_vals_y = panel_flat[obs_idx, y] if obs_idx else None
+            obs_feat_y = feat_flat[obs_idx, y] if obs_idx else None
+
+            for t, s in missing_series:
+                if not obs_idx:
+                    # No observed series at this year: causal fallback (strictly past-only)
+                    cf = causal_mean[t, s, y]
+                    result[t, s, y] = cf if cf != 0.0 else self._global_mean
+                    continue
+
+                q_feat = feat_flat[t * n_S + s, y]
+                dists = np.abs(obs_feat_y - q_feat) + 1e-8
+                k_act = min(self.k, len(obs_idx))
+                nn_idx = np.argsort(dists)[:k_act]
+                weights = 1.0 / dists[nn_idx]
+                result[t, s, y] = float(np.dot(weights, obs_vals_y[nn_idx]) / weights.sum())
+
+        return self._apply_observed(result, panel, mask)

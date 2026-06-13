@@ -70,10 +70,10 @@ class SyntheticConfig:
     n_crisis_sectors: float = 0.5       # fraction of sectors hit by crisis
     structural_break_year: int | None = None  # if None, set to 3/4 of n_years
 
-    # Masking
-    mcar_rates: tuple = (0.10, 0.20, 0.30)
-    mar_rates: tuple = (0.10, 0.20, 0.30)
-    block_rates: tuple = (0.10, 0.20, 0.30)
+    # Masking (include 50% for stress-testing)
+    mcar_rates: tuple = (0.10, 0.20, 0.30, 0.50)
+    mar_rates: tuple = (0.10, 0.20, 0.30, 0.50)
+    block_rates: tuple = (0.10, 0.20, 0.30, 0.50)
 
 
 def _build_territory_adjacency(n_territories: int, radius: float, rng: np.random.Generator) -> np.ndarray:
@@ -289,3 +289,70 @@ def mask_panel(panel: np.ndarray, mask: np.ndarray) -> np.ndarray:
     out = panel.copy()
     out[mask == 0] = np.nan
     return out
+
+
+# ── Benchmark scenario registry ───────────────────────────────────────────────
+# Full-scale configs for HPC (30T × 9S × 20Y).
+# Seed is overridden per-task; only structural parameters are fixed here.
+
+BENCHMARK_SCENARIOS: dict[str, SyntheticConfig] = {
+    "linear": SyntheticConfig(
+        n_territories=30, n_sectors=9, n_years=20,
+        seed=0,  # overridden per task
+        n_true_relations=8,
+        frac_nonlinear=0.0,       # ALL relations are linear
+        frac_negative=0.4,
+        noise_sigma_range=(0.08, 0.18),
+        ar_coef_range=(0.3, 0.6),
+        territory_propagation=0.15,
+        territory_radius=0.35,
+    ),
+    "nonlinear_heavy": SyntheticConfig(
+        n_territories=30, n_sectors=9, n_years=20,
+        seed=0,
+        n_true_relations=8,
+        frac_nonlinear=0.8,       # 80% nonlinear relations
+        frac_negative=0.4,
+        noise_sigma_range=(0.08, 0.18),
+        ar_coef_range=(0.3, 0.6),
+        territory_propagation=0.15,
+        territory_radius=0.35,
+    ),
+    "mixed_default": SyntheticConfig(
+        n_territories=30, n_sectors=9, n_years=20,
+        seed=0,
+        n_true_relations=8,
+        frac_nonlinear=0.3,       # 30% nonlinear (default mix)
+        frac_negative=0.4,
+        noise_sigma_range=(0.10, 0.25),
+        ar_coef_range=(0.3, 0.6),
+        territory_propagation=0.15,
+        territory_radius=0.35,
+    ),
+    "generalization": SyntheticConfig(
+        # Qualitatively different dynamics to test structural generalization.
+        # Higher nonlinearity + higher noise + higher territory propagation
+        # + denser true relations + different AR range.
+        n_territories=30, n_sectors=9, n_years=20,
+        seed=0,
+        n_true_relations=12,
+        frac_nonlinear=0.6,
+        frac_negative=0.5,
+        noise_sigma_range=(0.15, 0.35),   # higher noise than other scenarios
+        ar_coef_range=(0.2, 0.7),          # wider AR range
+        territory_propagation=0.25,        # stronger cross-territory signal
+        territory_radius=0.28,             # sparser territory graph
+    ),
+}
+
+# Pilot-scale configs (20T × 7S × 16Y, ≈2× faster than full).
+PILOT_SCENARIOS: dict[str, SyntheticConfig] = {
+    k: dataclasses.replace(v, n_territories=20, n_sectors=7, n_years=16)
+    for k, v in BENCHMARK_SCENARIOS.items()
+}
+
+# Full benchmark grid
+BENCHMARK_SEEDS = [42, 123, 456, 789, 1337]
+PILOT_SEEDS = [42, 123, 456]
+BENCHMARK_MASK_TYPES = ["mcar", "mar", "block"]
+BENCHMARK_MASK_LEVELS = [10, 30, 50]  # percent
