@@ -25,24 +25,20 @@ echo "=========================================="
 
 WORKDIR="${HOME}/project_recomm_herald_v6_2025_20260430/dataset"
 OUTDIR="${WORKDIR}/hpc_results/phase10_synthetic_lagged"
-CONDA_ENV="herald-v5"
+PYTHON="${HOME}/.conda/envs/herald-v5/bin/python"
 N_EPOCHS=500
 
 cd "${WORKDIR}"
 
-# Activate conda
-source "${HOME}/miniconda3/etc/profile.d/conda.sh"
-conda activate "${CONDA_ENV}"
-
 # Verify environment
-python -c "import torch; print(f'torch={torch.__version__}')"
-python -c "from src.modeles.synthetic.herald_graph_imputer_lagged import HERALDGraphImputerLagged; print('lagged OK')"
+"${PYTHON}" -c "import torch; print(f'torch={torch.__version__}')"
+"${PYTHON}" -c "from src.modeles.synthetic.herald_graph_imputer_lagged import HERALDGraphImputerLagged; print('lagged OK')"
 
 # Create output directories
 mkdir -p "${OUTDIR}/logs"
 
 # Run task
-python -m src.modeles.synthetic.run_phase10_benchmark \
+"${PYTHON}" -m src.modeles.synthetic.run_phase10_benchmark \
     --task-id "${SLURM_ARRAY_TASK_ID}" \
     --output-dir "${OUTDIR}" \
     --n-epochs "${N_EPOCHS}" \
