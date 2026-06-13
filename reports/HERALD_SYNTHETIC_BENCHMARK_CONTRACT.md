@@ -155,6 +155,23 @@ Smoke does NOT need to satisfy G1–G4 (too small). Smoke validates architecture
 
 ---
 
+## Conformal calibration specification (post-HPC, not implemented in DEC-039/040/041)
+
+G4 (cal90 ≥ 0.80) is expected to FAIL with MC Dropout. The designated remedy, to be implemented
+in a future task after the HPC run, is split conformal prediction:
+
+1. Reserve the last 3 years of each synthetic panel as a calibration set (not used in training)
+2. Compute residuals `|y_true − ŷ|` on the calibration set for each model
+3. Set conformal interval width = `q_{1-α}` of calibration residuals (α=0.10 for 90%)
+4. Report empirical coverage on the test set with conformal intervals
+5. Re-evaluate G4 with conformal coverage (replaces MC Dropout intervals)
+
+No claim of calibrated uncertainty intervals is authorised until G4 passes with conformal intervals.
+
+Reference: Angelopoulos & Bates (2021), "A Gentle Introduction to Conformal Prediction."
+
+---
+
 ## Scope limits
 
 - No real data touched in this task.
