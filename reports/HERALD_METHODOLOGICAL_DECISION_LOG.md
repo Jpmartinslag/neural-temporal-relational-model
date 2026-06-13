@@ -1873,3 +1873,46 @@ Recommendation: Option C is scientifically defensible. The improvement is real, 
 - `src/modeles/synthetic/run_signal_sensitivity.py` (modified — NOT_AUTHORIZED guard added)
 - `tests/test_ofat_sensitivity.py` (new — manifest, guard, gates, result tests)
 - `reports/HERALD_PHASE10_SIGNAL_SENSITIVITY.md` (updated — sections 10-13 added)
+
+---
+
+## DEC-045 — Phase 11: True Synthetic Generalization Protocol
+**Date:** 2026-06-13 | **Status:** PILOT_COMPLETE | **Decision:** SYNTHETIC_RELATIONS_GENERALIZE
+
+**Context:** Phase 10 trained and tested on its own generated data (no cross-scenario transfer). DEC-045 tests TRUE generalization: train on {linear, mixed_default}, validate on {nonlinear_heavy}, evaluate zero-shot on frozen novel scenarios never seen during training.
+
+**What was done:**
+- Defined frozen novel test scenarios: `novel_lag2` (frac_nonlinear=0.85, forced_lag=2, territory_radius=0.25) and `novel_highvar` (frac_nonlinear=0.90, structural break at year 8, high noise). NOT in BENCHMARK_SCENARIOS.
+- Seeds fully disjoint: train [10-50] / val [100-300] / test [1000-5000] — no overlap with Phase 9/10 or OFAT.
+- Two strategies: T1 (single-family, linear only) and T2 (multi-environment, linear+mixed_default).
+- 7 models: ffill, ridge, no_graph, herald_contemp, herald_lagged (zero-shot), herald_lagged_permuted, oracle_lagged.
+- X1-X9 gates frozen before execution. Runner: `src/modeles/synthetic/phase11_generalization/run_pilot.py`.
+- Pilot: 3 train seeds × 1 val seed × 3 test seeds × 150 epochs × 2 masks. 36s total.
+
+**Gate outcomes (6/9 PASS):**
+
+| Gate | Outcome |
+|------|---------|
+| X1 SAFETY | PASS — NaN=0, leakage=0 |
+| X2 DATASET_DISJOINT | PASS — all seeds fully disjoint |
+| X3 NO_ADAPTATION | PASS — checkpoint hash verified at runtime |
+| X4 T2_ADVANTAGE | PASS — T2 MAE/T1 MAE = 0.9959 ≤ 1.02 |
+| X5 GENERALIZES_BASELINE | FAIL — herald_lagged ≥ no_graph in 3/3 seeds on novel_lag2 |
+| X6 EDGE_TRANSFER | PASS — mean edge AUC=0.611 > 0.55 |
+| X7 PILOT_COMPLETENESS | PASS — 24/24 records, 0 errors |
+| X8 SEED_CONSISTENCY | FAIL — herald_lagged worse than no_graph in all 3 seeds |
+| X9 ORACLE_BOUND | FAIL — oracle not consistently better than ffill (20/24 fail) |
+
+**Decisions:**
+- `SYNTHETIC_RELATIONS_GENERALIZE`: learned sector attention correctly identifies causal pairs in novel scenarios (AUC=0.611). Oracle wiring achieves AUC=1.000 confirming metric correctness.
+- Imputation does NOT generalize under extreme dynamics shift (0-30% → 85-90% nonlinear). MLP trained on linear data cannot predict nonlinear-dominated dynamics. Forward fill dominates.
+- `MULTI_ENVIRONMENT_TRAINING_SUPPORTED` at imputation quality level: NOT REACHED. X4 marginal (T2 ratio=0.9959), X5 FAIL.
+
+**HPC assessment:** HPC NOT REQUIRED. Pilot finding is structurally unambiguous (3/3 seeds). Adding seeds/epochs cannot overcome MLP-dynamics mismatch.
+
+**Reopen condition:** A new DEC is needed for partial adaptation (fine-tuning MLP only, frozen attention matrix) — would test if structure transfer + MLP adaptation beats training from scratch.
+
+**Affected files:**
+- `src/modeles/synthetic/phase11_generalization/` (new package — splits, trainer, evaluator, gates, pilot runner)
+- `tests/test_phase11_generalization.py` (new — 51 tests)
+- `reports/HERALD_PHASE11_SYNTHETIC_GENERALIZATION.md` (new)
