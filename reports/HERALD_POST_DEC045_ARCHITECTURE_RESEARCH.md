@@ -16,7 +16,7 @@
 
 ### 1.2 O que falhou e por quê
 
-**X5 FAIL — Imputação:** `herald_lagged ≥ no_graph` em 3/3 seeds. **Causa:** O MLP foi treinado em dinâmicas AR(1) com frac_nonlinear=0-30%. Para reconstruir valores em cenários 85-90% não-lineares, o MLP precisaria aplicar `w·tanh(x_source)`, mas aprendeu apenas `w·x_source`. A mensagem de atenção grafal chega corretamente ao neurônio de destino — mas o cabeçote MLP processa essa mensagem com uma função linear inadequada para a distribuição alvo.
+**X5 FAIL — Imputação:** `herald_lagged ≥ no_graph` em 3/3 seeds. **Causa:** O MLP foi treinado em dinâmicas AR(1) com frac_nonlinear=0-30%. Para reconstruir valores em cenários 85-90% não-lineares, o MLP precisaria aplicar `w·tanh(x_source)`, mas aprendeu apenas `w·x_source`. A mensagem de atenção grafal chega corretamente ao neurônio de destino — mas o cabeçote MLP processa essa mensagem com uma função linear inadequada para a distribuição alvo. O MLP aprende apenas uma transformação linear (hipótese a verificar por ablação — DEC-047 §10).
 
 **X9 FAIL — Oracle não bate ffill:** O oracle fixa a matriz de atenção nos pares verdadeiros, mas o MLP permanece treinado em domínio linear. Com dinâmicas 90% não-lineares + structural break no ano 8, o MLP produz previsões sistematicamente fora da escala real. Forward fill (cópia do último valor observado) domina porque a série tem alta autocorrelação de curto prazo — o MLP não supera uma cópia ingênua quando a distribuição se afastou radicalmente.
 
@@ -32,6 +32,19 @@ HERALD tem dois sub-problemas distintos com comportamentos distintos:
 ```
 
 O MLP é um decoder treinado de forma supervisionada num domínio. Ele não é invariante à distribuição de dinâmicas. Esta separação é a chave para a proposta arquitetural correta.
+
+---
+
+> **ESTADO DE EVIDÊNCIA (DEC-045 → DEC-047)**
+>
+> | Componente | Estado | Evidência |
+> |-----------|--------|-----------|
+> | **Transferência da estrutura grafal** (atenção lag-1/lag-2) | **CONFIRMADO** | AUC=0.611 OOD (X6 PASS, gate X1-X9) |
+> | **Reconstrução dos valores** (MLP decoder) | **FALHA** | X5/X9 FAIL — MLP não transfere; ffill domina em 3/3 seeds |
+> | **Adaptação few-shot** (adapter + K% labels) | **NÃO AVALIADO** | A avaliar em DEC-047 (gates A1-A10) |
+> | **Calibração de incerteza** (EnbPI/conformal) | **ADIADO** | Após escolha de estratégia de reconstrução |
+>
+> **Nota:** As relações no gerador sintético são "relações dirigidas implantadas no gerador sintético" — não constituem evidência de causalidade. Para dados observacionais, usar "associação dirigida/defasada" em vez de "efeito causal".
 
 ---
 
@@ -298,12 +311,12 @@ Datasets de pretraining: 200-500 seeds × 4 cenários = 800-2000 mini-datasets
 **Motivação:** NRI (Kipf et al. 2018) e GTS (Shang et al. 2021) aprendem a estrutura do grafo conjuntamente com as dinâmicas. Se HERALD tivesse T>>50 e N>>20 setores, esta abordagem seria preferível ao pretraining + frozen attention porque eliminaria a necessidade de adj_s como input.
 
 **Por que FUTURE_ONLY:**
-- T=20 anos é insuficiente para aprendizagem de estrutura grafal fiável por VAE (NRI assume T≥100 para resultados publicados)
+- T curto (T=20) aumenta risco de sobreajuste nas matrizes de adjacência aprendidas; requer validação com T≥25 antes de adoção (não é um requisito universal de T>50, mas sim uma cautela específica para HERALD com N=9)
 - N=9 setores cria apenas 72 pares (off-diagonal) — o espaço de busca é tratável, mas o sinal é escasso
 - Com 3-4 países no HERALD actual, a meta-tarefa tem demasiado poucas amostras
-- O risco de overfitting à estrutura do dataset de treino é elevado sem regularização muito forte
+- O risco de sobreajuste à estrutura do dataset de treino é elevado sem regularização muito forte
 
-**Condição de reabertura:** N_countries ≥ 8, T ≥ 25, e pretraining de PATH 2 testado e validado primeiro. Reabrir como DEC-048 quando estas condições forem satisfeitas.
+**Condição de reabertura:** N_countries ≥ 8, T ≥ 25, e pretraining de PATH 2 testado e validado primeiro. Validação com T≥25 obrigatória antes de adopção. Reabrir como DEC-048 quando estas condições forem satisfeitas.
 
 **Referências base:** NRI (Kipf 2018, ICML), GTS (Shang 2021, ICLR), SLAPS (Fatemi 2021, NeurIPS).
 
@@ -315,15 +328,15 @@ Datasets de pretraining: 200-500 seeds × 4 cenários = 800-2000 mini-datasets
 |--------|--------------|-------|
 | Frozen attn + adapter MLP (few-shot) | `RECOMMENDED_NOW` | Intervenção cirúrgica directa para DEC-045 |
 | Masked pretraining multi-task | `SECONDARY` | Melhora pretraining antes de adaptação; mais custo |
-| Graph structure learning (NRI/GTS) | `FUTURE_ONLY` | T e N insuficientes; risco overfitting |
-| GRIN completo | `REJECT` | T>>200 necessário; não adequado para T=20 |
+| Graph structure learning (NRI/GTS) | `FUTURE_ONLY` | T curto (T=20) aumenta risco de sobreajuste nas matrizes de adjacência; requer validação com T≥25 antes de adoção |
+| GRIN completo | `SECONDARY_BASELINE` | T>>200 ideal mas pode servir como baseline de comparação; implementação adiada para após resultado few-shot |
 | CSDI / PriSTI (diffusion) | `REJECT` | Custo injustificado, baixa interpretabilidade, sem grafo dirigido+lag |
 | GTrans test-time | `REJECT` | Resolve shift de topologia, não shift de dinâmicas |
 | UDAGCN adversarial | `REJECT` | Classificação de nós; não imputação temporal |
 | MAML/Reptile meta-learning | `REJECT` | Precisa muitas meta-tasks; 3-4 países é insuficiente |
 | Mixture-of-Experts por país | `SECONDARY` | Interessante mas mais complexo que adapter; implementar depois de PATH 1 |
 | EnbPI / SPCI conformal | Complementar a PATH 1 | UQ válida; T=20 é marginal para calibração; adicionar como camada |
-| SAITS (sem grafo) | `REJECT` | Não usa grafo; substituiria atenção por auto-atenção — perde interpretabilidade |
+| SAITS (sem grafo) | `SECONDARY_BASELINE` | Pode servir como baseline de referência sem grafo; implementação adiada para após resultado few-shot |
 
 ---
 
@@ -390,7 +403,7 @@ Datasets de pretraining: 200-500 seeds × 4 cenários = 800-2000 mini-datasets
 
 ## 11. Lacunas bibliográficas identificadas
 
-1. **Relações grafais dirigidas+assinadas+defasadas para dados económicos curtos (T=10-20):** Não existe um método publicado que combine simultaneamente (a) direcção, (b) sinal positivo/negativo, (c) lag específico, e (d) T curto. NRI e GTS são os mais próximos mas não satisfazem T curto. Esta é uma **contribuição original possível do HERALD**.
+1. **Relações grafais dirigidas+assinadas+defasadas para dados económicos curtos (T=10-20):** Não foi encontrado, nas referências revisadas, método que combine simultaneamente (a) direcção, (b) sinal positivo/negativo, (c) lag específico, e (d) T curto. NRI e GTS são os mais próximos mas não satisfazem T curto. Esta é uma **contribuição original possível do HERALD**.
 
 2. **Adaptação de domínio para imputação temporal territorial:** A maioria dos métodos de domain adaptation é para classificação de nós. Adaptação para imputação de séries económicas NUTS3 com T curto não tem referência directa.
 
@@ -406,7 +419,7 @@ Datasets de pretraining: 200-500 seeds × 4 cenários = 800-2000 mini-datasets
 | AUC atenção congelada < 0,5 no novo país | Média | Alto | Protocolo de verificação antes de congelar: se AUC < 0,5 → fine-tune atenção |
 | Pretraining não cobre distribuição do país real | Média | Alto | Incluir cenários sintéticos com alta não-linearidade; usar dados reais de treino quando disponíveis |
 | Conformal com T=20 produz intervalos muito largos | Alta | Baixo | Documentar como limitação; não apresentar como intervalos apertados |
-| Interpretação errada da atenção congelada como "causalidade" | Média | **Muito alto** | Protocolo de linguagem: "relações implantadas no gerador" (sintético); "associações estatísticas" (real); nunca "causalidade" |
+| Interpretação errada da atenção congelada como "causalidade" | Média | **Muito alto** | Protocolo de linguagem: "relações dirigidas implantadas no gerador sintético" (sintético); "associações dirigidas/defasadas" (real); nunca "causalidade" nem "efeito causal" — usar "associação dirigida" ou "efeito observacional" |
 
 ---
 
