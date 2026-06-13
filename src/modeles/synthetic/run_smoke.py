@@ -148,7 +148,7 @@ def run_one_seed(seed: int, verbose: bool = True) -> dict:
     # ── B8: HERALD permuted graph ──────────────────────────────────────────────
     t0 = time.time()
     perm_rng = np.random.default_rng(seed + 999)
-    adj_s_perm, adj_t_perm = build_permuted_adj(adj_s, adj_t, perm_rng)
+    adj_s_perm, adj_t_perm, _, _ = build_permuted_adj(adj_s, adj_t, perm_rng)
     model_perm = HERALDGraphImputer(config.n_sectors, config.n_territories, hidden_dim=32)
     train_herald_imputer(model_perm, obs_panel, mask, adj_s_perm, adj_t_perm, n_epochs=SMOKE_EPOCHS)
     pred_perm = impute_deterministic(model_perm, obs_panel, mask, adj_s_perm, adj_t_perm)

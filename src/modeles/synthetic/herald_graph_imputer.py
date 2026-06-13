@@ -249,11 +249,50 @@ def build_permuted_adj(
     adj_territory: np.ndarray,
     rng: np.random.Generator,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Shuffle rows and columns of both adjacency matrices independently."""
+    """
+    Permute rows AND columns of both adjacency matrices (node relabeling null).
+    Panel, masks, and labels are NOT permuted → genuine structural mismatch.
+
+    Proof of non-degeneracy: if panel were copermuted with the same permutation,
+    the result would be identical to the original (pure relabeling, zero information change).
+    Since only the graph is permuted, nodes receive messages from wrong neighbors.
+    """
     n_S = adj_sector.shape[0]
     n_T = adj_territory.shape[0]
     perm_s = rng.permutation(n_S)
     perm_t = rng.permutation(n_T)
     adj_s_perm = adj_sector[perm_s][:, perm_s]
     adj_t_perm = adj_territory[perm_t][:, perm_t]
-    return adj_s_perm, adj_t_perm
+    return adj_s_perm, adj_t_perm, perm_s, perm_t  # return permutation for audit
+
+
+def build_random_adj(
+    adj_sector: np.ndarray,
+    adj_territory: np.ndarray,
+    rng: np.random.Generator,
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Erdős-Rényi random adjacency preserving exact edge density of the original.
+    Sector adj → symmetric random with same density.
+    Territory adj → row-normalized random with same mean density.
+    This is a weaker null than node-permutation: no structural relationship to true graph.
+    """
+    n_S = adj_sector.shape[0]
+    # Sector adj: symmetric, density = fraction of off-diagonal entries that are 1
+    n_off = n_S * (n_S - 1)
+    density_s = float(adj_sector.sum()) / max(n_off, 1)
+    upper = rng.uniform(size=(n_S, n_S)) < density_s
+    upper = np.triu(upper, k=1)
+    adj_s_rand = (upper | upper.T).astype(float)
+    np.fill_diagonal(adj_s_rand, 0)
+
+    # Territory adj: row-normalized random with same density
+    n_T = adj_territory.shape[0]
+    density_t = float((adj_territory > 0).sum()) / max(n_T * (n_T - 1), 1)
+    adj_t_bin = (rng.uniform(size=(n_T, n_T)) < density_t).astype(float)
+    np.fill_diagonal(adj_t_bin, 0)
+    row_sum = adj_t_bin.sum(axis=1, keepdims=True)
+    row_sum = np.where(row_sum == 0, 1.0, row_sum)
+    adj_t_rand = adj_t_bin / row_sum
+
+    return adj_s_rand, adj_t_rand
