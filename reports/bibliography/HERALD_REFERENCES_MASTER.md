@@ -117,15 +117,15 @@
 ### R-008 — EconoGNN (2026)
 **Key:** `econognn2026`  
 **Title:** EconoGNN: A Graph Neural Network Framework for Temporal Economic Resilience Insights  
-**Authors:** (Authors to be verified from full text)  
+**Authors:** Marcus Araujo, Francisco Rodrigues, Elaine Sousa
 **Year:** 2026  
 **Venue:** *PLOS One*, 21(4), e0343683  
 **DOI:** https://doi.org/10.1371/journal.pone.0343683  
-**Status:** `UNVERIFIED` (DOI not yet resolved to full author list)  
+**Status:** `VERIFIED_PRIMARY` (official PLOS ONE article checked 2026-06-11)
 **Theme:** GNN, economic resilience, temporal, 183 countries, UN COMTRADE, Penn World Table  
-**Used in project:** Recent example of temporal GNN applied to economic resilience  
-**Claim supported:** GNN + complexity theory can model temporal economic resilience at country level  
-**Risk:** Country-level T=25 is much richer than our NUTS3 T≈13; methods may not transfer  
+**Used in project:** Methodological reference for observed dynamic economic graphs and GConvGRU
+**Claim supported:** Temporal graph learning has been evaluated on an observed dynamic country-level trade network
+**Risk:** Classification, national scale, richer temporal panel and different validation protocol; reference only, not a HERALD base implementation
 
 ---
 
@@ -344,28 +344,245 @@
 
 ---
 
+## Axis 10 — Graph-based Time-Series Imputation (DEC-046)
+
+### R-026 — Cini, Marisca & Alippi (2022) — GRIN
+**Key:** `cini2022grin`
+**Title:** Filling the G_ap_s: Multivariate Time Series Imputation by Graph Neural Networks
+**Authors:** Andrea Cini, Ivan Marisca, Cesare Alippi
+**Year:** 2022
+**Venue:** *ICLR 2022*
+**URL:** https://openreview.net/forum?id=kOu3-S3wJ7
+**Code:** https://github.com/Graph-Machine-Learning-Group/grin
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Graph recurrent imputation, GCRNN, MCAR + block missing, spatiotemporal
+**Used in project:** Reference architecture for graph-based imputation; REJECTED for direct use (T>>200 required)
+**Claim supported:** GRIN achieves SOTA on traffic and air quality sensors; T>>200 datasets
+
+### R-027 — Du, Cote & Liu (2023) — SAITS
+**Key:** `du2023saits`
+**Title:** SAITS: Self-Attention-based Imputation for Time Series
+**Authors:** Wenjie Du, David Cote, Yan Liu
+**Year:** 2023
+**Venue:** *Expert Systems with Applications*
+**URL:** https://arxiv.org/abs/2202.08516
+**Code:** https://github.com/WenjieDu/SAITS
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Diagonal-masked self-attention, time series imputation without graph
+**Used in project:** Reference for attention-based imputation head; no directed lag distinction
+
+### R-028 — Tashiro, Song, Song & Ermon (2021) — CSDI
+**Key:** `tashiro2021csdi`
+**Title:** CSDI: Conditional Score-based Diffusion Models for Probabilistic Time Series Imputation
+**Authors:** Yusuke Tashiro, Jiaming Song, Yang Song, Stefano Ermon
+**Year:** 2021
+**Venue:** *NeurIPS 2021*
+**URL:** https://proceedings.neurips.cc/paper/2021/hash/cfe8504bda37b575c70ee1a8276f3486-Abstract.html
+**Code:** https://github.com/ermongroup/CSDI
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Score-based diffusion, probabilistic imputation, temporal masking
+**Used in project:** REJECTED (DEC-046): high compute, low interpretability, no directed graph
+
+### R-029 — Liu et al. (2023) — PriSTI
+**Key:** `liu2023pristi`
+**Title:** PriSTI: A Conditional Diffusion Framework for Spatiotemporal Imputation
+**Authors:** Mingzhe Liu et al.
+**Year:** 2023
+**Venue:** *ICDE 2023 / arXiv*
+**URL:** https://arxiv.org/abs/2302.09746
+**Status:** `PREPRINT`
+**Theme:** Spatial-temporal diffusion imputation
+**Used in project:** REJECTED (DEC-046): same limitations as CSDI; code not confirmed
+
+### R-030 — You, Ma, Ding, Kochenderfer & Leskovec (2020) — GRAPE
+**Key:** `you2020grape`
+**Title:** Handling Missing Data with Graph Representation Learning
+**Authors:** Jiaxuan You, Xiaobai Ma, Yi Ding, Mykel J. Kochenderfer, Jure Leskovec
+**Year:** 2020
+**Venue:** *NeurIPS 2020*
+**URL:** https://proceedings.neurips.cc/paper/2020/hash/dc36f18a9a0a776671d4879cae69b551-Abstract.html
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Missing data as link prediction in bipartite graph
+**Used in project:** Conceptual reference; no lag, no directed relations
+
+---
+
+## Axis 11 — Domain Adaptation and Test-Time Adaptation for Graphs (DEC-046)
+
+### R-031 — Wu, Pan, Zhou, Chang & Zhu (2020) — UDAGCN
+**Key:** `wu2020udagcn`
+**Title:** Unsupervised Domain Adaptive Graph Convolutional Networks
+**Authors:** Man Wu, Shirui Pan, Chuan Zhou, Xiaojun Chang, Xingquan Zhu
+**Year:** 2020
+**Venue:** *The Web Conference (WWW) 2020*
+**URL:** https://dl.acm.org/doi/10.1145/3366423.3380219
+**Code:** https://github.com/TrustAGI-Lab/UDAGCN
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Adversarial domain adaptation, node classification, GCN
+**Used in project:** REJECTED (DEC-046): node classification, not temporal imputation
+
+### R-032 — Jin, Zhao, Ding, Liu, Tang & Shah (2023) — GTrans
+**Key:** `jin2023gtrans`
+**Title:** Empowering Graph Representation Learning with Test-Time Graph Transformation
+**Authors:** Wei Jin, Tong Zhao, Jiayuan Ding, Yozen Liu, Jiliang Tang, Neil Shah
+**Year:** 2023
+**Venue:** *ICLR 2023*
+**URL:** https://openreview.net/forum?id=Lnxl5pr018
+**Code:** https://github.com/ChandlerBang/GTrans
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Test-time graph transformation, topology shift adaptation
+**Used in project:** REJECTED (DEC-046): resolves topology shift, not dynamics shift
+
+---
+
+## Axis 12 — Neural Relational Inference and Graph Structure Learning (DEC-046)
+
+### R-033 — Kipf, Fetaya, Wang, Welling & Zemel (2018) — NRI
+**Key:** `kipf2018nri`
+**Title:** Neural Relational Inference for Interacting Systems
+**Authors:** Thomas Kipf, Ethan Fetaya, Kuan-Chieh Wang, Max Welling, Richard Zemel
+**Year:** 2018
+**Venue:** *ICML 2018 (PMLR Vol. 80)*
+**URL:** https://proceedings.mlr.press/v80/kipf18a/kipf18a.pdf
+**Code:** https://github.com/ethanfetaya/NRI
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** VAE graph structure learning, interacting systems, discrete latent graph
+**Used in project:** FUTURE_ONLY (DEC-046): T>>50 and N>>20 required; T=20/N=9 insufficient
+
+### R-034 — Shang, Chen & Bi (2021) — GTS
+**Key:** `shang2021gts`
+**Title:** Discrete Graph Structure Learning for Forecasting Multiple Time Series
+**Authors:** Chao Shang, Jie Chen, Jinbo Bi
+**Year:** 2021
+**Venue:** *ICLR 2021*
+**URL:** https://openreview.net/forum?id=WEHSlH5mOk
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Discrete graph learning, Gumbel-softmax, time series forecasting
+**Used in project:** FUTURE_ONLY (DEC-046): designed for forecasting, not imputation; T>>50
+
+### R-035 — Fatemi, El Asri & Kazemi (2021) — SLAPS
+**Key:** `fatemi2021slaps`
+**Title:** SLAPS: Self-Supervision Improves Structure Learning for Graph Neural Networks
+**Authors:** Bahare Fatemi, Layla El Asri, Seyed Mehran Kazemi
+**Year:** 2021
+**Venue:** *NeurIPS 2021*
+**URL:** https://proceedings.neurips.cc/paper/2021/file/bf499a12e998d178afd964adf64a60cb-Paper.pdf
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Self-supervision + graph structure learning, denoising autoencoder on features
+**Used in project:** Reference for combining self-supervision with graph learning (PATH 2)
+
+---
+
+## Axis 13 — Self-Supervised and Masked Pretraining (DEC-046)
+
+### R-036 — Hou, Liu, Cen, Dong, Yang, Wang & Tang (2022) — GraphMAE
+**Key:** `hou2022graphmae`
+**Title:** GraphMAE: Self-Supervised Masked Graph Autoencoders
+**Authors:** Zhenyu Hou, Xiao Liu, Yukuo Cen, Yuxiao Dong, Hongxia Yang, Chunjie Wang, Jie Tang
+**Year:** 2022
+**Venue:** *KDD 2022*
+**URL:** https://dl.acm.org/doi/abs/10.1145/3534678.3539321
+**Code:** https://github.com/THUDM/GraphMAE
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Masked node feature reconstruction, graph pretraining, GNN encoder
+**Used in project:** Conceptual basis for masked pretraining task in PATH 1 and PATH 2
+
+### R-037 — Nie, Nguyen, Sinthong & Kalagnanam (2023) — PatchTST
+**Key:** `nie2023patchtst`
+**Title:** A Time Series is Worth 64 Words: Long-term Forecasting with Transformers
+**Authors:** Yuqi Nie, Nam H. Nguyen, Phanwadee Sinthong, Jayant Kalagnanam
+**Year:** 2023
+**Venue:** *ICLR 2023*
+**URL:** https://arxiv.org/abs/2211.14730
+**Code:** https://github.com/yuqinie98/PatchTST
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Patch tokenization, masked time-series pretraining, long-horizon forecasting
+**Used in project:** Reference for masked temporal pretraining; T=20 too short for full patches
+
+### R-038 — Dong, Wu, Zhang, Zhang, Wang & Long (2023) — SimMTM
+**Key:** `dong2023simmtm`
+**Title:** SimMTM: A Simple Pre-Training Framework for Masked Time-Series Modeling
+**Authors:** Jiaxiang Dong, Haixu Wu, Haoran Zhang, Li Zhang, Jianmin Wang, Mingsheng Long
+**Year:** 2023
+**Venue:** *NeurIPS 2023 (Spotlight)*
+**URL:** https://proceedings.neurips.cc/paper_files/paper/2023/hash/5f9bfdfe3685e4ccdbc0e7fb29cccf2a-Abstract-Conference.html
+**Code:** https://github.com/thuml/SimMTM
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Contrastive + masked reconstruction, time-series pretraining, temporal neighbors as positives
+**Used in project:** Reference for contrastive pretraining objective; no graph component
+
+---
+
+## Axis 14 — Conformal Prediction for Temporal Data (DEC-046)
+
+### R-039 — Xu & Xie (2021) — EnbPI
+**Key:** `xu2021enbpi`
+**Title:** Conformal Prediction Interval for Dynamic Time-Series
+**Authors:** Chen Xu, Yao Xie
+**Year:** 2021
+**Venue:** *ICML 2021 (PMLR Vol. 139)*
+**URL:** https://proceedings.mlr.press/v139/xu21h.html
+**Code:** https://github.com/hamrel-cxu/EnbPI
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Conformal intervals, non-exchangeable time series, online calibration, distribution shift
+**Used in project:** Recommended as uncertainty layer in PATH 1 (complementary)
+
+### R-040 — Xu & Xie (2023) — SPCI
+**Key:** `xu2023spci`
+**Title:** Sequential Predictive Conformal Inference for Time Series
+**Authors:** Chen Xu, Yao Xie
+**Year:** 2023
+**Venue:** *ICML 2023 (PMLR Vol. 202)*
+**URL:** https://proceedings.mlr.press/v202/xu23r.html
+**Code:** https://github.com/hamrel-cxu/SPCI-code
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Sequential conformal, quantile regression, conditional coverage
+**Used in project:** Complementary uncertainty layer; T≥30 recommended for calibration
+
+### R-041 — Barber, Candès, Ramdas & Tibshirani (2023)
+**Key:** `barber2023conformal`
+**Title:** Conformal Prediction Beyond Exchangeability
+**Authors:** Rina Foygel Barber, Emmanuel J. Candès, Aaditya Ramdas, Ryan J. Tibshirani
+**Year:** 2023
+**Venue:** *Annals of Statistics*, 51(2), 816–845
+**DOI:** https://doi.org/10.1214/23-AOS2276
+**Status:** `VERIFIED_PRIMARY`
+**Theme:** Conformal validity under covariate shift, weighted conformal prediction
+**Used in project:** Theoretical basis for cross-country conformal coverage (distribution shift)
+
+### R-042 — Angelopoulos & Bates (2023) — Tutorial
+**Key:** `angelopoulos2023conformal`
+**Title:** A Gentle Introduction to Conformal Prediction and Distribution-Free Uncertainty Quantification
+**Authors:** Anastasios N. Angelopoulos, Stephen Bates
+**Year:** 2023 (arXiv v6)
+**URL:** https://arxiv.org/abs/2107.07511
+**Status:** `PREPRINT` (tutorial monograph, widely cited)
+**Theme:** Conformal prediction tutorial, implementation guide
+**Used in project:** Implementation reference for conformal layers
+
+---
+
 ## Metrics
 
 | Metric | Count |
 |--------|------:|
-| Total references | 25 |
-| VERIFIED_PRIMARY | 12 |
+| Total references | 42 |
+| VERIFIED_PRIMARY | 28 |
 | VERIFIED_INSTITUTIONAL | 2 |
-| PREPRINT | 1 |
-| UNVERIFIED | 10 |
+| PREPRINT | 3 |
+| UNVERIFIED | 9 |
 | POSSIBLE_HALLUCINATION | 0 |
-| Axes covered | 9 |
+| Axes covered | 14 |
 
 **Note on count:** The literature review comparative table (section 13) describes ~30 works, of which approximately 25 are explicitly keyed here. The remaining ~5 are referenced descriptively in the text (e.g. financial TVGL applications, product space Brazil analysis) without independent primary verification — they are not counted as references until verified.
 
 **Priority verifications needed:**
-1. R-008 (EconoGNN 2026) — confirm full author list and publication details
-2. R-010 (Shojaie 2022) — confirm Annual Review of Statistics DOI
-3. R-016 (Audretsch 2002) — confirm Regional Studies DOI
-4. R-017 (Anselin 1988) — confirm book DOI
-5. R-018 (Moran 1950) — confirm Biometrika DOI
-6. R-019 (Jain 2019) — confirm NAACL DOI
-7. R-020 (Neffke 2011) — confirm Economic Geography DOI
-8. R-021 (Acemoglu 2012) — confirm Econometrica DOI
-9. R-022 (Blondel 2008) — confirm JSTAT DOI
-10. R-025 (Page 1954) — confirm Biometrika DOI
+1. R-010 (Shojaie 2022) — confirm Annual Review of Statistics DOI
+2. R-016 (Audretsch 2002) — confirm Regional Studies DOI
+3. R-017 (Anselin 1988) — confirm book DOI
+4. R-018 (Moran 1950) — confirm Biometrika DOI
+5. R-019 (Jain 2019) — confirm NAACL DOI
+6. R-020 (Neffke 2011) — confirm Economic Geography DOI
+7. R-021 (Acemoglu 2012) — confirm Econometrica DOI
+8. R-022 (Blondel 2008) — confirm JSTAT DOI
+9. R-025 (Page 1954) — confirm Biometrika DOI
