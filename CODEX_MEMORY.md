@@ -1,5 +1,5 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-13 (DEC-043: Phase 10 lagged graph arch — HPC_AUTHORIZED. Commit 97d9e56).
+**LEIA PRIMEIRO.** Updated 2026-06-13 (DEC-043 ADDENDUM: Phase 10 HPC COMPLETE — PHASE10_PARTIAL. L1+L2+L4+L5+L7 PASS. AUC +70%, MAE +1–2%).
 Read this file, then verify drift with `rtk git status --short`.
 
 ## Quick orientation (start here)
@@ -21,7 +21,7 @@ Read this file, then verify drift with `rtk git status --short`.
 - **HPC full run COMPLETE (job 7457617):** 20/20 tasks completed, 4-7 min each. Results: `data/processed/synthetic_benchmark/full/`. All G1 FAIL, oracle MAE=0.307, herald MAE=0.308, ffill MAE=0.255 (ffill dominates all scenarios). G2 falsely FAIL (AUC evaluation bug B1). G5 PASS. G4 FAIL (cal90≈0.27 vs 0.80 threshold).
 - **DEC-042 — Graph usage diagnostic (IMPLEMENTATION_BUG_FIXED + ARCHITECTURE_STRUCTURALLY_INADEQUATE):** Three bugs found: B1=AUC transposition in evaluate_imputation.py (FIXED: `attn[cols,rows]`; corrected AUC=0.727, G2 PASS), B2=symmetric adj passed to oracle (documented), B3=contemporaneous aggregation misses lag-1/lag-2 effects (architectural; prototype HERALDGraphImputerLagged in run_diagnostic.py). Diagnostic gates: D1/D2/D3/D5 PASS, D4 ceiling effect on trivial. 12/12 tests PASS. Report: `reports/HERALD_PHASE9_GRAPH_USAGE_DIAGNOSTIC.md`.
 - **DEC-043 — Phase 10 lagged graph benchmark (HPC_AUTHORIZED):** `HERALDGraphImputerLagged` (lag-1+lag-2 directed sector attention, MLP 10→64→32→2). 15 models (7 baselines + 5 contemp neural + 3 lagged neural). Directed oracle AUC=1.000 (wiring verified). Pilot gates (200 epochs, 2 scenarios × 3 seeds): L1 PASS, L2 PASS, L4 PASS, L5 PASS, L7 PASS (NaN=0, leakage PASS). HPC_AUTHORIZED=True (L1+L2+L7). Pilot decision=PHASE10_PARTIAL (L3 requires >5% MAE improvement not visible at 200 epochs). 34/34 tests PASS. Contract: `reports/HERALD_PHASE10_LAGGED_CONTRACT.md`. Next: `git push` + rsync to meso + smoke + sbatch.
-- **HPC array RUNNING:** Job 7457885 (meso, array 0-19, 500 epochs, partition fast). Smoke PASS (exit 0, JSON valid, leakage PASS, NaN=0, oracle_lagged AUC=1.0). Next: collect results + merge + gates L1-L8 + update docs.
+- **DEC-043 ADDENDUM — Phase 10 HPC COMPLETE (PHASE10_PARTIAL):** Job 7457885, 20/20 tasks, 500 epochs. Gates: L1 PASS (oracle_lagged < oracle_contemp 4/4), L2 PASS (AUC=1.000), L3 FAIL (+1–2% MAE, need 5%), L4 PASS (specific to true graph), L5 PASS (no regression), L6 FAIL (generalization +2.4%), L7 PASS (NaN=0, leakage PASS), L8 FAIL (marker). Edge AUC: herald_lagged 0.64–0.71 vs herald_contemp 0.39–0.43 (+70%). MAE improvement: +0.7–2.4% vs contemp. L3 failure is structural (AR-dynamics ceiling ~2%). Full results: `reports/HERALD_PHASE10_LAGGED_RESULTS.md`. Next DEC options: (A) lower L3 threshold; (B) stronger generator signal; (C) accept PARTIAL for publication.
 
 ## DO NOT change direction without a new DEC-* entry
 No new GNN architecture search. No geographic graph reopen. No P6 relaunch.
