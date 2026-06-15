@@ -226,21 +226,27 @@ def _permuted_adj(adj: np.ndarray, rng: np.random.Generator) -> np.ndarray:
     return adj[np.ix_(perm, perm)]
 
 
-def _edge_auc(model: HERALDGraphImputerLagged, true_relations: dict, device: str) -> float:
-    """Edge presence AUC from model attention (same as evaluator_v2)."""
+def _edge_auc(model: HERALDGraphImputerLagged, true_relations: list, device: str) -> float:
+    """Edge presence AUC from model attention.
+
+    true_relations is a list[TrueRelation] with .source_sector, .target_sector attributes.
+    Builds a binary presence matrix then computes AUC vs model's max(lag1, lag2) attention.
+    """
     try:
         lag1 = model.log_sect_attn_lag1.detach().cpu().numpy()
         lag2 = model.log_sect_attn_lag2.detach().cpu().numpy()
         scores = np.maximum(lag1, lag2)
         n_S = scores.shape[0]
+
+        # Build binary presence adj from list[TrueRelation]
+        presence = np.zeros((n_S, n_S), dtype=int)
+        for r in true_relations:
+            presence[r.source_sector, r.target_sector] = 1
+
         mask_diag = ~np.eye(n_S, dtype=bool)
         y_score = scores[mask_diag]
-        if "adj" in true_relations:
-            y_true = true_relations["adj"][mask_diag].astype(int)
-        elif "presence" in true_relations:
-            y_true = true_relations["presence"][mask_diag].astype(int)
-        else:
-            return float("nan")
+        y_true = presence[mask_diag]
+
         if len(np.unique(y_true)) < 2:
             return float("nan")
         return float(roc_auc_score(y_true, y_score))
