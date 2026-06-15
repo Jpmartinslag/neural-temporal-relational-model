@@ -1,6 +1,6 @@
 # HERALD Current State
-**Updated:** 2026-06-13 (DEC-039: Phase 9 synthetic benchmark implemented, smoke PASS)
-**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-039), `HERALD_EVIDENCE_MATRIX.md`.
+**Updated:** 2026-06-15 (DEC-049: Phase 14 convergence audit PROTOCOL_READY)
+**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-049), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
 

@@ -1,5 +1,5 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-15 (DEC-048: failure cause diagnostic PILOT_COMPLETE. Decision: TRAINING_BUDGET_TOO_SMALL — arquitetura NÃO inadequada (C2 PASS, oracle ratio=0.732). Gradiente atenção 400x menor que MLP. GRAPH_MASKED_MULTITASK pretraining +1.1%. Próximo: DEC-049 full-scale pretraining 150 epochs, 50 datasets D2).
+**LEIA PRIMEIRO.** Updated 2026-06-15 (DEC-049: Phase 14 convergence audit PROTOCOL_READY. Testa hipótese TRAINING_BUDGET_TOO_SMALL com grid 3 variantes × 3 budgets [30/75/150] × 2 cenários. E1-E10 gates frozen. 25 testes PASS (15s). DEC-048 corrigido: C10 PASS = oracle M4 localmente treinado, NÃO learned HERALD zero-shot; "400x" agora marcado como evidência diagnóstica; SYNTHETIC-ONLY constraint reforçado. Package: `src/modeles/synthetic/phase14_convergence/`. Executar: `python src/modeles/synthetic/phase14_convergence/run_convergence.py --pilot`. 300 épocas SÓ se trigger E1+E2 PASS at 150).
 Read this file, then verify drift with `rtk git status --short`.
 
 ## Quick orientation (start here)

@@ -67,7 +67,8 @@ Key findings:
 - graph_contribution_mae: 0.006 (small but non-zero)
 - attn_grad_near_zero: False (gradients do reach attention)
 
-**Interpretation:** The attention gradient is 400x smaller than MLP gradient.
+**Interpretation:** The attention gradient is ~400× smaller than MLP gradient
+(diagnostic evidence, not proof that budget is the sole cause — see Section 10).
 Under DEC-047 conditions (frozen attention + decoder only), the decoder was adapting
 in a flat signal landscape. The edge contribution to prediction variance is tiny
 compared to temporal signal, making graph attention hard to learn.
@@ -184,9 +185,10 @@ GRAPH_MASKED_MULTITASK slightly outperforms TEMPORAL_MASKED (0.2609 vs 0.2623).
 provides a small but consistent benefit. The D2 distribution (0-90% nonlinear) is
 a better prior than no pretraining. The gain is modest but real.
 
-NOTE: Edge supervision (GRAPH_MASKED_MULTITASK) ONLY applies to synthetic data
-where true_relations are known. This supervision is NOT transferable to real
-country data (PT/IT/FR/NL/AT) where the graph structure is unknown.
+**SYNTHETIC-ONLY CONSTRAINT:** Edge supervision (GRAPH_MASKED_MULTITASK) ONLY applies
+to synthetic data where true_relations are known ground truth. This supervision is NOT
+available and NOT transferable to real country data (PT/IT/FR/NL/AT) where the true
+graph structure is unknown. Do NOT apply GRAPH_MASKED_MULTITASK to real data.
 
 ---
 
@@ -203,9 +205,14 @@ country data (PT/IT/FR/NL/AT) where the graph structure is unknown.
 | C7 EDGE_AUC | FAIL | AUC≈0.51-0.52 < threshold 0.60 |
 | **C8 BLOCK_ROBUSTNESS** | **PASS** | Block_30 consistent direction with MCAR_30 |
 | **C9 SHIFT_CURVE** | **PASS** | 2/2 progressive degradation steps confirmed |
-| **C10 BEATS_FFILL** | **PASS** | Best neural MAE ratio=0.929 (oracle locally trained) |
+| **C10 BEATS_FFILL** | **PASS** | Best neural MAE ratio=0.929 (oracle M4, locally trained); learned HERALD zero-shot does NOT beat ffill — see note |
 
 **Summary: 6/10 PASS**
+
+**Important C10 clarification:** C10 PASS is driven by oracle M4 (locally trained, frozen true
+attention). The learned HERALD model (zero-shot, M3) does NOT beat ffill at 30 epochs — M3
+MAE ratio ≈ 0.997 ≈ 1.0, barely at parity. C10 PASS confirms the architecture CAN beat ffill
+when given correct graph structure; it does NOT confirm learned zero-shot HERALD beats ffill.
 
 ---
 
