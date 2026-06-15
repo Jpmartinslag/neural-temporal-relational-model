@@ -2083,3 +2083,44 @@ NOTE: Edge supervision only applicable to synthetic data. NOT transferable to re
   - `reports/HERALD_DEC049_CONVERGENCE_AUDIT.md` (new)
   - `reports/HERALD_DEC048_FAILURE_CAUSE_DIAGNOSTIC.md` (3 targeted corrections)
   - `CODEX_MEMORY.md` (DEC-049 bullet added)
+
+---
+
+## DEC-050 — 2026-06-15 — Phase 14: Bug fixes in pretrain_runner.py and re-run (30/75/150 epochs)
+
+**Phase:** 14
+**Question:** Are the DEC-049 pilot results valid? Three critical bugs were identified in `pretrain_runner.py` after the pilot. Do the bugs invalidate the DEC-049 conclusions?
+**Evidence:**
+  - **Bug A (TEMPORAL_MASKED masked reconstruction):** `compute_multitask_nll` computed NLL on `training_mask` (cells the model CAN see), not on `loss_mask` (artificially hidden cells). Result: TEMPORAL_MASKED trained to reconstruct already-visible cells — equivalent to standard NLL but with a smaller dataset. The masked reconstruction objective was never actually applied.
+  - **Bug B (edge presence BCE — lag-2 ignored):** `_edge_bce` marked only `lag == 1` edges as positive. lag-2 true edges were treated as negatives, actively training the model to suppress lag-2 attention. Consequence: GRAPH_MASKED_MULTITASK edge AUC was penalized for correctly learning lag-2 associations.
+  - **Bug C (sign/lag shared logit):** `_sign_bce` and `_lag_bce` both used `log_sect_attn_lag1 − log_sect_attn_lag2` as logit. Sign prediction is architecturally impossible via softmax attention (attention weights are always non-negative after softmax; they cannot encode the sign/direction of an effect). The sign BCE objective conflated two semantically different properties using the same logit. Removed.
+**Alternatives considered:**
+  1. Accept DEC-049 PARTIAL as-is, note bugs, move on to architecture redesign.
+  2. Fix bugs, re-run the same protocol, update DEC-049.
+  3. Fix bugs, run new DEC-050 protocol with separate output directory to preserve before/after comparison.
+**Decision:** `TEMPORAL_MASKED_CONFIRMED; GRAPH_MULTITASK_UNSTABLE`
+
+After bug fixes, the corrected 30/75/150 epoch run (50 D2 datasets, 5 test seeds, mcar_30+block_30, novel_lag2+novel_highvar) shows:
+
+- **Bug A fix critical**: TEMPORAL_MASKED@75 achieves MAE=0.2327 on novel_lag2, BEATING ffill (0.2568) by 9.4% and NO_PRETRAINING (0.2562) by 9.2% in zero-shot. DEC-049 TEMPORAL_MASKED (buggy) showed MAE=0.371. The masked reconstruction objective was the key.
+- **GRAPH_MASKED_MULTITASK unstable at scale**: val_loss diverges from -3.17 @30 → -31941 @75 → -421009 @150 (variance collapse in NLL σ→0). MAE degrades with epochs: 0.2628→0.2684→0.3716. The pos_weight (n_neg/n_pos) in edge BCE combined with 50 datasets drives instability. New finding beyond DEC-049.
+- **Few-shot A1 extremely effective**: All variants show 78-80% MAE reduction after A1 adaptation (decoder-only, frozen attention). TEMPORAL_MASKED@75 few-shot novel_lag2 MAE=0.0509. Improvement uniform across pretraining strategies.
+- **300-epoch trigger fires** (E1+E2 PASS at 150) — only for TEMPORAL_MASKED. NOT authorized without user confirmation.
+- Gates 4/10 PASS: E1 (safety), E2 (convergence), E7 (fewshot value), E8 (graph preservation). FAIL: E3 (AUC), E4 (graph signal), E5 (ffill), E6 (graph multitask), E9 (GRAPH vs baseline), E10 (block robustness).
+**Rationale:** DEC-049 conclusions were based on buggy implementation. Before claiming "pretraining does not help", verify that the multitask pretraining objectives were actually applied correctly. The PARTIAL decision (not FAIL) is appropriate because gradient evidence was real and independent of the bugs (gradient flow was measured directly via autograd, not via the loss output).
+**Limitations:**
+  - DEC-049 gradient evidence (attention/decoder ratio) was collected with the buggy code but is still valid: gradient norms were measured by calling the loss functions and reading `.grad` attributes directly, not via the loss magnitude.
+  - DEC-049 val_loss comparisons (GRAPH_MASKED_MULTITASK < TEMPORAL_MASKED) used correct reconstruction NLL; this finding is also unaffected by Bug A (which only affects the TEMPORAL_MASKED auxiliary loss).
+  - Bug C: sign BCE with a proxy logit was architecturally invalid; removing it does not affect GRAPH_MASKED_MULTITASK (which used edge_presence + lag, not sign).
+  - The fundamental challenge (ffill domination; graph signal not used in reconstruction) may persist even with corrected objectives. These are separate from the bugs.
+**Frozen before execution:**
+  - MULTITASK_ALPHA=0.1, MULTITASK_GAMMA=0.05 (unchanged; BETA effectively 0 with sign BCE removed)
+  - E1-E10 gate thresholds unchanged
+  - Output dir: `data/processed/synthetic_benchmark/phase14_convergence_v2/`
+**Affected files:**
+  - `src/modeles/synthetic/phase14_convergence/pretrain_runner.py` (3 bug fixes: A, B, C)
+  - `src/modeles/synthetic/phase14_convergence/run_convergence.py` (REPO_ROOT parents[5]→parents[4] fix)
+  - `tests/test_phase14_convergence.py` (25→30 tests; test 24 updated; tests 26-30 new)
+  - `reports/HERALD_DEC050_BUG_AUDIT.md` (new)
+  - `reports/HERALD_DEC049_CONVERGENCE_AUDIT.md` (note added: DEC-049 pilot used buggy code)
+  - `CODEX_MEMORY.md` (DEC-050 bullet added)

@@ -179,55 +179,96 @@ def _build_val_entries() -> list[dict]:
     return entries
 
 
-# ── Multitask loss functions ──────────────────────────────────────────────────
+# ── Multitask loss functions (v2 — DEC-050 bug fixes) ────────────────────────
+#
+# Bugs fixed vs DEC-049 pilot implementation:
+#   A. TEMPORAL_MASKED now computes loss on artificially hidden cells (loss_mask),
+#      NOT on the cells the model can see (input_mask). Separated:
+#        structural_mask: cells that are ever observed in this dataset (1=known)
+#        input_mask:      cells shown to model (structural_mask minus extra hidden)
+#        loss_mask:       cells artificially hidden (truth known, model cannot see)
+#   B. Edge presence BCE now marks BOTH lag-1 and lag-2 true edges as positive.
+#      Previous version only marked lag-1 → lag-2 edges were treated as negatives.
+#      Logit = max(log_attn_lag1, log_attn_lag2) per (target, source) pair.
+#      Imbalance corrected via pos_weight = n_neg / n_pos.
+#   C. Sign BCE REMOVED — HERALD softmax attention is always positive after softmax;
+#      it cannot encode the sign (direction) of an effect without a dedicated head.
+#      MULTITASK_BETA is kept in the constant but effectively unused (set to 0).
+#      Lag BCE keeps the lag1-lag2 logit (reasonable proxy for lag discrimination)
+#      but is now correctly separated from presence logit.
 
-def _edge_bce(
+def _compute_masked_nll_loss(
+    model: HERALDGraphImputerLagged,
+    panel: np.ndarray,
+    input_mask: np.ndarray,   # (n_T, n_S, n_Y) — cells the model sees (1=visible)
+    loss_mask: np.ndarray,    # (n_T, n_S, n_Y) — cells where loss is computed (1=target)
+    adj_s: np.ndarray,
+    adj_t: np.ndarray,
+    device: str,
+) -> torch.Tensor:
+    """
+    NLL on loss_mask cells, using input_mask as model input context.
+
+    input_mask and loss_mask must be disjoint — the model cannot see the cells
+    whose values it is being asked to predict.
+
+    Used for TEMPORAL_MASKED variant where 40% of observed cells are artificially
+    hidden: the model predicts those cells from the remaining 60%.
+    """
+    assert not np.any((input_mask == 1) & (loss_mask == 1)), (
+        "input_mask and loss_mask overlap — model would see the cells it predicts"
+    )
+    panel_t, input_mask_t, adj_s_t, adj_t_t = _prep_tensors(
+        panel, input_mask, adj_s, adj_t, device
+    )
+    loss_mask_t = torch.from_numpy(loss_mask.astype(np.float32)).to(device)
+    true_t = torch.from_numpy(np.nan_to_num(panel, nan=0.0).astype(np.float32)).to(device)
+    # Temporal features computed with input_mask (model sees only input_mask cells)
+    temp_feats_t = torch.from_numpy(
+        _build_temporal_features(panel, input_mask).astype(np.float32)
+    ).to(device)
+    out = model(panel_t, input_mask_t, adj_s_t, adj_t_t, temp_feats_t)
+    pred_mean = out[..., 0]
+    log_sigma = out[..., 1]
+    sigma_sq = (2 * log_sigma).exp().clamp(min=1e-4)
+    nll = 0.5 * (2 * log_sigma + (true_t - pred_mean) ** 2 / sigma_sq)
+    n_loss = loss_mask_t.sum().clamp(min=1)
+    return (nll * loss_mask_t).sum() / n_loss
+
+
+def _edge_presence_bce(
     model: HERALDGraphImputerLagged,
     true_relations: list,
     n_sectors: int,
     device: str,
 ) -> torch.Tensor:
     """
-    Binary CE on edge presence using log_sect_attn_lag1 as logit.
+    Edge PRESENCE BCE — both lag-1 and lag-2 true edges are positive targets.
+
+    Presence logit: max(log_sect_attn_lag1, log_sect_attn_lag2) per (target, source).
+    Diagonal excluded (self-loops not modelled).
+    Positive class weighted by n_neg/n_pos to handle class imbalance.
+    Convention: edge_target[target, source] = 1 if source→target edge exists.
+
+    BUG FIX (DEC-050): previous version only marked lag-1 as positive.
+    lag-2 true edges are now correctly marked as positive for presence.
 
     NOTE: true_relations ground truth is SYNTHETIC-ONLY.
-    This function must NOT be used with real country data.
     """
     edge_target = torch.zeros(n_sectors, n_sectors, device=device)
     for r in true_relations:
         s, t = r.source_sector, r.target_sector
         if s < n_sectors and t < n_sectors:
-            if r.lag == 1:
-                edge_target[t, s] = 1.0
+            edge_target[t, s] = 1.0  # lag-agnostic: any lag → positive
     mask_diag = ~torch.eye(n_sectors, dtype=torch.bool, device=device)
-    logits = model.log_sect_attn_lag1[mask_diag]
+    # Presence logit: max of both lag attention logits per (target, source) pair
+    presence_logits = torch.max(model.log_sect_attn_lag1, model.log_sect_attn_lag2)
+    logits = presence_logits[mask_diag]
     targets = edge_target[mask_diag]
-    return F.binary_cross_entropy_with_logits(logits, targets)
-
-
-def _sign_bce(
-    model: HERALDGraphImputerLagged,
-    true_relations: list,
-    n_sectors: int,
-    device: str,
-) -> torch.Tensor:
-    """
-    Binary CE on edge sign (positive=1, negative=0) for known lag-1 edges.
-    Uses log_sect_attn_lag1 - log_sect_attn_lag2 as sign logit.
-
-    NOTE: true_relations ground truth is SYNTHETIC-ONLY.
-    """
-    sign_target = torch.full((n_sectors, n_sectors), -1.0, device=device)
-    for r in true_relations:
-        s, t = r.source_sector, r.target_sector
-        if s < n_sectors and t < n_sectors:
-            if r.lag == 1:
-                sign_target[t, s] = 1.0 if r.weight > 0 else 0.0
-    known = sign_target >= 0
-    if not known.any():
-        return torch.tensor(0.0, device=device)
-    sign_logit = model.log_sect_attn_lag1 - model.log_sect_attn_lag2
-    return F.binary_cross_entropy_with_logits(sign_logit[known], sign_target[known])
+    n_pos = targets.sum().clamp(min=1)
+    n_neg = (1 - targets).sum().clamp(min=1)
+    pos_weight = torch.tensor([float(n_neg / n_pos)], device=device)
+    return F.binary_cross_entropy_with_logits(logits, targets, pos_weight=pos_weight)
 
 
 def _lag_bce(
@@ -237,8 +278,14 @@ def _lag_bce(
     device: str,
 ) -> torch.Tensor:
     """
-    Binary CE on lag (lag-1=1, lag-2=0) for known edges.
-    Uses log_sect_attn_lag1 - log_sect_attn_lag2 as lag logit.
+    Lag prediction BCE (lag-1 = 1.0, lag-2 = 0.0) for known edges only.
+    Logit = log_sect_attn_lag1[t,s] - log_sect_attn_lag2[t,s].
+
+    Rationale: if lag-1 attention > lag-2 attention, the edge is more likely lag-1.
+    Applied only to cells where a true edge exists (not all off-diagonal pairs).
+
+    BUG FIX (DEC-050): now uses a DIFFERENT logit than edge_presence (which uses max).
+    Previous version used the same lag1-lag2 logit for BOTH sign and lag prediction.
 
     NOTE: true_relations ground truth is SYNTHETIC-ONLY.
     """
@@ -252,6 +299,14 @@ def _lag_bce(
         return torch.tensor(0.0, device=device)
     lag_logit = model.log_sect_attn_lag1 - model.log_sect_attn_lag2
     return F.binary_cross_entropy_with_logits(lag_logit[known], lag_target[known])
+
+
+# SIGN BCE — REMOVED (DEC-050 architectural finding):
+# HERALD softmax attention always produces values in [0,1] after softmax.
+# The sign (positive/negative) of an edge weight cannot be encoded via attention
+# without a dedicated signed output head not present in HERALDGraphImputerLagged.
+# Using lag1-lag2 as a sign proxy conflated two different properties (lag vs sign).
+# MULTITASK_BETA is kept in constants but sign loss is not included in training.
 
 
 def compute_multitask_nll(
@@ -268,43 +323,57 @@ def compute_multitask_nll(
     extra_mask_rate: float = 0.40,
 ) -> torch.Tensor:
     """
-    Compute total pretraining loss:
+    Compute total pretraining loss.
 
     TEMPORAL_MASKED:
-        Apply additional MCAR masking to 40% of observed cells.
-        Loss = NLL on extra-masked cells only.
-        Does NOT use true_relations.
+        Apply MCAR extra masking to extra_mask_rate of observed cells.
+        input_mask = observed cells minus artificially hidden.
+        loss_mask  = artificially hidden cells (truth known, model cannot see).
+        Loss = NLL on loss_mask only.
+
+        BUG FIX (DEC-050): previous version computed loss on input_mask (cells the
+        model CAN see), not on loss_mask (cells artificially hidden). Now correct.
 
     GRAPH_MASKED_MULTITASK:
-        Loss = NLL + ALPHA * edge_BCE + BETA * sign_BCE + GAMMA * lag_BCE.
+        Loss = NLL(all observed) + ALPHA * edge_presence_BCE + GAMMA * lag_BCE.
+        Sign BCE removed (see note above). BETA unused.
         Requires true_relations (SYNTHETIC-ONLY — not for real country data).
 
-    Weights FROZEN: ALPHA=0.1, BETA=0.05, GAMMA=0.05.
+    Loss weights FROZEN: ALPHA=0.1, GAMMA=0.05.
     """
     if variant == "TEMPORAL_MASKED":
-        # Apply extra masking to 40% of observed cells (MCAR within observed)
         if rng is None:
             rng = np.random.default_rng(42)
-        observed_positions = np.where(mask == 1)
+        structural_mask = mask  # 1 = structurally observed in this dataset
+        observed_positions = np.where(structural_mask == 1)
         n_obs = len(observed_positions[0])
         n_to_hide = int(extra_mask_rate * n_obs)
-        training_mask = mask.copy()
-        if n_to_hide > 0:
-            hide_idx = rng.choice(n_obs, n_to_hide, replace=False)
-            training_mask[tuple(obs[hide_idx] for obs in observed_positions)] = 0
-        return _compute_nll_loss(model, panel, training_mask, adj_s, adj_t, device)
+
+        if n_to_hide == 0:
+            # Degenerate case: fall back to standard NLL
+            return _compute_nll_loss(model, panel, structural_mask, adj_s, adj_t, device)
+
+        hide_idx = rng.choice(n_obs, n_to_hide, replace=False)
+        indices_to_hide = tuple(arr[hide_idx] for arr in observed_positions)
+
+        # input_mask: what the model sees (structural minus artificially hidden)
+        input_mask = structural_mask.copy()
+        input_mask[indices_to_hide] = 0
+
+        # loss_mask: artificially hidden cells — truth is known, model cannot see them
+        loss_mask = np.zeros_like(structural_mask, dtype=np.float32)
+        loss_mask[indices_to_hide] = 1.0
+
+        return _compute_masked_nll_loss(model, panel, input_mask, loss_mask, adj_s, adj_t, device)
 
     elif variant == "GRAPH_MASKED_MULTITASK":
-        # Standard NLL on all observed cells
+        # Reconstruction NLL on all observed cells
         nll_loss = _compute_nll_loss(model, panel, mask, adj_s, adj_t, device)
-        # Auxiliary edge/sign/lag losses (SYNTHETIC-ONLY)
-        edge_loss = _edge_bce(model, true_relations, n_sectors, device)
-        sign_loss = _sign_bce(model, true_relations, n_sectors, device)
+        # Auxiliary losses (SYNTHETIC-ONLY — not for real country data)
+        edge_loss = _edge_presence_bce(model, true_relations, n_sectors, device)
         lag_loss = _lag_bce(model, true_relations, n_sectors, device)
-        return (nll_loss
-                + MULTITASK_ALPHA * edge_loss
-                + MULTITASK_BETA * sign_loss
-                + MULTITASK_GAMMA * lag_loss)
+        # Sign BCE omitted — architecturally unimplementable (see note above)
+        return nll_loss + MULTITASK_ALPHA * edge_loss + MULTITASK_GAMMA * lag_loss
 
     else:
         raise ValueError(f"Unknown variant: {variant!r}")
@@ -396,11 +465,10 @@ def _measure_grad_norms(
         for p in model.parameters():
             if p.grad is not None:
                 p.grad.zero_()
-        # Only aux losses
-        edge_loss = _edge_bce(model, e["true_relations"], n_sectors, device)
-        sign_loss = _sign_bce(model, e["true_relations"], n_sectors, device)
+        # Only aux losses (sign BCE removed — see compute_multitask_nll docstring)
+        edge_loss = _edge_presence_bce(model, e["true_relations"], n_sectors, device)
         lag_loss = _lag_bce(model, e["true_relations"], n_sectors, device)
-        aux_loss = MULTITASK_ALPHA * edge_loss + MULTITASK_BETA * sign_loss + MULTITASK_GAMMA * lag_loss
+        aux_loss = MULTITASK_ALPHA * edge_loss + MULTITASK_GAMMA * lag_loss
         aux_loss.backward()
         attn_from_aux = (
             model.log_sect_attn_lag1.grad is not None
