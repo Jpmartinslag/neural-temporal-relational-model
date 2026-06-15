@@ -54,7 +54,6 @@ def _load_resume(path: Path) -> list[dict] | None:
 
 def print_summary_table(records: list[dict], gates: dict) -> None:
     """Print a summary table of results."""
-    from src.modeles.synthetic.phase14_convergence.evaluator import _filter
 
     print("\n" + "=" * 70)
     print("DEC-049 CONVERGENCE AUDIT — SUMMARY TABLE")
