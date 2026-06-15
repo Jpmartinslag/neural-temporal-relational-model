@@ -1,5 +1,5 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-15 (DEC-049: Phase 14 convergence audit PROTOCOL_READY. Testa hipótese TRAINING_BUDGET_TOO_SMALL com grid 3 variantes × 3 budgets [30/75/150] × 2 cenários. E1-E10 gates frozen. 25 testes PASS (15s). DEC-048 corrigido: C10 PASS = oracle M4 localmente treinado, NÃO learned HERALD zero-shot; "400x" agora marcado como evidência diagnóstica; SYNTHETIC-ONLY constraint reforçado. Package: `src/modeles/synthetic/phase14_convergence/`. Executar: `python src/modeles/synthetic/phase14_convergence/run_convergence.py --pilot`. 300 épocas SÓ se trigger E1+E2 PASS at 150).
+**LEIA PRIMEIRO.** Updated 2026-06-15 (DEC-049 PARTIAL: piloto concluído 22s, 168 registos. E1+E6 PASS, E3/E4/E5/E9 FAIL. GRAPH_MASKED_MULTITASK confirma gradiente chega à atenção (aux→attn=True, ratio 101-331×); TEMPORAL_MASKED não (ratio 3000-6438×, aux→attn=False). Pretraining com 10 datasets PIORA reconstrução vs NO_PRETRAINING. ffill MAE=0.307 ainda domina (melhor neural=0.316). 300 épocas NÃO disparadas. Próximo: 150 épocas com 50 datasets D2 + corrigir bug few-shot (E7 inválido — 0 registos) antes de concluir).
 Read this file, then verify drift with `rtk git status --short`.
 
 ## Quick orientation (start here)

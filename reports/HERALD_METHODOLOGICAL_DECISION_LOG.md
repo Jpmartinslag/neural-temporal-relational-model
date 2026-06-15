@@ -2065,7 +2065,7 @@ NOTE: Edge supervision only applicable to synthetic data. NOT transferable to re
   1. Accept TRAINING_BUDGET_TOO_SMALL as sufficient explanation, proceed directly to DEC-050.
   2. Run architecture redesign (abandoned — C2 PASS rules out ARCHITECTURE_INADEQUATE).
   3. Run Phase 14 controlled convergence audit before committing to longer training.
-**Decision:** PROTOCOL_READY — implementation complete, execution pending. Package `phase14_convergence` implemented with E1-E10 gates (all thresholds frozen before execution).
+**Decision:** PARTIAL — pilot complete (22s, 10 D2 datasets, budgets 30/75, 168 records). E1+E6 PASS; E3/E4/E5/E9 FAIL; E7 invalid (few-shot bug — 0 records). Pretraining hurts reconstruction at pilot scale. Gradient analysis confirms GRAPH_MASKED_MULTITASK edge-BCE reaches attention encoder (ratio 101–331×, aux→attn=True); TEMPORAL_MASKED does not (ratio 3000–6000×, aux→attn=False). ffill still dominates (MAE=0.307 vs best neural 0.316). 300-epoch trigger NOT fired. Next: 150-epoch run with 50 D2 datasets + few-shot bug fix before concluding.
 **Rationale:** Before committing to 150-epoch HPC runs, a controlled audit with a defined gate structure prevents post-hoc tuning. Epoch budgets [30,75,150] allow detecting whether improvement is monotone. 300 epochs only auto-triggered if E1+E2 PASS at 150.
 **Limitations:**
   - All results apply to SYNTHETIC data only — not transferable to PT/IT/FR/AT/NL.
