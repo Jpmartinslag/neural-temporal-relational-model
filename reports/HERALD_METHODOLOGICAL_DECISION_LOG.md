@@ -2124,3 +2124,47 @@ After bug fixes, the corrected 30/75/150 epoch run (50 D2 datasets, 5 test seeds
   - `reports/HERALD_DEC050_BUG_AUDIT.md` (new)
   - `reports/HERALD_DEC049_CONVERGENCE_AUDIT.md` (note added: DEC-049 pilot used buggy code)
   - `CODEX_MEMORY.md` (DEC-050 bullet added)
+
+---
+
+## DEC-051: Stable Objective Audit
+
+**Date:** 2026-06-15
+**Status:** IMPLEMENTATION_COMPLETE — experiment pending execution
+**Predecessors:** DEC-050 (bugs A/B/C corrected), DEC-049 (few-shot A1 pilot)
+
+**Problem:**
+  1. DEC-050 few-shot A1 shows 78-80% MAE reduction across ALL variants (including NO_PRETRAINING) — raises question of genuine signal vs. evaluation artifact.
+  2. GRAPH_MASKED_MULTITASK diverges catastrophically at scale (variance collapse log_sigma→-∞, val_loss -3→-421009). Proposed fix: clamp log_sigma to [-3,2].
+  3. Bug C (sign/lag logits shared) eliminated sign BCE but left the architecture without a valid sign head. DEC-051 adds independent sign and lag parameters.
+
+**Evidence:**
+  - DEC-050 corrected results: TEMPORAL_MASKED@75 MAE=0.2327 beats ffill 9.4% on novel_lag2 (zero-shot)
+  - Few-shot A1: identical ~80% gain for pretrained AND NO_PRETRAINING → suspicious
+  - GRAPH_MASKED_MULTITASK@75: val_loss -31941; GRAPH_MASKED_MULTITASK@150: -421009
+
+**Alternatives considered:**
+  1. Accept few-shot as genuine, proceed to scaling without audit.
+  2. Switch exclusively to Huber loss, drop NLL entirely.
+  3. Drop graph heads from DEC-051, focus on temporal-only stability.
+**Decision:** `DEC051_IMPLEMENTATION_COMPLETE`
+
+**Design (all constants frozen before results):**
+- R1: NLL with `log_sigma.clamp(-3.0, 2.0)` + entropy penalty λ=0.001
+- R2: Huber with δ=1.0 (no variance head)
+- R3: MSE (diagnostic only)
+- GraphAuxHeads: `sign_logit` and `lag_logit` are independent `nn.Parameter` — not shared with attention
+- Negative tests NT1-NT6: presence logit from max(lag1, lag2) attention; sign from sign_logit; lag from lag_logit
+- Gates V1-V10 frozen before results
+- 300-epoch gate (V300): requires V1+V2+V6 PASS + monotone improvement + ≥4/5 seeds + user authorization
+
+**Limitations:**
+  - 300-epoch run NOT executed — requires explicit user authorization even if V300 gate passes.
+  - No calibration, no real-country application in this task.
+  - Evaluation on synthetic only — true_relations ground truth not available for PT/IT/FR/NL/AT.
+
+**Affected files:**
+  - `src/modeles/synthetic/phase15_stable_objective/` (7 new files)
+  - `tests/test_phase15_stable_objective.py` (38 tests, all passing)
+  - `reports/HERALD_DEC051_STABLE_OBJECTIVE_AUDIT.md` (new)
+  - `CODEX_MEMORY.md` (DEC-051 bullet added)
