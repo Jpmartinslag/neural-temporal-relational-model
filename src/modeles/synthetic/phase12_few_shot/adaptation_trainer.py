@@ -15,6 +15,7 @@ Key invariants:
 from __future__ import annotations
 
 import copy
+import random
 
 import numpy as np
 import torch
@@ -83,6 +84,21 @@ def _compute_nll_train(
     return (nll * support_t).sum() / support_t.sum().clamp(min=1)
 
 
+def _set_adapt_seed(seed: int | None) -> None:
+    """Fix all RNG sources for reproducible Dropout and optimizer behaviour."""
+    if seed is None:
+        return
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+    try:
+        torch.use_deterministic_algorithms(True)
+    except Exception:
+        pass  # not available on all builds
+
+
 def adapt_model(
     model: HERALDGraphImputerLagged,
     panel: np.ndarray,
@@ -94,6 +110,7 @@ def adapt_model(
     lr: float = ADAPTATION_LR,
     patience: int = ADAPTATION_PATIENCE,
     device: str = "cpu",
+    adapt_seed: int | None = None,  # when set, makes Dropout & training reproducible
 ) -> dict:
     """
     Adapt only the unfrozen parameters (set by apply_strategy_freeze before calling).
@@ -104,6 +121,7 @@ def adapt_model(
     Zero-shot (support_mask.sum()==0): no optimizer created, model unchanged.
     All-frozen (no trainable params): no optimizer created, model unchanged.
     """
+    _set_adapt_seed(adapt_seed)
     n_support = int(support_mask.sum())
     is_extreme_low_shot = 0 < n_support < MIN_LABELS
 
