@@ -95,6 +95,8 @@ def _checkpoint_hash(path: Path) -> str:
 def _load_ep150(source_dir: Path, variant: str, device: str) -> HERALDGraphImputerLagged:
     ckpt_path = source_dir / f"model_{variant}_ep{CONTINUE_FROM}.pt"
     if not ckpt_path.exists():
+        ckpt_path = source_dir / "checkpoints" / f"model_{variant}_ep{CONTINUE_FROM}.pt"
+    if not ckpt_path.exists():
         raise FileNotFoundError(f"ep150 checkpoint not found: {ckpt_path}")
     model = load_checkpoint(ckpt_path, device)
     print(f"  Loaded {ckpt_path.name} (hash {_checkpoint_hash(ckpt_path)[:10]})")
@@ -105,6 +107,8 @@ def _load_heads_ep150(source_dir: Path, variant: str, device: str) -> GraphAuxHe
     if "GRAPH_MULTITASK" not in variant:
         return None
     heads_path = source_dir / f"heads_{variant}_ep{CONTINUE_FROM}.pt"
+    if not heads_path.exists():
+        heads_path = source_dir / "checkpoints" / f"heads_{variant}_ep{CONTINUE_FROM}.pt"
     if not heads_path.exists():
         print(f"  [WARN] heads checkpoint not found at {heads_path}, reinitialising")
         return GraphAuxHeads(N_SECTORS).to(device)
