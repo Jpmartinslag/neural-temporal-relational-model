@@ -1,0 +1,512 @@
+{
+  "experiment": "DEC-055",
+  "mode": "full",
+  "seeds": [
+    10,
+    20,
+    30,
+    40,
+    50
+  ],
+  "max_epochs": 100,
+  "architecture": {
+    "input_dim": 26,
+    "encoder_hidden1": 32,
+    "encoder_hidden2": 32,
+    "n_encoder_params": 2215,
+    "n_adapter_params": 656,
+    "n_total_params": 2871
+  },
+  "aggregated": {
+    "leakage_check": true,
+    "pair_params_found": [],
+    "nan_count": 0,
+    "inf_count": 0,
+    "test_target_in_train": false,
+    "n_encoder_params": 2215,
+    "n_adapter_params": 656,
+    "in_sample_auc_mean": 0.9600000000000002,
+    "unseen_pair_auc_mean": 0.689655172413793,
+    "unseen_pair_auprc_mean": 0.12487738927738927,
+    "unseen_pair_prevalence_mean": 0.03333333333333333,
+    "unseen_pair_aucs": [
+      0.7448275862068965,
+      0.7310344827586206,
+      0.7517241379310345,
+      0.5448275862068965,
+      0.6758620689655173
+    ],
+    "oos_env_shared_auc_mean": 0.7194666666666667,
+    "oos_env_old_head_auc_mean": 0.5511999999999999,
+    "oos_env_permuted_auc_mean": 0.4570666666666667,
+    "oos_direction_acc_mean": 0.56125,
+    "oos_sign_acc_mean": 0.8699999999999999,
+    "oos_lag_acc_mean": 0.58,
+    "adapter_oos_env_aucs": [
+      0.72,
+      0.792,
+      0.56
+    ],
+    "no_adapter_oos_env_aucs": [
+      0.752,
+      0.8639999999999999,
+      0.544
+    ],
+    "adapter_unseen_pair_auc": 0.6827586206896552,
+    "no_adapter_unseen_pair_auc": 0.689655172413793,
+    "permuted_relations_auc_mean": 0.5613793103448275,
+    "permuted_pair_labels_auc_mean": 0.46344827586206894
+  },
+  "per_seed": [
+    {
+      "seed": 10,
+      "leakage_check": true,
+      "pair_params_found": [],
+      "nan_count": 0,
+      "inf_count": 0,
+      "test_target_in_train": false,
+      "n_encoder_params": 2215,
+      "n_adapter_params": 656,
+      "in_sample_auc_mean": 0.9728,
+      "unseen_pair_auc_mean": 0.7448275862068965,
+      "unseen_pair_auprc_mean": 0.1387179487179487,
+      "unseen_pair_prevalence_mean": 0.03333333333333333,
+      "unseen_pair_aucs": [
+        0.8620689655172413,
+        0.8275862068965517,
+        0.6206896551724138,
+        0.8275862068965517,
+        0.5862068965517242
+      ],
+      "oos_env_shared_auc_mean": 0.7200000000000001,
+      "oos_env_old_head_auc_mean": 0.5266666666666667,
+      "oos_env_permuted_auc_mean": 0.4346666666666666,
+      "oos_direction_acc_mean": 0.56875,
+      "oos_sign_acc_mean": 0.825,
+      "oos_lag_acc_mean": 0.5,
+      "adapter_oos_env_aucs": [
+        0.72,
+        0.792,
+        0.56
+      ],
+      "no_adapter_oos_env_aucs": [
+        0.752,
+        0.8639999999999999,
+        0.544
+      ],
+      "adapter_unseen_pair_auc": 0.7241379310344828,
+      "no_adapter_unseen_pair_auc": 0.7448275862068965,
+      "permuted_relations_auc_mean": 0.689655172413793,
+      "permuted_pair_labels_auc_mean": 0.3931034482758621,
+      "n_epochs_c1": 100,
+      "final_loss_c1": 0.7942350625991821,
+      "final_grad_norm_c1": 1.36250088599064,
+      "n_epochs_c2": 100,
+      "n_embedding_records": 180
+    },
+    {
+      "seed": 20,
+      "leakage_check": true,
+      "pair_params_found": [],
+      "nan_count": 0,
+      "inf_count": 0,
+      "test_target_in_train": false,
+      "n_encoder_params": 2215,
+      "n_adapter_params": 656,
+      "in_sample_auc_mean": 0.9696,
+      "unseen_pair_auc_mean": 0.7310344827586206,
+      "unseen_pair_auprc_mean": 0.13333333333333336,
+      "unseen_pair_prevalence_mean": 0.03333333333333333,
+      "unseen_pair_aucs": [
+        0.6896551724137931,
+        0.6206896551724138,
+        0.6206896551724138,
+        0.8620689655172413,
+        0.8620689655172413
+      ],
+      "oos_env_shared_auc_mean": 0.7706666666666666,
+      "oos_env_old_head_auc_mean": 0.5293333333333333,
+      "oos_env_permuted_auc_mean": 0.44533333333333336,
+      "oos_direction_acc_mean": 0.58125,
+      "oos_sign_acc_mean": 0.95,
+      "oos_lag_acc_mean": 0.4,
+      "adapter_oos_env_aucs": [
+        0.888,
+        0.872,
+        0.584
+      ],
+      "no_adapter_oos_env_aucs": [
+        0.848,
+        0.856,
+        0.608
+      ],
+      "adapter_unseen_pair_auc": 0.7172413793103448,
+      "no_adapter_unseen_pair_auc": 0.7310344827586206,
+      "permuted_relations_auc_mean": 0.4344827586206897,
+      "permuted_pair_labels_auc_mean": 0.3793103448275862,
+      "n_epochs_c1": 100,
+      "final_loss_c1": 0.8560533285140991,
+      "final_grad_norm_c1": 1.918548944297901,
+      "n_epochs_c2": 100,
+      "n_embedding_records": 180
+    },
+    {
+      "seed": 30,
+      "leakage_check": true,
+      "pair_params_found": [],
+      "nan_count": 0,
+      "inf_count": 0,
+      "test_target_in_train": false,
+      "n_encoder_params": 2215,
+      "n_adapter_params": 656,
+      "in_sample_auc_mean": 0.9743999999999999,
+      "unseen_pair_auc_mean": 0.7517241379310345,
+      "unseen_pair_auprc_mean": 0.14213786213786217,
+      "unseen_pair_prevalence_mean": 0.03333333333333333,
+      "unseen_pair_aucs": [
+        0.8620689655172413,
+        0.7931034482758621,
+        0.8620689655172413,
+        0.6551724137931034,
+        0.5862068965517242
+      ],
+      "oos_env_shared_auc_mean": 0.6826666666666666,
+      "oos_env_old_head_auc_mean": 0.5613333333333334,
+      "oos_env_permuted_auc_mean": 0.544,
+      "oos_direction_acc_mean": 0.65625,
+      "oos_sign_acc_mean": 0.975,
+      "oos_lag_acc_mean": 0.625,
+      "adapter_oos_env_aucs": [
+        0.944,
+        0.752,
+        0.528
+      ],
+      "no_adapter_oos_env_aucs": [
+        0.864,
+        0.696,
+        0.488
+      ],
+      "adapter_unseen_pair_auc": 0.7310344827586206,
+      "no_adapter_unseen_pair_auc": 0.7517241379310345,
+      "permuted_relations_auc_mean": 0.3793103448275862,
+      "permuted_pair_labels_auc_mean": 0.6413793103448275,
+      "n_epochs_c1": 100,
+      "final_loss_c1": 0.8394647002220154,
+      "final_grad_norm_c1": 1.8112718860423684,
+      "n_epochs_c2": 100,
+      "n_embedding_records": 180
+    },
+    {
+      "seed": 40,
+      "leakage_check": true,
+      "pair_params_found": [],
+      "nan_count": 0,
+      "inf_count": 0,
+      "test_target_in_train": false,
+      "n_encoder_params": 2215,
+      "n_adapter_params": 656,
+      "in_sample_auc_mean": 0.9263999999999999,
+      "unseen_pair_auc_mean": 0.5448275862068965,
+      "unseen_pair_auprc_mean": 0.10147985347985347,
+      "unseen_pair_prevalence_mean": 0.03333333333333333,
+      "unseen_pair_aucs": [
+        0.8620689655172413,
+        0.5862068965517242,
+        0.1724137931034483,
+        0.31034482758620685,
+        0.7931034482758621
+      ],
+      "oos_env_shared_auc_mean": 0.7093333333333334,
+      "oos_env_old_head_auc_mean": 0.5773333333333334,
+      "oos_env_permuted_auc_mean": 0.39200000000000007,
+      "oos_direction_acc_mean": 0.515625,
+      "oos_sign_acc_mean": 0.775,
+      "oos_lag_acc_mean": 0.75,
+      "adapter_oos_env_aucs": [
+        0.744,
+        0.8320000000000001,
+        0.5760000000000001
+      ],
+      "no_adapter_oos_env_aucs": [
+        0.7280000000000001,
+        0.8400000000000001,
+        0.56
+      ],
+      "adapter_unseen_pair_auc": 0.5448275862068966,
+      "no_adapter_unseen_pair_auc": 0.5448275862068965,
+      "permuted_relations_auc_mean": 0.5379310344827586,
+      "permuted_pair_labels_auc_mean": 0.3310344827586207,
+      "n_epochs_c1": 100,
+      "final_loss_c1": 0.8564697623252868,
+      "final_grad_norm_c1": 1.9401421033143802,
+      "n_epochs_c2": 100,
+      "n_embedding_records": 180
+    },
+    {
+      "seed": 50,
+      "leakage_check": true,
+      "pair_params_found": [],
+      "nan_count": 0,
+      "inf_count": 0,
+      "test_target_in_train": false,
+      "n_encoder_params": 2215,
+      "n_adapter_params": 656,
+      "in_sample_auc_mean": 0.9568,
+      "unseen_pair_auc_mean": 0.6758620689655173,
+      "unseen_pair_auprc_mean": 0.10871794871794874,
+      "unseen_pair_prevalence_mean": 0.03333333333333333,
+      "unseen_pair_aucs": [
+        0.6896551724137931,
+        0.6206896551724138,
+        0.6206896551724138,
+        0.8620689655172413,
+        0.5862068965517242
+      ],
+      "oos_env_shared_auc_mean": 0.7146666666666667,
+      "oos_env_old_head_auc_mean": 0.5613333333333334,
+      "oos_env_permuted_auc_mean": 0.4693333333333333,
+      "oos_direction_acc_mean": 0.484375,
+      "oos_sign_acc_mean": 0.825,
+      "oos_lag_acc_mean": 0.625,
+      "adapter_oos_env_aucs": [
+        0.688,
+        0.76,
+        0.5840000000000001
+      ],
+      "no_adapter_oos_env_aucs": [
+        0.736,
+        0.792,
+        0.616
+      ],
+      "adapter_unseen_pair_auc": 0.6965517241379311,
+      "no_adapter_unseen_pair_auc": 0.6758620689655173,
+      "permuted_relations_auc_mean": 0.7655172413793103,
+      "permuted_pair_labels_auc_mean": 0.5724137931034482,
+      "n_epochs_c1": 100,
+      "final_loss_c1": 0.78811594247818,
+      "final_grad_norm_c1": 1.291486292500395,
+      "n_epochs_c2": 100,
+      "n_embedding_records": 180
+    }
+  ],
+  "gates": {
+    "S1": {
+      "verdict": "PASS",
+      "description": "Zero leakage / NaN / Inf in all metrics",
+      "evidence": {
+        "leakage_check": true,
+        "nan_count": 0,
+        "inf_count": 0,
+        "test_overlap": false,
+        "issues": []
+      },
+      "notes": ""
+    },
+    "S2": {
+      "verdict": "PASS",
+      "description": "No trainable parameter indexed by sector pair; no S\u00d7S lookup table",
+      "evidence": {
+        "pair_params_found": [],
+        "n_encoder_params": 2215,
+        "in_sample_auc_mean": 0.9600000000000002,
+        "unseen_pair_auc_mean": 0.689655172413793,
+        "issues": []
+      },
+      "notes": ""
+    },
+    "S3": {
+      "verdict": "PASS",
+      "description": "Unseen-pair transfer: AUC >= 0.65 AND AUPRC > prevalence",
+      "evidence": {
+        "auc": 0.689655172413793,
+        "auprc": 0.12487738927738927,
+        "prevalence": 0.03333333333333333,
+        "all_aucs": [
+          0.7448275862068965,
+          0.7310344827586206,
+          0.7517241379310345,
+          0.5448275862068965,
+          0.6758620689655173
+        ],
+        "issues": []
+      },
+      "notes": ""
+    },
+    "S4": {
+      "verdict": "PASS",
+      "description": "Unseen-env transfer: SharedEncoder > old head AND > permuted baseline",
+      "evidence": {
+        "shared_auc": 0.7194666666666667,
+        "old_head_auc": 0.5511999999999999,
+        "permuted_auc": 0.4570666666666667,
+        "issues": []
+      },
+      "notes": ""
+    },
+    "S5": {
+      "verdict": "PASS",
+      "description": "Direction > 0.50 / sign > 0.55 / lag > 0.55 OOS",
+      "evidence": {
+        "direction_acc": 0.56125,
+        "sign_acc": 0.8699999999999999,
+        "lag_acc": 0.58,
+        "issues": []
+      },
+      "notes": ""
+    },
+    "S6": {
+      "verdict": "PASS",
+      "description": "Adapter improves OOS env AUC in >= 1 env; pair transfer degradation <= 0.02",
+      "evidence": {
+        "adapter_oos_aucs": [
+          0.72,
+          0.792,
+          0.56
+        ],
+        "no_adapter_oos_aucs": [
+          0.752,
+          0.8639999999999999,
+          0.544
+        ],
+        "n_improved": 1,
+        "pair_auc_with_adapter": 0.6827586206896552,
+        "pair_auc_without_adapter": 0.689655172413793,
+        "pair_transfer_degradation": 0.006896551724137834,
+        "issues": []
+      },
+      "notes": ""
+    },
+    "S7": {
+      "verdict": "FAIL",
+      "description": "Temporal peak in correct window in >= 2/3 regime-change environments",
+      "evidence": {
+        "n_correct": 0,
+        "n_total": 8,
+        "frac_correct": 0.0,
+        "details": [
+          {
+            "env_id": "T0",
+            "peak_year": 10,
+            "active_window": [
+              5,
+              10
+            ],
+            "peak_in_window": false
+          },
+          {
+            "env_id": "T1",
+            "peak_year": 18,
+            "active_window": [
+              3,
+              8
+            ],
+            "peak_in_window": false
+          },
+          {
+            "env_id": "T2",
+            "peak_year": 19,
+            "active_window": [
+              10,
+              15
+            ],
+            "peak_in_window": false
+          },
+          {
+            "env_id": "T3",
+            "peak_year": 19,
+            "active_window": [
+              7,
+              12
+            ],
+            "peak_in_window": false
+          },
+          {
+            "env_id": "T4",
+            "peak_year": 17,
+            "active_window": [
+              5,
+              10
+            ],
+            "peak_in_window": false
+          },
+          {
+            "env_id": "O0",
+            "peak_year": 16,
+            "active_window": [
+              2,
+              7
+            ],
+            "peak_in_window": false
+          },
+          {
+            "env_id": "O1",
+            "peak_year": 19,
+            "active_window": [
+              14,
+              19
+            ],
+            "peak_in_window": false
+          },
+          {
+            "env_id": "O2",
+            "peak_year": 18,
+            "active_window": [
+              8,
+              13
+            ],
+            "peak_in_window": false
+          }
+        ]
+      },
+      "notes": ""
+    },
+    "S8": {
+      "verdict": "PASS",
+      "description": "Permuted controls degrade AUC by >= 0.05 (both relations and labels)",
+      "evidence": {
+        "real_auc": 0.689655172413793,
+        "permuted_relations_auc": 0.5613793103448275,
+        "permuted_pair_labels_auc": 0.46344827586206894,
+        "delta_permuted_relations": 0.12827586206896557,
+        "delta_permuted_labels": 0.2262068965517241,
+        "issues": []
+      },
+      "notes": ""
+    },
+    "S9": {
+      "verdict": "PASS",
+      "description": "SharedEncoder AUC > 0.60 on unseen pairs in >= 4/5 seeds",
+      "evidence": {
+        "n_pass": 4,
+        "n_total": 5,
+        "frac_pass": 0.8,
+        "per_seed_aucs": [
+          0.7448275862068965,
+          0.7310344827586206,
+          0.7517241379310345,
+          0.5448275862068965,
+          0.6758620689655173
+        ]
+      },
+      "notes": ""
+    },
+    "S10": {
+      "verdict": "PASS",
+      "description": "Total params (encoder + adapter) <= 5000",
+      "evidence": {
+        "n_encoder_params": 2215,
+        "n_adapter_params": 656,
+        "n_total_params": 2871,
+        "threshold": 5000
+      },
+      "notes": "Encoder: 2215, Adapter: 656, Total: 2871"
+    }
+  },
+  "gate_report": "| Gate | Description | Verdict |\n|------|-------------|---------|\n| S1 | Zero leakage / NaN / Inf in all metrics | \u2713 PASS |\n| S2 | No trainable parameter indexed by sector pair; no S\u00d7S lookup table | \u2713 PASS |\n| S3 | Unseen-pair transfer: AUC >= 0.65 AND AUPRC > prevalence | \u2713 PASS |\n| S4 | Unseen-env transfer: SharedEncoder > old head AND > permuted baseline | \u2713 PASS |\n| S5 | Direction > 0.50 / sign > 0.55 / lag > 0.55 OOS | \u2713 PASS |\n| S6 | Adapter improves OOS env AUC in >= 1 env; pair transfer degradation <= 0.02 | \u2713 PASS |\n| S7 | Temporal peak in correct window in >= 2/3 regime-change environments | \u2717 FAIL |\n| S8 | Permuted controls degrade AUC by >= 0.05 (both relations and labels) | \u2713 PASS |\n| S9 | SharedEncoder AUC > 0.60 on unseen pairs in >= 4/5 seeds | \u2713 PASS |\n| S10 | Total params (encoder + adapter) <= 5000 *Encoder: 2215, Adapter: 656, Total: 2871* | \u2713 PASS |",
+  "decision": "SHARED_RELATION_ENCODER_SUPPORTED + LOCAL_CONTEXT_ADAPTER_SUPPORTED",
+  "n_gates_pass": 9,
+  "n_gates_fail": 1,
+  "n_gates_ne": 0,
+  "elapsed_seconds": 198.55213737487793,
+  "n_embedding_records": 900
+}
