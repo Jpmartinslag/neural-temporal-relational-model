@@ -2229,3 +2229,96 @@ After bug fixes, the corrected 30/75/150 epoch run (50 D2 datasets, 5 test seeds
   - `tests/test_phase15_stable_objective.py` (+9 tests, 47 total)
   - `reports/HERALD_DEC051_STABLE_OBJECTIVE_AUDIT.md` (§9 addendum)
   - `CODEX_MEMORY.md` (DEC-052 bullet)
+
+## DEC-053: Decoupled Graph Architecture — Directed Relation Inference + Gated Residual
+
+**Date:** 2026-06-15
+**Status:** IMPLEMENTADO — pronto para execução local
+
+### Context
+
+DEC-052 confirmou que o backbone temporal (TEMPORAL_MASKED_NLL_CLAMPED@75) aprende
+estrutura grafosal (AUC≥0.60) mas esta não se traduz em ganho preditivo. Diagnóstico:
+
+1. **Prior simétrico**: `_sector_adj_from_relations()` simetriza relações dirigidas →
+   adj[s,t]=adj[t,s]=1, adicionando reverso falso para cada aresta real. exp(1)≈2.7× boost
+   nas duas direcções, incluindo reversos que não existem.
+
+2. **Correlação com ruído**: cenários novel (frac_nonlinear=0.85-0.90) estão no extremo
+   da distribuição de treino. Features temporais (`_build_temporal_features`) são suficientes;
+   atenção cruzada via adj simétrico adiciona ruído correlacionado.
+
+3. **Desacoplamento necessário**: o modelo aprendeu a compensar o adj durante o treino mas o
+   sinal grafal dirigido não é separável do ruído simétrico na arquitectura actual.
+
+### Decision
+
+Implementar arquitectura desacoplada com 4 componentes:
+
+- **A. GraphRelationHead**: infere presença/sinal/lag/confiança de forma dirigida (parâmetros
+  independentes `presence_logit[target,source]`, `sign_logit`, `lag_logit`, `log_confidence`).
+- **B. TemporalDecoder**: backbone Phase 15 congelado, adj=0 sempre.
+- **C. GraphMessageExpert**: MLP pequeno que mapeia mensagens dirigidas para residual clamped
+  (±MAX_RESIDUAL_FRAC=0.15 × |y_temporal|.mean()).
+- **D. UtilityGate**: sigmoid MLP com bias=-5 (fechado na inicialização); inputs sem alvo.
+
+**Loss desacoplada** (pesos congelados antes da execução):
+```
+L_total = L_recon + 0.05·L_presence + 0.02·L_sign + 0.02·L_lag + 0.05·L_utility + 0.01·mean(gate)
+```
+`compute_utility=False` durante eval/test (nunca acede ao alvo).
+
+**3 modos de avaliação:**
+1. `ANALYTIC_GRAPH_ONLY` — AUC dirigido, AUPRC, sign/lag acc, auditoria do prior simétrico.
+2. `TEMPORAL_RECONSTRUCTION` — backbone vs ffill/Ridge, sem grafo.
+3. `GATED_GRAPH_ASSIST` — temporal + residual grafal vs todas as baselines + gate permutado.
+
+**Seeds**: 1000, 2000, 3000. **Máscaras**: MCAR 30%, block 30%. **Épocas**: ≤75.
+
+### Fixtures F1-F6 (testes funcionais)
+
+| Fixture | Propriedade testada |
+|---------|---------------------|
+| F1 | Grafo útil (sector 0→1 weight=0.9); gate deve abrir |
+| F2 | Grafo inútil (AR puro); gate deve fechar |
+| F3 | Relação negativa (weight=-0.8); sinal deve ser recuperado |
+| F4 | Lag-2 (não lag-1); lag_logit deve favorecer lag=2 |
+| F5 | Janela de regime (anos 5-10 activos); gate varia com ano |
+| F6 | Dirigido assimétrico (só 0→1); presence_logit[1,0] >> presence_logit[0,1] |
+
+### Gates D1-D10 (congelados antes da execução)
+
+| Gate | Critério |
+|------|----------|
+| D1 | AUC/AUPRC finito, alvo dirigido, prevalência registada |
+| D2 | AUC≥0.60, AUPRC>prevalência, sign/lag>0.50 |
+| D3 | gate=0 → temporal-only exacto (atol=1e-5) |
+| D4 | gate>0.3 em F1/F3/F4 onde relação ajuda |
+| D5 | gate<0.2 em F2; fecha fora de janela em F5 |
+| D6 | presence_logit[true_dir] >> presence_logit[false_dir] em F6 (diff>0.2) |
+| D7 | Gated nunca >5% pior que temporal-only por cenário |
+| D8 | Gated MAE < graph-always-on AND < graph-permuted |
+| D9 | Comparação honesta registada (ganho não exigido) [informativo] |
+| D10 | Resultados funcionais replicam em ≥2/3 seeds |
+
+### Limitations
+
+- Experimento sintético: não implica generalização para dados reais.
+- A gate não demonstra utilidade preditiva sobre ffill/Ridge globalmente (D7 é segurança
+  mínima, não superioridade).
+- Backbone congelado: a GraphRelationHead não beneficia de fine-tuning conjunto.
+- Nenhuma linguagem causal: AUC/AUPRC medem discriminação de arestas, não causalidade.
+
+**Ficheiros afectados (DEC-053 adições):**
+- `src/modeles/synthetic/phase16_decoupled/__init__.py` (novo)
+- `src/modeles/synthetic/phase16_decoupled/graph_relation_head.py` (novo — componente A)
+- `src/modeles/synthetic/phase16_decoupled/gated_model.py` (novo — componentes B+C+D)
+- `src/modeles/synthetic/phase16_decoupled/loss_functions.py` (novo — loss desacoplada)
+- `src/modeles/synthetic/phase16_decoupled/fixtures.py` (novo — F1-F6)
+- `src/modeles/synthetic/phase16_decoupled/evaluator.py` (novo — 3 modos)
+- `src/modeles/synthetic/phase16_decoupled/gates_dec053.py` (novo — D1-D10 congelados)
+- `src/modeles/synthetic/phase16_decoupled/run_dec053.py` (novo — orquestrador)
+- `src/modeles/synthetic/run_phase15_300ep.py` (fix `_directed_graph_metrics()`)
+- `tests/test_phase16_decoupled.py` (novo — 41 testes)
+- `reports/HERALD_DEC053_DECOUPLED_GRAPH_AUDIT.md` (novo)
+- `CODEX_MEMORY.md` (DEC-053 bullet)
