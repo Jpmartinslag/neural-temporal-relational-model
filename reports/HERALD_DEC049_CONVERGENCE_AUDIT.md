@@ -1,7 +1,14 @@
 # HERALD — DEC-049 Convergence Audit
-**Phase 14 | Date: 2026-06-15 | Status: PILOT_COMPLETE**
+**Phase 14 | Date: 2026-06-15 | Status: PILOT_COMPLETE (SUPERSEDED by DEC-050)**
 **Hypothesis under test: TRAINING_BUDGET_TOO_SMALL (DEC-048)**
 **Decision: PARTIAL — gradient evidence supports hypothesis; reconstruction still below ffill at pilot scale**
+
+> **⚠️ DEC-050 NOTE (2026-06-15):** Three critical bugs were identified in `pretrain_runner.py` AFTER the DEC-049 pilot was run. The DEC-049 pilot results (Sections 3–7) were produced with buggy code:
+> - **Bug A:** TEMPORAL_MASKED computed loss on already-visible cells, not on artificially hidden cells → masked reconstruction was never applied
+> - **Bug B:** `_edge_bce` treated lag-2 edges as negatives → edge AUC biased against lag-2 relations
+> - **Bug C:** Sign BCE used same logit as lag BCE → architecturally invalid; sign prediction removed
+>
+> **Gradient evidence (Section 4) is UNAFFECTED** — grad norms were measured via direct autograd, not via loss magnitude. PARTIAL decision preserved. Full corrected run in DEC-050 output dir: `data/processed/synthetic_benchmark/phase14_convergence_v2/`.
 
 ---
 

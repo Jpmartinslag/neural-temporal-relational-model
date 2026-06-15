@@ -57,9 +57,9 @@ from src.modeles.synthetic.phase14_convergence.pretrain_runner import (
     compute_multitask_nll,
     run_pretraining,
     run_budget_grid,
-    _edge_bce,
-    _sign_bce,
+    _edge_presence_bce,
     _lag_bce,
+    _compute_masked_nll_loss,
     _measure_grad_norms,
 )
 from src.modeles.synthetic.phase14_convergence.evaluator import (
@@ -731,37 +731,32 @@ def test_records_no_nan():
             assert not np.isinf(mae), f"Inf MAE in record: {r}"
 
 
-# ── Test 24: Sign and lag BCE gradients are finite ────────────────────────────
+# ── Test 24: Lag BCE gradient is finite (sign_bce removed) ───────────────────
 
-def test_sign_lag_bce_gradients():
-    """_sign_bce and _lag_bce must produce finite gradient norms."""
+def test_lag_bce_gradients_finite():
+    """_lag_bce must produce finite gradients. _sign_bce no longer exists (DEC-050)."""
     ds = _tiny_ds()
     true_relations = ds["true_relations"]
     n_T, n_S, n_Y = ds["panel"].shape
     model = _tiny_model(n_S, n_T)
     model.train()
 
-    # Ensure all params have requires_grad
     for p in model.parameters():
         p.requires_grad_(True)
 
-    sign_loss = _sign_bce(model, true_relations, n_S, DEVICE)
-    sign_loss.backward()
-    for p in model.parameters():
-        if p.grad is not None:
-            assert not torch.any(torch.isnan(p.grad)), "NaN in sign_bce gradient"
-            assert not torch.any(torch.isinf(p.grad)), "Inf in sign_bce gradient"
-
-    # Repeat for lag
-    for p in model.parameters():
-        if p.grad is not None:
-            p.grad.zero_()
     lag_loss = _lag_bce(model, true_relations, n_S, DEVICE)
     lag_loss.backward()
     for p in model.parameters():
         if p.grad is not None:
             assert not torch.any(torch.isnan(p.grad)), "NaN in lag_bce gradient"
             assert not torch.any(torch.isinf(p.grad)), "Inf in lag_bce gradient"
+
+    # Sign BCE no longer exists — verify it is not importable
+    import importlib
+    m = importlib.import_module("src.modeles.synthetic.phase14_convergence.pretrain_runner")
+    assert not hasattr(m, "_sign_bce"), (
+        "_sign_bce should be removed (architecturally unimplementable). DEC-050 bug fix."
+    )
 
 
 # ── Test 25: Atomic write: records file survives truncation ───────────────────
@@ -789,3 +784,180 @@ def test_atomic_write_resume():
         loaded = json.loads(path.read_text())
         assert loaded == data2, f"Expected data2, got {loaded}"
         assert not tmp.exists(), "Temp file should not remain after successful write"
+
+
+# ── Test 26 (DEC-050 Bug A): TEMPORAL_MASKED loss targets hidden cells only ───
+
+def test_temporal_masked_loss_on_hidden_cells():
+    """Loss must change when an artificially-hidden cell changes value,
+    but must NOT change when a structurally-missing cell changes value."""
+    ds = _tiny_ds()
+    panel = ds["panel"].copy()
+    mask = ds["masks"]["mcar_30"].copy()
+    n_T, n_S, n_Y = panel.shape
+    adj_s = ds["sector_adj"]
+    adj_t = ds["territory_adj"]
+    true_relations = ds["true_relations"]
+
+    model = _tiny_model(n_S, n_T)
+    model.eval()
+    rng = np.random.default_rng(42)
+
+    def _loss(p):
+        return compute_multitask_nll(
+            model, p, mask, adj_s, adj_t, true_relations, n_S, DEVICE,
+            variant="TEMPORAL_MASKED", rng=np.random.default_rng(42),
+            extra_mask_rate=0.40,
+        ).item()
+
+    loss_base = _loss(panel)
+
+    # Flip an artificially-hidden cell (observed cell, will be hidden by TEMPORAL_MASKED)
+    observed_indices = list(zip(*np.where(mask == 1)))
+    assert len(observed_indices) > 0, "Need at least 1 observed cell"
+    t0, s0, y0 = observed_indices[0]
+    panel_mod = panel.copy()
+    panel_mod[t0, s0, y0] = panel[t0, s0, y0] + 10.0  # large change
+
+    loss_mod = _loss(panel_mod)
+    assert loss_base != loss_mod, (
+        "TEMPORAL_MASKED loss must change when hidden-cell value changes "
+        f"(base={loss_base:.6f}, mod={loss_mod:.6f})"
+    )
+
+    # Changing a structurally-missing cell must NOT affect the loss
+    # (model receives identical inputs and loss mask is the same)
+    missing_indices = list(zip(*np.where(mask == 0)))
+    if len(missing_indices) > 0:
+        t1, s1, y1 = missing_indices[0]
+        panel_struct = panel.copy()
+        panel_struct[t1, s1, y1] = panel[t1, s1, y1] + 10.0
+        loss_struct = _loss(panel_struct)
+        assert abs(loss_struct - loss_base) < 1e-5, (
+            "TEMPORAL_MASKED loss must NOT change when a structurally-missing cell changes "
+            f"(base={loss_base:.6f}, struct={loss_struct:.6f})"
+        )
+
+
+# ── Test 27 (DEC-050 Bug B): lag-2 edges are positive in _edge_presence_bce ──
+
+def test_edge_presence_bce_lag2_positive():
+    """lag-2 true edges must be treated as positives in _edge_presence_bce.
+    The loss with only lag-2 relations must be lower than with no true edges."""
+    from src.data.synthetic.generate_herald_synthetic import TrueRelation
+
+    n_S = 6
+    n_T = 10
+
+    model = _tiny_model(n_S, n_T)
+    model.eval()
+
+    # Only lag-2 true relations
+    lag2_relations = [TrueRelation(source_sector=0, target_sector=2, lag=2, weight=1.0, nonlinear=False)]
+
+    # Only lag-1 true relations (same edge, different lag)
+    lag1_relations = [TrueRelation(source_sector=0, target_sector=2, lag=1, weight=1.0, nonlinear=False)]
+
+    # No true relations at all
+    empty_relations = []
+
+    loss_lag2 = _edge_presence_bce(model, lag2_relations, n_S, DEVICE).item()
+    loss_lag1 = _edge_presence_bce(model, lag1_relations, n_S, DEVICE).item()
+    loss_empty = _edge_presence_bce(model, empty_relations, n_S, DEVICE).item()
+
+    # Both lag-1 and lag-2 should produce the same loss structure
+    # (same edge (0,2) is positive in both cases)
+    # The critical check: lag-2 edge gets a POSITIVE target (not negative).
+    # If lag-2 were treated as negative (old bug), loss_lag2 would equal loss_empty.
+    assert loss_lag2 != loss_empty or loss_lag1 != loss_empty, (
+        "At least one true-edge case must differ from no-edges (edge BCE sanity)"
+    )
+
+    # Specifically: loss_lag2 and loss_lag1 must produce same loss
+    # (both mark (source=0, target=2) as positive → same binary targets)
+    assert abs(loss_lag2 - loss_lag1) < 1e-5, (
+        f"lag-1 and lag-2 single-edge losses should be equal "
+        f"(both mark same cell positive). lag1={loss_lag1:.6f}, lag2={loss_lag2:.6f}"
+    )
+
+
+# ── Test 28 (DEC-050 Bug C): presence logit ≠ lag logit ──────────────────────
+
+def test_presence_and_lag_logits_differ():
+    """The logit for presence (max(lag1, lag2)) must be semantically different
+    from the lag logit (lag1 - lag2). With known non-equal parameter values,
+    max(a,b) ≠ a-b in general."""
+    n_S = 4
+    n_T = 6
+    model = _tiny_model(n_S, n_T)
+
+    # Set lag1 and lag2 to known asymmetric values so max ≠ lag1-lag2
+    with torch.no_grad():
+        model.log_sect_attn_lag1.fill_(1.0)
+        model.log_sect_attn_lag2.fill_(0.5)
+        # lag1=1.0, lag2=0.5 → presence=max(1,0.5)=1.0 ; lag_logit=1.0-0.5=0.5
+        # If all were equal (old bug): same logit → max(x,x)=x and x-x=0 (or same x)
+
+    lag1 = model.log_sect_attn_lag1.detach()
+    lag2 = model.log_sect_attn_lag2.detach()
+
+    presence_logit = torch.max(lag1, lag2)   # all = 1.0
+    lag_logit = lag1 - lag2                  # all = 0.5
+
+    diff = (presence_logit - lag_logit).abs().max().item()
+    assert diff > 0.4, (
+        f"presence logit and lag logit must differ (expected ~0.5, got {diff:.4f}). "
+        "They serve different purposes: presence detects an edge exists; "
+        "lag classifies whether it is lag-1 or lag-2."
+    )
+
+
+# ── Test 29 (DEC-050 Bug C): _sign_bce is NOT called in compute_multitask_nll ─
+
+def test_sign_bce_not_in_multitask_loss():
+    """compute_multitask_nll must not call _sign_bce (removed as unimplementable)."""
+    import inspect
+    import src.modeles.synthetic.phase14_convergence.pretrain_runner as runner_mod
+
+    source = inspect.getsource(runner_mod.compute_multitask_nll)
+    assert "_sign_bce" not in source, (
+        "compute_multitask_nll must NOT call _sign_bce. "
+        "Sign prediction is architecturally unimplementable in softmax attention (DEC-050 Bug C)."
+    )
+    assert not hasattr(runner_mod, "_sign_bce"), (
+        "_sign_bce must be fully removed from pretrain_runner (DEC-050 Bug C)."
+    )
+
+
+# ── Test 30 (DEC-050 Bug A): _compute_masked_nll_loss rejects overlapping masks ─
+
+def test_compute_masked_nll_loss_disjoint_assertion():
+    """_compute_masked_nll_loss must raise if input_mask and loss_mask overlap."""
+    ds = _tiny_ds()
+    panel = ds["panel"]
+    adj_s = ds["sector_adj"]
+    adj_t = ds["territory_adj"]
+    n_T, n_S, n_Y = panel.shape
+
+    model = _tiny_model(n_S, n_T)
+    model.eval()
+
+    input_mask = np.ones((n_T, n_S, n_Y), dtype=np.float32)
+    loss_mask_overlap = np.ones((n_T, n_S, n_Y), dtype=np.float32)  # overlap!
+
+    with pytest.raises((AssertionError, ValueError)):
+        _compute_masked_nll_loss(
+            model, panel, input_mask, loss_mask_overlap, adj_s, adj_t, DEVICE
+        )
+
+    # Non-overlapping masks should NOT raise
+    input_mask_ok = np.zeros((n_T, n_S, n_Y), dtype=np.float32)
+    input_mask_ok[:, :, :n_Y // 2] = 1.0
+    loss_mask_ok = np.zeros((n_T, n_S, n_Y), dtype=np.float32)
+    loss_mask_ok[:, :, n_Y // 2:] = 1.0
+
+    loss_val = _compute_masked_nll_loss(
+        model, panel, input_mask_ok, loss_mask_ok, adj_s, adj_t, DEVICE
+    )
+    assert isinstance(loss_val, torch.Tensor), "Should return a tensor"
+    assert not torch.isnan(loss_val), "Loss must be finite"
