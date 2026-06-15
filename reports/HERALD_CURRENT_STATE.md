@@ -123,6 +123,23 @@
 
 ---
 
+## Phase 13 — DEC-048 Failure Cause Diagnostic (DEC-048)
+
+**Status:** PILOT_COMPLETE (2026-06-15). Decision: TRAINING_BUDGET_TOO_SMALL.
+
+- OFAT design: 4 axes (D/M/L/S) + functional scenario test + gradient diagnostics + masked pretraining
+- 6/10 gates PASS. 21 tests PASS. Runtime: 79s.
+- C2 PASS: Oracle beats ffill by 27% in functional scenario (ratio=0.732) — architecture NOT inadequate
+- Attention gradient 400x smaller than MLP under NLL — flat gradient landscape for graph learning
+- GRAPH_MASKED_MULTITASK pretraining +1.1% MAE benefit vs NO_PRETRAINING (25 datasets, 50 epochs)
+- S3 (structural_break_year=8) causes catastrophic degradation (ratio=1.45)
+- Package: `src/modeles/synthetic/phase13_diagnostic/`
+- Report: `reports/HERALD_DEC048_FAILURE_CAUSE_DIAGNOSTIC.md`
+
+**Next:** DEC-049 — Full-scale pretraining (n_epochs=150, 50 D2 datasets, GRAPH_MASKED_MULTITASK), then rerun DEC-047 few-shot strategies.
+
+---
+
 ## Reference Documents
 
 - Direction and claims: `reports/HERALD_PROJECT_CHARTER.md`
