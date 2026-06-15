@@ -226,38 +226,102 @@ def _permuted_adj(adj: np.ndarray, rng: np.random.Generator) -> np.ndarray:
     return adj[np.ix_(perm, perm)]
 
 
-def _edge_auc(model: HERALDGraphImputerLagged, true_relations: list, device: str) -> float:
-    """Edge presence AUC from model attention.
+def _directed_graph_metrics(
+    model: HERALDGraphImputerLagged,
+    true_relations: list,
+    heads_path: Path | None,
+    sector_adj: np.ndarray,
+) -> dict:
+    """Full directed graph metrics.
 
-    true_relations is a list[TrueRelation] with .source_sector, .target_sector attributes.
-    Builds a binary presence matrix then computes AUC vs model's max(lag1, lag2) attention.
+    Uses directed presence[target,source]=1 iff TrueRelation(source,target) exists.
+    Does NOT use the symmetrised sector_adj as ground truth.
+    Returns AUC/AUPRC per lag, prevalence, false-reverse count, sign/lag accuracy.
     """
-    try:
-        lag1 = model.log_sect_attn_lag1.detach().cpu().numpy()
-        lag2 = model.log_sect_attn_lag2.detach().cpu().numpy()
-        scores = np.maximum(lag1, lag2)
-        n_S = scores.shape[0]
+    from sklearn.metrics import roc_auc_score, average_precision_score
 
-        # Build binary presence adj from list[TrueRelation]
-        presence = np.zeros((n_S, n_S), dtype=int)
-        for r in true_relations:
-            presence[r.source_sector, r.target_sector] = 1
+    n_S = model.log_sect_attn_lag1.shape[0]
+    lag1_scores = model.log_sect_attn_lag1.detach().cpu().numpy()
+    lag2_scores = model.log_sect_attn_lag2.detach().cpu().numpy()
+    combined = np.maximum(lag1_scores, lag2_scores)
 
-        mask_diag = ~np.eye(n_S, dtype=bool)
-        y_score = scores[mask_diag]
-        y_true = presence[mask_diag]
+    # Directed presence matrices [target, source]
+    presence = np.zeros((n_S, n_S), dtype=int)
+    lag1_pres = np.zeros((n_S, n_S), dtype=int)
+    lag2_pres = np.zeros((n_S, n_S), dtype=int)
+    sign_gt = np.full((n_S, n_S), -1.0)   # -1 = unknown pair
+    lag_gt = np.full((n_S, n_S), -1.0)
 
-        if len(np.unique(y_true)) < 2:
+    for r in true_relations:
+        s, t = r.source_sector, r.target_sector
+        if 0 <= s < n_S and 0 <= t < n_S and s != t:
+            presence[t, s] = 1
+            if r.lag == 1:
+                lag1_pres[t, s] = 1
+            else:
+                lag2_pres[t, s] = 1
+            sign_gt[t, s] = 1.0 if r.weight > 0 else 0.0
+            lag_gt[t, s] = 1.0 if r.lag == 1 else 0.0
+
+    # False reverses: pairs where directed t→s exists but not s→t (symmetrisation adds these)
+    n_false_rev = int(sum(
+        1 for t in range(n_S) for s in range(n_S)
+        if t != s and presence[s, t] == 0 and presence[t, s] == 1
+    ))
+    # Sector_adj false entries: edges in adj but not in directed presence
+    adj_false = int(((sector_adj > 0) & (presence == 0)).sum()) if sector_adj is not None else -1
+
+    mask_diag = ~np.eye(n_S, dtype=bool)
+
+    def _auc(y_t, y_s):
+        if len(np.unique(y_t)) < 2:
             return float("nan")
-        return float(roc_auc_score(y_true, y_score))
-    except Exception:
-        return float("nan")
+        return float(roc_auc_score(y_t, y_s))
+
+    def _auprc(y_t, y_s):
+        if y_t.sum() == 0:
+            return float("nan")
+        return float(average_precision_score(y_t, y_s))
+
+    metrics = {
+        "edge_auc_directed": _auc(presence[mask_diag], combined[mask_diag]),
+        "edge_auprc_directed": _auprc(presence[mask_diag], combined[mask_diag]),
+        "prevalence": float(presence[mask_diag].mean()),
+        "edge_auc_lag1": _auc(lag1_pres[mask_diag], lag1_scores[mask_diag]),
+        "edge_auc_lag2": _auc(lag2_pres[mask_diag], lag2_scores[mask_diag]),
+        "n_true_directed": int(presence.sum()),
+        "n_false_reverses_in_symmetric_adj": n_false_rev,
+        "n_adj_false_entries": adj_false,
+        "sign_acc": float("nan"),
+        "lag_acc": float("nan"),
+    }
+
+    # Sign and lag accuracy from auxiliary heads if available
+    if heads_path is not None and heads_path.exists():
+        try:
+            from src.modeles.synthetic.phase15_stable_objective.graph_heads import GraphAuxHeads
+            heads = GraphAuxHeads(n_S)
+            state = torch.load(str(heads_path), map_location="cpu", weights_only=True)
+            heads.load_state_dict(state)
+            known_s = sign_gt >= 0
+            known_l = lag_gt >= 0
+            if known_s.any():
+                sign_pred = (heads.sign_logit.detach().numpy() > 0).astype(float)
+                metrics["sign_acc"] = float((sign_pred[known_s] == sign_gt[known_s]).mean())
+            if known_l.any():
+                lag_pred = (heads.lag_logit.detach().numpy() > 0).astype(float)
+                metrics["lag_acc"] = float((lag_pred[known_l] == lag_gt[known_l]).mean())
+        except Exception:
+            pass
+
+    return metrics
 
 
 def evaluate_300ep(
     variant: str,
     ckpt_path: Path,
     device: str,
+    heads_path: Path | None = None,
 ) -> list[dict]:
     """
     Evaluate a 300-epoch checkpoint zero-shot on NOVEL_TEST_SCENARIOS × NOVEL_TEST_SEEDS × NOVEL_TEST_MASKS.
@@ -312,8 +376,8 @@ def evaluate_300ep(
                 pm_perm, _ = _predict(model, panel, obs_mask, perm_s, perm_t, device)
                 mae_permuted = float(np.abs(pm_perm[cells] - panel[cells]).mean())
 
-                # Edge AUC
-                edge_auc = _edge_auc(model, true_relations, device)
+                # Directed graph metrics
+                gm = _directed_graph_metrics(model, true_relations, heads_path, adj_s)
 
                 results.append({
                     "variant": variant,
@@ -327,7 +391,7 @@ def evaluate_300ep(
                     "mae_permuted": mae_permuted,
                     "log_sigma_min": ls_min,
                     "log_sigma_max": ls_max,
-                    "edge_auc": edge_auc,
+                    **gm,
                     "beats_ffill": mae < mae_ffill,
                     "beats_nogr": mae < mae_nogr,
                     "beats_permuted": mae < mae_permuted,
@@ -432,7 +496,8 @@ def main(args: argparse.Namespace) -> None:
             print(f"  SKIP {variant}: checkpoint not found")
             continue
         print(f"  {variant}...")
-        results = evaluate_300ep(variant, ckpt_path, device)
+        hp = Path(manifests.get(f"{variant}_ep300", {}).get("heads_path") or "")
+        results = evaluate_300ep(variant, ckpt_path, device, heads_path=hp if hp.exists() else None)
         all_results.extend(results)
         print(f"    {len(results)} results")
 
