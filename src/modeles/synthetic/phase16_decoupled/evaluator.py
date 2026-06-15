@@ -191,13 +191,14 @@ def evaluate_fixture_results(
     result: dict = {}
 
     # D3: gate=0 identity
-    model.gate.net[-2].bias.fill_(-100.0)   # force gate ≈ 0
+    with torch.no_grad():
+        model.gate.net[-2].bias.fill_(-100.0)   # force gate ≈ 0
     y_force_closed, _ = model.predict_gated(panel, obs_mask, device)
     y_temporal = model.predict_temporal_only(panel, obs_mask, device)
     max_delta = float(np.abs(y_force_closed - y_temporal).max())
     result["gate_zero_identity_max_delta"] = max_delta
-    # Restore default closed initialisation
-    model.gate.net[-2].bias.fill_(-5.0)
+    with torch.no_grad():
+        model.gate.net[-2].bias.fill_(-5.0)   # restore
 
     # Gate statistics after proper training
     gate_stats = model.predict_gate_stats(panel, obs_mask, device)

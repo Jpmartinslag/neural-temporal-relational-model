@@ -1,0 +1,344 @@
+{
+  "experiment": "DEC-053",
+  "n_epochs_max": 75,
+  "seeds": [
+    1000,
+    2000,
+    3000
+  ],
+  "mask_keys": [
+    "mcar",
+    "block"
+  ],
+  "n_sectors": 9,
+  "n_territories": 30,
+  "backbone_path": "data/processed/synthetic_benchmark/phase15_stable_objective/checkpoints/model_TEMPORAL_MASKED_NLL_CLAMPED_ep75.pt",
+  "elapsed_seconds": 3.964411973953247,
+  "all_results": [
+    {
+      "scenario": "standard",
+      "mask_key": "mcar",
+      "seed": 1000,
+      "edge_auc_directed": 1.0,
+      "edge_auprc_directed": 1.0,
+      "prevalence": 0.05555555555555555,
+      "edge_auc_lag1": 1.0,
+      "edge_auc_lag2": 1.0,
+      "n_true_directed": 4,
+      "n_adj_total_edges": 8,
+      "n_adj_false_edges": 4,
+      "n_false_reverses": 4,
+      "sign_acc": 1.0,
+      "lag_acc": 1.0,
+      "mae_temporal": 0.1754969269746179,
+      "mae_ffill": 0.19693610132575526,
+      "mae_ridge": 0.2027546622072173,
+      "n_eval_cells": 1611,
+      "mae_gated": 0.1754958154089984,
+      "mae_graph_always": 0.17540314103641835,
+      "mae_permuted": 0.17549581546255189,
+      "gate_mean": 0.004625799600034952,
+      "gate_std": 0.0008152030641213059,
+      "gate_max": 0.0052726985886693,
+      "gate_frac_above_half": 0.0,
+      "n_epochs_trained": 75,
+      "final_loss": 0.1395290642976761
+    },
+    {
+      "scenario": "standard",
+      "mask_key": "block",
+      "seed": 1000,
+      "edge_auc_directed": 1.0,
+      "edge_auprc_directed": 1.0,
+      "prevalence": 0.05555555555555555,
+      "edge_auc_lag1": 1.0,
+      "edge_auc_lag2": 1.0,
+      "n_true_directed": 4,
+      "n_adj_total_edges": 8,
+      "n_adj_false_edges": 4,
+      "n_false_reverses": 4,
+      "sign_acc": 1.0,
+      "lag_acc": 1.0,
+      "mae_temporal": 0.1953026127213568,
+      "mae_ffill": 0.2398841895968075,
+      "mae_ridge": 0.1993838977799656,
+      "n_eval_cells": 1620,
+      "mae_gated": 0.19530109630047685,
+      "mae_graph_always": 0.19508719264780094,
+      "mae_permuted": 0.19530109656863628,
+      "gate_mean": 0.004292737226933241,
+      "gate_std": 0.0003834021626971662,
+      "gate_max": 0.004599709063768387,
+      "gate_frac_above_half": 0.0,
+      "n_epochs_trained": 75,
+      "final_loss": 0.1503629982471466
+    },
+    {
+      "scenario": "standard",
+      "mask_key": "mcar",
+      "seed": 2000,
+      "edge_auc_directed": 1.0,
+      "edge_auprc_directed": 1.0,
+      "prevalence": 0.05555555555555555,
+      "edge_auc_lag1": 1.0,
+      "edge_auc_lag2": 1.0,
+      "n_true_directed": 4,
+      "n_adj_total_edges": 8,
+      "n_adj_false_edges": 4,
+      "n_false_reverses": 4,
+      "sign_acc": 1.0,
+      "lag_acc": 1.0,
+      "mae_temporal": 0.175741560464893,
+      "mae_ffill": 0.20164357619394652,
+      "mae_ridge": 0.18855165091910775,
+      "n_eval_cells": 1620,
+      "mae_gated": 0.17574071636181832,
+      "mae_graph_always": 0.17578396773090446,
+      "mae_permuted": 0.1757407161958052,
+      "gate_mean": 0.00428870739415288,
+      "gate_std": 0.0004075104952789843,
+      "gate_max": 0.0046184784732759,
+      "gate_frac_above_half": 0.0,
+      "n_epochs_trained": 75,
+      "final_loss": 0.14505819976329803
+    },
+    {
+      "scenario": "standard",
+      "mask_key": "block",
+      "seed": 2000,
+      "edge_auc_directed": 1.0,
+      "edge_auprc_directed": 1.0,
+      "prevalence": 0.05555555555555555,
+      "edge_auc_lag1": 1.0,
+      "edge_auc_lag2": 1.0,
+      "n_true_directed": 4,
+      "n_adj_total_edges": 8,
+      "n_adj_false_edges": 4,
+      "n_false_reverses": 4,
+      "sign_acc": 1.0,
+      "lag_acc": 1.0,
+      "mae_temporal": 0.18995890603811377,
+      "mae_ffill": 0.24513498850963075,
+      "mae_ridge": 0.19244813759420526,
+      "n_eval_cells": 1620,
+      "mae_gated": 0.18995756731372926,
+      "mae_graph_always": 0.19019186225485088,
+      "mae_permuted": 0.1899575673770705,
+      "gate_mean": 0.0068528493866324425,
+      "gate_std": 0.00405746279284358,
+      "gate_max": 0.1548164337873459,
+      "gate_frac_above_half": 0.0,
+      "n_epochs_trained": 75,
+      "final_loss": 0.15480822324752808
+    },
+    {
+      "scenario": "standard",
+      "mask_key": "mcar",
+      "seed": 3000,
+      "edge_auc_directed": 1.0,
+      "edge_auprc_directed": 1.0,
+      "prevalence": 0.05555555555555555,
+      "edge_auc_lag1": 1.0,
+      "edge_auc_lag2": 1.0,
+      "n_true_directed": 4,
+      "n_adj_total_edges": 8,
+      "n_adj_false_edges": 4,
+      "n_false_reverses": 4,
+      "sign_acc": 1.0,
+      "lag_acc": 1.0,
+      "mae_temporal": 0.17363764572125648,
+      "mae_ffill": 0.18813951026373157,
+      "mae_ridge": 0.19741936509821512,
+      "n_eval_cells": 1603,
+      "mae_gated": 0.17363516980669155,
+      "mae_graph_always": 0.17341770496375683,
+      "mae_permuted": 0.17363516978842677,
+      "gate_mean": 0.006739639677107334,
+      "gate_std": 0.0020944103598594666,
+      "gate_max": 0.0501805804669857,
+      "gate_frac_above_half": 0.0,
+      "n_epochs_trained": 75,
+      "final_loss": 0.13726508617401123
+    },
+    {
+      "scenario": "standard",
+      "mask_key": "block",
+      "seed": 3000,
+      "edge_auc_directed": 1.0,
+      "edge_auprc_directed": 1.0,
+      "prevalence": 0.05555555555555555,
+      "edge_auc_lag1": 1.0,
+      "edge_auc_lag2": 1.0,
+      "n_true_directed": 4,
+      "n_adj_total_edges": 8,
+      "n_adj_false_edges": 4,
+      "n_false_reverses": 4,
+      "sign_acc": 1.0,
+      "lag_acc": 1.0,
+      "mae_temporal": 0.1786711987390659,
+      "mae_ffill": 0.21927717408204175,
+      "mae_ridge": 0.19010727010511747,
+      "n_eval_cells": 1620,
+      "mae_gated": 0.17866927055107096,
+      "mae_graph_always": 0.17848805896133624,
+      "mae_permuted": 0.17866927098539848,
+      "gate_mean": 0.005799118895083666,
+      "gate_std": 0.0004005510709248483,
+      "gate_max": 0.014103624038398266,
+      "gate_frac_above_half": 0.0,
+      "n_epochs_trained": 75,
+      "final_loss": 0.14100895822048187
+    }
+  ],
+  "fixture_results": {
+    "F1_useful_graph": {
+      "gate_zero_identity_max_delta": 0.0,
+      "gate_mean": 0.0050002820789813995,
+      "gate_median": 0.004899066872894764,
+      "gate_std": 0.0005541377468034625,
+      "gate_frac_above_half": 0.0,
+      "gate_max": 0.00864209420979023,
+      "gate_min": 0.004260432906448841
+    },
+    "F2_useless_graph": {
+      "gate_zero_identity_max_delta": 0.0,
+      "gate_mean": 0.007593142334371805,
+      "gate_median": 0.007589586079120636,
+      "gate_std": 0.00011270842514932156,
+      "gate_frac_above_half": 0.0,
+      "gate_max": 0.007835229858756065,
+      "gate_min": 0.0071726092137396336
+    },
+    "F3_negative_relation": {
+      "gate_zero_identity_max_delta": 0.0,
+      "gate_mean": 0.007387034595012665,
+      "gate_median": 0.0073875184170901775,
+      "gate_std": 7.4708295869641e-05,
+      "gate_frac_above_half": 0.0,
+      "gate_max": 0.00758512644097209,
+      "gate_min": 0.007061648182570934
+    },
+    "F4_lag2_relation": {
+      "gate_zero_identity_max_delta": 0.0,
+      "gate_mean": 0.007453911937773228,
+      "gate_median": 0.007445193827152252,
+      "gate_std": 7.698101399000734e-05,
+      "gate_frac_above_half": 0.0,
+      "gate_max": 0.007628328632563353,
+      "gate_min": 0.007267114240676165
+    },
+    "F5_regime_window": {
+      "gate_zero_identity_max_delta": 0.0,
+      "gate_mean": 0.007423923350870609,
+      "gate_median": 0.007408531382679939,
+      "gate_std": 7.308810018002987e-05,
+      "gate_frac_above_half": 0.0,
+      "gate_max": 0.007642481010407209,
+      "gate_min": 0.007258248049765825,
+      "gate_inside_window_mean": 0.007416312117129564,
+      "gate_outside_window_mean": 0.007426637224853039
+    },
+    "F6_asymmetric_directed": {
+      "gate_zero_identity_max_delta": 0.0,
+      "gate_mean": 0.007711989805102348,
+      "gate_median": 0.007743228692561388,
+      "gate_std": 0.0001188772585010156,
+      "gate_frac_above_half": 0.0,
+      "gate_max": 0.007973946630954742,
+      "gate_min": 0.0073768505826592445,
+      "presence_logit_true_minus_false": 0.14914393424987793
+    },
+    "gate_zero_identity_max_delta": 0.0
+  },
+  "gates": {
+    "D1": {
+      "verdict": "PASS",
+      "description": "Metric correctness: AUC/AUPRC finite, directed target",
+      "evidence": {
+        "n_issues": 0.0,
+        "examples": []
+      }
+    },
+    "D2": {
+      "verdict": "PASS",
+      "description": "Analytic relation recovery: AUC\u22650.60, AUPRC>prev, sign/lag>0.50",
+      "evidence": {
+        "mean_auc": 1.0,
+        "frac_auprc_beats_prev": 1.0,
+        "mean_sign_acc": 1.0,
+        "mean_lag_acc": 1.0
+      }
+    },
+    "D3": {
+      "verdict": "PASS",
+      "description": "Temporal fallback identity: gate=0 \u2192 temporal-only (atol=1e-5)",
+      "evidence": {
+        "max_delta": 0.0
+      }
+    },
+    "D4": {
+      "verdict": "FAIL",
+      "description": "Useful-graph opening: gate>0.3 in F1/F3/F4",
+      "evidence": {
+        "f1_gate": 0.0050002820789813995,
+        "f3_gate": 0.007387034595012665,
+        "f4_gate": 0.007453911937773228
+      }
+    },
+    "D5": {
+      "verdict": "PASS",
+      "description": "Useless-graph closing: gate<0.2 in F2, closed outside F5 window",
+      "evidence": {
+        "f2_gate": 0.007593142334371805,
+        "f5_outside_gate": 0.007426637224853039,
+        "issues": []
+      }
+    },
+    "D6": {
+      "verdict": "FAIL",
+      "description": "Directed specificity: A\u2192B separated from B\u2192A in F6",
+      "evidence": {
+        "presence_logit_diff": 0.14914393424987793
+      }
+    },
+    "D7": {
+      "verdict": "PASS",
+      "description": "Predictive safety: gated never >5% worse than temporal-only",
+      "evidence": {
+        "n_violations": 0.0,
+        "examples": []
+      }
+    },
+    "D8": {
+      "verdict": "FAIL",
+      "description": "Selective utility: gated < graph-always and < graph-permuted",
+      "evidence": {
+        "mae_gated": 0.1814666059571309,
+        "mae_graph_always": 0.1813953212658446,
+        "mae_permuted": 0.1814666060629815
+      }
+    },
+    "D9": {
+      "verdict": "PASS",
+      "description": "Realistic reconstruction: honest comparison reported",
+      "evidence": {
+        "mean_maes": {
+          "temporal": 0.18146814177655066,
+          "gated": 0.1814666059571309,
+          "ffill": 0.21516925666198558
+        },
+        "note": "gain over ffill/temporal not required for ANALYTIC layer"
+      }
+    },
+    "D10": {
+      "verdict": "PASS",
+      "description": "Replication: safety holds in \u22652/3 seeds across scenarios",
+      "evidence": {
+        "n_groups": 2.0,
+        "n_replicate": 2.0,
+        "frac": 1.0
+      }
+    }
+  },
+  "gate_report": "| Gate | Description | Verdict |\n|------|-------------|---------|\n| D1 | Metric correctness: AUC/AUPRC finite, directed target | \u2713 PASS |\n| D10 | Replication: safety holds in \u22652/3 seeds across scenarios | \u2713 PASS |\n| D2 | Analytic relation recovery: AUC\u22650.60, AUPRC>prev, sign/lag>0.50 | \u2713 PASS |\n| D3 | Temporal fallback identity: gate=0 \u2192 temporal-only (atol=1e-5) | \u2713 PASS |\n| D4 | Useful-graph opening: gate>0.3 in F1/F3/F4 | \u2717 FAIL |\n| D5 | Useless-graph closing: gate<0.2 in F2, closed outside F5 window | \u2713 PASS |\n| D6 | Directed specificity: A\u2192B separated from B\u2192A in F6 | \u2717 FAIL |\n| D7 | Predictive safety: gated never >5% worse than temporal-only | \u2713 PASS |\n| D8 | Selective utility: gated < graph-always and < graph-permuted | \u2717 FAIL |\n| D9 | Realistic reconstruction: honest comparison reported | \u2713 PASS |"
+}

@@ -35,7 +35,8 @@ import torch.optim as optim
 
 from src.data.synthetic.generate_herald_synthetic import (
     TrueRelation,
-    generate_herald_synthetic,
+    SyntheticConfig,
+    generate_dataset,
 )
 from src.modeles.synthetic.herald_graph_imputer_lagged import HERALDGraphImputerLagged
 from src.modeles.synthetic.phase16_decoupled.evaluator import (
@@ -91,32 +92,35 @@ def _make_block_mask(
     return mask
 
 
-def _gen_dataset(seed: int) -> dict:
-    """Generate one synthetic panel with true_relations."""
-    data = generate_herald_synthetic(seed=seed, n_territories=8, n_sectors=N_SECTORS,
-                                     n_years=20, frac_nonlinear=0.5)
-    return data
+def _gen_dataset(seed: int, n_sectors: int, n_territories: int) -> dict:
+    """Generate one synthetic panel matching backbone dimensions."""
+    cfg = SyntheticConfig(seed=seed, n_territories=n_territories,
+                          n_sectors=n_sectors, n_years=20, frac_nonlinear=0.5)
+    return generate_dataset(cfg)
 
 
 # ── Backbone loading ──────────────────────────────────────────────────────────
 
-def _load_backbone(backbone_path: Path, n_sectors: int) -> HERALDGraphImputerLagged:
+def _load_backbone(backbone_path: Path) -> tuple[HERALDGraphImputerLagged, int, int]:
+    """Load backbone; infer n_sectors and n_territories from state dict."""
     state = torch.load(backbone_path, map_location="cpu", weights_only=False)
     if isinstance(state, dict) and "model_state_dict" in state:
         state = state["model_state_dict"]
-    n_S = n_sectors
-    # Infer hyperparameters from checkpoint keys
-    hidden = None
-    for k, v in state.items():
-        if "sector_attention.0.weight" in k:
-            hidden = v.shape[0]
-            break
-    if hidden is None:
-        hidden = 64   # fallback
-    model = HERALDGraphImputerLagged(n_sectors=n_S, hidden_dim=hidden)
-    model.load_state_dict(state, strict=False)
+    # Infer dimensions from parameter shapes
+    n_S = state["log_sect_attn_lag1"].shape[0]
+    n_T = state["log_terr_attn"].shape[0]
+    hidden = state["net.0.weight"].shape[0]
+    model = HERALDGraphImputerLagged(n_sectors=n_S, n_territories=n_T, hidden_dim=hidden)
+    model.load_state_dict(state)
     model.eval()
-    return model
+    return model, n_S, n_T
+
+
+def _fresh_backbone(n_sectors: int, n_territories: int) -> HERALDGraphImputerLagged:
+    """Create a randomly-initialised backbone for fixture testing."""
+    m = HERALDGraphImputerLagged(n_sectors=n_sectors, n_territories=n_territories, hidden_dim=32)
+    m.eval()
+    return m
 
 
 # ── Training loop ─────────────────────────────────────────────────────────────
@@ -206,18 +210,21 @@ def _eval_seed_mask(
 
 # ── Fixture evaluation (D3-D6) ────────────────────────────────────────────────
 
-def _eval_fixtures(
-    backbone: HERALDGraphImputerLagged,
-    n_sectors_fixture: int,
-    device: str,
-) -> dict:
+def _eval_fixtures(device: str) -> dict:
+    """
+    Run fixtures F1-F6. Uses a fresh backbone per fixture (fixture panels have
+    n_sectors=3 / n_territories=5, different from the pre-trained backbone).
+    Structural properties (gate opening/closing, logit direction) do not depend
+    on pre-trained temporal quality.
+    """
     fixture_results: dict = {}
     d3_deltas = []
 
     for make_fn in ALL_FIXTURES:
         panel, obs_mask, true_relations, sector_adj, territory_adj, name = make_fn()
-        n_S_fix = panel.shape[1]
-        fix_model = GatedGraphModel(backbone, n_S_fix, max_residual_frac=0.15).to(device)
+        n_S_fix, n_T_fix = panel.shape[1], panel.shape[0]
+        fix_backbone = _fresh_backbone(n_S_fix, n_T_fix)
+        fix_model = GatedGraphModel(fix_backbone, n_S_fix, max_residual_frac=0.15).to(device)
         _train_one(fix_model, panel, obs_mask, true_relations, device,
                    max_epochs=MAX_EPOCHS, seed=42)
         res = evaluate_fixture_results(
@@ -240,20 +247,19 @@ def main(args: argparse.Namespace) -> None:
     out_dir = Path(args.out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     device = DEVICE
-    global N_SECTORS
-    N_SECTORS = args.n_sectors
 
     backbone_path = Path(args.backbone_path)
     log.info(f"Loading backbone from {backbone_path}")
-    backbone = _load_backbone(backbone_path, args.n_sectors)
+    backbone, n_S, n_T = _load_backbone(backbone_path)
     backbone.eval()
+    log.info(f"Backbone: n_sectors={n_S}, n_territories={n_T}")
 
     all_results = []
     t0 = time.time()
 
     for seed in SEEDS:
         log.info(f"Generating synthetic data seed={seed}")
-        data = _gen_dataset(seed)
+        data = _gen_dataset(seed, n_sectors=n_S, n_territories=n_T)
         panel: np.ndarray = data["panel"]
         true_relations: list = data["true_relations"]
         sector_adj: np.ndarray = data.get("sector_adj")
@@ -265,7 +271,7 @@ def main(args: argparse.Namespace) -> None:
             else:
                 obs_mask = _make_block_mask(panel, seed)
 
-            model = GatedGraphModel(backbone, args.n_sectors).to(device)
+            model = GatedGraphModel(backbone, n_S).to(device)
             history = _train_one(model, panel, obs_mask, true_relations, device,
                                   max_epochs=MAX_EPOCHS, seed=seed)
 
@@ -282,7 +288,7 @@ def main(args: argparse.Namespace) -> None:
     elapsed = time.time() - t0
     log.info(f"Main experiment done in {elapsed:.1f}s. Running fixture tests...")
 
-    fixture_results = _eval_fixtures(backbone, args.n_sectors, device)
+    fixture_results = _eval_fixtures(device)
 
     eval_results = {"all_results": all_results}
     gates = evaluate_all_gates(eval_results, fixture_results)
@@ -308,7 +314,8 @@ def main(args: argparse.Namespace) -> None:
         "n_epochs_max": MAX_EPOCHS,
         "seeds": SEEDS,
         "mask_keys": MASK_KEYS,
-        "n_sectors": args.n_sectors,
+        "n_sectors": n_S,
+        "n_territories": n_T,
         "backbone_path": str(backbone_path),
         "elapsed_seconds": elapsed,
         "all_results": all_results,
@@ -332,8 +339,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="DEC-053 decoupled graph experiment")
     parser.add_argument("--backbone_path", required=True,
                         help="Path to Phase 15 model checkpoint (.pt)")
-    parser.add_argument("--n_sectors", type=int, default=5,
-                        help="Number of sectors in backbone (default: 5)")
+    parser.add_argument("--n_sectors", type=int, default=None,
+                        help="Ignored — n_sectors is inferred from the backbone checkpoint")
     parser.add_argument("--out_dir", default="data/processed/phase16_dec053",
                         help="Output directory for results")
     main(parser.parse_args())

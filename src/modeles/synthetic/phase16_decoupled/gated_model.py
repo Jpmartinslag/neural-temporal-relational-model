@@ -118,6 +118,13 @@ class GatedGraphModel(nn.Module):
         self.graph_expert = GraphMessageExpert()
         self.gate = UtilityGate()
 
+    def train(self, mode: bool = True):
+        super().train(mode)
+        # Backbone always stays in eval: dropout must be off so that two calls
+        # to _temporal_pred return identical outputs (required by D3 identity test).
+        self.backbone.eval()
+        return self
+
     # ── Core forward ──────────────────────────────────────────────────────────
 
     def _temporal_pred(

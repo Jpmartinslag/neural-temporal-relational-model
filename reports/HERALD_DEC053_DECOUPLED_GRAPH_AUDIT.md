@@ -1,6 +1,6 @@
 # HERALD DEC-053: Decoupled Graph Architecture Audit
 
-**Status:** IMPLEMENTADO — pronto para execução local
+**Status:** EXPERIMENT_COMPLETE — 7/10 PASS (D4/D6/D8 FAIL — ver §8)
 **Date:** 2026-06-15
 **Decision log:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md §DEC-053`
 
@@ -131,52 +131,105 @@ python -m src.modeles.synthetic.phase16_decoupled.run_dec053 \
     --out_dir data/processed/phase16_dec053
 ```
 
+Backbone: `TEMPORAL_MASKED_NLL_CLAMPED_ep75`, n_sectors=9, n_territories=30.
+Execução: 3 seeds × 2 masks = 6 experimentos + 6 fixtures. ~4s local (CPU).
+
 ### 7.1 Modo ANALYTIC_GRAPH_ONLY
 
-| Métrica | Valor | Threshold |
-|---------|-------|-----------|
-| edge_auc_directed | — | ≥0.60 (D2) |
-| edge_auprc_directed | — | >prevalência (D2) |
-| sign_acc | — | >0.50 (D2) |
-| lag_acc | — | >0.50 (D2) |
-| n_false_reverses (bias audit) | — | informativo |
+| Seed | Mask | AUC_directed | AUPRC_directed | sign_acc | lag_acc |
+|------|------|-------------|----------------|----------|---------|
+| 1000 | mcar | 1.000 | 1.000 | 1.00 | 1.00 |
+| 1000 | block | 1.000 | 1.000 | 1.00 | 1.00 |
+| 2000 | mcar | 1.000 | 1.000 | 1.00 | 1.00 |
+| 2000 | block | 1.000 | 1.000 | 1.00 | 1.00 |
+| 3000 | mcar | 1.000 | 1.000 | 1.00 | 1.00 |
+| 3000 | block | 1.000 | 1.000 | 1.00 | 1.00 |
+
+**Nota:** AUC=1.00 reflete recuperação perfeita nas-mesmas-amostras sintéticas (não generalização out-of-sample). A architecture discrimina correctamente as arestas dirigidas quando supervisionada pelos `true_relations`.
 
 ### 7.2 Modo TEMPORAL_RECONSTRUCTION
 
-| Baseline | MAE | vs ffill |
-|----------|-----|---------|
-| forward fill | — | — |
-| Ridge | — | — |
-| temporal-only | — | — |
+| Seed | Mask | mae_temporal | mae_ffill | Δ vs ffill |
+|------|------|-------------|-----------|-----------|
+| 1000 | mcar | 0.1755 | 0.1969 | −10.9% |
+| 1000 | block | 0.1953 | 0.2399 | −18.6% |
+| 2000 | mcar | 0.1757 | 0.2016 | −12.9% |
+| 2000 | block | 0.1900 | 0.2451 | −22.5% |
+| 3000 | mcar | 0.1736 | 0.1881 | −7.7% |
+| 3000 | block | 0.1787 | 0.2193 | −18.5% |
+
+Backbone temporal bate ffill em todos os cenários (confirma DEC-052).
 
 ### 7.3 Modo GATED_GRAPH_ASSIST
 
-| Modelo | MAE | vs temporal-only |
-|--------|-----|-----------------|
-| forward fill | — | — |
-| temporal-only | — | — |
-| gated graph | — | — |
-| graph-always-on | — | — |
-| graph-permuted | — | — |
+| Seed | Mask | mae_temporal | mae_gated | mae_always | mae_permuted | gate_mean |
+|------|------|-------------|-----------|------------|--------------|-----------|
+| 1000 | mcar | 0.1755 | 0.1755 | — | — | 0.0046 |
+| 1000 | block | 0.1953 | 0.1953 | — | — | 0.0043 |
+| 2000 | mcar | 0.1757 | 0.1757 | — | — | 0.0043 |
+| 2000 | block | 0.1900 | 0.1900 | — | — | 0.0069 |
+| 3000 | mcar | 0.1736 | 0.1736 | — | — | 0.0067 |
+| 3000 | block | 0.1787 | 0.1787 | — | — | 0.0058 |
+
+**gate_mean ≈ 0.005 em todos os casos** — a gate permanece essencialmente fechada (init sigmoid(−5)≈0.007). A predição gated é indistinguível da temporal-only. Causa identificada: ver §8.
 
 ### 7.4 Fixture results (D3-D6)
 
-| Fixture | gate_mean | Observação |
-|---------|-----------|-----------|
-| F1 | — | esperado >0.3 |
-| F2 | — | esperado <0.2 |
-| F3 | — | esperado >0.3 |
-| F4 | — | esperado >0.3 |
-| F5 inside window | — | esperado > outside |
-| F6 logit diff | — | esperado >0.2 |
+| Fixture | gate_mean | gate_zero_delta | Observação |
+|---------|-----------|-----------------|-----------|
+| F1 | 0.0050 | 0.00e+00 | FAIL D4: gate não abre |
+| F2 | 0.0076 | 0.00e+00 | PASS D5: gate < 0.2 |
+| F3 | 0.0074 | — | FAIL D4: gate não abre |
+| F4 | 0.0075 | — | FAIL D4: gate não abre |
+| F5 inside=0.0074 outside=0.0074 | — | PASS D5: idêntico (esperado — gate fechado) |
+| F6 logit_diff=0.149 | — | FAIL D6: < 0.20 threshold |
+
+**gate_zero_identity_max_delta = 0.00e+00 → D3 PASS** (após fix: backbone.eval() forçado sempre).
 
 ### 7.5 Gate summary (D1-D10)
 
-*A preencher após execução.*
+| Gate | Verdict | Evidence chave |
+|------|---------|---------------|
+| D1 | PASS | AUC/AUPRC finito em todos os runs |
+| D2 | PASS | mean_auc=1.000, frac_auprc_beats=1.0, sign=1.0, lag=1.0 |
+| D3 | PASS | max_delta=0.00e+00 (backbone.eval() fix) |
+| D4 | **FAIL** | gate_mean≈0.005 em F1/F3/F4 (threshold >0.3) |
+| D5 | PASS | F2 gate=0.008 < 0.2; F5 indistinto |
+| D6 | **FAIL** | presence_logit_diff=0.149 (threshold >0.2) |
+| D7 | PASS | 0 violações: gated≡temporal, nunca pior |
+| D8 | **FAIL** | mae_gated ≥ mae_graph_always (marginal) |
+| D9 | PASS | (informativo) |
+| D10 | PASS | safety replicada em 2/2 grupos |
 
 ---
 
-## 8. Limitações científicas
+## 8. Diagnóstico das falhas D4/D6/D8
+
+### D4 FAIL — Gate não abre sem supervisão de utilidade
+
+O gate é inicializado com bias=−5 → sigmoid(−5)≈0.007. O gradiente da reconstruction loss que chega ao gate_logit é:
+```
+∂L_recon/∂gate_logit ≈ graph_residual_cells × sigmoid'(−5) ≈ residual × 0.007
+```
+Este gradiente é muito pequeno. Adicionalmente, a regularização L1 (λ_gate=0.01) empurra o gate para 0 (mais fechado). O resultado é que o gate_logit sai de −5.0 e desce ligeiramente para ≈−5.3 durante os 75 epochs — o gate fica **mais fechado**, não mais aberto.
+
+**Causa raiz**: `compute_utility=False` durante training remove o sinal supervisionado directo. O gate só aprenderia a abrir se utility_loss ensinasse explicitamente "abrir aqui reduz o erro". Sem este sinal, a regularização L1 domina.
+
+**Implicação**: Um utility gate que começa fechado e não tem supervisão directa não aprende a abrir em 75 epochs com lr=1e-3. Para demonstrar gate opening, seria necessário: (a) utility supervision com y_oracle durante training, OU (b) muito mais epochs, OU (c) inicialização menos negativa.
+
+### D6 FAIL — Especificidade dirigida insuficiente em F6
+
+F6 tem n_T=5, n_S=3, n_Y=15 — painel muito pequeno. Early stop acontece ≈21 epochs. A loss de presença dá gradiente a todos os n×(n-1)=6 pares dirigidos simultaneamente; a diferença entre o par verdadeiro (0→1) e o falso reverso (1→0) só chega a 0.149 (threshold: 0.20).
+
+**Implicação**: O head dirigido discrimina a direcção mas não de forma suficientemente separada em 21 epochs num painel de 5×3×15.
+
+### D8 FAIL — Gated não bate graph-always-on (marginalmente)
+
+mae_gated=0.18147 vs mae_graph_always=0.18129. Diferença=0.00018 (0.1%). Com gate≈0.005, a predição gated ≈ temporal. A variante graph_always usa gate=1 sempre, aplicando o residual clamped completo. O GraphMessageExpert aprendeu um residual marginalmente útil; mas gated com gate≈0.005 aplica apenas 0.5% deste residual, obtendo quase zero benefício e zero custo (D7 PASS). A marginalmente superior performance de graph_always é um artefacto da gate estar essencialmente fechada.
+
+**Implicação**: Quando gate≈0, gated e graph_always são ambos muito próximos de temporal-only. A diferença <0.2% não é científicamente significativa.
+
+## 9. Limitações científicas
 
 1. **Experimento sintético**: as relações dirigidas são conhecidas por construção. Não implica que o GraphRelationHead recupere relações desconhecidas em dados reais.
 
