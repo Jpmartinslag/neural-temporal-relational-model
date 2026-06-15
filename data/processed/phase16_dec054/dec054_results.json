@@ -1,0 +1,458 @@
+{
+  "experiment": "DEC-054",
+  "n_epochs_max": 75,
+  "train_seeds": [
+    1000,
+    2000,
+    3000
+  ],
+  "oos_seeds": [
+    4000,
+    5000,
+    6000
+  ],
+  "n_sectors": 9,
+  "n_territories": 30,
+  "backbone_path": "/home/jpdark/Downloads/project_recomm/dataset/data/processed/synthetic_benchmark/phase15_stable_objective/checkpoints/model_TEMPORAL_MASKED_NLL_CLAMPED_ep75.pt",
+  "elapsed_seconds_train": 5.792811393737793,
+  "elapsed_seconds_fixtures": 2.558305263519287,
+  "oos_aggregated": {
+    "A0": {
+      "mae_temporal": 0.1799713517530738,
+      "mae_gated": 0.18004737762068138,
+      "max_regression": 0.0009667484102054076,
+      "gate_mean": 1.0,
+      "gate_mean_useful": 1.0,
+      "gate_mean_useless": 1.0,
+      "auroc": 0.5,
+      "auprc": 0.18897379193607242,
+      "utility_prevalence": 0.18897379193607242
+    },
+    "T0": {
+      "mae_temporal": 0.1799713517530738,
+      "mae_gated": 0.1799713517530738,
+      "gate_mean": 0.0,
+      "gate_mean_useful": 0.0,
+      "gate_mean_useless": 0.0,
+      "max_regression": 0.0,
+      "auroc": NaN,
+      "auprc": NaN,
+      "utility_prevalence": 0.18897379193607242
+    },
+    "P0": {
+      "mae_temporal": 0.1799713517530738,
+      "mae_gated": 0.17996976899663433,
+      "max_regression": 1.6202242036184473e-06,
+      "gate_mean": 0.008498561568558216,
+      "gate_mean_useful": 0.00866200557599465,
+      "gate_mean_useless": 0.00844268687069416,
+      "auroc": 0.5991830598329375,
+      "auprc": 0.2507197142849302,
+      "utility_prevalence": 0.18897379193607242
+    },
+    "G0": {
+      "mae_temporal": 0.1799713517530738,
+      "mae_gated": 0.17997058007345376,
+      "max_regression": 2.782483135860219e-07,
+      "gate_mean": 0.004277088834593694,
+      "gate_mean_useful": 0.004221645183861256,
+      "gate_mean_useless": 0.004290278380115827,
+      "auroc": 0.4619830797207182,
+      "auprc": 0.20590328916897946,
+      "utility_prevalence": 0.18897379193607242
+    },
+    "G2": {
+      "mae_temporal": 0.1799713517530738,
+      "mae_gated": 0.17996977147876073,
+      "max_regression": 1.6046783067376578e-06,
+      "gate_mean": 0.008478159084916115,
+      "gate_mean_useful": 0.008640128808716932,
+      "gate_mean_useless": 0.008422902474800745,
+      "auroc": 0.5991185307742398,
+      "auprc": 0.25065969265813554,
+      "utility_prevalence": 0.18897379193607242
+    },
+    "G1": {
+      "mae_temporal": 0.1799713517530738,
+      "mae_gated": 0.1799697684166687,
+      "max_regression": 1.6194814999224168e-06,
+      "gate_mean": 0.008498743176460266,
+      "gate_mean_useful": 0.008662282799681028,
+      "gate_mean_useless": 0.008442897349596024,
+      "auroc": 0.5991987055133874,
+      "auprc": 0.25070571126755287,
+      "utility_prevalence": 0.18897379193607242
+    },
+    "G3": {
+      "mae_temporal": 0.1799713517530738,
+      "mae_gated": 0.16368428075568706,
+      "max_regression": 0.0,
+      "gate_mean": 0.057592593133449554,
+      "gate_mean_useful": 1.0,
+      "gate_mean_useless": 0.0,
+      "auroc": 1.0,
+      "auprc": 0.18897379193607242,
+      "utility_prevalence": 0.18897379193607242
+    }
+  },
+  "oos_head_results": {
+    "in_sample_aucs": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "oos_aucs": [
+      0.47058823529411764,
+      0.47058823529411764,
+      0.6029411764705882,
+      0.47058823529411764,
+      0.6029411764705882,
+      0.6029411764705882,
+      0.6029411764705882,
+      0.47058823529411764,
+      0.47058823529411764
+    ],
+    "test_in_sample_aucs": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "mean_in_sample_auc": 1.0,
+    "mean_oos_auc": 0.5294117647058824,
+    "mean_test_in_sample_auc": 1.0,
+    "permuted_baseline": 0.4705882352941176,
+    "prevalences": [
+      0.05555555555555555,
+      0.05555555555555555,
+      0.05555555555555555
+    ],
+    "mean_prevalence": 0.05555555555555555,
+    "n_train": 3,
+    "n_test": 3
+  },
+  "fixture_results": {
+    "F1_useful_graph": {
+      "gate_zero_identity_max_delta": 0.0,
+      "gate_mean": 0.013047796674072742,
+      "gate_median": 0.012524723075330257,
+      "gate_std": 0.0017992095090448856,
+      "gate_frac_above_half": 0.0,
+      "gate_max": 0.021514147520065308,
+      "gate_min": 0.010476958006620407,
+      "gate_mean_useful": 0.012987695634365082,
+      "gate_mean_useless": 0.013055951334536076,
+      "utility_prevalence": 0.2835820895522388,
+      "util_stats": {
+        "prevalence": 0.2835820895522388,
+        "mean_gain": 0.024761177599430084,
+        "frac_positive": 0.2835820895522388,
+        "n_useful": 19,
+        "n_total": 67
+      }
+    },
+    "F2_useless_graph": {
+      "gate_zero_identity_max_delta": 0.0,
+      "gate_mean": 0.005803619045764208,
+      "gate_median": 0.005828157067298889,
+      "gate_std": 0.00017004121036734432,
+      "gate_frac_above_half": 0.0,
+      "gate_max": 0.006161634810268879,
+      "gate_min": 0.004933577962219715,
+      "gate_mean_useful": NaN,
+      "gate_mean_useless": 0.00583329051733017,
+      "utility_prevalence": 0.0,
+      "util_stats": {
+        "prevalence": 0.0,
+        "mean_gain": 0.0,
+        "frac_positive": 0.0,
+        "n_useful": 0,
+        "n_total": 67
+      }
+    },
+    "F3_negative_relation": {
+      "gate_zero_identity_max_delta": 0.0,
+      "gate_mean": 0.011119275353848934,
+      "gate_median": 0.011056986637413502,
+      "gate_std": 0.00022257835371419787,
+      "gate_frac_above_half": 0.0,
+      "gate_max": 0.011870105750858784,
+      "gate_min": 0.010820581577718258,
+      "gate_mean_useful": 0.011122306808829308,
+      "gate_mean_useless": 0.011142218485474586,
+      "utility_prevalence": 0.13043478260869565,
+      "util_stats": {
+        "prevalence": 0.13043478260869565,
+        "mean_gain": 0.013321913778781891,
+        "frac_positive": 0.13043478260869565,
+        "n_useful": 9,
+        "n_total": 69
+      }
+    },
+    "F4_lag2_relation": {
+      "gate_zero_identity_max_delta": 0.0,
+      "gate_mean": 0.01120018307119608,
+      "gate_median": 0.011163135059177876,
+      "gate_std": 0.00018390834156889468,
+      "gate_frac_above_half": 0.0,
+      "gate_max": 0.011970501393079758,
+      "gate_min": 0.01088854018598795,
+      "gate_mean_useful": 0.011143711395561695,
+      "gate_mean_useless": 0.011181244626641273,
+      "utility_prevalence": 0.13114754098360656,
+      "util_stats": {
+        "prevalence": 0.13114754098360656,
+        "mean_gain": 0.01266004890203476,
+        "frac_positive": 0.13114754098360656,
+        "n_useful": 8,
+        "n_total": 61
+      }
+    },
+    "F5_regime_window": {
+      "gate_zero_identity_max_delta": 0.0,
+      "gate_mean": 0.011003502644598484,
+      "gate_median": 0.010948185808956623,
+      "gate_std": 0.00021935839322395623,
+      "gate_frac_above_half": 0.0,
+      "gate_max": 0.012119279243052006,
+      "gate_min": 0.010718373581767082,
+      "gate_inside_window_mean": 0.010940968059003353,
+      "gate_outside_window_mean": 0.011038219556212425,
+      "gate_mean_useful": 0.011060182005167007,
+      "gate_mean_useless": 0.010997064411640167,
+      "utility_prevalence": 0.14285714285714285,
+      "util_stats": {
+        "prevalence": 0.14285714285714285,
+        "mean_gain": 0.007576609496027231,
+        "frac_positive": 0.14285714285714285,
+        "n_useful": 11,
+        "n_total": 77
+      }
+    },
+    "F6_asymmetric_directed": {
+      "gate_zero_identity_max_delta": 0.0,
+      "gate_mean": 0.01136497687548399,
+      "gate_median": 0.011288638226687908,
+      "gate_std": 0.0003059261944144964,
+      "gate_frac_above_half": 0.0,
+      "gate_max": 0.012629366479814053,
+      "gate_min": 0.010918382555246353,
+      "presence_logit_true_minus_false": 0.1491454318165779,
+      "gate_mean_useful": 0.011358426883816719,
+      "gate_mean_useless": 0.011355380527675152,
+      "utility_prevalence": 0.1346153846153846,
+      "util_stats": {
+        "prevalence": 0.1346153846153846,
+        "mean_gain": 0.00786313321441412,
+        "frac_positive": 0.1346153846153846,
+        "n_useful": 7,
+        "n_total": 52
+      }
+    }
+  },
+  "utility_stats_by_seed": {
+    "1000": {
+      "G1": {
+        "prevalence": 0.15021725636250777,
+        "mean_gain": 0.0048094443045556545,
+        "frac_positive": 0.15021725636250777,
+        "n_useful": 242,
+        "n_total": 1611
+      },
+      "G2": {
+        "prevalence": 0.15021725636250777,
+        "mean_gain": 0.0048094443045556545,
+        "frac_positive": 0.15021725636250777,
+        "n_useful": 242,
+        "n_total": 1611
+      }
+    },
+    "2000": {
+      "G1": {
+        "prevalence": 0.15864197530864196,
+        "mean_gain": 0.011243442073464394,
+        "frac_positive": 0.15864197530864196,
+        "n_useful": 257,
+        "n_total": 1620
+      },
+      "G2": {
+        "prevalence": 0.15864197530864196,
+        "mean_gain": 0.011243442073464394,
+        "frac_positive": 0.15864197530864196,
+        "n_useful": 257,
+        "n_total": 1620
+      }
+    },
+    "3000": {
+      "G1": {
+        "prevalence": 0.1671865252651279,
+        "mean_gain": 0.007347230799496174,
+        "frac_positive": 0.1671865252651279,
+        "n_useful": 268,
+        "n_total": 1603
+      },
+      "G2": {
+        "prevalence": 0.1671865252651279,
+        "mean_gain": 0.007347230799496174,
+        "frac_positive": 0.1671865252651279,
+        "n_useful": 268,
+        "n_total": 1603
+      }
+    }
+  },
+  "gates": {
+    "U1": {
+      "verdict": "PASS",
+      "description": "No leakage: oracle uses obs_mask, backbone params frozen throughout",
+      "evidence": {
+        "leakage_check_passed": true,
+        "backbone_frozen": true
+      }
+    },
+    "U2": {
+      "verdict": "FAIL",
+      "description": "Gate discrimination: AUROC >= 0.70 AND AUPRC > prevalence on OOS data",
+      "evidence": {
+        "best_auroc": 0.5991987055133874,
+        "best_auprc": 0.25070571126755287,
+        "prevalence": 0.18897379193607242,
+        "issues": [
+          "Best AUROC 0.599 < 0.70"
+        ]
+      }
+    },
+    "U3": {
+      "verdict": "FAIL",
+      "description": "Gate opens on useful cells: gate_mean_useful > 0.15 in F1/F3/F4, window in F5",
+      "evidence": {
+        "F1_gate_mean_useful": 0.012987695634365082,
+        "F3_gate_mean_useful": 0.011122306808829308,
+        "F4_gate_mean_useful": 0.011143711395561695,
+        "F5_gate_inside": 0.010940968059003353,
+        "F5_gate_outside": 0.011038219556212425,
+        "issues": [
+          "F1 gate_mean_useful=0.013 <= 0.15",
+          "F3 gate_mean_useful=0.011 <= 0.15",
+          "F4 gate_mean_useful=0.011 <= 0.15",
+          "F5 gate not higher inside window: inside=0.011, outside=0.011"
+        ]
+      }
+    },
+    "U4": {
+      "verdict": "PASS",
+      "description": "Gate stays low on useless cells: gate_mean_useless < 0.10 in F2 and outside F5 window",
+      "evidence": {
+        "F2_gate_mean_useless": 0.00583329051733017,
+        "F2_gate_mean": 0.005803619045764208,
+        "F5_gate_outside": 0.011038219556212425,
+        "issues": []
+      }
+    },
+    "U5": {
+      "verdict": "PASS",
+      "description": "Gated MAE < temporal, always-on, permuted in useful-graph scenarios",
+      "evidence": {
+        "mae_g1": 0.1799697684166687,
+        "mae_temporal": 0.1799713517530738,
+        "mae_always": 0.18004737762068138,
+        "mae_permuted": 0.17996976899663433,
+        "issues": []
+      }
+    },
+    "U6": {
+      "verdict": "PASS",
+      "description": "No regression: max_regression < 5% in useless-graph scenarios",
+      "evidence": {
+        "worst_regression": 3.4086736531537967e-06,
+        "all_regressions": [
+          3.4086736531537967e-06,
+          3.385728074641277e-06,
+          0.0,
+          0.0,
+          1.4497708466134539e-06,
+          1.428306845571697e-06
+        ],
+        "issues": []
+      }
+    },
+    "U7": {
+      "verdict": "PASS",
+      "description": "Consistent gate utility direction (useful > useless) in >= 2/3 seeds",
+      "evidence": {
+        "n_consistent": 6,
+        "n_evaluated": 6,
+        "frac_consistent": 1.0,
+        "details": [
+          {
+            "variant": "G1",
+            "gate_mean_useful": 0.008601495996117592,
+            "gate_mean_useless": 0.008421038277447224,
+            "consistent": true
+          },
+          {
+            "variant": "G2",
+            "gate_mean_useful": 0.008579971268773079,
+            "gate_mean_useless": 0.008401299826800823,
+            "consistent": true
+          },
+          {
+            "variant": "G1",
+            "gate_mean_useful": 0.008698535151779652,
+            "gate_mean_useless": 0.008471309207379818,
+            "consistent": true
+          },
+          {
+            "variant": "G2",
+            "gate_mean_useful": 0.008675779215991497,
+            "gate_mean_useless": 0.008451014757156372,
+            "consistent": true
+          },
+          {
+            "variant": "G1",
+            "gate_mean_useful": 0.00868681725114584,
+            "gate_mean_useless": 0.008436344563961029,
+            "consistent": true
+          },
+          {
+            "variant": "G2",
+            "gate_mean_useful": 0.008664635941386223,
+            "gate_mean_useless": 0.008416392840445042,
+            "consistent": true
+          }
+        ]
+      }
+    },
+    "R1": {
+      "verdict": "PASS",
+      "description": "Head can learn: AUC >= 0.60 on test data (in-sample for test)",
+      "evidence": {
+        "mean_test_in_sample_auc": 1.0,
+        "mean_prevalence": 0.05555555555555555,
+        "all_test_is_aucs": [
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    },
+    "R2": {
+      "verdict": "PASS",
+      "description": "OOS head: direction AUC > 0.50 (sign/lag if available)",
+      "evidence": {
+        "mean_oos_auc": 0.5294117647058824,
+        "mean_oos_sign_acc": NaN,
+        "mean_oos_lag_acc": NaN,
+        "issues": []
+      }
+    },
+    "R3": {
+      "verdict": "PASS",
+      "description": "Real head AUC > permuted null baseline on test data",
+      "evidence": {
+        "mean_test_in_sample_auc": 1.0,
+        "permuted_baseline": 0.4705882352941176,
+        "delta": 0.5294117647058825
+      }
+    }
+  },
+  "gate_report": "| Gate | Description | Verdict |\n|------|-------------|---------|\n| R1 | Head can learn: AUC >= 0.60 on test data (in-sample for test) | \u2713 PASS |\n| R2 | OOS head: direction AUC > 0.50 (sign/lag if available) | \u2713 PASS |\n| R3 | Real head AUC > permuted null baseline on test data | \u2713 PASS |\n| U1 | No leakage: oracle uses obs_mask, backbone params frozen throughout | \u2713 PASS |\n| U2 | Gate discrimination: AUROC >= 0.70 AND AUPRC > prevalence on OOS data | \u2717 FAIL |\n| U3 | Gate opens on useful cells: gate_mean_useful > 0.15 in F1/F3/F4, window in F5 | \u2717 FAIL |\n| U4 | Gate stays low on useless cells: gate_mean_useless < 0.10 in F2 and outside F5 window | \u2713 PASS |\n| U5 | Gated MAE < temporal, always-on, permuted in useful-graph scenarios | \u2713 PASS |\n| U6 | No regression: max_regression < 5% in useless-graph scenarios | \u2713 PASS |\n| U7 | Consistent gate utility direction (useful > useless) in >= 2/3 seeds | \u2713 PASS |"
+}
