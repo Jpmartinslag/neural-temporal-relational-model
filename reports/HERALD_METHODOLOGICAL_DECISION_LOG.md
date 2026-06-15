@@ -2053,3 +2053,33 @@ NOTE: Edge supervision only applicable to synthetic data. NOT transferable to re
 - `data/processed/synthetic_benchmark/phase13_pilot/` (results JSON)
 - `CODEX_MEMORY.md` (updated)
 - `reports/HERALD_CURRENT_STATE.md` (updated)
+
+---
+
+## DEC-049 — 2026-06-15 — Phase 14: Convergence Audit for Training Budget Hypothesis
+
+**Phase:** 14
+**Question:** Does the TRAINING_BUDGET_TOO_SMALL hypothesis from DEC-048 hold under more epochs (30/75/150) and graph-multitask pretraining? Does GRAPH_MASKED_MULTITASK add value over TEMPORAL_MASKED at scale?
+**Evidence:** DEC-048 found: (a) C2 PASS — architecture not inadequate; (b) attention gradient ~400× smaller than MLP; (c) GRAPH_MASKED_MULTITASK pretraining at 50 epochs +1.1% gain; (d) C3/C4 FAIL interpreted as undertrained artefacts of 30-epoch pilot.
+**Alternatives considered:**
+  1. Accept TRAINING_BUDGET_TOO_SMALL as sufficient explanation, proceed directly to DEC-050.
+  2. Run architecture redesign (abandoned — C2 PASS rules out ARCHITECTURE_INADEQUATE).
+  3. Run Phase 14 controlled convergence audit before committing to longer training.
+**Decision:** PROTOCOL_READY — implementation complete, execution pending. Package `phase14_convergence` implemented with E1-E10 gates (all thresholds frozen before execution).
+**Rationale:** Before committing to 150-epoch HPC runs, a controlled audit with a defined gate structure prevents post-hoc tuning. Epoch budgets [30,75,150] allow detecting whether improvement is monotone. 300 epochs only auto-triggered if E1+E2 PASS at 150.
+**Limitations:**
+  - All results apply to SYNTHETIC data only — not transferable to PT/IT/FR/AT/NL.
+  - GRAPH_MASKED_MULTITASK uses true_relations ground truth which does NOT exist for real country data. The objective is a synthetic diagnostic tool only.
+  - Phase 14 pilot mode (n_datasets=10, epoch_budgets=[30,75]) provides fast validation; full run required for gate decisions.
+  - Gradient ratios are diagnostic evidence, not proof that budget is the sole cause.
+**Reopen condition:** If E2 (convergence) fails, reopen to investigate architecture or data quantity as primary cause. If novel_highvar performance remains catastrophic regardless of budget, structural_break generalization requires separate DEC.
+**Frozen before execution:**
+  - MULTITASK_ALPHA=0.1, MULTITASK_BETA=0.05, MULTITASK_GAMMA=0.05
+  - E1-E10 gate thresholds (see gates_dec049.py)
+  - 300-epoch trigger requires E1+E2 PASS at 150
+**Affected files:**
+  - `src/modeles/synthetic/phase14_convergence/` (new package — 5 files)
+  - `tests/test_phase14_convergence.py` (new — 25 tests)
+  - `reports/HERALD_DEC049_CONVERGENCE_AUDIT.md` (new)
+  - `reports/HERALD_DEC048_FAILURE_CAUSE_DIAGNOSTIC.md` (3 targeted corrections)
+  - `CODEX_MEMORY.md` (DEC-049 bullet added)
