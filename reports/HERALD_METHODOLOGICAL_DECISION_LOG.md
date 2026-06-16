@@ -2362,3 +2362,30 @@ L_total = L_recon + 0.05·L_presence + 0.02·L_sign + 0.02·L_lag + 0.05·L_util
 - `data/processed/real_weak_label_results/` (novo — scores, validation JSON)
 - `reports/HERALD_DEC058_REAL_WEAK_LABEL_TUNING.md` (novo)
 - `CODEX_MEMORY.md` (DEC-058 bullet)
+
+---
+
+## DEC-059 — Weak-Label Tuning Revalidation (2026-06-16)
+
+**Decision:** REAL_WEAK_LABEL_TUNING_PARTIAL (confirmed; DEC-058 corrected from SUPPORTED to PARTIAL)
+
+**Context:** DEC-058 W2 failed (C2=0.688 ≥ V1=0.667 — country-shuffled control not degraded). DEC-059 provides rigorous revalidation with 7 controls, multi-window stability, and LOW_EVIDENCE fold marking.
+
+**Key findings:**
+- V1 sign concordance = 0.500 on valid LOCO folds (NL+PT); FR fold LOW_EVIDENCE (n=1)
+- M2 FAIL: C1/C2/C3/C5 all within 0.021 of V1 — fine-tuning does not clearly separate from permuted/shuffled baselines with 12 training labels
+- C4 (sign-flip) and C6/C7 (random/synthetic-only) DO degrade, confirming the model learns something — but cannot attribute to economic sector dynamics
+- M4 FAIL: 0 abstentions — encoder gives presence ≥ 0.50 to all 72 pairs; proper abstention requires conformal uncertainty
+- M7 PASS: 59 multi-window stable replicated pairs (not validated against controls)
+- FR fold n=1: marked LOW_EVIDENCE; 1.000 concordance is unreliable and excluded from main claim
+
+**Decision ceiling rule:** M2 FAIL → maximum = REAL_WEAK_LABEL_TUNING_PARTIAL.
+
+**Ficheiros afectados:**
+- `src/modeles/real_world/gates_dec059.py` (novo — M1-M10 congelados)
+- `src/modeles/real_world/run_dec059_weak_label_revalidation.py` (novo — multi-window + C1-C7)
+- `tests/test_dec059_weak_label_revalidation.py` (novo — 49 testes)
+- `data/processed/real_dec059_results/` (novo — scores, validation JSON)
+- `reports/HERALD_DEC059_WEAK_LABEL_REVALIDATION.md` (novo)
+- `reports/HERALD_DEC058_REAL_WEAK_LABEL_TUNING.md` (corrigido: PARTIAL)
+- `CODEX_MEMORY.md` (DEC-059 bullet + DEC-058 corrigido)

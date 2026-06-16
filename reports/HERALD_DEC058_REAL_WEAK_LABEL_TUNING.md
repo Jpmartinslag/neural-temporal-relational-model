@@ -1,6 +1,6 @@
 # HERALD DEC-058: Real Weak-Label Relation Tuning
 
-**Status:** COMPLETE | **Decision:** REAL_WEAK_LABEL_TUNING_SUPPORTED  
+**Status:** COMPLETE | **Decision:** REAL_WEAK_LABEL_TUNING_PARTIAL *(corrected by DEC-059: W2 FAIL — country-shuffled C2=0.688 ≥ V1=0.667)*  
 **Date:** 2026-06-16 | **Elapsed:** 6.7s (local, no HPC)
 
 ---
@@ -172,9 +172,11 @@ C2 (country-shuffle) achieving 0.688 > V1 (0.667) is a warning: the improvement 
 
 ## 6. Decision and Limitations
 
-**Decision:** `REAL_WEAK_LABEL_TUNING_SUPPORTED`
+**Decision (corrected):** `REAL_WEAK_LABEL_TUNING_PARTIAL`
 
-The fine-tuning improves sign concordance from 0.313 (frozen) to 0.667 (LOCO V1), exceeding the prior DEC-056 baseline of 0.438. W3 and W4 pass, confirming that at least one replicable association is identified and sign concordance exceeds the baseline.
+*(Original decision was `REAL_WEAK_LABEL_TUNING_SUPPORTED`, corrected by DEC-059 audit because W2 failed: country-shuffled C2=0.688 ≥ V1=0.667. A control outperforming the fine-tuned model disqualifies the full SUPPORTED claim.)*
+
+The fine-tuning improves sign concordance from 0.313 (frozen) to 0.667 (LOCO V1), exceeding the prior DEC-056 baseline of 0.438. W3 and W4 pass, confirming that sign concordance exceeds the baseline and at least 58 pairs were classified as replicated.
 
 However:
 1. **W2 FAIL** — controls do not degrade as expected. With only 12 training labels, the fine-tuning signal is too sparse to clearly separate learned from randomised patterns. The claimed improvement over V0 is real, but attribution to country-specific sector dynamics is not proven.
