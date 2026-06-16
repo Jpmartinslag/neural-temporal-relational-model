@@ -1,5 +1,5 @@
 # HERALD Current State
-**Updated:** 2026-06-16 (DEC-059 COMPLETE — 8/10 PASS. REAL_WEAK_LABEL_TUNING_PARTIAL. V1 sign concordance=0.500 valid folds (NL+PT; FR n=1 LOW_EVIDENCE). M2 FAIL: C1/C2/C3/C5 within 0.021 of V1=0.667, margin required=0.05. M4 FAIL: 0 abstentions. DEC-058 corrected to PARTIAL. 49/49 tests PASS.)
+**Updated:** 2026-06-16 (DEC-060 COMPLETE — AUDIT_COMPLETE 10/10 PASS. FR binding constraint = |β| ≥ 0.10 (not FDR). 8 near-miss-beta pairs (|β|=0.076-0.097). MN→BE most consistent (6 windows p≤0.01) but beta-FDR anti-correlation blocks promotion. RU→MN = FR_COVID_SENSITIVE (pre-COVID p=0.127). 63/63 tests PASS.)
 **Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-049), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---

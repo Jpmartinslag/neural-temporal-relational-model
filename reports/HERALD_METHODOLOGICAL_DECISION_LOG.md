@@ -2389,3 +2389,42 @@ L_total = L_recon + 0.05·L_presence + 0.02·L_sign + 0.02·L_lag + 0.05·L_util
 - `reports/HERALD_DEC059_WEAK_LABEL_REVALIDATION.md` (novo)
 - `reports/HERALD_DEC058_REAL_WEAK_LABEL_TUNING.md` (corrigido: PARTIAL)
 - `CODEX_MEMORY.md` (DEC-059 bullet + DEC-058 corrigido)
+
+---
+
+## DEC-060 — France Relation Signal Recovery Audit
+
+**Status:** COMPLETE | **Decision:** AUDIT_COMPLETE (10/10 PASS)  
+**Date:** 2026-06-16 | **Tests:** 63/63 PASS
+
+**Question:** Why does France have only 1 promoted Phase 7 sector-precedence label? Is the limitation methodological, scale-related, or a genuine absence of signal?
+
+**Findings:**
+- **Binding criterion: |β| ≥ 0.10** (not FDR). FR ZE2020 has 280 small employment zones. Observed effect sizes for near-miss pairs: |β|=0.076–0.097, systematically just below threshold.
+- FDR correction (792 tests = 11 windows × 72 pairs) is secondary — 9 rows already pass q_fdr ≤ 0.05.
+- **8 near-miss-beta pairs**: pass FDR + Δr² + bss but |β| < 0.10.
+- **7 near-miss-fdr pairs**: pass |β| + Δr² + bss but q_fdr > 0.05.
+- **MN→BE**: most consistent pair (6 windows p≤0.01, bss=1.000) but exhibits beta-FDR anti-correlation: when |β| ≥ 0.10 (2017-2022, β=0.112), q_fdr=0.072 > threshold; when q_fdr ≤ 0.05, |β| drops to 0.087–0.097.
+- **RU→MN** (the 1 promoted pair): pre-COVID p_perm=0.127, classified **FR_COVID_SENSITIVE**.
+- NUTS3 panel has no sector columns — ZE2020/NUTS3 scale comparison for sector relations is not possible.
+- Sensitivity: with |β| ≥ 0.08, 7 additional pairs would qualify (not promoted — requires new DEC with pre-registered gates).
+
+**FR Label Distribution (72 pairs):**
+- FR_COVID_SENSITIVE: 1 (RU→MN)
+- FR_BETA_BELOW_THRESHOLD: 3 (MN→BE, OQ→MN, KZ→FZ)
+- FR_FDR_ONLY_BLOCKED: 5 (OQ→BE, FZ→RU, LZ→KZ, FZ→JZ, GI→JZ)
+- FR_WEAK_SIGNAL: 63
+
+**What this does NOT support:**
+- Promotion of any FR pair (no pair simultaneously passes all 4 Phase 7 criteria in a non-COVID window).
+- Causal interpretation of any association.
+- That absence of Phase 7 promotion means absence of economic association.
+
+**Ficheiros afectados:**
+- `src/modeles/real_world/gates_dec060_france_audit.py` (novo — F1-F10 congelados)
+- `src/modeles/real_world/run_dec060_france_signal_audit.py` (novo — audit completo)
+- `tests/test_dec060_france_relation_audit.py` (novo — 63 testes)
+- `data/processed/france_relation_audit/` (novo — fr_pair_audit.csv, fr_dataset_coverage.csv, fr_dataset_coverage_summary.json)
+- `reports/HERALD_DEC060_FRANCE_RELATION_SIGNAL_AUDIT.md` (novo)
+- `CODEX_MEMORY.md` (DEC-060 bullet)
+- `reports/HERALD_CURRENT_STATE.md` (updated)
