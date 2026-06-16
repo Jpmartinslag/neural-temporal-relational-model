@@ -1,0 +1,238 @@
+{
+  "experiment": "DEC-060",
+  "decision": "AUDIT_COMPLETE",
+  "n_gates_pass": 10,
+  "n_gates_fail": 0,
+  "critical_fail": [],
+  "secondary_fail": [],
+  "gate_version": "DEC-060-v1",
+  "fr_dataset": {
+    "ze2020_n_territories": 280,
+    "ze2020_n_rows": 3640,
+    "ze2020_n_years": 13,
+    "ze2020_year_range": "2012-2024",
+    "ze2020_n_sector_cols": 9,
+    "ze2020_valid_row_frac": 0.9231,
+    "ze2020_targets": [
+      "establishment_creation"
+    ],
+    "nuts3_has_sector_cols": false,
+    "nuts3_n_rows": 1414
+  },
+  "phase7_criteria": {
+    "fdr_q": 0.05,
+    "min_abs_beta": 0.1,
+    "min_delta_r2": 0.005,
+    "min_bss": 0.7
+  },
+  "criterion_analysis": {
+    "n_pass_fdr": 9,
+    "n_pass_beta": 8,
+    "n_pass_dr2": 43,
+    "n_pass_bss": 497,
+    "n_pass_all": 1,
+    "n_promoted": 1,
+    "binding_criterion": "beta",
+    "n_near_miss_beta": 8,
+    "n_near_miss_fdr": 7
+  },
+  "fdr_sensitivity": {
+    "q_05": 1,
+    "q_10": 4,
+    "q_15": 7,
+    "q_20": 7
+  },
+  "beta_sensitivity": {
+    "beta_10": 1,
+    "beta_08": 7,
+    "beta_06": 9,
+    "beta_05": 9
+  },
+  "promoted_pairs": [
+    {
+      "pair_key": "RU_MN",
+      "window_start": 2020,
+      "window_end": 2025,
+      "beta": -0.1079817647665838,
+      "q_fdr": 0.024
+    }
+  ],
+  "pre_covid_p_values": {
+    "RU_MN": 0.127
+  },
+  "fr_label_counts": {
+    "FR_WEAK_SIGNAL": 63,
+    "FR_FDR_ONLY_BLOCKED": 5,
+    "FR_BETA_BELOW_THRESHOLD": 3,
+    "FR_COVID_SENSITIVE": 1
+  },
+  "gates": [
+    {
+      "gate_id": "F1",
+      "verdict": "PASS",
+      "value": {
+        "n_sectors": 9,
+        "valid_row_frac": 0.9231,
+        "n_windows": 11
+      },
+      "threshold": {
+        "n_sectors": 9,
+        "valid_row_frac": 0.7,
+        "n_windows": 5
+      },
+      "note": "FR dataset has sufficient coverage for audit."
+    },
+    {
+      "gate_id": "F2",
+      "verdict": "PASS",
+      "value": {
+        "n_pass_fdr": 9,
+        "n_pass_beta": 8,
+        "n_pass_dr2": 43,
+        "n_pass_bss": 497,
+        "n_pass_all": 1,
+        "binding_criterion": "beta"
+      },
+      "threshold": {
+        "binding_identified": true
+      },
+      "note": "Binding criterion = criterion that most restricts FR promotions."
+    },
+    {
+      "gate_id": "F3",
+      "verdict": "PASS",
+      "value": {
+        "n_near_miss_beta": 8,
+        "n_near_miss_fdr": 7,
+        "total_near_miss": 15
+      },
+      "threshold": {
+        "min_near_miss": 1
+      },
+      "note": "Near-miss = passes 3 of 4 Phase 7 criteria."
+    },
+    {
+      "gate_id": "F4",
+      "verdict": "PASS",
+      "value": {
+        "ze2020_n_territories": 280,
+        "nuts3_has_sector_cols": false,
+        "scale_note": "ZE2020 (280 territories) vs NUTS3 (101 regions). NUTS3 has no sector columns \u2014 s"
+      },
+      "threshold": {
+        "ze2020_min_territories": 200,
+        "nuts3_sector_cols_must_be_absent": true
+      },
+      "note": "Scale comparison documented as hypothesis, not validated claim."
+    },
+    {
+      "gate_id": "F5",
+      "verdict": "PASS",
+      "value": {
+        "pair_window_counts": {
+          "FZ_RU": 3,
+          "MN_BE": 6,
+          "MN_LZ": 2,
+          "OQ_BE": 5,
+          "OQ_MN": 4,
+          "RU_KZ": 2,
+          "RU_MN": 2
+        },
+        "n_stable_pairs": 7
+      },
+      "threshold": {
+        "min_windows_per_pair": 2
+      },
+      "note": "Window stability indicates persistent (not one-shot) association pattern."
+    },
+    {
+      "gate_id": "F6",
+      "verdict": "PASS",
+      "value": {
+        "n_promoted": 1,
+        "pre_covid_p_values": {
+          "RU_MN": 0.127
+        }
+      },
+      "threshold": {
+        "pre_covid_data_available": true
+      },
+      "note": "COVID sensitivity documented; does not constitute causal claim."
+    },
+    {
+      "gate_id": "F7",
+      "verdict": "PASS",
+      "value": {
+        "invalid_labels": [],
+        "mixed_labels": []
+      },
+      "threshold": {
+        "valid_labels": [
+          "FR_BETA_BELOW_THRESHOLD",
+          "FR_COVID_SENSITIVE",
+          "FR_FDR_ONLY_BLOCKED",
+          "FR_MULTI_WINDOW_CANDIDATE",
+          "FR_NATIONAL_ROBUST",
+          "FR_WEAK_SIGNAL"
+        ]
+      },
+      "note": "FR labels must be in approved namespace and not mixed."
+    },
+    {
+      "gate_id": "F8",
+      "verdict": "PASS",
+      "value": {
+        "violations": []
+      },
+      "threshold": {
+        "causal_terms": [
+          "causa",
+          "causal",
+          "causas",
+          "causado",
+          "gera",
+          "impact",
+          "impacta",
+          "impacto causal",
+          "causa estrutural",
+          "drives",
+          "causes",
+          "led to",
+          "results in",
+          "provoca"
+        ]
+      },
+      "note": "No causal language in audit outputs or labels."
+    },
+    {
+      "gate_id": "F9",
+      "verdict": "PASS",
+      "value": {
+        "targets_in_panel": [
+          "establishment_creation"
+        ],
+        "target_used": "establishment_creation"
+      },
+      "threshold": {
+        "n_targets": 1,
+        "expected_target": "establishment_creation"
+      },
+      "note": "Single target enforced; cross-target mixing forbidden."
+    },
+    {
+      "gate_id": "F10",
+      "verdict": "PASS",
+      "value": {
+        "n_pairs": 72,
+        "n_windows": 11,
+        "coverage_csv": true,
+        "summary_json": true
+      },
+      "threshold": {
+        "n_pairs": 72,
+        "n_windows": 11
+      },
+      "note": "Full audit coverage required before labelling."
+    }
+  ]
+}
