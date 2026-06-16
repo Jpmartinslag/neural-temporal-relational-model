@@ -123,6 +123,21 @@
 
 ---
 
+## Phase 4: DEC-063 — Granular FR/PT/NL Evidence Model (2026-06-16)
+
+**Status:** COMPLETE. Decision: `GRANULAR_FR_PT_NL_PREFLIGHT_READY` — 10/10 gates PASS, 66/66 tests PASS.
+
+- **FR ZE2020 (280 units):** observed_births, SIDRE establishment_creation. READY.
+- **PT Municipal (278 units):** observed_births, INE enterprise_birth. KZ structural_absent. READY_WITH_LIMITATION.
+- **NL COROP (40 units):** observed_births, CBS 83631NED. KZ present. READY.
+- **NL Gemeente proxy (355 units):** proxy_disaggregated_by_stock_share. 73% proxy_computed. Reaggregation exact (max_abs=0.0).
+- CBS API 10k-row limit resolved: year-loop strategy (19 calls × 9,177 rows).
+- Contract: `reports/HERALD_GRANULAR_FR_PT_NL_TRAINING_CONTRACT.md` — evaluation must report observed-only and proxy-excluded sensitivity separately.
+
+**Next:** DEC-064 (Phase 7 at PT municipal, new DEC required); DEC-065 (NL gemeente Phase 7, proxy-labelled, new DEC required).
+
+---
+
 ## Phase 13 — DEC-048 Failure Cause Diagnostic (DEC-048)
 
 **Status:** PILOT_COMPLETE (2026-06-15). Decision: TRAINING_BUDGET_TOO_SMALL.

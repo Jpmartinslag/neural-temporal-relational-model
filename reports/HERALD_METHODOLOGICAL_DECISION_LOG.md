@@ -2488,3 +2488,61 @@ L_total = L_recon + 0.05·L_presence + 0.02·L_sign + 0.02·L_lag + 0.05·L_util
 - `reports/HERALD_DEC062_GRANULAR_PHASE7_PREFLIGHT.md` (novo)
 - `CODEX_MEMORY.md` (DEC-062 bullet)
 - `reports/HERALD_CURRENT_STATE.md` (updated)
+
+---
+
+## DEC-063 — Granular FR/PT/NL Evidence Model (2026-06-16)
+
+**Decision:** `GRANULAR_FR_PT_NL_PREFLIGHT_READY`
+**Gates:** 10/10 PASS (GATE_VERSION: DEC-063-v1) | **Tests:** 66/66 PASS
+
+**Context:** DEC-062 confirmed PT municipal panel ready and NL gemeente CBS open data blocked. DEC-063 resolves the NL gemeente gap via a stock-share proxy (disaggregating COROP births to gemeente using establishment stock shares from 81575NED), and formally documents the evidence hierarchy for all three countries.
+
+**Part A — Evidence Levels:**
+
+| Country | System | Evidence type | N units | Sectors |
+|---------|--------|--------------|---------|---------|
+| FR | ZE2020 | observed_births (SIDRE) | 280 | 8 (KZ present) |
+| PT | MUNICIPALITY_CONTINENTE | observed_births (INE) | 278 | 8 (KZ structural_absent) |
+| NL | COROP | observed_births (83631NED) | 40 | 9 (KZ present) |
+| NL | GEMEENTE_PROXY | proxy_disaggregated_by_stock_share | 355 | 9 (attempted) |
+
+**Part B — NL Gemeente Ingest:**
+- **83631NED** (oprichtingen): COROP-only (0 GM codes). metric=OprichtingenVanVestigingen_1. Period 2007–2025.
+- **81575NED** (vestigingen): 483 GMs × 19 SBI sections. metric=Vestigingen_1 (establishment stock, NOT births). Evidence_type=observed_stock.
+- **84721NED** (regioindeling): 355 current GM→CR mappings; 128 historical GMs unmatched.
+- CBS OData 10k-row limit: resolved by year-loop with combined year+SBI filter (9,177 rows/call).
+
+**Part C — Proxy Method:**
+- `share_gm = stock_gm / sum(stock within COROP for sector×year)`
+- `estimated_births_gm = observed_births_corop × share_gm`
+- evidence_status: proxy_computed (73%), no_corop_births_data (128 unmatched GMs × 9 sectors × 19y), insufficient_stock_share (stock=0)
+- Reaggregation identity: sum of gemeente proxy within COROP == observed COROP births. Verified: max_abs_error=0.0.
+
+**Key prohibitions ratified:**
+- No neural training before new DEC
+- No Phase 7 full run before new DEC
+- No treating proxy as observed births without evidence_type flag
+- No KZ claims for PT
+- No causal language
+- Evaluation must report separately: observed-only, proxy-included, proxy-excluded sensitivity
+
+**Ficheiros afectados:**
+- `src/data/european_panel/ingest_nl_gemeente_stock_panel.py` (novo)
+- `src/data/european_panel/build_nl_gemeente_birth_proxy.py` (novo)
+- `src/data/european_panel/gates_dec063_granular_evidence.py` (novo)
+- `src/data/european_panel/build_granular_training_matrix.py` (novo)
+- `src/modeles/real_world/run_dec063_granular_evidence_gates.py` (novo)
+- `tests/test_granular_fr_pt_nl_evidence_model.py` (novo — 66 testes)
+- `data/processed/european_panel/nl_gemeente_corop_crosswalk.csv` (novo — 355 rows)
+- `data/processed/european_panel/nl_gemeente_stock_panel.csv` (novo — 9,177 rows)
+- `data/processed/european_panel/nl_gemeente_stock_manifest.json` (novo)
+- `data/processed/european_panel/nl_gemeente_birth_proxy_panel.csv` (novo — 82,593 rows)
+- `data/processed/european_panel/nl_gemeente_birth_proxy_manifest.json` (novo)
+- `data/processed/european_panel/granular_fr_pt_nl_training_matrix.csv` (novo — 4 rows)
+- `data/processed/european_panel/dec063_gates.json` (novo)
+- `reports/HERALD_DEC063_GRANULAR_FR_PT_NL_EVIDENCE_MODEL.md` (novo)
+- `reports/HERALD_GRANULAR_FR_PT_NL_TRAINING_CONTRACT.md` (novo)
+- `reports/herald_artifact_registry.json` (DEC-063 entry)
+- `CODEX_MEMORY.md` (DEC-063 bullet)
+- `reports/HERALD_CURRENT_STATE.md` (updated)

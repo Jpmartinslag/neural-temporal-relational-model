@@ -420,6 +420,34 @@
       "script": "src/data/european_panel/audit_european_sector_coverage.py",
       "tests": "tests/test_european_sector_coverage.py (53 tests)",
       "status": "COMPLETE"
+    },
+    {
+      "id": "GRANULAR_FR_PT_NL_EVIDENCE_MODEL",
+      "decision": "DEC-063",
+      "date": "2026-06-16",
+      "description": "NL gemeente stock panel (81575NED) + gemeente birth proxy (83631NED disaggregated by stock share) + granular training matrix FR/PT/NL. Decision: GRANULAR_FR_PT_NL_PREFLIGHT_READY. 10/10 gates PASS. 66/66 tests PASS.",
+      "files": [
+        "data/processed/european_panel/nl_gemeente_corop_crosswalk.csv",
+        "data/processed/european_panel/nl_gemeente_stock_panel.csv",
+        "data/processed/european_panel/nl_gemeente_stock_manifest.json",
+        "data/processed/european_panel/nl_gemeente_birth_proxy_panel.csv",
+        "data/processed/european_panel/nl_gemeente_birth_proxy_manifest.json",
+        "data/processed/european_panel/granular_fr_pt_nl_training_matrix.csv",
+        "data/processed/european_panel/dec063_gates.json",
+        "reports/HERALD_DEC063_GRANULAR_FR_PT_NL_EVIDENCE_MODEL.md",
+        "reports/HERALD_GRANULAR_FR_PT_NL_TRAINING_CONTRACT.md"
+      ],
+      "scripts": [
+        "src/data/european_panel/ingest_nl_gemeente_stock_panel.py",
+        "src/data/european_panel/build_nl_gemeente_birth_proxy.py",
+        "src/data/european_panel/gates_dec063_granular_evidence.py",
+        "src/data/european_panel/build_granular_training_matrix.py",
+        "src/modeles/real_world/run_dec063_granular_evidence_gates.py"
+      ],
+      "tests": "tests/test_granular_fr_pt_nl_evidence_model.py (66 tests)",
+      "status": "COMPLETE",
+      "claim_authorized": "GRANULAR_FR_PT_NL_PREFLIGHT_READY. FR 280 ZE2020 + PT 278 municipalities + NL 40 COROP: observed_births available. NL 355 gemeente: proxy_disaggregated_by_stock_share available. Reaggregation identity verified (max_abs_error=0.0).",
+      "claim_forbidden": "Neural training before new DEC. Phase 7 full run before new DEC. Treating proxy as observed births. KZ claims for PT. Causal language. Pooled FR/PT/NL claims without concept harmonisation DEC."
     }
   ]
 }

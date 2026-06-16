@@ -1,0 +1,142 @@
+{
+  "experiment": "DEC-063",
+  "gate_version": "DEC-063-v1",
+  "decision": "GRANULAR_FR_PT_NL_PREFLIGHT_READY",
+  "n_pass": 10,
+  "n_fail": 0,
+  "critical_fail": [],
+  "secondary_fail": [],
+  "gates": [
+    {
+      "gate_id": "G1",
+      "verdict": "PASS",
+      "value": {
+        "births_83631NED": true,
+        "stock_81575NED": true,
+        "crosswalk_84721NED": true,
+        "proxy_panel": true
+      },
+      "threshold": {
+        "all_present": true
+      },
+      "note": "All source files must exist before evidence model is declared ready."
+    },
+    {
+      "gate_id": "G2",
+      "verdict": "PASS",
+      "value": {
+        "n_gm": 0,
+        "n_cr": 40
+      },
+      "threshold": {
+        "n_gm": 0,
+        "min_n_cr": 40
+      },
+      "note": "83631NED confirmed COROP-only. Cannot provide direct gemeente births."
+    },
+    {
+      "gate_id": "G3",
+      "verdict": "PASS",
+      "value": {
+        "metric_col": "Vestigingen_1",
+        "evidence_type": "observed_stock",
+        "has_gemeente": true
+      },
+      "threshold": {
+        "metric": "Vestigingen_1",
+        "evidence_type": "observed_stock"
+      },
+      "note": "81575NED is establishment stock, not births. Must be marked observed_stock."
+    },
+    {
+      "gate_id": "G4",
+      "verdict": "PASS",
+      "value": {
+        "reagg_status": "PASS",
+        "max_abs_error": 0.0,
+        "max_rel_error": 0.0
+      },
+      "threshold": {
+        "abs_tol": 5.0,
+        "rel_tol": 0.001
+      },
+      "note": "Proxy must re-aggregate to observed COROP births (mathematical identity). Failure = internal inconsistency in proxy construction."
+    },
+    {
+      "gate_id": "G5",
+      "verdict": "PASS",
+      "value": {
+        "bad_fr": [],
+        "bad_pt": []
+      },
+      "threshold": {
+        "no_proxy_in_fr_or_pt": true
+      },
+      "note": "FR and PT are observed_births. Proxy is NL-gemeente only."
+    },
+    {
+      "gate_id": "G6",
+      "verdict": "PASS",
+      "value": {
+        "kz_all_nan": true,
+        "kz_has_zeros": false
+      },
+      "threshold": {
+        "kz_all_nan": true,
+        "kz_no_zeros": true
+      },
+      "note": "PT KZ (Finance) definitionally excluded from INE enterprise births."
+    },
+    {
+      "gate_id": "G7",
+      "verdict": "PASS",
+      "value": {
+        "stock_raw_ok": true,
+        "births_raw_ok": true,
+        "crosswalk_raw_ok": true
+      },
+      "threshold": {
+        "max_raw_size_mb": 2
+      },
+      "note": "Raw CBS API responses must not be committed. Manifests with URLs suffice."
+    },
+    {
+      "gate_id": "G8",
+      "verdict": "PASS",
+      "value": {
+        "n_pass": 66,
+        "n_fail": 0
+      },
+      "threshold": {
+        "n_fail": 0
+      },
+      "note": "tests/test_granular_fr_pt_nl_evidence_model.py must be all green."
+    },
+    {
+      "gate_id": "G9",
+      "verdict": "PASS",
+      "value": {
+        "manifest_ok": true,
+        "report_ok": true
+      },
+      "threshold": {
+        "no_causal_language": true
+      },
+      "note": "Language must be: 'association', 'precedence', 'predictive impact', 'proxy'."
+    },
+    {
+      "gate_id": "G10",
+      "verdict": "PASS",
+      "value": {
+        "report": true,
+        "contract": true,
+        "codex": true,
+        "registry": true
+      },
+      "threshold": {
+        "all_updated": true
+      },
+      "note": "Full documentation trail required before granular training may begin."
+    }
+  ]
+}
