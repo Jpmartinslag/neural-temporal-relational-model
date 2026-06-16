@@ -1,0 +1,700 @@
+{
+  "experiment": "DEC-056-CORRECTED",
+  "protocol": "P0_trained_checkpoint",
+  "run_note": "Trained checkpoint (DEC-055 best seed). Replaces DEC056_PREVIOUS_RUN_INVALID.",
+  "checkpoint_path": "data/processed/phase16_dec055/shared_relation_encoder_best.pt",
+  "checkpoint_hash": "39b30a52da2ad330",
+  "encoder_params": 2215,
+  "n_p0_records": 1096,
+  "presence_stats": {
+    "mean": 0.6481385365955215,
+    "max": 0.935366153717041,
+    "above_threshold": 829,
+    "threshold": 0.55
+  },
+  "stability_by_country": {
+    "FR": 0.8197633288314362,
+    "NL": 0.4116127510879586,
+    "PT": 0.5926472024216386
+  },
+  "covid_analysis": {
+    "FR": {
+      "pre_vs_covid": 0.3553283169335649,
+      "covid_vs_post": NaN,
+      "pre_vs_post": NaN
+    },
+    "NL": {
+      "pre_vs_covid": NaN,
+      "covid_vs_post": NaN,
+      "pre_vs_post": NaN
+    },
+    "PT": {
+      "pre_vs_covid": 0.03779904306220096,
+      "covid_vs_post": NaN,
+      "pre_vs_post": NaN
+    }
+  },
+  "controls": {
+    "real_presence_logit_mean": 0.6871243624814919,
+    "control_presence_logit_means": {
+      "permuted_years": 0.7159375085362366,
+      "permuted_sectors": 0.5087347840060049,
+      "permuted_regions": 0.6871251112648419
+    }
+  },
+  "phase7_comparison": {
+    "phase7_sign_concordance": 0.4375,
+    "phase7_n_compared": 16,
+    "phase7_pairs_compared": [
+      {
+        "country": "PT",
+        "window": "2014-2019",
+        "pair": "BE\u2192MN",
+        "p7_beta": -0.281,
+        "p7_sign": "negative",
+        "enc_presence": 0.642,
+        "enc_sign": "positive",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2014-2019",
+        "pair": "MN\u2192JZ",
+        "p7_beta": -0.311,
+        "p7_sign": "negative",
+        "enc_presence": 0.709,
+        "enc_sign": "positive",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2014-2019",
+        "pair": "MN\u2192OQ",
+        "p7_beta": -0.245,
+        "p7_sign": "negative",
+        "enc_presence": 0.856,
+        "enc_sign": "positive",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2014-2019",
+        "pair": "OQ\u2192JZ",
+        "p7_beta": -0.328,
+        "p7_sign": "negative",
+        "enc_presence": 0.43,
+        "enc_sign": "positive",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "FZ\u2192BE",
+        "p7_beta": 0.255,
+        "p7_sign": "positive",
+        "enc_presence": 0.853,
+        "enc_sign": "positive",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "GI\u2192BE",
+        "p7_beta": 0.362,
+        "p7_sign": "positive",
+        "enc_presence": 0.895,
+        "enc_sign": "positive",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "JZ\u2192BE",
+        "p7_beta": 0.194,
+        "p7_sign": "positive",
+        "enc_presence": 0.777,
+        "enc_sign": "positive",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "JZ\u2192MN",
+        "p7_beta": 0.213,
+        "p7_sign": "positive",
+        "enc_presence": 0.787,
+        "enc_sign": "positive",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "MN\u2192JZ",
+        "p7_beta": -0.289,
+        "p7_sign": "negative",
+        "enc_presence": 0.767,
+        "enc_sign": "positive",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "MN\u2192OQ",
+        "p7_beta": -0.287,
+        "p7_sign": "negative",
+        "enc_presence": 0.861,
+        "enc_sign": "positive",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "OQ\u2192JZ",
+        "p7_beta": -0.267,
+        "p7_sign": "negative",
+        "enc_presence": 0.778,
+        "enc_sign": "positive",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2017-2022",
+        "pair": "BE\u2192MN",
+        "p7_beta": -0.228,
+        "p7_sign": "negative",
+        "enc_presence": 0.895,
+        "enc_sign": "positive",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2017-2022",
+        "pair": "GI\u2192BE",
+        "p7_beta": 0.231,
+        "p7_sign": "positive",
+        "enc_presence": 0.88,
+        "enc_sign": "positive",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2017-2022",
+        "pair": "GI\u2192FZ",
+        "p7_beta": 0.212,
+        "p7_sign": "positive",
+        "enc_presence": 0.904,
+        "enc_sign": "positive",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2017-2022",
+        "pair": "GI\u2192JZ",
+        "p7_beta": -0.22,
+        "p7_sign": "negative",
+        "enc_presence": 0.83,
+        "enc_sign": "positive",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2017-2022",
+        "pair": "MN\u2192BE",
+        "p7_beta": 0.205,
+        "p7_sign": "positive",
+        "enc_presence": 0.857,
+        "enc_sign": "positive",
+        "agree": true
+      }
+    ]
+  },
+  "replicated_pairs": [],
+  "top_pairs": [
+    {
+      "country": "FR",
+      "source_sector": "GI",
+      "target_sector": "LZ",
+      "score_presence": 0.8573289513587952,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2019,
+      "window_end": 2025,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "FR",
+      "source_sector": "GI",
+      "target_sector": "FZ",
+      "score_presence": 0.8521931171417236,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2019,
+      "window_end": 2025,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "FR",
+      "source_sector": "GI",
+      "target_sector": "OQ",
+      "score_presence": 0.8317778706550598,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2019,
+      "window_end": 2025,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "FR",
+      "source_sector": "GI",
+      "target_sector": "KZ",
+      "score_presence": 0.8265262246131897,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2019,
+      "window_end": 2025,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "FR",
+      "source_sector": "GI",
+      "target_sector": "RU",
+      "score_presence": 0.8216964602470398,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2019,
+      "window_end": 2025,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "NL",
+      "source_sector": "KZ",
+      "target_sector": "FZ",
+      "score_presence": 0.935366153717041,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2019,
+      "window_end": 2025,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "NL",
+      "source_sector": "KZ",
+      "target_sector": "GI",
+      "score_presence": 0.9278530478477478,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2019,
+      "window_end": 2025,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "NL",
+      "source_sector": "KZ",
+      "target_sector": "LZ",
+      "score_presence": 0.9095516800880432,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2019,
+      "window_end": 2025,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "NL",
+      "source_sector": "KZ",
+      "target_sector": "RU",
+      "score_presence": 0.9074341654777527,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2019,
+      "window_end": 2025,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "NL",
+      "source_sector": "KZ",
+      "target_sector": "MN",
+      "score_presence": 0.9061047434806824,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2019,
+      "window_end": 2025,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "PT",
+      "source_sector": "FZ",
+      "target_sector": "OQ",
+      "score_presence": 0.9286679029464722,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2014,
+      "window_end": 2020,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "PT",
+      "source_sector": "GI",
+      "target_sector": "OQ",
+      "score_presence": 0.9238781929016113,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2014,
+      "window_end": 2020,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "PT",
+      "source_sector": "LZ",
+      "target_sector": "JZ",
+      "score_presence": 0.9230332374572754,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2010,
+      "window_end": 2016,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "PT",
+      "source_sector": "OQ",
+      "target_sector": "FZ",
+      "score_presence": 0.9228147268295288,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2016,
+      "window_end": 2022,
+      "validation_status": "COVID_SENSITIVE"
+    },
+    {
+      "country": "PT",
+      "source_sector": "OQ",
+      "target_sector": "GI",
+      "score_presence": 0.9209372401237488,
+      "score_sign": NaN,
+      "inferred_lag": 1,
+      "inferred_sign": "positive",
+      "confidence": 0.5,
+      "window_start": 2016,
+      "window_end": 2022,
+      "validation_status": "COVID_SENSITIVE"
+    }
+  ],
+  "classified_counts": {
+    "ASSOCIATION_CANDIDATE": 0,
+    "REPLICATED_ASSOCIATION": 0,
+    "COVID_SENSITIVE": 194,
+    "COUNTRY_SPECIFIC": 0,
+    "NOT_SUPPORTED": 6
+  },
+  "gates": {
+    "R1": {
+      "verdict": "PASS",
+      "description": "Safety: no leakage/NaN/Inf/future-mix/cross-pooling",
+      "evidence": {
+        "leakage_check": true,
+        "nan_count": 0,
+        "inf_count": 0,
+        "cross_country_pooling": false,
+        "pt_kz_excluded": true,
+        "issues": []
+      }
+    },
+    "R2": {
+      "verdict": "PASS",
+      "description": "Negative controls degrade presence score by >= 0.05",
+      "evidence": {
+        "real_mean": 0.6871243624814919,
+        "delta_permuted_years": -0.02881314605474472,
+        "delta_permuted_sectors": 0.17838957847548698,
+        "delta_permuted_regions": -7.487833499908447e-07,
+        "issues": []
+      }
+    },
+    "R3": {
+      "verdict": "PASS",
+      "description": "Top-10 Spearman pair-ranking stability > 0.30 in >= 2 countries",
+      "evidence": {
+        "stability_FR": 0.8197633288314362,
+        "stability_NL": 0.4116127510879586,
+        "stability_PT": 0.5926472024216386,
+        "n_countries_pass": 3
+      }
+    },
+    "R4": {
+      "verdict": "FAIL",
+      "description": "Encoder sign agrees with Phase 7 beta direction in > 50% promoted edges",
+      "evidence": {
+        "sign_concordance": 0.4375,
+        "n_edges_compared": 16,
+        "phase7_pairs": [
+          {
+            "country": "PT",
+            "window": "2014-2019",
+            "pair": "BE\u2192MN",
+            "p7_beta": -0.281,
+            "p7_sign": "negative",
+            "enc_presence": 0.642,
+            "enc_sign": "positive",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2014-2019",
+            "pair": "MN\u2192JZ",
+            "p7_beta": -0.311,
+            "p7_sign": "negative",
+            "enc_presence": 0.709,
+            "enc_sign": "positive",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2014-2019",
+            "pair": "MN\u2192OQ",
+            "p7_beta": -0.245,
+            "p7_sign": "negative",
+            "enc_presence": 0.856,
+            "enc_sign": "positive",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2014-2019",
+            "pair": "OQ\u2192JZ",
+            "p7_beta": -0.328,
+            "p7_sign": "negative",
+            "enc_presence": 0.43,
+            "enc_sign": "positive",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "FZ\u2192BE",
+            "p7_beta": 0.255,
+            "p7_sign": "positive",
+            "enc_presence": 0.853,
+            "enc_sign": "positive",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "GI\u2192BE",
+            "p7_beta": 0.362,
+            "p7_sign": "positive",
+            "enc_presence": 0.895,
+            "enc_sign": "positive",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "JZ\u2192BE",
+            "p7_beta": 0.194,
+            "p7_sign": "positive",
+            "enc_presence": 0.777,
+            "enc_sign": "positive",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "JZ\u2192MN",
+            "p7_beta": 0.213,
+            "p7_sign": "positive",
+            "enc_presence": 0.787,
+            "enc_sign": "positive",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "MN\u2192JZ",
+            "p7_beta": -0.289,
+            "p7_sign": "negative",
+            "enc_presence": 0.767,
+            "enc_sign": "positive",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "MN\u2192OQ",
+            "p7_beta": -0.287,
+            "p7_sign": "negative",
+            "enc_presence": 0.861,
+            "enc_sign": "positive",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "OQ\u2192JZ",
+            "p7_beta": -0.267,
+            "p7_sign": "negative",
+            "enc_presence": 0.778,
+            "enc_sign": "positive",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2017-2022",
+            "pair": "BE\u2192MN",
+            "p7_beta": -0.228,
+            "p7_sign": "negative",
+            "enc_presence": 0.895,
+            "enc_sign": "positive",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2017-2022",
+            "pair": "GI\u2192BE",
+            "p7_beta": 0.231,
+            "p7_sign": "positive",
+            "enc_presence": 0.88,
+            "enc_sign": "positive",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2017-2022",
+            "pair": "GI\u2192FZ",
+            "p7_beta": 0.212,
+            "p7_sign": "positive",
+            "enc_presence": 0.904,
+            "enc_sign": "positive",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2017-2022",
+            "pair": "GI\u2192JZ",
+            "p7_beta": -0.22,
+            "p7_sign": "negative",
+            "enc_presence": 0.83,
+            "enc_sign": "positive",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2017-2022",
+            "pair": "MN\u2192BE",
+            "p7_beta": 0.205,
+            "p7_sign": "positive",
+            "enc_presence": 0.857,
+            "enc_sign": "positive",
+            "agree": true
+          }
+        ]
+      }
+    },
+    "R5": {
+      "verdict": "FAIL",
+      "description": "At least 1 pair replicated in >= 2 countries",
+      "evidence": {
+        "replicated_pairs": [],
+        "threshold": 0.55,
+        "reason": "Pairs above 0.55 in \u22652 countries"
+      }
+    },
+    "R6": {
+      "verdict": "FAIL",
+      "description": "Country-specific associations identified (present in 1 country only)",
+      "evidence": {
+        "FR": 0,
+        "NL": 0,
+        "PT": 0,
+        "specific_by_country": {
+          "FR": [],
+          "NL": [],
+          "PT": []
+        }
+      }
+    },
+    "R7": {
+      "verdict": "PASS",
+      "description": "COVID period reported separately with instability documentation",
+      "evidence": {
+        "covid_reported_separately": true,
+        "pre_covid_stability": 0.19656367999788293,
+        "covid_stability": null,
+        "post_covid_stability": null,
+        "notes": []
+      }
+    },
+    "R8": {
+      "verdict": "PASS",
+      "description": "Top-5 pairs have direction/sign/lag/confidence/window documented",
+      "evidence": {
+        "n_top_pairs": 15,
+        "issues": []
+      }
+    },
+    "R9": {
+      "verdict": "PASS",
+      "description": "No causal language in report or outputs",
+      "evidence": {
+        "causal_terms_found": [],
+        "checked_terms": [
+          "causes",
+          "caused by",
+          "causal",
+          "causality",
+          "causation",
+          "Granger cause",
+          "drives",
+          "effect of",
+          "impact of",
+          "leads to"
+        ]
+      }
+    },
+    "R10": {
+      "verdict": "PASS",
+      "description": "Outputs schema-valid for Observatory integration",
+      "evidence": {
+        "csv_schema_valid": true,
+        "json_schema_valid": true,
+        "required_csv_cols_present": true,
+        "issues": []
+      }
+    }
+  },
+  "gate_report": "| Gate | Description | Verdict |\n|------|-------------|---------|\n| R1 | Safety: no leakage/NaN/Inf/future-mix/cross-pooling | \u2713 PASS |\n| R2 | Negative controls degrade presence score by >= 0.05 | \u2713 PASS |\n| R3 | Top-10 Spearman pair-ranking stability > 0.30 in >= 2 countries | \u2713 PASS |\n| R4 | Encoder sign agrees with Phase 7 beta direction in > 50% promoted edges | \u2717 FAIL |\n| R5 | At least 1 pair replicated in >= 2 countries | \u2717 FAIL |\n| R6 | Country-specific associations identified (present in 1 country only) | \u2717 FAIL |\n| R7 | COVID period reported separately with instability documentation | \u2713 PASS |\n| R8 | Top-5 pairs have direction/sign/lag/confidence/window documented | \u2713 PASS |\n| R9 | No causal language in report or outputs | \u2713 PASS |\n| R10 | Outputs schema-valid for Observatory integration | \u2713 PASS |",
+  "decision": "REAL_SHARED_RELATION_PARTIAL",
+  "n_gates_pass": 7,
+  "n_gates_fail": 3,
+  "n_gates_ne": 0,
+  "elapsed_seconds": 2.1428911685943604,
+  "previous_run_status": "DEC056_PREVIOUS_RUN_INVALID_FOR_MODEL_VALIDATION",
+  "previous_run_note": "Prior P0 used randomly initialized encoder \u2014 valid only as pipeline preflight"
+}

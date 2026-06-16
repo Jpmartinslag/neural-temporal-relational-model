@@ -1,0 +1,49 @@
+{
+  "checkpoint_path": "data/processed/phase16_dec055/shared_relation_encoder_best.pt",
+  "sha256_prefix": "39b30a52da2ad330",
+  "best_seed": 30,
+  "best_unseen_pair_auc": 0.7517241379310345,
+  "all_seed_oos_aucs": {
+    "10": 0.7448275862068965,
+    "20": 0.7310344827586206,
+    "30": 0.7517241379310345,
+    "40": 0.5448275862068965,
+    "50": 0.6758620689655173
+  },
+  "n_encoder_params": 2215,
+  "architecture": {
+    "class": "SharedRelationEncoder",
+    "input_dim": 26,
+    "encoder_hidden1": 32,
+    "encoder_hidden2": 32
+  },
+  "training": {
+    "max_epochs": 100,
+    "patience": 10,
+    "lr": 0.001,
+    "seeds": [
+      10,
+      20,
+      30,
+      40,
+      50
+    ],
+    "holdout_frac": 0.3,
+    "window_size": 8
+  },
+  "gate_summary": {
+    "S1": "PASS",
+    "S2": "PASS",
+    "S3": "PASS",
+    "S4": "PASS",
+    "S5": "PASS",
+    "S6": "PASS",
+    "S7": "FAIL",
+    "S8": "PASS",
+    "S9": "PASS",
+    "S10": "PASS"
+  },
+  "n_gates_pass": 9,
+  "elapsed_seconds": 181.4251024723053,
+  "experiment": "DEC-055"
+}

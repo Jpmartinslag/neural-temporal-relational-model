@@ -30,6 +30,7 @@ S1/S2 are checked first. If either fails, experiment stops.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import logging
 import math
@@ -240,6 +241,15 @@ def eval_old_head(head: GraphRelationHead, true_relations: list) -> dict:
 
 # ── Training ──────────────────────────────────────────────────────────────────
 
+def _state_dict_hash(state_dict: dict) -> str:
+    """SHA256 of encoder state dict (weights only)."""
+    h = hashlib.sha256()
+    for k in sorted(state_dict.keys()):
+        h.update(k.encode())
+        h.update(state_dict[k].cpu().numpy().tobytes())
+    return h.hexdigest()[:16]
+
+
 def train_shared_encoder(
     encoder: SharedRelationEncoder,
     train_envs: list,
@@ -261,6 +271,8 @@ def train_shared_encoder(
     opt = optim.Adam(params, lr=LR)
 
     best_loss = math.inf
+    best_epoch = 0
+    best_encoder_state: dict | None = None
     patience_count = 0
     history = []
     grad_norms = []
@@ -346,6 +358,8 @@ def train_shared_encoder(
 
         if mean_loss < best_loss - 1e-5:
             best_loss = mean_loss
+            best_epoch = epoch
+            best_encoder_state = {k: v.clone() for k, v in encoder.state_dict().items()}
             patience_count = 0
         else:
             patience_count += 1
@@ -354,6 +368,12 @@ def train_shared_encoder(
             log.debug(f"  Early stop at epoch {epoch}, best_loss={best_loss:.4f}")
             break
 
+    # Restore best weights
+    if best_encoder_state is not None:
+        encoder.load_state_dict(best_encoder_state)
+
+    history[-1]["best_epoch"] = best_epoch
+    history[-1]["best_loss"] = best_loss
     return encoder, history, grad_norms
 
 
@@ -704,6 +724,8 @@ def run_one_seed(seed: int, smoke: bool = False) -> dict:
         valid = [x for x in lst if not math.isnan(x)]
         return float(np.mean(valid)) if valid else float("nan")
 
+    enc_hash = _state_dict_hash(enc_no_adapter.state_dict())
+
     return {
         "seed": seed,
         # Sanity / S1/S2
@@ -745,9 +767,11 @@ def run_one_seed(seed: int, smoke: bool = False) -> dict:
         "final_loss_c1": hist_c1[-1]["loss"] if hist_c1 else float("nan"),
         "final_grad_norm_c1": grads_c1[-1] if grads_c1 else float("nan"),
         "n_epochs_c2": len(hist_c2),
+        # Checkpoint
+        "encoder_hash": enc_hash,
         # Embeddings
         "n_embedding_records": len(embedding_records),
-    }, embedding_records
+    }, embedding_records, enc_no_adapter
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────
@@ -765,12 +789,14 @@ def main(args: argparse.Namespace) -> None:
 
     per_seed_results = []
     all_embeddings = []
+    seed_encoders: list[tuple[int, float, SharedRelationEncoder]] = []  # (seed, oos_pair_auc, encoder)
 
     for seed in seeds:
         log.info(f"\n{'='*50}\nRunning seed {seed}...")
-        seed_result, embed_records = run_one_seed(seed, smoke=smoke)
+        seed_result, embed_records, trained_enc = run_one_seed(seed, smoke=smoke)
         per_seed_results.append(seed_result)
         all_embeddings.extend(embed_records)
+        seed_encoders.append((seed, seed_result.get("unseen_pair_auc_mean", 0.0), trained_enc))
 
         log.info(
             f"  Seed {seed}: IS_AUC={seed_result['in_sample_auc_mean']:.3f}, "
@@ -888,6 +914,68 @@ def main(args: argparse.Namespace) -> None:
         "n_embedding_records": len(all_embeddings),
     }
 
+    # ── Save best checkpoint ───────────────────────────────────────────────────
+    best_seed, best_oos_auc, best_encoder = max(seed_encoders, key=lambda x: x[1])
+    log.info(f"Best seed: {best_seed} (unseen_pair_auc={best_oos_auc:.3f})")
+
+    ckpt_path = out_dir / "shared_relation_encoder_best.pt"
+    best_state = best_encoder.state_dict()
+    torch.save({
+        "model_state_dict": best_state,
+        "architecture": {
+            "class": "SharedRelationEncoder",
+            "input_dim": 26,
+            "encoder_hidden1": 32,
+            "encoder_hidden2": 32,
+        },
+        "training": {
+            "best_seed": best_seed,
+            "best_unseen_pair_auc": best_oos_auc,
+            "max_epochs": MAX_EPOCHS,
+            "lr": LR,
+            "seeds": seeds,
+        },
+        "experiment": "DEC-055",
+    }, ckpt_path)
+
+    ckpt_hash = _state_dict_hash(best_state)
+
+    # Manifest
+    manifest = {
+        "checkpoint_path": str(ckpt_path),
+        "sha256_prefix": ckpt_hash,
+        "best_seed": best_seed,
+        "best_unseen_pair_auc": best_oos_auc,
+        "all_seed_oos_aucs": {str(s): float(a) for s, a, _ in seed_encoders},
+        "n_encoder_params": aggregated["n_encoder_params"],
+        "architecture": {
+            "class": "SharedRelationEncoder",
+            "input_dim": 26,
+            "encoder_hidden1": 32,
+            "encoder_hidden2": 32,
+        },
+        "training": {
+            "max_epochs": MAX_EPOCHS,
+            "patience": PATIENCE,
+            "lr": LR,
+            "seeds": seeds,
+            "holdout_frac": HOLDOUT_FRAC,
+            "window_size": WINDOW_SIZE,
+        },
+        "gate_summary": {gid: g.verdict for gid, g in gates.items()},
+        "n_gates_pass": n_pass,
+        "elapsed_seconds": elapsed,
+        "experiment": "DEC-055",
+    }
+    manifest_path = out_dir / "checkpoint_manifest.json"
+    with open(manifest_path, "w") as f:
+        json.dump(manifest, f, indent=2)
+    log.info(f"Checkpoint saved: {ckpt_path}  (hash={ckpt_hash})")
+    log.info(f"Manifest saved:   {manifest_path}")
+    results_out["checkpoint_path"] = str(ckpt_path)
+    results_out["checkpoint_hash"] = ckpt_hash
+    results_out["checkpoint_manifest"] = str(manifest_path)
+
     # Save results
     out_path = out_dir / "dec055_results.json"
     with open(out_path, "w") as f:
@@ -925,6 +1013,8 @@ def main(args: argparse.Namespace) -> None:
     print(f"  Perm-labels AUC:       {aggregated['permuted_pair_labels_auc_mean']:.3f}")
     print(f"\nElapsed: {elapsed:.1f}s")
     print(f"Results: {out_path}")
+    print(f"Checkpoint: {ckpt_path}  (hash={ckpt_hash}, best_seed={best_seed})")
+    print(f"Manifest: {manifest_path}")
 
 
 if __name__ == "__main__":
