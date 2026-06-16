@@ -1,0 +1,104 @@
+{
+  "audit": "DEC-061",
+  "title": "PT/NL Municipal Sector Data Availability Audit",
+  "timestamp": "2026-06-16T12:03:31.726426Z",
+  "countries": [
+    "FR",
+    "PT",
+    "NL"
+  ],
+  "reference_country": "FR",
+  "reference_n_units": 280,
+  "findings": {
+    "PT": {
+      "status": "AVAILABLE",
+      "granularity": "municipality",
+      "n_units_continente": 278,
+      "n_units_total": 308,
+      "source": "INE Portugal API (indicators 0009703/0014099)",
+      "years": "2008-2023 confirmed",
+      "concept": "enterprise_birth",
+      "sector": "CAE sections A-S (17/18, K absent)",
+      "a10_mappable": "8/9 HERALD A10 sectors",
+      "verdict": "READY"
+    },
+    "NL": {
+      "status": "BLOCKED (births at gemeente level)",
+      "granularity": "COROP (40) \u2014 gemeente births NOT available via CBS Open Data",
+      "n_units": 40,
+      "source": "CBS StatLine (83631NED)",
+      "years": "2007-2025",
+      "concept": "local_unit_opening",
+      "sector": "SBI 2008 aggregates (A10 compatible)",
+      "a10_mappable": "9/9 HERALD A10 sectors",
+      "verdict": "BLOCKED_OPEN_DATA \u2014 requires CBS Microdata or alternative source",
+      "alternative": "CBS 81575NED has gemeente x stock x SBI (not births)"
+    }
+  },
+  "comparability": {
+    "FR_vs_PT": {
+      "n_units": "280 vs 278 continente (virtually identical)",
+      "concept_diff": "establishment_creation (FR) vs enterprise_birth (PT) \u2014 different target concepts",
+      "sector_diff": "FR has KZ; PT KZ absent by definition",
+      "verdict": "COMPARABLE_GRANULARITY; CONCEPT_DIFFERENCE_DOCUMENTED"
+    },
+    "FR_vs_NL": {
+      "n_units": "280 vs 40 COROP (FR is 7x more granular than current NL)",
+      "gemeente_potential": "280 vs 342 potential gemeente (blocked)",
+      "verdict": "GRANULARITY_GAP_REMAINS if gemeente blocked"
+    }
+  },
+  "phase7_viability": {
+    "PT_municipal": {
+      "n_territories": 278,
+      "years": 15,
+      "n_samples": 4170,
+      "a10_sectors": 8,
+      "verdict": "MEETS_PHASE7_CRITERIA"
+    },
+    "NL_gemeente": {
+      "n_territories": null,
+      "verdict": "BLOCKED"
+    }
+  },
+  "decision": "PT_READY_NL_BLOCKED",
+  "decision_options": [
+    "PT_NL_MUNICIPAL_READY",
+    "PT_READY_NL_BLOCKED",
+    "PT_READY_NL_NEEDS_ALT_SOURCE",
+    "PT_BLOCKED_NL_READY",
+    "MUNICIPAL_GRANULARITY_BLOCKED",
+    "AUDIT_INCONCLUSIVE"
+  ],
+  "next_steps": [
+    "1. Build PT municipal panel from INE 0009703/0014099 (confirmed available)",
+    "2. For NL: contact CBS Research Center for microdata access, or use COROP at current resolution",
+    "3. Document concept differences FR/PT/NL before cross-country comparison",
+    "4. Resolve NUTS2013/NUTS2024 geocod alignment for PT 2022/2023 boundary"
+  ],
+  "manifest": {
+    "pt_api_urls": [
+      "https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&varcd=0009703&Dim1=S7A{year}&lang=PT",
+      "https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&varcd=0014099&Dim1=S7A{year}&lang=PT"
+    ],
+    "nl_api_urls": [
+      "https://opendata.cbs.nl/ODataFeed/OData/83631NED/",
+      "https://opendata.cbs.nl/ODataFeed/OData/81575NED/",
+      "https://opendata.cbs.nl/ODataFeed/OData/81841NED/"
+    ],
+    "tables_probed": [
+      "83631NED",
+      "81841NED",
+      "81575NED",
+      "80234ned"
+    ],
+    "indicators_probed": [
+      "0009703",
+      "0014099",
+      "0009702",
+      "0014098"
+    ],
+    "probe_method": "Live HTTP API call (CBS OData v3 Atom; INE JSON)",
+    "probe_timestamp": "2026-06-16T12:03:31.726426Z"
+  }
+}

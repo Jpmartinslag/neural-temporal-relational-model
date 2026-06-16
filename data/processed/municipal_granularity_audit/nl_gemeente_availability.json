@@ -1,0 +1,67 @@
+{
+  "country": "NL",
+  "audit_decision": "DEC-061",
+  "probe_timestamp": "2026-06-16T11:57:25.212336Z",
+  "api_reachable": true,
+  "cbs_api_status": "CONFIRMED_LIVE (OData v3 Atom format, accessible)",
+  "finding_summary": "NL gemeente x oprichtingen x SBI table DOES NOT EXIST in CBS Open Data as of 2026-06-16.",
+  "tables_probed": [
+    {
+      "table": "83631NED",
+      "has_gemeente": false,
+      "has_oprichtingen": true,
+      "verdict": "OPRICHTINGEN_COROP_ONLY"
+    },
+    {
+      "table": "81841NED",
+      "has_gemeente": false,
+      "has_oprichtingen": true,
+      "verdict": "OPRICHTINGEN_COROP_ONLY (2007-2013 only)"
+    },
+    {
+      "table": "81575NED",
+      "has_gemeente": true,
+      "has_oprichtingen": false,
+      "verdict": "STOCK_GEMEENTE_NOT_BIRTHS"
+    },
+    {
+      "table": "80234ned",
+      "has_gemeente": true,
+      "has_oprichtingen": false,
+      "verdict": "STOCK_GEMEENTE_2006-2010_ONLY"
+    }
+  ],
+  "gemeente_births_available": false,
+  "gemeente_births_verdict": "BLOCKED \u2014 No CBS Open Data table provides oprichtingen (births/openings) at gemeente x SBI x jaar resolution.",
+  "available_at_gemeente": "establishment STOCK (81575NED: 483 gemeenten x SBI x 2007-2026)",
+  "available_at_corop": "oprichtingen (83631NED: 40 COROP x SBI x 2007-2025)",
+  "european_netherlands_filter": {
+    "caribean_nl": [
+      "BQ1 Bonaire",
+      "BQ2 Sint Eustatius",
+      "BQ3 Saba"
+    ],
+    "note": "Caribbean NL (BES) uses different statistical system. CBS 83631NED and 81575NED cover European Netherlands only. No BES codes appear in RegioS dimensions.",
+    "filter_needed": false
+  },
+  "municipal_boundary_changes": "Significant. NL has ~100+ municipal mergers since 2007. 483 GM codes in 81575NED reflect historical municipalities. In 2023 approximately 342 European municipalities exist after mergers. Time-consistent panel requires concordance tables.",
+  "sbi_to_a10_mapping": {
+    "possible": true,
+    "note": "81575NED uses SBI section-level codes (A-U, 20 codes), same as HERALD A10 except: A10 is section-level already. Mapping is direct for sections G,H,I\u2192GI; B+C+D+E\u2192BE; M+N\u2192MN; O+P+Q\u2192OQ; R+S\u2192RU. K and L separate in 81575NED."
+  },
+  "alternative_sources": [
+    "CBS Microdata (remote access required): may have gemeente x oprichtingen x SBI but not via Open Data API.",
+    "Eurostat BD_HGNACE_R: covers NL at NUTS3 (COROP) level, 2007-2022, no gemeente.",
+    "KvK Kamer van Koophandel: commercial company register, not via open API.",
+    "Attention: no alternative CBS open API table found with gemeente x births x SBI."
+  ],
+  "verdict": "NL_GEMEENTE_BIRTHS_BLOCKED_VIA_CBS_OPEN_DATA",
+  "recommended_path": "CBS Microdata access (remote via CBS Research Center) or aggregate COROP stays at current resolution.",
+  "risks": [
+    "CBS statistical disclosure suppression: for small municipalities, cell counts suppressed (privacy)",
+    "Municipal boundary changes (mergers): ~342 current vs 483 historical GM codes",
+    "Caribbean NL (BES) must be excluded \u2014 confirmed absent from CBS Open Data RegioS",
+    "Concept gap: 81575NED is stock, not births \u2014 use as auxiliary only",
+    "No oprichtingen table provides gemeente granularity"
+  ]
+}

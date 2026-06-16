@@ -1,0 +1,9 @@
+year,indicator,n_municipalities_total,n_municipalities_continente,n_municipalities_madeira,n_municipalities_acores,cae_sections_present,has_K_finance,data_status,url,probe_timestamp
+2008,0009703,308,297,11,0,"A,B,C,D,E,F,G,H,I,J,L,M,N,P,Q,R,S",False,CONFIRMED_LIVE_API,https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&varcd=0009703&Dim1=S7A2008&lang=PT,2026-06-16T11:53:27.567155Z
+2010,0009703,308,297,11,0,"A,B,C,D,E,F,G,H,I,J,L,M,N,P,Q,R,S",False,CONFIRMED_LIVE_API,https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&varcd=0009703&Dim1=S7A2010&lang=PT,2026-06-16T11:53:27.567155Z
+2015,0009703,308,297,11,0,"A,B,C,D,E,F,G,H,I,J,L,M,N,P,Q,R,S",False,CONFIRMED_LIVE_API,https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&varcd=0009703&Dim1=S7A2015&lang=PT,2026-06-16T11:53:27.567155Z
+2019,0009703,308,297,11,0,"A,B,C,D,E,F,G,H,I,J,L,M,N,P,Q,R,S",False,CONFIRMED_LIVE_API,https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&varcd=0009703&Dim1=S7A2019&lang=PT,2026-06-16T11:53:27.567155Z
+2020,0009703,308,297,11,0,"A,B,C,D,E,F,G,H,I,J,L,M,N,P,Q,R,S",False,CONFIRMED_LIVE_API,https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&varcd=0009703&Dim1=S7A2020&lang=PT,2026-06-16T11:53:27.567155Z
+2021,0009703,308,297,11,0,"A,B,C,D,E,F,G,H,I,J,L,M,N,P,Q,R,S",False,CONFIRMED_LIVE_API,https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&varcd=0009703&Dim1=S7A2021&lang=PT,2026-06-16T11:53:27.567155Z
+2022,0009703,308,297,11,0,"A,B,C,D,E,F,G,H,I,J,L,M,N,P,Q,R,S",False,CONFIRMED_LIVE_API,https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&varcd=0009703&Dim1=S7A2022&lang=PT,2026-06-16T11:53:27.567155Z
+2023,0014099,308,297,11,0,"A,B,C,D,E,F,G,H,I,J,L,M,N,P,Q,R,S",False,CONFIRMED_LIVE_API,https://www.ine.pt/ine/json_indicador/pindica.jsp?op=2&varcd=0014099&Dim1=S7A2023&lang=PT,2026-06-16T11:53:27.567155Z
