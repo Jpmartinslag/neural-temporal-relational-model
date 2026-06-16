@@ -1,0 +1,48 @@
+{
+  "experiment": "DEC-063",
+  "evidence_type": "proxy_disaggregated_by_stock_share",
+  "proxy_method": "corop_births_allocated_by_gemeente_stock_share",
+  "source_birth_table": "83631NED",
+  "source_stock_table": "81575NED",
+  "n_rows": 82593,
+  "n_gemeenten": 483,
+  "n_years": 19,
+  "common_years": [
+    2007,
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "n_proxy_computed": 60498,
+  "n_proxy_missing": 22095,
+  "evidence_status_counts": {
+    "proxy_computed": 60498,
+    "no_corop_births_data": 21888,
+    "insufficient_stock_share": 207
+  },
+  "reaggregation_check": {
+    "status": "PASS",
+    "n_checked": 6759,
+    "n_fail": 0,
+    "max_abs_error": 0.0,
+    "max_rel_error": 0.0,
+    "tolerance_abs": 5.0,
+    "tolerance_rel": 0.001
+  },
+  "warning": "estimated_births_gemeente is a PROXY. It is NOT observed births. Claims based on this must be labelled proxy-dependent. Evaluation must report proxy-excluded sensitivity separately."
+}

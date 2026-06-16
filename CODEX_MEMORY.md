@@ -372,3 +372,17 @@ COMPLETE | PT_PANEL_READY_NL_OPEN_DATA_BLOCKED | 10/10 PASS | 89/89 tests
 - Granularity: FR 280 ZE2020 ≈ PT 278 municipalities; NL COROP 40 (fallback)
 - `data/processed/european_panel/pt_municipal_sector_panel.csv`, `data/processed/granular_phase7_preflight/`
 - Next: DEC-063 = Phase 7 at PT municipal level
+
+## DEC-063 — Granular FR/PT/NL Evidence Model (2026-06-16)
+COMPLETE | GRANULAR_FR_PT_NL_PREFLIGHT_READY | 10/10 PASS | 66/66 tests
+- NL gemeente stock (81575NED): 483 GMs × 19 SBI sections × 19 years → 9,177 wide rows (evidence_type=observed_stock)
+- NL gemeente birth proxy: 83631NED COROP births disaggregated by gemeente stock share (82,593 rows; 73% proxy_computed)
+  - Method: share_gm = stock_gm/corop_total; proxy = corop_births × share; reaggregation to COROP exact (max_abs=0.0)
+  - evidence_type=proxy_disaggregated_by_stock_share; NEVER treat as observed_births
+- Crosswalk 84721NED: 355 current GM→CR mappings; 128 historical GMs unmatched (pre-merger)
+- CBS API 10k-row limit: combine year+SBI filter → 9,177 rows/call (year loop, 19 calls)
+- PT KZ structural_absent (Finance excluded from INE); NL KZ present (Finance sector included)
+- Training matrix: 4 rows — FR/PT/NL_COROP (observed), NL_GEMEENTE (proxy)
+- Evaluation must report separately: observed-only, proxy-included, proxy-excluded sensitivity
+- `data/processed/european_panel/nl_gemeente_*`, `reports/HERALD_DEC063_*`, `reports/HERALD_GRANULAR_FR_PT_NL_TRAINING_CONTRACT.md`
+- Next: DEC-064 = Phase 7 at PT municipal level; DEC-065 = NL gemeente Phase 7 (proxy-labelled)
