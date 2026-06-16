@@ -125,16 +125,22 @@
 
 ## Phase 7: DEC-064 — PT Municipal Phase 7 (2026-06-16)
 
-**Status:** `PT_MUNICIPAL_PHASE7_READY_FOR_HPC`. Smoke 10/10 PASS. 52/52 tests PASS (8 skip-full).
+**Status:** `PT_MUNICIPAL_PHASE7_HPC_RUNNING`. Job 7472757 (meso, 208/208 tasks RUNNING).
 
-- Smoke (2018-2023, n_perm=9): 56/56 pares válidos, n_samples 1055–1668 (11× NUTS3).
+- Remote smoke (task 0, n_perm=9): PASS — 31.2s, 7 edges, checksum OK.
+- Full array: 208 tasks × 2h, partition=normal, hpcnode06–hpcnode38 (14 nodes).
+- Smoke local (2018-2023, n_perm=9): 56/56 pares válidos, n_samples 1055–1668 (11× NUTS3).
 - Max |β|=0.078 — abaixo do threshold 0.10. Zero pares promovidos no smoke.
 - Ecological fragmentation: NUTS3→municipal reduz |β| (efeitos menores em unidades menores).
-- HPC: 208 tasks, 30 min/task. Sbatch: `hpc/phase7_sector_precedence/run_phase7_pt_municipal_array.sbatch`. **Não lançar sem autorização.**
-- Medium run (n_perm=99, todas janelas) em background — concluirá em ~6h.
 - DEC-065 DRAFT preparado: `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_DRAFT.md`.
 
-**Next:** Autorizar HPC para PT Phase 7 completo (sbatch pronto). Após resultados finais, decidir DEC-066 (threshold calibration) e DEC-065 (NL gemeente proxy).
+**Post-run (quando 208/208 JSONs presentes):**
+```bash
+ssh meso "ls ~/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_pt_municipal/raw/ | wc -l"
+rsync -avz meso:~/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_pt_municipal/raw/ \
+    /home/jpdark/Downloads/project_recomm/dataset/hpc_results/phase7_pt_municipal/raw/
+```
+**Next:** Aguardar resultados HPC. Após 208/208 JSONs: merge + BH/FDR + gates P1-P10 full. Depois decidir DEC-066 (threshold calibration) e DEC-065 (NL gemeente proxy).
 
 ---
 

@@ -1,7 +1,7 @@
 # HERALD DEC-064: PT Municipal Phase 7 Sector Precedence Audit
 
-**Status:** SMOKE COMPLETE (10/10 PASS) — Medium run pending  
-**Decision:** `PT_MUNICIPAL_PHASE7_READY_FOR_HPC`  
+**Status:** HPC RUNNING — Job 7472757 (meso, 208 tasks, partition=normal)  
+**Decision:** `PT_MUNICIPAL_PHASE7_HPC_SUBMITTED`  
 **Date:** 2026-06-16  
 **Follows:** DEC-063 (GRANULAR_FR_PT_NL_PREFLIGHT_READY)  
 **Gates:** P1-P10, pre-registered before results observed (GATE_VERSION: DEC-064-v1)
@@ -147,13 +147,15 @@ Divergence is documented (not required to match). P4 PASS.
 - Commit: `10a7890f5d56` (DEC-063 commit)
 
 **Sbatch:** `hpc/phase7_sector_precedence/run_phase7_pt_municipal_array.sbatch`
-- 208-task array, 30 min/task @ 4G
+- 208-task array, 2h/task @ 8G, partition=normal, constraint=mpi
+- REPO: `/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset`
 - Output dir: `hpc_results/phase7_pt_municipal/raw/`
 
-**Submit command (DO NOT run without explicit authorisation):**
-```bash
-sbatch --array=0-207 hpc/phase7_sector_precedence/run_phase7_pt_municipal_array.sbatch
-```
+**HPC Job submitted 2026-06-16:**
+- Job ID: **7472757** (meso, partition=normal)
+- All 208 tasks RUNNING (hpcnode06–hpcnode38, 14 nodes)
+- Remote smoke (task 0, n_perm=9): PASS — 31.2s, 7 edges, status=complete
+- Monitoring: `ssh meso "squeue -u jpmartinsd --job=7472757"`
 
 **Post-run merge:**
 ```bash

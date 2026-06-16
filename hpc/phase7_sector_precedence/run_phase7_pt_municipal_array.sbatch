@@ -1,20 +1,22 @@
 #!/bin/bash
 #SBATCH --job-name=phase7_pt_muni
 #SBATCH --array=0-207
-#SBATCH --cpus-per-task=1
-#SBATCH --mem=4G
-#SBATCH --time=00:30:00
-#SBATCH --output=hpc_results/phase7_pt_municipal/logs/task_%a.log
-#SBATCH --error=hpc_results/phase7_pt_municipal/logs/task_%a.err
-#SBATCH --partition=cpu
+#SBATCH --cpus-per-task=2
+#SBATCH --mem=8G
+#SBATCH --time=02:00:00
+#SBATCH --output=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_pt_municipal/logs/task_%a.out
+#SBATCH --error=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_pt_municipal/logs/task_%a.err
+#SBATCH --partition=normal
+#SBATCH --constraint=mpi
 
 # DEC-064: Phase 7 sector precedence — PT municipal (278 municipalities, observed_births)
 # 208 tasks = 13 windows × 2 scenarios × 8 source sectors
-# Each task: 7 targets × (999 perms + 500 bootstraps) ~30 min/task @ 4G
+# Each task: 7 targets × (999 perms + 500 bootstraps) ~30 min/task @ 8G
 
 set -euo pipefail
 
-REPO=/home/jpdark/Downloads/project_recomm/dataset
+REPO=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset
+PYTHON=/home/jpmartinsd/.conda/envs/herald-v5/bin/python
 PANEL=$REPO/data/processed/phase7_pt_municipal/pt_municipal_phase7_panel.csv
 MANIFEST=$REPO/data/processed/phase7_pt_municipal/hpc_task_manifest.json
 RAW_DIR=$REPO/hpc_results/phase7_pt_municipal/raw
@@ -25,10 +27,12 @@ mkdir -p "$RAW_DIR" "$RESULTS_DIR" "$REPO/hpc_results/phase7_pt_municipal/logs"
 cd "$REPO"
 export PYTHONPATH="$REPO"
 
-python hpc/phase7_sector_precedence/scripts/run_sector_precedence_task.py \
+echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) starting task ${SLURM_ARRAY_TASK_ID} on $(hostname)"
+
+"${PYTHON}" hpc/phase7_sector_precedence/scripts/run_sector_precedence_task.py \
     --manifest "$MANIFEST" \
     --task-id "$SLURM_ARRAY_TASK_ID" \
     --panel "$PANEL" \
     --output-dir "$RAW_DIR"
 
-echo "Task $SLURM_ARRAY_TASK_ID complete."
+echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) task ${SLURM_ARRAY_TASK_ID} done"
