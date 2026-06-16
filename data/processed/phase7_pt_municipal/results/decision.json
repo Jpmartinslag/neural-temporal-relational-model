@@ -1,0 +1,16 @@
+{
+  "verdict": "SECTOR_PRECEDENCE_NOT_PROMOTED",
+  "total_tasks": 208,
+  "total_edges_raw": 1456,
+  "promoted_main_count": 2,
+  "covid_robust_count": 2,
+  "countries_with_robust_edges": 1,
+  "gate_thresholds": {
+    "q_fdr": 0.05,
+    "min_abs_beta": 0.1,
+    "min_delta_r2": 0.005,
+    "min_sign_stability": 0.7,
+    "min_samples": 60
+  },
+  "generated_at": "2026-06-16T19:29:31.292931+00:00"
+}
