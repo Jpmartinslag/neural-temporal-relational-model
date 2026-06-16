@@ -1,0 +1,171 @@
+{
+  "experiment": "DEC-062",
+  "gate_version": "DEC-062-v1",
+  "decision": "PT_PANEL_READY_NL_OPEN_DATA_BLOCKED",
+  "n_pass": 10,
+  "n_fail": 0,
+  "critical_fail": [],
+  "secondary_fail": [],
+  "gates": [
+    {
+      "gate_id": "H1",
+      "verdict": "PASS",
+      "value": {
+        "review_exists": true,
+        "continental_filter_corrected": true,
+        "acores_geocod_documented": true
+      },
+      "threshold": {
+        "all_true": true
+      },
+      "note": "DEC-061 used prefix '1 or 2' for continental \u2014 A\u00e7ores (prefix '2') incorrectly included. Corrected to geocod[0]=='1'."
+    },
+    {
+      "gate_id": "H2",
+      "verdict": "PASS",
+      "value": {
+        "csv_exists": true,
+        "manifest_exists": true,
+        "n_rows": 4448
+      },
+      "threshold": {
+        "min_rows": 1000
+      },
+      "note": "Panel must exist and have minimum content."
+    },
+    {
+      "gate_id": "H3",
+      "verdict": "PASS",
+      "value": {
+        "n_continental": 278,
+        "filter_rule": "geocod[0]=='1' \u2014 continental Portugal only",
+        "no_acores": true,
+        "no_madeira": true
+      },
+      "threshold": {
+        "n_continental": 278,
+        "tolerance": 2
+      },
+      "note": "Filter: geocod[0]=='1'. A\u00e7ores=prefix '2', Madeira=prefix '3'. DEC-061 had a 297 vs 278 discrepancy."
+    },
+    {
+      "gate_id": "H4",
+      "verdict": "PASS",
+      "value": {
+        "n_sectors_observable": 8,
+        "kz_status": "structural_absent",
+        "sectors_present": [
+          "BE",
+          "FZ",
+          "GI",
+          "JZ",
+          "LZ",
+          "MN",
+          "OQ",
+          "RU"
+        ]
+      },
+      "threshold": {
+        "n_sectors": 8,
+        "kz_status": "structural_absent"
+      },
+      "note": "KZ (Finance) definitionally excluded from INE enterprise births per DEC-018."
+    },
+    {
+      "gate_id": "H5",
+      "verdict": "PASS",
+      "value": {
+        "explicit_na_policy": true,
+        "zero_documented": true,
+        "structural_absent_documented": true
+      },
+      "threshold": {
+        "all_documented": true
+      },
+      "note": "INE uses valor='0' for genuine zeros; valor='' for suppressed/missing. KZ=NaN by definition."
+    },
+    {
+      "gate_id": "H6",
+      "verdict": "PASS",
+      "value": {
+        "n_tables": 4,
+        "n_search_terms": 8,
+        "output_csv": true,
+        "output_json": true
+      },
+      "threshold": {
+        "min_tables": 4,
+        "min_search_terms": 5
+      },
+      "note": "CBS Open Data catalog must be systematically searched."
+    },
+    {
+      "gate_id": "H7",
+      "verdict": "PASS",
+      "value": {
+        "nl_decision": "NL_GEMEENTE_OPEN_DATA_BLOCKED",
+        "no_stock_promoted": true,
+        "no_corop_as_gemeente": true
+      },
+      "threshold": {
+        "conservative": true
+      },
+      "note": "Cannot substitute stock (81575NED) for births, or COROP for gemeente."
+    },
+    {
+      "gate_id": "H8",
+      "verdict": "PASS",
+      "value": {
+        "readiness_json": true,
+        "has_FR": true,
+        "has_PT": true,
+        "has_NL": true
+      },
+      "threshold": {
+        "all_countries_covered": true
+      },
+      "note": "Readiness assessment needed for each country at target granularity."
+    },
+    {
+      "gate_id": "H9",
+      "verdict": "PASS",
+      "value": {
+        "no_model": true,
+        "no_phase7_full": true
+      },
+      "threshold": {
+        "no_unauthorized_runs": true
+      },
+      "note": "DEC-062 scope: data audit and preflight only."
+    },
+    {
+      "gate_id": "H10",
+      "verdict": "PASS",
+      "value": {
+        "has_urls": true,
+        "has_table_ids": true,
+        "has_query_params": true
+      },
+      "threshold": {
+        "all_documented": true
+      },
+      "note": "All data sources must be reproducible from manifest."
+    }
+  ],
+  "pt_ready": true,
+  "nl_blocked": true,
+  "nl_decision": "NL_GEMEENTE_OPEN_DATA_BLOCKED",
+  "pt_n_municipalities": 278,
+  "pt_n_rows": 4448,
+  "pt_kz_status": "structural_absent",
+  "pt_sectors_present": [
+    "BE",
+    "FZ",
+    "GI",
+    "JZ",
+    "LZ",
+    "MN",
+    "OQ",
+    "RU"
+  ]
+}

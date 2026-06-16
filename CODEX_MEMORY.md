@@ -351,3 +351,24 @@ if justified.
 
 ## New research entry
 - Added DEC‑057 research report for real relation learning improvements.
+
+## DEC-060 — France Relation Signal Recovery Audit (2026-06-16)
+COMPLETE | AUDIT_COMPLETE 10/10 PASS | 63/63 tests
+- FR has 1 Phase 7 label (RU→MN FR_COVID_SENSITIVE). Binding constraint: |β| ≥ 0.10.
+- 8 near-miss-beta pairs (pass FDR but |β|=0.076–0.097), 3 near-miss-fdr pairs
+- MN→BE: most consistent (6 windows, bss=1.000) but beta-FDR anti-correlation
+- FR ZE2020 small zones → small absolute effect sizes; no FR pair passes all 4 criteria simultaneously outside COVID window
+- `data/processed/france_relation_audit/`, `reports/HERALD_DEC060_FRANCE_RELATION_SIGNAL_AUDIT.md`
+
+## DEC-062 — PT Municipal Panel + NL Gemeente Source Search (2026-06-16)
+COMPLETE | PT_PANEL_READY_NL_OPEN_DATA_BLOCKED | 10/10 PASS | 89/89 tests
+- PT panel: 278 continental municipalities × 16 years = 4,448 rows; 8 sectors; KZ structural_absent
+- INE geocod structure: 1=continental (278), 2=Açores (19), 3=Madeira (11)
+- DEC-061 had 297→278 discrepancy: wrong filter included Açores (prefix 2)
+- NUTS2013→2024 transition: 176/278 geocods changed; harmonised via municipality name
+- NL gemeente: CBS Open Data has no table with gemeente × births × SBI × ≥6 years
+  - 83631NED=COROP_ONLY, 81575NED=STOCK_ONLY, 81841NED=COROP_ONLY, 80234ned=STOCK_ONLY
+  - Path: CBS Microdata (ABR) via Research Data Center — requires application
+- Granularity: FR 280 ZE2020 ≈ PT 278 municipalities; NL COROP 40 (fallback)
+- `data/processed/european_panel/pt_municipal_sector_panel.csv`, `data/processed/granular_phase7_preflight/`
+- Next: DEC-063 = Phase 7 at PT municipal level

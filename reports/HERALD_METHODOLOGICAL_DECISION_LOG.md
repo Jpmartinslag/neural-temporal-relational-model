@@ -2428,3 +2428,63 @@ L_total = L_recon + 0.05·L_presence + 0.02·L_sign + 0.02·L_lag + 0.05·L_util
 - `reports/HERALD_DEC060_FRANCE_RELATION_SIGNAL_AUDIT.md` (novo)
 - `CODEX_MEMORY.md` (DEC-060 bullet)
 - `reports/HERALD_CURRENT_STATE.md` (updated)
+
+---
+
+## DEC-062 — PT Municipal Panel Build + NL Gemeente Source Search (Granular Phase 7 Preflight)
+
+**Status:** COMPLETE | **Decision:** `PT_PANEL_READY_NL_OPEN_DATA_BLOCKED` (10/10 PASS)  
+**Date:** 2026-06-16 | **Tests:** 89/89 PASS | **Gates:** H1-H10
+
+**Context:** DEC-061 confirmed PT_READY_NL_BLOCKED at NUTS3/COROP level. DEC-062 builds a PT panel at full municipal granularity (278 continental municipalities) and audits CBS Open Data for NL gemeente births.
+
+**Part A — DEC-061 Review:**
+- DEC-061 used `geocod[0] in ('1','2')` → 297 municipalities (included 19 Açores, prefix '2')
+- Correct filter: `geocod[0] == '1'` → 278 continental municipalities
+- INE geocod structure: 1=continental (278), 2=Açores (19), 3=Madeira (11), other=aggregates
+- NUTS2013→NUTS2024 transition at 2023: 176/278 municipalities got new all-numeric geocods. `_harmonise_geocods()` uses municipality name (geodsg) as join key to canonicalise.
+
+**Part B — PT Municipal Panel:**
+- **Sources:** INE 0009703 (2008–2022) + 0014099 (2023)
+- **Panel:** 278 continental municipalities × 16 years = 4,448 rows
+- **CAE→A10:** A→OQ (agri merged per PT convention); K→structural_absent (finance definitionally excluded)
+- **Sectors:** 8 observable (BE, FZ, GI, JZ, LZ, MN, OQ, RU); KZ=NaN structural_absent throughout
+- **Sector coverage:** 100% for all 8 sectors across all municipalities and years
+- **Missing/zero policy:** valor='0'→0.0; valor=''→NaN; KZ=NaN by definition (never 0)
+- **Growth lags:** causal (lag1, lag2, growth_1y, growth_2y computed within municipality; NaN in first year)
+
+**Part C — NL Gemeente Search:**
+- 83631NED: COROP_ONLY (no gemeente level)
+- 81575NED: STOCK_ONLY (vestigingen bestand, not births)
+- 81841NED: COROP_ONLY + period 2007–2013 only
+- 80234ned: STOCK_ONLY + period 2006–2010
+- CBS catalog scan (8 search terms, 10 pages): 0 acceptable tables found
+- **Decision:** NL_GEMEENTE_OPEN_DATA_BLOCKED
+- **Non-finding note:** CBS Microdata (ABR) contains gemeente × SBI × oprichtingen — requires Research Data Center access application
+
+**Part D — Readiness:**
+
+| Country | System | N units | Status |
+|---------|--------|---------|--------|
+| FR | ZE2020 | 280 | READY |
+| PT | MUNICIPALITY_CONTINENTE | 278 | READY_WITH_LIMITATION (KZ absent) |
+| NL | COROP (fallback) | 40 | READY |
+| NL | GEMEENTE | 342 | BLOCKED |
+
+**Ficheiros afectados:**
+- `src/data/european_panel/build_pt_municipal_sector_panel.py` (novo)
+- `src/data/european_panel/search_nl_gemeente_birth_sources.py` (novo)
+- `src/data/european_panel/gates_dec062_granular_preflight.py` (novo — H1-H10 congelados)
+- `src/modeles/real_world/preflight_granular_phase7.py` (novo)
+- `src/modeles/real_world/run_dec062_granular_preflight_gates.py` (novo)
+- `tests/test_dec062_granular_preflight.py` (novo — 89 testes)
+- `data/processed/european_panel/pt_municipal_sector_panel.csv` (novo — 4448 rows)
+- `data/processed/european_panel/pt_municipal_sector_panel_manifest.json` (novo)
+- `data/processed/granular_phase7_preflight/dec061_review.json` (novo)
+- `data/processed/granular_phase7_preflight/nl_gemeente_source_candidates.csv` (novo)
+- `data/processed/granular_phase7_preflight/nl_gemeente_source_search.json` (novo)
+- `data/processed/granular_phase7_preflight/granular_phase7_readiness.json` (novo)
+- `data/processed/granular_phase7_preflight/dec062_gates.json` (novo)
+- `reports/HERALD_DEC062_GRANULAR_PHASE7_PREFLIGHT.md` (novo)
+- `CODEX_MEMORY.md` (DEC-062 bullet)
+- `reports/HERALD_CURRENT_STATE.md` (updated)

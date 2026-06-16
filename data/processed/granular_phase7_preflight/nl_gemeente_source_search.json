@@ -1,0 +1,94 @@
+{
+  "experiment": "DEC-062",
+  "dec061_finding": "NL_GEMEENTE_BIRTHS_BLOCKED_VIA_CBS_OPEN_DATA",
+  "nl_decision": "NL_GEMEENTE_OPEN_DATA_BLOCKED",
+  "nl_note": "No open-data table with gemeente × births × SBI × ≥6 years found. Paths: CBS Microdata (ABR) via Research Data Center or maintain NL at COROP level.",
+  "n_tables_evaluated": 4,
+  "n_acceptable": 0,
+  "acceptable_tables": [],
+  "verdict_counts": {
+    "COROP_ONLY": 2,
+    "STOCK_ONLY_NOT_ACCEPTABLE": 2
+  },
+  "search_terms": [
+    "oprichtingen gemeente",
+    "oprichtingen bedrijfstak",
+    "vestigingen oprichtingen",
+    "bedrijfsdemografie gemeente",
+    "bedrijven gemeente SBI",
+    "bedrijfsvestigingen gemeente",
+    "nieuwe bedrijven gemeente",
+    "bedrijvendynamiek gemeente"
+  ],
+  "known_tables_dec061": [
+    "83631NED",
+    "81575NED",
+    "81841NED",
+    "80234ned"
+  ],
+  "candidates": [
+    {
+      "table_id": "83631NED",
+      "title": "Vestigingen en oprichtingen van bedrijven; bedrijfstak, regio",
+      "concept": "oprichtingen (births/openings)",
+      "has_gemeente": false,
+      "has_sector_sbi": true,
+      "is_births": true,
+      "period": "2007-2025",
+      "verdict": "COROP_ONLY",
+      "rejection_reason": "No gemeente level — only COROP (40 regions), province, and national",
+      "source": "DEC-061"
+    },
+    {
+      "table_id": "81575NED",
+      "title": "Vestigingen van bedrijven; bedrijfstak, gemeente",
+      "concept": "vestigingen (stock/bestand)",
+      "has_gemeente": true,
+      "has_sector_sbi": true,
+      "is_births": false,
+      "period": "2007-2026",
+      "verdict": "STOCK_ONLY_NOT_ACCEPTABLE",
+      "rejection_reason": "Establishment stock (bestand), not births/openings. Stock ≠ births without closure data.",
+      "source": "DEC-061"
+    },
+    {
+      "table_id": "81841NED",
+      "title": "Oprichtingen en opheffingen; bedrijfstak, regio",
+      "concept": "oprichtingen+opheffingen (births+closures)",
+      "has_gemeente": false,
+      "has_sector_sbi": true,
+      "is_births": true,
+      "period": "2007-2013",
+      "verdict": "COROP_ONLY",
+      "rejection_reason": "No gemeente level; short period (2007-2013 only).",
+      "source": "DEC-061"
+    },
+    {
+      "table_id": "80234ned",
+      "title": "Vestigingen van bedrijven; SBI, gemeenten 2006-2010",
+      "concept": "vestigingen (stock)",
+      "has_gemeente": true,
+      "has_sector_sbi": true,
+      "is_births": false,
+      "period": "2006-2010",
+      "verdict": "STOCK_ONLY_NOT_ACCEPTABLE",
+      "rejection_reason": "Stock data, not births. Period too short and old (2006-2010).",
+      "source": "DEC-061"
+    }
+  ],
+  "formal_path_if_blocked": [
+    "CBS Microdata (ABR) — gemeente × SBI × oprichtingen, restricted access via Research Data Center",
+    "Research Data Center application via affiliated academic institution",
+    "Alternatively: maintain NL at COROP (40 regions) as separate, lower-granularity layer"
+  ],
+  "classification_labels": {
+    "ACCEPTABLE_OPEN_DATA": "Gemeente × births × SBI × ≥6 years — suitable for HERALD",
+    "STOCK_ONLY_NOT_ACCEPTABLE": "Stock data, not births",
+    "COROP_ONLY": "Only COROP/province level, not gemeente",
+    "NO_SECTOR": "Gemeente and births but no sector breakdown",
+    "NO_YEAR": "No time dimension",
+    "WRONG_CONCEPT": "Wrong enterprise concept (e.g. number of enterprises not births)",
+    "MICRODATA_REQUIRED": "Data exists but requires CBS Microdata access (ABR)",
+    "UNKNOWN_NEEDS_MANUAL_REVIEW": "Cannot classify from metadata alone"
+  }
+}

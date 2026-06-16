@@ -1,0 +1,55 @@
+{
+  "review_of": "DEC-061",
+  "reviewed_in": "DEC-062",
+  "purpose": "Document discrepancies found in DEC-061 PT continental filter and Açores geocod handling",
+  "findings": [
+    {
+      "finding_id": "DEC061-F1",
+      "description": "Continental municipality count: DEC-061 reported 297, correct value is 278",
+      "root_cause": "DEC-061 used filter 'prefix 1 or 2' for continental Portugal, which incorrectly included Açores (prefix 2, 19 municipalities). Madeira (prefix 3, 11 municipalities) was correctly excluded.",
+      "geocod_breakdown": {
+        "continental_prefix_1": 278,
+        "acores_prefix_2": 19,
+        "madeira_prefix_3": 11,
+        "total_portugal": 308
+      },
+      "correct_filter": "geocod[0] == '1'",
+      "dec061_filter": "geocod[0] in ('1', '2')",
+      "discrepancy": 19,
+      "discrepancy_explanation": "297 - 278 = 19 = exactly the number of Açores municipalities"
+    },
+    {
+      "finding_id": "DEC061-F2",
+      "description": "INE geocod structure confirmed: 7-character codes, first digit encodes territory",
+      "details": {
+        "continental": "geocod[0] == '1', 278 municipalities",
+        "acores": "geocod[0] == '2', 19 municipalities (Açores archipelago)",
+        "madeira": "geocod[0] == '3', 11 municipalities (Madeira archipelago)",
+        "national": "geocod == 'PT' or len(geocod) != 7 — filtered out"
+      }
+    },
+    {
+      "finding_id": "DEC061-F3",
+      "description": "NUTS2013 to NUTS2024 geocod transition at year 2023",
+      "details": {
+        "n_municipalities_affected": 176,
+        "n_municipalities_unchanged": 102,
+        "total_continental": 278,
+        "old_format_example": "16B1001 (alphanumeric NUTS2013)",
+        "new_format_example": "1910101 (all-numeric NUTS2024)",
+        "transition_year": 2023,
+        "indicator_change": "INE indicator 0009703 (NUTS2013) → 0014099 (NUTS2024) at 2023",
+        "fix": "_harmonise_geocods() uses municipality name (geodsg) as join key to adopt NUTS2024 canonical geocods throughout all years",
+        "effect_without_fix": "454 unique geocods across all years instead of 278 (278 + 176 = 454)"
+      }
+    }
+  ],
+  "corrections_applied_in_dec062": [
+    "CONTINENTAL_PREFIX = '1' (not '1 or 2')",
+    "_harmonise_geocods() added to canonicalise NUTS2013→NUTS2024 geocod transitions",
+    "Final PT municipal panel has 278 continental municipalities × 16 years = 4448 rows"
+  ],
+  "acores_geocod_documented": true,
+  "continental_filter_corrected": true,
+  "review_complete": true
+}
