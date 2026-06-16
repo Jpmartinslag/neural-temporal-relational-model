@@ -1,0 +1,40 @@
+{
+  "experiment": "DEC-064",
+  "description": "Phase 7 sector precedence at PT municipal level (278 continental municipalities, observed_births)",
+  "panel": "data/processed/phase7_pt_municipal/pt_municipal_phase7_panel.csv",
+  "output_dir": "data/processed/phase7_pt_municipal/results",
+  "country": "PT",
+  "region_system": "MUNICIPALITY_CONTINENTE",
+  "evidence_type": "observed_births",
+  "target_concept": "enterprise_birth",
+  "n_permutations": 999,
+  "n_bootstraps": 500,
+  "window_years": 6,
+  "seed": 42,
+  "min_samples": 60,
+  "scenario_exclusions": {
+    "without_2020": [2020]
+  },
+  "gate_thresholds": {
+    "fdr_q": 0.05,
+    "min_abs_beta": 0.10,
+    "min_delta_r2": 0.005,
+    "min_sign_stability": 0.70,
+    "min_samples": 60
+  },
+  "comparison_baseline": {
+    "country": "PT",
+    "region_system": "NUTS3",
+    "n_territories": 25,
+    "n_promoted": 0,
+    "source": "data/processed/herald_observatory_v02/sector_precedence/sector_precedence_all_edges.csv"
+  },
+  "notes": [
+    "Gates pre-registered BEFORE observing full results (DEC-064 constraint).",
+    "Same gate thresholds as original Phase 7 (DEC-034) for comparability.",
+    "KZ excluded (structural_absent in INE enterprise_birth concept).",
+    "Do NOT mix with NL gemeente proxy data in any evaluation run.",
+    "No causal language in outputs.",
+    "Separate from NL gemeente proxy Phase 7 (DEC-065, not yet authorised)."
+  ]
+}

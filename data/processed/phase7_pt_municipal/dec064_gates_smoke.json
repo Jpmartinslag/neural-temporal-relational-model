@@ -1,0 +1,178 @@
+{
+  "experiment": "DEC-064",
+  "gate_version": "DEC-064-v1",
+  "mode": "smoke",
+  "decision": "PT_MUNICIPAL_PHASE7_COMPLETE",
+  "n_pass": 10,
+  "n_fail": 0,
+  "critical_fail": [],
+  "secondary_fail": [],
+  "gates": [
+    {
+      "gate_id": "P1",
+      "verdict": "PASS",
+      "value": {
+        "has_nan_inf": false,
+        "leakage_check": "PASS",
+        "years_sorted": true
+      },
+      "threshold": {
+        "has_nan_inf": false,
+        "leakage_check": "PASS",
+        "years_sorted": true
+      },
+      "note": "Safety: velocity computed from lag1 (strictly causal). No NaN/Inf in structural_mask, observation_mask, territory_id, year."
+    },
+    {
+      "gate_id": "P2",
+      "verdict": "PASS",
+      "value": {
+        "n_municipalities": 278,
+        "n_observable_sectors": 8,
+        "kz_absent": true,
+        "country": "PT"
+      },
+      "threshold": {
+        "n_municipalities": 278,
+        "n_observable_sectors": 8,
+        "kz_absent": true,
+        "country": "PT"
+      },
+      "note": "Coverage: 278 continental municipalities, 8 A10 sectors, KZ structural_absent (INE enterprise_birth)."
+    },
+    {
+      "gate_id": "P3",
+      "verdict": "PASS",
+      "value": {
+        "has_proxy_column": false,
+        "proxy_evidence_types_found": []
+      },
+      "threshold": {
+        "has_proxy_column": false,
+        "proxy_evidence_types_found": []
+      },
+      "note": "Observed-only: no proxy_disaggregated_by_stock_share or NL gemeente data in PT run."
+    },
+    {
+      "gate_id": "P4",
+      "verdict": "PASS",
+      "value": {
+        "nuts3_comparison_available": true,
+        "max_rel_divergence": null,
+        "divergence_documented": true
+      },
+      "threshold": {
+        "divergence_documented": true
+      },
+      "note": "Reaggregation: municipal totals vs NUTS3 aggregation divergence measured. Divergence is expected (different years/NUTS vintage); documenting is mandatory."
+    },
+    {
+      "gate_id": "P5",
+      "verdict": "PASS",
+      "value": {
+        "n_pairs_below_threshold": 0,
+        "n_pairs_total": 56,
+        "min_samples_used": 60
+      },
+      "threshold": {
+        "n_pairs_below_threshold": 0,
+        "min_samples": 60
+      },
+      "note": "Min sample: all computed pairs must have n_samples \u2265 60."
+    },
+    {
+      "gate_id": "P6",
+      "verdict": "PASS",
+      "value": {
+        "mean_p_perm_observed": 0.4339,
+        "mean_p_perm_permuted": 0.65
+      },
+      "threshold": {
+        "permuted_p_perm >= observed_p_perm - 0.05": true
+      },
+      "note": "Controls: permuting source sector within year must degrade or preserve signal (not improve)."
+    },
+    {
+      "gate_id": "P7",
+      "verdict": "PASS",
+      "value": {
+        "thresholds_pre_registered": true,
+        "gate_version": "DEC-064-v1"
+      },
+      "threshold": {
+        "thresholds_pre_registered": true,
+        "gate_version": "DEC-064-v1"
+      },
+      "note": "Robustness: gates frozen as DEC-064-v1 (|\u03b2|\u22650.1, q_fdr<0.05, \u0394r\u00b2\u22650.005, bss\u22650.7, n\u226560). No threshold changes after results."
+    },
+    {
+      "gate_id": "P8",
+      "verdict": "PASS",
+      "value": {
+        "nuts3_promoted": 0,
+        "municipal_promoted_main": 0,
+        "municipal_promoted_robust": 0,
+        "comparison_documented": true
+      },
+      "threshold": {
+        "comparison_documented": true
+      },
+      "note": "Comparison: PT municipal vs PT NUTS3 (25 territories, 0 promoted) documented. Reports whether granularity increases or fragments signal."
+    },
+    {
+      "gate_id": "P9",
+      "verdict": "PASS",
+      "value": {
+        "manifest_clean": true,
+        "report_clean": true,
+        "results_clean": true
+      },
+      "threshold": {
+        "all_clean": true
+      },
+      "note": "No causal language: none of ['causes', 'drives', 'leads to', 'induces']... in manifests, report, or results. Use: 'temporal precedence', 'predictive association', 'association'."
+    },
+    {
+      "gate_id": "P10",
+      "verdict": "PASS",
+      "value": {
+        "manifest_exists": true,
+        "panel_checksum_recorded": true,
+        "commit_hash_recorded": true,
+        "commands_documented": true
+      },
+      "threshold": {
+        "all": true
+      },
+      "note": "Reproducibility: manifest + panel SHA256 + git commit + run commands all documented."
+    }
+  ],
+  "study_summary": {
+    "n_edge_rows": 56,
+    "n_valid_main": 56,
+    "n_promoted_main": 0,
+    "n_covid_robust": 0,
+    "n_covid_sensitive": 0,
+    "covid_robust_pairs": [],
+    "covid_sensitive_pairs": []
+  },
+  "nuts3_comparison": {
+    "available": true,
+    "nuts3_n_territories": 25,
+    "nuts3_n_valid_edges": 2016,
+    "nuts3_n_promoted": 0,
+    "nuts3_mean_n_samples": 96.5,
+    "municipal_n_territories": 278,
+    "municipal_n_valid_edges": 56,
+    "municipal_n_promoted_main": 0,
+    "municipal_mean_n_samples": 1451.8,
+    "granularity_ratio": 11.1,
+    "nuts3_pairs_replicated_at_municipal": [],
+    "municipal_only_pairs": []
+  },
+  "panel_checksum": "19c4675bbf8323e0daab3ca1ca57e287ec7abd791cb9cedfce16c85db5008794",
+  "commit_sha": "10a7890f5d56f412da68555ce3636d4e50fafe00",
+  "n_permutations": 9,
+  "n_bootstraps": 20,
+  "timestamp": "2026-06-16T17:36:15.018539+00:00"
+}

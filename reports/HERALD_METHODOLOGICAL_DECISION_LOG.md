@@ -2546,3 +2546,63 @@ L_total = L_recon + 0.05·L_presence + 0.02·L_sign + 0.02·L_lag + 0.05·L_util
 - `reports/herald_artifact_registry.json` (DEC-063 entry)
 - `CODEX_MEMORY.md` (DEC-063 bullet)
 - `reports/HERALD_CURRENT_STATE.md` (updated)
+
+---
+
+## DEC-064 — PT Municipal Phase 7 Sector Precedence (2026-06-16)
+
+**Decision:** `PT_MUNICIPAL_PHASE7_READY_FOR_HPC`
+**Gates:** 10/10 PASS (GATE_VERSION: DEC-064-v1, smoke) | **Tests:** 52/52 PASS + 8 SKIP-full
+
+**Context:** DEC-063 confirmed GRANULAR_FR_PT_NL_PREFLIGHT_READY. DEC-064 runs Phase 7 sector
+precedence at PT municipal level (278 continental municipalities, observed_births, INE 0009703/0014099).
+Gates P1-P10 pre-registered before observing results.
+
+**Part A — Panel:**
+- 278 continental municipalities × 16 years (2008-2023) × 8 observable A10 sectors
+- KZ structural_absent (structural_mask=0, observation_mask=0); evidence_type=observed_births
+- Velocity = sector_value[t] / sector_value[t-1] − 1; temporal leakage check: PASS
+- Long panel: 40,032 rows; 31,100 with valid velocity (observation_mask=1)
+
+**Part B — Smoke results (2018-2023, n_perm=9, n_boot=20):**
+- 56/56 pares válidos; n_samples range: 1,055–1,668 (mean 1,452)
+- 11× mais samples/par que PT NUTS3 (150 max)
+- Max |β| = 0.078 (MN→GI, bss=1.0); todos abaixo do threshold pré-registado 0.10
+- p_perm floor = 0.10 (mínimo com n_perm=9); zero pares promovidos
+- RU→MN: β=+0.075, bss=1.0 — padrão consistente com FR (único label FR)
+
+**Part C — Comparação PT NUTS3:**
+- NUTS3: 25 territórios, 0 promovidos, max |β|=0.362 (GI→FZ, 2007-2012)
+- Municipal: 278 territórios, 0 promovidos (smoke), max |β|=0.078
+- ACHADO CHAVE: fragmentação ecológica — NUTS3→municipal reduz |β| (menor unidade, menor efeito individual)
+- Municipal tem 11× mais poder estatístico na permutation test, mas efeitos menores
+
+**Part D — Implicações:**
+- Threshold |β|≥0.10 pode ser sistematicamente restritivo para PT/NL ao nível municipal
+- Threshold foi calibrado para FR ZE2020 (maiores efeitos individuais)
+- Possível DEC-066: threshold calibration antes de pooled training
+
+**HPC preparado:**
+- 208 tasks (13 janelas × 2 cenários × 8 sources), 30 min/task @ 4G
+- Manifest: `data/processed/phase7_pt_municipal/hpc_task_manifest.json`
+- Sbatch: `hpc/phase7_sector_precedence/run_phase7_pt_municipal_array.sbatch`
+- NÃO lançar sem autorização explícita
+
+**Ficheiros afectados:**
+- `src/data/european_panel/build_pt_municipal_phase7_panel.py` (novo)
+- `src/modeles/real_world/gates_dec064_pt_municipal_phase7.py` (novo)
+- `src/modeles/real_world/run_dec064_pt_municipal_phase7.py` (novo)
+- `src/modeles/real_world/prepare_dec064_hpc_manifest.py` (novo)
+- `hpc/phase7_sector_precedence/configs/pt_municipal_observed.json` (novo)
+- `hpc/phase7_sector_precedence/run_phase7_pt_municipal_array.sbatch` (novo)
+- `hpc/phase7_sector_precedence/submit_phase7_pt_municipal.sh` (novo)
+- `tests/test_dec064_pt_municipal_phase7.py` (novo — 60 testes, 52 PASS + 8 SKIP)
+- `data/processed/phase7_pt_municipal/pt_municipal_phase7_panel.csv` (novo — 40,032 rows)
+- `data/processed/phase7_pt_municipal/pt_municipal_phase7_panel_manifest.json` (novo)
+- `data/processed/phase7_pt_municipal/hpc_task_manifest.json` (novo — 208 tasks)
+- `data/processed/phase7_pt_municipal/results/all_edges_smoke.csv` (novo — 56 rows)
+- `data/processed/phase7_pt_municipal/dec064_gates_smoke.json` (novo)
+- `reports/HERALD_DEC064_PT_MUNICIPAL_PHASE7_AUDIT.md` (novo)
+- `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_DRAFT.md` (novo — draft, não autorizado)
+- `CODEX_MEMORY.md` (DEC-064 bullet)
+- `reports/HERALD_CURRENT_STATE.md` (updated)
