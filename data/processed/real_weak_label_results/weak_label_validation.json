@@ -1,0 +1,252 @@
+{
+  "experiment": "DEC-058",
+  "initial_checkpoint_hash": "39b30a52da2ad330",
+  "final_checkpoint_hash": "254c6efe61f94d49",
+  "n_weak_labels": 25,
+  "n_train_labels": 12,
+  "v0_sign_concordance": {
+    "FR": {
+      "sign_concordance": 0.0,
+      "n_labels": 1
+    },
+    "NL": {
+      "sign_concordance": 0.5,
+      "n_labels": 6
+    },
+    "PT": {
+      "sign_concordance": 0.4375,
+      "n_labels": 16
+    }
+  },
+  "v0_sign_concordance_mean": 0.3125,
+  "v1_sign_concordance_loco": {
+    "PT": {
+      "sign_concordance": 0.5,
+      "n_labels": 16
+    },
+    "NL": {
+      "sign_concordance": 0.5,
+      "n_labels": 6
+    },
+    "FR": {
+      "sign_concordance": 1.0,
+      "n_labels": 1
+    }
+  },
+  "v1_sign_concordance_mean": 0.6666666666666666,
+  "v2_sign_concordance_loco": {
+    "PT": {
+      "sign_concordance": 0.4375,
+      "n_labels": 16
+    },
+    "NL": {
+      "sign_concordance": 0.5,
+      "n_labels": 6
+    },
+    "FR": {
+      "sign_concordance": 1.0,
+      "n_labels": 1
+    }
+  },
+  "v2_sign_concordance_mean": 0.6458333333333334,
+  "c1_sign_concordance_mean": 0.6458333333333334,
+  "c2_sign_concordance_mean": 0.6875,
+  "classification": {
+    "REPLICATED_ASSOCIATION": 58,
+    "COUNTRY_SPECIFIC": 1,
+    "COVID_SENSITIVE": 13,
+    "INSUFFICIENT_EVIDENCE": 0,
+    "NOT_SUPPORTED": 0
+  },
+  "replicated_pairs": [
+    {
+      "source_sector": "JZ",
+      "target_sector": "KZ",
+      "countries": [
+        "FR",
+        "NL"
+      ]
+    },
+    {
+      "source_sector": "GI",
+      "target_sector": "OQ",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "FZ",
+      "target_sector": "JZ",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "BE",
+      "target_sector": "GI",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "RU",
+      "target_sector": "OQ",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "GI",
+      "target_sector": "RU",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "FZ",
+      "target_sector": "LZ",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "OQ",
+      "target_sector": "LZ",
+      "countries": [
+        "FR",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "KZ",
+      "target_sector": "OQ",
+      "countries": [
+        "FR",
+        "NL"
+      ]
+    },
+    {
+      "source_sector": "KZ",
+      "target_sector": "RU",
+      "countries": [
+        "FR",
+        "NL"
+      ]
+    }
+  ],
+  "country_specific_pairs": [
+    {
+      "source_sector": "OQ",
+      "target_sector": "KZ",
+      "country": "FR"
+    }
+  ],
+  "covid_sensitive_pairs": [
+    {
+      "source_sector": "OQ",
+      "target_sector": "JZ",
+      "countries": [
+        "FR",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "BE",
+      "target_sector": "MN",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "MN",
+      "target_sector": "OQ",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "GI",
+      "target_sector": "FZ",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "FZ",
+      "target_sector": "BE",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    }
+  ],
+  "n_encoder_params": 2215,
+  "n_adapter_params": 592,
+  "elapsed_seconds": 6.7499566078186035,
+  "gates": {
+    "W1": {
+      "verdict": "PASS",
+      "description": "Safety: no NaN/Inf/leakage/broken-schema/PT-KZ"
+    },
+    "W2": {
+      "verdict": "FAIL",
+      "description": "V1 sign concordance > permuted/country-shuffled controls by >= 0.05"
+    },
+    "W3": {
+      "verdict": "PASS",
+      "description": "Sign concordance >= 0.50 AND > V0 baseline (DEC-056=0.438)"
+    },
+    "W4": {
+      "verdict": "PASS",
+      "description": ">=1 REPLICATED_ASSOCIATION or >=1 COUNTRY_SPECIFIC identified"
+    },
+    "W5": {
+      "verdict": "PASS",
+      "description": "COVID_SENSITIVE not promoted as ROBUST"
+    },
+    "W6": {
+      "verdict": "FAIL",
+      "description": ">=30% of pairs classified as INSUFFICIENT_EVIDENCE (not forced)"
+    },
+    "W7": {
+      "verdict": "PASS",
+      "description": "No causal language in outputs and report"
+    },
+    "W8": {
+      "verdict": "PASS",
+      "description": "Same seed produces identical outputs"
+    },
+    "W9": {
+      "verdict": "PASS",
+      "description": "Initial and final checkpoint hashes documented"
+    },
+    "W10": {
+      "verdict": "PASS",
+      "description": "Encoder + adapter <= 5000 params (frugal model)"
+    }
+  },
+  "gate_report": "| Gate | Description | Verdict |\n|------|-------------|---------|\n| W1 | Safety: no NaN/Inf/leakage/broken-schema/PT-KZ | \u2713 PASS |\n| W2 | V1 sign concordance > permuted/country-shuffled controls by >= 0.05 | \u2717 FAIL |\n| W3 | Sign concordance >= 0.50 AND > V0 baseline (DEC-056=0.438) | \u2713 PASS |\n| W4 | >=1 REPLICATED_ASSOCIATION or >=1 COUNTRY_SPECIFIC identified | \u2713 PASS |\n| W5 | COVID_SENSITIVE not promoted as ROBUST | \u2713 PASS |\n| W6 | >=30% of pairs classified as INSUFFICIENT_EVIDENCE (not forced) | \u2717 FAIL |\n| W7 | No causal language in outputs and report | \u2713 PASS |\n| W8 | Same seed produces identical outputs | \u2713 PASS |\n| W9 | Initial and final checkpoint hashes documented | \u2713 PASS |\n| W10 | Encoder + adapter <= 5000 params (frugal model) | \u2713 PASS |",
+  "decision": "REAL_WEAK_LABEL_TUNING_SUPPORTED",
+  "n_gates_pass": 8,
+  "n_gates_fail": 2,
+  "n_gates_ne": 0
+}
