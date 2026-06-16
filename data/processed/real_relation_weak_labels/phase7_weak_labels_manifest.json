@@ -1,0 +1,38 @@
+{
+  "csv_path": "data/processed/real_relation_weak_labels/phase7_weak_labels.csv",
+  "sha256_prefix": "efeb8229d930160c",
+  "n_rows": 25,
+  "n_positive_labels": 25,
+  "n_negative_labels": 0,
+  "n_unlabeled": 0,
+  "evidence_class_counts": {
+    "COVID_SENSITIVE": 13,
+    "COVID_ROBUST": 12
+  },
+  "country_counts": {
+    "PT": 16,
+    "NL": 8,
+    "FR": 1
+  },
+  "confidence_weight_stats": {
+    "mean": 0.448,
+    "min": 0.1177,
+    "max": 0.7952
+  },
+  "lag_label_unique": [
+    1
+  ],
+  "sign_label_counts": {
+    "-1": 15,
+    "1": 10
+  },
+  "source_artifacts": [
+    "phase7_sector_precedence_main_with_sensitivity"
+  ],
+  "experiment": "DEC-058",
+  "constraints": {
+    "not_promoted_is_not_negative": true,
+    "covid_sensitive_not_robust": true,
+    "phase7_lag": 1
+  }
+}

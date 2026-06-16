@@ -1,0 +1,26 @@
+country,source_sector,target_sector,window_start,window_end,sign_label,lag_label,presence_label,confidence_weight,evidence_class,source_artifact,notes
+FR,RU,MN,2020,2025,-1,1,1,0.1491,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=-0.1080; p_perm=0.001; bss=1.000
+NL,BE,MN,2009,2014,-1,1,1,0.1491,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=-0.2219; p_perm=0.001; bss=1.000
+NL,BE,RU,2009,2014,-1,1,1,0.147,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=-0.2049; p_perm=0.001; bss=0.986
+NL,FZ,GI,2014,2019,1,1,1,0.7857,COVID_ROBUST,phase7_sector_precedence_main_with_sensitivity,beta=0.1953; p_perm=0.002; bss=0.994; robust_wo20
+NL,FZ,RU,2014,2019,1,1,1,0.7573,COVID_ROBUST,phase7_sector_precedence_main_with_sensitivity,beta=0.1697; p_perm=0.003; bss=0.964; robust_wo20
+NL,JZ,FZ,2014,2019,-1,1,1,0.7398,COVID_ROBUST,phase7_sector_precedence_main_with_sensitivity,beta=-0.2301; p_perm=0.002; bss=0.936; robust_wo20
+NL,JZ,RU,2014,2019,-1,1,1,0.1467,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=-0.1800; p_perm=0.003; bss=0.996
+NL,LZ,RU,2014,2019,1,1,1,0.142,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=0.1751; p_perm=0.003; bss=0.964
+NL,OQ,JZ,2014,2019,-1,1,1,0.1177,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=-0.2855; p_perm=0.004; bss=0.804
+PT,BE,MN,2014,2019,-1,1,1,0.7888,COVID_ROBUST,phase7_sector_precedence_main_with_sensitivity,beta=-0.2807; p_perm=0.001; bss=0.992; robust_wo20
+PT,MN,JZ,2014,2019,-1,1,1,0.7888,COVID_ROBUST,phase7_sector_precedence_main_with_sensitivity,beta=-0.3105; p_perm=0.001; bss=0.992; robust_wo20
+PT,MN,OQ,2014,2019,-1,1,1,0.1479,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=-0.2450; p_perm=0.002; bss=0.998
+PT,OQ,JZ,2014,2019,-1,1,1,0.7682,COVID_ROBUST,phase7_sector_precedence_main_with_sensitivity,beta=-0.3277; p_perm=0.001; bss=0.966; robust_wo20
+PT,FZ,BE,2015,2020,1,1,1,0.1488,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=0.2547; p_perm=0.001; bss=0.998
+PT,GI,BE,2015,2020,1,1,1,0.7936,COVID_ROBUST,phase7_sector_precedence_main_with_sensitivity,beta=0.3617; p_perm=0.001; bss=0.998; robust_wo20
+PT,JZ,BE,2015,2020,1,1,1,0.1359,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=0.1938; p_perm=0.006; bss=0.940
+PT,JZ,MN,2015,2020,1,1,1,0.1464,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=0.2134; p_perm=0.004; bss=1.000
+PT,MN,JZ,2015,2020,-1,1,1,0.792,COVID_ROBUST,phase7_sector_precedence_main_with_sensitivity,beta=-0.2886; p_perm=0.001; bss=0.996; robust_wo20
+PT,MN,OQ,2015,2020,-1,1,1,0.7952,COVID_ROBUST,phase7_sector_precedence_main_with_sensitivity,beta=-0.2869; p_perm=0.001; bss=1.000; robust_wo20
+PT,OQ,JZ,2015,2020,-1,1,1,0.7682,COVID_ROBUST,phase7_sector_precedence_main_with_sensitivity,beta=-0.2667; p_perm=0.001; bss=0.966; robust_wo20
+PT,BE,MN,2017,2022,-1,1,1,0.784,COVID_ROBUST,phase7_sector_precedence_main_with_sensitivity,beta=-0.2279; p_perm=0.003; bss=0.998; robust_wo20
+PT,GI,BE,2017,2022,1,1,1,0.141,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=0.2314; p_perm=0.001; bss=0.946
+PT,GI,FZ,2017,2022,1,1,1,0.1402,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=0.2119; p_perm=0.003; bss=0.952
+PT,GI,JZ,2017,2022,-1,1,1,0.7792,COVID_ROBUST,phase7_sector_precedence_main_with_sensitivity,beta=-0.2201; p_perm=0.004; bss=0.998; robust_wo20
+PT,MN,BE,2017,2022,1,1,1,0.1482,COVID_SENSITIVE,phase7_sector_precedence_main_with_sensitivity,beta=0.2050; p_perm=0.002; bss=1.000

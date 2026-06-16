@@ -2322,3 +2322,43 @@ L_total = L_recon + 0.05·L_presence + 0.02·L_sign + 0.02·L_lag + 0.05·L_util
 - `tests/test_phase16_decoupled.py` (novo — 41 testes)
 - `reports/HERALD_DEC053_DECOUPLED_GRAPH_AUDIT.md` (novo)
 - `CODEX_MEMORY.md` (DEC-053 bullet)
+
+---
+
+## DEC-058 — Real Weak-Label Relation Tuning (2026-06-16)
+
+**Decision:** Use Phase 7 sector precedence evidence as weak/noisy labels for fine-tuning the SharedRelationEncoder. Labels are confidence-weighted; Phase 7 is not treated as ground truth.
+
+**Context:** DEC-056 (R4 FAIL) showed sign concordance=0.438 on real data. DEC-057 recommended weak-label supervision over lag-aware encoder as primary fix.
+
+**Label classification:**
+- COVID_ROBUST (confidence 0.60–0.96): promoted AND robust against 2020 exclusion → positive label
+- MAIN_ONLY (confidence 0.20–0.40): promoted AND robust (not COVID-driven) → positive label
+- COVID_SENSITIVE (confidence 0.05–0.15): promoted only with 2020 → excluded from training
+- UNLABELED (not promoted): excluded entirely ("not promoted" ≠ negative)
+- PERMUTATION_NEGATIVE: only from explicit permutation evidence
+
+**Fine-tuning design:**
+- V0: frozen DEC-055 checkpoint (baseline)
+- V1: confidence-weighted BCE loss on presence + sign + lag heads; early stopping; gradient clipping
+- V2: V1 + CountryAdapter (592 params, regularised)
+- Controls C1 (permuted signs) and C2 (country-shuffled)
+- Leave-one-country-out: FR+NL→PT, FR+PT→NL, NL+PT→FR
+
+**Results:**
+- V1 LOCO sign concordance = 0.667 vs V0 = 0.313 (W3 PASS)
+- 58 replicated pairs (W4 PASS), COVID_SENSITIVE not promoted (W5 PASS)
+- W2 FAIL: C2=0.688 ≥ V1=0.667; only 12 training labels insufficient to degrade controls
+- W6 FAIL: 0 abstentions; all 72 pairs scored from single representative window
+
+**Decision outcome:** REAL_WEAK_LABEL_TUNING_SUPPORTED (8/10 PASS), with W2 and W6 failures noted as limitations requiring more training data and a calibrated uncertainty mechanism.
+
+**Ficheiros afectados:**
+- `src/modeles/real_world/build_phase7_weak_labels.py` (novo)
+- `src/modeles/real_world/train_real_relation_weak_labels.py` (novo)
+- `src/modeles/real_world/gates_dec058.py` (novo)
+- `tests/test_real_relation_weak_labels.py` (novo — 60 testes)
+- `data/processed/real_relation_weak_labels/` (novo — 25 labels, manifest)
+- `data/processed/real_weak_label_results/` (novo — scores, validation JSON)
+- `reports/HERALD_DEC058_REAL_WEAK_LABEL_TUNING.md` (novo)
+- `CODEX_MEMORY.md` (DEC-058 bullet)

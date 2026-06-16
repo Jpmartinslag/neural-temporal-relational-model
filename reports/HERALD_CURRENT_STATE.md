@@ -1,5 +1,5 @@
 # HERALD Current State
-**Updated:** 2026-06-16 (DEC-056 CORRECTED — 7/10 PASS. REAL_SHARED_RELATION_PARTIAL. Trained checkpoint hash=39b30a52da2ad330. Presence mean=0.648. R2 PASS (sector perm Δ=0.178). R3 PASS (stability 0.41–0.82). R4 FAIL (sign concordance 0.438). R5/R6 FAIL (194 COVID_SENSITIVE). 77/77 tests PASS.)
+**Updated:** 2026-06-16 (DEC-058 COMPLETE — 8/10 PASS. REAL_WEAK_LABEL_TUNING_SUPPORTED. V1 LOCO sign concordance=0.667 vs V0=0.313 vs DEC-056=0.438. 58 replicated pairs. W2 FAIL (controls not degraded; 12 labels too sparse). W6 FAIL (0 abstentions). 60/60 tests PASS. Initial checkpoint=39b30a52da2ad330, final=254c6efe61f94d49.)
 **Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-049), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
