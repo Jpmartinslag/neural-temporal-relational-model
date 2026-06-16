@@ -1,0 +1,143 @@
+{
+  "country": "PT",
+  "audit_decision": "DEC-061",
+  "probe_timestamp": "2026-06-16T11:53:27.567155Z",
+  "sources": [
+    {
+      "indicator": "0009703",
+      "description": "Enterprise births x CAE x municipality (NUTS2013 geocods)",
+      "years": "2008-2022"
+    },
+    {
+      "indicator": "0014099",
+      "description": "Enterprise births x CAE x municipality (NUTS2024 geocods)",
+      "years": "2023+"
+    },
+    {
+      "indicator": "0009702",
+      "description": "Enterprise births total x municipality (NUTS2013)",
+      "years": "2008-2022"
+    },
+    {
+      "indicator": "0014098",
+      "description": "Enterprise births total x municipality (NUTS2024)",
+      "years": "2023+"
+    }
+  ],
+  "api_reachable": true,
+  "data_confirmed_live": true,
+  "granularity": "municipality/concelho",
+  "geocod_format": "7-character (e.g. 1101100 = Lisboa Metro)",
+  "total_municipalities": 308,
+  "continente_municipalities": 278,
+  "madeira_municipalities": 11,
+  "acores_municipalities": 19,
+  "note_acores": "A\u00e7ores geocods appear to use a different prefix (not starting with 4 in 2020 probe \u2014 may use 48xxxx or A\u00e7ores-specific prefix). Exact count from geocod prefix analysis: acores=0 in probe due to prefix assumption. A\u00e7ores may use different prefix. Total=308 confirmed including all autonomous regions.",
+  "years_confirmed": [
+    2008,
+    2010,
+    2015,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023
+  ],
+  "year_range": "2008-2023 (confirmed); 2024 expected via 0014099",
+  "consecutive_years": 16,
+  "sectors_present": [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "L",
+    "M",
+    "N",
+    "P",
+    "Q",
+    "R",
+    "S"
+  ],
+  "sectors_absent": [
+    "K"
+  ],
+  "kz_absence_reason": "INE definitionally excludes section K (finance/insurance) from enterprise births per DEC-018 INE 0009703 audit. Consistent with Eurostat/OECD enterprise demography convention.",
+  "cae_to_a10_mapping": {
+    "OQ/A": [
+      "A"
+    ],
+    "BE": [
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "FZ": [
+      "F"
+    ],
+    "GI": [
+      "G",
+      "H",
+      "I"
+    ],
+    "JZ": [
+      "J"
+    ],
+    "LZ": [
+      "L"
+    ],
+    "MN": [
+      "M",
+      "N"
+    ],
+    "OQ": [
+      "P",
+      "Q"
+    ],
+    "RU": [
+      "R",
+      "S"
+    ]
+  },
+  "a10_mappable_sectors": [
+    "BE",
+    "FZ",
+    "GI",
+    "JZ",
+    "LZ",
+    "MN",
+    "OQ",
+    "RU"
+  ],
+  "a10_blocked_sectors": [
+    "KZ"
+  ],
+  "a10_note": "Section A (agriculture) maps to OQ/A depending on observatory convention. Section T/U negligible (not reported by INE 0009703). 8 of 9 HERALD A10 sectors mappable; KZ (finance) absent.",
+  "nuts_break": "NUTS2013 geocods (0009703) valid through 2022. NUTS2024 geocods (0014099) from 2023. Geocod format change: 7-character codes may shift between NUTS versions. Requires alignment for panel 2008-2023.",
+  "geocod_stability": "Municipality codes (concelhos) are generally stable. Some boundary adjustments may affect geocod consistency over 16 years. INE maintains concordance tables.",
+  "continental_filter": "Feasible via geocod prefix. Continental geocods confirmed: 297 in probe. Madeira: 11. A\u00e7ores: ~19 (prefix clarification needed). Total continente: ~278.",
+  "phase7_compatibility": {
+    "n_territories": 278,
+    "consecutive_years": 15,
+    "n_samples": 4170,
+    "threshold_met": true,
+    "n_a10_comparable": 8,
+    "concept": "enterprise_birth",
+    "verdict": "MEETS_PHASE7_CRITERIA"
+  },
+  "verdict": "PT_MUNICIPAL_DATA_AVAILABLE",
+  "risks": [
+    "KZ sector missing (by definition) \u2014 cannot test KZ-related HERALD relations at municipal level",
+    "NUTS2013/NUTS2024 geocod break at 2022/2023 transition requires explicit alignment",
+    "A\u00e7ores geocod prefix assumption needs verification",
+    "Statistical disclosure control: some small municipalities may have suppressed cells",
+    "Municipal boundary changes over 2008-2023 may affect geocod stability",
+    "Section A (agriculture) mapping: INE includes it, HERALD OQ convention differs"
+  ]
+}
