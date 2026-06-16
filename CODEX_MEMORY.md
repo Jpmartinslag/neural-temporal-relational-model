@@ -340,3 +340,6 @@ rtk proxy rsync -av meso:~/project_recomm_herald_v6_2025_20260430/dataset/hpc_re
 Parallel Slurm jobs require `#SBATCH --constraint="mpi"` to avoid affected
 `nompi` nodes. Next Italy diagnostic is cheap: local smoke/audit first; HPC only
 if justified.
+
+## New research entry
+- Added DEC‑057 research report for real relation learning improvements.
