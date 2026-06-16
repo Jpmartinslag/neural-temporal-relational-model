@@ -1,5 +1,5 @@
 # HERALD Current State
-**Updated:** 2026-06-16 (DEC-060 COMPLETE — AUDIT_COMPLETE 10/10 PASS. FR binding constraint = |β| ≥ 0.10 (not FDR). 8 near-miss-beta pairs (|β|=0.076-0.097). MN→BE most consistent (6 windows p≤0.01) but beta-FDR anti-correlation blocks promotion. RU→MN = FR_COVID_SENSITIVE (pre-COVID p=0.127). 63/63 tests PASS.)
+**Updated:** 2026-06-16 (DEC-062 COMPLETE — PT_PANEL_READY_NL_OPEN_DATA_BLOCKED 10/10 PASS. PT municipal panel: 278 continental municipalities × 16 years, 8 sectors, KZ structural_absent. NL gemeente blocked via CBS Open Data (no births × SBI × gemeente table). FR 280 ZE2020 ≈ PT 278 municipalities — comparable granularity. 89/89 tests PASS. DEC-060: AUDIT_COMPLETE 10/10 PASS, FR binding constraint |β| ≥ 0.10.)
 **Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-049), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---

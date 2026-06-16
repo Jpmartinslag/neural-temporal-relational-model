@@ -1,0 +1,5 @@
+table_id,title,concept,has_gemeente,has_sector_sbi,is_births,period,verdict,rejection_reason,source
+83631NED,"Vestigingen en oprichtingen van bedrijven; bedrijfstak, regio",oprichtingen (births/openings),False,True,True,2007-2025,COROP_ONLY,"No gemeente level — only COROP (40 regions), province, and national",DEC-061
+81575NED,"Vestigingen van bedrijven; bedrijfstak, gemeente",vestigingen (stock/bestand),True,True,False,2007-2026,STOCK_ONLY_NOT_ACCEPTABLE,"Establishment stock (bestand), not births/openings. Stock ≠ births without closure data.",DEC-061
+81841NED,"Oprichtingen en opheffingen; bedrijfstak, regio",oprichtingen+opheffingen (births+closures),False,True,True,2007-2013,COROP_ONLY,No gemeente level; short period (2007-2013 only).,DEC-061
+80234ned,"Vestigingen van bedrijven; SBI, gemeenten 2006-2010",vestigingen (stock),True,True,False,2006-2010,STOCK_ONLY_NOT_ACCEPTABLE,"Stock data, not births. Period too short and old (2006-2010).",DEC-061

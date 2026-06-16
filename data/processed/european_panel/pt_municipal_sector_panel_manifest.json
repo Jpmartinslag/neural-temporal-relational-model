@@ -1,0 +1,67 @@
+{
+  "experiment": "DEC-062",
+  "build_mode": "CONTINENT",
+  "sources": [
+    {
+      "indicator": "0009703",
+      "years": "2008-2022",
+      "url": "https://www.ine.pt/ine/json_indicador/pindica.jsp"
+    },
+    {
+      "indicator": "0014099",
+      "years": "2023+",
+      "url": "https://www.ine.pt/ine/json_indicador/pindica.jsp"
+    }
+  ],
+  "continental_filter": "geocod[0] == '1'",
+  "n_municipalities": 278,
+  "n_years": 16,
+  "year_range": "2008-2023",
+  "n_rows": 4448,
+  "sectors_observable": [
+    "BE",
+    "FZ",
+    "GI",
+    "JZ",
+    "LZ",
+    "MN",
+    "OQ",
+    "RU"
+  ],
+  "sector_KZ_status": "structural_absent_definitional_exclusion",
+  "cae_to_a10": {
+    "A": "OQ",
+    "B": "BE",
+    "C": "BE",
+    "D": "BE",
+    "E": "BE",
+    "F": "FZ",
+    "G": "GI",
+    "H": "GI",
+    "I": "GI",
+    "J": "JZ",
+    "L": "LZ",
+    "M": "MN",
+    "N": "MN",
+    "O": "OQ",
+    "P": "OQ",
+    "Q": "OQ",
+    "R": "RU",
+    "S": "RU"
+  },
+  "cae_k_status": "K_structural_absent",
+  "target_concept": "enterprise_birth",
+  "flag_target_concept": "enterprise_birth",
+  "source_label": "INE_0009703_0014099",
+  "sector_coverage": {
+    "sector_BE": 1.0,
+    "sector_FZ": 1.0,
+    "sector_GI": 1.0,
+    "sector_JZ": 1.0,
+    "sector_LZ": 1.0,
+    "sector_MN": 1.0,
+    "sector_OQ": 1.0,
+    "sector_RU": 1.0
+  },
+  "mask_sector_a10_mean": 1.0
+}

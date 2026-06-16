@@ -1,0 +1,197 @@
+{
+  "experiment": "DEC-062",
+  "purpose": "Granular Phase 7 readiness assessment",
+  "entries": [
+    {
+      "country": "FR",
+      "region_system": "ZE2020",
+      "n_regions": 280,
+      "years": [
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024
+      ],
+      "n_years": 13,
+      "year_range": "2012-2024",
+      "n_windows": 9,
+      "n_samples_per_window": 1400,
+      "n_directed_pairs": 56,
+      "sectors_present": [
+        "sector_BE",
+        "sector_FZ",
+        "sector_GI",
+        "sector_JZ",
+        "sector_LZ",
+        "sector_MN",
+        "sector_OQ",
+        "sector_RU"
+      ],
+      "sectors_missing": [],
+      "structural_absent_sectors": [],
+      "valid_row_frac": 0.9231,
+      "missing_rate": 0.0769,
+      "concept": "establishment_creation",
+      "readiness_status": "READY",
+      "limitations": [],
+      "recommended_next_action": "Can run Phase 7 granular at this level"
+    },
+    {
+      "country": "PT",
+      "region_system": "MUNICIPALITY_CONTINENTE",
+      "n_regions": 278,
+      "years": [
+        2008,
+        2009,
+        2010,
+        2011,
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023
+      ],
+      "n_years": 16,
+      "year_range": "2008-2023",
+      "n_windows": 12,
+      "n_samples_per_window": 1390,
+      "n_directed_pairs": 56,
+      "sectors_present": [
+        "sector_BE",
+        "sector_FZ",
+        "sector_GI",
+        "sector_JZ",
+        "sector_LZ",
+        "sector_MN",
+        "sector_OQ",
+        "sector_RU"
+      ],
+      "sectors_missing": [],
+      "structural_absent_sectors": [
+        "KZ"
+      ],
+      "valid_row_frac": 1.0,
+      "missing_rate": 0.0,
+      "concept": "enterprise_birth",
+      "readiness_status": "READY_WITH_LIMITATION",
+      "limitations": [
+        "Structural absent sectors: ['KZ']"
+      ],
+      "recommended_next_action": "Ready; Structural absent sectors: ['KZ']; KZ structural_absent"
+    },
+    {
+      "country": "NL",
+      "region_system": "COROP",
+      "n_regions": 40,
+      "years": [
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+        2021,
+        2022,
+        2023,
+        2024,
+        2025
+      ],
+      "n_years": 11,
+      "year_range": "2015-2025",
+      "n_windows": 7,
+      "n_samples_per_window": 200,
+      "n_directed_pairs": 56,
+      "sectors_present": [
+        "sector_BE",
+        "sector_FZ",
+        "sector_GI",
+        "sector_JZ",
+        "sector_LZ",
+        "sector_MN",
+        "sector_OQ",
+        "sector_RU"
+      ],
+      "sectors_missing": [],
+      "structural_absent_sectors": [],
+      "valid_row_frac": 1.0,
+      "missing_rate": 0.0,
+      "concept": "local_unit_opening",
+      "readiness_status": "READY",
+      "limitations": [],
+      "recommended_next_action": "Can run Phase 7 granular at this level"
+    },
+    {
+      "country": "NL",
+      "region_system": "GEMEENTE",
+      "n_regions": 342,
+      "readiness_status": "BLOCKED",
+      "reason": "CBS Open Data has no table with gemeente \u00d7 oprichtingen \u00d7 SBI \u00d7 jaar (DEC-061, confirmed DEC-062)",
+      "recommended_next_action": "Apply for CBS Microdata (ABR) access via Research Data Center",
+      "years": [],
+      "n_years": 0,
+      "concept": "local_unit_opening",
+      "limitations": [
+        "No open-data source found for gemeente \u00d7 births \u00d7 SBI"
+      ]
+    }
+  ],
+  "granularity_matrix": [
+    {
+      "country": "FR",
+      "system": "ZE2020",
+      "n_regions": 280,
+      "n_years": 13,
+      "n_windows": 9,
+      "readiness": "READY"
+    },
+    {
+      "country": "PT",
+      "system": "MUNICIPALITY_CONTINENTE",
+      "n_regions": 278,
+      "n_years": 16,
+      "n_windows": 12,
+      "readiness": "READY_WITH_LIMITATION"
+    },
+    {
+      "country": "NL",
+      "system": "COROP",
+      "n_regions": 40,
+      "n_years": 11,
+      "n_windows": 7,
+      "readiness": "READY"
+    },
+    {
+      "country": "NL",
+      "system": "GEMEENTE",
+      "n_regions": 342,
+      "n_years": 0,
+      "n_windows": 0,
+      "readiness": "BLOCKED"
+    }
+  ],
+  "phase7_thresholds": {
+    "min_samples": 60,
+    "min_windows": 5,
+    "window_size_years": 5
+  },
+  "note_fr": "FR ZE2020 already running Phase 7 \u2014 used as reference",
+  "note_pt": "PT municipal \u2248 FR ZE2020 in granularity (278 vs 280 units)",
+  "note_nl": "NL gemeente blocked via CBS Open Data; COROP (40) is current fallback",
+  "note_concept": "FR=establishment_creation, PT=enterprise_birth, NL=local_unit_opening \u2014 cross-country pooling requires harmonisation DEC"
+}
