@@ -1,0 +1,498 @@
+{
+  "experiment": "DEC-056",
+  "protocol": "P0_zero_shot + P1_loco + controls",
+  "encoder_params": 2215,
+  "encoder_note": "zero-shot (DEC-055 checkpoint not saved; architecture identical)",
+  "n_p0_records": 1096,
+  "n_p1_records": 1096,
+  "stability_by_country": {
+    "FR": 0.701934207987652,
+    "NL": 0.5492100242244947,
+    "PT": 0.6140513621716631
+  },
+  "covid_analysis": {
+    "FR": {
+      "pre_vs_covid": -0.13750080391021932,
+      "covid_vs_post": NaN,
+      "pre_vs_post": NaN
+    },
+    "NL": {
+      "pre_vs_covid": NaN,
+      "covid_vs_post": NaN,
+      "pre_vs_post": NaN
+    },
+    "PT": {
+      "pre_vs_covid": 0.4008202323991798,
+      "covid_vs_post": NaN,
+      "pre_vs_post": NaN
+    }
+  },
+  "controls": {
+    "real_presence_logit_mean": 0.06661671652857747,
+    "control_presence_logit_means": {
+      "permuted_years": 0.06625259042318378,
+      "permuted_sectors": 0.07073744013905525,
+      "permuted_regions": 0.06661671666162354
+    }
+  },
+  "phase7_comparison": {
+    "phase7_sign_concordance": 0.5625,
+    "phase7_n_compared": 16,
+    "phase7_pairs_compared": [
+      {
+        "country": "PT",
+        "window": "2014-2019",
+        "pair": "BE\u2192MN",
+        "p7_beta": -0.281,
+        "p7_sign": "negative",
+        "enc_presence": 0.066,
+        "enc_sign": "negative",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2014-2019",
+        "pair": "MN\u2192JZ",
+        "p7_beta": -0.311,
+        "p7_sign": "negative",
+        "enc_presence": 0.066,
+        "enc_sign": "negative",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2014-2019",
+        "pair": "MN\u2192OQ",
+        "p7_beta": -0.245,
+        "p7_sign": "negative",
+        "enc_presence": 0.07,
+        "enc_sign": "negative",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2014-2019",
+        "pair": "OQ\u2192JZ",
+        "p7_beta": -0.328,
+        "p7_sign": "negative",
+        "enc_presence": 0.064,
+        "enc_sign": "negative",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "FZ\u2192BE",
+        "p7_beta": 0.255,
+        "p7_sign": "positive",
+        "enc_presence": 0.069,
+        "enc_sign": "negative",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "GI\u2192BE",
+        "p7_beta": 0.362,
+        "p7_sign": "positive",
+        "enc_presence": 0.068,
+        "enc_sign": "negative",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "JZ\u2192BE",
+        "p7_beta": 0.194,
+        "p7_sign": "positive",
+        "enc_presence": 0.069,
+        "enc_sign": "negative",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "JZ\u2192MN",
+        "p7_beta": 0.213,
+        "p7_sign": "positive",
+        "enc_presence": 0.067,
+        "enc_sign": "negative",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "MN\u2192JZ",
+        "p7_beta": -0.289,
+        "p7_sign": "negative",
+        "enc_presence": 0.066,
+        "enc_sign": "negative",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "MN\u2192OQ",
+        "p7_beta": -0.287,
+        "p7_sign": "negative",
+        "enc_presence": 0.068,
+        "enc_sign": "negative",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2015-2020",
+        "pair": "OQ\u2192JZ",
+        "p7_beta": -0.267,
+        "p7_sign": "negative",
+        "enc_presence": 0.064,
+        "enc_sign": "negative",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2017-2022",
+        "pair": "BE\u2192MN",
+        "p7_beta": -0.228,
+        "p7_sign": "negative",
+        "enc_presence": 0.065,
+        "enc_sign": "negative",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2017-2022",
+        "pair": "GI\u2192BE",
+        "p7_beta": 0.231,
+        "p7_sign": "positive",
+        "enc_presence": 0.066,
+        "enc_sign": "negative",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2017-2022",
+        "pair": "GI\u2192FZ",
+        "p7_beta": 0.212,
+        "p7_sign": "positive",
+        "enc_presence": 0.065,
+        "enc_sign": "negative",
+        "agree": false
+      },
+      {
+        "country": "PT",
+        "window": "2017-2022",
+        "pair": "GI\u2192JZ",
+        "p7_beta": -0.22,
+        "p7_sign": "negative",
+        "enc_presence": 0.064,
+        "enc_sign": "negative",
+        "agree": true
+      },
+      {
+        "country": "PT",
+        "window": "2017-2022",
+        "pair": "MN\u2192BE",
+        "p7_beta": 0.205,
+        "p7_sign": "positive",
+        "enc_presence": 0.067,
+        "enc_sign": "negative",
+        "agree": false
+      }
+    ]
+  },
+  "replicated_pairs": [],
+  "top_pairs": [],
+  "classified_counts": {
+    "ASSOCIATION_CANDIDATE": 0,
+    "REPLICATED_ASSOCIATION": 0,
+    "COVID_SENSITIVE": 0,
+    "COUNTRY_SPECIFIC": 0,
+    "NOT_SUPPORTED": 200
+  },
+  "gates": {
+    "R1": {
+      "verdict": "PASS",
+      "description": "Safety: no leakage/NaN/Inf/future-mix/cross-pooling",
+      "evidence": {
+        "leakage_check": true,
+        "nan_count": 0,
+        "inf_count": 0,
+        "cross_country_pooling": false,
+        "pt_kz_excluded": true,
+        "issues": []
+      }
+    },
+    "R2": {
+      "verdict": "FAIL",
+      "description": "Negative controls degrade presence score by >= 0.05",
+      "evidence": {
+        "real_mean": 0.06661671652857747,
+        "delta_permuted_years": 0.00036412610539368617,
+        "delta_permuted_sectors": -0.004120723610477786,
+        "delta_permuted_regions": -1.3304607415776104e-10,
+        "issues": [
+          "permuted_years: delta=0.000 < 0.05",
+          "permuted_sectors: delta=-0.004 < 0.05",
+          "permuted_regions: delta=-0.000 < 0.05"
+        ]
+      }
+    },
+    "R3": {
+      "verdict": "PASS",
+      "description": "Top-10 Spearman pair-ranking stability > 0.30 in >= 2 countries",
+      "evidence": {
+        "stability_FR": 0.701934207987652,
+        "stability_NL": 0.5492100242244947,
+        "stability_PT": 0.6140513621716631,
+        "n_countries_pass": 3
+      }
+    },
+    "R4": {
+      "verdict": "PASS",
+      "description": "Encoder sign agrees with Phase 7 beta direction in > 50% promoted edges",
+      "evidence": {
+        "sign_concordance": 0.5625,
+        "n_edges_compared": 16,
+        "phase7_pairs": [
+          {
+            "country": "PT",
+            "window": "2014-2019",
+            "pair": "BE\u2192MN",
+            "p7_beta": -0.281,
+            "p7_sign": "negative",
+            "enc_presence": 0.066,
+            "enc_sign": "negative",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2014-2019",
+            "pair": "MN\u2192JZ",
+            "p7_beta": -0.311,
+            "p7_sign": "negative",
+            "enc_presence": 0.066,
+            "enc_sign": "negative",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2014-2019",
+            "pair": "MN\u2192OQ",
+            "p7_beta": -0.245,
+            "p7_sign": "negative",
+            "enc_presence": 0.07,
+            "enc_sign": "negative",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2014-2019",
+            "pair": "OQ\u2192JZ",
+            "p7_beta": -0.328,
+            "p7_sign": "negative",
+            "enc_presence": 0.064,
+            "enc_sign": "negative",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "FZ\u2192BE",
+            "p7_beta": 0.255,
+            "p7_sign": "positive",
+            "enc_presence": 0.069,
+            "enc_sign": "negative",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "GI\u2192BE",
+            "p7_beta": 0.362,
+            "p7_sign": "positive",
+            "enc_presence": 0.068,
+            "enc_sign": "negative",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "JZ\u2192BE",
+            "p7_beta": 0.194,
+            "p7_sign": "positive",
+            "enc_presence": 0.069,
+            "enc_sign": "negative",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "JZ\u2192MN",
+            "p7_beta": 0.213,
+            "p7_sign": "positive",
+            "enc_presence": 0.067,
+            "enc_sign": "negative",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "MN\u2192JZ",
+            "p7_beta": -0.289,
+            "p7_sign": "negative",
+            "enc_presence": 0.066,
+            "enc_sign": "negative",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "MN\u2192OQ",
+            "p7_beta": -0.287,
+            "p7_sign": "negative",
+            "enc_presence": 0.068,
+            "enc_sign": "negative",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2015-2020",
+            "pair": "OQ\u2192JZ",
+            "p7_beta": -0.267,
+            "p7_sign": "negative",
+            "enc_presence": 0.064,
+            "enc_sign": "negative",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2017-2022",
+            "pair": "BE\u2192MN",
+            "p7_beta": -0.228,
+            "p7_sign": "negative",
+            "enc_presence": 0.065,
+            "enc_sign": "negative",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2017-2022",
+            "pair": "GI\u2192BE",
+            "p7_beta": 0.231,
+            "p7_sign": "positive",
+            "enc_presence": 0.066,
+            "enc_sign": "negative",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2017-2022",
+            "pair": "GI\u2192FZ",
+            "p7_beta": 0.212,
+            "p7_sign": "positive",
+            "enc_presence": 0.065,
+            "enc_sign": "negative",
+            "agree": false
+          },
+          {
+            "country": "PT",
+            "window": "2017-2022",
+            "pair": "GI\u2192JZ",
+            "p7_beta": -0.22,
+            "p7_sign": "negative",
+            "enc_presence": 0.064,
+            "enc_sign": "negative",
+            "agree": true
+          },
+          {
+            "country": "PT",
+            "window": "2017-2022",
+            "pair": "MN\u2192BE",
+            "p7_beta": 0.205,
+            "p7_sign": "positive",
+            "enc_presence": 0.067,
+            "enc_sign": "negative",
+            "agree": false
+          }
+        ]
+      }
+    },
+    "R5": {
+      "verdict": "FAIL",
+      "description": "At least 1 pair replicated in >= 2 countries",
+      "evidence": {
+        "replicated_pairs": [],
+        "threshold": 0.55,
+        "reason": "Pairs found in >= 2 countries with score > 0.55"
+      }
+    },
+    "R6": {
+      "verdict": "FAIL",
+      "description": "Country-specific associations identified (present in 1 country only)",
+      "evidence": {
+        "FR": 0,
+        "NL": 0,
+        "PT": 0,
+        "specific_by_country": {
+          "FR": [],
+          "NL": [],
+          "PT": []
+        }
+      }
+    },
+    "R7": {
+      "verdict": "PASS",
+      "description": "COVID period reported separately with instability documentation",
+      "evidence": {
+        "covid_reported_separately": true,
+        "pre_covid_stability": 0.13165971424448025,
+        "covid_stability": null,
+        "post_covid_stability": null,
+        "notes": []
+      }
+    },
+    "R8": {
+      "verdict": "NOT_EVALUATED",
+      "description": "Top-5 pairs fully documented",
+      "evidence": {
+        "reason": "No top pairs provided"
+      }
+    },
+    "R9": {
+      "verdict": "PASS",
+      "description": "No causal language in report or outputs",
+      "evidence": {
+        "causal_terms_found": [],
+        "checked_terms": [
+          "causes",
+          "caused by",
+          "causal",
+          "causality",
+          "causation",
+          "Granger cause",
+          "drives",
+          "effect of",
+          "impact of",
+          "leads to"
+        ]
+      }
+    },
+    "R10": {
+      "verdict": "PASS",
+      "description": "Outputs schema-valid for Observatory integration",
+      "evidence": {
+        "csv_schema_valid": true,
+        "json_schema_valid": true,
+        "required_csv_cols_present": true,
+        "issues": []
+      }
+    }
+  },
+  "gate_report": "| Gate | Description | Verdict |\n|------|-------------|---------|\n| R1 | Safety: no leakage/NaN/Inf/future-mix/cross-pooling | \u2713 PASS |\n| R2 | Negative controls degrade presence score by >= 0.05 | \u2717 FAIL |\n| R3 | Top-10 Spearman pair-ranking stability > 0.30 in >= 2 countries | \u2713 PASS |\n| R4 | Encoder sign agrees with Phase 7 beta direction in > 50% promoted edges | \u2713 PASS |\n| R5 | At least 1 pair replicated in >= 2 countries | \u2717 FAIL |\n| R6 | Country-specific associations identified (present in 1 country only) | \u2717 FAIL |\n| R7 | COVID period reported separately with instability documentation | \u2713 PASS |\n| R8 | Top-5 pairs fully documented | \u25cb NOT_EVALUATED |\n| R9 | No causal language in report or outputs | \u2713 PASS |\n| R10 | Outputs schema-valid for Observatory integration | \u2713 PASS |",
+  "decision": "ENCODER_CAPTURES_ARTIFACTS",
+  "n_gates_pass": 6,
+  "n_gates_fail": 3,
+  "n_gates_ne": 1,
+  "elapsed_seconds": 3.3727028369903564
+}
