@@ -1,0 +1,366 @@
+{
+  "experiment": "DEC-059",
+  "initial_checkpoint_hash": "39b30a52da2ad330",
+  "final_checkpoint_hash": "254c6efe61f94d49",
+  "n_weak_labels": 25,
+  "n_train_labels": 12,
+  "v0_sign_concordance": {
+    "FR": {
+      "sign_concordance": 0.0,
+      "n_labels": 1,
+      "n_evaluated": 1,
+      "n_low_evidence_skipped": 0,
+      "low_evidence": true
+    },
+    "NL": {
+      "sign_concordance": 0.5,
+      "n_labels": 8,
+      "n_evaluated": 6,
+      "n_low_evidence_skipped": 2,
+      "low_evidence": false
+    },
+    "PT": {
+      "sign_concordance": 0.4375,
+      "n_labels": 16,
+      "n_evaluated": 16,
+      "n_low_evidence_skipped": 0,
+      "low_evidence": false
+    }
+  },
+  "v0_sign_concordance_mean": 0.3125,
+  "v1_sign_concordance_loco": {
+    "PT": {
+      "sign_concordance": 0.5,
+      "n_labels": 16,
+      "n_evaluated": 16,
+      "n_low_evidence_skipped": 0,
+      "low_evidence": false
+    },
+    "NL": {
+      "sign_concordance": 0.5,
+      "n_labels": 8,
+      "n_evaluated": 6,
+      "n_low_evidence_skipped": 2,
+      "low_evidence": false
+    },
+    "FR": {
+      "sign_concordance": 1.0,
+      "n_labels": 1,
+      "n_evaluated": 1,
+      "n_low_evidence_skipped": 0,
+      "low_evidence": true
+    }
+  },
+  "v1_sign_concordance_mean_valid_folds": 0.5,
+  "v1_sign_concordance_mean_all": 0.6666666666666666,
+  "control_sign_concordance": {
+    "C1": 0.6458333333333334,
+    "C2": 0.6666666666666666,
+    "C3": 0.6458333333333334,
+    "C4": 0.3333333333333333,
+    "C5": 0.6666666666666666,
+    "C6": 0.3125,
+    "C7": 0.3125
+  },
+  "classification": {
+    "REPLICATED_ASSOCIATION": 59,
+    "COUNTRY_SPECIFIC": 0,
+    "COVID_SENSITIVE": 13,
+    "INSUFFICIENT_EVIDENCE": 0,
+    "NOT_SUPPORTED": 0
+  },
+  "replicated_pairs": [
+    {
+      "source_sector": "GI",
+      "target_sector": "JZ",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ],
+      "n_countries": 3
+    },
+    {
+      "source_sector": "GI",
+      "target_sector": "OQ",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ],
+      "n_countries": 3
+    },
+    {
+      "source_sector": "KZ",
+      "target_sector": "MN",
+      "countries": [
+        "FR",
+        "NL"
+      ],
+      "n_countries": 2
+    },
+    {
+      "source_sector": "GI",
+      "target_sector": "RU",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ],
+      "n_countries": 3
+    },
+    {
+      "source_sector": "BE",
+      "target_sector": "GI",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ],
+      "n_countries": 3
+    },
+    {
+      "source_sector": "FZ",
+      "target_sector": "MN",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ],
+      "n_countries": 3
+    },
+    {
+      "source_sector": "BE",
+      "target_sector": "JZ",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ],
+      "n_countries": 3
+    },
+    {
+      "source_sector": "RU",
+      "target_sector": "GI",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ],
+      "n_countries": 3
+    },
+    {
+      "source_sector": "BE",
+      "target_sector": "OQ",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ],
+      "n_countries": 3
+    },
+    {
+      "source_sector": "KZ",
+      "target_sector": "BE",
+      "countries": [
+        "FR",
+        "NL"
+      ],
+      "n_countries": 2
+    }
+  ],
+  "country_specific_pairs": [],
+  "covid_sensitive_pairs": [
+    {
+      "source_sector": "JZ",
+      "target_sector": "MN",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "GI",
+      "target_sector": "FZ",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "JZ",
+      "target_sector": "BE",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "BE",
+      "target_sector": "RU",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    },
+    {
+      "source_sector": "OQ",
+      "target_sector": "JZ",
+      "countries": [
+        "FR",
+        "NL",
+        "PT"
+      ]
+    }
+  ],
+  "insufficient_evidence_pairs": [],
+  "gates": {
+    "M1": {
+      "verdict": "PASS",
+      "evidence": {
+        "nan_count": 0,
+        "inf_count": 0,
+        "leakage_check": true,
+        "schema_valid": true,
+        "pt_kz_excluded": true,
+        "issues": []
+      },
+      "notes": ""
+    },
+    "M2": {
+      "verdict": "FAIL",
+      "evidence": {
+        "v1": 0.6666666666666666,
+        "controls": {
+          "C1_permuted_labels": 0.6458333333333334,
+          "C2_country_shuffled": 0.6666666666666666,
+          "C3_sector_shuffled": 0.6458333333333334,
+          "C4_sign_flipped": 0.3333333333333333,
+          "C5_window_shuffled": 0.6666666666666666,
+          "C6_random_labels": 0.3125
+        },
+        "required_margin": 0.05,
+        "failures": [
+          "V1(0.667) - C1_permuted_labels(0.646) = 0.021 < 0.05",
+          "V1(0.667) - C2_country_shuffled(0.667) = 0.000 < 0.05",
+          "V1(0.667) - C3_sector_shuffled(0.646) = 0.021 < 0.05",
+          "V1(0.667) - C5_window_shuffled(0.667) = 0.000 < 0.05"
+        ]
+      },
+      "notes": "If FAIL: decision ceiling = REAL_WEAK_LABEL_TUNING_PARTIAL"
+    },
+    "M3": {
+      "verdict": "PASS",
+      "evidence": {
+        "n_stable_relations": 59,
+        "n_replicated_associations": 59,
+        "n_unstable_promoted": 0,
+        "min_windows": 3,
+        "sign_consistency_threshold": 0.6
+      },
+      "notes": ""
+    },
+    "M4": {
+      "verdict": "FAIL",
+      "evidence": {
+        "n_abstained": 0,
+        "n_total": 72,
+        "rate": 0.0,
+        "min_required_rate": 0.1
+      },
+      "notes": ""
+    },
+    "M5": {
+      "verdict": "PASS",
+      "evidence": {
+        "FR": {
+          "n_labels": 1,
+          "sign_concordance": 1.0,
+          "low_evidence": true
+        },
+        "NL": {
+          "n_labels": 8,
+          "sign_concordance": 0.5,
+          "low_evidence": false
+        },
+        "PT": {
+          "n_labels": 16,
+          "sign_concordance": 0.5,
+          "low_evidence": false
+        }
+      },
+      "notes": ""
+    },
+    "M6": {
+      "verdict": "PASS",
+      "evidence": {
+        "covid_promoted": [],
+        "covid_in_replicated": []
+      },
+      "notes": ""
+    },
+    "M7": {
+      "verdict": "PASS",
+      "evidence": {
+        "n_stable_replicated": 59,
+        "pairs": [
+          "GI\u2192JZ",
+          "GI\u2192OQ",
+          "KZ\u2192MN",
+          "GI\u2192RU",
+          "BE\u2192GI"
+        ]
+      },
+      "notes": ""
+    },
+    "M8": {
+      "verdict": "PASS",
+      "evidence": {
+        "n_country_specific": 0,
+        "country_specific_in_replicated": false
+      },
+      "notes": ""
+    },
+    "M9": {
+      "verdict": "PASS",
+      "evidence": {
+        "hash_match": true
+      },
+      "notes": ""
+    },
+    "M10": {
+      "verdict": "PASS",
+      "evidence": {
+        "terms_found": [],
+        "checked_list": [
+          "causes",
+          "caused by",
+          "causal",
+          "causality",
+          "causation",
+          "Granger cause",
+          "drives",
+          "effect of",
+          "impact of",
+          "leads to",
+          "structural effect",
+          "structural cause",
+          "impacta",
+          "impacto causal",
+          "causa estrutural"
+        ]
+      },
+      "notes": ""
+    }
+  },
+  "gate_report": "| Gate | Description | Verdict |\n|------|-------------|---------|\n| M1 | Safety: no NaN/Inf/leakage/schema-break/PT-KZ | \u2713 PASS |\n| M2 | V1 > all controls C1-C6 by >= 0.05 (ceiling: PARTIAL if fails) | \u2717 FAIL |\n| M3 | Promoted relations: n_windows >= 3 AND sign_consistency >= 0.6 | \u2713 PASS |\n| M4 | INSUFFICIENT_EVIDENCE used; abstention rate >= 10% | \u2717 FAIL |\n| M5 | Per-fold LOCO honesty; LOW_EVIDENCE folds excluded from strong claims | \u2713 PASS |\n| M6 | COVID_SENSITIVE not promoted to REPLICATED or ROBUST | \u2713 PASS |\n| M7 | >=1 REPLICATED relation with multi-window stability survives controls | \u2713 PASS |\n| M8 | Country-specific relations identified and NOT counted as European replication | \u2713 PASS |\n| M9 | Same seed produces identical outputs | \u2713 PASS |\n| M10 | No causal language in outputs, report, or decision text | \u2713 PASS |",
+  "decision": "REAL_WEAK_LABEL_TUNING_PARTIAL",
+  "n_gates_pass": 8,
+  "n_gates_fail": 2,
+  "n_gates_ne": 0,
+  "elapsed_seconds": 11.186553478240967
+}

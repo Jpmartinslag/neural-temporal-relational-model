@@ -1,5 +1,5 @@
 # HERALD Current State
-**Updated:** 2026-06-16 (DEC-058 COMPLETE — 8/10 PASS. REAL_WEAK_LABEL_TUNING_SUPPORTED. V1 LOCO sign concordance=0.667 vs V0=0.313 vs DEC-056=0.438. 58 replicated pairs. W2 FAIL (controls not degraded; 12 labels too sparse). W6 FAIL (0 abstentions). 60/60 tests PASS. Initial checkpoint=39b30a52da2ad330, final=254c6efe61f94d49.)
+**Updated:** 2026-06-16 (DEC-059 COMPLETE — 8/10 PASS. REAL_WEAK_LABEL_TUNING_PARTIAL. V1 sign concordance=0.500 valid folds (NL+PT; FR n=1 LOW_EVIDENCE). M2 FAIL: C1/C2/C3/C5 within 0.021 of V1=0.667, margin required=0.05. M4 FAIL: 0 abstentions. DEC-058 corrected to PARTIAL. 49/49 tests PASS.)
 **Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-049), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
