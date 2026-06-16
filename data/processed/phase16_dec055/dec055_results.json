@@ -102,6 +102,7 @@
       "final_loss_c1": 0.7942350625991821,
       "final_grad_norm_c1": 1.36250088599064,
       "n_epochs_c2": 100,
+      "encoder_hash": "11c5ca375e139ca2",
       "n_embedding_records": 180
     },
     {
@@ -148,6 +149,7 @@
       "final_loss_c1": 0.8560533285140991,
       "final_grad_norm_c1": 1.918548944297901,
       "n_epochs_c2": 100,
+      "encoder_hash": "b3096451e8572e38",
       "n_embedding_records": 180
     },
     {
@@ -194,6 +196,7 @@
       "final_loss_c1": 0.8394647002220154,
       "final_grad_norm_c1": 1.8112718860423684,
       "n_epochs_c2": 100,
+      "encoder_hash": "39b30a52da2ad330",
       "n_embedding_records": 180
     },
     {
@@ -240,6 +243,7 @@
       "final_loss_c1": 0.8564697623252868,
       "final_grad_norm_c1": 1.9401421033143802,
       "n_epochs_c2": 100,
+      "encoder_hash": "2eaef45ad8e890cc",
       "n_embedding_records": 180
     },
     {
@@ -286,6 +290,7 @@
       "final_loss_c1": 0.78811594247818,
       "final_grad_norm_c1": 1.291486292500395,
       "n_epochs_c2": 100,
+      "encoder_hash": "2e4a2e3a95f6caf7",
       "n_embedding_records": 180
     }
   ],
@@ -507,6 +512,9 @@
   "n_gates_pass": 9,
   "n_gates_fail": 1,
   "n_gates_ne": 0,
-  "elapsed_seconds": 198.55213737487793,
-  "n_embedding_records": 900
+  "elapsed_seconds": 181.4251024723053,
+  "n_embedding_records": 900,
+  "checkpoint_path": "data/processed/phase16_dec055/shared_relation_encoder_best.pt",
+  "checkpoint_hash": "39b30a52da2ad330",
+  "checkpoint_manifest": "data/processed/phase16_dec055/checkpoint_manifest.json"
 }

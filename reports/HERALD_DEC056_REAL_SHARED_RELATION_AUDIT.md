@@ -1,228 +1,261 @@
 # HERALD DEC-056: Real Shared Relation Encoder Audit
-**Status:** COMPLETE — 6/10 PASS  
-**Decision:** `REAL_SHARED_RELATION_PARTIAL — FEATURES INFORMATIVE, PRESENCE THRESHOLD NOT REACHED (ZERO-SHOT LIMITATION)`  
+**Status:** COMPLETE (corrected run) — 7/10 PASS  
+**Decision:** `REAL_SHARED_RELATION_PARTIAL` — Trained encoder discriminates sectors; rankings stable; sign concordance below chance; no cross-country replication without COVID window  
 **Date:** 2026-06-16  
-**Runtime:** 3.4 s (P0 + P1 + controls, CPU)  
-**Scope:** Analytic validation only. No training on real data. No pseudo-labels. No recommendation output. No causal claims.
+**Checkpoint:** `data/processed/phase16_dec055/shared_relation_encoder_best.pt` (hash=`39b30a52da2ad330`, best_seed=30)  
+**Runtime:** 2.1 s (P0 only, CPU)  
+**Scope:** Analytic validation only. Zero-shot real. No fine-tuning. No pseudo-labels. No recommendation. No causal claims.
+
+---
+
+## 0. Audit Summary
+
+### Previous Run (INVALID for model validation)
+
+The first DEC-056 run (`DEC056_PREVIOUS_RUN_INVALID_FOR_MODEL_VALIDATION`) used a **randomly initialized encoder** because `run_dec055.py` never called `torch.save`. Presence scores clustered at ~0.067 (initialization prior). That run is valid only as a **pipeline preflight** — it confirmed the data loading, normalization, permutation control, and gate infrastructure works correctly.
+
+### This Run (corrected)
+
+DEC-055 was re-executed with checkpoint saving added. The best-seed encoder (seed=30, unseen_pair_auc=0.752) was saved and used for real-data P0.
+
+| Run | Encoder | Mean presence | PASS gates |
+|---|---|---|---|
+| Previous (INVALID) | Random init | 0.067 | 6/10 |
+| **This (corrected)** | **Trained, hash=39b30a52da2ad330** | **0.648** | **7/10** |
 
 ---
 
 ## 1. Scientific Question
 
-Does the SharedRelationEncoder (DEC-055, trained on synthetic data) extract features from real FR/NL/PT sector panels that carry meaningful information about association structure?
+Does the DEC-055-trained SharedRelationEncoder (trained on synthetic FR-type environments) extract sector-pair signals from real FR/NL/PT panels that are consistent with independent Phase 7 evidence?
 
-**Findings:**
-- **YES (sign direction):** Sign head output correlates with Phase 7 beta direction at above-chance rate (0.562 vs 0.50 threshold) using raw features from real panels — with zero real-data training.
-- **YES (ranking stability):** Pair rankings are temporally stable across windows (FR=0.702, NL=0.549, PT=0.614 Spearman) — the encoder consistently identifies the same relative ranking across years.
-- **NO (presence threshold):** The untrained encoder's presence scores cluster near initialization prior (~0.067), never reaching the 0.55 association candidate threshold. No associations can be claimed in zero-shot mode.
-- **R2/R5/R6 FAIL:** Direct consequence of zero-shot mode — controls are indistinguishable from real data at initialization prior values. Not an architecture failure.
-
----
-
-## 2. Protocol
-
-### 2.1 Encoder
-- Architecture: SharedRelationEncoder (2215 params), identical to DEC-055
-- **Zero-shot:** Random initialization (DEC-055 did not save a checkpoint). This tests whether architecture + features carry signal, not whether specific learned weights transfer.
-- No fine-tuning. No gradient updates on real data.
-
-### 2.2 Normalization
-- P0: log1p + per-sector z-score using window data only (causal: no future leakage)
-- P1: z-score calibrated from the other two countries (leave-one-country-out)
-- PT KZ: structural absence applied (`obs_mask = 0` for all PT KZ cells)
-
-### 2.3 Panels
-
-| Country | Regions | Years | Valid windows |
-|---|---|---|---|
-| FR | 280 ZE2020 | 2013–2024 (12 years) | 5 |
-| NL | 40 COROP | 2015–2025 (11 years) | 4 |
-| PT | 25 NUTS3 | 2009–2024 (16 years) | 8 |
-| **Total** | — | — | **17 windows** |
-
-Total pair-window records: **1096** (P0) + 1096 (P1)
-
-### 2.4 Evaluation Windows
-Standard 6-year sliding windows: 2009–2015, 2010–2016, 2012–2018, 2014–2020, 2015–2021, 2016–2022, 2017–2023, 2019–2025 (subset used per country by year availability).
+**Findings (zero-shot real):**
+- **YES (sector discrimination):** Sector permutation degrades mean presence by 0.178 (R2 PASS) — the encoder is not outputting the same score regardless of sector identity.
+- **YES (ranking stability):** FR=0.820, NL=0.412, PT=0.593 Spearman across windows (R3 PASS).
+- **PARTIAL (Phase 7 sign):** Concordance = 0.438 < 0.50 threshold (R4 FAIL) — below chance. The synthetic-trained sign head does not generalize to real-data sign direction.
+- **NO (cross-country replication):** No pair exceeds threshold (0.55) in ≥2 countries outside COVID windows (R5 FAIL). 194 pairs are classified COVID_SENSITIVE (above threshold only in windows containing 2020).
 
 ---
 
-## 3. Results
+## 2. DEC-055 Checkpoint
 
-### 3.1 Presence Scores (Zero-Shot)
+### 2.1 Changes to `run_dec055.py`
 
-| Metric | Value | Interpretation |
+Three additions (no change to architecture, hyperparameters, or data):
+
+1. `_state_dict_hash()` — SHA256 prefix of encoder weights
+2. `train_shared_encoder()` — tracks best-epoch weights and restores them at end of training
+3. `main()` — after all seeds, saves best-seed encoder as `.pt` and writes manifest JSON
+
+### 2.2 DEC-055 Re-run Results
+
+Same protocol, same seeds (10, 20, 30, 40, 50), same gates:
+
+| Metric | Value | Gate |
 |---|---|---|
-| Mean presence probability | **0.067** | Near initialization prior (sigmoid(−2.0) ≈ 0.119) |
-| Max presence probability | — | < 0.55 threshold |
-| Pairs above threshold (0.55) | **0** | Zero-shot: encoder never reaches threshold |
-| Replicated associations | **0** | Consequence of zero-shot mode |
+| IS AUC | 0.960 | — |
+| Unseen-pair AUC | 0.690 | S3 ≥ 0.65 ✓ |
+| OOS-env AUC (shared) | 0.719 | S4 > 0.551 (old) ✓ |
+| Sign acc OOS | 0.870 | S5 > 0.55 ✓ |
+| Lag acc OOS | 0.580 | S5 > 0.55 ✓ |
+| Permuted controls | Δ ≥ 0.05 | S8 ✓ |
+| Seeds > 0.60 | 4/5 | S9 ✓ |
+| Total params | 2871 | S10 ≤ 5000 ✓ |
 
-The encoder's `head_presence` bias is initialized to −2.0 (sparse prior). With random weights, the untrained MLP pushes logits further negative via random projections. All presence probabilities cluster at ~0.067, making thresholding non-informative.
+**Gates: 9/10 PASS** (S7 FAIL unchanged — temporal regime detection requires dedicated architecture).
 
-### 3.2 Temporal Stability (Spearman Rank Correlation)
+### 2.3 Checkpoint Manifest
 
-| Country | Stability | Gate |
+```json
+{
+  "checkpoint_path": "data/processed/phase16_dec055/shared_relation_encoder_best.pt",
+  "sha256_prefix": "39b30a52da2ad330",
+  "best_seed": 30,
+  "best_unseen_pair_auc": 0.752,
+  "n_encoder_params": 2215,
+  "architecture": {"class": "SharedRelationEncoder", "input_dim": 26, ...},
+  "training": {"max_epochs": 100, "patience": 10, "lr": 1e-3, ...},
+  "gate_summary": {"S1": "PASS", ..., "S7": "FAIL", ..., "S10": "PASS"}
+}
+```
+
+---
+
+## 3. Protocol
+
+- **P0:** Zero-shot — trained checkpoint frozen, log1p normalization, no fine-tuning
+- Countries: FR (280 ZE2020, 5 windows), NL (40 COROP, 4 windows), PT (25 NUTS3, 8 windows)
+- PT KZ structurally excluded (`obs_mask=0`)
+- 1096 pair-window records
+- No future leakage (normalization uses only window data)
+
+---
+
+## 4. Results
+
+### 4.1 Presence Score Distribution
+
+| Metric | Untrained (INVALID) | **Trained (corrected)** |
 |---|---|---|
-| FR | **0.702** | R3 PASS |
-| NL | **0.549** | R3 PASS |
-| PT | **0.614** | R3 PASS |
+| Mean presence | 0.067 | **0.648** |
+| Max presence | ~0.12 | **0.935** |
+| Pairs above 0.55 | 0 | **829/1096** |
 
-All 3 countries above 0.30 threshold. **The relative ranking of pairs is temporally consistent** even without real-data training. This indicates the encoder's features (cross-lag correlations, direction asymmetry) carry stable structural information from the real panels.
+The trained encoder gives substantially higher and more varied scores. The mean (0.648) is above the presence threshold (0.55), indicating the encoder over-predicts presence on real data relative to the synthetic training distribution. This is expected: the encoder was trained on synthetic environments with explicit sparse priors; real data has different statistics.
 
-### 3.3 Phase 7 Sign Concordance
+### 4.2 Temporal Stability (Spearman)
 
-| Metric | Value |
-|---|---|
-| Sign concordance | **0.562** |
-| Edges compared | **16** |
-| Threshold | 0.50 |
-| Gate R4 | **PASS** |
+| Country | Stability | Gate R3 |
+|---|---|---|
+| FR | **0.820** | PASS |
+| NL | **0.412** | PASS |
+| PT | **0.593** | PASS |
 
-The sign head's output (inferred positive/negative) agrees with Phase 7 beta direction in 56.2% of promoted edges using only raw sector history features — above chance rate. This is not trivially expected from random weights; it indicates the `direction_asymmetry` feature (`corr(src[t-1],tgt[t]) − corr(tgt[t-1],src[t])`) captures real directionality from the data.
+Pair rankings are consistent across adjacent 6-year windows. The trained encoder assigns stable relative ranks to sector pairs.
 
-### 3.4 Permutation Controls
+### 4.3 Permutation Controls
 
 | Control | Mean presence | Delta vs real |
 |---|---|---|
-| Real (PT panel) | **0.067** | — |
-| Permuted years | 0.066 | +0.000 |
-| Permuted sectors | 0.071 | −0.004 |
-| Permuted regions | 0.067 | −0.000 |
+| **Real (PT panel)** | **0.687** | — |
+| Permuted years | 0.716 | −0.029 |
+| **Permuted sectors** | **0.509** | **+0.178** ✓ |
+| Permuted regions | 0.687 | +0.000 |
 
-**R2 FAIL** — Controls do not degrade. This is expected and interpretable: with an untrained encoder, ALL inputs (real or permuted) map to approximately the same initialization prior. The absence of degradation reflects the absence of learned weights, not architecture failure.
+**R2 PASS** — sector permutation degrades presence by 0.178 (>> threshold 0.05). The encoder IS sensitive to sector identity. However, year permutation does not degrade (slightly increases), indicating temporal ordering within windows is not the primary driver.
 
-If the encoder had been trained on real data, controls would degrade. R2 should be re-evaluated after training.
+**Interpretation:** The trained encoder learns sector-specific cross-correlation patterns (via `direction_asymmetry` and `lag_corr` features), but not temporal onset/offset within windows (consistent with S7 failure in DEC-055).
 
-### 3.5 COVID Sensitivity
+### 4.4 Phase 7 Sign Concordance
 
-| Country | Pre-COVID vs COVID Spearman |
-|---|---|
-| FR | −0.138 |
-| PT | +0.401 |
-| NL | NaN (insufficient windows) |
+| Metric | Value | Gate R4 |
+|---|---|---|
+| Concordance | **0.438** | **FAIL** (< 0.50) |
+| Edges compared | 16 | — |
 
-PT shows moderate positive correlation (rankings consistent across pre-COVID to COVID). FR shows slight sign reversal. NaN for NL: insufficient window overlap for cross-period comparison. COVID windows reported separately (R7 PASS).
+Below-chance concordance (0.438 < 0.50). The synthetic-trained sign head produces sign predictions that do not align with Phase 7 regression betas. Possible causes:
+1. Phase 7 uses OLS regression signs; encoder uses cross-lag correlation asymmetry — different quantities
+2. The sign head learned from synthetic data where positive/negative relations have different statistics than real economies
+3. 16 edges is a small sample — 95% CI includes 0.50
+
+This is a genuine limitation: sign direction does not transfer from synthetic to real.
+
+### 4.5 Classification
+
+| Status | Count | Interpretation |
+|---|---|---|
+| ASSOCIATION_CANDIDATE | 0 | COVID_SENSITIVE takes priority |
+| REPLICATED_ASSOCIATION | 0 | All above-threshold pairs are COVID-window only |
+| **COVID_SENSITIVE** | **194** | Above threshold only in windows containing 2020 |
+| COUNTRY_SPECIFIC | 0 | Same reason |
+| NOT_SUPPORTED | 6 | Below threshold in all windows |
+
+**194 COVID_SENSITIVE pairs** — these are sector pairs where the encoder produces high presence scores only in windows that include 2020. This could reflect:
+1. COVID as a genuine structural change that makes sector co-movements more pronounced
+2. Encoder capturing recent-years patterns (post-2015 data) that happen to include 2020
+
+**No REPLICATED_ASSOCIATION** because the classification logic gives COVID_SENSITIVE priority over cross-country replication. A pair that is above threshold in COVID windows in FR and PT would be COVID_SENSITIVE, not REPLICATED_ASSOCIATION. This is a classification design choice, not a claim about the data.
+
+### 4.6 Top Pairs Per Country
+
+| Country | Top 3 pairs | Score |
+|---|---|---|
+| FR | GI→LZ, GI→FZ, GI→OQ | 0.857, 0.852, 0.832 |
+| NL | KZ→FZ, KZ→GI, KZ→LZ | 0.935, 0.928, 0.910 |
+| PT | FZ→OQ, GI→OQ, LZ→JZ | 0.929, 0.924, 0.923 |
+
+NL: KZ (Finance, insurance) is the dominant source sector. Note: KZ was excluded from PT due to structural absence, but is present and measured in NL.
 
 ---
 
-## 4. Gate Results
+## 5. Gate Results
 
 | Gate | Description | Verdict |
 |---|---|---|
 | R1 | Safety: no leakage/NaN/Inf/future-mix/cross-pooling | ✓ PASS |
-| R2 | Negative controls degrade presence score ≥ 0.05 | ✗ FAIL |
+| R2 | Negative controls degrade presence score ≥ 0.05 | ✓ PASS |
 | R3 | Spearman stability > 0.30 in ≥ 2 countries | ✓ PASS |
-| R4 | Phase 7 sign concordance > 0.50 | ✓ PASS |
-| R5 | ≥ 1 pair replicated in ≥ 2 countries | ✗ FAIL |
+| R4 | Phase 7 sign concordance > 0.50 | ✗ FAIL |
+| R5 | ≥ 1 pair replicated in ≥ 2 countries (outside COVID) | ✗ FAIL |
 | R6 | Country-specific pairs identified | ✗ FAIL |
 | R7 | COVID period reported separately | ✓ PASS |
-| R8 | Top-5 pairs fully documented | ○ NOT_EVALUATED |
+| R8 | Top-5 pairs fully documented | ✓ PASS |
 | R9 | No causal language in outputs | ✓ PASS |
 | R10 | CSV/JSON schema valid | ✓ PASS |
 
-**Summary: 6/10 PASS, 3/10 FAIL, 1/10 NOT_EVALUATED**
+**Summary: 7/10 PASS**
 
 ---
 
-## 5. Failure Analysis
+## 6. Failure Analysis
 
-### R2 FAIL — Controls Do Not Degrade
+### R4 FAIL — Sign concordance below chance (0.438)
 
-**Root cause:** Untrained encoder. All inputs map to ~sigmoid(−2.0) ≈ 0.119 (presence head bias), further reduced to 0.067 by random MLP weights. Permuting data changes features but the random weights cannot discriminate real from permuted.
+Sign head trained on synthetic data where: positive = sector A level increases → sector B level increases (linear additive model). Phase 7 sign = OLS regression coefficient beta. These quantities measure the same direction but through different transformations. On 16 edges, random chance = 0.50. The trained sign head gives 0.438 — no evidence it generalizes to real-data sign direction.
 
-**Implication:** R2 cannot distinguish architecture quality from training quality in zero-shot mode. **Not** evidence that the architecture is wrong — it is evidence that the encoder needs real-data training to discriminate pairs.
+**Remedy:** Fine-tune sign head specifically on real pairs with Phase 7 labels as soft targets (NOT authorized in this DEC).
 
-**Remedy:** Save DEC-055 synthetic checkpoint → apply to real panels (would test whether synthetic-trained weights generalize). Or train a lightweight fine-tuned version on PT-holdout.
+### R5/R6 FAIL — No cross-country replication (classification artifact)
 
-### R5/R6 FAIL — No Associations or Country-Specific Pairs Found
+194 pairs are above threshold only in COVID windows. The classification logic marks these as COVID_SENSITIVE before checking cross-country replication. If the COVID_SENSITIVE label were removed, some of these pairs might be REPLICATED_ASSOCIATION (present in FR + PT COVID windows).
 
-**Root cause:** All presence scores ≈ 0.067 < 0.55 threshold. No pair can be classified as ASSOCIATION_CANDIDATE or REPLICATED_ASSOCIATION in zero-shot mode.
+**Remedy:** Separate classification by period rather than blocking COVID_SENSITIVE from replication check.
 
-**Implication:** Threshold-based classification requires a trained encoder. Sign concordance (R4) and stability (R3) are meaningful even without trained presence scores because they use relative ranking and direction, not absolute threshold.
+### R2 partial — Year permutation does not degrade
 
-### R8 NOT_EVALUATED — No Top Pairs to Document
-
-**Root cause:** Consequence of R5/R6 failures — no pairs above threshold to report. All `top_pairs_documented` arrays are empty.
+The encoder scores are not sensitive to year ordering within windows (permuted_years = 0.716 > real = 0.687). This confirms S7 failure pattern from DEC-055: the encoder captures cross-lag correlations averaged over the window, not temporal onset/offset.
 
 ---
 
-## 6. Meaningful Zero-Shot Findings
+## 7. Comparison: Untrained vs Trained Encoder on Real Data
 
-Despite zero-shot limitations, two results are non-trivially informative:
-
-**Finding 1 — Temporal rank stability (R3):** The encoder assigns pair rankings that are consistent across adjacent 6-year windows (Spearman 0.55–0.70). This means the features capture a stable signal in real sector histories. Random noise would produce Spearman ≈ 0.
-
-**Finding 2 — Phase 7 sign concordance (R4):** On 16 promoted Phase 7 edges, the encoder's sign head agrees at 56.2% rate using only real sector time series features and zero training on real data. The `direction_asymmetry = corr(src[t-1],tgt[t]) − corr(tgt[t-1],src[t])` feature is the likely driver — it encodes directional precedence from actual data.
-
-Both findings support the hypothesis that the encoder's FEATURE DESIGN (not its trained weights) is informative about real economic associations.
-
----
-
-## 7. Comparison with Phase 7 Sector Precedence
-
-Phase 7 used regression coefficients (beta) from panel models with bootstrapped confidence intervals. DEC-056 uses raw feature similarity via a neural encoder.
-
-| Aspect | Phase 7 | DEC-056 (zero-shot) |
+| Aspect | Previous run (INVALID) | This run (corrected) |
 |---|---|---|
-| Method | OLS panel regression with lagged predictors | Feature-based shared encoder |
-| Training data | Real panels (observed outcome as target) | Synthetic environments (DEC-055) |
-| Presence threshold | p-value < 0.05 | Presence sigmoid > 0.55 |
-| Sign evidence | Regression beta sign | Encoder sign_head output |
-| Sign concordance | — | **56.2%** (above chance) |
-| Temporal stability | Not tested | **0.55–0.70** (Spearman) |
+| Checkpoint | None (random init) | hash=39b30a52da2ad330 |
+| Mean presence | 0.067 | 0.648 |
+| Pairs above 0.55 | 0 | 829/1096 |
+| R2 (controls) | FAIL | PASS |
+| R3 (stability) | PASS | PASS |
+| R4 (Phase 7 sign) | PASS (0.562, above chance) | FAIL (0.438, below chance) |
+| R5 (replication) | FAIL | FAIL |
+| R8 (documentation) | NOT_EVALUATED | PASS |
+| Gates total | 6/10 | 7/10 |
 
-Phase 7 used real outcome labels. DEC-056 uses no labels — only sector time series. Agreement at 56.2% is noteworthy given this constraint.
-
----
-
-## 8. Association Classification — Zero-Shot Results
-
-| Status | Count | Note |
-|---|---|---|
-| ASSOCIATION_CANDIDATE | 0 | Requires presence > 0.55 — not reached in zero-shot |
-| REPLICATED_ASSOCIATION | 0 | Requires candidate in ≥ 2 countries |
-| COVID_SENSITIVE | 0 | Requires candidate only in COVID windows |
-| COUNTRY_SPECIFIC | 0 | Requires candidate in 1 country only |
-| NOT_SUPPORTED | (all) | All pairs below threshold |
-
-**All pairs classified as NOT_SUPPORTED in zero-shot mode.** This is the correct and honest result — no association claims can be made without real-data training.
+Note: R4 was PASS in the untrained run (0.562) but FAIL in the trained run (0.438). The untrained encoder's sign output was effectively random — it happened to be above-chance on 16 edges. The trained encoder actively learned a sign representation from synthetic data that conflicts with Phase 7 sign conventions.
 
 ---
 
-## 9. Decisions
+## 8. Decision
 
-- **FEATURES_CARRY_REAL_SIGNAL** (R3 + R4 PASS): Temporal ranking stability (0.55–0.70) and Phase 7 sign concordance (0.562) demonstrate the encoder's features capture genuine structural information from real sector panels.
-- **ZERO_SHOT_INSUFFICIENT_FOR_CANDIDATES** (R2/R5/R6 FAIL): The untrained encoder cannot produce presence scores above the 0.55 threshold. Association classification requires a trained encoder.
-- **NO_CAUSAL_CLAIMS** (R9 PASS): All outputs labeled as `analytic_association_only`. Provenance: `real_observed_association_score`.
-- **DEC056_PARTIAL** (6/10 PASS): Architecture and features validated; trained weights required for full candidate detection.
+`REAL_SHARED_RELATION_PARTIAL` — The trained encoder:
+- **Does** respond to sector identity (R2 PASS)
+- **Does** produce stable pair rankings across time (R3 PASS)
+- **Does not** align with Phase 7 sign direction (R4 FAIL)
+- **Does not** replicate across countries outside COVID windows (R5/R6 FAIL)
 
----
+No association claims can be made. All outputs labeled `analytic_association_only`. No causal language.
 
-## 10. Next Steps (Not Authorized in DEC-056)
+### What this means for the research path
 
-If authorized:
-1. **Save DEC-055 checkpoint** → apply frozen synthetic-trained encoder to real data (tests synthetic→real transfer)
-2. **Fine-tune on PT holdout** → train presence head on P1 split (NL+FR train, PT eval)
-3. **Lower presence threshold** → report score distribution, let threshold be tuned per protocol
-4. **S7-style temporal detection** → requires dedicated temporal encoder (known DEC-055 limitation)
+The encoder architecture is validated on synthetic data (DEC-055, 9/10 PASS). On real data, the encoder finds sector-specific patterns that are stable across time. The sign and replication gates fail because:
+1. Sign: synthetic and real sign conventions differ
+2. Replication: COVID dominates the high-score windows; pre-COVID scores are below threshold
 
-**NOT authorized without new decision:**
-- Pseudo-labels
-- UtilityGate connection
-- Causal inference
-- HPC compute
+A fine-tuned sign head or an unsupervised clustering of the 32-dim embeddings (rather than threshold-based classification) may be more informative next steps.
 
 ---
 
-## 11. Files
+## 9. Files
 
 | File | Description |
 |---|---|
-| `src/modeles/real_world/run_shared_relation_real.py` | Main validation module (P0/P1/controls) |
-| `src/modeles/real_world/__init__.py` | Module init |
-| `src/modeles/synthetic/phase16_decoupled/gates_dec056.py` | R1–R10 gate definitions (frozen) |
-| `tests/test_dec056_real_shared_relation.py` | 56 tests (56/56 PASS) |
-| `data/processed/real_shared_relations/shared_relation_scores.csv` | 1096 pair-window records |
-| `data/processed/real_shared_relations/shared_relation_embeddings.json` | 200 embedding records |
-| `data/processed/real_shared_relations/shared_relation_validation.json` | Gates + summary |
+| `src/modeles/synthetic/phase16_decoupled/run_dec055.py` | Updated runner with checkpoint saving |
+| `data/processed/phase16_dec055/shared_relation_encoder_best.pt` | Trained checkpoint (hash=39b30a52da2ad330) |
+| `data/processed/phase16_dec055/checkpoint_manifest.json` | Manifest: hash, seed, metrics, gates |
+| `data/processed/phase16_dec055/dec055_results.json` | Updated DEC-055 results |
+| `src/modeles/real_world/run_p0_checkpointed.py` | Corrected P0 with checkpoint loading + hash verification |
+| `data/processed/real_shared_relations_checkpointed/shared_relation_scores_checkpointed.csv` | 1096 records with checkpoint_hash |
+| `data/processed/real_shared_relations_checkpointed/shared_relation_embeddings_checkpointed.json` | 200 embeddings |
+| `data/processed/real_shared_relations_checkpointed/shared_relation_validation_checkpointed.json` | Full gate results |
+| `tests/test_dec056_real_shared_relation.py` | 77 tests (77/77 PASS) |
+| `data/processed/real_shared_relations/` | Previous P0 (INVALID — pipeline preflight only) |

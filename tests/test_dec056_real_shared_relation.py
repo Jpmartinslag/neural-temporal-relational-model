@@ -559,3 +559,308 @@ class TestRegionSystem:
 
     def test_region_system_unknown(self):
         assert _region_system("XX") == "UNKNOWN"
+
+
+# ── Tests: Checkpoint requirement (DEC-056 correction) ───────────────────────
+
+import hashlib
+import json
+import tempfile
+from pathlib import Path
+
+from src.modeles.real_world.run_p0_checkpointed import (
+    load_trained_encoder,
+    is_encoder_trained,
+    _state_dict_hash,
+)
+
+
+class TestCheckpointRequired:
+    def test_load_trained_encoder_missing_file(self):
+        """load_trained_encoder raises FileNotFoundError for missing checkpoint."""
+        with pytest.raises(FileNotFoundError, match="Checkpoint not found"):
+            load_trained_encoder("/nonexistent/path/encoder.pt")
+
+    def test_load_trained_encoder_exists(self, tmp_path):
+        """load_trained_encoder loads a valid checkpoint and returns encoder + hash."""
+        encoder = SharedRelationEncoder()
+        # Simulate trained weights (shift bias)
+        with torch.no_grad():
+            encoder.head_presence.bias.data.fill_(-1.0)
+        ckpt_path = tmp_path / "test_encoder.pt"
+        torch.save({
+            "model_state_dict": encoder.state_dict(),
+            "architecture": {"class": "SharedRelationEncoder"},
+            "training": {"best_seed": 1, "best_unseen_pair_auc": 0.70},
+            "experiment": "DEC-055",
+        }, ckpt_path)
+        loaded_enc, h = load_trained_encoder(str(ckpt_path))
+        assert h is not None and len(h) == 16
+        assert loaded_enc.n_parameters() == encoder.n_parameters()
+
+    def test_hash_mismatch_raises(self, tmp_path):
+        """load_trained_encoder raises RuntimeError on hash mismatch."""
+        encoder = SharedRelationEncoder()
+        with torch.no_grad():
+            encoder.head_presence.bias.data.fill_(-0.5)
+        ckpt_path = tmp_path / "encoder.pt"
+        torch.save({
+            "model_state_dict": encoder.state_dict(),
+            "architecture": {},
+            "training": {},
+            "experiment": "DEC-055",
+        }, ckpt_path)
+
+        manifest_path = tmp_path / "manifest.json"
+        manifest = {"sha256_prefix": "wrong_hash_12345"}
+        with open(manifest_path, "w") as f:
+            json.dump(manifest, f)
+
+        with pytest.raises(RuntimeError, match="hash mismatch"):
+            load_trained_encoder(str(ckpt_path), str(manifest_path))
+
+    def test_hash_match_succeeds(self, tmp_path):
+        """load_trained_encoder succeeds when manifest hash matches checkpoint."""
+        encoder = SharedRelationEncoder()
+        with torch.no_grad():
+            encoder.head_presence.bias.data.fill_(-0.8)
+        state = encoder.state_dict()
+        expected_hash = _state_dict_hash(state)
+
+        ckpt_path = tmp_path / "encoder.pt"
+        torch.save({
+            "model_state_dict": state,
+            "architecture": {},
+            "training": {"best_seed": 2, "best_unseen_pair_auc": 0.72},
+            "experiment": "DEC-055",
+        }, ckpt_path)
+
+        manifest_path = tmp_path / "manifest.json"
+        with open(manifest_path, "w") as f:
+            json.dump({"sha256_prefix": expected_hash}, f)
+
+        loaded, h = load_trained_encoder(str(ckpt_path), str(manifest_path))
+        assert h == expected_hash
+
+
+class TestManifestHasHash:
+    def test_manifest_schema(self):
+        """Checkpoint manifest must contain sha256_prefix."""
+        manifest_path = Path("data/processed/phase16_dec055/checkpoint_manifest.json")
+        if not manifest_path.exists():
+            pytest.skip("DEC-055 not yet run")
+        with open(manifest_path) as f:
+            manifest = json.load(f)
+        assert "sha256_prefix" in manifest, "Manifest missing sha256_prefix"
+        h = manifest["sha256_prefix"]
+        assert len(h) == 16, f"Hash should be 16 chars, got {len(h)}"
+
+    def test_manifest_has_required_fields(self):
+        """Manifest must have training config and gate summary."""
+        manifest_path = Path("data/processed/phase16_dec055/checkpoint_manifest.json")
+        if not manifest_path.exists():
+            pytest.skip("DEC-055 not yet run")
+        with open(manifest_path) as f:
+            manifest = json.load(f)
+        required = ["sha256_prefix", "best_seed", "best_unseen_pair_auc",
+                    "n_encoder_params", "architecture", "training", "gate_summary"]
+        for field in required:
+            assert field in manifest, f"Manifest missing field: {field}"
+
+    def test_manifest_hash_matches_checkpoint(self):
+        """Manifest sha256_prefix must match actual checkpoint hash."""
+        ckpt_path = Path("data/processed/phase16_dec055/shared_relation_encoder_best.pt")
+        manifest_path = Path("data/processed/phase16_dec055/checkpoint_manifest.json")
+        if not ckpt_path.exists() or not manifest_path.exists():
+            pytest.skip("DEC-055 not yet run")
+        ckpt = torch.load(str(ckpt_path), map_location="cpu", weights_only=False)
+        actual_hash = _state_dict_hash(ckpt["model_state_dict"])
+        with open(manifest_path) as f:
+            manifest = json.load(f)
+        assert manifest["sha256_prefix"] == actual_hash, \
+            f"Hash mismatch: manifest={manifest['sha256_prefix']}, actual={actual_hash}"
+
+
+class TestCheckpointChangesScoreDistribution:
+    """Trained encoder must produce different score distribution than untrained."""
+
+    def test_trained_vs_untrained_mean_presence(self):
+        """Trained encoder must shift mean presence away from initialization prior."""
+        ckpt_path = Path("data/processed/phase16_dec055/shared_relation_encoder_best.pt")
+        if not ckpt_path.exists():
+            pytest.skip("DEC-055 not yet run")
+
+        trained_enc, _ = load_trained_encoder(str(ckpt_path))
+        untrained_enc = SharedRelationEncoder()  # fresh init, bias=-2.0
+
+        panel, obs_mask = _make_synthetic_panel(seed=42)
+        trained_scores = []
+        untrained_scores = []
+        trained_enc.eval()
+        untrained_enc.eval()
+        with torch.no_grad():
+            for si in range(4):
+                for ti in range(4):
+                    if si == ti:
+                        continue
+                    feat = extract_pair_features(panel, obs_mask, si, ti, window_end=6)
+                    trained_scores.append(float(torch.sigmoid(trained_enc(feat)["presence_logit"])))
+                    untrained_scores.append(float(torch.sigmoid(untrained_enc(feat)["presence_logit"])))
+
+        trained_mean = float(np.mean(trained_scores))
+        untrained_mean = float(np.mean(untrained_scores))
+        # Trained encoder should differ significantly from untrained prior (~0.067-0.119)
+        assert abs(trained_mean - untrained_mean) > 0.05, (
+            f"Trained ({trained_mean:.3f}) vs untrained ({untrained_mean:.3f}) "
+            "means too similar — checkpoint may not be properly trained"
+        )
+
+    def test_trained_encoder_not_at_initialization_prior(self):
+        """Trained encoder presence bias should NOT be -2.0 (initialization value)."""
+        ckpt_path = Path("data/processed/phase16_dec055/shared_relation_encoder_best.pt")
+        if not ckpt_path.exists():
+            pytest.skip("DEC-055 not yet run")
+        trained_enc, _ = load_trained_encoder(str(ckpt_path))
+        bias = trained_enc.head_presence.bias.data.item()
+        assert abs(bias - (-2.0)) > 1e-4, \
+            f"Presence bias still at initialization (-2.0), encoder was not trained"
+
+    def test_is_encoder_trained_rejects_fresh_init(self):
+        """is_encoder_trained should return False for a fresh encoder."""
+        fresh = SharedRelationEncoder()
+        assert not is_encoder_trained(fresh), "Fresh encoder incorrectly flagged as trained"
+
+    def test_is_encoder_trained_accepts_modified(self):
+        """is_encoder_trained should return True after bias modification (simulating training)."""
+        enc = SharedRelationEncoder()
+        with torch.no_grad():
+            enc.head_presence.bias.data.fill_(-0.5)
+        assert is_encoder_trained(enc), "Modified encoder not recognized as trained"
+
+
+class TestP0UsesCorrectCheckpoint:
+    """Verify that P0 records contain the correct checkpoint hash."""
+
+    def test_output_records_have_checkpoint_hash(self):
+        """P0 output records must include checkpoint_hash field."""
+        out_path = Path("data/processed/real_shared_relations_checkpointed/"
+                        "shared_relation_scores_checkpointed.csv")
+        if not out_path.exists():
+            pytest.skip("P0 checkpointed run not yet executed")
+        import pandas as pd
+        df = pd.read_csv(out_path)
+        assert "checkpoint_hash" in df.columns, "Output CSV missing checkpoint_hash column"
+        assert df["checkpoint_hash"].notna().all(), "Some records have missing checkpoint_hash"
+
+    def test_output_hash_matches_manifest(self):
+        """checkpoint_hash in outputs must match manifest sha256_prefix."""
+        out_path = Path("data/processed/real_shared_relations_checkpointed/"
+                        "shared_relation_scores_checkpointed.csv")
+        manifest_path = Path("data/processed/phase16_dec055/checkpoint_manifest.json")
+        if not out_path.exists() or not manifest_path.exists():
+            pytest.skip("Files not yet produced")
+        import pandas as pd
+        df = pd.read_csv(out_path)
+        with open(manifest_path) as f:
+            manifest = json.load(f)
+        expected = manifest["sha256_prefix"]
+        hashes = df["checkpoint_hash"].unique().tolist()
+        assert len(hashes) == 1, f"Multiple checkpoint hashes in output: {hashes}"
+        assert hashes[0] == expected, f"Hash mismatch: output={hashes[0]}, manifest={expected}"
+
+    def test_output_provenance_is_trained(self):
+        """Provenance field must say 'trained_shared_encoder_p0', not random init."""
+        out_path = Path("data/processed/real_shared_relations_checkpointed/"
+                        "shared_relation_scores_checkpointed.csv")
+        if not out_path.exists():
+            pytest.skip("P0 checkpointed run not yet executed")
+        import pandas as pd
+        df = pd.read_csv(out_path)
+        unique_provenance = df["provenance"].unique().tolist()
+        assert "trained_shared_encoder_p0" in unique_provenance, \
+            f"Expected trained provenance, got: {unique_provenance}"
+        assert "real_observed_association_score" not in unique_provenance, \
+            "Old (untrained) provenance found in corrected output"
+
+
+class TestSeedDeterminism:
+    """DEC-055 checkpoint and DEC-056 P0 must be deterministic."""
+
+    def test_state_dict_hash_deterministic(self):
+        """Same state dict → same hash."""
+        enc = SharedRelationEncoder()
+        torch.manual_seed(1)
+        with torch.no_grad():
+            enc.head_presence.bias.data.fill_(-0.9)
+        h1 = _state_dict_hash(enc.state_dict())
+        h2 = _state_dict_hash(enc.state_dict())
+        assert h1 == h2
+
+    def test_encoder_eval_deterministic_features(self):
+        """Same features → same presence logit (no stochastic ops in eval)."""
+        ckpt_path = Path("data/processed/phase16_dec055/shared_relation_encoder_best.pt")
+        if not ckpt_path.exists():
+            pytest.skip("DEC-055 not yet run")
+        enc, _ = load_trained_encoder(str(ckpt_path))
+        panel, obs_mask = _make_synthetic_panel(seed=7)
+        feat = extract_pair_features(panel, obs_mask, 0, 1, window_end=6)
+        enc.eval()
+        with torch.no_grad():
+            o1 = enc(feat)["presence_logit"]
+            o2 = enc(feat)["presence_logit"]
+        assert torch.allclose(o1, o2)
+
+
+class TestSchemaNoNaNInf:
+    """Validated output files must not contain NaN/Inf in numeric columns."""
+
+    def test_checkpointed_csv_no_nan_presence(self):
+        """Presence scores in checkpointed CSV must be finite."""
+        out_path = Path("data/processed/real_shared_relations_checkpointed/"
+                        "shared_relation_scores_checkpointed.csv")
+        if not out_path.exists():
+            pytest.skip("P0 checkpointed run not yet executed")
+        import pandas as pd
+        df = pd.read_csv(out_path)
+        assert df["score_presence"].notna().all(), "NaN presence scores in output"
+        assert df["score_presence"].apply(lambda x: not math.isinf(x)).all(), \
+            "Inf presence scores in output"
+        assert (df["score_presence"] >= 0).all() and (df["score_presence"] <= 1).all(), \
+            "Presence scores outside [0,1]"
+
+    def test_checkpointed_csv_required_cols(self):
+        """Checkpointed output must have all REQUIRED_CSV_COLS."""
+        from src.modeles.real_world.run_shared_relation_real import REQUIRED_CSV_COLS
+        out_path = Path("data/processed/real_shared_relations_checkpointed/"
+                        "shared_relation_scores_checkpointed.csv")
+        if not out_path.exists():
+            pytest.skip("P0 checkpointed run not yet executed")
+        import pandas as pd
+        df = pd.read_csv(out_path)
+        for col in REQUIRED_CSV_COLS:
+            assert col in df.columns, f"Missing required column: {col}"
+
+
+class TestNoCausalLanguageCheckpointed:
+    """Corrected P0 outputs must not contain causal language."""
+
+    def test_trained_provenance_no_causal_terms(self):
+        """Provenance values must not contain causal language."""
+        causal_terms_in_provenance = scan_for_causal_terms("trained_shared_encoder_p0")
+        assert causal_terms_in_provenance == []
+
+    def test_claim_scope_no_causal_terms(self):
+        """claim_scope must not contain causal language."""
+        assert scan_for_causal_terms("analytic_association_only") == []
+
+    def test_output_validation_json_no_causal(self):
+        """Validation JSON decision field must not contain causal terms."""
+        val_path = Path("data/processed/real_shared_relations_checkpointed/"
+                        "shared_relation_validation_checkpointed.json")
+        if not val_path.exists():
+            pytest.skip("P0 checkpointed run not yet executed")
+        with open(val_path) as f:
+            val = json.load(f)
+        decision = val.get("decision", "")
+        found = scan_for_causal_terms(decision)
+        assert found == [], f"Causal terms in decision: {found}"
