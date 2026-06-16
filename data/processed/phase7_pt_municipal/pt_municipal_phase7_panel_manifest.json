@@ -1,0 +1,48 @@
+{
+  "experiment": "DEC-064",
+  "source_panel": "data/processed/european_panel/pt_municipal_sector_panel.csv",
+  "output_panel": "data/processed/phase7_pt_municipal/pt_municipal_phase7_panel.csv",
+  "panel_checksum": "19c4675bbf8323e0daab3ca1ca57e287ec7abd791cb9cedfce16c85db5008794",
+  "commit_sha": "10a7890f5d56f412da68555ce3636d4e50fafe00",
+  "country": "PT",
+  "region_system": "MUNICIPALITY_CONTINENTE",
+  "evidence_type": "observed_births",
+  "target_concept": "enterprise_birth",
+  "n_territories": 278,
+  "n_years": 16,
+  "years_available": [
+    2008,
+    2009,
+    2010,
+    2011,
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023
+  ],
+  "observable_sectors": [
+    "BE",
+    "FZ",
+    "GI",
+    "JZ",
+    "LZ",
+    "MN",
+    "OQ",
+    "RU"
+  ],
+  "structural_absent_sectors": [
+    "KZ"
+  ],
+  "n_rows_total": 40032,
+  "n_obs_with_velocity": 31100,
+  "temporal_leakage_check": "PASS",
+  "notes": "velocity = sector_value[t] / sector_value[t-1] - 1. KZ structural_absent (structural_mask=0, observation_mask=0). Evidence type: observed_births (enterprise_birth, INE 0009703/0014099). No proxy data used."
+}

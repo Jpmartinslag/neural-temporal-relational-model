@@ -386,3 +386,20 @@ COMPLETE | GRANULAR_FR_PT_NL_PREFLIGHT_READY | 10/10 PASS | 66/66 tests
 - Evaluation must report separately: observed-only, proxy-included, proxy-excluded sensitivity
 - `data/processed/european_panel/nl_gemeente_*`, `reports/HERALD_DEC063_*`, `reports/HERALD_GRANULAR_FR_PT_NL_TRAINING_CONTRACT.md`
 - Next: DEC-064 = Phase 7 at PT municipal level; DEC-065 = NL gemeente Phase 7 (proxy-labelled)
+
+## DEC-064 — PT Municipal Phase 7 Sector Precedence (2026-06-16)
+SMOKE COMPLETE | PT_MUNICIPAL_PHASE7_READY_FOR_HPC | 10/10 PASS (smoke) | 52/52 tests (+ 8 skip-full)
+- Panel: 278 continental municipalities × 16 years × 8 observable sectors (KZ structural_absent)
+  Long format (build_pt_municipal_phase7_panel.py): 40,032 rows; velocity = sector[t]/sector[t-1]-1
+- Smoke (2018-2023, n_perm=9): 56/56 pares válidos, n_samples 1055–1668 (11× NUTS3)
+  - Max |β|=0.078 (MN→GI, bss=1.0); todos abaixo do threshold |β|≥0.10 pré-registado
+  - p_perm floor = 0.10 com n_perm=9 — n_perm=999 (HPC) necessário para p_perm real
+- Comparação PT NUTS3: 25 territórios, 0 promovidos, n_samples max 150 → municipal tem 11× mais poder
+  ACHADO: efeitos fragmentam com granularidade (NUTS3→municipal reduz |β|, ecological correlation)
+- RU→MN: β=+0.075, bss=1.0 — consistente com FR (único label FR promovido)
+- Threshold |β|≥0.10 pode ser demasiado restritivo para PT/NL — possível DEC-066 threshold calibration
+- HPC preparado: 208 tasks, 30 min/task, sbatch pronto; NÃO lançar sem autorização explícita
+- Medium run (n_perm=99, todas janelas) a correr localmente em background — resultado em ~6h
+- `data/processed/phase7_pt_municipal/`, `reports/HERALD_DEC064_PT_MUNICIPAL_PHASE7_AUDIT.md`
+- DEC-065 DRAFT: `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_DRAFT.md` (não autorizado)
+- Next: autorizar HPC OU aguardar medium run para decidir; DEC-065 requer DEC-064 completo

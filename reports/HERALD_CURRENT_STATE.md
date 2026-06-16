@@ -123,6 +123,21 @@
 
 ---
 
+## Phase 7: DEC-064 — PT Municipal Phase 7 (2026-06-16)
+
+**Status:** `PT_MUNICIPAL_PHASE7_READY_FOR_HPC`. Smoke 10/10 PASS. 52/52 tests PASS (8 skip-full).
+
+- Smoke (2018-2023, n_perm=9): 56/56 pares válidos, n_samples 1055–1668 (11× NUTS3).
+- Max |β|=0.078 — abaixo do threshold 0.10. Zero pares promovidos no smoke.
+- Ecological fragmentation: NUTS3→municipal reduz |β| (efeitos menores em unidades menores).
+- HPC: 208 tasks, 30 min/task. Sbatch: `hpc/phase7_sector_precedence/run_phase7_pt_municipal_array.sbatch`. **Não lançar sem autorização.**
+- Medium run (n_perm=99, todas janelas) em background — concluirá em ~6h.
+- DEC-065 DRAFT preparado: `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_DRAFT.md`.
+
+**Next:** Autorizar HPC para PT Phase 7 completo (sbatch pronto). Após resultados finais, decidir DEC-066 (threshold calibration) e DEC-065 (NL gemeente proxy).
+
+---
+
 ## Phase 4: DEC-063 — Granular FR/PT/NL Evidence Model (2026-06-16)
 
 **Status:** COMPLETE. Decision: `GRANULAR_FR_PT_NL_PREFLIGHT_READY` — 10/10 gates PASS, 66/66 tests PASS.
@@ -134,7 +149,7 @@
 - CBS API 10k-row limit resolved: year-loop strategy (19 calls × 9,177 rows).
 - Contract: `reports/HERALD_GRANULAR_FR_PT_NL_TRAINING_CONTRACT.md` — evaluation must report observed-only and proxy-excluded sensitivity separately.
 
-**Next:** DEC-064 (Phase 7 at PT municipal, new DEC required); DEC-065 (NL gemeente Phase 7, proxy-labelled, new DEC required).
+**Next:** HPC authorisation for full run (208 tasks); or await local medium run (~6h). DEC-065 draft prepared (awaiting DEC-064 completion).
 
 ---
 

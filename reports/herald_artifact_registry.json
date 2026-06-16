@@ -448,6 +448,33 @@
       "status": "COMPLETE",
       "claim_authorized": "GRANULAR_FR_PT_NL_PREFLIGHT_READY. FR 280 ZE2020 + PT 278 municipalities + NL 40 COROP: observed_births available. NL 355 gemeente: proxy_disaggregated_by_stock_share available. Reaggregation identity verified (max_abs_error=0.0).",
       "claim_forbidden": "Neural training before new DEC. Phase 7 full run before new DEC. Treating proxy as observed births. KZ claims for PT. Causal language. Pooled FR/PT/NL claims without concept harmonisation DEC."
+    },
+    {
+      "id": "PT_MUNICIPAL_PHASE7_SMOKE",
+      "decision": "DEC-064",
+      "date": "2026-06-16",
+      "description": "PT municipal Phase 7 sector precedence. Pipeline validated (smoke 10/10 PASS). n_samples 1055-1668 (11× NUTS3). Max |β|=0.078 < 0.10 threshold. 0 promoted. HPC manifest (208 tasks) prepared. Decision: PT_MUNICIPAL_PHASE7_READY_FOR_HPC.",
+      "files": [
+        "data/processed/phase7_pt_municipal/pt_municipal_phase7_panel.csv",
+        "data/processed/phase7_pt_municipal/pt_municipal_phase7_panel_manifest.json",
+        "data/processed/phase7_pt_municipal/hpc_task_manifest.json",
+        "data/processed/phase7_pt_municipal/results/all_edges_smoke.csv",
+        "data/processed/phase7_pt_municipal/dec064_gates_smoke.json",
+        "hpc/phase7_sector_precedence/configs/pt_municipal_observed.json",
+        "hpc/phase7_sector_precedence/run_phase7_pt_municipal_array.sbatch",
+        "reports/HERALD_DEC064_PT_MUNICIPAL_PHASE7_AUDIT.md",
+        "reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_DRAFT.md"
+      ],
+      "scripts": [
+        "src/data/european_panel/build_pt_municipal_phase7_panel.py",
+        "src/modeles/real_world/gates_dec064_pt_municipal_phase7.py",
+        "src/modeles/real_world/run_dec064_pt_municipal_phase7.py",
+        "src/modeles/real_world/prepare_dec064_hpc_manifest.py"
+      ],
+      "tests": "tests/test_dec064_pt_municipal_phase7.py (60 tests: 52 PASS + 8 SKIP-full)",
+      "status": "SMOKE_COMPLETE — READY_FOR_HPC",
+      "claim_authorized": "PT municipal pipeline validated. n_samples sufficient. Smoke: 56/56 pares válidos, 0 promovidos. Ecological fragmentation confirmed: |β| smaller at municipal vs NUTS3.",
+      "claim_forbidden": "Promoted PT municipal relations (full run not complete). Causal claims. Threshold change without new DEC. HPC launch without authorisation."
     }
   ]
 }
