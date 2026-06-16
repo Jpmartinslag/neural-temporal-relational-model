@@ -1,0 +1,3 @@
+country,window_start,window_end,source_sector,target_sector,beta_main,beta_wo20
+PT,2015,2020,GI,OQ,0.1302967198964387,0.10811503192986634
+PT,2015,2020,MN,JZ,-0.10415372793056618,-0.12464305187986202

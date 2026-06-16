@@ -125,22 +125,19 @@
 
 ## Phase 7: DEC-064 — PT Municipal Phase 7 (2026-06-16)
 
-**Status:** `PT_MUNICIPAL_PHASE7_HPC_RUNNING`. Job 7472757 (meso, 208/208 tasks RUNNING).
+**Status:** `PT_MUNICIPAL_PHASE7_COMPLETE`. 10/10 gates PASS. Job 7472757 (208/208 complete).
 
-- Remote smoke (task 0, n_perm=9): PASS — 31.2s, 7 edges, checksum OK.
-- Full array: 208 tasks × 2h, partition=normal, hpcnode06–hpcnode38 (14 nodes).
-- Smoke local (2018-2023, n_perm=9): 56/56 pares válidos, n_samples 1055–1668 (11× NUTS3).
-- Max |β|=0.078 — abaixo do threshold 0.10. Zero pares promovidos no smoke.
-- Ecological fragmentation: NUTS3→municipal reduz |β| (efeitos menores em unidades menores).
+- **2 COVID-robust promoted pairs** — both in window 2015-2020 only:
+  - GI→OQ: β=+0.130, q_fdr=0.028, bss=1.00, n=1668 (COVID-robust: β_wo2020=+0.108)
+  - MN→JZ: β=−0.104, q_fdr=0.037, bss=1.00, n=999 (COVID-robust: β_wo2020=−0.125)
+- Both pairs are **period-specific** (2015-2020); no other window produces promotions.
+- Ecological fragmentation: NUTS3 max|β|=0.362 vs municipal max|β|=0.130 (smaller units, smaller effects).
+- NUTS3 baseline: 0 promoted in all 14 windows. Municipal 278 territories provides 11× statistical power.
 - DEC-065 DRAFT preparado: `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_DRAFT.md`.
 
-**Post-run (quando 208/208 JSONs presentes):**
-```bash
-ssh meso "ls ~/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_pt_municipal/raw/ | wc -l"
-rsync -avz meso:~/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_pt_municipal/raw/ \
-    /home/jpdark/Downloads/project_recomm/dataset/hpc_results/phase7_pt_municipal/raw/
-```
-**Next:** Aguardar resultados HPC. Após 208/208 JSONs: merge + BH/FDR + gates P1-P10 full. Depois decidir DEC-066 (threshold calibration) e DEC-065 (NL gemeente proxy).
+**Artefacts:** `data/processed/phase7_pt_municipal/results/` (all_edges.csv, latest.csv, covid_robust_edges.csv)
+
+**Next:** DEC-066 (threshold calibration — |β|≥0.10 may exclude municipal-level signals); DEC-065 (NL gemeente proxy, requires DEC-064 complete ✓).
 
 ---
 

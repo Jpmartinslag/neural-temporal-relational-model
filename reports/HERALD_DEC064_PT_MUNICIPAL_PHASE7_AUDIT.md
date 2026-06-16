@@ -1,64 +1,48 @@
 # HERALD DEC-064: PT Municipal Phase 7 Sector Precedence Audit
 
-**Status:** HPC RUNNING — Job 7472757 (meso, 208 tasks, partition=normal)  
-**Decision:** `PT_MUNICIPAL_PHASE7_HPC_SUBMITTED`  
+**Status:** COMPLETE — 10/10 gates PASS  
+**Decision:** `PT_MUNICIPAL_PHASE7_COMPLETE`  
 **Date:** 2026-06-16  
 **Follows:** DEC-063 (GRANULAR_FR_PT_NL_PREFLIGHT_READY)  
-**Gates:** P1-P10, pre-registered before results observed (GATE_VERSION: DEC-064-v1)
+**Gates:** P1-P10, pre-registered before results observed (GATE_VERSION: DEC-064-v1)  
+**HPC Job:** 7472757 (meso, 208/208 tasks complete)
 
 ---
 
 ## Summary
 
-Phase 7 sector precedence was run on 278 continental Portuguese municipalities
-using `observed_births` (INE enterprise_birth, 2008–2023). The pipeline is validated
-(smoke PASS, 10/10 gates). Effect sizes at municipal level are consistent with the
-NUTS3 pattern but are below the pre-registered |β| ≥ 0.10 threshold. No sector
-pairs are promoted at the current threshold. Full HPC run (n_perm=999) is prepared
-and awaiting authorisation for definitive results across all 13 windows.
+Phase 7 sector precedence was run at full scale (n_perm=999, n_boot=500) on 278 continental
+Portuguese municipalities using `observed_births` (INE enterprise_birth, 2008–2023), across
+13 rolling 6-year windows and 2 scenarios (main, without_2020). BH/FDR applied per family
+(country × scenario × window).
+
+**Key result:** 2 sector pairs promoted in the 2015-2020 window. Both pairs pass all 5 gates
+and are COVID-robust (promoted in main AND without_2020 with same sign). The two pairs are
+specific to the 2015-2020 period; no other window produces promoted pairs. Promoted pairs
+appear against the background of the NUTS3 baseline of 0 promotions in all 14 windows —
+confirming that granular spatial resolution increases statistical power at PT level.
 
 ---
 
-## Part A — PT Municipal Panel Audit
+## Gates P1-P10 (Full Run)
 
-| Property | Value |
-|----------|-------|
-| Source | INE enterprise_birth (0009703 / 0014099) |
-| N municipalities | 278 (continental Portugal, geocod prefix=1) |
-| Years | 2008–2023 (16 years) |
-| Observable A10 sectors | 8 (BE, FZ, GI, JZ, LZ, MN, OQ, RU) |
-| KZ (Finance) | structural_absent — all NaN, no zeros |
-| Evidence type | observed_births |
-| Proxy columns | None |
-| Açores / Madeira | Excluded (is_continental = True for all rows) |
-
-Panel built with `build_pt_municipal_phase7_panel.py`:
-- Long format: 40,032 rows (278 municipalities × 9 A10 sectors × 16 years)
-- observation_mask=1 rows: 31,100 (velocity computable)
-- Velocity = `sector_value[t] / sector_value[t-1] − 1` (strictly causal, lag1 only)
-- Temporal leakage check: PASS (lag1 = shift(1), never future)
-
----
-
-## Part B — Gates P1-P10 (Smoke)
-
-**GATE_VERSION:** DEC-064-v1 — thresholds pre-registered before observing any results.
+**GATE_VERSION:** DEC-064-v1 — thresholds frozen before observing any results.
 
 | Gate | Description | Verdict |
 |------|-------------|---------|
-| P1 | Safety: no NaN/Inf, no temporal leakage, years ordered | PASS |
-| P2 | Coverage: 278 municipalities, 8 observable sectors, KZ absent | PASS |
-| P3 | Observed-only: no proxy data mixed in | PASS |
-| P4 | Reaggregation divergence documented | PASS |
-| P5 | All computed pairs have n_samples ≥ 60 | PASS |
-| P6 | Permutation control degrades signal | PASS |
-| P7 | Thresholds pre-registered (DEC-064-v1) | PASS |
-| P8 | PT municipal vs PT NUTS3 comparison documented | PASS |
-| P9 | No causal language in outputs | PASS |
-| P10 | Manifest, checksum, commit hash documented | PASS |
+| P1 | Safety: no NaN/Inf, no temporal leakage, years ordered | **PASS** |
+| P2 | Coverage: 278 municipalities, 8 observable sectors, KZ structural_absent | **PASS** |
+| P3 | Observed-only: no proxy data mixed in | **PASS** |
+| P4 | Reaggregation divergence vs NUTS3 documented | **PASS** |
+| P5 | All 728 tested pairs have n_samples ≥ 60 (min=321) | **PASS** |
+| P6 | Permutation control degrades signal (mean p_perm observed < 0.5 null) | **PASS** |
+| P7 | Thresholds pre-registered (DEC-064-v1) | **PASS** |
+| P8 | PT municipal vs PT NUTS3 comparison documented | **PASS** |
+| P9 | No causal language in outputs | **PASS** |
+| P10 | Manifest, SHA256, commit hash, commands documented | **PASS** |
 
 Pre-registered thresholds (identical to original Phase 7, DEC-034):
-- q_fdr < 0.05 (BH/FDR per family: country × scenario × window)
+- q_fdr < 0.05 (BH/FDR per family)
 - |β| ≥ 0.10
 - Δr² ≥ 0.005
 - bootstrap sign stability ≥ 0.70
@@ -66,157 +50,178 @@ Pre-registered thresholds (identical to original Phase 7, DEC-034):
 
 ---
 
-## Part C — Smoke Results (2018-2023 window, n_perm=9)
+## HPC Run Summary
 
-**Window:** 2018–2023 | **N pairs:** 56 (8 sectors × 7 targets) | **N_perm:** 9
+| Property | Value |
+|----------|-------|
+| Job ID | 7472757 (meso, partition=normal) |
+| Tasks submitted | 208 (13 windows × 2 scenarios × 8 source sectors) |
+| Tasks complete | 208/208 |
+| Task status | all complete |
+| Runtime range | 19.8 – 46.5 min/task |
+| Runtime median | 36.5 min/task |
+| Panel SHA256 | `19c4675bbf8323e0daab3ca1ca57e287ec7abd791cb9cedfce16c85db5008794` |
+| Commit | `10a7890f5d56` (DEC-063) |
+| n_permutations | 999 |
+| n_bootstraps | 500 |
+| Total edges tested | 1,456 (728 main + 728 without_2020) |
 
-### Sample size (key finding)
+---
+
+## Results: Promoted Edges
+
+### Main scenario — all 5 gates pass
+
+| Source | Target | Window | β | Δr² | p_perm | q_fdr | bss | n_samples |
+|--------|--------|--------|---|-----|--------|-------|-----|-----------|
+| GI | OQ | 2015-2020 | +0.130 | 0.0166 | 0.001 | 0.028 | 1.000 | 1,668 |
+| MN | JZ | 2015-2020 | −0.104 | 0.0108 | 0.002 | 0.037 | 1.000 | 999 |
+
+Both pairs: bootstrap_sign_stability = **1.000** (perfectly stable across 500 bootstrap resamples).
+
+### COVID-robustness check (main AND without_2020, same sign)
+
+| Source | Target | Window | β (main) | β (wo2020) | COVID-robust |
+|--------|--------|--------|----------|------------|--------------|
+| GI | OQ | 2015-2020 | +0.130 | +0.108 | **YES** |
+| MN | JZ | 2015-2020 | −0.104 | −0.125 | **YES** |
+
+Both pairs survive exclusion of 2020 with consistent sign and remain promoted in the
+without_2020 scenario (q_fdr=0.028 for both in without_2020).
+
+### Near-miss edge (q_fdr < 0.05, |β| < threshold)
+
+| Source | Target | Window | β | q_fdr | bss | Gate fail |
+|--------|--------|--------|---|-------|-----|-----------|
+| OQ | GI | 2015-2020 | +0.076 | 0.028 | 1.000 | |β|=0.076 < 0.10 |
+
+OQ→GI fails only the |β| threshold. This is the reciprocal direction of GI→OQ. The
+two-way association pattern (GI↔OQ) in 2015-2020 is noted but GI→OQ is the direction
+that meets all 5 pre-registered gates.
+
+---
+
+## Cross-Window Consistency Analysis
+
+### GI→OQ across all 13 windows
+
+| Window | n_samples | β | q_fdr | bss | Promoted |
+|--------|-----------|---|-------|-----|----------|
+| 2006-2011 | 556 | +0.156 | 0.280 | 0.99 | No |
+| 2007-2012 | 834 | +0.062 | 0.722 | 0.93 | No |
+| 2008-2013 | 1,112 | −0.062 | 0.590 | 0.97 | No |
+| 2009-2014 | 1,390 | −0.040 | 0.377 | 0.94 | No |
+| 2010-2015 | 1,668 | +0.015 | 0.890 | 0.71 | No |
+| 2011-2016 | 1,668 | +0.023 | 0.604 | 0.83 | No |
+| 2012-2017 | 1,668 | +0.023 | 0.750 | 0.83 | No |
+| 2013-2018 | 1,668 | +0.018 | 0.667 | 0.85 | No |
+| 2014-2019 | 1,668 | +0.044 | 0.440 | 0.96 | No |
+| **2015-2020** | **1,668** | **+0.130** | **0.028** | **1.00** | **Yes** |
+| 2016-2021 | 1,668 | +0.066 | 0.149 | 0.98 | No |
+| 2017-2022 | 1,667 | +0.054 | 0.177 | 0.94 | No |
+| 2018-2023 | 1,667 | +0.032 | 0.416 | 0.85 | No |
+
+**Interpretation:** GI→OQ is not a persistent cross-window association. The pattern is
+window-specific: early windows (2006-2011) show β=+0.156 (q_fdr=0.28, insufficient power),
+middle windows are near-zero, and the 2015-2020 window shows the strongest effect.
+Sign changes occur (negative in 2008-2013, 2009-2014). The promotion is localized to
+the 2015-2020 economic period; it is not a structural invariant across time.
+
+### MN→JZ across all 13 windows
+
+| Window | n_samples | β | q_fdr | bss | Promoted |
+|--------|-----------|---|-------|-----|----------|
+| 2006-2011 | 321 | +0.032 | 0.876 | 0.72 | No |
+| 2007-2012 | 472 | +0.033 | 0.845 | 0.76 | No |
+| 2008-2013 | 622 | +0.028 | 0.783 | 0.75 | No |
+| 2009-2014 | 773 | +0.055 | 0.386 | 0.95 | No |
+| 2010-2015 | 921 | +0.034 | 0.818 | 0.86 | No |
+| 2011-2016 | 911 | +0.012 | 0.862 | 0.64 | No |
+| 2012-2017 | 922 | −0.027 | 0.882 | 0.81 | No |
+| 2013-2018 | 950 | −0.046 | 0.479 | 0.96 | No |
+| 2014-2019 | 976 | −0.067 | 0.434 | 0.99 | No |
+| **2015-2020** | **999** | **−0.104** | **0.037** | **1.00** | **Yes** |
+| 2016-2021 | 1,028 | −0.075 | 0.149 | 0.99 | No |
+| 2017-2022 | 1,068 | −0.048 | 0.448 | 0.96 | No |
+| 2018-2023 | 1,105 | −0.001 | 0.986 | 0.54 | No |
+
+**Interpretation:** MN→JZ undergoes a sign reversal around 2012 (positive before, negative
+after). The negative association strengthens from 2013-2018 onwards, peaking in 2015-2020.
+The 2015-2020 promotion reflects the period of maximum effect. The reversal in 2018-2023
+(β≈0) indicates the pattern dissipated after 2020. Interpreted as a period-specific
+association, not a structural invariant.
+
+---
+
+## Comparison: PT Municipal vs PT NUTS3
+
+| Metric | PT NUTS3 (all 14 windows) | PT Municipal (all 13 windows) |
+|--------|--------------------------|-------------------------------|
+| N territories | 25 | 278 |
+| N observable sectors | 8 | 8 |
+| Max n_samples/pair | 150 | 1,668 |
+| N promoted (all windows) | **0** | **2** (2015-2020 only) |
+| Max |β| (any window) | 0.362 (GI→FZ, 2007-2012) | 0.130 (GI→OQ, 2015-2020) |
+| p_perm < 0.05 ever | 0 pairs | 3 pairs (same window) |
+| COVID-robust pairs | 0 | **2** (GI→OQ, MN→JZ) |
+
+**Key finding:** PT NUTS3 never produced a significant permutation p-value despite large β
+because 25 territories × 6 years = 150 samples is insufficient power. PT Municipal 278 × 6 =
+1,668 samples provides the statistical power needed. Granularity resolves the power problem
+at the cost of ecological fragmentation (smaller β magnitudes).
+
+**Ecological fragmentation effect:** NUTS3 max |β| = 0.362 vs Municipal max |β| = 0.130.
+Disaggregation from 25 to 278 spatial units reduces per-unit effect sizes, consistent with
+the ecological correlation trade-off. Effects visible at NUTS3 level may correspond to
+different sector pairs/windows than at municipal level due to spatial averaging.
+
+---
+
+## Statistical Overview (Main Scenario, 13 Windows)
 
 | Metric | Value |
 |--------|-------|
-| Mean n_samples | 1,452 |
-| Min n_samples | 1,055 |
-| Max n_samples | 1,668 |
-| **NUTS3 n_samples (max)** | **150** |
-
-Municipal level provides **11× more samples per pair** than NUTS3 (278 × 6 years vs 25 × 6 years). This substantially increases permutation test power.
-
-### Top associations (2018-2023 window)
-
-| Source → Target | β | Δr² | p_perm¹ | bss |
-|----------------|---|-----|---------|-----|
-| MN → GI | +0.078 | 0.0060 | 0.10 | 1.00 |
-| LZ → BE | +0.075 | 0.0056 | 0.10 | 0.90 |
-| RU → MN | +0.075 | 0.0056 | 0.10 | 1.00 |
-| BE → GI | +0.069 | 0.0046 | 0.10 | 1.00 |
-| GI → BE | −0.084 | 0.0068 | 0.10 | 1.00 |
-| OQ → JZ | −0.063 | 0.0039 | 0.10 | 1.00 |
-
-¹ With n_perm=9, minimum achievable p_perm = 1/(9+1) = 0.10. Real p-values require n_perm=999.
-
-### Promoted edges
-
-**0 pairs promoted** (smoke, 1 window, n_perm=9).
-
-No pairs reach p_perm < 0.05 at n_perm=9 (floor = 0.10).  
-Largest |β| = 0.078 < 0.10 threshold.
+| Total edge tests (main) | 728 (56 pairs × 13 windows) |
+| Pairs with n_samples ≥ 60 | 728/728 (100%) |
+| q_fdr < 0.05 | 3 edges (all in 2015-2020) |
+| |β| ≥ 0.10 | 7 edges across all windows |
+| Promoted (all 5 gates) | **2 edges** |
+| COVID-robust | **2 edges** |
+| Windows with promotions | **1** (2015-2020) |
+| Window with highest max |β| | 2006-2011 (|β|=0.156, not promoted: q_fdr=0.28) |
 
 ---
 
-## Part D — Comparison with PT NUTS3
+## Scientific Interpretation
 
-| Metric | PT NUTS3 (Phase 7 original) | PT Municipal (DEC-064 smoke) |
-|--------|-----------------------------|------------------------------|
-| N territories | 25 | 278 |
-| N years | 2008–2024 | 2008–2023 |
-| Mean n_samples/pair | 130 | 1,452 |
-| N promoted (all windows) | **0** | **0** (smoke; full run pending) |
-| Max |β| (all windows) | 0.362 (GI→FZ, 2007-2012) | 0.078 (MN→GI, 2018-2023) |
-| p_perm < 0.05 ever | **0 pairs** | unknown (n_perm=9 floor=0.10) |
+### What the results show
 
-**Key observations:**
+1. **GI→OQ, 2015-2020 (β=+0.130, q_fdr=0.028, bss=1.00):** In the period 2015-2020,
+municipalities where Growth and Information sectors (GI) showed higher lagged velocity
+exhibited systematically higher subsequent velocity in Public and Health services (OQ),
+after two-way territory+year demeaning. This pattern is COVID-robust (survives exclusion
+of 2020). The direction reverses or vanishes in adjacent windows.
 
-1. **PT NUTS3 had 0 promotions** because `p_perm < 0.05` was never reached with 25 territories. PT Municipal with 278 territories has sufficient statistical power to detect small associations.
+2. **MN→JZ, 2015-2020 (β=−0.104, q_fdr=0.037, bss=1.00):** In the same period,
+municipalities with higher lagged Professional/Administrative sector velocity (MN) showed
+lower subsequent Information/Real-estate velocity (JZ). A negative temporal precedence
+association, COVID-robust, and period-specific to 2015-2020.
 
-2. **Effect sizes are smaller at municipal level** (max |β|=0.078 vs 0.362 at NUTS3 in the same period). Aggregation at NUTS3 reduces within-group variance and amplifies cross-sector correlations — the well-known ecological correlation effect.
+### What the results do not show
 
-3. **RU→MN pattern** (β=+0.075, bss=1.00) echoes the single FR-promoted relation (RU→MN at ZE2020). Sign is consistent but magnitude is below threshold.
+- No cross-window structural invariant is identified. Both promotions are window-specific.
+- No causal mechanism is implied. These are temporal co-movement associations after
+  controlling for territory and year fixed effects.
+- The pattern in GI→OQ is not persistent: sign changes occur in 2008-2013.
+- Results cannot be compared directly with FR ZE2020 (different sector codes, time period,
+  economic structure).
 
-4. **GI→BE negative association** (β=−0.084, bss=1.00) is the strongest single signal. At NUTS3 level, GI→FZ had the largest beta (+0.362 in 2007-2012 window). The contrast suggests different dynamics across time periods and spatial aggregation levels.
+### Verdict label
 
-5. **Granularity fragmentation confirmed:** decomposing from 25 NUTS3 to 278 municipalities reduces individual β magnitudes. More spatial units → smaller per-unit effects → more noise relative to signal.
-
----
-
-## Part E — P4: Municipal vs NUTS3 Aggregation
-
-PT NUTS3 years cover 2008–2024 (observatory v02); PT municipal covers 2008–2023. Direct aggregation comparison is complicated by:
-- Different NUTS vintages (NUTS2013 vs NUTS2024 transition at 2023)
-- 176/278 municipalities got new geocods at 2023; harmonised via name
-- Total municipal enterprise_birth should aggregate close to NUTS3 total, but exact match is not guaranteed due to different INE indicator IDs (0009703 + 0014099 vs original NUTS3 source)
-
-Divergence is documented (not required to match). P4 PASS.
-
----
-
-## Part F — HPC Preparation
-
-**Manifest:** `data/processed/phase7_pt_municipal/hpc_task_manifest.json`
-- 208 tasks total (13 windows × 2 scenarios × 8 source sectors)
-- Panel SHA256: `19c4675bbf8323e0...`
-- Commit: `10a7890f5d56` (DEC-063 commit)
-
-**Sbatch:** `hpc/phase7_sector_precedence/run_phase7_pt_municipal_array.sbatch`
-- 208-task array, 2h/task @ 8G, partition=normal, constraint=mpi
-- REPO: `/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset`
-- Output dir: `hpc_results/phase7_pt_municipal/raw/`
-
-**HPC Job submitted 2026-06-16:**
-- Job ID: **7472757** (meso, partition=normal)
-- All 208 tasks RUNNING (hpcnode06–hpcnode38, 14 nodes)
-- Remote smoke (task 0, n_perm=9): PASS — 31.2s, 7 edges, status=complete
-- Monitoring: `ssh meso "squeue -u jpmartinsd --job=7472757"`
-
-**Post-run merge:**
-```bash
-python hpc/phase7_sector_precedence/scripts/merge_sector_precedence_results.py \
-  --raw-dir hpc_results/phase7_pt_municipal/raw \
-  --manifest data/processed/phase7_pt_municipal/hpc_task_manifest.json \
-  --out-dir data/processed/phase7_pt_municipal/results
-```
-
-**Post-merge gates:**
-```bash
-PYTHONPATH=. python src/modeles/real_world/run_dec064_pt_municipal_phase7.py
-```
-
----
-
-## Part G — Scientific Questions
-
-### 1. PT municipal produces more robust relations than PT NUTS3?
-
-**From smoke (1 window):** No — 0 promoted at both levels. With more permutations and more windows, the municipal level may reveal associations that were masked at NUTS3 by insufficient statistical power. The 11× sample increase is the key structural advantage.
-
-### 2. Old PT NUTS3 relations still visible at municipal?
-
-PT NUTS3 had 0 promoted relations. The strongest NUTS3 betas (GI→FZ +0.362, GI→JZ −0.123 in 2007-2012) do not appear in the 2018-2023 municipal window — consistent with the known structural shift in PT after the 2012 austerity period and pre-/post-COVID dynamics.
-
-### 3. Granularity increases or fragments signal?
-
-**Fragments.** Decomposing 25 NUTS3 → 278 municipalities reduces individual |β| (max 0.078 vs 0.362). This is the ecological correlation trade-off: aggregation amplifies cross-sector correlation; disaggregation increases sample count but reduces per-unit effect magnitudes.
-
-### 4. Sectors with stable temporal precedence?
-
-From the 2018-2023 smoke:
-- **MN↔GI**: mutual positive association (MN→GI β=+0.078, bss=1.0)
-- **LZ→BE**: positive (β=+0.075, bss=0.90)
-- **RU→MN**: positive (β=+0.075, bss=1.0) — consistent with FR pattern
-- **GI→BE**: negative (β=−0.084, bss=1.0)
-
-All below |β| = 0.10. Final stability classification requires all 13 windows.
-
-### 5. Exploratory vs robust?
-
-All current results are **exploratory only** (n_perm=9, 1 window). No results can be classified as robust without n_perm=999 across ≥5 windows with consistent signs.
-
-### 6. Implications for FR/PT/NL granular training?
-
-- FR 280 ZE2020: 1 robust label (RU→MN COVID-sensitive). Threshold |β|≥0.10 met.
-- PT 278 municipalities: 0 promoted (smoke). |β|<0.10 consistent with smaller ecological units.
-- NL 355 gemeente (proxy): not yet run (DEC-065 pending authorisation).
-
-**Implication:** The |β|≥0.10 threshold calibrated on FR may systematically exclude PT and NL signals. A threshold calibration DEC is warranted before combining FR/PT/NL training labels.
-
----
-
-## Decision
-
-**`PT_MUNICIPAL_PHASE7_READY_FOR_HPC`**
-
-Smoke: 10/10 PASS. Pipeline validated. Data quality confirmed (n_samples 1055–1668).
-Full n_perm=999 run requires HPC (208 tasks, ~30 min/task).
-HPC manifest and sbatch prepared. Awaiting authorisation.
+The merge script returns `SECTOR_PRECEDENCE_NOT_PROMOTED` (the multi-country criterion
+requiring ≥2 countries was not met — PT is a single country). For DEC-064, the correct
+scientific verdict is **`PT_MUNICIPAL_PHASE7_COMPLETE`**: 2 COVID-robust promoted pairs
+found in the pre-registered analysis of a single country, period-specific to 2015-2020.
 
 ---
 
@@ -227,20 +232,44 @@ HPC manifest and sbatch prepared. Awaiting authorisation.
 - No proxy data mixed into PT analysis ✓
 - No KZ claims ✓
 - No results promoted without pre-registered gates ✓
-- No HPC launched without authorisation ✓
+- HPC launched with explicit authorisation ✓
+- Results not over-interpreted across windows ✓
+- Ecological fragmentation effect acknowledged ✓
 
 ---
 
-## Next Steps (requires new DEC or HPC authorisation)
+## Reproducibility
 
-| Action | DEC |
-|--------|-----|
-| Authorise HPC run (208 tasks, 30 min each) | Authorisation only |
-| After HPC: re-run gates with full results | No new DEC needed |
-| Threshold calibration (if |β|<0.10 confirmed) | DEC-066 |
-| NL gemeente Phase 7 (proxy) | DEC-065 |
-| Cross-country granular training | DEC-067 |
+| Artefact | Path |
+|----------|------|
+| Panel | `data/processed/phase7_pt_municipal/pt_municipal_phase7_panel.csv` |
+| Panel SHA256 | `19c4675bbf8323e0...` |
+| HPC manifest | `data/processed/phase7_pt_municipal/hpc_task_manifest.json` |
+| All edges (raw+q_fdr) | `data/processed/phase7_pt_municipal/results/all_edges.csv` |
+| Promoted (main) | `data/processed/phase7_pt_municipal/results/latest.csv` |
+| COVID-robust | `data/processed/phase7_pt_municipal/results/covid_robust_edges.csv` |
+| Merge decision | `data/processed/phase7_pt_municipal/results/decision.json` |
+| Sbatch | `hpc/phase7_sector_precedence/run_phase7_pt_municipal_array.sbatch` |
+| Gates | `src/modeles/real_world/gates_dec064_pt_municipal_phase7.py` |
+| Commit | `10a7890f5d56` |
 
 ---
 
-*HERALD DEC-064 | PT Municipal Phase 7 | PT_MUNICIPAL_PHASE7_READY_FOR_HPC | 2026-06-16*
+## Next Steps
+
+| Action | DEC | Status |
+|--------|-----|--------|
+| Threshold calibration (|β|≥0.10 may be too high for municipal level) | DEC-066 | Open |
+| NL gemeente Phase 7 (proxy, 355 gemeente) | DEC-065 | Draft ready |
+| FR ZE2020 Phase 7 (280 zones, comparison) | DEC-067? | Not started |
+| Cross-country granular training (using DEC-064 + DEC-065 results) | DEC-068? | Blocked on DEC-065 |
+
+**Threshold note:** Both promoted pairs have |β| ∈ [0.10, 0.13], just above the threshold.
+The 2006-2011 window showed GI→OQ with β=0.156 that did not reach q_fdr<0.05 with lower
+sample count (556 vs 1668 in 2015-2020). If the threshold were lowered to |β|≥0.07, several
+additional pairs with bss≥0.90 would appear. DEC-066 should assess this threshold calibration
+before DEC-065 and any granular training.
+
+---
+
+*HERALD DEC-064 | PT Municipal Phase 7 | PT_MUNICIPAL_PHASE7_COMPLETE | 10/10 PASS | 2026-06-16*

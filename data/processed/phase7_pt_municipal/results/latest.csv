@@ -1,0 +1,3 @@
+task_id,country,scenario,window_start,window_end,source_sector,target_sector,n_samples,beta,delta_r2,p_perm,bootstrap_sign_stability,panel_checksum,commit_sha,hostname,runtime_seconds,q_fdr,promoted
+74,PT,main,2015,2020,GI,OQ,1668,0.1302967198964387,0.016551631914195397,0.001,1.0,19c4675bbf8323e0daab3ca1ca57e287ec7abd791cb9cedfce16c85db5008794,10a7890f5d56f412da68555ce3636d4e50fafe00,hpcnode11,2232.77,0.028,True
+77,PT,main,2015,2020,MN,JZ,999,-0.10415372793056618,0.010831118813362184,0.002,1.0,19c4675bbf8323e0daab3ca1ca57e287ec7abd791cb9cedfce16c85db5008794,10a7890f5d56f412da68555ce3636d4e50fafe00,hpcnode11,2154.113,0.037333333333333336,True
