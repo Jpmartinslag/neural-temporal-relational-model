@@ -2772,3 +2772,131 @@ from the validated exports.
 - `tests/test_observatory_v04_dashboard.py` (novo — 41/41 PASS)
 - `reports/herald_artifact_registry.json` (updated)
 - `reports/HERALD_CURRENT_STATE.md`, `CODEX_MEMORY.md`, `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` (updated)
+
+---
+
+### Observatory v0.4.1 — Visual Upgrade: PT Municipal Map + Dynamic Graph (2026-06-17)
+
+**Decision:** `OBSERVATORY_V041_VISUAL_READY`
+**Gates:** none new (purely visual/UX/geometry task; no scientific decisions changed)
+**Tests:** `tests/test_observatory_v041_visual_upgrade.py` (41/41 PASS); 241/241 total across all Observatory v0.4/v0.4.1 + DEC-065/066 suites
+
+**Context:** the v0.4 dashboard (above) was methodologically sound but visually
+limited: PT rendered as a table (no municipal geometry in the repo) and the
+sector→sector graph was a static circular layout that did not communicate the
+temporal dynamics already present in `granular_relation_edges.csv` (6 rolling
+windows, 2009-2014 through 2020-2025). This task is purely visual/UX/geometry
+— no scientific data, labels, or decisions were changed.
+
+**Part A — PT municipality geometry:**
+- No municipal-level PT geometry existed in the repo. Two candidate official
+  sources evaluated: Eurostat/GISCO LAU 2021 (official, but freguesia-level
+  for PT, n=3092 — would require dissolving by `LAU_ID[:4]` == INE Dicofre
+  code) vs geoapi.pt (redistributes Direção-Geral do Território (DGT) /
+  Carta Administrativa Oficial de Portugal (CAOP) municipal boundaries
+  directly, with GeoJSON properties `Dicofre`/`Concelho`/`Distrito` matching
+  the official CAOP schema — spot-verified `Dicofre="1006"` for Caldas da
+  Rainha equals the GISCO `LAU_ID` prefix "1006").
+- Used geoapi.pt as the primary source (already at municipality granularity,
+  no dissolve needed), documenting GISCO LAU+dissolve as the documented
+  fallback method if geoapi.pt becomes unavailable.
+- Fetched all 308 PT municipalities (278 continental + 19 Açores + 11
+  Madeira), cached each response to `data/external/portugal/geometry/raw/`
+  (181 MB, gitignored — regenerable, not committed).
+- Crosswalked to the panel's 278 distinct 7-digit geocods
+  (`data/processed/european_panel/pt_municipal_sector_panel.csv`, region_id →
+  region_name) by NORMALISED NAME MATCH (lowercase, accent-stripped,
+  punctuation-stripped) — explicitly NOT by code, since the panel's 7-digit
+  geocod scheme (NUTS2013/2024-vintage, DEC-062) and geoapi.pt's 4-digit
+  Dicofre are unrelated numbering systems.
+- Result: **278/278 matched, 0 unmatched panel names, 30 unmatched geoapi
+  names = exactly the Açores+Madeira set** (confirms no continental/island
+  leakage in either direction).
+- Simplified geometry (`shapely.simplify`, tolerance 0.001° ≈ 110m,
+  `preserve_topology=True`, then `buffer(0)` repair): 29.7 MB → 1.18 MB, 0
+  invalid/empty geometries.
+- Output: `data/processed/geometries/pt_municipalities_continental.geojson`
+  (278 features, sha256 documented) + `..._manifest.json` (source, source_url,
+  fallback_official_source, crosswalk_method, coverage, status=`COMPLETE_278_278`).
+- Builder: `src/data/european_panel/build_pt_municipality_geometry.py`
+  (idempotent — caches raw fetches, re-running does not re-download).
+
+**Part B — PT choropleth in dashboard:**
+- `build_observatory_v04_dashboard.py` now loads the PT geojson via
+  `_build_pt_geojson()`, which checks the manifest's `status==COMPLETE_278_278`
+  before using it — if missing or partial, returns an empty FeatureCollection
+  and the dashboard JS automatically falls back to the table view (never
+  fabricates geometry for a partial match).
+- Map source dropdown updated: "Portugal — Municipality (observed, map)"
+  (was "...table)"). `MAPPED_SOURCES = ['FR','NL','PT']`.
+- Existing generic `renderMap()`/tooltip/side-panel code required no changes
+  — it already worked off `region_system` and `REGION_META`, which already
+  carry `evidence_type=observed_births` for PT.
+
+**Part C — dynamic sector→sector graph:**
+- New `annotate_relation_dynamics()` (Python) computes, per
+  (country, source_sector, target_sector): `n_windows`, `is_recurring`
+  (≥2 windows), `is_exclusive` (1 window), `sign_changes` (sign differs across
+  occurrences) — embedded directly in each edge record sent to the dashboard.
+- New UI: timeline slider (`#window-slider`, indices over `ALL_WINDOWS` = the
+  6 unique windows in `granular_relation_edges.csv`), Play/Pause button
+  (1.1s/frame interval, loops), Mode selector (`current` / `cumulative until
+  window` / `recurring edges only`).
+- `edgesForMode()` implements the 3 modes: current = edges in the exact
+  selected window; cumulative = union of all edges with `window_end <=`
+  selected window's end year; recurring = edges with `is_recurring=true`
+  among those visible up to the slider position, one row per pair (latest
+  occurrence).
+- Visual markers at edge midpoints: 🔁 recurring, ⚠ sign-changes, ⭐ exclusive
+  (priority order: sign_changes > recurring > exclusive).
+- `showEdgeDetail()` extended: per-window history table (β/q_fdr/bss/label_class
+  across all windows where the pair appears for that country), list of all
+  countries/region_systems where the pair appears (any system), and the new
+  territory-state context block (see Part D).
+- New `renderRelationHeatmap()`: Plotly heatmap, rows = `country: source→target`,
+  columns = `ALL_WINDOWS`, colour = β (diverging red/grey/green), respects the
+  same country/region_system/label_class filters as the graph.
+
+**Part D — map↔graph linking:**
+- `handleSourceChange()` (map country dropdown): if the new source is FR/NL/PT,
+  sets `graph-country` to match and re-renders the graph; shows a small sync
+  note. NL_GEMEENTE leaves the graph filter untouched (no relation evidence to
+  sync) and shows an explanatory note instead.
+- `handleMapSectorChange()` (map sector dropdown): sets `HIGHLIGHT_SECTOR`;
+  `renderGraph()` dims (opacity ×0.25, width ×0.6) all edges/nodes not
+  touching the highlighted sector.
+- `showEdgeDetail()` → `territoryStateSummary(country, region_system, year)`:
+  counts territories in GROWTH/DECLINE/STAGNATION/n-a for the edge's source
+  and target sectors at the edge's window end year, for that country/region_system
+  only. Explicitly labelled "context only, not a claim that this edge is
+  localised to specific territories" — satisfies the instruction not to
+  fabricate edge-to-territory attribution for country/system-level edges.
+
+**Part E — methodological protection (re-verified, unchanged):**
+- `GEMEENTE_PROXY` still absent from `RELATION_EDGES` (20 edges, identical
+  set to the v0.4 milestone).
+- 121 `BLOCKED_EDGES` still isolated in their own panel,
+  `allowed_for_training_label=false`, never rendered as graph edges.
+- DEC-066 label classes (`ROBUST_ORIGINAL`/`FINE_GRAIN_SUPPORTED`/
+  `EXPLORATORY_FINE_GRAIN`) unchanged.
+- No forbidden causal language (`causal impact`, `causal effect`, `causally`);
+  the only "causes" occurrence remains the benign Plotly.js bundle comment.
+
+**Visual validation:** Playwright/headless browser unavailable in this
+environment (same limitation as the v0.4 milestone) — validated via HTML/JS
+structural checks (element IDs, embedded JS const parsing) instead of
+screenshots. Manual validation steps documented in
+`reports/HERALD_CURRENT_STATE.md`.
+
+**Decision:** `OBSERVATORY_V041_VISUAL_READY`.
+
+**Ficheiros afectados:**
+- `src/data/european_panel/build_pt_municipality_geometry.py` (novo)
+- `data/processed/geometries/pt_municipalities_continental.geojson` (novo, 1.18 MB)
+- `data/processed/geometries/pt_municipalities_continental_manifest.json` (novo)
+- `src/data/european_panel/build_observatory_v04_dashboard.py` (updated: PT geojson loading, dynamic graph, map↔graph linking)
+- `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (regenerated, 10.0 MB)
+- `tests/test_observatory_v04_dashboard.py` (updated: graph-window → window-slider)
+- `tests/test_observatory_v041_visual_upgrade.py` (novo — 41/41 PASS)
+- `.gitignore` (added `data/external/portugal/geometry/raw/`)
+- `reports/herald_artifact_registry.json`, `reports/HERALD_CURRENT_STATE.md`, `CODEX_MEMORY.md` (updated)

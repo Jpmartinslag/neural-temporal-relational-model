@@ -1,5 +1,5 @@
 # HERALD Current State
-**Updated:** 2026-06-17 (OBSERVATORY_V04_DASHBOARD_READY — `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (9.0 MB) built and tested, 41/41 dashboard tests PASS (200/200 total). NL gemeente proxy verified absent from the relation graph; 121 blocked proxy edges isolated in their own panel. DEC-065 CONSOLIDATED — NL_GEMEENTE_PROXY_PHASE7_BLOCKED, all 121 proxy edges INVALID_FOR_TRAINING_LABELS, NL COROP VALID_OBSERVED preserved. `reports/HERALD_GRANULAR_EVIDENCE_POLICY.md` + Observatory v0.4 granular contract/exports: GRANULAR_OBSERVATORY_V04_DATA_READY. DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
+**Updated:** 2026-06-17 (OBSERVATORY_V041_VISUAL_READY — PT continental municipality geometry obtained (278/278, DGT/CAOP via geoapi.pt, name-crosswalked, 1.18 MB simplified) and now renders as a real choropleth in `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (10.0 MB). Sector→sector graph is now dynamic: timeline slider + play/pause + 3 modes (current/cumulative/recurring) + recurring/sign-change/exclusive markers + per-window edge history + relation×window heatmap. Map↔graph linking added (country sync, sector highlight, edge-click territory context). NL gemeente proxy re-verified absent from the relation graph; 121 blocked edges still isolated. 241/241 tests pass (41 new `test_observatory_v041_visual_upgrade.py` + 200 prior). OBSERVATORY_V04_DASHBOARD_READY (previous milestone) and GRANULAR_OBSERVATORY_V04_DATA_READY both superseded by this visual upgrade. DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
 **Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-049), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
@@ -138,6 +138,59 @@
 **Policy:** `data/processed/phase7_threshold_calibration/fine_grain_label_policy.json`
 
 **Next:** DEC-065 (NL gemeente proxy, now authorised); DEC-067 (FR/PT label export).
+
+---
+
+## Observatory v0.4.1 Visual Upgrade — PT Map + Dynamic Graph (2026-06-17)
+
+**Status:** `OBSERVATORY_V041_VISUAL_READY`. 41/41 new tests PASS (241/241 total).
+
+- **PT geometry (Part A):** previously missing. Obtained via geoapi.pt
+  (redistributes DGT/CAOP municipal boundaries; GeoJSON properties
+  Dicofre/Concelho/Distrito match CAOP schema). 278/278 continental
+  municipalities matched to the panel's 7-digit geocods by normalised name
+  (no code-to-code assumption — the two ID schemes are unrelated). 0 unmatched
+  panel names; 30 unmatched geoapi names = exactly the Açores+Madeira set
+  (confirms correct exclusion). Simplified 0.001° for embedding: 29.7 MB → 1.18 MB.
+  Builder: `src/data/european_panel/build_pt_municipality_geometry.py`. Output:
+  `data/processed/geometries/pt_municipalities_continental.geojson` +
+  `_manifest.json` (status=COMPLETE_278_278).
+- **PT map (Part B):** dashboard now renders PT as a real choropleth (was
+  table fallback). Fallback logic preserved: if geometry/manifest status is
+  ever missing, PT silently reverts to the table view rather than fabricating
+  a map.
+- **Dynamic graph (Part C):** timeline slider over the 6 windows present in
+  `granular_relation_edges.csv` (2009-2014…2020-2025), play/pause animation,
+  3 modes (current window / cumulative until window / recurring edges only),
+  🔁/⚠/⭐ markers for recurring/sign-changing/exclusive-to-one-window edges,
+  per-window edge history table in the detail panel, and a relation×window
+  mini heatmap (β sign/intensity).
+- **Map↔graph linking (Part D):** selecting a country on the map filters the
+  graph; selecting a sector highlights its incoming/outgoing edges (dims the
+  rest); clicking a graph edge shows an aggregate territory-state distribution
+  for that country/region_system/window — explicitly labelled as context, not
+  an edge-specific territorial attribution.
+- **Methodological protection (Part E), re-verified:** `GEMEENTE_PROXY` still
+  absent from `RELATION_EDGES` (20 edges, unchanged); 121 `BLOCKED_EDGES`
+  still isolated in their own panel, `allowed_for_training_label=false`;
+  DEC-066 label classes unchanged; no forbidden causal language.
+- **Tests:** `tests/test_observatory_v041_visual_upgrade.py` (41/41 PASS).
+- **Visual validation:** Playwright/headless browser still unavailable in
+  this environment — validated via HTML/JS structural checks and embedded-data
+  assertions (same approach as the v0.4 milestone). Manual validation
+  recommended: open the dashboard, switch the map source to Portugal and
+  confirm a real choropleth renders, drag the timeline slider/press Play and
+  confirm the graph and heatmap update, click an edge and confirm the
+  per-window table and territory-state context appear.
+- **Dashboard:** `reports/dashboards/herald_observatory_v04_granular_dashboard.html`
+  (10.0 MB). v0.3 dashboard untouched.
+- **Raw geometry cache** (`data/external/portugal/geometry/raw/`, 181 MB) is
+  gitignored — regenerable via the builder script, not committed.
+
+**Next:** none required for this task; future work could add an analogous
+NL gemeente choropleth (still context-only, never relation-graph) if gemeente
+geometry becomes available, or extend the dynamic graph to FR/PT NUTS3 scale
+comparisons.
 
 ---
 
