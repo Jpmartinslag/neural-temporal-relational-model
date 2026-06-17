@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "dec": "DEC-066",
+  "date": "2026-06-16",
+  "original_threshold": 0.1,
+  "labels": {
+    "ROBUST_ORIGINAL": {
+      "min_abs_beta": 0.1,
+      "q_fdr_max": 0.05,
+      "min_bss": 0.7,
+      "additional_requirement": "None \u2014 pre-registered threshold, no extra condition needed.",
+      "use_in_training": true,
+      "claim_level": "primary",
+      "note": "Pre-registered (DEC-034 / DEC-064). Full claim. Can be used as positive label in supervised training."
+    },
+    "FINE_GRAIN_SUPPORTED": {
+      "min_abs_beta": 0.09,
+      "q_fdr_max": 0.05,
+      "min_bss": 0.8,
+      "additional_requirement": "At least ONE of: (a) covid_robust (promoted in main AND without_2020, same sign); (b) appears in \u22652 consecutive windows with same sign at |\u03b2|\u22650.09; (c) replicated in an observed (non-proxy) second country at same scale.",
+      "use_in_training": "with_caveat",
+      "claim_level": "fine_grain_label",
+      "note": "Sub-threshold edge with supplemental evidence. MUST be labelled evidence_type=fine_grain_supported in outputs. MUST NOT be presented as equivalent to ROBUST_ORIGINAL in main claims. May be used as weak positive label with downweighting."
+    },
+    "EXPLORATORY_FINE_GRAIN": {
+      "min_abs_beta": 0.07,
+      "q_fdr_max": 0.05,
+      "min_bss": 0.9,
+      "additional_requirement": "No additional requirement \u2014 single window, no cross-country replication.",
+      "use_in_training": false,
+      "claim_level": "exploratory",
+      "note": "Significant at FDR but no supplemental evidence. MUST NOT be used as positive training label. Documented for hypothesis generation only."
+    },
+    "REJECTED_OR_WEAK": {
+      "min_abs_beta": null,
+      "q_fdr_max": null,
+      "min_bss": null,
+      "additional_requirement": null,
+      "use_in_training": false,
+      "claim_level": "none",
+      "note": "Fails q_fdr, |\u03b2|, delta_r2, or bss threshold. Not a candidate."
+    }
+  },
+  "prohibitions": [
+    "NL gemeente proxy results MUST NOT be used to derive or validate this threshold.",
+    "No threshold may be selected AFTER observing NL proxy results.",
+    "FINE_GRAIN_SUPPORTED may not use future (post-training) labels as condition (c).",
+    "KZ\u2192FZ FR may not transfer to PT labels (KZ structural_absent in PT).",
+    "ROBUST_ORIGINAL threshold 0.10 remains unchanged.",
+    "EXPLORATORY_FINE_GRAIN must not be presented as robust in any report or claim."
+  ]
+}

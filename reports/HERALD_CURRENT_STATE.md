@@ -1,5 +1,5 @@
 # HERALD Current State
-**Updated:** 2026-06-16 (DEC-062 COMPLETE — PT_PANEL_READY_NL_OPEN_DATA_BLOCKED 10/10 PASS. PT municipal panel: 278 continental municipalities × 16 years, 8 sectors, KZ structural_absent. NL gemeente blocked via CBS Open Data (no births × SBI × gemeente table). FR 280 ZE2020 ≈ PT 278 municipalities — comparable granularity. 89/89 tests PASS. DEC-060: AUDIT_COMPLETE 10/10 PASS, FR binding constraint |β| ≥ 0.10.)
+**Updated:** 2026-06-16 (DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. Threshold 0.09 supplementary tier; original 0.10 unchanged. 43/43 tests PASS. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
 **Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-049), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
@@ -123,6 +123,24 @@
 
 ---
 
+## DEC-066 — Fine-Grain Threshold Calibration (2026-06-16)
+
+**Status:** `FINE_GRAIN_THRESHOLD_POLICY_READY`. 10/10 gates PASS. 43/43 tests PASS.
+
+- **Original threshold 0.10 (ROBUST_ORIGINAL):** unchanged — pre-registered DEC-034/DEC-064.
+- **Supplementary threshold 0.09 (FINE_GRAIN_SUPPORTED):** adopted. Requires bss≥0.80 PLUS one of: (a) COVID-robust; (b) ≥2 consecutive windows same sign; (c) cross-country replication.
+- **EXPLORATORY_FINE_GRAIN (0.07-0.09, bss≥0.90):** documented, NOT a training label.
+- Ecological scale effect confirmed: PT NUTS3 max|β|=0.362 → NL COROP 0.285 → FR/PT_MUNI ≈0.10-0.13.
+- NL proxy (DEC-065) may now proceed under this policy. KZ→FZ FR cannot transfer to PT labels.
+
+**Label counts:** FR=1 ROBUST + 3 FINE_GRAIN + 5 EXPLORATORY; NL=8 ROBUST; PT_NUTS3=16 ROBUST; PT_MUNI=2 ROBUST + 1 EXPLORATORY.
+
+**Policy:** `data/processed/phase7_threshold_calibration/fine_grain_label_policy.json`
+
+**Next:** DEC-065 (NL gemeente proxy, now authorised); DEC-067 (FR/PT label export).
+
+---
+
 ## Phase 7: DEC-064 — PT Municipal Phase 7 (2026-06-16)
 
 **Status:** `PT_MUNICIPAL_PHASE7_COMPLETE`. 10/10 gates PASS. Job 7472757 (208/208 complete).
@@ -137,7 +155,7 @@
 
 **Artefacts:** `data/processed/phase7_pt_municipal/results/` (all_edges.csv, latest.csv, covid_robust_edges.csv)
 
-**Next:** DEC-066 (threshold calibration — |β|≥0.10 may exclude municipal-level signals); DEC-065 (NL gemeente proxy, requires DEC-064 complete ✓).
+**Next:** DEC-065 (NL gemeente proxy — now authorised, policy DEC-066 in place); DEC-067 (FR/PT label export with fine-grain policy).
 
 ---
 
