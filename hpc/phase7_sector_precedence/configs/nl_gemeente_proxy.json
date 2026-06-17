@@ -1,0 +1,32 @@
+{
+  "experiment": "DEC-065",
+  "panel": "data/processed/phase7_nl_gemeente_proxy/nl_gemeente_phase7_panel.csv",
+  "output_dir": "data/processed/phase7_nl_gemeente_proxy/results",
+  "country": "NL",
+  "region_system": "GEMEENTE_PROXY",
+  "evidence_type": "proxy_disaggregated_by_stock_share",
+  "proxy_method": "corop_births_allocated_by_gemeente_stock_share",
+  "n_permutations": 999,
+  "n_bootstraps": 500,
+  "window_years": 6,
+  "seed": 42,
+  "min_samples": 60,
+  "gate_thresholds": {
+    "fdr_q": 0.05,
+    "min_abs_beta": 0.10,
+    "fine_grain_abs_beta": 0.09,
+    "min_delta_r2": 0.005,
+    "min_sign_stability": 0.70,
+    "min_sign_stability_fine_grain": 0.80,
+    "min_samples": 60
+  },
+  "label_policy": "DEC-066",
+  "comparison_baseline": {
+    "country": "NL",
+    "region_system": "COROP",
+    "n_territories": 40,
+    "n_promoted_main": 8,
+    "n_covid_robust": 3
+  },
+  "warning": "evidence_type=proxy_disaggregated_by_stock_share. All outputs must carry this label. Never report as observed_births."
+}
