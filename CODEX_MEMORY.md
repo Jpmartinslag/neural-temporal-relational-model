@@ -1,5 +1,20 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-17 (DEC-065 COMPLETE — `NL_GEMEENTE_PROXY_PHASE7_BLOCKED`.
+**LEIA PRIMEIRO.** Updated 2026-06-17 (OBSERVATORY_V04_DASHBOARD_READY —
+`reports/dashboards/herald_observatory_v04_granular_dashboard.html` (9.0 MB,
+Plotly embedded locally/offline). Map: FR ZE2020 + NL COROP choropleth
+(geometry available); PT Municipality + NL gemeente proxy as sortable
+table/heatmap fallback (no municipal/gemeente geometry). Sector graph built
+ONLY from `granular_relation_edges.csv` (20 edges, FR/PT/NL COROP observed) —
+NL gemeente proxy structurally absent from the graph (verified programmatically).
+121 blocked NL gemeente proxy edges shown only in a separate "Blocked proxy
+artifacts" panel, `allowed_for_training_label=false`. Builder:
+`src/data/european_panel/build_observatory_v04_dashboard.py` (reuses v0.3
+patterns: local Plotly embed, NL_COROP_TO_NUTS3 crosswalk, circular sector
+layout). 41/41 new dashboard tests PASS (200/200 total incl. DEC-065/066/
+Observatory-policy suites). Playwright unavailable — validated via embedded
+JSON-blob assertions + HTML structural checks instead of screenshot (see
+report for manual validation steps).
+**Previously updated 2026-06-17 (DEC-065 COMPLETE — `NL_GEMEENTE_PROXY_PHASE7_BLOCKED`.
 NL gemeente proxy Phase 7 (job 7475756, 252/252 complete) found a structural validity
 defect: the DEC-063 stock-share weighting term injects cross-sector-correlated noise
 unrelated to births precedence (share_velocity coefficient ~10x corop_velocity;
@@ -57,6 +72,28 @@ Read this file, then verify drift with `rtk git status --short`.
 - **DEC-060 — France Relation Signal Recovery Audit (COMPLETE; AUDIT_COMPLETE 10/10 PASS):** Audita por que FR tem apenas 1 label Phase 7. Critério vinculante identificado: |β| ≥ 0.10 (não FDR). FR ZE2020 tem 280 zonas de emprego pequenas → efeitos |β|=0.076-0.097 sistematicamente abaixo do threshold. 8 near-miss-beta: passam FDR+Δr²+bss mas |β|<0.10. 7 near-miss-fdr: passam |β|+Δr²+bss mas q_fdr>0.05. MN→BE: par mais consistente (6 janelas p≤0.01, bss=1.000) mas anti-correlação beta-FDR impede promoção simultânea. RU→MN (único promovido): FR_COVID_SENSITIVE (p_perm pre-COVID=0.127, sem sinal pré-2015). NUTS3 sem colunas de sector — comparação de escala indisponível. Sensibilidade: com |β|≥0.08, 7 pares adicionais qualificariam (não promovidos — requer novo DEC). Labels FR_*: 1 FR_COVID_SENSITIVE, 3 FR_BETA_BELOW_THRESHOLD, 5 FR_FDR_ONLY_BLOCKED, 63 FR_WEAK_SIGNAL. 63/63 testes PASS. Artefactos: `gates_dec060_france_audit.py`, `run_dec060_france_signal_audit.py`, `tests/test_dec060_france_relation_audit.py`. Dados: `data/processed/france_relation_audit/`. Report: `reports/HERALD_DEC060_FRANCE_RELATION_SIGNAL_AUDIT.md`.
 
 - **DEC-061 — PT/NL Municipal Sector Data Availability Audit (COMPLETE; PT_READY_NL_BLOCKED; 39/40 tests PASS + 1 SKIP-expected):** Audita se PT e NL podem elevar granularidade para nível municipal, aproximando-se de FR ZE2020 (280 zonas). RESULTADO: PT confirmado disponível via INE API (0009703/0014099): 308 municípios, 297 continente+madeira, 17 sectores CAE (K ausente por definição per DEC-018), anos 2008-2023, 8/9 A10 mapeáveis → Phase 7 viável (278 territorial × 15 anos = 4.170 amostras). NL BLOQUEADO: CBS Open Data (83631NED, 81841NED) só tem oprichtingen (nascimentos) ao nível COROP — sem gemeente. Tabela 81575NED tem gemeente (483 GM codes) mas é STOCK não nascimentos. Catálogo CBS (5.927 tabelas) pesquisado — nenhuma tabela gemeente × oprichtingen × SBI encontrada. Caribbean NL ausente (confirmado). Gates G1/G2/G3/G4/G6/G7/G8/G9/G10 PASS; G5 FORMALLY_BLOCKED. Decisão: PT_READY_NL_BLOCKED. Próximo: DEC-062 para construir painel municipal PT; NL requer CBS Microdata (acesso restrito) ou fonte alternativa. Conceitos documentados: FR=establishment_creation, PT=enterprise_birth, NL=local_unit_opening. Artefactos: `src/data/european_panel/gates_dec061_municipal_granularity.py`, `tests/test_dec061_municipal_granularity.py`, `data/processed/municipal_granularity_audit/`. Report: `reports/HERALD_DEC061_PT_NL_MUNICIPAL_GRANULARITY_AUDIT.md`.
+
+## Observatory v0.4 Dashboard — OBSERVATORY_V04_DASHBOARD_READY (2026-06-17)
+- `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (9.0 MB, offline-capable).
+- Layer 1 (map): FR ZE2020 + NL COROP choropleth (geometry from `data/external/ze2020_geometry.geojson`
+  + NUTS3 via NL_COROP_TO_NUTS3 crosswalk). PT Municipality + NL gemeente proxy render as a
+  sortable/colour-coded table (no municipal/gemeente geometry available — explicit fallback,
+  not a fabricated map).
+- Layer 2 (relation graph): circular sector layout, edges from `granular_relation_edges.csv`
+  ONLY (20 edges). Style: solid=ROBUST_ORIGINAL, dashed=FINE_GRAIN_SUPPORTED,
+  dotted/low-opacity=EXPLORATORY_FINE_GRAIN. Colour by sign, width by |β|.
+- Layer 3 (blocked panel): 121 NL gemeente proxy edges, `allowed_for_training_label=false`,
+  isolated in its own panel/table, never rendered as graph edges (asserted in builder +
+  verified in tests by parsing the embedded JS blobs).
+- Layer 4 (evidence/export): KPI counts, manifest checksums, DEC references, CSV/manifest links.
+- Builder: `src/data/european_panel/build_observatory_v04_dashboard.py` (fail-closed asserts:
+  GEMEENTE_PROXY never in relation edges; blocked edges always allowed_for_training_label=false).
+- Tests: `tests/test_observatory_v04_dashboard.py` (41/41 PASS) — extracts JS consts by regex
+  and validates hard rules, UI elements, language rules, checksum/determinism.
+- No Playwright/headless browser available — validated via HTML structural checks + embedded
+  data assertions instead of screenshot.
+- v0.3 dashboard untouched (`herald_observatory_v03_dashboard.html`, no git diff).
+- Decision: `OBSERVATORY_V04_DASHBOARD_READY`.
 
 ## DEC-065 — NL Gemeente Proxy Phase 7 BLOCKED + Granular Evidence Policy (2026-06-17)
 **`NL_GEMEENTE_PROXY_PHASE7_BLOCKED`** | 71/71 tests PASS | HPC job 7475756, 252/252 complete.
