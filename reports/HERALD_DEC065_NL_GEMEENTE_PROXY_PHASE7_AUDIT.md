@@ -7,6 +7,17 @@
 **HPC job:** 7475756 on meso — 252/252 tasks complete
 **Gates:** N1-N10 — 71/71 tests PASS (tests verify schema/structure; the BLOCKED verdict is a manual scientific override, see below)
 
+**Explicit markers (consolidated 2026-06-17, see `reports/HERALD_GRANULAR_EVIDENCE_POLICY.md`):**
+- All **121 NL gemeente proxy edges** are marked **`INVALID_FOR_TRAINING_LABELS`**
+  (label_class=`BLOCKED_PROXY_ARTIFACT`, `allowed_for_training_label=false`).
+- NL gemeente proxy data **cannot be used as a sector→sector relation label**, under
+  any DEC-066 tier, at any window.
+- **NL COROP observed** (8 promoted, 3 COVID-robust) **remains valid** —
+  `NL_COROP_PHASE7 = VALID_OBSERVED`.
+- NL gemeente proxy **may be used as visual/territorial context only**
+  (`allowed_use=territory_state_context_only`) — never as relation-graph or training
+  evidence. See `data/processed/herald_observatory_v04_granular/blocked_proxy_edges.csv`.
+
 ---
 
 ## Summary

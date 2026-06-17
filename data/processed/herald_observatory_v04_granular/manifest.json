@@ -1,0 +1,40 @@
+{
+  "dec_references": [
+    "DEC-063",
+    "DEC-064",
+    "DEC-065",
+    "DEC-066"
+  ],
+  "generated_at": "2026-06-17T18:32:12.386594+00:00",
+  "sources": {
+    "fr_nl_corop_observed": "data/processed/economic_graph/sector_panel_fr_nl_pt.csv",
+    "pt_municipal_observed": "data/processed/phase7_pt_municipal/pt_municipal_phase7_panel.csv",
+    "nl_gemeente_proxy": "data/processed/phase7_nl_gemeente_proxy/nl_gemeente_phase7_panel.csv",
+    "dec066_labelled_candidates": "data/processed/phase7_threshold_calibration/phase7_threshold_candidates.csv",
+    "nl_gemeente_proxy_promoted_blocked": "data/processed/phase7_nl_gemeente_proxy/results/latest.csv"
+  },
+  "outputs": {
+    "granular_territory_state_panel.csv": {
+      "rows": 142650,
+      "sha256": "73c598aca5ba99403e7a364abb38342d022d8c990f2665fcc020434cdf2cc639"
+    },
+    "granular_relation_edges.csv": {
+      "rows": 20,
+      "sha256": "b8a56ca0addfc11b79e6a153fc82270f4d878c5b9b580852602ee1b975f3b5d1"
+    },
+    "blocked_proxy_edges.csv": {
+      "rows": 121,
+      "sha256": "80b35680bdb3c1d810dc5b02f280464deefef58e31837a167ea7000a3868e8db"
+    }
+  },
+  "rules": {
+    "nl_gemeente_proxy_relation_edges_forbidden": true,
+    "nl_gemeente_proxy_allowed_use": [
+      "territory_state_context_only"
+    ],
+    "nl_corop_observed_status": "VALID_OBSERVED",
+    "nl_gemeente_proxy_status": "BLOCKED_FOR_RELATION_LABELS",
+    "blocked_proxy_reason": "stock_share_induced_artifact"
+  },
+  "warning": "NL gemeente proxy data (evidence_type=proxy_disaggregated_by_stock_share) must NEVER appear in granular_relation_edges.csv. It may only be used for territory state visualisation / local context, never as a sector to sector relation label or training signal. See reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md."
+}

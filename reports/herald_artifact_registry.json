@@ -10,11 +10,15 @@
       "SUPERSEDED",
       "INVALID_FOR_CLAIMS",
       "INVALID_FOR_INTERPRETATION",
+      "INVALID_FOR_TRAINING_LABELS",
+      "INVALID_FOR_RELATION_LABELS",
+      "VALID_OBSERVED",
+      "BLOCKED",
       "REGENERABLE",
       "ARCHIVED"
     ],
-    "last_updated": "2026-06-13",
-    "last_decision": "DEC-038"
+    "last_updated": "2026-06-17",
+    "last_decision": "DEC-065"
   },
   "artifacts": [
     {
@@ -501,9 +505,32 @@
         "src/modeles/real_world/merge_nl_gemeente_proxy_phase7.py"
       ],
       "tests": "tests/test_dec065_nl_gemeente_proxy_phase7.py (71/71 PASS)",
-      "status": "BLOCKED — structural validity defect documented",
-      "claim_authorized": "NL gemeente proxy panel construction valid (reaggregation PASS, leakage PASS). Structural validity diagnostic is reusable evidence against stock-share-weighted disaggregation for future country/sector proxy panels. NL COROP (observed, DEC-034/064) remains valid NL baseline.",
+      "status": "BLOCKED",
+      "relation_label_status": "INVALID_FOR_RELATION_LABELS",
+      "allowed_use": ["territory_state_context_only"],
+      "claim_authorized": "NL gemeente proxy panel construction valid (reaggregation PASS, leakage PASS). Structural validity diagnostic is reusable evidence against stock-share-weighted disaggregation for future country/sector proxy panels. NL COROP (observed, DEC-034/064) remains valid NL baseline. May be used as territorial context/visualization only.",
       "claim_forbidden": "Using any of the 121 promoted / 97 COVID-robust gemeente proxy edges as DEC-066 training labels under any tier (ROBUST_ORIGINAL, FINE_GRAIN_SUPPORTED, EXPLORATORY_FINE_GRAIN). Pooling gemeente proxy edges with FR/PT/NL COROP in DEC-068 cross-country training. Treating proxy as observed births. Causal language."
+    },
+    {
+      "id": "NL_COROP_PHASE7",
+      "decision": "DEC-034",
+      "date": "2026-06-17",
+      "description": "NL COROP (40 regions) Phase 7 sector precedence, observed_births (local_unit_opening, CBS 83631NED). 8 promoted main edges, 3 COVID-robust (FZ->GI, FZ->RU, JZ->FZ, all 2014-2019). Confirmed unaffected by the DEC-065 NL gemeente proxy structural validity defect — this source uses no stock-share weighting.",
+      "files": [
+        "data/processed/sector_precedence_results/all_edges.csv",
+        "data/processed/sector_precedence_results/latest.csv",
+        "data/processed/sector_precedence_results/covid_robust_edges.csv",
+        "data/processed/sector_precedence_results/decision.json"
+      ],
+      "scripts": [
+        "hpc/phase7_sector_precedence/scripts/merge_sector_precedence_results.py"
+      ],
+      "tests": "tests/test_dec065_nl_gemeente_proxy_phase7.py (TestN4CoropSignalPreservation references this baseline)",
+      "status": "VALID_OBSERVED",
+      "relation_label_status": "VALID_OBSERVED",
+      "allowed_use": ["territory_state", "relation_graph", "training_label"],
+      "claim_authorized": "NL COROP 8 promoted edges, 3 COVID-robust, usable as DEC-066 ROBUST_ORIGINAL training labels and Observatory relation graph input.",
+      "claim_forbidden": "Pooling with NL gemeente proxy edges. Causal language. Claiming COROP-scale precision at gemeente scale."
     }
   ]
 }

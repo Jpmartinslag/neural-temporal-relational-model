@@ -79,6 +79,18 @@
 | `reports/dashboards/herald_france_final_dashboard.html` | France operational dashboard | ACTIVE — do not modify without explicit decision |
 | `reports/dashboards/herald_observatory_v03_dashboard.html` | Observatory v0.3: choropleth map + sector graph + states + territory + provenance (DEC-035/036, 6.2 MB self-contained) | ACTIVE |
 
+### Granular FR/PT/NL Evidence (DEC-063→DEC-066, Observatory v0.4)
+| Document | Covers | Status |
+|----------|--------|--------|
+| `reports/HERALD_DEC063_GRANULAR_FR_PT_NL_EVIDENCE_MODEL.md` | FR/PT/NL granular evidence model, NL gemeente proxy construction | ACTIVE |
+| `reports/HERALD_GRANULAR_FR_PT_NL_TRAINING_CONTRACT.md` | Evaluation must report observed-only/proxy-excluded sensitivity | ACTIVE |
+| `reports/HERALD_DEC064_PT_MUNICIPAL_PHASE7_AUDIT.md` | PT Municipal Phase 7, 2 COVID-robust pairs | ACTIVE |
+| `reports/HERALD_DEC066_FINE_GRAIN_THRESHOLD_CALIBRATION.md` | DEC-066 four-tier label taxonomy (0.10/0.09/0.07) | ACTIVE |
+| `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md` | **NL_GEMEENTE_PROXY_PHASE7_BLOCKED** — structural validity defect (stock-share induced cross-sector correlation) | ACTIVE |
+| `reports/HERALD_GRANULAR_EVIDENCE_POLICY.md` | Post-DEC-065 policy: observed vs proxy evidence, label classes, language rules | ACTIVE |
+| `reports/HERALD_OBSERVATORY_V04_GRANULAR_CONTRACT.md` | Observatory v0.4 4-layer contract; NL gemeente proxy excluded from relation graph | ACTIVE |
+| `data/processed/herald_observatory_v04_granular/` | Clean exports: territory_state, relation_edges (observed-only), blocked_proxy_edges, manifest | ACTIVE |
+
 ### Bibliography
 | Document | Covers | Status |
 |----------|--------|--------|
