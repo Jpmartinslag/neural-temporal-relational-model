@@ -1,0 +1,52 @@
+{
+  "thresholds": {
+    "0.1": {
+      "FR": 1,
+      "NL": 8,
+      "PT_NUTS3": 16,
+      "PT_MUNI": 2
+    },
+    "0.09": {
+      "FR": 5,
+      "NL": 8,
+      "PT_NUTS3": 16,
+      "PT_MUNI": 2
+    },
+    "0.08": {
+      "FR": 7,
+      "NL": 8,
+      "PT_NUTS3": 16,
+      "PT_MUNI": 2
+    },
+    "0.07": {
+      "FR": 9,
+      "NL": 8,
+      "PT_NUTS3": 16,
+      "PT_MUNI": 3
+    }
+  },
+  "recommended_threshold": 0.09,
+  "ecological_scale_evidence": {
+    "PT_NUTS3_max_abs_beta": 0.362,
+    "NL_COROP_max_abs_beta": 0.285,
+    "FR_ZE2020_max_abs_beta": 0.108,
+    "PT_MUNI_max_abs_beta": 0.13,
+    "note": "Finer territorial granularity produces smaller |\u03b2|. Threshold 0.10 calibrated on FR (280 zones) is appropriate for FR-scale analyses; PT municipal (278 units, similar scale) reaches 0.10. Sub-0.10 effects in FR and PT municipal may be structurally comparable to 0.10+ effects at coarser scales."
+  },
+  "fr_mn_be_cross_window": {
+    "pair": "MN\u2192BE",
+    "country": "FR",
+    "windows_at_009": [
+      "2018-2023",
+      "2019-2024",
+      "2020-2025"
+    ],
+    "bss_all": 1.0,
+    "note": "3 consecutive recent windows with same positive sign, q_fdr<0.05. Cross-window stability meets FINE_GRAIN_SUPPORTED condition b."
+  },
+  "caution_kz_fz": {
+    "pair": "KZ\u2192FZ",
+    "country": "FR",
+    "note": "KZ (Finance) is structural_absent in PT INE data. KZ\u2192FZ is a valid FR observation but cannot be transferred to PT training labels."
+  }
+}
