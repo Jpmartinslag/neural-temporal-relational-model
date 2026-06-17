@@ -1,0 +1,29 @@
+[
+  {
+    "schema_version": "1.0",
+    "task_id": 0,
+    "country": "NL",
+    "region_system": "GEMEENTE_PROXY",
+    "evidence_type": "proxy_disaggregated_by_stock_share",
+    "scenario": "main",
+    "window_start": 2007,
+    "window_end": 2012,
+    "source_sector": "BE",
+    "targets": [
+      "FZ",
+      "GI",
+      "JZ",
+      "KZ",
+      "LZ",
+      "MN",
+      "OQ",
+      "RU"
+    ],
+    "seed": 42,
+    "n_permutations": 9,
+    "n_bootstraps": 20,
+    "panel_checksum": "7170f1cef7488c264e7365a668b7de01147955fcae973e97c50d8ddaf9a70f7d",
+    "commit_sha": "4f26404a516d45245da02d142166ddd4e7372911",
+    "expected_output": "task_000000.json"
+  }
+]

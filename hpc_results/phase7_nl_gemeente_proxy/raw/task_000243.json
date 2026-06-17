@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "task_id": 243,
+  "country": "NL",
+  "scenario": "without_2020",
+  "window_start": 2020,
+  "window_end": 2025,
+  "source_sector": "BE",
+  "targets": [
+    "FZ",
+    "GI",
+    "JZ",
+    "KZ",
+    "LZ",
+    "MN",
+    "OQ",
+    "RU"
+  ],
+  "n_permutations": 999,
+  "n_bootstraps": 500,
+  "panel_checksum": "7170f1cef7488c264e7365a668b7de01147955fcae973e97c50d8ddaf9a70f7d",
+  "commit_sha": "4f26404a516d45245da02d142166ddd4e7372911",
+  "derived_seed": 5505225,
+  "edges": [
+    {
+      "target_sector": "FZ",
+      "n_samples": 1366,
+      "beta": 0.03701883935091185,
+      "delta_r2": 0.0013656548169511673,
+      "p_perm": 0.221,
+      "bootstrap_sign_stability": 0.85
+    },
+    {
+      "target_sector": "GI",
+      "n_samples": 1366,
+      "beta": 0.0541582772400189,
+      "delta_r2": 0.002904381530074329,
+      "p_perm": 0.082,
+      "bootstrap_sign_stability": 0.974
+    },
+    {
+      "target_sector": "JZ",
+      "n_samples": 1365,
+      "beta": 0.1083330476340772,
+      "delta_r2": 0.011736044299260229,
+      "p_perm": 0.002,
+      "bootstrap_sign_stability": 0.998
+    },
+    {
+      "target_sector": "KZ",
+      "n_samples": 1366,
+      "beta": 0.04509066793200922,
+      "delta_r2": 0.002016948866605195,
+      "p_perm": 0.123,
+      "bootstrap_sign_stability": 0.95
+    },
+    {
+      "target_sector": "LZ",
+      "n_samples": 1366,
+      "beta": -0.08220437974710787,
+      "delta_r2": 0.006694867078812949,
+      "p_perm": 0.004,
+      "bootstrap_sign_stability": 1.0
+    },
+    {
+      "target_sector": "MN",
+      "n_samples": 1366,
+      "beta": -0.0058069108889680365,
+      "delta_r2": 3.200650207568767e-05,
+      "p_perm": 0.865,
+      "bootstrap_sign_stability": 0.564
+    },
+    {
+      "target_sector": "OQ",
+      "n_samples": 1366,
+      "beta": -0.15487538874353618,
+      "delta_r2": 0.023751435174836022,
+      "p_perm": 0.001,
+      "bootstrap_sign_stability": 1.0
+    },
+    {
+      "target_sector": "RU",
+      "n_samples": 1366,
+      "beta": -0.030271219510319247,
+      "delta_r2": 0.0008771573899467588,
+      "p_perm": 0.336,
+      "bootstrap_sign_stability": 0.81
+    }
+  ],
+  "runtime_seconds": 3848.579,
+  "hostname": "hpcnode23",
+  "status": "complete"
+}

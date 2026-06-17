@@ -1,0 +1,51 @@
+{
+  "dec": "DEC-065",
+  "diagnostic": "STOCK_SHARE_INDUCED_CROSS_SECTOR_CORRELATION",
+  "summary": "The gemeente proxy disaggregation method (estimated_births_gemeente = corop_births * stock_share_within_corop) injects a structural cross-sector correlation into gemeente-level velocity that is unrelated to any births precedence relationship. This inflates the Phase 7 sector-precedence regression results.",
+  "evidence": {
+    "variance_decomposition": {
+      "method": "velocity variance split by COROP x year x sector group mean vs within-group residual",
+      "total_variance": 23.982613,
+      "between_group_variance": 7.790020,
+      "between_group_share": 0.325,
+      "within_group_variance": 16.192593,
+      "within_group_share": 0.675,
+      "n_rows": 54811,
+      "n_groups": 6395,
+      "avg_gemeenten_per_group": 8.6
+    },
+    "decomposition_regression": {
+      "model": "gm_velocity ~ const + corop_velocity + share_velocity",
+      "r_squared": 0.635,
+      "coef_const": 0.041,
+      "coef_corop_velocity": 1.326,
+      "coef_share_velocity": 13.005,
+      "interpretation": "share_velocity (the stock-share weighting term) has a coefficient ~10x larger than corop_velocity (the actual births signal), meaning small year-to-year fluctuations in a gemeente's stock share within its COROP dominate the proxy birth velocity, swamping the genuine COROP-level birth dynamics."
+    },
+    "cross_sector_correlation_share_velocity": {
+      "description": "Pairwise correlation of stock_share velocity across A10 sectors within the same gemeente-year (the proxy WEIGHTING term, not births)",
+      "range_excluding_oq": "0.34 to 0.82",
+      "example_pairs": {
+        "GI_MN": 0.82,
+        "FZ_GI": 0.75,
+        "GI_RU": 0.75,
+        "BE_GI": 0.68,
+        "MN_RU": 0.74
+      },
+      "interpretation": "Strong positive correlation across most sectors indicates a gemeente's general establishment-stock growth (gentrification, development) moves multiple sector stocks together, independent of any sector-to-sector births relationship."
+    },
+    "cross_sector_correlation_proxy_births_velocity": {
+      "description": "Pairwise correlation of estimated_births_gemeente velocity across A10 sectors (the actual Phase 7 regression input)",
+      "range": "-0.06 to 0.53",
+      "comparison": "Lower than share_velocity correlation but still elevated for sector pairs with high share_velocity correlation (e.g. GI-MN: 0.53), consistent with share_velocity being a major contributor to the births velocity signal."
+    }
+  },
+  "consequence_for_phase7": {
+    "promoted_main_count_gemeente": 121,
+    "promoted_main_count_corop_observed": 8,
+    "promoted_main_count_pt_municipal_observed": 2,
+    "interpretation": "The ~15x jump in promoted edges (8 -> 121) when moving from COROP observed births to gemeente proxy births is not consistent with genuine sub-COROP signal discovery. It is consistent with the stock-share weighting term injecting artificial cross-sector co-movement that the permutation test treats as a births precedence signal. n_samples >= 60 and q_fdr < 0.05 are satisfied trivially because gemeente-year observations within the same COROP are not statistically independent: they share ~32.5% of velocity variance directly from the COROP-year-sector group, and the remaining within-group variance is itself ~67% driven by a stock-share term with structural cross-sector correlation up to 0.82."
+  },
+  "recommendation": "NL gemeente proxy Phase 7 sector-precedence edges (including the 97 nominally COVID-robust pairs) must NOT be used as training labels under any DEC-066 tier (ROBUST_ORIGINAL, FINE_GRAIN_SUPPORTED, or EXPLORATORY_FINE_GRAIN) until the regression is re-run with COROP-clustered standard errors / COROP fixed effects to absorb the shared stock-share component, or until an alternative proxy method is found that does not inject cross-sector stock co-movement into the births estimate.",
+  "generated_at": "2026-06-17T18:30:00+00:00"
+}
