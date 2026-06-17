@@ -1,5 +1,5 @@
 # HERALD Current State
-**Updated:** 2026-06-17 (DEC-065 CONSOLIDATED — NL_GEMEENTE_PROXY_PHASE7_BLOCKED, all 121 proxy edges INVALID_FOR_TRAINING_LABELS, NL COROP VALID_OBSERVED preserved. New `reports/HERALD_GRANULAR_EVIDENCE_POLICY.md` + Observatory v0.4 granular contract/exports ready: GRANULAR_OBSERVATORY_V04_DATA_READY, 159/159 tests PASS. DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
+**Updated:** 2026-06-17 (OBSERVATORY_V04_DASHBOARD_READY — `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (9.0 MB) built and tested, 41/41 dashboard tests PASS (200/200 total). NL gemeente proxy verified absent from the relation graph; 121 blocked proxy edges isolated in their own panel. DEC-065 CONSOLIDATED — NL_GEMEENTE_PROXY_PHASE7_BLOCKED, all 121 proxy edges INVALID_FOR_TRAINING_LABELS, NL COROP VALID_OBSERVED preserved. `reports/HERALD_GRANULAR_EVIDENCE_POLICY.md` + Observatory v0.4 granular contract/exports: GRANULAR_OBSERVATORY_V04_DATA_READY. DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
 **Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-049), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
@@ -138,6 +138,24 @@
 **Policy:** `data/processed/phase7_threshold_calibration/fine_grain_label_policy.json`
 
 **Next:** DEC-065 (NL gemeente proxy, now authorised); DEC-067 (FR/PT label export).
+
+---
+
+## Observatory v0.4 Granular Dashboard (2026-06-17)
+
+**Status:** `OBSERVATORY_V04_DASHBOARD_READY`. 41/41 dashboard tests PASS (200/200 total across DEC-065/066/Observatory-policy/dashboard suites).
+
+- **File:** `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (9.0 MB, Plotly embedded locally — works fully offline, no CDN).
+- **Map (Layer 1):** FR ZE2020 + NL COROP render as a real choropleth (geometry from `data/external/ze2020_geometry.geojson` and NUTS3 via the NL_COROP_TO_NUTS3 crosswalk, reused from v0.3). PT Municipality and NL gemeente proxy have no embedded municipal/gemeente geometry — they render as a sortable, colour-coded table (state heatmap), an explicit fallback rather than a fabricated map. NL gemeente rows always carry a `proxy/context — not valid for relation labels` badge.
+- **Relation graph (Layer 2):** circular sector layout built ONLY from `granular_relation_edges.csv` (20 edges: FR=9, NL COROP=8, PT Municipal=3). Styled by `label_class` (solid/dashed/dotted) and `sign` (colour), width by |β|. NL gemeente proxy is structurally absent — verified by parsing the embedded `RELATION_EDGES` JS blob in tests.
+- **Blocked panel (Layer 3):** all 121 NL gemeente proxy edges in a dedicated "Blocked proxy artifacts" table, `allowed_for_training_label=false`, `reason=stock_share_induced_artifact`, never rendered as graph edges.
+- **Evidence/export (Layer 4-5):** KPI counts, manifest checksums, DEC references, CSV/manifest download links, embedded manifest modal.
+- **Builder:** `src/data/european_panel/build_observatory_v04_dashboard.py` — fail-closed asserts at build time (GEMEENTE_PROXY never in relation edges; blocked edges always non-trainable).
+- **Tests:** `tests/test_observatory_v04_dashboard.py` (41/41 PASS) — existence/well-formedness, dataset references, hard-rule isolation, UI elements, language rules, builder determinism/checksums.
+- **Visual validation:** Playwright/headless browser not available in this environment; validated via HTML structural checks and embedded-data assertions instead of screenshot. Manual validation: open the file directly in a browser and confirm map/graph/tables render (see report for checklist).
+- v0.3 dashboard (`herald_observatory_v03_dashboard.html`) untouched.
+
+**Next:** dashboard is ready for manual visual confirmation in a browser; no further action required unless visual review surfaces issues.
 
 ---
 

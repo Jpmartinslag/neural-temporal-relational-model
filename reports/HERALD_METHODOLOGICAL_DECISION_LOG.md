@@ -2726,3 +2726,49 @@ formal evidence policy and prepares the granular Observatory v0.4 data layer.
 - `reports/herald_artifact_registry.json` (updated: NL_COROP_PHASE7 added, status_vocabulary extended)
 - `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md` (updated: explicit markers added)
 - `reports/HERALD_CURRENT_STATE.md`, `CODEX_MEMORY.md`, `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` (updated)
+
+---
+
+### DEC-065 — Dashboard Addendum (2026-06-17): Observatory v0.4 Granular Dashboard
+
+Following `GRANULAR_OBSERVATORY_V04_DATA_READY`, this addendum builds the visual dashboard
+from the validated exports.
+
+- New self-contained dashboard: `reports/dashboards/herald_observatory_v04_granular_dashboard.html`
+  (9.0 MB, Plotly embedded locally per the v0.3 pattern — `_plotly_js_tag()` reads
+  `plotly.min.js` from the installed Python `plotly` package; no CDN dependency).
+- Map (Layer 1): FR ZE2020 + NL COROP choropleth using existing geometry
+  (`data/external/ze2020_geometry.geojson`, `data/external/nuts3_2021_eurostat.geojson` via the
+  `NL_COROP_TO_NUTS3` crosswalk reused verbatim from `build_observatory_v03.py`). PT Municipality
+  and NL gemeente proxy have no committed municipal/gemeente geometry — rendered as a sortable
+  table/heatmap fallback per the task's explicit fallback rule (no fabricated map).
+- Relation graph (Layer 2): circular sector layout (reused from v0.3) built EXCLUSIVELY from
+  `granular_relation_edges.csv` (20 edges). NL gemeente proxy is structurally absent — enforced
+  by a fail-closed assert in the builder (`assert "GEMEENTE_PROXY" not in relation_edges[...]`)
+  and verified by parsing the embedded `RELATION_EDGES` JS blob in tests.
+- Blocked panel (Layer 3): all 121 NL gemeente proxy edges in a separate table,
+  `allowed_for_training_label=false`, never rendered as graph edges.
+- Evidence/export panel (Layers 4-5): KPI counts, manifest checksums (16-char prefix),
+  DEC references, CSV/manifest download links, embedded manifest modal (works offline).
+- New builder: `src/data/european_panel/build_observatory_v04_dashboard.py`.
+- New tests: `tests/test_observatory_v04_dashboard.py` (41/41 PASS) — extracts the dashboard's
+  embedded JS consts via regex + `json.loads` and asserts: relation edges count/region-systems/
+  evidence_type; blocked edges count/reason/non-trainability; no overlap of region_system sets
+  between relation and blocked edges; UI elements (badges, filters, panel divs) present; no
+  forbidden causal language (the only "causes" occurrence is inside the embedded Plotly.js
+  minified bundle's floating-point engineering comment, verified context-checked); builder
+  determinism (re-running produces the same edge counts); CSV checksums match manifest.
+- Playwright/headless browser not available in this environment — visual screenshot validation
+  was not possible. Validated instead via HTML structural checks (DOCTYPE, balanced tags, key
+  element IDs present) and embedded-data assertions. Manual validation recommended: open the
+  HTML file in a browser and confirm the map is not blank, the graph renders with 9 sector
+  nodes, the blocked-edges table has 121 rows, and all badges are visible.
+- `reports/dashboards/herald_observatory_v03_dashboard.html` is untouched (no git diff).
+- **Decision:** `OBSERVATORY_V04_DASHBOARD_READY`.
+
+**Ficheiros afectados (dashboard addendum):**
+- `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (novo, 9.0 MB)
+- `src/data/european_panel/build_observatory_v04_dashboard.py` (novo)
+- `tests/test_observatory_v04_dashboard.py` (novo — 41/41 PASS)
+- `reports/herald_artifact_registry.json` (updated)
+- `reports/HERALD_CURRENT_STATE.md`, `CODEX_MEMORY.md`, `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` (updated)

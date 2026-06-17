@@ -531,6 +531,24 @@
       "allowed_use": ["territory_state", "relation_graph", "training_label"],
       "claim_authorized": "NL COROP 8 promoted edges, 3 COVID-robust, usable as DEC-066 ROBUST_ORIGINAL training labels and Observatory relation graph input.",
       "claim_forbidden": "Pooling with NL gemeente proxy edges. Causal language. Claiming COROP-scale precision at gemeente scale."
+    },
+    {
+      "id": "OBSERVATORY_V04_GRANULAR_DASHBOARD",
+      "decision": "DEC-065",
+      "date": "2026-06-17",
+      "description": "Self-contained HTML dashboard for the granular FR/PT/NL Observatory v0.4. Map (FR ZE2020 + NL COROP choropleth; PT Municipality + NL gemeente proxy table fallback), relation graph (granular_relation_edges.csv ONLY, NL gemeente proxy structurally absent), blocked proxy artifacts panel (121 edges, non-trainable), evidence/export panel.",
+      "files": [
+        "reports/dashboards/herald_observatory_v04_granular_dashboard.html"
+      ],
+      "scripts": [
+        "src/data/european_panel/build_observatory_v04_dashboard.py"
+      ],
+      "tests": "tests/test_observatory_v04_dashboard.py (41/41 PASS)",
+      "status": "ACTIVE",
+      "size_mb": 9.0,
+      "plotly_dependency": "local_embedded",
+      "claim_authorized": "Visual exploration of FR/PT/NL granular territory state and observed sector relations. NL gemeente proxy territory context with explicit proxy/context badge. Blocked proxy edges visible for audit only.",
+      "claim_forbidden": "Treating NL gemeente proxy edges or table rows as relation labels or observed evidence. Causal language. Modifying without re-running tests/test_observatory_v04_dashboard.py."
     }
   ]
 }

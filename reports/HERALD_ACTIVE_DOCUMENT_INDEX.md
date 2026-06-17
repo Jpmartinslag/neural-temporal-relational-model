@@ -90,6 +90,8 @@
 | `reports/HERALD_GRANULAR_EVIDENCE_POLICY.md` | Post-DEC-065 policy: observed vs proxy evidence, label classes, language rules | ACTIVE |
 | `reports/HERALD_OBSERVATORY_V04_GRANULAR_CONTRACT.md` | Observatory v0.4 4-layer contract; NL gemeente proxy excluded from relation graph | ACTIVE |
 | `data/processed/herald_observatory_v04_granular/` | Clean exports: territory_state, relation_edges (observed-only), blocked_proxy_edges, manifest | ACTIVE |
+| `reports/dashboards/herald_observatory_v04_granular_dashboard.html` | Observatory v0.4 dashboard: FR/NL COROP choropleth + PT/NL gemeente table fallback + observed-only relation graph + blocked proxy panel (9.0 MB, offline) | ACTIVE |
+| `src/data/european_panel/build_observatory_v04_dashboard.py` | Dashboard builder; fail-closed asserts NL gemeente proxy never in relation graph | ACTIVE |
 
 ### Bibliography
 | Document | Covers | Status |
