@@ -1,5 +1,24 @@
 # HERALD Codex Memory
-**LEIA PRIMEIRO.** Updated 2026-06-17 (OBSERVATORY_V04_DASHBOARD_READY —
+**LEIA PRIMEIRO.** Updated 2026-06-17 (OBSERVATORY_V041_VISUAL_READY —
+PT continental municipality geometry obtained (278/278, DGT/CAOP via geoapi.pt,
+crosswalked by normalised name to the panel's 7-digit geocods, simplified
+0.001° for embedding, 1.18 MB). PT now renders as a REAL choropleth in
+`reports/dashboards/herald_observatory_v04_granular_dashboard.html` (10.0 MB)
+instead of a table fallback. Sector→sector graph (Section 2) is now dynamic:
+timeline slider over 6 windows, play/pause animation, 3 modes (current/
+cumulative/recurring edges only), recurring/sign-change/exclusive markers
+(🔁/⚠/⭐), per-window edge-detail history table, and a relation×window mini
+heatmap (β sign/intensity). Map↔graph linking: selecting a country on the map
+syncs the graph's country filter; selecting a sector highlights its incoming/
+outgoing edges; clicking an edge shows aggregate territory-state context
+(never edge-specific territorial attribution). NL gemeente proxy re-verified
+absent from the relation graph; 121 blocked edges still isolated; DEC-066
+labels untouched. 241/241 tests pass (41 new
+`test_observatory_v041_visual_upgrade.py` + 200 prior). Playwright still
+unavailable — validated via HTML/JS structural + embedded-data checks.
+Builders: `src/data/european_panel/build_pt_municipality_geometry.py`,
+`src/data/european_panel/build_observatory_v04_dashboard.py` (updated).
+**Previously updated 2026-06-17 (OBSERVATORY_V04_DASHBOARD_READY —
 `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (9.0 MB,
 Plotly embedded locally/offline). Map: FR ZE2020 + NL COROP choropleth
 (geometry available); PT Municipality + NL gemeente proxy as sortable
@@ -72,6 +91,59 @@ Read this file, then verify drift with `rtk git status --short`.
 - **DEC-060 — France Relation Signal Recovery Audit (COMPLETE; AUDIT_COMPLETE 10/10 PASS):** Audita por que FR tem apenas 1 label Phase 7. Critério vinculante identificado: |β| ≥ 0.10 (não FDR). FR ZE2020 tem 280 zonas de emprego pequenas → efeitos |β|=0.076-0.097 sistematicamente abaixo do threshold. 8 near-miss-beta: passam FDR+Δr²+bss mas |β|<0.10. 7 near-miss-fdr: passam |β|+Δr²+bss mas q_fdr>0.05. MN→BE: par mais consistente (6 janelas p≤0.01, bss=1.000) mas anti-correlação beta-FDR impede promoção simultânea. RU→MN (único promovido): FR_COVID_SENSITIVE (p_perm pre-COVID=0.127, sem sinal pré-2015). NUTS3 sem colunas de sector — comparação de escala indisponível. Sensibilidade: com |β|≥0.08, 7 pares adicionais qualificariam (não promovidos — requer novo DEC). Labels FR_*: 1 FR_COVID_SENSITIVE, 3 FR_BETA_BELOW_THRESHOLD, 5 FR_FDR_ONLY_BLOCKED, 63 FR_WEAK_SIGNAL. 63/63 testes PASS. Artefactos: `gates_dec060_france_audit.py`, `run_dec060_france_signal_audit.py`, `tests/test_dec060_france_relation_audit.py`. Dados: `data/processed/france_relation_audit/`. Report: `reports/HERALD_DEC060_FRANCE_RELATION_SIGNAL_AUDIT.md`.
 
 - **DEC-061 — PT/NL Municipal Sector Data Availability Audit (COMPLETE; PT_READY_NL_BLOCKED; 39/40 tests PASS + 1 SKIP-expected):** Audita se PT e NL podem elevar granularidade para nível municipal, aproximando-se de FR ZE2020 (280 zonas). RESULTADO: PT confirmado disponível via INE API (0009703/0014099): 308 municípios, 297 continente+madeira, 17 sectores CAE (K ausente por definição per DEC-018), anos 2008-2023, 8/9 A10 mapeáveis → Phase 7 viável (278 territorial × 15 anos = 4.170 amostras). NL BLOQUEADO: CBS Open Data (83631NED, 81841NED) só tem oprichtingen (nascimentos) ao nível COROP — sem gemeente. Tabela 81575NED tem gemeente (483 GM codes) mas é STOCK não nascimentos. Catálogo CBS (5.927 tabelas) pesquisado — nenhuma tabela gemeente × oprichtingen × SBI encontrada. Caribbean NL ausente (confirmado). Gates G1/G2/G3/G4/G6/G7/G8/G9/G10 PASS; G5 FORMALLY_BLOCKED. Decisão: PT_READY_NL_BLOCKED. Próximo: DEC-062 para construir painel municipal PT; NL requer CBS Microdata (acesso restrito) ou fonte alternativa. Conceitos documentados: FR=establishment_creation, PT=enterprise_birth, NL=local_unit_opening. Artefactos: `src/data/european_panel/gates_dec061_municipal_granularity.py`, `tests/test_dec061_municipal_granularity.py`, `data/processed/municipal_granularity_audit/`. Report: `reports/HERALD_DEC061_PT_NL_MUNICIPAL_GRANULARITY_AUDIT.md`.
+
+## Observatory v0.4.1 Visual Upgrade — OBSERVATORY_V041_VISUAL_READY (2026-06-17)
+
+**Part A — PT municipality geometry (previously missing):**
+- No municipal-level PT geometry existed in the repo. Evaluated Eurostat/GISCO
+  LAU 2021 (official, but freguesia-level n=3092 for PT, would need dissolve
+  by LAU_ID[:4]==INE Dicofre) vs geoapi.pt (redistributes DGT/CAOP municipal
+  boundaries directly, GeoJSON properties Dicofre/Concelho/Distrito match the
+  official CAOP schema — verified Dicofre="1006" for Caldas da Rainha matches
+  GISCO LAU_ID prefix "1006").
+- Used geoapi.pt: fetched 308 municipalities (278 continental + 19 Açores + 11
+  Madeira), crosswalked to our panel's 278 distinct 7-digit geocods by
+  NORMALISED NAME match (no code-to-code assumption across the two schemes) —
+  **278/278 matched, 0 unmatched panel names, 30 unmatched geoapi names = exactly
+  the Açores+Madeira set (confirms correct continental filtering)**.
+- Simplified geometry 0.001° (≈110m) for embedding: 29.7 MB → 1.18 MB, no
+  invalid/empty geometries after `buffer(0)` repair.
+- Output: `data/processed/geometries/pt_municipalities_continental.geojson` (278
+  features) + `..._manifest.json` (source, checksum, coverage, status=COMPLETE_278_278).
+- Raw per-municipality JSON cache (181 MB) in `data/external/portugal/geometry/raw/`
+  — NOT committed (gitignored, regenerable via the builder script).
+- Builder: `src/data/european_panel/build_pt_municipality_geometry.py`.
+
+**Part B — PT now a real choropleth** (was table fallback): dashboard builder
+loads the PT geojson, falls back to table ONLY if the file or its
+COMPLETE_278_278 manifest status is missing (never fabricates geometry).
+
+**Part C — dynamic sector→sector graph:** timeline slider (6 windows:
+2009-2014…2020-2025) + play/pause animation (1.1s/frame) + 3 modes (current
+window / cumulative until window / recurring edges only) + 🔁/⚠/⭐ markers
+(recurring/sign-changing/exclusive-to-one-window) + per-window edge history
+table in the detail panel + relation×window mini heatmap (β sign/intensity,
+Plotly heatmap trace).
+
+**Part D — map↔graph linking:** map country selection syncs
+`graph-country` filter + re-renders graph; map sector selection sets
+`HIGHLIGHT_SECTOR` and dims non-matching edges/nodes; clicking a graph edge
+shows an aggregate territory-state distribution (GROWTH/DECLINE/STAGNATION
+counts) for the edge's country/region_system/window — explicitly NOT an
+edge-specific territorial attribution claim.
+
+**Part E — protection re-verified:** `GEMEENTE_PROXY` still absent from
+`RELATION_EDGES` (asserted in builder + tested); 121 `BLOCKED_EDGES` still
+isolated in their own panel; DEC-066 label classes unchanged; no forbidden
+causal language (only benign Plotly.js bundle comment).
+
+**Tests:** `tests/test_observatory_v041_visual_upgrade.py` (41/41 PASS).
+241/241 total across all Observatory v0.4/v0.4.1 + DEC-065/066 suites.
+
+**Dashboard:** `reports/dashboards/herald_observatory_v04_granular_dashboard.html`
+(10.0 MB, Plotly embedded locally). v0.3 dashboard untouched.
+
+**Decision:** `OBSERVATORY_V041_VISUAL_READY`.
 
 ## Observatory v0.4 Dashboard — OBSERVATORY_V04_DASHBOARD_READY (2026-06-17)
 - `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (9.0 MB, offline-capable).

@@ -186,7 +186,7 @@ class TestUiElements:
             assert f'id="{el_id}"' in html
 
     def test_graph_filters_present(self, html):
-        for el_id in ["graph-country", "graph-region-system", "graph-label-class", "graph-window"]:
+        for el_id in ["graph-country", "graph-region-system", "graph-label-class", "window-slider"]:
             assert f'id="{el_id}"' in html
 
     def test_map_plot_div_present(self, html):

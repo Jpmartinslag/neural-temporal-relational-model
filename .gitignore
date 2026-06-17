@@ -141,3 +141,7 @@ reports/PATCH_ROBUSTNESS_*.txt
 hpc_results/final_model_comparison_20260429_partial_failed_7248278/
 hpc_results/imported_from_vm_20260501_raw/
 hpc_results/patch_robustness_20260429/
+
+# ── PT municipality geometry raw cache (regenerable; ~180MB, see
+#    src/data/european_panel/build_pt_municipality_geometry.py) ────
+data/external/portugal/geometry/raw/

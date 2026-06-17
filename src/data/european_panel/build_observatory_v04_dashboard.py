@@ -42,6 +42,8 @@ MANIFEST_PATH = DATA_DIR / "manifest.json"
 
 ZE_GEOJSON_PATH = REPO_ROOT / "data/external/ze2020_geometry.geojson"
 NUTS3_GEOJSON_PATH = REPO_ROOT / "data/external/nuts3_2021_eurostat.geojson"
+PT_GEOJSON_PATH = REPO_ROOT / "data/processed/geometries/pt_municipalities_continental.geojson"
+PT_GEOJSON_MANIFEST_PATH = REPO_ROOT / "data/processed/geometries/pt_municipalities_continental_manifest.json"
 
 OUT_PATH = REPO_ROOT / "reports/dashboards/herald_observatory_v04_granular_dashboard.html"
 
@@ -59,18 +61,18 @@ SECTOR_LABELS = {
 SECTORS_ORDER = list(SECTOR_LABELS.keys())
 
 # Region systems rendered with real geometry vs table fallback
-MAPPED_SYSTEMS = {"ZE2020", "COROP"}
-TABLE_SYSTEMS = {"MUNICIPALITY", "GEMEENTE_PROXY"}
+MAPPED_SYSTEMS = {"ZE2020", "COROP", "MUNICIPALITY"}
+TABLE_SYSTEMS = {"GEMEENTE_PROXY"}
 
 MAP_CONFIG = {
     "FR": {"region_system": "ZE2020", "label": "France — ZE2020 (observed)",
            "note": "France uses functional employment zones (ZE2020, n=280)."},
     "NL": {"region_system": "COROP", "label": "Netherlands — COROP (observed)",
            "note": "Netherlands uses COROP regions (n=40), NUTS3-equivalent."},
+    "PT": {"region_system": "MUNICIPALITY", "label": "Portugal — Municipality (observed)",
+           "note": "Portugal continental municipalities (n=278), DGT/CAOP boundaries via geoapi.pt."},
 }
 TABLE_CONFIG = {
-    "PT": {"region_system": "MUNICIPALITY", "label": "Portugal — Municipality (observed)",
-           "badge": "observed"},
     "NL_GEMEENTE": {"region_system": "GEMEENTE_PROXY",
                      "label": "Netherlands — Gemeente (proxy/context)",
                      "badge": "proxy"},
@@ -164,6 +166,28 @@ def _build_nl_geojson() -> dict:
     return {"type": "FeatureCollection", "features": features}
 
 
+def _build_pt_geojson() -> dict:
+    """Load the pre-built continental PT municipality geojson (DEC-067 visual
+    upgrade). Falls back to an empty FeatureCollection (table fallback in the
+    dashboard JS) if the file or its 278/278 coverage is missing — never
+    fabricates geometry."""
+    if not PT_GEOJSON_PATH.exists():
+        logger.warning("PT geojson not found at %s — PT will fall back to table view", PT_GEOJSON_PATH)
+        return {"type": "FeatureCollection", "features": []}
+    if PT_GEOJSON_MANIFEST_PATH.exists():
+        pt_manifest = json.loads(PT_GEOJSON_MANIFEST_PATH.read_text())
+        if pt_manifest.get("status") != "COMPLETE_278_278":
+            logger.warning(
+                "PT geojson manifest status=%s (not COMPLETE_278_278) — PT will "
+                "fall back to table view to avoid presenting partial geometry as complete",
+                pt_manifest.get("status"),
+            )
+            return {"type": "FeatureCollection", "features": []}
+    raw = json.loads(PT_GEOJSON_PATH.read_text(encoding="utf-8"))
+    logger.info("PT GeoJSON: %d features", len(raw.get("features", [])))
+    return raw
+
+
 def build_territory_data(panel: pd.DataFrame) -> tuple[dict, dict]:
     """Nested {country: {region_id: {sector: {year: [value, state_num, velocity]}}}}
     plus per-region metadata, deduplicated (not per-row) to keep payload small."""
@@ -197,6 +221,26 @@ def build_territory_data(panel: pd.DataFrame) -> tuple[dict, dict]:
     return territory_data, region_meta
 
 
+def annotate_relation_dynamics(relation_edges: pd.DataFrame) -> pd.DataFrame:
+    """Add per-edge dynamics fields used by the timeline/heatmap view:
+    n_windows (how many windows this country/pair appears in), is_recurring
+    (n_windows>=2), is_exclusive (n_windows==1), sign_changes (whether the
+    sign differs across this pair's occurrences for the same country)."""
+    df = relation_edges.copy()
+    df["window_start"] = df["window"].str.split("-").str[0].astype(int)
+    df["window_end"] = df["window"].str.split("-").str[1].astype(int)
+
+    group_cols = ["country", "source_sector", "target_sector"]
+    counts = df.groupby(group_cols)["window"].nunique().rename("n_windows")
+    signs = df.groupby(group_cols)["sign"].nunique().rename("n_distinct_signs")
+    df = df.merge(counts, on=group_cols, how="left").merge(signs, on=group_cols, how="left")
+    df["is_recurring"] = df["n_windows"] >= 2
+    df["is_exclusive"] = df["n_windows"] == 1
+    df["sign_changes"] = df["n_distinct_signs"] >= 2
+    df = df.drop(columns=["n_distinct_signs"])
+    return df
+
+
 def build_node_positions() -> dict:
     node_pos = {}
     for i, s in enumerate(SECTORS_ORDER):
@@ -225,6 +269,9 @@ def main() -> None:
     fr_ids = sorted(panel[panel["country"] == "FR"]["region_id"].astype(str).unique())
     geo_fr = _build_fr_geojson(fr_ids)
     geo_nl = _build_nl_geojson()
+    geo_pt = _build_pt_geojson()
+    pt_map_status = "MAP" if len(geo_pt["features"]) == 278 else "TABLE_FALLBACK"
+    logger.info("PT map status: %s (%d features)", pt_map_status, len(geo_pt["features"]))
 
     plotly_tag, plotly_dep = _plotly_js_tag()
 
@@ -234,8 +281,11 @@ def main() -> None:
     n_proxy_context_rows = int((panel["evidence_type"] == "proxy_disaggregated_by_stock_share").sum())
     n_blocked = len(blocked_edges)
 
-    relation_edges_js = relation_edges.to_dict(orient="records")
+    relation_edges_dyn = annotate_relation_dynamics(relation_edges)
+    relation_edges_js = relation_edges_dyn.to_dict(orient="records")
     blocked_edges_js = blocked_edges.to_dict(orient="records")
+    all_windows = sorted(relation_edges_dyn["window"].unique(),
+                          key=lambda w: int(w.split("-")[0]))
 
     csv_checksums = {
         "granular_territory_state_panel.csv": _sha256_file(TERRITORY_PATH)[:16],
@@ -252,6 +302,7 @@ def main() -> None:
         sector_labels_js=json.dumps(SECTOR_LABELS),
         geo_fr_js=json.dumps(geo_fr, separators=(",", ":")),
         geo_nl_js=json.dumps(geo_nl, separators=(",", ":")),
+        geo_pt_js=json.dumps(geo_pt, separators=(",", ":")),
         relation_edges_js=json.dumps(relation_edges_js),
         blocked_edges_js=json.dumps(blocked_edges_js),
         manifest_js=json.dumps(manifest),
@@ -259,10 +310,12 @@ def main() -> None:
         table_config_js=json.dumps(TABLE_CONFIG),
         label_counts_js=json.dumps(label_counts),
         csv_checksums_js=json.dumps(csv_checksums),
+        all_windows_js=json.dumps(all_windows),
         n_observed_relation_edges=n_observed_relation_edges,
         n_proxy_context_rows=n_proxy_context_rows,
         n_blocked=n_blocked,
         n_territory_rows=len(panel),
+        pt_map_status=pt_map_status,
     )
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -381,10 +434,11 @@ def _render_html(**kw) -> str:
 <div class="section">
   <div class="section-title">1. Territorial Map / State</div>
   <div class="section-note">
-    FR (ZE2020) and NL (COROP) render as a choropleth map (geometry available).
-    PT (Municipality) and NL gemeente have no embedded municipal/gemeente geometry —
-    they render as a sortable, colour-coded table (state heatmap), not a fabricated map.
-    NL gemeente rows always carry a <span class="badge badge-proxy" style="padding:1px 6px">proxy/context</span>
+    FR (ZE2020), NL (COROP) and PT (278 continental municipalities, DGT/CAOP boundaries
+    via geoapi.pt) render as a real choropleth map. NL gemeente has no embedded gemeente
+    geometry — it renders as a sortable, colour-coded table (state heatmap), not a
+    fabricated map. NL gemeente rows always carry a
+    <span class="badge badge-proxy" style="padding:1px 6px">proxy/context</span>
     badge — they are a territorial estimate, never observed evidence.
   </div>
   <div class="controls">
@@ -392,13 +446,13 @@ def _render_html(**kw) -> str:
       <select id="map-source" onchange="handleSourceChange()">
         <option value="FR">France — ZE2020 (observed, map)</option>
         <option value="NL">Netherlands — COROP (observed, map)</option>
-        <option value="PT">Portugal — Municipality (observed, table)</option>
+        <option value="PT">Portugal — Municipality (observed, map)</option>
         <option value="NL_GEMEENTE">Netherlands — Gemeente (proxy/context, table)</option>
       </select>
     </label>
     <label>Year <select id="map-year" onchange="renderTerritoryView()"></select></label>
     <label>Sector
-      <select id="map-sector" onchange="renderTerritoryView()">
+      <select id="map-sector" onchange="handleMapSectorChange()">
         <option value="ALL">All sectors (dominant shown)</option>
         {"".join(f'<option value="{s}">{s} — {SECTOR_LABELS[s]}</option>' for s in SECTORS_ORDER)}
       </select>
@@ -423,9 +477,9 @@ def _render_html(**kw) -> str:
   </div>
 </div>
 
-<!-- ── SECTION 2: Sector Relation Graph ───────────────────────────────── -->
+<!-- ── SECTION 2: Sector Relation Graph (dynamic) ─────────────────────── -->
 <div class="section">
-  <div class="section-title">2. Sector → Sector Relation Graph (observed evidence only)</div>
+  <div class="section-title">2. Sector → Sector Relation Graph — Dynamic (observed evidence only)</div>
   <div class="section-note">
     Source: <code>granular_relation_edges.csv</code> ONLY — FR ZE2020 / PT Municipality / NL COROP
     observed evidence. NL gemeente proxy edges are structurally excluded from this graph (see Section 3).
@@ -435,28 +489,44 @@ def _render_html(**kw) -> str:
   <div class="warn-box">
     Style: solid = ROBUST_ORIGINAL, dashed = FINE_GRAIN_SUPPORTED, dotted/low-opacity = EXPLORATORY_FINE_GRAIN (not a training label).
     Colour: positive association = blue/green, negative association = red/orange. Width ∝ |β|.
+    🔁 = recurring (≥2 windows) · ⚠ = sign changes across windows · ⭐ = exclusive to one window.
   </div>
   <div class="controls">
-    <label>Country <select id="graph-country" onchange="renderGraph()">
+    <label>Country <select id="graph-country" onchange="renderGraph();renderRelationHeatmap()">
       <option value="ALL">All countries</option>
       <option value="FR">France</option>
       <option value="NL">Netherlands</option>
       <option value="PT">Portugal</option>
     </select></label>
-    <label>Region system <select id="graph-region-system" onchange="renderGraph()">
+    <label>Region system <select id="graph-region-system" onchange="renderGraph();renderRelationHeatmap()">
       <option value="ALL">All</option>
       <option value="ZE2020">ZE2020</option>
       <option value="COROP">COROP</option>
       <option value="MUNICIPALITY">Municipality</option>
     </select></label>
-    <label>Label class <select id="graph-label-class" onchange="renderGraph()">
+    <label>Label class <select id="graph-label-class" onchange="renderGraph();renderRelationHeatmap()">
       <option value="ALL">All</option>
       <option value="ROBUST_ORIGINAL">ROBUST_ORIGINAL</option>
       <option value="FINE_GRAIN_SUPPORTED">FINE_GRAIN_SUPPORTED</option>
       <option value="EXPLORATORY_FINE_GRAIN">EXPLORATORY_FINE_GRAIN</option>
     </select></label>
-    <label>Window <select id="graph-window" onchange="renderGraph()"><option value="ALL">All windows</option></select></label>
     <span id="edge-count-label" style="color:var(--muted);font-size:12px;"></span>
+    <span id="graph-sync-note" style="color:var(--robust);font-size:12px;"></span>
+  </div>
+  <div class="controls">
+    <label>Mode
+      <select id="graph-mode" onchange="updateWindowLabel();renderGraph();renderRelationHeatmap()">
+        <option value="current">Current window</option>
+        <option value="cumulative">Cumulative until window</option>
+        <option value="recurring">Recurring edges only</option>
+      </select>
+    </label>
+    <button id="play-pause-btn" onclick="togglePlay()">▶ Play</button>
+    <span style="display:flex;align-items:center;gap:6px;flex:1;min-width:220px;">
+      <input type="range" id="window-slider" min="0" max="0" value="0" step="1"
+        style="flex:1" oninput="onSliderInput()">
+      <span id="window-label" style="font-size:12px;color:var(--muted);min-width:90px;text-align:right"></span>
+    </span>
   </div>
   <div class="legend-row">
     <div class="legend-item"><div class="legend-dot" style="background:var(--pos)"></div>Positive</div>
@@ -473,6 +543,11 @@ def _render_html(**kw) -> str:
       <div id="edge-panel-content" style="display:none"></div>
     </div>
   </div>
+  <div class="section-note" style="margin-top:14px">
+    Mini heatmap: rows = source→target relation, columns = windows, colour = β sign/intensity
+    (the same data as the graph above, read across time).
+  </div>
+  <div class="card"><div id="relation-heatmap" style="height:360px"></div></div>
 </div>
 
 <!-- ── SECTION 3: Blocked proxy artifacts ─────────────────────────────── -->
@@ -543,7 +618,10 @@ const NODE_POS = {kw['node_pos_js']};
 const SECTOR_LABELS = {kw['sector_labels_js']};
 const GEO_FR = {kw['geo_fr_js']};
 const GEO_NL = {kw['geo_nl_js']};
-const GEO = {{FR: GEO_FR, NL: GEO_NL}};
+const GEO_PT = {kw['geo_pt_js']};
+const GEO = {{FR: GEO_FR, NL: GEO_NL, PT: GEO_PT}};
+const MAPPED_SOURCES = ['FR','NL','PT'];
+const PT_MAP_STATUS = {json.dumps(kw['pt_map_status'])};
 const RELATION_EDGES = {kw['relation_edges_js']};
 const BLOCKED_EDGES = {kw['blocked_edges_js']};
 const MANIFEST = {kw['manifest_js']};
@@ -551,10 +629,14 @@ const MAP_CONFIG = {kw['map_config_js']};
 const TABLE_CONFIG = {kw['table_config_js']};
 const LABEL_COUNTS = {kw['label_counts_js']};
 const CSV_CHECKSUMS = {kw['csv_checksums_js']};
+const ALL_WINDOWS = {kw['all_windows_js']};
 const N_OBSERVED_RELATION_EDGES = {kw['n_observed_relation_edges']};
 const N_PROXY_CONTEXT_ROWS = {kw['n_proxy_context_rows']};
 const N_BLOCKED = {kw['n_blocked']};
 const N_TERRITORY_ROWS = {kw['n_territory_rows']};
+
+let PLAY_INTERVAL = null;
+let HIGHLIGHT_SECTOR = null;
 
 const SECTORS = {json.dumps(SECTORS_ORDER)};
 const STATE_COLORS = {{1:'#26a69a', 0:'#9aa4bf', '-1':'#ef5350'}};
@@ -625,11 +707,35 @@ function handleSourceChange() {{
   const source = document.getElementById('map-source').value;
   populateYearOptions(source);
   renderTerritoryView();
+  // Part D.1: selecting a country on the map filters the relation graph.
+  // NL_GEMEENTE has no relation-graph evidence (context only); leave the
+  // graph's country filter untouched in that case, but show a note.
+  const syncNote = document.getElementById('graph-sync-note');
+  if (MAPPED_SOURCES.includes(source) || source === 'NL') {{
+    const graphCountrySel = document.getElementById('graph-country');
+    if (['FR','NL','PT'].includes(source)) {{
+      graphCountrySel.value = source;
+      renderGraph();
+      syncNote.textContent = 'synced to map: ' + source;
+    }}
+  }} else if (source === 'NL_GEMEENTE') {{
+    syncNote.textContent = 'NL gemeente proxy has no relation-graph evidence (context only)';
+  }}
+}}
+
+function handleMapSectorChange() {{
+  // Part D.2: selecting a sector on the map highlights its incoming/outgoing
+  // edges in the relation graph.
+  const sector = document.getElementById('map-sector').value;
+  HIGHLIGHT_SECTOR = sector === 'ALL' ? null : sector;
+  renderTerritoryView();
+  renderGraph();
 }}
 
 function renderTerritoryView() {{
   const source = document.getElementById('map-source').value;
-  const isMapped = source === 'FR' || source === 'NL';
+  const isMapped = MAPPED_SOURCES.includes(source) && GEO[source] && GEO[source].features
+    && GEO[source].features.length > 0;
   document.getElementById('map-card').innerHTML = isMapped
     ? '<div id="map-plot" style="height:520px"></div>'
     : '<div class="scroll-table"><table class="dense" id="territory-table"><thead><tr>'
@@ -638,7 +744,11 @@ function renderTerritoryView() {{
       + '<th onclick="sortTable(4)">state</th><th onclick="sortTable(5)">velocity</th>'
       + '<th>evidence_type</th><th>allowed_use</th></tr></thead><tbody></tbody></table></div>';
 
-  const cfg = MAP_CONFIG[source] || TABLE_CONFIG[source];
+  if (MAPPED_SOURCES.includes(source) && !isMapped) {{
+    document.getElementById('map-card').insertAdjacentHTML('afterbegin',
+      '<div class="warn-box">Geometry unavailable for this source — showing table fallback instead of a fabricated map.</div>');
+  }}
+
   const badgeClass = (TABLE_CONFIG[source]||{{}}).badge === 'proxy' || source==='NL_GEMEENTE' ? 'badge-proxy' : 'badge-observed';
   const badgeText = badgeClass === 'badge-proxy' ? 'proxy/context — not valid for relation labels' : 'observed';
   document.getElementById('map-evidence-badge').innerHTML = `<span class="badge ${{badgeClass}}">${{badgeText}}</span>`;
@@ -814,29 +924,88 @@ function showTerritorySidePanel(source, cd) {{
     {{responsive:true, displayModeBar:false}});
 }}
 
-// ── Section 2: Sector graph ──────────────────────────────────────────────
+// ── Section 2: Sector graph — dynamic (timeline / modes / heatmap) ──────
 function populateWindowOptions() {{
-  const windows = [...new Set(RELATION_EDGES.map(e=>e.window))].sort();
-  const sel = document.getElementById('graph-window');
-  sel.innerHTML = '<option value="ALL">All windows</option>' + windows.map(w=>`<option value="${{w}}">${{w}}</option>`).join('');
+  const slider = document.getElementById('window-slider');
+  slider.min = 0;
+  slider.max = Math.max(0, ALL_WINDOWS.length - 1);
+  slider.value = ALL_WINDOWS.length - 1;  // default: most recent window
+  updateWindowLabel();
+}}
+
+function currentWindow() {{
+  const idx = parseInt(document.getElementById('window-slider').value);
+  return ALL_WINDOWS[idx] || ALL_WINDOWS[ALL_WINDOWS.length - 1];
+}}
+
+function updateWindowLabel() {{
+  const mode = document.getElementById('graph-mode').value;
+  const w = currentWindow();
+  document.getElementById('window-label').textContent =
+    (mode === 'cumulative' ? '≤ ' : '') + (w || 'n/a');
+}}
+
+function onSliderInput() {{
+  updateWindowLabel();
+  renderGraph();
+  renderRelationHeatmap();
+}}
+
+function togglePlay() {{
+  const btn = document.getElementById('play-pause-btn');
+  if (PLAY_INTERVAL) {{
+    clearInterval(PLAY_INTERVAL);
+    PLAY_INTERVAL = null;
+    btn.textContent = '▶ Play';
+    return;
+  }}
+  btn.textContent = '⏸ Pause';
+  PLAY_INTERVAL = setInterval(() => {{
+    const slider = document.getElementById('window-slider');
+    let idx = parseInt(slider.value) + 1;
+    if (idx > parseInt(slider.max)) idx = 0;
+    slider.value = idx;
+    onSliderInput();
+  }}, 1100);
+}}
+
+function edgesForMode(filtered) {{
+  const mode = document.getElementById('graph-mode').value;
+  const w = currentWindow();
+  if (!w) return [];
+  const wEnd = parseInt(w.split('-')[1]);
+  if (mode === 'current') {{
+    return filtered.filter(e => e.window === w);
+  }}
+  if (mode === 'cumulative') {{
+    return filtered.filter(e => e.window_end <= wEnd);
+  }}
+  // recurring: edges that recur (>=2 windows) among those visible up to the
+  // current slider position; one row per pair, using its latest occurrence.
+  const upTo = filtered.filter(e => e.window_end <= wEnd && e.is_recurring);
+  const latestByPair = {{}};
+  upTo.forEach(e => {{
+    const key = e.country + '|' + e.source_sector + '|' + e.target_sector;
+    if (!latestByPair[key] || e.window_end > latestByPair[key].window_end) latestByPair[key] = e;
+  }});
+  return Object.values(latestByPair);
 }}
 
 function renderGraph() {{
   const country = document.getElementById('graph-country').value;
   const regionSystem = document.getElementById('graph-region-system').value;
   const labelClass = document.getElementById('graph-label-class').value;
-  const window_ = document.getElementById('graph-window').value;
 
-  const filtered = RELATION_EDGES.filter(e => {{
+  const baseFiltered = RELATION_EDGES.filter(e => {{
     if (country !== 'ALL' && e.country !== country) return false;
     if (regionSystem !== 'ALL' && e.region_system !== regionSystem) return false;
     if (labelClass !== 'ALL' && e.label_class !== labelClass) return false;
-    if (window_ !== 'ALL' && e.window !== window_) return false;
     return true;
   }});
+  const filtered = edgesForMode(baseFiltered);
 
   const pairIdx = {{}};
-  const annotations = [], edgeTraces = [];
+  const annotations = [], edgeTraces = [], markerX = [], markerY = [], markerText = [], markerSym = [];
   filtered.forEach((e,i) => {{
     const sp = NODE_POS[e.source_sector], tp = NODE_POS[e.target_sector];
     if (!sp || !tp) return;
@@ -849,40 +1018,58 @@ function renderGraph() {{
     const px=-uy*off, py=ux*off;
     const ax=sp.x+ux*r+px, ay=sp.y+uy*r+py, x=tp.x-ux*r+px, y=tp.y-uy*r+py;
     const col = e.sign==='+' ? '#26a69a' : '#ef5350';
-    const w = 1+Math.abs(e.beta||0)*10;
+    const isHighlighted = !HIGHLIGHT_SECTOR || e.source_sector===HIGHLIGHT_SECTOR || e.target_sector===HIGHLIGHT_SECTOR;
+    const w = (1+Math.abs(e.beta||0)*10) * (isHighlighted ? 1 : 0.6);
     const dash = e.label_class==='ROBUST_ORIGINAL' ? 'solid' : e.label_class==='FINE_GRAIN_SUPPORTED' ? 'dash' : 'dot';
-    const opacity = e.label_class==='ROBUST_ORIGINAL' ? 0.95 : e.label_class==='FINE_GRAIN_SUPPORTED' ? 0.8 : 0.45;
+    let opacity = e.label_class==='ROBUST_ORIGINAL' ? 0.95 : e.label_class==='FINE_GRAIN_SUPPORTED' ? 0.8 : 0.45;
+    if (!isHighlighted) opacity *= 0.25;
     edgeTraces.push({{
       x:[ax,x,null], y:[ay,y,null], mode:'lines', type:'scatter',
       line:{{color:col,width:w,dash}}, opacity,
       hovertemplate:`<b>${{e.source_sector}}→${{e.target_sector}}</b> (${{e.country}}/${{e.region_system}})<br>`+
         `β=${{e.beta.toFixed(3)}} sign=${{e.sign}}<br>q_fdr=${{e.q_fdr.toFixed(3)}} bss=${{e.bss.toFixed(3)}}<br>`+
         `window=${{e.window}}<br>label_class=${{e.label_class}}<br>evidence_type=${{e.evidence_type}}<br>`+
-        `allowed_for_training_label=${{e.allowed_for_training_label}}<extra></extra>`,
+        `allowed_for_training_label=${{e.allowed_for_training_label}}<br>`+
+        `n_windows=${{e.n_windows}} recurring=${{e.is_recurring}} sign_changes=${{e.sign_changes}}<extra></extra>`,
       customdata:[i], showlegend:false, name:key,
     }});
     annotations.push({{x,y,ax,ay,xref:'x',yref:'y',axref:'x',ayref:'y',
       showarrow:true,arrowhead:2,arrowsize:1.1,arrowwidth:Math.max(1.3,w*0.6),
       arrowcolor:col,opacity}});
+    // Dynamics marker at the edge midpoint: recurring / sign-change / exclusive
+    let sym = null;
+    if (e.sign_changes) sym = '⚠';
+    else if (e.is_recurring) sym = '🔁';
+    else if (e.is_exclusive) sym = '⭐';
+    if (sym) {{
+      markerX.push((ax+x)/2); markerY.push((ay+y)/2);
+      markerText.push(sym); markerSym.push(sym);
+    }}
   }});
 
   const nodeTrace = {{
     x:SECTORS.map(s=>NODE_POS[s].x), y:SECTORS.map(s=>NODE_POS[s].y),
     mode:'markers+text', type:'scatter',
-    marker:{{size:28,color:'#20253a',line:{{color:'#4aa3ff',width:1.5}}}},
+    marker:{{size:28,color:SECTORS.map(s=>s===HIGHLIGHT_SECTOR?'#2d3a5c':'#20253a'),
+      line:{{color:'#4aa3ff',width:1.5}}}},
     text:SECTORS, textfont:{{size:10,color:'#eef2ff'}}, textposition:'middle center',
     hovertext:SECTORS.map(s=>'<b>'+s+'</b><br>'+(SECTOR_LABELS[s]||s)),
     hovertemplate:'%{{hovertext}}<extra></extra>', name:'sectors',
   }};
+  const markerTrace = {{
+    x:markerX, y:markerY, mode:'text', type:'scatter', text:markerText,
+    textfont:{{size:13}}, hoverinfo:'skip', showlegend:false,
+  }};
 
-  document.getElementById('edge-count-label').textContent = filtered.length + ' edge(s)';
+  document.getElementById('edge-count-label').textContent = filtered.length + ' edge(s) — ' +
+    document.getElementById('graph-mode').value + ' @ ' + (currentWindow()||'n/a');
   const layout = Object.assign({{}}, BASE_LAYOUT, {{
     xaxis:{{range:[-1.6,1.6],showgrid:false,zeroline:false,showticklabels:false}},
     yaxis:{{range:[-1.45,1.45],showgrid:false,zeroline:false,showticklabels:false,scaleanchor:'x'}},
     annotations, showlegend:false, hovermode:'closest',
     margin:{{l:10,r:10,t:10,b:10}}, paper_bgcolor:'#171b2d', plot_bgcolor:'#171b2d',
   }});
-  Plotly.newPlot('sector-graph', [...edgeTraces, nodeTrace], layout, {{responsive:true, displayModeBar:false}});
+  Plotly.newPlot('sector-graph', [...edgeTraces, markerTrace, nodeTrace], layout, {{responsive:true, displayModeBar:false}});
   document.getElementById('sector-graph').on('plotly_click', function(data) {{
     const pt = data.points[0];
     if (pt.data.customdata) showEdgeDetail(filtered[pt.data.customdata[0]]);
@@ -895,20 +1082,103 @@ function showEdgeDetail(e) {{
     : e.label_class==='FINE_GRAIN_SUPPORTED' ? '<span class="badge badge-fine">FINE_GRAIN_SUPPORTED</span>'
     : '<span class="badge badge-explor">EXPLORATORY_FINE_GRAIN</span>';
   const signBadge = e.sign==='+' ? '<span class="badge badge-pos">Positive ↑</span>' : '<span class="badge badge-neg">Negative ↓</span>';
+
+  // Part C.6: all windows where this (country, pair) appears
+  const allOccurrences = RELATION_EDGES.filter(o =>
+    o.country===e.country && o.source_sector===e.source_sector && o.target_sector===e.target_sector
+  ).sort((a,b)=>a.window_start-b.window_start);
+  const windowRows = allOccurrences.map(o =>
+    `<tr><td>${{o.window}}</td><td>${{o.beta.toFixed(4)}}</td><td>${{o.q_fdr.toFixed(3)}}</td>`+
+    `<td>${{o.bss.toFixed(3)}}</td><td>${{o.label_class}}</td></tr>`).join('');
+
+  // Countries where this sector pair appears (any region system)
+  const countriesForPair = [...new Set(RELATION_EDGES
+    .filter(o => o.source_sector===e.source_sector && o.target_sector===e.target_sector)
+    .map(o => o.country + '/' + o.region_system))];
+
+  // Part D.3: territory-state context for source/target sector in this
+  // country+region_system at the edge's window end year — NOT an edge-specific
+  // territorial attribution, only aggregate context.
+  const territoryCtx = territoryStateSummary(e.country, e.region_system, e.window_end);
+
   document.getElementById('edge-panel-empty').style.display = 'none';
   const content = document.getElementById('edge-panel-content');
   content.style.display = 'block';
   content.innerHTML = `
     <h3>${{e.source_sector}} → ${{e.target_sector}}</h3>
-    <div style="margin:8px 0">${{lcBadge}} ${{signBadge}}</div>
+    <div style="margin:8px 0">${{lcBadge}} ${{signBadge}}
+      ${{e.is_recurring?'<span class="badge badge-robust">🔁 recurring</span>':''}}
+      ${{e.sign_changes?'<span class="badge badge-neg">⚠ sign changes</span>':''}}
+      ${{e.is_exclusive?'<span class="badge badge-explor">⭐ exclusive</span>':''}}
+    </div>
     <div class="side-field"><span class="lbl">Country / system</span><span>${{e.country}} / ${{e.region_system}}</span></div>
-    <div class="side-field"><span class="lbl">beta</span><span>${{e.beta.toFixed(4)}}</span></div>
+    <div class="side-field"><span class="lbl">beta (this window)</span><span>${{e.beta.toFixed(4)}}</span></div>
     <div class="side-field"><span class="lbl">q_fdr</span><span>${{e.q_fdr.toFixed(4)}}</span></div>
     <div class="side-field"><span class="lbl">bss</span><span>${{e.bss.toFixed(3)}}</span></div>
     <div class="side-field"><span class="lbl">window</span><span>${{e.window}}</span></div>
     <div class="side-field"><span class="lbl">evidence_type</span><span style="font-size:10px">${{e.evidence_type}}</span></div>
     <div class="side-field"><span class="lbl">allowed_for_training_label</span><span>${{e.allowed_for_training_label}}</span></div>
+    <div class="side-field"><span class="lbl">Countries (any system)</span><span style="font-size:10px">${{countriesForPair.join(', ')}}</span></div>
+    <h3 style="margin-top:10px">Per-window history</h3>
+    <table class="dense"><thead><tr><th>window</th><th>beta</th><th>q_fdr</th><th>bss</th><th>label_class</th></tr></thead>
+    <tbody>${{windowRows}}</tbody></table>
+    <h3 style="margin-top:10px">Territory-state context (${{e.country}}/${{e.region_system}}, ${{e.window_end}})</h3>
+    <div class="section-note" style="margin-bottom:4px">Aggregate territory states for the source/target sectors —
+    context only, not a claim that this edge is localised to specific territories.</div>
+    ${{territoryCtx}}
   `;
+}}
+
+function territoryStateSummary(country, regionSystem, year) {{
+  const countryData = TERRITORY_DATA[country] || {{}};
+  const meta = REGION_META[country] || {{}};
+  const sectors = [...new Set(RELATION_EDGES
+    .filter(o=>o.country===country)
+    .flatMap(o=>[o.source_sector,o.target_sector]))];
+  const rows = sectors.map(s => {{
+    const counts = {{GROWTH:0, STAGNATION:0, DECLINE:0, INSUFFICIENT:0}};
+    Object.keys(countryData).forEach(rid => {{
+      if ((meta[rid]||{{}}).region_system !== regionSystem) return;
+      const cell = (countryData[rid][s]||{{}})[year];
+      if (!cell) {{ counts.INSUFFICIENT++; return; }}
+      const label = STATE_LABELS[cell[1]] || 'INSUFFICIENT';
+      counts[label] = (counts[label]||0) + 1;
+    }});
+    return `<tr><td>${{s}}</td><td class="state-growth">${{counts.GROWTH}}</td>`+
+      `<td class="state-decline">${{counts.DECLINE}}</td><td class="state-stagnation">${{counts.STAGNATION}}</td>`+
+      `<td class="state-insufficient">${{counts.INSUFFICIENT}}</td></tr>`;
+  }}).join('');
+  return `<table class="dense"><thead><tr><th>sector</th><th>GROWTH</th><th>DECLINE</th><th>STAGNATION</th><th>n/a</th></tr></thead><tbody>${{rows}}</tbody></table>`;
+}}
+
+function renderRelationHeatmap() {{
+  const country = document.getElementById('graph-country').value;
+  const regionSystem = document.getElementById('graph-region-system').value;
+  const labelClass = document.getElementById('graph-label-class').value;
+  const filtered = RELATION_EDGES.filter(e => {{
+    if (country !== 'ALL' && e.country !== country) return false;
+    if (regionSystem !== 'ALL' && e.region_system !== regionSystem) return false;
+    if (labelClass !== 'ALL' && e.label_class !== labelClass) return false;
+    return true;
+  }});
+  const pairs = [...new Set(filtered.map(e=>e.country+': '+e.source_sector+'→'+e.target_sector))].sort();
+  const z = pairs.map(p => ALL_WINDOWS.map(w => {{
+    const [c, st] = p.split(': ');
+    const [s,t] = st.split('→');
+    const match = filtered.find(e=>e.country===c && e.source_sector===s && e.target_sector===t && e.window===w);
+    return match ? match.beta : null;
+  }}));
+  const text = pairs.map((p,ri) => ALL_WINDOWS.map((w,ci) => z[ri][ci]!=null ? `${{p}}<br>${{w}}<br>β=${{z[ri][ci].toFixed(3)}}` : ''));
+  const trace = {{
+    type:'heatmap', x: ALL_WINDOWS, y: pairs, z, text, hovertemplate:'%{{text}}<extra></extra>',
+    colorscale:[[0,'#ef5350'],[0.5,'#171b2d'],[1,'#26a69a']], zmid:0,
+    colorbar:{{title:'β', tickfont:{{color:'#eef2ff',size:10}}, thickness:12}},
+  }};
+  const layout = Object.assign({{}}, BASE_LAYOUT, {{
+    margin:{{l:140,r:20,t:10,b:60}},
+    xaxis:{{tickangle:-45, tickfont:{{size:9}}}}, yaxis:{{tickfont:{{size:9}}, automargin:true}},
+  }});
+  Plotly.newPlot('relation-heatmap', [trace], layout, {{responsive:true, displayModeBar:false}});
 }}
 
 // ── Section 3: Blocked proxy table ──────────────────────────────────────
@@ -934,6 +1204,7 @@ populateYearOptions('FR');
 renderTerritoryView();
 populateWindowOptions();
 renderGraph();
+renderRelationHeatmap();
 renderBlockedTable();
 </script>
 </body>

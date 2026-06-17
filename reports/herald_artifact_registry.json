@@ -534,21 +534,40 @@
     },
     {
       "id": "OBSERVATORY_V04_GRANULAR_DASHBOARD",
-      "decision": "DEC-065",
+      "decision": "DEC-065 / Observatory v0.4.1 visual upgrade",
       "date": "2026-06-17",
-      "description": "Self-contained HTML dashboard for the granular FR/PT/NL Observatory v0.4. Map (FR ZE2020 + NL COROP choropleth; PT Municipality + NL gemeente proxy table fallback), relation graph (granular_relation_edges.csv ONLY, NL gemeente proxy structurally absent), blocked proxy artifacts panel (121 edges, non-trainable), evidence/export panel.",
+      "description": "Self-contained HTML dashboard for the granular FR/PT/NL Observatory v0.4.1. Map: FR ZE2020 + NL COROP + PT Municipality (278/278, real choropleth as of v0.4.1) + NL gemeente proxy table fallback. Relation graph (granular_relation_edges.csv ONLY, NL gemeente proxy structurally absent) is now dynamic: timeline slider, play/pause, 3 modes (current/cumulative/recurring), recurring/sign-change/exclusive markers, per-window edge history, relation x window heatmap. Map<->graph linking (country sync, sector highlight, edge-click territory context). Blocked proxy artifacts panel (121 edges, non-trainable), evidence/export panel.",
       "files": [
         "reports/dashboards/herald_observatory_v04_granular_dashboard.html"
       ],
       "scripts": [
         "src/data/european_panel/build_observatory_v04_dashboard.py"
       ],
-      "tests": "tests/test_observatory_v04_dashboard.py (41/41 PASS)",
+      "tests": "tests/test_observatory_v04_dashboard.py (41/41 PASS) + tests/test_observatory_v041_visual_upgrade.py (41/41 PASS)",
       "status": "ACTIVE",
-      "size_mb": 9.0,
+      "size_mb": 10.0,
       "plotly_dependency": "local_embedded",
-      "claim_authorized": "Visual exploration of FR/PT/NL granular territory state and observed sector relations. NL gemeente proxy territory context with explicit proxy/context badge. Blocked proxy edges visible for audit only.",
-      "claim_forbidden": "Treating NL gemeente proxy edges or table rows as relation labels or observed evidence. Causal language. Modifying without re-running tests/test_observatory_v04_dashboard.py."
+      "claim_authorized": "Visual exploration of FR/PT/NL granular territory state (incl. PT real choropleth) and observed sector relations with temporal dynamics. NL gemeente proxy territory context with explicit proxy/context badge. Blocked proxy edges visible for audit only.",
+      "claim_forbidden": "Treating NL gemeente proxy edges or table rows as relation labels or observed evidence. Causal language. Treating edge-click territory-state context as edge-specific territorial attribution. Modifying without re-running tests/test_observatory_v04_dashboard.py and tests/test_observatory_v041_visual_upgrade.py."
+    },
+    {
+      "id": "PT_MUNICIPALITY_GEOMETRY",
+      "decision": "Observatory v0.4.1 visual upgrade",
+      "date": "2026-06-17",
+      "description": "Continental Portugal municipality (concelho) boundary geometry, 278/278 matched to the PT panel's 7-digit geocods by normalised name. Source: geoapi.pt (redistributes DGT/CAOP municipal boundaries; GeoJSON properties Dicofre/Concelho/Distrito match the official CAOP schema; spot-verified Dicofre=1006 for Caldas da Rainha equals GISCO LAU_ID prefix). Documented fallback: Eurostat/GISCO LAU 2021 freguesia-level dissolve by LAU_ID[:4]==Dicofre. Simplified 0.001 deg (29.7MB -> 1.18MB).",
+      "files": [
+        "data/processed/geometries/pt_municipalities_continental.geojson",
+        "data/processed/geometries/pt_municipalities_continental_manifest.json"
+      ],
+      "scripts": [
+        "src/data/european_panel/build_pt_municipality_geometry.py"
+      ],
+      "tests": "tests/test_observatory_v041_visual_upgrade.py::TestPartAPtGeometry (13 tests PASS)",
+      "status": "COMPLETE_278_278",
+      "size_mb": 1.18,
+      "raw_cache": "data/external/portugal/geometry/raw/ (181 MB, gitignored, regenerable)",
+      "claim_authorized": "PT continental municipality choropleth mapping in the Observatory v0.4.1 dashboard. Reproducible via the documented builder script (idempotent, caches raw fetches).",
+      "claim_forbidden": "Using for Acores/Madeira (excluded by construction). Treating geoapi.pt panel_id as equivalent to the GISCO Dicofre code (crosswalk is name-based, not code-based). Fabricating geometry if coverage regresses below 278/278 — the dashboard must fall back to table view instead."
     }
   ]
 }
