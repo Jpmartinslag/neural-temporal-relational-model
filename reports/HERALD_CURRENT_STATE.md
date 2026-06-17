@@ -1,5 +1,5 @@
 # HERALD Current State
-**Updated:** 2026-06-16 (DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. Threshold 0.09 supplementary tier; original 0.10 unchanged. 43/43 tests PASS. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
+**Updated:** 2026-06-17 (DEC-065 COMPLETE — NL_GEMEENTE_PROXY_PHASE7_BLOCKED. Structural validity defect found: stock-share weighting in proxy method injects cross-sector correlation unrelated to births precedence, inflating promoted edges 15x vs COROP observed (8→121). 71/71 tests PASS; verdict manually overridden from automated SUPPORTED — see HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md. DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
 **Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-049), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
@@ -138,6 +138,24 @@
 **Policy:** `data/processed/phase7_threshold_calibration/fine_grain_label_policy.json`
 
 **Next:** DEC-065 (NL gemeente proxy, now authorised); DEC-067 (FR/PT label export).
+
+---
+
+## DEC-065 — NL Gemeente Proxy Phase 7 (2026-06-17)
+
+**Status:** `NL_GEMEENTE_PROXY_PHASE7_BLOCKED` (manual override). 71/71 tests PASS. HPC job 7475756 (252/252 complete).
+
+- **Automated gate-count verdict would have been `SUPPORTED`** (121 promoted, 97 nominally COVID-robust, 7/8 COROP pairs preserved) — but this is overridden.
+- **Critical structural finding:** DEC-063 proxy method (`estimated_births_gemeente = corop_births × stock_share`) injects cross-sector-correlated noise unrelated to births precedence. Decomposition: `share_velocity` coefficient (13.0) ~10x larger than `corop_velocity` coefficient (1.33), R²=0.635. `share_velocity` cross-sector correlation 0.34-0.82 (general local stock co-movement, e.g. gentrification — not births dynamics).
+- This explains the implausible 15x jump in promoted edges (8 COROP observed → 121 gemeente proxy), opposite of the ecological-fragmentation pattern (finer units → fewer effects) confirmed in DEC-064/066.
+- **None of the 121 promoted/97 COVID-robust gemeente edges may be used as DEC-066 training labels under any tier.**
+- NL COROP (8 promoted, 3 COVID-robust, observed) remains the valid NL baseline.
+
+**Artefacts:** `data/processed/phase7_nl_gemeente_proxy/results/` (all_edges.csv, decision.json, structural_validity_diagnostic.json), `nl_corop_vs_gemeente_proxy_comparison.csv`, `nl_gemeente_proxy_label_summary.json`
+
+**Full audit:** `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md`
+
+**Next:** DEC-065b (proposed) — re-specify gemeente regression with COROP-clustered SEs or COROP×year FE before re-testing. DEC-068 (cross-country granular training) must exclude NL gemeente proxy edges, limit NL contribution to COROP scale. DEC-067 (FR/PT label export, unaffected by this finding) remains open.
 
 ---
 

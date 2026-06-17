@@ -1,0 +1,31 @@
+{
+  "dec": "DEC-065",
+  "verdict": "NL_GEMEENTE_PROXY_PHASE7_BLOCKED",
+  "verdict_override_reason": "STOCK_SHARE_INDUCED_CROSS_SECTOR_CORRELATION \u2014 see structural_validity_diagnostic.json. Raw merge script computed NL_GEMEENTE_PROXY_PHASE7_SUPPORTED from gate counts alone; that automated verdict is INVALID because the proxy disaggregation method (stock-share weighting) injects structural cross-sector correlation unrelated to sector birth-growth ordering, inflating promoted edges 8->121 vs COROP observed. n_samples>=60 and q_fdr<0.05 are satisfied but observations are not independent within COROP.",
+  "automated_verdict_before_override": "NL_GEMEENTE_PROXY_PHASE7_SUPPORTED",
+  "country": "NL",
+  "region_system": "GEMEENTE_PROXY",
+  "evidence_type": "proxy_disaggregated_by_stock_share",
+  "total_tasks": 252,
+  "total_edges_raw": 2016,
+  "promoted_main_count": 121,
+  "covid_robust_count": 97,
+  "n4_corop_pairs_preserved": 7,
+  "n4_pass": true,
+  "gate_thresholds": {
+    "q_fdr": 0.05,
+    "min_abs_beta": 0.1,
+    "min_delta_r2": 0.005,
+    "min_sign_stability": 0.7,
+    "min_samples": 60
+  },
+  "label_policy": "DEC-066",
+  "label_counts": {
+    "ROBUST_ORIGINAL": 121,
+    "EXPLORATORY_FINE_GRAIN": 99,
+    "FINE_GRAIN_SUPPORTED": 27,
+    "REJECTED_OR_WEAK": 2
+  },
+  "generated_at": "2026-06-17T18:03:27.481148+00:00",
+  "warning": "All results carry evidence_type=proxy_disaggregated_by_stock_share. This is NOT observed births. Results must not be pooled with observed data without sensitivity analysis excluding proxy."
+}

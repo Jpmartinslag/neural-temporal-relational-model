@@ -475,6 +475,35 @@
       "status": "SMOKE_COMPLETE — READY_FOR_HPC",
       "claim_authorized": "PT municipal pipeline validated. n_samples sufficient. Smoke: 56/56 pares válidos, 0 promovidos. Ecological fragmentation confirmed: |β| smaller at municipal vs NUTS3.",
       "claim_forbidden": "Promoted PT municipal relations (full run not complete). Causal claims. Threshold change without new DEC. HPC launch without authorisation."
+    },
+    {
+      "id": "NL_GEMEENTE_PROXY_PHASE7_BLOCKED",
+      "decision": "DEC-065",
+      "date": "2026-06-17",
+      "description": "NL gemeente proxy (355 gemeenten, evidence_type=proxy_disaggregated_by_stock_share) Phase 7 sector precedence. HPC job 7475756, 252/252 tasks complete. Automated gate-count verdict would be SUPPORTED (121 promoted, 97 nominally COVID-robust vs NL COROP's 8/3) but MANUALLY OVERRIDDEN to BLOCKED: structural validity diagnostic found the stock-share weighting term in the DEC-063 proxy method injects cross-sector-correlated noise (share_velocity coefficient ~10x corop_velocity coefficient; cross-sector correlation 0.34-0.82) unrelated to births precedence, explaining the implausible 15x inflation in promoted edges.",
+      "files": [
+        "data/processed/phase7_nl_gemeente_proxy/nl_gemeente_phase7_panel.csv",
+        "data/processed/phase7_nl_gemeente_proxy/nl_gemeente_phase7_panel_manifest.json",
+        "data/processed/phase7_nl_gemeente_proxy/hpc_task_manifest.json",
+        "data/processed/phase7_nl_gemeente_proxy/results/all_edges.csv",
+        "data/processed/phase7_nl_gemeente_proxy/results/latest.csv",
+        "data/processed/phase7_nl_gemeente_proxy/results/covid_robust_edges.csv",
+        "data/processed/phase7_nl_gemeente_proxy/results/decision.json",
+        "data/processed/phase7_nl_gemeente_proxy/results/structural_validity_diagnostic.json",
+        "data/processed/phase7_nl_gemeente_proxy/nl_corop_vs_gemeente_proxy_comparison.csv",
+        "data/processed/phase7_nl_gemeente_proxy/nl_gemeente_proxy_label_summary.json",
+        "hpc/phase7_sector_precedence/configs/nl_gemeente_proxy.json",
+        "hpc/phase7_sector_precedence/run_phase7_nl_gemeente_proxy_array.sbatch",
+        "reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md"
+      ],
+      "scripts": [
+        "src/data/european_panel/build_nl_gemeente_phase7_panel.py",
+        "src/modeles/real_world/merge_nl_gemeente_proxy_phase7.py"
+      ],
+      "tests": "tests/test_dec065_nl_gemeente_proxy_phase7.py (71/71 PASS)",
+      "status": "BLOCKED — structural validity defect documented",
+      "claim_authorized": "NL gemeente proxy panel construction valid (reaggregation PASS, leakage PASS). Structural validity diagnostic is reusable evidence against stock-share-weighted disaggregation for future country/sector proxy panels. NL COROP (observed, DEC-034/064) remains valid NL baseline.",
+      "claim_forbidden": "Using any of the 121 promoted / 97 COVID-robust gemeente proxy edges as DEC-066 training labels under any tier (ROBUST_ORIGINAL, FINE_GRAIN_SUPPORTED, EXPLORATORY_FINE_GRAIN). Pooling gemeente proxy edges with FR/PT/NL COROP in DEC-068 cross-country training. Treating proxy as observed births. Causal language."
     }
   ]
 }

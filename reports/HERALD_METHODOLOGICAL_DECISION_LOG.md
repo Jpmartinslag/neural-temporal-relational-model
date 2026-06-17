@@ -2606,3 +2606,73 @@ Gates P1-P10 pre-registered before observing results.
 - `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_DRAFT.md` (novo — draft, não autorizado)
 - `CODEX_MEMORY.md` (DEC-064 bullet)
 - `reports/HERALD_CURRENT_STATE.md` (updated)
+
+---
+
+## DEC-066 — Fine-Grain Threshold Calibration (2026-06-16)
+
+**Decision:** `FINE_GRAIN_THRESHOLD_POLICY_READY`
+**Gates:** C1-C10, 10/10 PASS | **Tests:** 43/43 PASS
+
+Calibrated a supplementary |β|≥0.09 FINE_GRAIN_SUPPORTED tier (requires bss≥0.80 plus
+COVID-robust OR ≥2 consecutive windows OR cross-country replication) and a non-training
+EXPLORATORY_FINE_GRAIN tier (0.07-0.09, bss≥0.90), using only FR ZE2020 and PT Municipal
+observed data (NL gemeente proxy explicitly excluded from calibration — pre-registered
+prohibition). Original ROBUST_ORIGINAL threshold 0.10 unchanged.
+
+Full report: `reports/HERALD_DEC066_FINE_GRAIN_THRESHOLD_CALIBRATION.md`.
+Policy: `data/processed/phase7_threshold_calibration/fine_grain_label_policy.json`.
+
+---
+
+## DEC-065 — NL Gemeente Proxy Phase 7 Sector Precedence (2026-06-17)
+
+**Decision:** `NL_GEMEENTE_PROXY_PHASE7_BLOCKED` (manual override of automated `SUPPORTED` verdict)
+**Gates:** N1-N10 — 71/71 tests PASS | **HPC:** job 7475756, 252/252 tasks COMPLETED
+
+**Context:** Following DEC-066 policy readiness, ran NL gemeente proxy (355 gemeenten,
+evidence_type=proxy_disaggregated_by_stock_share, DEC-063 panel) through Phase 7 sector
+precedence to test whether proxy disaggregation preserves the NL COROP observed signal
+and can enter the Observatory as proxy evidence.
+
+**HPC:** 252 tasks (14 windows × 2 scenarios × 9 source sectors) on meso, ~63-75s/task
+at smoke scale, 3h time limit, all 252/252 COMPLETED.
+
+**Raw automated result:** 121 promoted edges (35 unique pairs), 97 nominally COVID-robust
+— vs NL COROP observed baseline of 8 promoted / 3 COVID-robust. The merge script's
+gate-count logic alone would yield `NL_GEMEENTE_PROXY_PHASE7_SUPPORTED`.
+
+**Critical finding — manually overridden:** A structural validity diagnostic found that
+the DEC-063 proxy method (`estimated_births_gemeente = corop_births × stock_share`)
+injects cross-sector-correlated noise into gemeente velocity that is unrelated to any
+births-precedence relationship:
+- Decomposition regression `gm_velocity ~ corop_velocity + share_velocity`: R²=0.635,
+  coefficient on `share_velocity` (13.0) ~10x larger than on `corop_velocity` (1.33).
+- `share_velocity` (the proxy weighting term) has cross-sector correlation 0.34-0.82
+  across most A10 sectors — reflecting general local establishment-stock co-movement
+  (development/gentrification), not births dynamics.
+- This explains the implausible 15x jump in promoted edges going from COROP (observed)
+  to gemeente (proxy) for the same underlying NL births series — opposite of the
+  ecological-fragmentation pattern found in DEC-064/066 (finer units → fewer/smaller
+  effects, not more).
+
+**Verdict override:** `decision.json` and `nl_gemeente_proxy_label_summary.json` record
+both the automated verdict (`SUPPORTED`) and the overridden verdict (`BLOCKED`) with
+full reasoning. None of the 121 promoted edges may be used as DEC-066 training labels
+under any tier.
+
+**Consequence for DEC-068:** Cross-country granular training (FR+PT+NL) must exclude
+NL gemeente proxy edges; NL contribution limited to COROP scale (DEC-034/064) until a
+corrected proxy/regression specification (COROP-clustered SEs or COROP×year FE on the
+share term) is validated.
+
+**Ficheiros afectados:**
+- `hpc/phase7_sector_precedence/run_phase7_nl_gemeente_proxy_array.sbatch` (novo)
+- `hpc/phase7_sector_precedence/configs/nl_gemeente_proxy.json` (novo)
+- `src/modeles/real_world/merge_nl_gemeente_proxy_phase7.py` (novo)
+- `tests/test_dec065_nl_gemeente_proxy_phase7.py` (novo — 71/71 PASS)
+- `data/processed/phase7_nl_gemeente_proxy/results/` (all_edges.csv, latest.csv, covid_robust_edges.csv, decision.json, structural_validity_diagnostic.json)
+- `data/processed/phase7_nl_gemeente_proxy/nl_corop_vs_gemeente_proxy_comparison.csv` (novo)
+- `data/processed/phase7_nl_gemeente_proxy/nl_gemeente_proxy_label_summary.json` (novo)
+- `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md` (novo)
+- `reports/HERALD_CURRENT_STATE.md` (updated)

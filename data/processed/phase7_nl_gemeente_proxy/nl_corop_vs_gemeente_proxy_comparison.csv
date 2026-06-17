@@ -1,0 +1,9 @@
+source_sector,target_sector,corop_window,corop_expected_sign,corop_covid_robust,region_system,source,proxy_n_windows_p020,proxy_best_window,proxy_best_beta,proxy_sign_consistent,proxy_best_q_fdr,proxy_best_bss,evidence_type,proxy_source
+BE,MN,2009-2014,-,False,COROP,NL_COROP_observed,9,2007-2012,-0.15813935773359933,True,0.006000000000000001,1.0,proxy_disaggregated_by_stock_share,NL_GEMEENTE_PROXY
+BE,RU,2009-2014,-,False,COROP,NL_COROP_observed,9,2007-2012,-0.14183556348016962,True,0.006000000000000001,1.0,proxy_disaggregated_by_stock_share,NL_GEMEENTE_PROXY
+FZ,GI,2014-2019,+,True,COROP,NL_COROP_observed,12,2020-2025,0.08821768306049374,True,0.009000000000000001,1.0,proxy_disaggregated_by_stock_share,NL_GEMEENTE_PROXY
+FZ,RU,2014-2019,+,True,COROP,NL_COROP_observed,13,2014-2019,0.126291168368515,True,0.0051428571428571435,0.998,proxy_disaggregated_by_stock_share,NL_GEMEENTE_PROXY
+JZ,FZ,2014-2019,-,True,COROP,NL_COROP_observed,11,2013-2018,-0.11348016865999738,True,0.02,1.0,proxy_disaggregated_by_stock_share,NL_GEMEENTE_PROXY
+JZ,RU,2014-2019,-,False,COROP,NL_COROP_observed,10,2020-2025,-0.09229895687236615,True,0.005538461538461539,1.0,proxy_disaggregated_by_stock_share,NL_GEMEENTE_PROXY
+LZ,RU,2014-2019,+,False,COROP,NL_COROP_observed,8,2008-2013,-0.1412253839496993,False,0.006545454545454546,1.0,proxy_disaggregated_by_stock_share,NL_GEMEENTE_PROXY
+OQ,JZ,2014-2019,-,False,COROP,NL_COROP_observed,4,2017-2022,-0.07980924823024044,True,0.003428571428571429,0.986,proxy_disaggregated_by_stock_share,NL_GEMEENTE_PROXY

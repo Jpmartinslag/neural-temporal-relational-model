@@ -409,22 +409,37 @@ class TestN7Controls:
 # ─────────────────────────────────────────────────────────────────────────────
 
 class TestN8NoProxyOverclaim:
+    """Flags overclaim terms UNLESS immediately preceded by a negation
+    (e.g. 'NOT observed births', 'is not observed births') — those are
+    legitimate disclaimers, not overclaims."""
+
     OVERCLAIM_TERMS = [
         "observed births", "observed_births", "nascimentos observados",
         "direct observation", "census", "registro"
     ]
+    NEGATION_WINDOW = 12   # chars to look back for a negation marker
+    NEGATIONS = ["not ", "nao ", "n\\u00e3o "]
+
+    def _unnegated_hits(self, text: str) -> list[str]:
+        hits = []
+        for term in self.OVERCLAIM_TERMS:
+            idx = text.find(term.lower())
+            while idx != -1:
+                window = text[max(0, idx - self.NEGATION_WINDOW):idx]
+                if not any(neg in window for neg in self.NEGATIONS):
+                    hits.append(term)
+                idx = text.find(term.lower(), idx + 1)
+        return hits
 
     def test_label_summary_no_overclaim(self, label_summary):
         text = json.dumps(label_summary).lower()
-        for term in self.OVERCLAIM_TERMS:
-            assert term.lower() not in text, \
-                f"Overclaim term '{term}' found in label_summary"
+        hits = self._unnegated_hits(text)
+        assert not hits, f"Unnegated overclaim term(s) found in label_summary: {hits}"
 
     def test_decision_no_overclaim(self, decision):
         text = json.dumps(decision).lower()
-        for term in self.OVERCLAIM_TERMS:
-            assert term.lower() not in text, \
-                f"Overclaim term '{term}' found in decision.json"
+        hits = self._unnegated_hits(text)
+        assert not hits, f"Unnegated overclaim term(s) found in decision.json: {hits}"
 
     def test_label_summary_warns_proxy(self, label_summary):
         text = json.dumps(label_summary).lower()
