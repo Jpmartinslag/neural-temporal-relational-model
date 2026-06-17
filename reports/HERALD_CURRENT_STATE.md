@@ -1,5 +1,5 @@
 # HERALD Current State
-**Updated:** 2026-06-17 (DEC-065 COMPLETE — NL_GEMEENTE_PROXY_PHASE7_BLOCKED. Structural validity defect found: stock-share weighting in proxy method injects cross-sector correlation unrelated to births precedence, inflating promoted edges 15x vs COROP observed (8→121). 71/71 tests PASS; verdict manually overridden from automated SUPPORTED — see HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md. DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
+**Updated:** 2026-06-17 (DEC-065 CONSOLIDATED — NL_GEMEENTE_PROXY_PHASE7_BLOCKED, all 121 proxy edges INVALID_FOR_TRAINING_LABELS, NL COROP VALID_OBSERVED preserved. New `reports/HERALD_GRANULAR_EVIDENCE_POLICY.md` + Observatory v0.4 granular contract/exports ready: GRANULAR_OBSERVATORY_V04_DATA_READY, 159/159 tests PASS. DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
 **Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-049), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
@@ -155,7 +155,30 @@
 
 **Full audit:** `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md`
 
-**Next:** DEC-065b (proposed) — re-specify gemeente regression with COROP-clustered SEs or COROP×year FE before re-testing. DEC-068 (cross-country granular training) must exclude NL gemeente proxy edges, limit NL contribution to COROP scale. DEC-067 (FR/PT label export, unaffected by this finding) remains open.
+**Consolidation (2026-06-17):** All 121 gemeente proxy edges explicitly marked
+`INVALID_FOR_TRAINING_LABELS` (label_class=`BLOCKED_PROXY_ARTIFACT`,
+`allowed_for_training_label=false`). Artifact registry adds explicit
+`NL_GEMEENTE_PROXY_PHASE7_BLOCKED` (status=`BLOCKED`,
+relation_label_status=`INVALID_FOR_RELATION_LABELS`) and `NL_COROP_PHASE7`
+(status=`VALID_OBSERVED`) entries. New policy document
+`reports/HERALD_GRANULAR_EVIDENCE_POLICY.md` defines observed vs proxy evidence
+boundaries, label classes (`ROBUST_ORIGINAL`/`FINE_GRAIN_SUPPORTED`/
+`EXPLORATORY_FINE_GRAIN`/`BLOCKED_PROXY_ARTIFACT`/`INSUFFICIENT_EVIDENCE`), and
+language rules. Observatory v0.4 granular contract
+(`reports/HERALD_OBSERVATORY_V04_GRANULAR_CONTRACT.md`, 4 layers) + clean exports
+in `data/processed/herald_observatory_v04_granular/`:
+- `granular_territory_state_panel.csv` (142,650 rows: FR ZE2020 + PT Municipal +
+  NL COROP observed + NL gemeente proxy tagged `allowed_use=territory_state_context_only`)
+- `granular_relation_edges.csv` (20 rows: FR=9, NL COROP=8, PT Municipal=3 — NL
+  gemeente proxy structurally excluded)
+- `blocked_proxy_edges.csv` (121 rows, `BLOCKED_PROXY_ARTIFACT`)
+- `manifest.json` (checksums, DEC references, hard rules)
+
+159/159 tests pass (71 DEC-065 + 45 `test_observatory_v04_granular_evidence_policy.py`
++ 43 DEC-066). **Decision: `GRANULAR_OBSERVATORY_V04_DATA_READY`** — data layer
+complete and tested; dashboard build is a separate, larger task not yet authorised.
+
+**Next:** DEC-065b (proposed) — re-specify gemeente regression with COROP-clustered SEs or COROP×year FE before re-testing. DEC-068 (cross-country granular training) must exclude NL gemeente proxy edges, limit NL contribution to COROP scale. DEC-067 (FR/PT label export, unaffected by this finding) remains open. Observatory v0.4 dashboard build requires separate authorisation.
 
 ---
 

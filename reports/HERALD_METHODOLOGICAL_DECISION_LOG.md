@@ -2676,3 +2676,53 @@ share term) is validated.
 - `data/processed/phase7_nl_gemeente_proxy/nl_gemeente_proxy_label_summary.json` (novo)
 - `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md` (novo)
 - `reports/HERALD_CURRENT_STATE.md` (updated)
+
+---
+
+### DEC-065 — Consolidation Addendum (2026-06-17)
+
+Following the BLOCKED verdict above, this addendum consolidates the decision into a
+formal evidence policy and prepares the granular Observatory v0.4 data layer.
+
+- All 121 NL gemeente proxy edges explicitly re-marked `INVALID_FOR_TRAINING_LABELS`
+  (`label_class=BLOCKED_PROXY_ARTIFACT`, `allowed_for_training_label=false`,
+  `reason=stock_share_induced_artifact`) in
+  `data/processed/herald_observatory_v04_granular/blocked_proxy_edges.csv`.
+- `reports/herald_artifact_registry.json`: new explicit entry `NL_COROP_PHASE7`
+  (status=`VALID_OBSERVED`, relation_label_status=`VALID_OBSERVED`); existing
+  `NL_GEMEENTE_PROXY_PHASE7_BLOCKED` entry updated with
+  `relation_label_status=INVALID_FOR_RELATION_LABELS`,
+  `allowed_use=[territory_state_context_only]`. Status vocabulary extended with
+  `VALID_OBSERVED`, `BLOCKED`, `INVALID_FOR_TRAINING_LABELS`, `INVALID_FOR_RELATION_LABELS`.
+- New policy: `reports/HERALD_GRANULAR_EVIDENCE_POLICY.md` — defines which sources
+  (FR ZE2020 observed, PT Municipal observed, NL COROP observed) may feed relation
+  labels/training vs which (NL gemeente proxy) may only feed territory-state visual
+  context. Defines 5 label classes (adds `BLOCKED_PROXY_ARTIFACT` and
+  `INSUFFICIENT_EVIDENCE` to the DEC-066 taxonomy) and permitted/prohibited language.
+- New contract: `reports/HERALD_OBSERVATORY_V04_GRANULAR_CONTRACT.md` — 4 layers
+  (territory state / relation graph / comparison / recommendation readiness). NL
+  gemeente proxy carries a mandatory "proxy/context" badge in Layer 1 and is
+  structurally excluded from Layer 2 (relation graph).
+- New exporter: `src/data/european_panel/build_observatory_v04_granular_exports.py`
+  produces `data/processed/herald_observatory_v04_granular/`:
+  `granular_territory_state_panel.csv` (142,650 rows), `granular_relation_edges.csv`
+  (20 rows: FR=9, NL COROP=8, PT Municipal=3 — NL gemeente proxy absent by
+  construction, asserted in the builder), `blocked_proxy_edges.csv` (121 rows),
+  `manifest.json` (checksums + DEC references + hard rules).
+- New tests: `tests/test_observatory_v04_granular_evidence_policy.py` (45 tests) —
+  verifies NL gemeente proxy never appears in relation edges, blocked edges carry
+  `allowed_for_training_label=false`, DEC-066 labels applied correctly, no causal
+  language, manifest checksums match, FR/PT/NL COROP observed sources preserved.
+- **159/159 tests pass** (71 DEC-065 + 45 Observatory v0.4 policy + 43 DEC-066).
+- **Decision:** `GRANULAR_OBSERVATORY_V04_DATA_READY` — data/policy layer complete;
+  dashboard HTML build is a separate task requiring its own authorisation (DEC-014 rule).
+
+**Ficheiros afectados (addendum):**
+- `reports/HERALD_GRANULAR_EVIDENCE_POLICY.md` (novo)
+- `reports/HERALD_OBSERVATORY_V04_GRANULAR_CONTRACT.md` (novo)
+- `src/data/european_panel/build_observatory_v04_granular_exports.py` (novo)
+- `data/processed/herald_observatory_v04_granular/` (novo: 4 files)
+- `tests/test_observatory_v04_granular_evidence_policy.py` (novo — 45/45 PASS)
+- `reports/herald_artifact_registry.json` (updated: NL_COROP_PHASE7 added, status_vocabulary extended)
+- `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md` (updated: explicit markers added)
+- `reports/HERALD_CURRENT_STATE.md`, `CODEX_MEMORY.md`, `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` (updated)
