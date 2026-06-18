@@ -2900,3 +2900,208 @@ screenshots. Manual validation steps documented in
 - `tests/test_observatory_v041_visual_upgrade.py` (novo — 41/41 PASS)
 - `.gitignore` (added `data/external/portugal/geometry/raw/`)
 - `reports/herald_artifact_registry.json`, `reports/HERALD_CURRENT_STATE.md`, `CODEX_MEMORY.md` (updated)
+
+---
+
+## DEC-067 — Observatory v0.5 Narrative Presentation Layer (2026-06-17)
+
+**Status:** COMPLETE. Decision: `OBSERVATORY_V05_NARRATIVE_READY`.
+
+**CORRECTION (2026-06-17, same day, v0.5.1):** the product owner reviewed this
+milestone and rejected it as a polished MVP, not a complete-method presentation:
+English UI, the HERALD architecture explanation at the bottom of the page (after the
+map/KPIs), no integrated PT prediction despite the gap report saying it was closeable
+without HPC, no true geographic heatmap (only a placeholder string for "similar
+dynamics"), the sector graph never filtering the map on click, generic English KPI
+cards, and technical vocabulary not fully confined to a collapsible section. **The
+`OBSERVATORY_V05_NARRATIVE_READY` dashboard-readiness decision is corrected to
+`OBSERVATORY_V05_PARTIAL`.** This correction does NOT alter any prior scientific or
+statistical DEC-0xx conclusion — only the UX/dashboard-readiness claim for this
+specific milestone. See DEC-068 below and
+`reports/HERALD_OBSERVATORY_V051_CORRECTION_AUDIT.md` for the full point-by-point fix
+record. The v0.5 files themselves (exports/dashboard/tests) are untouched and their
+65/65 tests still pass — they remain a valid historical artifact, just not the current
+dashboard-readiness recommendation.
+
+**Problem:** v0.4's granular dashboard (`herald_observatory_v04_granular_dashboard.html`)
+is scientifically correct but communicates poorly to a layperson audience: raw acronyms
+(GI/OQ/MN/KZ), an isolated sector-relation graph disconnected from the map, a heatmap
+shown as a separate widget instead of being felt within the geography, and PT showing
+bare NaN for the structurally-absent KZ sector.
+
+**What was built (presentation layer only, no scientific recomputation):**
+- New export pipeline `src/data/european_panel/build_observatory_v05_narrative_exports.py`
+  re-shapes the v0.4 granular exports (territory state, relation edges, blocked proxy
+  edges) into `data/processed/herald_observatory_v05_narrative/`: `territory_view`,
+  `sector_view`, `relation_view`, `prediction_view`, `map_state_by_year_sector.json`,
+  `relation_timeline.json`, `manifest.json`. Every number is carried through verbatim;
+  only human-readable labels, evidence badges, and plain-language sentences are added.
+- New dashboard builder `src/data/european_panel/build_observatory_v05_narrative_dashboard.py`
+  → `reports/dashboards/herald_observatory_v05_narrative_dashboard.html` (14.8 MB,
+  Plotly embedded locally, GSAP loaded from CDN for timeline/window playback only).
+- Map color now changes directly by year/sector/view selection (state / velocity /
+  above-below-expected / similar-dynamics-placeholder) — the map IS the heatmap, no
+  separate chart.
+- Sector→sector graph is dynamic and spatial: persistent mode (all valid relations
+  shown faint, active time window highlighted) or active-window-only mode; clicking an
+  edge updates an aggregate territory-context table and a plain-language sentence
+  ("Between Y1 and Y2, in country X, sector A moves in the same/opposite direction as
+  sector B. This is observed evidence, not proof of causality.").
+- Prediction layer audit (`reports/HERALD_OBSERVATORY_V05_PREDICTION_GAP.md`): found a
+  validated observed-vs-expected forecast already exists for FR+NL
+  (`data/processed/herald_observatory_v03/herald_observatory_v03_panel.csv`, causal
+  rolling-origin AR(1) Ridge, same ZE2020/COROP grain as v0.4 granular) and wired it in
+  directly. PT excluded: its only existing forecast is at NUTS3 grain (25 territories),
+  not the MUNICIPALITY grain (278) used by v0.4/v0.5 — different grains, no validated
+  join exists, and disaggregating would repeat the DEC-065 proxy-injection failure
+  mode. Decision: `PREDICTION_LAYER_PARTIAL`. Closing the gap is a data-engineering
+  task (re-run the existing forecast script against the PT municipal panel), not HPC.
+- PT/KZ: confirmed every PT/KZ row carries `state=INSUFFICIENT_DATA`/`value=NaN` by
+  construction (per DEC-064, "KZ structural_absent... No KZ claims") — relabelled
+  explicitly as "Sector not available for Portugal" (never a bare NaN); KZ is disabled
+  in the dashboard's sector selector when country=PT.
+- NL gemeente proxy: fail-closed assert in both new builders confirms it never enters
+  `relation_view`/the embedded `RELATION_EDGES` dataset; it remains visible only on the
+  map/territory layer with a "Proxy / context" badge.
+- 121 blocked proxy edges kept in their own technical panel, explicitly described as
+  "audit only", with a forbidden-language guard against framing them as a "discovery".
+- No causal language, no ML jargon (GNN/attention/encoder/AUC) in the main UI body —
+  verified by `tests/test_observatory_v05_narrative_dashboard.py` (65/65 PASS).
+  Determinism verified for both builders (identical output hash across consecutive
+  runs, modulo the exports manifest's own `generated_at` timestamp).
+- Playwright unavailable in this environment (same limitation as v0.4) — validated via
+  embedded-JSON parsing, DOM id cross-reference, and onclick/onchange handler
+  cross-reference instead of screenshots.
+
+**Ficheiros afectados:**
+- `src/data/european_panel/build_observatory_v05_narrative_exports.py` (novo)
+- `src/data/european_panel/build_observatory_v05_narrative_dashboard.py` (novo)
+- `data/processed/herald_observatory_v05_narrative/` (novo: 5 CSV + 5 JSON + manifest)
+- `reports/dashboards/herald_observatory_v05_narrative_dashboard.html` (novo, 14.8 MB)
+- `tests/test_observatory_v05_narrative_dashboard.py` (novo — 65/65 PASS)
+- `reports/HERALD_OBSERVATORY_V05_PREDICTION_GAP.md` (novo)
+- `CODEX_MEMORY.md`, `reports/HERALD_CURRENT_STATE.md`,
+  `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`, `reports/herald_artifact_registry.json`
+  (updated)
+- v0.4 dashboard/builder/tests: untouched.
+
+---
+
+## DEC-068 — Observatory v0.5.1 Narrative Correction (2026-06-17)
+
+**Status:** COMPLETE. Decision: see final status line below.
+**Note (2026-06-18, traceability re-audit):** all 103/103 Part N structural
+tests pass (`tests/test_observatory_v051_narrative_dashboard.py`), but
+"structural tests pass" is not the same claim as "dashboard accepted as
+final." No Playwright/real-screenshot visual validation has ever been
+performed on v0.5.1 (Playwright unavailable in this environment — see below),
+and the product owner's own next instruction after this milestone was to
+"redesign the dashboard modularly, starting with the map" — i.e. v0.5.1 itself
+was treated as a corrected draft, not a finally-accepted deliverable. The
+decision below is worded accordingly.
+
+**Problem (product-owner rejection of DEC-067/v0.5):** v0.5 was a polished MVP, not a
+complete-method presentation of HERALD. Ten concrete defects: (1) architecture
+explanation at the bottom of the page; (2) entire UI in English; (3) prediction layer
+not visually central; (4) PT municipal prediction never integrated despite the gap
+report saying it was closeable as pure data engineering; (5) no true geographic
+heatmap (a placeholder string only); (6) sector graph never filtered the map on click;
+(7) generic English KPI cards instead of an interpretable evidence summary; (8)
+technical vocabulary (beta/q_fdr/bss) not fully confined to a collapsible section; (9)
+"How it works" too shallow to read as a method figure; (10) no explicit distinction
+between validated relations and (nonexistent) neural candidate relations.
+
+**What was built (data-engineering addition + presentation correction; no v0.4
+scientific number recomputed or altered):**
+- New script `src/data/european_panel/build_pt_municipal_prediction_layer.py`: re-runs
+  the exact causal persistence/Ridge AR(1) method already validated for FR/NL
+  (`RIDGE_ALPHA=1.0`, `RIDGE_MIN_TRAIN=4`, reused verbatim from
+  `build_observatory_export.py._rolling_ridge_forecasts`) directly against the observed
+  PT municipal panel (`data/processed/phase7_pt_municipal/pt_municipal_phase7_panel.csv`,
+  278 municipalities × 16 years × 8 sectors; KZ structurally absent for every row). No
+  proxy disaggregation. An explicit code-level leakage assertion confirms every
+  `valid_forecast` row's `persistence_forecast` equals the prior year's observed value
+  in the source panel for all 28,974 valid-forecast rows in this run.
+  Output: `data/processed/herald_observatory_v051_narrative/pt_municipal_prediction_view.csv`
+  (40,032 rows: 28,974 valid_forecast / 6,610 insufficient_history / 4,448
+  structural_absent). `reports/HERALD_OBSERVATORY_V05_PREDICTION_GAP.md` updated to
+  `CLOSED` with the required sentence: "PT municipal forecast generated via causal
+  persistence/Ridge on observed municipal panel; no proxy, no HPC."
+- New export pipeline `src/data/european_panel/build_observatory_v051_narrative_exports.py`:
+  same re-shaping logic as v0.5's exports script, but (a) entirely French-language
+  output fields/sentences, (b) integrates the new PT municipal forecast into a unified
+  `prediction_view.csv`/`.json` alongside FR/NL, (c) adds `economic_basins.json`
+  (territorial-intensity quantile score per country/region/year, for the new
+  geographic heatmap), (d) adds `prediction_lookup.json` for the dashboard's
+  observed/expected/difference side-panel display.
+- New dashboard builder `src/data/european_panel/build_observatory_v051_narrative_dashboard.py`
+  + `..._template.py` → `reports/dashboards/herald_observatory_v051_narrative_dashboard.html`
+  (18.2 MB, Plotly embedded locally, GSAP from CDN for timeline/window playback only):
+  - "Méthode HERALD" architecture section (6-stage diagram + 4 component cards:
+    statistical baseline / relational-candidate layer / validation / output) is the
+    first content block after the title, before the evidence summary and before the map.
+  - "Prévision locale" section + a new "Écart à l'attendu" map mode + side-panel
+    observed/expected/difference fields, now covering FR+NL+PT.
+  - New "Bassins économiques" map mode: a real geographic intensity layer (quantile of
+    mean velocity per country/region/year), distinct from the state/velocity/prediction
+    choropleth modes — never called a "causal cluster".
+  - Sector-relation graph now wired to the map: clicking an edge calls
+    `applyGraphFilterToMap()`, which sets the map's country selector and year slider to
+    the edge's country/window and re-renders — a real, traceable interaction, not two
+    independent click handlers.
+  - Generic KPI cards replaced by a French "Résumé d'évidence"
+    (e.g. "3 pays comparés", "20 relations validées", "121 relations proxy rejetées").
+  - beta/q_fdr/bss and the one permitted causality-prohibition sentence
+    ("Ces relations n'établissent pas de lien de causalité structurelle.") confined to
+    two collapsible `<details class="tech">` blocks — verified absent from the static
+    HTML body outside those blocks.
+  - New "Couche relationnelle" section explicitly states, in French, that no neural
+    candidate-relation dataset exists in this repository today; only validated Phase 7
+    relations are shown, kept separate from the (preserved-for-audit-only) blocked
+    proxy edges.
+- All hard rules re-verified: `GEMEENTE_PROXY` absent from `relation_view`/embedded
+  `RELATION_EDGES` (20 edges unchanged: FR=9, NL COROP=8, PT Municipal=3); 121 blocked
+  proxy edges isolated, `allowed_for_training_label=false`; PT/KZ always
+  `structural_absent`/disabled, never an enabled option or a bare NaN; no
+  "causal"/"causes"/"not proof of causality" in the main narrative (only inside the
+  technical-details blocks, as an explicit prohibition).
+- Determinism verified for all three builders (PT municipal forecast script, exports,
+  dashboard) — identical output hashes across consecutive runs.
+- Playwright unavailable in this environment (same limitation as v0.4/v0.5) — validated
+  structurally: embedded-JSON parsing, DOM id cross-reference, onclick/onchange handler
+  cross-reference, and explicit substring/negative-assertion tests for every Part N
+  requirement (103/103 tests pass — see `tests/test_observatory_v051_narrative_dashboard.py`).
+
+**Ficheiros afectados (novos, v0.4/v0.4.1/v0.5 inalterados):**
+- `src/data/european_panel/build_pt_municipal_prediction_layer.py` (novo)
+- `src/data/european_panel/build_observatory_v051_narrative_exports.py` (novo)
+- `src/data/european_panel/build_observatory_v051_narrative_dashboard.py` (novo)
+- `src/data/european_panel/build_observatory_v051_narrative_dashboard_template.py` (novo)
+- `data/processed/herald_observatory_v051_narrative/` (novo)
+- `reports/dashboards/herald_observatory_v051_narrative_dashboard.html` (novo, 18.2 MB)
+- `tests/test_observatory_v051_narrative_dashboard.py` (novo — 103/103 PASS)
+- `reports/HERALD_OBSERVATORY_V051_CORRECTION_AUDIT.md` (novo)
+- `reports/HERALD_OBSERVATORY_V05_PREDICTION_GAP.md` (§6 appended — gap CLOSED)
+- `CODEX_MEMORY.md`, `reports/HERALD_CURRENT_STATE.md`,
+  `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`, `reports/herald_artifact_registry.json`
+  (updated; DEC-067 entries above corrected with a superseding note, not deleted)
+- v0.4/v0.4.1/v0.5 dashboards/builders/tests: untouched (re-verified: their test suites
+  still pass — 192/192 across `test_observatory_v05_narrative_dashboard.py`,
+  `test_observatory_v041_visual_upgrade.py`, `test_observatory_v04_dashboard.py`,
+  `test_observatory_v04_granular_evidence_policy.py`).
+
+**Final decision (2026-06-18, traceability re-audit):** `OBSERVATORY_V051_CANDIDATE_NEEDS_MAP_REDESIGN`.
+All ten v0.5 defects are fixed and 103/103 structural tests pass — this is a
+real, substantive correction over v0.5, not cosmetic. It is adopted as the
+**current best draft / candidate** dashboard, superseding v0.5's
+`OBSERVATORY_V05_PARTIAL` status. It is explicitly **not** promoted to a final
+"narrative ready" / accepted-as-final status, because (1) it has never been
+visually validated (no Playwright run, no real screenshot — only DOM/JS string
+and embedded-JSON structural assertions), and (2) the product owner's own
+next-step direction was to modularize the dashboard starting with the map,
+which implies v0.5.1 is a candidate to be reworked, not a finished artifact.
+This status string is used consistently everywhere v0.5.1's readiness is
+referenced (`CODEX_MEMORY.md`, `HERALD_CURRENT_STATE.md`,
+`HERALD_ACTIVE_DOCUMENT_INDEX.md`, `herald_artifact_registry.json`,
+`HERALD_NAMING_CONVENTIONS.md`, `README.md`) — see those files for the
+corresponding update.

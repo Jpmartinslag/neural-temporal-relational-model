@@ -9,7 +9,11 @@ as a "polished MVP" — its readiness decision is corrected
 `OBSERVATORY_V05_NARRATIVE_READY` → `OBSERVATORY_V05_PARTIAL` (DEC-067/068);
 the v0.5 files remain untouched and their 65/65 tests still pass, but it is
 NOT the current dashboard. v0.5.1 (`herald_observatory_v051_narrative_dashboard.html`,
-103/103 tests pass, re-verified 2026-06-18) is the CURRENT dashboard:
+103/103 tests pass, re-verified 2026-06-18) is the CURRENT BEST-DRAFT
+CANDIDATE — decision `OBSERVATORY_V051_CANDIDATE_NEEDS_MAP_REDESIGN` (DEC-068,
+corrected 2026-06-18; NOT `OBSERVATORY_V051_NARRATIVE_READY` — passing
+structural tests is not the same as being visually validated or finally
+accepted):
 French UI, architecture-first layout, FR+NL+PT prediction (PT closed via a
 direct causal persistence/Ridge re-run on the observed PT municipal panel, no
 proxy, no HPC), real geographic heatmap, graph wired to the map. **None of
@@ -55,9 +59,10 @@ in the working tree — NOT part of this consolidation, not touched here.
   for readiness purposes (English UI, MVP-feel, PT prediction gap, no real
   heatmap). Kept for audit trail; do not present as current.
 - v0.5.1 (`herald_observatory_v051_narrative_dashboard.html`, 18.2 MB) —
-  CURRENT. French, PT prediction integrated, real heatmap, graph-to-map
-  filter wired. Limitation: not committed to git; no Playwright/screenshot
-  validation in this environment, only structural (DOM id / embedded JSON /
+  CURRENT CANDIDATE (`OBSERVATORY_V051_CANDIDATE_NEEDS_MAP_REDESIGN`, not a
+  final accepted dashboard). French, PT prediction integrated, real heatmap,
+  graph-to-map filter wired. Limitation: not committed to git; no
+  Playwright/screenshot validation in this environment, only structural (DOM id / embedded JSON /
   handler cross-reference) checks.
 
 **Active data sources:** FR ZE2020 (observed, SIDE/SIRENE), PT Municipal 278
