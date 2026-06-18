@@ -9,8 +9,8 @@ moved or deleted to produce this file.
 
 ## Read first, in this order
 
-1. `CODEX_MEMORY.md` — concise entry point, current status, authorized/forbidden next steps.
-2. `README.md` — project overview, current state summary, dashboard link, roadmap.
+1. `README.md` — project overview, current state summary, dashboard link, roadmap.
+2. `reports/HERALD_PROJECT_TRAJECTORY.md` — narrative evolution, April→June 2026.
 3. `reports/HERALD_CURRENT_STATE.md` — detailed per-layer completion table.
 4. `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` — every DEC-001→DEC-068 decision, never renumbered or deleted.
 5. `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` — classifies every report as active/historical/blocked/regenerable.
@@ -18,6 +18,9 @@ moved or deleted to produce this file.
 Do not start anywhere else. Do not trust a claim, number, or file path found
 outside these five documents (or the ones they point to) without
 cross-checking the decision log first.
+
+Agent-local files such as `CODEX_MEMORY.md` are intentionally ignored and
+not part of the public scientific repository.
 
 ---
 
@@ -54,7 +57,7 @@ cross-checking the decision log first.
 
 `reports/dashboards/` contains several HTML files spanning different
 Observatory milestones (v0.3, v0.4, v0.4.1, v0.5, v0.5.1). Only one is
-"current" at any time — check `CODEX_MEMORY.md`'s top entry or
+"current" at any time — check
 `reports/HERALD_CURRENT_STATE.md`'s Visualization row for which one, and what
 its actual decision status is (e.g. `OBSERVATORY_V051_CANDIDATE_NEEDS_MAP_REDESIGN`
 is a *candidate*, not an accepted final dashboard). Older dashboard files are

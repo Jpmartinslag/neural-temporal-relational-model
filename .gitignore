@@ -50,6 +50,7 @@ Thumbs.db
 .codex
 AGENTS.md
 CLAUDE.md
+CODEX_MEMORY.md
 
 # ── data/raw — só o ficheiro URSSAF trimestral é necessário ────────
 data/raw/*
