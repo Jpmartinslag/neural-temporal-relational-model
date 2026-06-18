@@ -51,6 +51,9 @@ Thumbs.db
 AGENTS.md
 CLAUDE.md
 CODEX_MEMORY.md
+package.json
+package-lock.json
+.graphifyignore
 
 # ── data/raw — só o ficheiro URSSAF trimestral é necessário ────────
 data/raw/*
