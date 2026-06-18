@@ -1,11 +1,78 @@
 # HERALD — Research Gantt
 
-**Created:** 2026-06-10  
-**Current date:** 2026-06-13
-**Last update:** DEC-038 — European sector coverage preflight complete. 27 countries evaluated. FI: ELIGIBLE_WITH_MAPPING. BE: BLOCKED_SEMANTICS. 9 countries ELIGIBLE_WITH_DOWNLOAD. 53 tests pass. Total tests: 145 (48 observatory + 44 Phase 8 + 53 European coverage).
+**Created:** 2026-06-10
+**Re-drafted:** 2026-06-18 (consolidation/freeze pass — adds the June→September schedule below; original Phase 0-7 plan from 2026-06-10/13 preserved further down for traceability, superseded where it conflicts with what is actually done)
 
-**End date / defence / internship deadline:** `DATE_LIMITE_A_CONFIRMER`  
-**Note:** No end date found in project documentation. Confirm with supervisors before fixing milestones.
+**End date / defence / internship deadline:** still `DATE_LIMITE_A_CONFIRMER` — **no confirmed external deadline found in any project document as of 2026-06-18.** The schedule below is a planning estimate built around a hypothetical August/September delivery window mentioned in the consolidation brief, NOT a confirmed supervisor/venue deadline. Confirm before treating any date as binding.
+
+---
+
+## June→September schedule (2026-06-18 draft, current)
+
+Status check against this plan, verified against the decision log before writing:
+PT municipal prediction is **already closed** (DEC-068, no proxy, no HPC) — so July's
+"build PT municipal prediction" task below is reframed as "validate/extend", not "build
+from scratch". Dashboard modularization (map-first) has NOT started — it is a signalled
+direction only (see `CODEX_MEMORY.md` entry point), correctly placed as a June/July task.
+
+### June 2026 — Freeze current state, organize repo, start dashboard modularization
+- [DONE] Freeze Observatory v0.4/v0.4.1 as stable/historical; v0.5 corrected to v0.5.1 (DEC-067/068).
+- [DONE — this consolidation] Repo audit: separate Observatory-related working-tree
+  changes from unrelated parallel workstreams (Italy/Austria/Belgium/NL ingestion,
+  economic_graph, dual_graph, synthetic_benchmark); update README/CODEX_MEMORY/
+  CURRENT_STATE/ACTIVE_DOCUMENT_INDEX/artifact registry; add missing `.gitignore` entries.
+- [PENDING] Commit + push the consolidated Observatory v0.4.1/v0.5/v0.5.1 files (separate
+  session, per this task's instructions — not done here).
+- [NOT STARTED] Begin modularizing the dashboard, **starting with the map component**
+  (product owner's signalled direction, recorded in `CODEX_MEMORY.md`; no code written yet).
+- [NOT STARTED] "Close out the HERALD map" — interpreted as: finish the map modularization
+  spike enough to decide the v0.6 dashboard architecture. Not started.
+
+### July 2026 — PT municipal validation, dynamic map, spatial relations, methodology, visual validation
+- [MOSTLY DONE, validate/extend not build] PT municipal prediction: closed via direct
+  causal persistence/Ridge AR(1) re-run on the observed municipal panel (DEC-068). Remaining
+  work, if time permits: sensitivity checks across more windows, possible extension to a
+  longer forecast horizon.
+- [TO DO] Complete the dynamic map as a standalone module (depends on June's map-first
+  modularization spike).
+- [TO DO] Spatial relations: no new geographic/mobility graph work is authorized without a
+  new DEC (4P/4Q branch is CLOSED) — this item is about consolidating and documenting the
+  *existing* validated sector→sector relations (20 observed edges) into the architecture
+  write-up, not opening a new spatial-graph branch.
+- [TO DO] Architecture/methodology layer: write `reports/HERALD_ARCHITECTURE_OVERVIEW.md`
+  into article-ready prose (the structural version was created in this consolidation pass).
+- [TO DO] Visual validation (Playwright) of v0.5.1 — environment currently lacks a working
+  Playwright/headless browser; this is a blocker to close before claiming the dashboard is
+  fully validated, not just structurally checked.
+
+### August 2026 — Consolidate results, final validations, figures/tables, methodology/results writing
+- [TO DO] Re-run the light/documentary test suites one more time before any figure export
+  to confirm nothing drifted (artifact registry schema drift found in this consolidation —
+  see Part G/J findings — should be fixed before this point).
+- [TO DO] Generate the actual figures/tables for the article from frozen results (no figure
+  export pass has happened since Phase 8 — this is new work, not a re-run).
+- [TO DO] Write methodology section (causal forecasting protocol, Phase 7 precedence method,
+  fine-grain threshold policy DEC-066, evidence-tier taxonomy).
+- [TO DO] Write results section (LOCO baselines, sector precedence edges, PT municipal
+  closure, NL gemeente proxy negative result as a methodological finding in its own right).
+- [TO DO] Final freeze of all scientific numbers — no new DEC after this point without
+  reopening the freeze explicitly.
+
+### Early September 2026 — Final writing, review, submission/delivery
+- [TO DO] Final writing pass (introduction, discussion, limitations).
+- [TO DO] Internal/supervisor review round.
+- [TO DO] Submission or delivery, per whatever venue/deadline gets confirmed.
+
+**Risk carried over from the original Gantt below:** the external deadline is still
+unconfirmed. This schedule assumes roughly 11 weeks (mid-June→early September) and should
+be treated as the contingency-light version of the original Gantt's "minimum viable
+timeline", not as a guarantee.
+
+---
+
+## Original Phase 0-7 plan (2026-06-10/13, preserved below for traceability)
+
+**Last update (original):** DEC-038 — European sector coverage preflight complete. 27 countries evaluated. FI: ELIGIBLE_WITH_MAPPING. BE: BLOCKED_SEMANTICS. 9 countries ELIGIBLE_WITH_DOWNLOAD. 53 tests pass. Total tests: 145 (48 observatory + 44 Phase 8 + 53 European coverage).
 
 ---
 

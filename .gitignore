@@ -34,6 +34,12 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
+
+# ── Checkpoints/model binaries (regenerable training artefacts) ────
+*.pt
+*.ckpt
+*.pth
 
 # ── Ruído de SO/editor ─────────────────────────────────────────────
 .DS_Store
@@ -145,3 +151,19 @@ hpc_results/patch_robustness_20260429/
 # ── PT municipality geometry raw cache (regenerable; ~180MB, see
 #    src/data/european_panel/build_pt_municipality_geometry.py) ────
 data/external/portugal/geometry/raw/
+
+# ── Raw external source caches (regenerable from ingest scripts;
+#    not part of this consolidation, added 2026-06-18 audit) ───────
+data/external/portugal/raw/
+data/external/belgium/raw/
+data/external/italy/raw/
+data/external/netherlands/raw/
+data/external/eurostat_business_demography/raw/
+
+# ── Large narrative-dashboard export blobs (regenerable from
+#    build_observatory_v05*_narrative_exports.py; territory_view.json
+#    alone is ~65MB per version) ─────────────────────────────────────
+data/processed/herald_observatory_v05_narrative/*.json
+data/processed/herald_observatory_v05_narrative/*.csv
+data/processed/herald_observatory_v051_narrative/*.json
+data/processed/herald_observatory_v051_narrative/*.csv
