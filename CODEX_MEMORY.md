@@ -234,10 +234,10 @@ Observatory v0.4 policy + 43 DEC-066). Decision: `GRANULAR_OBSERVATORY_V04_DATA_
 **Previously updated 2026-06-16 (DEC-061 COMPLETE — PT_READY_NL_BLOCKED. PT municípios (308, 278 continente, 8/9 A10, 2008-2023) confirmados via INE API. NL gemeente births bloqueados via CBS Open Data (83631NED só COROP; 81575NED é stock não births). 39/40 testes PASS + 1 SKIP-expected. DEC-060 COMPLETE — AUDIT_COMPLETE 10/10 PASS. FR tem 1 label Phase 7 pois o critério vinculante é |β| ≥ 0.10 (não FDR). 8 pares near-miss-beta: passam FDR+Δr²+bss mas |β|=0.076-0.097. MN→BE o par mais consistente (6 janelas p≤0.01) mas anti-correlação beta-FDR impede promoção. RU→MN classificado FR_COVID_SENSITIVE (p_perm pre-COVID=0.127). 63 testes PASS. Outputs em data/processed/france_relation_audit/.).
 Read this file, then verify drift with `rtk git status --short`.
 
-## Quick orientation (start here)
+## Quick orientation (legacy note — historical reference; current entry point is the ENTRY POINT block at the top of this file)
 - **Direction:** `reports/HERALD_PROJECT_CHARTER.md` — official scope, permitted/forbidden claims, frozen decisions.
 - **Current state by component:** `reports/HERALD_CURRENT_STATE.md` — completion %, blockers, next step.
-- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-039).
+- **All decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-039 *as of this legacy note's original writing — the log now runs DEC-001→DEC-068, see the ENTRY POINT block above*).
 - **Claims classification:** `reports/HERALD_EVIDENCE_MATRIX.md`.
 - **Active document list:** `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`.
 - **Artefact manifest:** `reports/herald_artifact_registry.json`.

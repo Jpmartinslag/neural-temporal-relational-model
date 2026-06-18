@@ -75,14 +75,22 @@ v0.5.1 build is a single monolithic HTML file; the next iteration should
 split the map into its own reusable, testable module before extending the
 graph/prediction layers on top of it.
 
-## Roadmap (working target, not an externally confirmed deadline)
+## Research Gantt — working target
 
-| Period | Focus |
-|---|---|
-| June 2026 | Scientific freeze, repo organization, start map-first dashboard module |
-| July 2026 | Close the dynamic map, visual validation (Playwright), prepare visual methodology figures |
-| August 2026 | Consolidate results, generate figures/tables, write methodology/results sections |
-| Early September 2026 | Final review, submission/delivery |
+This is a working target, not an externally confirmed deadline.
+
+| Workstream | Jun 2026 | Jul 2026 | Aug 2026 | Early Sep 2026 | Status |
+|---|---|---|---|---|---|
+| Scientific freeze and repository organization | DONE | | | | DONE |
+| Dashboard modularization — map first | NOW | TODO | | | NOW |
+| Dynamic economic map | | TODO | REVIEW | | TODO |
+| Visual validation / Playwright screenshots | | TODO | REVIEW | | TODO |
+| Architecture and methodology figures | | TODO | TODO | | TODO |
+| Final result tables and article figures | | | TODO | REVIEW | TODO |
+| Methodology writing | | | TODO | REVIEW | TODO |
+| Results writing | | | TODO | REVIEW | TODO |
+| Discussion and limitations | | | | TODO | TODO |
+| Final review and delivery | | | | DELIVERY | TODO |
 
 Full detail: `reports/HERALD_RESEARCH_GANTT.md`.
 
@@ -90,17 +98,22 @@ Full detail: `reports/HERALD_RESEARCH_GANTT.md`.
 
 ## Repository map
 
+Legend: **active** (current, trustworthy) · **historical** (kept for
+traceability, not current) · **generated** (build output, regenerable) ·
+**do-not-start-here** (real but not an entry point).
+
 | Path | Status | Notes |
 |---|---|---|
-| `data/` | active | Raw, intermediate, and canonical processed panels. Large/regenerable exports are gitignored (see `.gitignore`); read `reports/herald_artifact_registry.json` before trusting any file's provenance. |
+| `reports/` | active — **start here** | Decisions, audits, naming conventions, architecture overview, and `reports/dashboards/`. |
 | `src/` | active | Ingestion adapters, models, export builders, dashboard builders. |
 | `tests/` | active | One suite per DEC/phase/dashboard version; see §"How to run tests" below. |
-| `reports/` | active — **start here** | Decisions, audits, naming conventions, architecture overview, and `reports/dashboards/`. |
-| `hpc/` | active, historical mix | SLURM batch scripts and remote-execution audits for closed and open phases alike — check the phase name against the decision log before reusing a script. |
-| `hpc_results/` | generated, mostly historical | Raw job outputs (many from closed/superseded branches). Do not start here; cross-reference against `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` first. |
-| `docs/architecture/` | historical | Older architecture diagrams/views (e.g. LikeC4). Kept for reference; `reports/HERALD_ARCHITECTURE_OVERVIEW.md` is the current source. |
-| `metadata/` | historical/legacy | Older data catalogs and dataset notes, partly superseded by `reports/herald_artifact_registry.json`. Verify before relying on it. |
+| `data/` | active | Raw, intermediate, and canonical processed panels. Read `reports/herald_artifact_registry.json` before trusting any file's provenance. |
+| `hpc/` | active + historical mix | SLURM batch scripts for both open and closed phases — check the phase name against the decision log before reusing a script. |
 | `scripts/`, `tools/` | active, narrow-purpose | Small standalone audit/merge utilities, not part of the main pipeline. |
+| `docs/architecture/` | historical | Older architecture diagrams/views (e.g. LikeC4). `reports/HERALD_ARCHITECTURE_OVERVIEW.md` is the current source. |
+| `metadata/` | historical | Older data catalogs, partly superseded by `reports/herald_artifact_registry.json`. Verify before relying on it. |
+| `hpc_results/` | generated, do-not-start-here | Raw job outputs, mostly from closed/superseded branches. Cross-reference against the decision log first. |
+| large exports under `data/processed/herald_observatory_v0*_narrative/` | generated | Regenerable presentation-layer exports; only their small `manifest.json` is git-tracked. |
 
 Full breakdown (active vs. historical vs. generated, and what an AI/new
 contributor should read first): `reports/HERALD_REPOSITORY_STRUCTURE.md`.
