@@ -31,7 +31,7 @@ Full source: `reports/HERALD_GRANULAR_EVIDENCE_POLICY.md`.
 | Source | Grain | N territories | Target concept | Status | Processed path |
 |---|---|---|---|---|---|
 | FR ZE2020 | Employment zone | 280 (306 historically cited in Q7 scope) | `establishment_creation` (SIDE/SIRENE) | **observed**, VALID | `data/processed/herald_observatory_v04_granular/granular_territory_state_panel.csv` |
-| PT Municipal | Municipality (continental) | 278 | `enterprise_birth` (INE 0009703/0014099) | **observed**, VALID | same file; also `data/processed/phase7_pt_municipal/` |
+| PT Municipal (`PT_MUNICIPALITY_CONTINENTE`) | Municipality (continental) | 278 | `enterprise_birth` (INE 0009703/0014099) | **observed**, VALID | same file; also `data/processed/phase7_pt_municipal/` |
 | NL COROP | COROP region | 40 | `local_unit_opening` (CBS 83631NED) | **observed**, VALID — the NL relation baseline | same file; `data/processed/phase7_sector_precedence_results/` (original Phase 7) |
 | NL Gemeente (proxy) | Municipality | 355 | `estimated_births_gemeente = corop_births × stock_share` | **proxy**, **BLOCKED for relation labels** (DEC-065) | `data/processed/phase7_nl_gemeente_proxy/results/`; tagged `allowed_use=territory_state_context_only` in the v0.4 granular export |
 | PT/IT/AT Path H | NUTS3 | ~151 (3-country panel) | Eurostat `bd_size_r3` (`enterprise_birth`, harmonized demographic concept) | **observed**, VALID for LOCO forecasting only — **no sector graph at this grain** | `data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv` |
@@ -145,11 +145,14 @@ This audit did not integrate any new country — it is eligibility classificatio
   `INVALID_FOR_TRAINING_LABELS`, `INVALID_FOR_RELATION_LABELS`, `VALID_OBSERVED`,
   `BLOCKED`, `REGENERABLE`, `ARCHIVED`.
 
-**Known unresolved naming inconsistency (not fixed here, see
-`reports/HERALD_NAMING_CONVENTIONS.md` §5):** PT's `region_system` field is written as
-both `"MUNICIPALITY"` and `"MUNICIPALITY_CONTINENTE"` across different active builders.
-Both refer to the same 278-municipality continental-only panel; recommend standardizing on
-`MUNICIPALITY_CONTINENTE` next time those files are touched for another reason.
+**Naming note (code-level inconsistency not fixed, documentation-level rule defined —
+see `reports/HERALD_NAMING_CONVENTIONS.md` §5):** PT's `region_system` field is written
+in code as both `"MUNICIPALITY"` and `"MUNICIPALITY_CONTINENTE"` across different active
+builders; both refer to the same 278-municipality continental-only panel. The official
+documentation identifier for this grain, used throughout the canonicals, is
+**`PT_MUNICIPALITY_CONTINENTE`** — "PT Municipal" remains an acceptable readable name,
+but a precise technical reference should say `PT_MUNICIPALITY_CONTINENTE`, not bare
+`MUNICIPALITY` (ambiguous vs Açores/Madeira).
 
 ---
 

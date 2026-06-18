@@ -43,13 +43,16 @@ number from them is trusted.
 | `GENERATED_DASHBOARD_OR_EXPORT` | Build output, regenerable from a builder script. |
 | `DO_NOT_START_HERE` | Real artefacts but not an entry point. |
 
-**Start with `reports/canonical/` (12 documents, in numbered order: the 5 entry-point
+**Start with `reports/canonical/` (12 numbered documents, in order: the 5 entry-point
 canonicals + 7 second-level traceability maps — `HERALD_06_PHASE_TECHNIQUE_MATRIX.md`,
 `HERALD_07_METHOD_LINEAGE_FOR_ARTICLE.md`, `HERALD_08_REPOSITORY_TRACEABILITY_MAP.md`,
 `HERALD_09_DATA_ASSET_MAP.md`, `HERALD_10_CODE_PATH_MAP.md`,
 `HERALD_11_HPC_AND_RESULTS_MAP.md`, `HERALD_12_FINAL_PHASE_MAP.md`, plus the
 `HERALD_CANONICAL_CONSOLIDATION_AUDIT.md` and `HERALD_DEEP_REPORT_AUDIT.md` audit
-trail).** All 12 numbered documents are `CANONICAL_READ_FIRST`.
+trail).** All 12 numbered documents are `CANONICAL_READ_FIRST` and are the scientific/
+structural base. `HERALD_13_ORGANIZATION_BACKLOG.md` is a separate, non-scientific
+housekeeping chore list — read it only for worktree/data/code/HPC organizational
+cleanup, not as a source of any claim.
 
 ---
 
@@ -69,8 +72,9 @@ plus the 3 kept folders.
 | `reports/HERALD_REPORTS_CONSOLIDATION_MAP.md` | `CANONICAL_READ_FIRST` | Which canonical doc represents which report cluster |
 | `reports/herald_artifact_registry.json` | `CANONICAL_READ_FIRST` | Artefact manifest with status and claims |
 
-Plus `reports/canonical/` (14 files: the 5 entry-point canonicals, the 7 second-level
-traceability maps (06-12), and the 2 audit docs — consolidation + deep verification),
+Plus `reports/canonical/` (15 files: the 5 entry-point canonicals, the 7 second-level
+traceability maps (06-12), the 2 audit docs — consolidation + deep verification — and
+the non-scientific `HERALD_13_ORGANIZATION_BACKLOG.md` chore list),
 `reports/dashboards/` (current and historical dashboard HTML + builders), and
 `reports/bibliography/` (references) — all unconditionally kept per policy.
 

@@ -34,16 +34,14 @@ decision string `OBSERVATORY_V{MAJOR}{MINOR}_{QUALIFIER}_READY` (or `_PARTIAL` i
 
 ## 2. DEC-* numbering
 
-**Inconsistency found:** DEC-061 has no standalone `## DEC-061` section in
+**Resolved 2026-06-18:** DEC-061 previously had no standalone `## DEC-061` section in
 `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md`, even though DEC-062 explicitly says
 "DEC-061 confirmed PT_READY_NL_BLOCKED..." and references it as "Part A — DEC-061 Review".
-The corresponding report `reports/HERALD_DEC061_PT_NL_MUNICIPAL_GRANULARITY_AUDIT.md` exists
-and is referenced from `CODEX_MEMORY.md` (line "DEC-061 — PT/NL Municipal Sector Data
-Availability Audit (COMPLETE; PT_READY_NL_BLOCKED...)"). **This consolidation does not
-silently add a synthetic DEC-061 log entry** — per the task's hard rule, this is recorded
-here and in the final report as a finding for a human to resolve (either backfill the DEC-061
-section from the existing report/CODEX_MEMORY content, or document why it was intentionally
-omitted).
+A `## DEC-061` section has now been backfilled into the decision log, reconstructed from
+`reports/HERALD_DEC061_PT_NL_MUNICIPAL_GRANULARITY_AUDIT.md` (verified via `git show` in
+the deep report audit) and from DEC-062's own correction of it (PT continental count
+297→278). DEC-061 keeps its original number — this was a backfill, not a renumbering or
+a new decision.
 
 DEC-066 is logged in `HERALD_METHODOLOGICAL_DECISION_LOG.md` **before** DEC-065 (the DEC-066
 section appears at line ~2612, DEC-065 at line ~2628) even though DEC-066 depends on
@@ -96,23 +94,31 @@ reading prose quickly.
 
 ---
 
-## 5. PT region_system naming — found inconsistency
+## 5. PT region_system naming — official rule (documentation-level, 2026-06-18)
 
-Two different string literals are used for the same concept (Portugal's 278 continental
-municipalities) across active, current code:
+Two different string literals are used in code for the same concept (Portugal's 278
+continental municipalities):
 
 | String | Used in |
 |---|---|
 | `"MUNICIPALITY"` | `build_observatory_v04_granular_exports.py`, `build_observatory_v04_dashboard.py`, `build_observatory_v051_narrative_exports.py`, `build_observatory_v051_narrative_dashboard.py`, `build_observatory_v05_narrative_dashboard.py`, `build_pt_municipal_sector_panel.py` (as a partial value `meta_region_system="MUNICIPALITY_ALL"`) |
 | `"MUNICIPALITY_CONTINENTE"` | `build_pt_municipal_phase7_panel.py` (`REGION_SYSTEM` constant), `build_granular_training_matrix.py`, `preflight_granular_phase7.py`, `HERALD_DEC062_GRANULAR_PHASE7_PREFLIGHT.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-062/063 tables) |
 
-Both refer to the same 278-municipality continental-only panel. **This is a genuine,
-unresolved naming inconsistency** — not silently fixed here, since changing either string
-would require re-running/re-testing every dependent builder and is out of scope for a
-documentation-only consolidation pass. **Recommendation:** standardize on
-`MUNICIPALITY_CONTINENTE` (the more precise, disambiguating form, since PT also has
-Açores/Madeira municipalities that are explicitly excluded) the next time any of the
-Observatory builders are touched for a non-trivial reason — not as a standalone task.
+Both refer to the same 278-municipality continental-only panel. **The code-level string
+literal is left unchanged in this pass** — changing it would require re-running/
+re-testing every dependent builder, which is out of scope for a documentation-only pass.
+**The documentation-level rule, in effect starting now:**
+
+| Identifier | Meaning | Status |
+|---|---|---|
+| `PT_MUNICIPALITY_CONTINENTE` | Portugal continental, 278 municipalities — the current canonical PT municipal grain (DEC-062/064) | **Official identifier for all new documentation** |
+| `PT_MUNICIPALITY_ALL` | Portugal including Açores/Madeira, if ever used (not currently built) | Reserved, not yet in use |
+| `MUNICIPALITY` (bare) | Ambiguous — does not state continental-only vs all-islands | **Avoid in new documentation**; existing code's `"MUNICIPALITY"` string is understood to mean continental-only by convention (confirmed by `geocod[0]=='1'` filtering in every active builder) until the code itself is updated |
+
+This is a documentation convention, not a code change: no builder, test, or data file
+was touched to produce this rule. The next time any Observatory builder is touched for
+another reason, standardizing its `region_system` string on `MUNICIPALITY_CONTINENTE`
+is recommended but still not authorized as a standalone task.
 
 ---
 
@@ -178,9 +184,9 @@ since the task asked to verify these strings exist (they do).
 ## 7. Summary of findings in this document
 
 1. v0.4/v0.4.1 share one physical dashboard file — intentional, not a bug, but worth noting explicitly.
-2. **DEC-061 has no standalone decision-log section** despite being referenced by DEC-062 and CODEX_MEMORY — unresolved, flagged for a human decision.
+2. **RESOLVED 2026-06-18:** DEC-061 now has a standalone decision-log section (backfilled from the removed source report, see §2 above).
 3. DEC-066 appears before DEC-065 in the decision log file — chronological quirk, not a numbering error, left as-is.
-4. PT `region_system` is inconsistently `MUNICIPALITY` vs `MUNICIPALITY_CONTINENTE` across active current code — unresolved, recommend standardizing on the latter next time those files are touched for another reason.
+4. **PARTIALLY RESOLVED 2026-06-18:** PT `region_system` code-level string remains inconsistently `MUNICIPALITY` vs `MUNICIPALITY_CONTINENTE` (not fixed, would require re-running builders) — but a documentation-level official identifier (`PT_MUNICIPALITY_CONTINENTE`) is now defined in §5 above for all new documentation.
 5. `INSUFFICIENT_EVIDENCE` label class is defined in policy but never emitted by any builder (0 real abstentions ever recorded) — unresolved, flagged as an implementation gap vs the documented taxonomy.
 6. The artifact registry test's `VALID_STATUSES` constant is narrower than the registry's own documented `_meta.status_vocabulary`, and several real entries use status strings outside both — pre-existing test/data drift, not fixed in this pass (see `tests/test_herald_artifact_registry.py`).
 

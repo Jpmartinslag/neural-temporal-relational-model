@@ -2431,6 +2431,70 @@ L_total = L_recon + 0.05·L_presence + 0.02·L_sign + 0.02·L_lag + 0.05·L_util
 
 ---
 
+## DEC-061 — PT/NL Municipal Sector Data Availability Audit
+
+**Status:** COMPLETE | **Decision:** `PT_READY_NL_BLOCKED` (10 gates: 9 PASS + 1 `FORMALLY_BLOCKED`)
+**Date:** 2026-06-16 | **Tests:** 39/39 PASS + 1 SKIP-expected
+
+**Note (backfilled 2026-06-18):** this section was missing from the log even though
+DEC-062, DEC-063, and several canonical documents reference DEC-061 directly. The
+content below is reconstructed from `reports/HERALD_DEC061_PT_NL_MUNICIPAL_GRANULARITY_AUDIT.md`
+(verified via `git show` in the 2026-06-18 deep report audit) and from DEC-062's own
+"Part A — DEC-061 Review" section, which corrects one figure (see below). No new
+finding is introduced here; this is a faithful backfill, not a re-decision. Per the
+naming-conventions rule ("never renumber"), DEC-061 keeps its original number even
+though it is being written into the log after DEC-062/063/064/065/066 were already
+recorded.
+
+**Question:** Following DEC-060 (France's weak relation signal traced to ZE2020's 280
+small zones), can PT and NL be raised to municipal/gemeente granularity, comparable in
+scale to FR ZE2020, to enable a fairer cross-country Phase 7 comparison?
+
+**Findings:**
+- **PT:** confirmed available via INE API (indicators 0009703/0014099). 308 municipalities
+  total; **297 reported in this audit as continental+Madeira** using filter
+  `geocod[0] in ('1','2')` — **this count was corrected by DEC-062** to **278 continental
+  only** (`geocod[0] == '1'`), which excludes Açores (prefix '2') that the DEC-061 filter
+  had incorrectly included. 8/9 HERALD A10 sectors mappable from CAE (KZ absent by
+  definition, confirmed DEC-018). Years 2008–2023.
+- **NL:** **BLOCKED**. CBS Open Data (83631NED births, 81841NED) provides `oprichtingen`
+  (business creations) only at COROP level, never gemeente. Table 81575NED has gemeente
+  granularity (483 GM codes) but is a **stock** table, not births. CBS catalog searched
+  (5,927 tables) — no gemeente × births × SBI table found. This is a structural limitation
+  of CBS Open Data, not a technical access failure.
+- Caribbean NL confirmed absent from all searched sources.
+- Concepts documented for clarity: FR = `establishment_creation`, PT = `enterprise_birth`,
+  NL = `local_unit_opening`.
+- Gates G1/G2/G3/G4/G6/G7/G8/G9/G10 PASS; **G5 `FORMALLY_BLOCKED`** (the NL gemeente gate).
+
+**Decision:** `PT_READY_NL_BLOCKED`. PT confirmed eligible for a municipal-grain Phase 7
+extension (built next in DEC-062). NL requires either CBS Microdata (restricted Research
+Data Center access) or an alternative source before any gemeente-level relation work —
+**using stock data (81575NED) as a births proxy is NOT authorized by this decision** and
+was not attempted until DEC-063 built and explicitly labelled such a proxy, which DEC-065
+later found structurally invalid and **blocked for relation/training labels**. The NL
+gemeente proxy may only ever be used as territorial visualization context, never as a
+sector-precedence training label (DEC-065, reaffirmed by DEC-066's label taxonomy).
+
+**Reopen condition:** new NL data source (CBS Microdata access, or an alternative
+official gemeente × births × sector table) — not a relaxation of the existing gate.
+
+**Ficheiros afectados:**
+- `src/data/european_panel/gates_dec061_municipal_granularity.py` (novo — G1-G10 congelados)
+- `tests/test_dec061_municipal_granularity.py` (novo — 39 testes + 1 skip)
+- `data/processed/municipal_granularity_audit/` (novo)
+- `reports/HERALD_DEC061_PT_NL_MUNICIPAL_GRANULARITY_AUDIT.md` (novo; removed from git
+  index 2026-06-18 consolidation, content preserved in
+  `reports/canonical/HERALD_02_DATA_PROVENANCE_AND_GRANULARITY.md` and this entry)
+- `CODEX_MEMORY.md` (DEC-061 bullet, historical)
+- `reports/HERALD_CURRENT_STATE.md` (updated)
+- `reports/HERALD_NAMING_CONVENTIONS.md` (this backfill closes the inconsistency that
+  document had flagged in §2)
+
+**Consolidated in:** `reports/canonical/HERALD_02_DATA_PROVENANCE_AND_GRANULARITY.md`.
+
+---
+
 ## DEC-062 — PT Municipal Panel Build + NL Gemeente Source Search (Granular Phase 7 Preflight)
 
 **Status:** COMPLETE | **Decision:** `PT_PANEL_READY_NL_OPEN_DATA_BLOCKED` (10/10 PASS)  
