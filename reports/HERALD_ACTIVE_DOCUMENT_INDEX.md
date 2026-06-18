@@ -1,5 +1,8 @@
 # HERALD Active Document Index
-**Updated:** 2026-06-12 (DEC-037)
+**Updated:** 2026-06-18 (consolidation/freeze pass — adds DEC-060→DEC-068 entries above the
+fold, which were already present from earlier same-day edits, plus the exhaustive appendix
+at the bottom covering every `reports/*.md` file not otherwise listed, per the "be exhaustive"
+instruction. No prior entry was removed or reclassified without a stated reason.)
 **Rule:** Documents not listed here should be treated as historical/archived unless explicitly referenced by an active decision.
 
 ---
@@ -95,6 +98,27 @@
 | `src/data/european_panel/build_pt_municipality_geometry.py` | PT continental municipality geometry builder (geoapi.pt/DGT-CAOP source, 278/278, name crosswalk) | ACTIVE |
 | `data/processed/geometries/pt_municipalities_continental.geojson` | PT continental municipality boundaries (278 features, 1.18 MB simplified) | ACTIVE |
 
+### Layperson Narrative Observatory v0.5 (DEC-067, presentation layer on top of v0.4) — SUPERSEDED (UX only) by v0.5.1
+| Document | Covers | Status |
+|----------|--------|--------|
+| `reports/HERALD_OBSERVATORY_V05_PREDICTION_GAP.md` | Prediction layer audit: FR/NL validated (joined from v0.3 Ridge/persistence forecasts); PT gap CLOSED in v0.5.1 (§6 appended) via causal persistence/Ridge on the observed PT municipal panel, no proxy, no HPC | ACTIVE (corrected) |
+| `data/processed/herald_observatory_v05_narrative/` | Narrative exports: territory_view, sector_view, relation_view, prediction_view, map_state_by_year_sector.json, relation_timeline.json, manifest.json | ACTIVE (historical, v0.5 dashboard-readiness superseded) |
+| `src/data/european_panel/build_observatory_v05_narrative_exports.py` | Builds v0.5 presentation-layer exports from v0.4 granular + v0.3 forecast data; never recomputes a scientific number | ACTIVE (historical, untouched) |
+| `reports/dashboards/herald_observatory_v05_narrative_dashboard.html` | Layperson-friendly dynamic Observatory: map-as-heatmap, dynamic spatial sector graph, prediction layer (FR/NL), evidence badges, "How it works", collapsible technical panel (14.8 MB, offline). English UI; superseded for dashboard-readiness purposes by v0.5.1 | ACTIVE (historical, untouched) |
+| `src/data/european_panel/build_observatory_v05_narrative_dashboard.py` | Dashboard builder; fail-closed asserts NL gemeente proxy never in relation graph; PT/KZ disabled with structural-absence tooltip | ACTIVE (historical, untouched) |
+| `tests/test_observatory_v05_narrative_dashboard.py` | 65 tests: no raw NaN, sector names always paired with codes, PT/KZ structural absence, NL gemeente proxy exclusion, blocked-edge isolation, determinism | ACTIVE (historical, untouched, still passes) |
+
+### Layperson Narrative Observatory v0.5.1 (correction of v0.5 dashboard-readiness)
+| Document | Covers | Status |
+|----------|--------|--------|
+| `reports/HERALD_OBSERVATORY_V051_CORRECTION_AUDIT.md` | Point-by-point record of what was wrong in v0.5 and what v0.5.1 fixed | ACTIVE |
+| `src/data/european_panel/build_pt_municipal_prediction_layer.py` | Closes the PT prediction gap: causal persistence/Ridge AR(1) (verbatim method reused from `build_observatory_export.py`) on the observed PT municipal panel, no proxy, no HPC, with an explicit leakage assertion | ACTIVE |
+| `data/processed/herald_observatory_v051_narrative/` | Corrected French exports: territory_view, sector_view, relation_view, prediction_view (incl. PT municipal), pt_municipal_prediction_view.csv, map_state_by_year_sector.json, relation_timeline.json, prediction_lookup.json, economic_basins.json, manifest.json | ACTIVE |
+| `src/data/european_panel/build_observatory_v051_narrative_exports.py` | Builds v0.5.1 French exports from v0.4 granular + v0.3 forecast + new PT municipal forecast; never recomputes a v0.4 scientific number | ACTIVE |
+| `reports/dashboards/herald_observatory_v051_narrative_dashboard.html` | French, article-grade Observatory: HERALD method diagram opens the page (before the map), integrated FR/NL/PT prediction, "Bassins économiques" geographic heatmap, graph-to-map wiring, French evidence summary, collapsible "Détails méthodologiques" | ACTIVE |
+| `src/data/european_panel/build_observatory_v051_narrative_dashboard.py` + `..._template.py` | Dashboard builder/template; fail-closed asserts NL gemeente proxy never in relation graph; PT/KZ disabled with structural-absence tooltip; causal language confined to methodological-details | ACTIVE |
+| `tests/test_observatory_v051_narrative_dashboard.py` | 103 tests covering every Part N requirement: French language, architecture-at-top, PT prediction integration, no raw NaN, PT/KZ disabled, NL gemeente exclusion, blocked-edge isolation, no causal language in main body, sector-name pairing, technical-term confinement, economic basins, graph-map wiring, timeline controls, determinism | ACTIVE |
+
 ### Bibliography
 | Document | Covers | Status |
 |----------|--------|--------|
@@ -153,3 +177,131 @@ The French WMAPE 0.0204 (HERALD Q7, Phase 3E) uses French SIDE/SIRENE data. **St
 Active documents: `reports/HERALD_*.md`
 Archived documents: `reports/archive/<phase>/` or marked SUPERSEDED in this index.
 Do not create new Phase-N reports without a corresponding DEC-* entry.
+
+---
+
+## Appendix — Exhaustive classification of all remaining `reports/*.md` files (2026-06-18)
+
+The sections above predate several phases and do not mention every report file in the
+repository. This appendix closes that gap: every `reports/*.md` not already named above is
+classified here by pattern, cross-checked against the decision log. None of these were
+read in full for this pass (only their phase/decision context was checked) — if a specific
+claim from one of these files needs to be cited, re-verify it against the decision log first.
+
+### Active scientific results (DEC-048→DEC-062, real-data and synthetic relation-learning research track)
+| Document | Covers |
+|----------|--------|
+| `reports/HERALD_DEC048_FAILURE_CAUSE_DIAGNOSTIC.md` | DEC-048 training-budget diagnostic |
+| `reports/HERALD_DEC049_CONVERGENCE_AUDIT.md` | DEC-049 (superseded by DEC-050, kept for traceability) |
+| `reports/HERALD_DEC050_BUG_AUDIT.md` | DEC-050 bug fixes + corrected run |
+| `reports/HERALD_DEC051_STABLE_OBJECTIVE_AUDIT.md` | DEC-051/052 stable-objective + NT audit |
+| `reports/HERALD_DEC053_DECOUPLED_GRAPH_AUDIT.md` | DEC-053 decoupled graph (superseded by DEC-054 for utility gate question) |
+| `reports/HERALD_DEC054_UTILITY_GATE_OOS_AUDIT.md` | DEC-054 utility gate OOS — UTILITY_GATE_NOT_SUPPORTED |
+| `reports/HERALD_DEC055_SHARED_RELATION_ENCODER.md` | DEC-055 SharedRelationEncoder — synthetic, SUPPORTED |
+| `reports/HERALD_DEC056_REAL_SHARED_RELATION_AUDIT.md` | DEC-056 real-data validation — REAL_SHARED_RELATION_PARTIAL |
+| `reports/HERALD_REAL_RELATION_LEARNING_RESEARCH.md` | DEC-057 corrected research direction (RESEARCH_ONLY) |
+| `reports/HERALD_DEC058_REAL_WEAK_LABEL_TUNING.md` | DEC-058 weak-label tuning (corrected by DEC-059) |
+| `reports/HERALD_DEC059_WEAK_LABEL_REVALIDATION.md` | DEC-059 revalidation — REAL_WEAK_LABEL_TUNING_PARTIAL |
+| `reports/HERALD_DEC060_FRANCE_RELATION_SIGNAL_AUDIT.md` | DEC-060 — already listed above |
+| `reports/HERALD_DEC061_PT_NL_MUNICIPAL_GRANULARITY_AUDIT.md` | DEC-061 PT/NL municipal granularity audit — **note: this file exists and is referenced extensively by DEC-062, but DEC-061 has no standalone `## DEC-061` heading in `HERALD_METHODOLOGICAL_DECISION_LOG.md`. Recorded as a finding, not fixed.** |
+| `reports/HERALD_DEC062_GRANULAR_PHASE7_PREFLIGHT.md` | DEC-062 — already listed above |
+| `reports/HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_DRAFT.md` | Superseded draft — DEC-065 final audit is `HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md` (already listed above) |
+| `reports/HERALD_POST_DEC045_ARCHITECTURE_RESEARCH.md` | DEC-046 research-only architecture survey |
+| `reports/HERALD_FEWSHOT_ADAPTATION_CONTRACT.md`, `reports/HERALD_FEWSHOT_ADAPTATION_PILOT.md` | DEC-047 few-shot adaptation (FEWSHOT_ADAPTATION_FAILED) |
+| `reports/HERALD_PHASE9_GRAPH_USAGE_DIAGNOSTIC.md` | DEC-042 graph usage diagnostic |
+| `reports/HERALD_PHASE10_LAGGED_CONTRACT.md`, `..._RESULTS.md`, `..._METRIC_RECONCILIATION.md`, `..._SIGNAL_SENSITIVITY.md` | DEC-043/044 Phase 10 lagged graph (PHASE10_PARTIAL) |
+| `reports/HERALD_PHASE11_SYNTHETIC_GENERALIZATION.md` | DEC-045 Phase 11 generalization protocol |
+| `reports/HERALD_SYNTHETIC_BENCHMARK_CONTRACT.md` | DEC-039/040 synthetic benchmark contract |
+
+**Status for this group: ACTIVE SCIENTIFIC RESULTS**, all on the synthetic/real relation-learning research track described in `HERALD_CURRENT_STATE.md`'s "Graph/neural layer" row (~20% complete, useful on synthetic data, partial on real data, not a final claim).
+
+### Historical/superseded — Phase 2 (France architecture search, pre-Q7)
+`HERALD_PHASE2B_A10_GUARD_AUDIT.md`, `HERALD_PHASE2C_CRITICAL_AUDIT.md`, `HERALD_PHASE2D_STABILITY_PLAN.md`,
+`HERALD_PHASE2H_FEATURE_MINIMALITY_AUDIT.md`, `HERALD_PHASE2I_SIDE2_FEATURE_AUDIT.md`,
+`HERALD_PHASE2L_LATENT_DIM_FINE_AUDIT.md`, `HERALD_PHASE2M_AUTOREG_AUDIT.md`,
+`HERALD_PHASE2O_2P_2Q_AUDIT.md`, `HERALD_PHASE2O_2P_2Q_PLAN.md`, `HERALD_PHASE2R_CONFIRMATORY_PLAN.md` —
+all exploratory steps superseded by Phase 3E/Q7 selection, per the existing rule
+"All `reports/HERALD_PHASE2*.md` (except 2R)" above; `HERALD_PHASE2R_CONFIRMATORY_PLAN.md` is the
+plan counterpart to the already-ACTIVE `HERALD_PHASE2R_CONFIRMATORY_AUDIT.md`.
+
+### Historical/superseded — Phase 3 (France q_tensor/labor pre-3E)
+`HERALD_PHASE3C_LABOR_TUTOR_AUDIT.md`, `HERALD_PHASE3C_LABOR_TUTOR_DATA_STATUS.md`,
+`HERALD_PHASE3C_MISSING_DATA_DOWNLOAD_AUDIT.md`, `HERALD_PHASE3C_URSSAF_METHOD_AUDIT.md`,
+`HERALD_PHASE3D_QTENSOR_PLAN.md`, `HERALD_PHASE3E_QTENSOR_ARCH_PLAN.md`,
+`HERALD_PHASE3_TUTOR_BLOCK_A_AUDIT.md` — steps toward 3E, per the existing rule "All
+`reports/HERALD_PHASE3*.md` (except 3E)" above.
+
+### Historical/superseded — Phase 4 (international generalization, pre-4N or non-canonical sub-steps)
+`HERALD_PHASE4_COVERAGE_MASK_PLAN.md`, `HERALD_PHASE4_DATA_VERIFICATION.md`,
+`HERALD_PHASE4_INTERNATIONAL_PLAN.md`, `HERALD_PHASE4_NEXT_STEP_INDEPENDENT_AUDIT.md`,
+`HERALD_PHASE4E_B_FEATURE_POLICY_PLAN.md`, `HERALD_PHASE4E_C_EU_SIGNALS_PLAN.md`,
+`HERALD_PHASE4E_C_RESULTS_AUDIT.md` (superseded by 4N), `HERALD_PHASE4E_F_GRAPH_REACTIVATION_PLAN.md`,
+`HERALD_PHASE4E_MISSING_DATA_SEARCH.md`, `HERALD_PHASE4E_PT_2024_EXTENSION_AUDIT.md`,
+`HERALD_PHASE4G_B_COUNTRY_BALANCE_PLAN.md`, `HERALD_PHASE4G_C_CONFIRMATION_PLAN.md`,
+`HERALD_PHASE4G_JOINT_EUROPE_PLAN.md`, `HERALD_PHASE4H_CODE_CONCEPT_AUDIT_2026.md`,
+`HERALD_PHASE4H_LOCO_PLAN.md`, `HERALD_PHASE4I_SELECTIVE_TRANSFER_PLAN.md`,
+`HERALD_PHASE4J_CANONICAL_REGISTRY_AUDIT.md`, `HERALD_PHASE4J_PATH_M_PROTOCOL.md`,
+`HERALD_PHASE4J_TARGET_AWARE_RESULTS.md`, `HERALD_PHASE4J_TARGET_EQUIVALENCE_TABLE.md`,
+`HERALD_PHASE4K_ENTERPRISE_BIRTH_COUNTRY_PREFLIGHT.md`, `HERALD_PHASE4L_ITALY_SEMANTIC_AUDIT.md`,
+`HERALD_PHASE4L_PT_IT_PANEL_AUDIT.md`, `HERALD_PHASE4M_THIRD_COUNTRY_PREFLIGHT.md`,
+`HERALD_PHASE4N_HARMONIZED_LOCO_PLAN.md` (plan counterpart to the ACTIVE `..._RESULTS_AUDIT.md`),
+`HERALD_PHASE4O_RESIDUAL_SPATIAL_DIAGNOSTIC.md` (plan counterpart to ACTIVE `..._B_RESIDUAL_SPATIAL_AUDIT.md`),
+`HERALD_PHASE4Q_ITALY_SPATIAL_DURBIN_PLAN.md` (plan counterpart to ACTIVE `..._AUDIT.md`) —
+all intermediate plans/audits feeding into the canonical 4M/4N/4O/4P/4Q results already
+classified ACTIVE above. Kept for audit trail, not citable as standalone results.
+
+### Historical/superseded — Dual graph / regime / V7 architecture search (pre-P6, pre-DEC-029)
+`HERALD_DUAL_GRAPH_EXPERIMENT_CONTRACT.md`, `HERALD_DUAL_GRAPH_MODEL_AUDIT.md`,
+`HERALD_DUAL_GRAPH_TARGET_AUDIT.md`, `HERALD_DUAL_GRAPH_TENSOR_AUDIT.md`,
+`HERALD_DUAL_GRAPH_TRAINER_AUDIT.md` — preflight/design docs for P6, superseded by the
+final `HERALD_DUAL_GRAPH_S1_RESULTS.md`/`HERALD_DUAL_GRAPH_S1_FINAL_AUDIT.md` (DUAL_GRAPH_S1_FAIL,
+already ACTIVE/closed-branch above).
+`HERALD_GRAPH_TEMPORAL_ARCHITECTURE_REVIEW.md` — superseded by `HERALD_GRAPH_TEMPORAL_ARCHITECTURE_DECISION.md` (DEC-027, already ACTIVE above).
+`HERALD_REGIME_ARCHITECTURE_REVIEW.md`, `HERALD_REGIME_DISCOVERY_BATTERY.md`,
+`HERALD_REGIME_PHASE2C_CRITICAL_PLAN.md`, `HERALD_LATENT_REGIME_DIMENSION_BATTERY_PLAN.md`,
+`HERALD_V7_RESEARCH_PLAN.md`, `HERALD_V7_TRAINING_BATTERY.md`,
+`HERALD_SEMI_V2_VALIDATION_BATTERY.md`, `HERALD_ECONOMIC_STATE_TUTOR_PLAN.md` — France
+regime-learner/V6/V7 architecture-search history predating the Q7 selection (Phase 3E);
+historical only, not citable for current claims.
+`HERALD_CURRENT_MODEL_DECISION_20260527.md` — historical France model-selection snapshot,
+superseded by Phase 3E Q7 (already ACTIVE above via `HERALD_PHASE3E_QTENSOR_ARCH_AUDIT.md`).
+
+### Historical/superseded — Other closed/early-exploration branches
+`HERALD_ECONOGNN_TRANSFERABILITY_AUDIT.md` — EconoGNN reference audit, concluded `REFERENCE_ONLY` (see CODEX_MEMORY DEC-028 section); historical.
+`HERALD_ARDECO_FR_EXTENSION_CONTRACT.md`, `HERALD_ARDECO_RIDGE_FR_AUDIT.md` — ARDECO extension exploration, not part of the current canonical pipeline; historical.
+`HERALD_AUTO_REGULATION_HYPOTHESIS_AUDIT.md`, `HERALD_RARE_REBOUND_DATA_AUDIT.md`,
+`HERALD_2021_INSTABILITY_DIAGNOSIS.md`, `HERALD_2021_STABILITY_LITERATURE_REVIEW.md`,
+`HERALD_SIDE5_STABILITY_AND_TREND_AUDIT_PLAN.md` — France 2021-instability diagnostic
+branch, historical, predates the current causal-baseline framing.
+`HERALD_PREDICTION_INTERPRETATION_METHODS.md` — general methods survey, historical reference only.
+`HERALD_EUROPEAN_PANEL_ADAPTER_AUDIT.md`, `HERALD_EUROPEAN_PANEL_STANDARD_PLAN.md`,
+`HERALD_EUROPEAN_SECTOR_COVERAGE_PREFLIGHT.md` (already covered by the DEC-038 entry above
+under a different filename pattern — `reports/HERALD_EUROPEAN_SECTOR_COVERAGE_PREFLIGHT.md`
+IS the DEC-038 report, status ACTIVE, not historical) — adapter/standard-plan docs are
+historical design notes superseded by the actually-built `src/data/european_panel/` adapters.
+`HERALD_G1_SECTOR_DATA_PREFLIGHT.md` — superseded by the canonical sector panel build (G0/G1 contract docs already ACTIVE above).
+`HERALD_G2_DASHBOARD_INTEGRATION_SPEC.md`, `HERALD_G2_REPORT_FIGURE_SELECTION.md`,
+`HERALD_G2_REPORT_SECTION_FR.md` — G2 write-up planning docs, historical (G2 results
+already classified ACTIVE via `HERALD_G2_AGGREGATE_DYNAMICS_AUDIT.md`/`HERALD_G2_COVID_SENSITIVITY_AUDIT.md`).
+`HERALD_INTELLIGENCE_LAYER_SPEC.md` — ARCHIVED per the artifact registry (`status: ARCHIVED`); structural reference only for future Bloco 3, not an active capability.
+`HERALD_DATA_AVAILABILITY_CALENDAR.md`, `HERALD_DATA_RESEARCH_REPORT.md` — early data-scoping notes, historical.
+
+### Regenerable / operational (not scientific reports)
+`HERALD_HPC_ORGANIZATION_AUDIT.md` — HPC directory organization audit; operational reference, regenerate-on-reorg only.
+`HERALD_DASHBOARD_FINAL_IMPLEMENTATION_PLAN.md`, `HERALD_DASHBOARD_PRESENTATION_SPEC.md`,
+`DASHBOARD_TODO.md` — pre-Observatory dashboard planning notes (France-only era); superseded
+by the Observatory v0.1→v0.5.1 contracts already listed as ACTIVE above.
+`HERALD_REPOSITORY_AND_DASHBOARD_CLEANUP_PLAN.md`, `HERALD_REPOSITORY_CLEANUP_20260526.md`,
+`reports/REPOSITORY_CLEANUP_20260519.md` — prior repo-cleanup passes; historical record of
+earlier consolidation efforts (this 2026-06-18 pass is the latest in that lineage).
+
+### Out of HERALD scope (pre-HERALD project, already noted above)
+`ATLAS_IAT_ANNUAL_RECONSTRUCTION_STANDBY.md`, `ATLAS_IAT_DATABASE_AUDIT.md`,
+`ATLAS_IAT_DYNAMIC_INTELLIGENCE_PLAN.md`, `ATLAS_IAT_SOURCE_REPRODUCIBILITY_AUDIT.md`,
+`ATLAS_IAT_STATIC_LAYER_AUDIT.md`, `ATLAS_IAT_TO_HERALD_EXPERIMENT_PLAN.md` — already
+covered by the existing rule "`reports/ATLAS_IAT_*.md` — pre-HERALD project, historical only".
+
+### Blocked/invalid for interpretation (cross-reference)
+No additional files beyond what is already listed above (`learned_sector_edges.csv` and its
+governing Charter §6 entry, and the NL gemeente proxy DEC-065 entries). This appendix found
+no other report claiming a blocked/invalid result that wasn't already flagged.

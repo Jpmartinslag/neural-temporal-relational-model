@@ -1,10 +1,87 @@
 # HERALD Current State
-**Updated:** 2026-06-17 (OBSERVATORY_V041_VISUAL_READY — PT continental municipality geometry obtained (278/278, DGT/CAOP via geoapi.pt, name-crosswalked, 1.18 MB simplified) and now renders as a real choropleth in `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (10.0 MB). Sector→sector graph is now dynamic: timeline slider + play/pause + 3 modes (current/cumulative/recurring) + recurring/sign-change/exclusive markers + per-window edge history + relation×window heatmap. Map↔graph linking added (country sync, sector highlight, edge-click territory context). NL gemeente proxy re-verified absent from the relation graph; 121 blocked edges still isolated. 241/241 tests pass (41 new `test_observatory_v041_visual_upgrade.py` + 200 prior). OBSERVATORY_V04_DASHBOARD_READY (previous milestone) and GRANULAR_OBSERVATORY_V04_DATA_READY both superseded by this visual upgrade. DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
+**Updated:** 2026-06-17 (OBSERVATORY_V051_NARRATIVE_READY — corrects
+OBSERVATORY_V05_NARRATIVE_READY below, which the product owner rejected as a
+polished MVP, not a complete-method presentation: English UI, architecture
+explanation at the bottom of the page, PT prediction gap left open, no
+geographic heatmap, sector graph not wired to the map, generic KPI cards,
+technical vocabulary leaking outside the collapsible section. v0.5.1 fixes
+every point: French UI throughout; a "Méthode HERALD" architecture diagram
+(6 stages + 4 components: statistical baseline / relational-candidate layer
+/ validation / output) opens the page before the map; PT municipal
+prediction integrated via causal persistence/Ridge AR(1) on the observed PT
+municipal panel (no proxy, no HPC — see
+`reports/HERALD_OBSERVATORY_V05_PREDICTION_GAP.md` §6, now CLOSED); a real
+"Bassins économiques" geographic-intensity heatmap mode; the sector relation
+graph now filters the map on click (`applyGraphFilterToMap`); a French
+"Résumé d'évidence" replaces the generic KPI cards; beta/q_fdr/bss and the
+one permitted causality-prohibition sentence confined to two collapsible
+"Détails méthodologiques" blocks; an explicit "Couche relationnelle" section
+stating no neural candidate-relation dataset exists in this repository
+today. New files only — v0.4/v0.4.1/v0.5 dashboards/builders/tests untouched
+and still pass (192/192). New dashboard:
+`reports/dashboards/herald_observatory_v051_narrative_dashboard.html` (18.2
+MB). 103/103 new tests pass
+(`tests/test_observatory_v051_narrative_dashboard.py`). Full record:
+`reports/HERALD_OBSERVATORY_V051_CORRECTION_AUDIT.md`.)
+**Previously updated 2026-06-17 (OBSERVATORY_V05_NARRATIVE_READY [CORRECTED
+to OBSERVATORY_V05_PARTIAL by the v0.5.1 entry above; scientific/statistical
+DEC-0xx conclusions are unaffected, only this dashboard-readiness claim is
+corrected] — new layperson-friendly
+dashboard `reports/dashboards/herald_observatory_v05_narrative_dashboard.html` (14.8 MB)
+built as a presentation layer on top of v0.4's already-validated granular exports; v0.4
+dashboard untouched. Map is now the heatmap (colour-by-year/sector directly on the
+choropleth, no separate chart) with a play/pause timeline; sector graph is dynamic and
+spatial with a plain-language sentence per relation and a persistent faint-vs-active
+window mode; prediction layer ("above/below expected") wired for FR+NL from the existing
+v0.3 Ridge/persistence forecast export (same ZE2020/COROP grain as v0.4 granular) — PT
+excluded at municipal grain because its only existing forecast is NUTS3-scale (gap
+documented, no fabrication, no HPC needed to close: see
+`reports/HERALD_OBSERVATORY_V05_PREDICTION_GAP.md`). PT/KZ structural absence now shown
+as "Sector not available for Portugal" (never NaN), KZ disabled in the sector selector
+for PT. NL gemeente proxy re-verified absent from the embedded relation graph; 121
+blocked proxy edges isolated in a technical-only panel. No causal language, no ML jargon
+in the main UI body (test-verified). New exports under
+`data/processed/herald_observatory_v05_narrative/`. 65/65 new tests pass
+(`tests/test_observatory_v05_narrative_dashboard.py`); all 127 prior v0.4/v0.4.1 tests
+unaffected. Playwright unavailable — validated structurally (JSON parse, DOM id/handler
+cross-reference) instead of screenshots.)
+**Previously updated 2026-06-17 (OBSERVATORY_V041_VISUAL_READY — PT continental municipality geometry obtained (278/278, DGT/CAOP via geoapi.pt, name-crosswalked, 1.18 MB simplified) and now renders as a real choropleth in `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (10.0 MB). Sector→sector graph is now dynamic: timeline slider + play/pause + 3 modes (current/cumulative/recurring) + recurring/sign-change/exclusive markers + per-window edge history + relation×window heatmap. Map↔graph linking added (country sync, sector highlight, edge-click territory context). NL gemeente proxy re-verified absent from the relation graph; 121 blocked edges still isolated. 241/241 tests pass (41 new `test_observatory_v041_visual_upgrade.py` + 200 prior). OBSERVATORY_V04_DASHBOARD_READY (previous milestone) and GRANULAR_OBSERVATORY_V04_DATA_READY both superseded by this visual upgrade. DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
 **Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-049), `HERALD_EVIDENCE_MATRIX.md`.
 
 ---
 
-## Overall Completion
+## Overall Completion (re-audited 2026-06-18, consolidation/freeze)
+
+This table replaces the 2026-06-12-era estimate below it, which predates
+DEC-060→DEC-068 (France signal audit, PT municipal granularity, NL gemeente
+proxy block, fine-grain threshold policy, Observatory v0.4.1/v0.5/v0.5.1).
+Percentages are planning estimates derived from what is actually READY vs
+PARTIAL vs BLOCKED in the decision log — not an empirical metric.
+
+| Layer | Completion | Ready | Partial | Blocked/Missing |
+|-------|-----------|-------|---------|------------------|
+| **Data** | **85%** | FR ZE2020, PT Municipal (278), NL COROP (40) all observed; PT/IT/AT harmonized Path H panel; European 27-country preflight (DEC-038) | NL gemeente proxy panel built but evidentially weak (DEC-063/065) | NL gemeente births at municipal grain (CBS open data structurally blocked — DEC-062); BE/other EU countries not ingested at sector×territory grain |
+| **Forecast/Prediction** | **75%** | Persistence/Ridge causal baseline validated PT/IT/AT LOCO (DEC-006); PT municipal forecast closed via direct AR(1)/Ridge re-run, no proxy, no HPC (DEC-068) | France HERALD Q7 (WMAPE 0.0204) — PENDING_REAUDIT, not a headline claim until causal pipeline audit completes | Conformal/uncertainty intervals still exploratory; no promoted interval method |
+| **Economic states** | **65%** | Deterministic observed states exported for aggregate PT/IT/AT and sector FR/NL/PT (Observatory v0.1.1→v0.4); PT/KZ structural absence correctly labelled, never bare NaN | — | No validated forecast-derived state (states are descriptive-only, not predicted ahead) |
+| **Sector→sector relations** | **80%** | SECTOR_PRECEDENCE_PROTOTYPE_READY: 20 observed edges (FR=9, NL COROP=8, PT Municipal=3); fine-grain threshold policy ready (DEC-066: ROBUST_ORIGINAL/FINE_GRAIN_SUPPORTED/EXPLORATORY_FINE_GRAIN tiers) | France has only 1 promoted label (RU→MN, COVID-sensitive) — audited root cause is small effect sizes at ZE2020 scale (DEC-060), not a methodology gap | NL gemeente proxy at finer grain BLOCKED for relation labels (DEC-065) — structural validity defect in the stock-share proxy method |
+| **Graph/neural layer** | **20%** | SharedRelationEncoder demonstrated on synthetic data (in-sample AUC=0.960, unseen-pair AUC=0.690 — DEC-055); useful as a research direction | Real-data validation PARTIAL (DEC-056/058/059): sign transfer weak (0.438-0.667 depending on variant), no robust cross-country replication, COVID/window sensitivity unresolved | Geographic/mobility graph as forecast input CLOSED (4P/4Q FAIL); P6 dual dynamic graph CLOSED (DUAL_GRAPH_S1_FAIL); graph-temporal GConvGRU/EvolveGCN-H CLOSED (S1_FR_FAIL). **No neural candidate-relation dataset exists in the repository for real data today** (explicitly stated in v0.5.1 dashboard) |
+| **Visualization (Observatory)** | **90%** | v0.4.1 stable/historical (FR/NL COROP/PT Municipal real choropleth, dynamic relation graph, 241/241 tests); v0.5.1 current (French, architecture-first, FR+NL+PT prediction, real geographic heatmap, graph-to-map wiring, 103/103 tests) | v0.5.1 not yet committed to git; no Playwright/screenshot visual validation in this environment (structural JS/DOM validation only) | Modular, map-first next iteration signalled by product owner — not started |
+| **Recommendation** | **0%** | — | Intelligence layer structure exists from earlier work (`HERALD_INTELLIGENCE_LAYER_SPEC.md`), reusable as structure only | Requires Bloco 1 + Bloco 2 complete per Charter; explicitly NOT STARTED; no weights/claims validated; rankings would be hypotheses only |
+| **European product (multi-country)** | **~45%** | FR/PT/NL sector-level integrated; PT/IT/AT harmonized for LOCO; 27-country sector coverage preflight done (DEC-038: FI eligible, 9 countries eligible-with-download) | NL gemeente sub-national disaggregation built but blocked for relations; BE remains semantically heterogeneous (vat_first_registration target) | No validated cross-country pooled relation claim; no validated single harmonized European target beyond Path H (PT/IT/AT, enterprise_birth demographic concept only) |
+| **Writing/article** | **5%** | Decision log, charter, evidence matrix, and bibliography (25 master refs) exist as raw material | Gantt re-drafted in this consolidation (`reports/HERALD_RESEARCH_GANTT.md`) | No outline, no draft sections, no venue selected; report/article writing has not started in any form beyond methodological documentation |
+
+**What's needed before the thesis/article can be written:** (1) Observatory
+v0.4.1/v0.5/v0.5.1 committed and visually validated; (2) PT municipal
+prediction extended/validated further if time permits (already closed as a
+data-engineering task, DEC-068); (3) decision on whether to attempt the
+modular map-first dashboard before or after writing starts; (4) figures/
+tables generated from the frozen results (not yet done — no figure-export
+pass has happened since Phase 8); (5) an explicit methods/results/discussion
+outline — none exists yet.
+
+---
+
+## Overall Completion (legacy estimate, 2026-06-12 — superseded by the table above)
 
 | Layer | Completion | Notes |
 |-------|-----------|-------|

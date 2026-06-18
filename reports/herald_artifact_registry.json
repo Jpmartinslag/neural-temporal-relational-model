@@ -17,8 +17,8 @@
       "REGENERABLE",
       "ARCHIVED"
     ],
-    "last_updated": "2026-06-17",
-    "last_decision": "DEC-065"
+    "last_updated": "2026-06-18",
+    "last_decision": "DEC-068 (consolidation pass: schema-drift fields backfilled for entries added since DEC-038; see HERALD_CURRENT_STATE.md finding)"
   },
   "artifacts": [
     {
@@ -136,7 +136,7 @@
         "data/processed/economic_graph/sector_panel_fr_nl_pt.csv"
       ],
       "claim_authorized": "Schema 2.0 tensors: 3 NL folds + 5 FR folds. E0_V2_PASS: 57/57 tests, zero leakage, deterministic. FR adjacency READY (280 ZE, 9 sectors, 5 eval years, 0 isolated nodes, 1 connected component, perfect symmetry).",
-      "claim_forbidden": "Predictive results \u2014 S1_FR_FAIL (DEC-031): GConvGRU/EvolveGCN-H both failed frozen gate. NL scientific claim (COVID-sensitive; engineering smoke only). No HPC submission authorized.",
+      "claim_forbidden": "Predictive results — S1_FR_FAIL (DEC-031): GConvGRU/EvolveGCN-H both failed frozen gate. NL scientific claim (COVID-sensitive; engineering smoke only). No HPC submission authorized.",
       "can_regenerate": true,
       "notes": "3 NL + 5 FR NPZ folds. Sector names confirmed: BE, FZ, GI, JZ, KZ, LZ, MN, OQ, RU (from sector panel sorted unique). Schema 1.0 at data/processed/graph_temporal_preflight/ is SUPERSEDED."
     },
@@ -155,7 +155,7 @@
         "hpc_results/dual_graph_s1/raw/ (275 JSON, local only)"
       ],
       "claim_authorized": "DUAL_GRAPH_S1_FAIL: all 7 gate criteria fail. C5_dual MAE 0.1424 vs C1_ridge 0.1242 (+14.6%), C2_no_graph 0.1329 (+7.2%). Seed Jaccard 0.3353. 2023 fold regression +17.4%.",
-      "claim_forbidden": "Any positive predictive claim. Named sector edge claims (sector label mapping invalid \u2014 see INVALID_FOR_INTERPRETATION entry below).",
+      "claim_forbidden": "Any positive predictive claim. Named sector edge claims (sector label mapping invalid — see INVALID_FOR_INTERPRETATION entry below).",
       "can_regenerate": false,
       "notes": "Authoritative gate result. Do not modify. Raw HPC results are in hpc_results/dual_graph_s1/ (local, not in git)."
     },
@@ -343,7 +343,7 @@
       "input_data": [
         "data/processed/herald_observatory_v02/herald_observatory_v02_panel.csv"
       ],
-      "claim_authorized": "12 COVID-robust sector precedence edges (NL=3, PT=9), 2 countries. SECTOR_PRECEDENCE_PROTOTYPE_READY. Associations only \u2014 predictive precedence, not structural causality. Slurm job 7455266, 710/710 COMPLETED. Audit PASS.",
+      "claim_authorized": "12 COVID-robust sector precedence edges (NL=3, PT=9), 2 countries. SECTOR_PRECEDENCE_PROTOTYPE_READY. Associations only — predictive precedence, not structural causality. Slurm job 7455266, 710/710 COMPLETED. Audit PASS.",
       "claim_forbidden": "Structural economic causality. Policy intervention claims. Mechanism claims (labour/capital flows). Extension to countries not in the panel without re-running the study.",
       "can_regenerate": true,
       "notes": "Panel SHA256=a6f8a5b2a34f17fac028518bf7955f7d8931c7a498b0af57b1afae5eb62c742e. Key files: decision.json (verdict), covid_robust_edges.csv, all_edges.csv, audit/audit_report.json. Not versioned (large CSV); regenerable from panel + manifest."
@@ -364,8 +364,8 @@
         "data/processed/sector_precedence_results/latest.csv",
         "data/processed/sector_precedence_results/covid_robust_edges.csv"
       ],
-      "claim_authorized": "Observatory v0.3 extends v0.2 with sector precedence layer. 12 ROBUST edges (NL=3, PT=9), 13 MAIN_ONLY_EXPLORATORY. sector_graph_available flag reflects COVID-robust window per country. Associations only \u2014 no structural causality.",
-      "claim_forbidden": "Structural causality. Policy intervention claims. Displaying MAIN_ONLY_EXPLORATORY edges as equivalent to ROBUST. Claiming FR has validated sector\u2192sector associations.",
+      "claim_authorized": "Observatory v0.3 extends v0.2 with sector precedence layer. 12 ROBUST edges (NL=3, PT=9), 13 MAIN_ONLY_EXPLORATORY. sector_graph_available flag reflects COVID-robust window per country. Associations only — no structural causality.",
+      "claim_forbidden": "Structural causality. Policy intervention claims. Displaying MAIN_ONLY_EXPLORATORY edges as equivalent to ROBUST. Claiming FR has validated sector→sector associations.",
       "can_regenerate": true,
       "notes": "Panel: 45,945 rows, same schema as v0.2 plus updated sector_graph_available. Key files: herald_observatory_v03_panel.csv, herald_observatory_v03_sector_relations.json, herald_observatory_v03_manifest.json. Dashboard: reports/dashboards/herald_observatory_v03_dashboard.html (self-contained HTML, 14095KB; Plotly 4.7MB + Phase 8 345-record territorial influence layer embedded; choropleth map + sector filter + Section 6 territorial contribution toggle, DEC-036/v0.3.1 + DEC-037 addendum). ROBUST_WINDOWS derived from covid_robust_edges.csv (FAIL_CLOSED). FR region_system=ZE2020 confirmed. PT choropleth: 23 mainland only."
     },
@@ -388,7 +388,7 @@
       "claim_authorized": "Descriptive LOTO territorial attribution of 12 Phase 7 ROBUST sector-precedence associations. influence_r = beta_full - beta_without_r. DESCRIPTIVE_ONLY layer: 91 HIGH_DESCRIPTIVE_INFLUENCE + 78 MODERATE_DESCRIPTIVE_INFLUENCE + 8 LOW_DESCRIPTIVE_INFLUENCE + 168 DESCRIPTIVE_ONLY. No causal transmission claim.",
       "claim_forbidden": "Causal transmission between territories. Geographic propagation. Enterprise-birth flow. Policy intervention. Elevating DESCRIPTIVE_ONLY to validated predictive finding without new pre-registration.",
       "can_regenerate": true,
-      "notes": "NL: 3 relations \u00d7 40 territories = 120 records. PT: 9 relations \u00d7 25 territories = 225 records. Total: 345. Bootstrap: 500 draws per relation, seed=42. Beta integrity verified: max deviation from Phase 7 = 3.6e-16. Manifest version=0.2 (nomenclature addendum). Key files: territorial_sector_movements.csv, territorial_sector_movement_summary.csv, territorial_sector_movement_decision.json, territorial_sector_movement_manifest.json. Dashboard integration: Observatory v0.3 Section 6."
+      "notes": "NL: 3 relations × 40 territories = 120 records. PT: 9 relations × 25 territories = 225 records. Total: 345. Bootstrap: 500 draws per relation, seed=42. Beta integrity verified: max deviation from Phase 7 = 3.6e-16. Manifest version=0.2 (nomenclature addendum). Key files: territorial_sector_movements.csv, territorial_sector_movement_summary.csv, territorial_sector_movement_decision.json, territorial_sector_movement_manifest.json. Dashboard integration: Observatory v0.3 Section 6."
     },
     {
       "id": "HERALD_Q7_FRANCE_RESULT",
@@ -405,7 +405,7 @@
         "data/raw/",
         "data/external/france/"
       ],
-      "claim_authorized": "HERALD Q7 WMAPE 0.0204 (mean 2021-2025), 0.0115 (2025), France 306 ZE. Status: PENDING_REAUDIT \u2014 causal audit of Phase 3E/2R pipeline features (growth_1y/2y, effectifs_lag1) not yet formally complete for French track. Not usable as headline claim until audit is done.",
+      "claim_authorized": "HERALD Q7 WMAPE 0.0204 (mean 2021-2025), 0.0115 (2025), France 306 ZE. Status: PENDING_REAUDIT — causal audit of Phase 3E/2R pipeline features (growth_1y/2y, effectifs_lag1) not yet formally complete for French track. Not usable as headline claim until audit is done.",
       "claim_forbidden": "Extension to non-French geographies. LOCO claim. Leakage-free claim extended to growth_1y Phase 4A/4D versions. Citing WMAPE 0.0204 as a headline validated result before causal pipeline audit is complete.",
       "can_regenerate": true,
       "notes": "French institutional data (SIDE/SIRENE, URSSAF effectifs). Causal protocol confirmed in Phase 3E. Note: growth_1y leakage issue is a Phase 4A/4D problem only. PENDING_REAUDIT status added DEC-030."
@@ -423,7 +423,14 @@
       ],
       "script": "src/data/european_panel/audit_european_sector_coverage.py",
       "tests": "tests/test_european_sector_coverage.py (53 tests)",
-      "status": "COMPLETE"
+      "status": "COMPLETE",
+      "path": "data/processed/european_panel/european_sector_coverage_matrix.csv",
+      "type": "result_directory",
+      "tracked_in_git": true,
+      "can_regenerate": true,
+      "origin_decision": "DEC-038",
+      "claim_authorized": "European territorial sector coverage preflight. 27 countries evaluated. FI: ELIGIBLE_WITH_MAPPING (19 NUTS3, 2013-2021). BE: BLOCKED_SEMANTICS. AT/CZ/DE/DK/ES/IT/PL/RO/SE: ELIGIBLE_WITH_DOWNLOAD. Key limitation: Eurostat BD_HGNACE_R only 3 years (2021-2023) except FI; K_L always combined.",
+      "claim_forbidden": "Treating ELIGIBLE_WITH_DOWNLOAD/PARTIAL countries as already-ingested. Pooling BE (BLOCKED_SEMANTICS) into harmonized claims."
     },
     {
       "id": "GRANULAR_FR_PT_NL_EVIDENCE_MODEL",
@@ -451,7 +458,12 @@
       "tests": "tests/test_granular_fr_pt_nl_evidence_model.py (66 tests)",
       "status": "COMPLETE",
       "claim_authorized": "GRANULAR_FR_PT_NL_PREFLIGHT_READY. FR 280 ZE2020 + PT 278 municipalities + NL 40 COROP: observed_births available. NL 355 gemeente: proxy_disaggregated_by_stock_share available. Reaggregation identity verified (max_abs_error=0.0).",
-      "claim_forbidden": "Neural training before new DEC. Phase 7 full run before new DEC. Treating proxy as observed births. KZ claims for PT. Causal language. Pooled FR/PT/NL claims without concept harmonisation DEC."
+      "claim_forbidden": "Neural training before new DEC. Phase 7 full run before new DEC. Treating proxy as observed births. KZ claims for PT. Causal language. Pooled FR/PT/NL claims without concept harmonisation DEC.",
+      "path": "data/processed/european_panel/granular_fr_pt_nl_training_matrix.csv",
+      "type": "result_directory",
+      "tracked_in_git": true,
+      "can_regenerate": true,
+      "origin_decision": "DEC-063"
     },
     {
       "id": "PT_MUNICIPAL_PHASE7_SMOKE",
@@ -478,7 +490,13 @@
       "tests": "tests/test_dec064_pt_municipal_phase7.py (60 tests: 52 PASS + 8 SKIP-full)",
       "status": "SMOKE_COMPLETE — READY_FOR_HPC",
       "claim_authorized": "PT municipal pipeline validated. n_samples sufficient. Smoke: 56/56 pares válidos, 0 promovidos. Ecological fragmentation confirmed: |β| smaller at municipal vs NUTS3.",
-      "claim_forbidden": "Promoted PT municipal relations (full run not complete). Causal claims. Threshold change without new DEC. HPC launch without authorisation."
+      "claim_forbidden": "Promoted PT municipal relations (full run not complete). Causal claims. Threshold change without new DEC. HPC launch without authorisation.",
+      "path": "data/processed/phase7_pt_municipal/",
+      "type": "result_directory",
+      "tracked_in_git": true,
+      "can_regenerate": true,
+      "notes_appendix": "Smoke entry superseded in content (not status) by the full Phase 7 run recorded in HERALD_CURRENT_STATE.md (2 COVID-robust pairs promoted: GI->OQ, MN->JZ); kept under this id for traceability with DEC-064.",
+      "origin_decision": "DEC-064"
     },
     {
       "id": "NL_GEMEENTE_PROXY_PHASE7_BLOCKED",
@@ -507,9 +525,16 @@
       "tests": "tests/test_dec065_nl_gemeente_proxy_phase7.py (71/71 PASS)",
       "status": "BLOCKED",
       "relation_label_status": "INVALID_FOR_RELATION_LABELS",
-      "allowed_use": ["territory_state_context_only"],
+      "allowed_use": [
+        "territory_state_context_only"
+      ],
       "claim_authorized": "NL gemeente proxy panel construction valid (reaggregation PASS, leakage PASS). Structural validity diagnostic is reusable evidence against stock-share-weighted disaggregation for future country/sector proxy panels. NL COROP (observed, DEC-034/064) remains valid NL baseline. May be used as territorial context/visualization only.",
-      "claim_forbidden": "Using any of the 121 promoted / 97 COVID-robust gemeente proxy edges as DEC-066 training labels under any tier (ROBUST_ORIGINAL, FINE_GRAIN_SUPPORTED, EXPLORATORY_FINE_GRAIN). Pooling gemeente proxy edges with FR/PT/NL COROP in DEC-068 cross-country training. Treating proxy as observed births. Causal language."
+      "claim_forbidden": "Using any of the 121 promoted / 97 COVID-robust gemeente proxy edges as DEC-066 training labels under any tier (ROBUST_ORIGINAL, FINE_GRAIN_SUPPORTED, EXPLORATORY_FINE_GRAIN). Pooling gemeente proxy edges with FR/PT/NL COROP in DEC-068 cross-country training. Treating proxy as observed births. Causal language.",
+      "path": "data/processed/phase7_nl_gemeente_proxy/",
+      "type": "result_directory",
+      "tracked_in_git": true,
+      "can_regenerate": true,
+      "origin_decision": "DEC-065"
     },
     {
       "id": "NL_COROP_PHASE7",
@@ -528,9 +553,18 @@
       "tests": "tests/test_dec065_nl_gemeente_proxy_phase7.py (TestN4CoropSignalPreservation references this baseline)",
       "status": "VALID_OBSERVED",
       "relation_label_status": "VALID_OBSERVED",
-      "allowed_use": ["territory_state", "relation_graph", "training_label"],
+      "allowed_use": [
+        "territory_state",
+        "relation_graph",
+        "training_label"
+      ],
       "claim_authorized": "NL COROP 8 promoted edges, 3 COVID-robust, usable as DEC-066 ROBUST_ORIGINAL training labels and Observatory relation graph input.",
-      "claim_forbidden": "Pooling with NL gemeente proxy edges. Causal language. Claiming COROP-scale precision at gemeente scale."
+      "claim_forbidden": "Pooling with NL gemeente proxy edges. Causal language. Claiming COROP-scale precision at gemeente scale.",
+      "path": "data/processed/sector_precedence_results/",
+      "type": "result_directory",
+      "tracked_in_git": false,
+      "can_regenerate": true,
+      "origin_decision": "DEC-034"
     },
     {
       "id": "OBSERVATORY_V04_GRANULAR_DASHBOARD",
@@ -548,7 +582,12 @@
       "size_mb": 10.0,
       "plotly_dependency": "local_embedded",
       "claim_authorized": "Visual exploration of FR/PT/NL granular territory state (incl. PT real choropleth) and observed sector relations with temporal dynamics. NL gemeente proxy territory context with explicit proxy/context badge. Blocked proxy edges visible for audit only.",
-      "claim_forbidden": "Treating NL gemeente proxy edges or table rows as relation labels or observed evidence. Causal language. Treating edge-click territory-state context as edge-specific territorial attribution. Modifying without re-running tests/test_observatory_v04_dashboard.py and tests/test_observatory_v041_visual_upgrade.py."
+      "claim_forbidden": "Treating NL gemeente proxy edges or table rows as relation labels or observed evidence. Causal language. Treating edge-click territory-state context as edge-specific territorial attribution. Modifying without re-running tests/test_observatory_v04_dashboard.py and tests/test_observatory_v041_visual_upgrade.py.",
+      "path": "reports/dashboards/herald_observatory_v04_granular_dashboard.html",
+      "type": "dashboard_html",
+      "tracked_in_git": true,
+      "can_regenerate": true,
+      "origin_decision": "DEC-065 / Observatory v0.4.1 visual upgrade"
     },
     {
       "id": "PT_MUNICIPALITY_GEOMETRY",
@@ -567,7 +606,126 @@
       "size_mb": 1.18,
       "raw_cache": "data/external/portugal/geometry/raw/ (181 MB, gitignored, regenerable)",
       "claim_authorized": "PT continental municipality choropleth mapping in the Observatory v0.4.1 dashboard. Reproducible via the documented builder script (idempotent, caches raw fetches).",
-      "claim_forbidden": "Using for Acores/Madeira (excluded by construction). Treating geoapi.pt panel_id as equivalent to the GISCO Dicofre code (crosswalk is name-based, not code-based). Fabricating geometry if coverage regresses below 278/278 — the dashboard must fall back to table view instead."
+      "claim_forbidden": "Using for Acores/Madeira (excluded by construction). Treating geoapi.pt panel_id as equivalent to the GISCO Dicofre code (crosswalk is name-based, not code-based). Fabricating geometry if coverage regresses below 278/278 — the dashboard must fall back to table view instead.",
+      "path": "data/processed/geometries/pt_municipalities_continental.geojson",
+      "type": "geometry_geojson",
+      "tracked_in_git": true,
+      "can_regenerate": true,
+      "origin_decision": "Observatory v0.4.1 visual upgrade"
+    },
+    {
+      "id": "OBSERVATORY_V05_NARRATIVE",
+      "decision": "DEC-067",
+      "date": "2026-06-17",
+      "description": "Layperson-friendly narrative presentation layer built on top of the v0.4 granular evidence exports. Re-shapes territory state / relation edges / blocked proxy edges into human-readable views (territory_view, sector_view, relation_view, prediction_view) plus map_state_by_year_sector.json and relation_timeline.json for the dynamic map/graph. Prediction layer joined from the v0.3 Ridge/persistence forecast export for FR+NL (same ZE2020/COROP grain); PT excluded (NUTS3 vs MUNICIPALITY grain mismatch, documented gap, no fabrication). No scientific number recomputed or altered.",
+      "files": [
+        "data/processed/herald_observatory_v05_narrative/territory_view.csv",
+        "data/processed/herald_observatory_v05_narrative/territory_view.json",
+        "data/processed/herald_observatory_v05_narrative/sector_view.csv",
+        "data/processed/herald_observatory_v05_narrative/sector_view.json",
+        "data/processed/herald_observatory_v05_narrative/relation_view.csv",
+        "data/processed/herald_observatory_v05_narrative/relation_view.json",
+        "data/processed/herald_observatory_v05_narrative/prediction_view.csv",
+        "data/processed/herald_observatory_v05_narrative/prediction_view.json",
+        "data/processed/herald_observatory_v05_narrative/map_state_by_year_sector.json",
+        "data/processed/herald_observatory_v05_narrative/relation_timeline.json",
+        "data/processed/herald_observatory_v05_narrative/blocked_proxy_edges_v04_copy.csv",
+        "data/processed/herald_observatory_v05_narrative/manifest.json",
+        "reports/dashboards/herald_observatory_v05_narrative_dashboard.html"
+      ],
+      "generator_script": "src/data/european_panel/build_observatory_v05_narrative_exports.py; src/data/european_panel/build_observatory_v05_narrative_dashboard.py",
+      "input_data": [
+        "data/processed/herald_observatory_v04_granular/granular_territory_state_panel.csv",
+        "data/processed/herald_observatory_v04_granular/granular_relation_edges.csv",
+        "data/processed/herald_observatory_v04_granular/blocked_proxy_edges.csv",
+        "data/processed/herald_observatory_v03/herald_observatory_v03_panel.csv"
+      ],
+      "claim_authorized": "Layperson-facing presentation of the same v0.4 granular evidence (territory state, observed relations, blocked proxy audit) plus a validated FR/NL observed-vs-expected prediction layer. Relations are predictive precedence, not causal claims.",
+      "claim_forbidden": "PT prediction at municipal grain (does not exist, gap documented in HERALD_OBSERVATORY_V05_PREDICTION_GAP.md); NL gemeente proxy as relation evidence (structurally excluded); blocked proxy edges as a discovery/finding.",
+      "can_regenerate": true,
+      "notes": "Presentation-only layer. v0.4 dashboard/exports remain canonical and untouched. 65/65 tests pass (tests/test_observatory_v05_narrative_dashboard.py). CORRECTED 2026-06-17: product owner rejected this UX as a polished MVP, not a complete-method presentation (English UI, architecture at the bottom, PT prediction gap not closed, no geographic heatmap, graph not wired to map, generic KPI cards, technical jargon leaking into main body). Dashboard-readiness status corrected to OBSERVATORY_V05_PARTIAL. See OBSERVATORY_V051_NARRATIVE artifact below and reports/HERALD_OBSERVATORY_V051_CORRECTION_AUDIT.md for the point-by-point fix. This entry's files/scripts are otherwise unchanged and still valid as historical record.",
+      "path": "reports/dashboards/herald_observatory_v05_narrative_dashboard.html",
+      "type": "dashboard_html",
+      "status": "OBSERVATORY_V05_PARTIAL",
+      "tracked_in_git": false,
+      "origin_decision": "DEC-067"
+    },
+    {
+      "id": "OBSERVATORY_V051_NARRATIVE",
+      "decision": "OBSERVATORY_V051_CORRECTION",
+      "date": "2026-06-17",
+      "description": "Correction of OBSERVATORY_V05_NARRATIVE per product-owner rejection. Same v0.4 granular evidence sources, re-shaped into a French, article-grade presentation: HERALD method/architecture diagram opens the page (before the map); prediction layer integrated for FR+NL+PT (PT municipal forecast newly built via causal persistence/Ridge AR(1) on the observed PT municipal panel, no proxy, no HPC); new geographic heatmap mode ('Bassins économiques', territorial intensity by quantile); sector relation graph wired to filter the map on click; generic KPI cards replaced by a French 'résumé d'évidence'; beta/q_fdr/bss and causal-prohibition language confined to a collapsible 'Détails méthodologiques' section; explicit 'Couche relationnelle' section distinguishing validated Phase 7 relations from (currently nonexistent) neural candidate relations. No scientific number recomputed or altered; v0.4/v0.4.1/v0.5 files untouched.",
+      "files": [
+        "data/processed/herald_observatory_v051_narrative/territory_view.csv",
+        "data/processed/herald_observatory_v051_narrative/territory_view.json",
+        "data/processed/herald_observatory_v051_narrative/sector_view.csv",
+        "data/processed/herald_observatory_v051_narrative/sector_view.json",
+        "data/processed/herald_observatory_v051_narrative/relation_view.csv",
+        "data/processed/herald_observatory_v051_narrative/relation_view.json",
+        "data/processed/herald_observatory_v051_narrative/prediction_view.csv",
+        "data/processed/herald_observatory_v051_narrative/prediction_view.json",
+        "data/processed/herald_observatory_v051_narrative/pt_municipal_prediction_view.csv",
+        "data/processed/herald_observatory_v051_narrative/map_state_by_year_sector.json",
+        "data/processed/herald_observatory_v051_narrative/relation_timeline.json",
+        "data/processed/herald_observatory_v051_narrative/prediction_lookup.json",
+        "data/processed/herald_observatory_v051_narrative/economic_basins.json",
+        "data/processed/herald_observatory_v051_narrative/blocked_proxy_edges_v04_copy.csv",
+        "data/processed/herald_observatory_v051_narrative/manifest.json",
+        "reports/dashboards/herald_observatory_v051_narrative_dashboard.html"
+      ],
+      "generator_script": "src/data/european_panel/build_pt_municipal_prediction_layer.py; src/data/european_panel/build_observatory_v051_narrative_exports.py; src/data/european_panel/build_observatory_v051_narrative_dashboard.py; src/data/european_panel/build_observatory_v051_narrative_dashboard_template.py",
+      "input_data": [
+        "data/processed/herald_observatory_v04_granular/granular_territory_state_panel.csv",
+        "data/processed/herald_observatory_v04_granular/granular_relation_edges.csv",
+        "data/processed/herald_observatory_v04_granular/blocked_proxy_edges.csv",
+        "data/processed/herald_observatory_v03/herald_observatory_v03_panel.csv",
+        "data/processed/phase7_pt_municipal/pt_municipal_phase7_panel.csv"
+      ],
+      "claim_authorized": "French-language layperson-facing presentation of the same v0.4 granular evidence plus a validated FR/NL/PT observed-vs-expected prediction layer (PT at municipal grain, causal persistence/Ridge, no proxy, no HPC). Relations are predictive precedence ('semble précéder'), not causal claims; causality is discussed only inside a collapsible technical section, framed as an explicit prohibition.",
+      "claim_forbidden": "NL gemeente proxy as relation evidence (structurally excluded); blocked proxy edges as a discovery/finding; any neural/candidate relation dataset (none exists in this repository — explicitly stated as such in the dashboard, not fabricated).",
+      "can_regenerate": true,
+      "notes": "Presentation-only layer with one new data-engineering addition (PT municipal forecast). v0.4 dashboard/exports and v0.5 dashboard/exports remain untouched. See tests/test_observatory_v051_narrative_dashboard.py and reports/HERALD_OBSERVATORY_V051_CORRECTION_AUDIT.md for full pass/fail record.",
+      "path": "reports/dashboards/herald_observatory_v051_narrative_dashboard.html",
+      "type": "dashboard_html",
+      "status": "OBSERVATORY_V051_NARRATIVE_READY",
+      "tracked_in_git": false,
+      "origin_decision": "OBSERVATORY_V051_CORRECTION"
+    },
+    {
+      "id": "DEC066_FINE_GRAIN_THRESHOLD_POLICY",
+      "decision": "DEC-066",
+      "date": "2026-06-16",
+      "description": "Fine-grain threshold calibration policy: original ROBUST_ORIGINAL tier (|beta|>=0.10) unchanged; new FINE_GRAIN_SUPPORTED tier (|beta|>=0.09, requires bss>=0.80 plus COVID-robust OR >=2 consecutive windows OR cross-country replication); new non-training EXPLORATORY_FINE_GRAIN tier (0.07-0.09, bss>=0.90). Calibrated using FR ZE2020 + PT Municipal observed data only; NL gemeente proxy explicitly excluded from calibration.",
+      "path": "data/processed/phase7_threshold_calibration/fine_grain_label_policy.json",
+      "type": "policy_json",
+      "status": "FINE_GRAIN_THRESHOLD_POLICY_READY",
+      "tracked_in_git": false,
+      "can_regenerate": true,
+      "files": [
+        "data/processed/phase7_threshold_calibration/fine_grain_label_policy.json",
+        "data/processed/phase7_threshold_calibration/phase7_threshold_candidates.csv",
+        "data/processed/phase7_threshold_calibration/threshold_sensitivity_summary.json"
+      ],
+      "tests": "43/43 PASS (tests/test_dec066_threshold_calibration.py)",
+      "claim_authorized": "FR=1 ROBUST + 3 FINE_GRAIN + 5 EXPLORATORY; NL=8 ROBUST; PT_NUTS3=16 ROBUST; PT_MUNI=2 ROBUST + 1 EXPLORATORY (per HERALD_DEC066_FINE_GRAIN_THRESHOLD_CALIBRATION.md). Ecological scale effect confirmed across PT NUTS3/NL COROP/FR-PT_MUNI.",
+      "claim_forbidden": "Using EXPLORATORY_FINE_GRAIN tier as a training label under any circumstance. Calibrating against NL gemeente proxy data.",
+      "notes": "Report: reports/HERALD_DEC066_FINE_GRAIN_THRESHOLD_CALIBRATION.md.",
+      "origin_decision": "DEC-066"
+    },
+    {
+      "id": "SYNTHETIC_BENCHMARK_RELATION_LEARNING_TRACK",
+      "decision": "DEC-039 to DEC-059 (research track, multiple decisions)",
+      "date": "2026-06-13 to 2026-06-16",
+      "description": "Synthetic-then-real relation-learning research track: controlled synthetic benchmark with known ground truth (DEC-039/040), lagged graph architecture (DEC-043/044), generalization/few-shot/pretraining experiments (DEC-045 to DEC-054), SharedRelationEncoder (DEC-055, synthetic SUPPORTED; DEC-056/058/059 real-data validation PARTIAL). This is the 'graph/neural layer' referenced in HERALD_CURRENT_STATE.md (~20% complete) and HERALD_ARCHITECTURE_OVERVIEW.md -- useful on synthetic data for relation detection, partial on real data (weak sign transfer, no robust cross-country replication), explicitly NOT a final claim.",
+      "path": "data/processed/synthetic_benchmark/",
+      "type": "result_directory",
+      "status": "ACTIVE",
+      "tracked_in_git": false,
+      "can_regenerate": true,
+      "claim_authorized": "Synthetic relation-learning architecture (SharedRelationEncoder) demonstrates in-sample AUC=0.960 and unseen-pair AUC=0.690 on controlled synthetic data with known ground truth (DEC-055). Real-data validation (DEC-056/058/059) finds sign concordance 0.438-0.667 depending on variant, no robust cross-country replication, COVID/window sensitivity unresolved.",
+      "claim_forbidden": "Treating the synthetic-data result as a real-data validated finding. Any claim that this architecture is production-ready or feeds the current Observatory dashboards (it does not -- the v0.5.1 dashboard explicitly states no neural candidate-relation dataset exists in this repository for real data today).",
+      "notes": "Large, regenerable, checkpoint-heavy directory (*.pt/*.ckpt files now covered by .gitignore as of the 2026-06-18 consolidation pass). Not committed; not part of the Observatory dashboard data path.",
+      "origin_decision": "DEC-039 to DEC-059 (research track, multiple decisions)"
     }
   ]
 }
