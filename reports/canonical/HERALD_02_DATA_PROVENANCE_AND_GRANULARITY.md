@@ -108,6 +108,27 @@ lowering the threshold uniformly (which would have let weaker effects through ev
 
 ---
 
+## 5b. European sector-coverage preflight (DEC-038) — eligibility beyond FR/NL/PT
+
+A 27-country eligibility audit (`reports/HERALD_EUROPEAN_SECTOR_COVERAGE_PREFLIGHT.md`)
+classified every EU country's territory×year×sector enterprise-birth data, ahead of any
+future expansion beyond FR/NL/PT:
+
+| Status | Countries |
+|---|---|
+| `IN_OBSERVATORY` | FR (280 ZE2020), NL (40 COROP), PT (25 NUTS3) |
+| `ELIGIBLE_WITH_MAPPING` | FI (19 NUTS3, Eurostat BD_HGNACE_R, 2013–2021, K_L sectors combined) |
+| `ELIGIBLE_WITH_DOWNLOAD` | AT, CZ, DE, DK, ES, IT, PL, RO, SE (national source download + mapping required) |
+| `PARTIAL_DESCRIPTIVE_ONLY` | BG, CY, EE, EL, HR, HU, IE, LT, LU, LV, MT, SI, SK (Eurostat BD_SIZE_R3, only 3 years, total births only) |
+| `BLOCKED_SEMANTICS` | BE (`vat_first_registration` ≠ `enterprise_birth`, permanent semantic blocker) |
+
+**Key structural limitation found:** Eurostat's `BD_HGNACE_R` combines KZ (financial) and
+LZ (real estate) into one `K_L` sector for every country — Phase 7 relations involving KZ
+or LZ individually cannot be tested from this Eurostat source alone, for any country.
+This audit did not integrate any new country — it is eligibility classification only.
+
+---
+
 ## 6. File index (clean exports)
 
 - `data/processed/herald_observatory_v04_granular/granular_territory_state_panel.csv` —

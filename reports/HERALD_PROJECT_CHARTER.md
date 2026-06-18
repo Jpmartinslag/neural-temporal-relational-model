@@ -9,8 +9,8 @@ DEC-034→DEC-068. Sector→sector precedence is now implemented statistically t
 Phase 7; recommendation remains future; neural graph prediction remains
 unsupported/partial. The original text below is left unchanged — read it together with
 the decision log, not as a standalone current-state claim. See
-`reports/HERALD_PROJECT_TRAJECTORY.md` for the narrative version and
-`reports/HERALD_CURRENT_STATE.md` for the current per-component status.
+`reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md` for the narrative version
+and `reports/HERALD_CURRENT_STATE.md` for the current per-component status.
 
 ---
 

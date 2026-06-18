@@ -133,7 +133,7 @@ gantt
     Final review and delivery                 :review, 2026-08-20, 2026-09-12
 ```
 
-Full detail: `reports/HERALD_RESEARCH_GANTT.md`.
+Full detail (and the rationale for each item): `reports/canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md`.
 
 ---
 
@@ -151,13 +151,17 @@ traceability, not current) · **generated** (build output, regenerable) ·
 | `data/` | active | Raw, intermediate, and canonical processed panels. Read `reports/herald_artifact_registry.json` before trusting any file's provenance. |
 | `hpc/` | active + historical mix | SLURM batch scripts for both open and closed phases — check the phase name against the decision log before reusing a script. |
 | `scripts/`, `tools/` | active, narrow-purpose | Small standalone audit/merge utilities, not part of the main pipeline. |
-| `docs/architecture/` | historical | Older architecture diagrams/views (e.g. LikeC4). `reports/HERALD_ARCHITECTURE_OVERVIEW.md` is the current source. Any local Node/Graphify helper files are intentionally ignored and are not required for current dashboard reproduction. |
+| `docs/architecture/` | historical | Older architecture diagrams/views (e.g. LikeC4). `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md` is the current source. Any local Node/Graphify helper files are intentionally ignored and are not required for current dashboard reproduction. |
 | `metadata/` | historical | Older data catalogs, partly superseded by `reports/herald_artifact_registry.json`. Verify before relying on it. |
-| `hpc_results/` | generated, do-not-start-here | Raw job outputs, mostly from closed/superseded branches. Cross-reference against the decision log first. |
+| `hpc_results/` | generated, do-not-start-here | Raw job outputs, mostly from closed/superseded branches (graph-temporal, P6 dual-graph, geographic-graph — all CLOSED). Cross-reference against the decision log first. |
+| `data/external/*/raw/` | generated, do-not-start-here | Raw, regenerable ingestion caches. Gitignored; regenerate via the corresponding `src/data/ingest_*`/`build_*` script, never edit by hand. |
 | large exports under `data/processed/herald_observatory_v0*_narrative/` | generated | Regenerable presentation-layer exports; only their small `manifest.json` is git-tracked. |
 
-Full breakdown (active vs. historical vs. generated, and what an AI/new
-contributor should read first): `reports/HERALD_REPOSITORY_STRUCTURE.md`.
+`reports/dashboards/` holds several HTML files spanning different Observatory milestones
+(v0.3, v0.4, v0.4.1, v0.5, v0.5.1) — only one is current at any time; check
+`reports/HERALD_CURRENT_STATE.md`'s Visualization row for which one and its actual
+decision status (e.g. `OBSERVATORY_V051_CANDIDATE_NEEDS_MAP_REDESIGN` is a *candidate*,
+not an accepted final dashboard). Older dashboard files stay committed for audit trail.
 
 ---
 
@@ -188,7 +192,8 @@ python3 -m pytest tests/test_herald_artifact_registry.py -q
 - **Active document index:** `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` — classifies every report (active / historical / blocked / regenerable).
 - **Artifact registry:** `reports/herald_artifact_registry.json` — path, status, allowed/forbidden use per artifact.
 - **Naming conventions:** `reports/HERALD_NAMING_CONVENTIONS.md` — canonical label/status vocabulary.
-- **Architecture detail:** `reports/HERALD_ARCHITECTURE_OVERVIEW.md`.
+- **Architecture detail:** `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md`.
+- **Consolidation audit (what was merged/removed from the old reports and why):** `reports/canonical/HERALD_CANONICAL_CONSOLIDATION_AUDIT.md`.
 - **Main panels:** `data/processed/herald_observatory_v04_granular/` (clean FR/PT/NL exports), `data/processed/european_panel/pt_municipal_sector_panel.csv` (PT municipal).
 
 ---

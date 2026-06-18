@@ -106,6 +106,28 @@ reports/archive/gate2_validation/
 reports/archive/fixed_geo_mob_only/
 reports/archive/self_only/
 
+# Canonical-docs policy: root-level reports are consolidated into
+# reports/canonical/ plus a small set of control documents. Legacy reports remain
+# available in git history and are mapped in HERALD_REPORTS_CONSOLIDATION_MAP.md.
+reports/*.md
+reports/*.csv
+reports/*.json
+!reports/README.md
+!reports/HERALD_ACTIVE_DOCUMENT_INDEX.md
+!reports/HERALD_CURRENT_STATE.md
+!reports/HERALD_METHODOLOGICAL_DECISION_LOG.md
+!reports/HERALD_PROJECT_CHARTER.md
+!reports/HERALD_NAMING_CONVENTIONS.md
+!reports/HERALD_REPORTS_CONSOLIDATION_MAP.md
+!reports/herald_artifact_registry.json
+reports/architecture/
+reports/archive/
+reports/dynamic_stgnn/
+reports/herald_v3/
+reports/herald_v6/
+reports/metrics/
+reports/phase3_tutor_signal_audit/
+
 # ── hpc_results — só manter JSON de métricas, README e HTML ───────
 hpc_results/**/*.npz
 hpc_results/**/*.csv

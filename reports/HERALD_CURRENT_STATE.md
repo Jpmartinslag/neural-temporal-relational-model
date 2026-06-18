@@ -53,7 +53,7 @@ in the main UI body (test-verified). New exports under
 unaffected. Playwright unavailable — validated structurally (JSON parse, DOM id/handler
 cross-reference) instead of screenshots.)
 **Previously updated 2026-06-17 (OBSERVATORY_V041_VISUAL_READY — PT continental municipality geometry obtained (278/278, DGT/CAOP via geoapi.pt, name-crosswalked, 1.18 MB simplified) and now renders as a real choropleth in `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (10.0 MB). Sector→sector graph is now dynamic: timeline slider + play/pause + 3 modes (current/cumulative/recurring) + recurring/sign-change/exclusive markers + per-window edge history + relation×window heatmap. Map↔graph linking added (country sync, sector highlight, edge-click territory context). NL gemeente proxy re-verified absent from the relation graph; 121 blocked edges still isolated. 241/241 tests pass (41 new `test_observatory_v041_visual_upgrade.py` + 200 prior). OBSERVATORY_V04_DASHBOARD_READY (previous milestone) and GRANULAR_OBSERVATORY_V04_DATA_READY both superseded by this visual upgrade. DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
-**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-068), `HERALD_EVIDENCE_MATRIX.md`.
+**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-068), `reports/canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md`.
 
 ---
 
@@ -75,7 +75,7 @@ PARTIAL vs BLOCKED in the decision log — not an empirical metric.
 | **Visualization (Observatory)** | **90%** | v0.4.1 stable/historical (FR/NL COROP/PT Municipal real choropleth, dynamic relation graph, 241/241 tests); v0.5.1 `OBSERVATORY_V051_CANDIDATE_NEEDS_MAP_REDESIGN` — **committed to git** as the current best-draft candidate (French, architecture-first, FR+NL+PT prediction, real geographic heatmap, graph-to-map wiring, 103/103 structural tests) | No Playwright/screenshot visual validation in this environment (structural JS/DOM validation only) — committed as a candidate, NOT a finally-accepted dashboard | Modular, map-first next iteration signalled by product owner — not started |
 | **Recommendation** | **0%** | — | Intelligence layer structure exists from earlier work (`HERALD_INTELLIGENCE_LAYER_SPEC.md`), reusable as structure only | Requires Bloco 1 + Bloco 2 complete per Charter; explicitly NOT STARTED; no weights/claims validated; rankings would be hypotheses only |
 | **European product (multi-country)** | **~45%** | FR/PT/NL sector-level integrated; PT/IT/AT harmonized for LOCO; 27-country sector coverage preflight done (DEC-038: FI eligible, 9 countries eligible-with-download) | NL gemeente sub-national disaggregation built but blocked for relations; BE remains semantically heterogeneous (vat_first_registration target) | No validated cross-country pooled relation claim; no validated single harmonized European target beyond Path H (PT/IT/AT, enterprise_birth demographic concept only) |
-| **Writing/article** | **5%** | Decision log, charter, evidence matrix, and bibliography (25 master refs) exist as raw material | Gantt re-drafted in this consolidation (`reports/HERALD_RESEARCH_GANTT.md`) | No outline, no draft sections, no venue selected; report/article writing has not started in any form beyond methodological documentation |
+| **Writing/article** | **5%** | Decision log, charter, evidence matrix, and bibliography (25 master refs) exist as raw material | Gantt re-drafted in this consolidation (`reports/canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md`) | No outline, no draft sections, no venue selected; report/article writing has not started in any form beyond methodological documentation |
 
 **What's needed before the thesis/article can be written:** (1) Observatory
 v0.4.1/v0.5/v0.5.1 committed and visually validated; (2) PT municipal
@@ -320,7 +320,7 @@ comparisons.
 `NL_GEMEENTE_PROXY_PHASE7_BLOCKED` (status=`BLOCKED`,
 relation_label_status=`INVALID_FOR_RELATION_LABELS`) and `NL_COROP_PHASE7`
 (status=`VALID_OBSERVED`) entries. New policy document
-`reports/HERALD_GRANULAR_EVIDENCE_POLICY.md` defines observed vs proxy evidence
+a policy (now summarized in `reports/canonical/HERALD_02_DATA_PROVENANCE_AND_GRANULARITY.md`) defines observed vs proxy evidence
 boundaries, label classes (`ROBUST_ORIGINAL`/`FINE_GRAIN_SUPPORTED`/
 `EXPLORATORY_FINE_GRAIN`/`BLOCKED_PROXY_ARTIFACT`/`INSUFFICIENT_EVIDENCE`), and
 language rules. Observatory v0.4 granular contract
@@ -395,8 +395,8 @@ complete and tested; dashboard build is a separate, larger task not yet authoris
 
 - Direction and claims: `reports/HERALD_PROJECT_CHARTER.md`
 - All decisions: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-068)
-- Claims classification: `reports/HERALD_EVIDENCE_MATRIX.md`
-- Gantt: `reports/HERALD_RESEARCH_GANTT.md`
+- Claims classification: `reports/canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md`
+- Gantt: `reports/canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md`
 - HPC registry: `hpc/hpc_phase_registry.json`
 - Artefact manifest: `reports/herald_artifact_registry.json`
 - Active document index: `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`
