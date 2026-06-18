@@ -39,6 +39,15 @@ architecture / what's left" at a glance:
   reasoning in narrative form, written as raw material for the article.
 - `reports/canonical/HERALD_08_REPOSITORY_TRACEABILITY_MAP.md` — what each top-level
   folder is, its status, and what must never be cited as a primary source from it.
+- `reports/canonical/HERALD_09_DATA_ASSET_MAP.md` — every data path classified as
+  canonical / valid-processed / raw-regenerable / historical / blocked-for-training.
+- `reports/canonical/HERALD_10_CODE_PATH_MAP.md` — every `src/` module classified as
+  active ingestion/build/prediction/relation-evidence/dashboard, historical, closed
+  branch, or research-track.
+- `reports/canonical/HERALD_11_HPC_AND_RESULTS_MAP.md` — every `hpc/`/`hpc_results/`
+  job classified as active, historical, valid, or rejected, with its DEC trace.
+- `reports/canonical/HERALD_12_FINAL_PHASE_MAP.md` — the single end-to-end phase table
+  (period, question, data, technique, validation, result, status, article/dashboard fit).
 
 ---
 
@@ -209,6 +218,7 @@ python3 -m pytest tests/test_herald_artifact_registry.py -q
 - **Naming conventions:** `reports/HERALD_NAMING_CONVENTIONS.md` — canonical label/status vocabulary.
 - **Architecture detail:** `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md`.
 - **Consolidation audit (what was merged/removed from the old reports and why):** `reports/canonical/HERALD_CANONICAL_CONSOLIDATION_AUDIT.md`.
+- **Deep per-file verification (every removed report read in full, gaps closed):** `reports/canonical/HERALD_DEEP_REPORT_AUDIT.md`.
 - **Main panels:** `data/processed/herald_observatory_v04_granular/` (clean FR/PT/NL exports), `data/processed/european_panel/pt_municipal_sector_panel.csv` (PT municipal).
 
 ---

@@ -12,11 +12,22 @@ This index used to carry a full per-file table for 150+ `reports/*.md` files. Th
 is now **superseded by `reports/canonical/HERALD_CANONICAL_CONSOLIDATION_AUDIT.md`**,
 which classifies every one of those files individually (category, which canonical
 document represents it, action taken, reason, risk) and is more precise than this index
-ever was. Most of those files have been removed from the git index via `git rm --cached`
-— they remain on the local filesystem and in full git history; only the public/tracked
-tree is smaller. **If a file is not listed in the "Currently tracked" table below, treat
-it as: represented in the canonical docs; available in git history — not deleted, not
-lost.**
+ever was. `reports/canonical/HERALD_DEEP_REPORT_AUDIT.md` goes one step further: every
+one of those 210 files was opened and read in full (via `git show`) and checked for
+quantitative numbers, gates, and caveats not yet in any canonical — 7 gaps were found
+and closed. Most of those files have been removed from the git index via
+`git rm --cached` — they remain on the local filesystem and in full git history; only
+the public/tracked tree is smaller. **If a file is not listed in the "Currently
+tracked" table below, treat it as: represented in the canonical docs; available in git
+history — not deleted, not lost.**
+
+**Where not to start:** `hpc_results/` (raw job outputs, mostly closed/superseded
+branches), raw `data/external/*/raw/` ingestion caches, and historical dashboard HTML
+files under `reports/dashboards/` other than the current candidate
+(`herald_observatory_v051_narrative_dashboard.html`, see
+`reports/HERALD_CURRENT_STATE.md`'s Visualization row) are none of them an entry
+point — they require cross-referencing the decision log/artifact registry before any
+number from them is trusted.
 
 ---
 
@@ -32,10 +43,13 @@ lost.**
 | `GENERATED_DASHBOARD_OR_EXPORT` | Build output, regenerable from a builder script. |
 | `DO_NOT_START_HERE` | Real artefacts but not an entry point. |
 
-**Start with `reports/canonical/` (8 documents, in numbered order: the 5 entry-point
-canonicals + 3 second-level traceability maps — `HERALD_06_PHASE_TECHNIQUE_MATRIX.md`,
-`HERALD_07_METHOD_LINEAGE_FOR_ARTICLE.md`, `HERALD_08_REPOSITORY_TRACEABILITY_MAP.md`).**
-All 8 are `CANONICAL_READ_FIRST`.
+**Start with `reports/canonical/` (12 documents, in numbered order: the 5 entry-point
+canonicals + 7 second-level traceability maps — `HERALD_06_PHASE_TECHNIQUE_MATRIX.md`,
+`HERALD_07_METHOD_LINEAGE_FOR_ARTICLE.md`, `HERALD_08_REPOSITORY_TRACEABILITY_MAP.md`,
+`HERALD_09_DATA_ASSET_MAP.md`, `HERALD_10_CODE_PATH_MAP.md`,
+`HERALD_11_HPC_AND_RESULTS_MAP.md`, `HERALD_12_FINAL_PHASE_MAP.md`, plus the
+`HERALD_CANONICAL_CONSOLIDATION_AUDIT.md` and `HERALD_DEEP_REPORT_AUDIT.md` audit
+trail).** All 12 numbered documents are `CANONICAL_READ_FIRST`.
 
 ---
 
@@ -55,8 +69,8 @@ plus the 3 kept folders.
 | `reports/HERALD_REPORTS_CONSOLIDATION_MAP.md` | `CANONICAL_READ_FIRST` | Which canonical doc represents which report cluster |
 | `reports/herald_artifact_registry.json` | `CANONICAL_READ_FIRST` | Artefact manifest with status and claims |
 
-Plus `reports/canonical/` (9 files: the 5 entry-point canonicals, the 3 second-level
-traceability maps (06/07/08), and the consolidation audit),
+Plus `reports/canonical/` (14 files: the 5 entry-point canonicals, the 7 second-level
+traceability maps (06-12), and the 2 audit docs — consolidation + deep verification),
 `reports/dashboards/` (current and historical dashboard HTML + builders), and
 `reports/bibliography/` (references) — all unconditionally kept per policy.
 
