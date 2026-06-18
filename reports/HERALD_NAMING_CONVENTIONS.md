@@ -16,7 +16,7 @@ consolidation task's explicit instruction not to mass-rename.
 | v0.4 | `herald_observatory_v04_granular_dashboard.html` | `OBSERVATORY_V04_DASHBOARD_READY` | superseded in content by v0.4.1, same file |
 | v0.4.1 | same file as v0.4 (regenerated in place) | `OBSERVATORY_V041_VISUAL_READY` | ACTIVE, historical/stable |
 | v0.5 | `herald_observatory_v05_narrative_dashboard.html` | `OBSERVATORY_V05_NARRATIVE_READY` → corrected to `OBSERVATORY_V05_PARTIAL` | historical, superseded for readiness |
-| v0.5.1 | `herald_observatory_v051_narrative_dashboard.html` | `OBSERVATORY_V051_NARRATIVE_READY` | **current** |
+| v0.5.1 | `herald_observatory_v051_narrative_dashboard.html` | `OBSERVATORY_V051_CANDIDATE_NEEDS_MAP_REDESIGN` | **current candidate (not final — never visually validated; map-first redesign signalled as next step)** |
 
 **Inconsistency found:** v0.4 and v0.4.1 share the same physical file (the v0.4.1 builder
 regenerates `herald_observatory_v04_granular_dashboard.html` in place) — there is no
@@ -139,18 +139,28 @@ Observatory builders are touched for a non-trivial reason — not as a standalon
 `INVALID_FOR_TRAINING_LABELS`, `INVALID_FOR_RELATION_LABELS`, `VALID_OBSERVED`, `BLOCKED`,
 `REGENERABLE`, `ARCHIVED`.
 
-**Inconsistency found (see also Part J / test findings):** `tests/test_herald_artifact_registry.py`
-hardcodes a narrower `VALID_STATUSES` set (`ACTIVE`, `ARCHIVED`, `FROZEN`,
-`INVALID_FOR_CLAIMS`, `INVALID_FOR_INTERPRETATION`, `REGENERABLE`, `SUPERSEDED`) that does
-**not** include `VALID_OBSERVED` or `BLOCKED`, even though the registry's own `_meta` block
-documents them as valid (added for DEC-065). Several real artifact entries also use
-status strings outside both vocabularies entirely (`COMPLETE`, `SMOKE_COMPLETE — READY_FOR_HPC`,
-`COMPLETE_278_278`, `OBSERVATORY_V05_PARTIAL`, `OBSERVATORY_V051_NARRATIVE_READY`,
-`FINE_GRAIN_THRESHOLD_POLICY_READY`). This is a real, pre-existing schema/test drift — not
-fixed here (would require either rewriting the test's vocabulary or rewriting several
-already-correct, decision-log-consistent status strings; both are judgment calls for a
-methodology owner, not a documentation pass). See `tests/test_herald_artifact_registry.py`
-and the final consolidation report for the exact failing assertions.
+**Inconsistency found and FIXED (2026-06-18 traceability re-audit):**
+`tests/test_herald_artifact_registry.py` hardcodes a narrower `VALID_STATUSES` set
+(`ACTIVE`, `ARCHIVED`, `FROZEN`, `INVALID_FOR_CLAIMS`, `INVALID_FOR_INTERPRETATION`,
+`REGENERABLE`, `SUPERSEDED`) than the registry's own `_meta.status_vocabulary`
+(which also lists `INVALID_FOR_TRAINING_LABELS`, `INVALID_FOR_RELATION_LABELS`,
+`VALID_OBSERVED`, `BLOCKED`). Nine real artifact entries previously used free-text
+milestone labels in the `status` field instead of a lifecycle status
+(`COMPLETE`, `SMOKE_COMPLETE — READY_FOR_HPC`, `COMPLETE_278_278`,
+`OBSERVATORY_V05_PARTIAL`, `OBSERVATORY_V051_NARRATIVE_READY`,
+`FINE_GRAIN_THRESHOLD_POLICY_READY`, `BLOCKED`, `VALID_OBSERVED`), causing
+`test_status_vocabulary` to fail. Fixed by correcting each entry's `status` field to
+the correct value from the test's `VALID_STATUSES` set (e.g. `ACTIVE` for
+in-use/current artifacts, `SUPERSEDED` for v0.5's dashboard-readiness status,
+`INVALID_FOR_CLAIMS` for the NL gemeente proxy Phase 7 result) and preserving the
+original milestone label verbatim in each entry's `notes` field, so no information
+was lost — only the `status` field's vocabulary was normalized.
+`tests/test_herald_artifact_registry.py::test_status_vocabulary` was NOT weakened;
+`VALID_STATUSES` is unchanged. The wider `_meta.status_vocabulary`
+(`VALID_OBSERVED`/`BLOCKED`/etc.) remains declared but currently unused by any
+`status` field — that residual declared-but-unused-vocabulary gap is left as-is
+(not a test failure, just an unused declaration) since narrowing `_meta` itself
+was out of scope for this pass.
 
 ### `region_system`
 `ZE2020` (FR), `COROP` (NL observed), `GEMEENTE_PROXY` (NL, context-only),

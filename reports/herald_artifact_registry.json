@@ -423,14 +423,15 @@
       ],
       "script": "src/data/european_panel/audit_european_sector_coverage.py",
       "tests": "tests/test_european_sector_coverage.py (53 tests)",
-      "status": "COMPLETE",
+      "status": "ACTIVE",
       "path": "data/processed/european_panel/european_sector_coverage_matrix.csv",
       "type": "result_directory",
       "tracked_in_git": true,
       "can_regenerate": true,
       "origin_decision": "DEC-038",
       "claim_authorized": "European territorial sector coverage preflight. 27 countries evaluated. FI: ELIGIBLE_WITH_MAPPING (19 NUTS3, 2013-2021). BE: BLOCKED_SEMANTICS. AT/CZ/DE/DK/ES/IT/PL/RO/SE: ELIGIBLE_WITH_DOWNLOAD. Key limitation: Eurostat BD_HGNACE_R only 3 years (2021-2023) except FI; K_L always combined.",
-      "claim_forbidden": "Treating ELIGIBLE_WITH_DOWNLOAD/PARTIAL countries as already-ingested. Pooling BE (BLOCKED_SEMANTICS) into harmonized claims."
+      "claim_forbidden": "Treating ELIGIBLE_WITH_DOWNLOAD/PARTIAL countries as already-ingested. Pooling BE (BLOCKED_SEMANTICS) into harmonized claims.",
+      "notes": "Milestone label was 'COMPLETE' (free text, not a lifecycle status); corrected to ACTIVE 2026-06-18 traceability re-audit. Preflight result is complete and currently in use, not frozen/superseded."
     },
     {
       "id": "GRANULAR_FR_PT_NL_EVIDENCE_MODEL",
@@ -456,14 +457,15 @@
         "src/modeles/real_world/run_dec063_granular_evidence_gates.py"
       ],
       "tests": "tests/test_granular_fr_pt_nl_evidence_model.py (66 tests)",
-      "status": "COMPLETE",
+      "status": "ACTIVE",
       "claim_authorized": "GRANULAR_FR_PT_NL_PREFLIGHT_READY. FR 280 ZE2020 + PT 278 municipalities + NL 40 COROP: observed_births available. NL 355 gemeente: proxy_disaggregated_by_stock_share available. Reaggregation identity verified (max_abs_error=0.0).",
       "claim_forbidden": "Neural training before new DEC. Phase 7 full run before new DEC. Treating proxy as observed births. KZ claims for PT. Causal language. Pooled FR/PT/NL claims without concept harmonisation DEC.",
       "path": "data/processed/european_panel/granular_fr_pt_nl_training_matrix.csv",
       "type": "result_directory",
       "tracked_in_git": true,
       "can_regenerate": true,
-      "origin_decision": "DEC-063"
+      "origin_decision": "DEC-063",
+      "notes": "Milestone label was 'COMPLETE' (free text); corrected to ACTIVE 2026-06-18 traceability re-audit. GRANULAR_FR_PT_NL_PREFLIGHT_READY (10/10 gates, 66/66 tests) remains the actual milestone decision, recorded here in description/claim fields."
     },
     {
       "id": "PT_MUNICIPAL_PHASE7_SMOKE",
@@ -488,7 +490,7 @@
         "src/modeles/real_world/prepare_dec064_hpc_manifest.py"
       ],
       "tests": "tests/test_dec064_pt_municipal_phase7.py (60 tests: 52 PASS + 8 SKIP-full)",
-      "status": "SMOKE_COMPLETE — READY_FOR_HPC",
+      "status": "ACTIVE",
       "claim_authorized": "PT municipal pipeline validated. n_samples sufficient. Smoke: 56/56 pares válidos, 0 promovidos. Ecological fragmentation confirmed: |β| smaller at municipal vs NUTS3.",
       "claim_forbidden": "Promoted PT municipal relations (full run not complete). Causal claims. Threshold change without new DEC. HPC launch without authorisation.",
       "path": "data/processed/phase7_pt_municipal/",
@@ -496,7 +498,8 @@
       "tracked_in_git": true,
       "can_regenerate": true,
       "notes_appendix": "Smoke entry superseded in content (not status) by the full Phase 7 run recorded in HERALD_CURRENT_STATE.md (2 COVID-robust pairs promoted: GI->OQ, MN->JZ); kept under this id for traceability with DEC-064.",
-      "origin_decision": "DEC-064"
+      "origin_decision": "DEC-064",
+      "notes": "Milestone label was 'SMOKE_COMPLETE — READY_FOR_HPC' (free text); corrected to ACTIVE 2026-06-18 traceability re-audit. Smoke-validated, HPC manifest prepared; superseded in scope (not status) by the full PT_MUNICIPAL_PHASE7 Phase 7 run (DEC-064 COMPLETE) but this preflight artifact itself remains a valid, current record."
     },
     {
       "id": "NL_GEMEENTE_PROXY_PHASE7_BLOCKED",
@@ -523,7 +526,7 @@
         "src/modeles/real_world/merge_nl_gemeente_proxy_phase7.py"
       ],
       "tests": "tests/test_dec065_nl_gemeente_proxy_phase7.py (71/71 PASS)",
-      "status": "BLOCKED",
+      "status": "INVALID_FOR_CLAIMS",
       "relation_label_status": "INVALID_FOR_RELATION_LABELS",
       "allowed_use": [
         "territory_state_context_only"
@@ -534,7 +537,8 @@
       "type": "result_directory",
       "tracked_in_git": true,
       "can_regenerate": true,
-      "origin_decision": "DEC-065"
+      "origin_decision": "DEC-065",
+      "notes": "Milestone label was 'BLOCKED' (free text); corrected to INVALID_FOR_CLAIMS 2026-06-18 traceability re-audit — this artifact's relation-edge results cannot be used as a claim/training label per DEC-065 (structural validity defect in the stock-share proxy weighting). The artifact itself is retained for audit, not deleted."
     },
     {
       "id": "NL_COROP_PHASE7",
@@ -551,7 +555,7 @@
         "hpc/phase7_sector_precedence/scripts/merge_sector_precedence_results.py"
       ],
       "tests": "tests/test_dec065_nl_gemeente_proxy_phase7.py (TestN4CoropSignalPreservation references this baseline)",
-      "status": "VALID_OBSERVED",
+      "status": "ACTIVE",
       "relation_label_status": "VALID_OBSERVED",
       "allowed_use": [
         "territory_state",
@@ -564,7 +568,8 @@
       "type": "result_directory",
       "tracked_in_git": false,
       "can_regenerate": true,
-      "origin_decision": "DEC-034"
+      "origin_decision": "DEC-034",
+      "notes": "Milestone label was 'VALID_OBSERVED' (free text); corrected to ACTIVE 2026-06-18 traceability re-audit. relation_label_status field (unchanged) already carries the VALID_OBSERVED claim-validity record."
     },
     {
       "id": "OBSERVATORY_V04_GRANULAR_DASHBOARD",
@@ -602,7 +607,7 @@
         "src/data/european_panel/build_pt_municipality_geometry.py"
       ],
       "tests": "tests/test_observatory_v041_visual_upgrade.py::TestPartAPtGeometry (13 tests PASS)",
-      "status": "COMPLETE_278_278",
+      "status": "ACTIVE",
       "size_mb": 1.18,
       "raw_cache": "data/external/portugal/geometry/raw/ (181 MB, gitignored, regenerable)",
       "claim_authorized": "PT continental municipality choropleth mapping in the Observatory v0.4.1 dashboard. Reproducible via the documented builder script (idempotent, caches raw fetches).",
@@ -611,7 +616,8 @@
       "type": "geometry_geojson",
       "tracked_in_git": true,
       "can_regenerate": true,
-      "origin_decision": "Observatory v0.4.1 visual upgrade"
+      "origin_decision": "Observatory v0.4.1 visual upgrade",
+      "notes": "Milestone label was 'COMPLETE_278_278' (free text); corrected to ACTIVE 2026-06-18 traceability re-audit. 278/278 municipality match remains recorded in description."
     },
     {
       "id": "OBSERVATORY_V05_NARRATIVE",
@@ -643,10 +649,10 @@
       "claim_authorized": "Layperson-facing presentation of the same v0.4 granular evidence (territory state, observed relations, blocked proxy audit) plus a validated FR/NL observed-vs-expected prediction layer. Relations are predictive precedence, not causal claims.",
       "claim_forbidden": "PT prediction at municipal grain (does not exist, gap documented in HERALD_OBSERVATORY_V05_PREDICTION_GAP.md); NL gemeente proxy as relation evidence (structurally excluded); blocked proxy edges as a discovery/finding.",
       "can_regenerate": true,
-      "notes": "Presentation-only layer. v0.4 dashboard/exports remain canonical and untouched. 65/65 tests pass (tests/test_observatory_v05_narrative_dashboard.py). CORRECTED 2026-06-17: product owner rejected this UX as a polished MVP, not a complete-method presentation (English UI, architecture at the bottom, PT prediction gap not closed, no geographic heatmap, graph not wired to map, generic KPI cards, technical jargon leaking into main body). Dashboard-readiness status corrected to OBSERVATORY_V05_PARTIAL. See OBSERVATORY_V051_NARRATIVE artifact below and reports/HERALD_OBSERVATORY_V051_CORRECTION_AUDIT.md for the point-by-point fix. This entry's files/scripts are otherwise unchanged and still valid as historical record.",
+      "notes": "Presentation-only layer. v0.4 dashboard/exports remain canonical and untouched. 65/65 tests pass (tests/test_observatory_v05_narrative_dashboard.py). CORRECTED 2026-06-17: product owner rejected this UX as a polished MVP, not a complete-method presentation (English UI, architecture at the bottom, PT prediction gap not closed, no geographic heatmap, graph not wired to map, generic KPI cards, technical jargon leaking into main body). Dashboard-readiness status corrected to OBSERVATORY_V05_PARTIAL. See OBSERVATORY_V051_NARRATIVE artifact below and reports/HERALD_OBSERVATORY_V051_CORRECTION_AUDIT.md for the point-by-point fix. This entry's files/scripts are otherwise unchanged and still valid as historical record. Milestone label was 'OBSERVATORY_V05_PARTIAL' (free text); corrected to SUPERSEDED 2026-06-18 traceability re-audit — v0.5 was rejected by the product owner as a polished MVP and is superseded for dashboard-readiness purposes by v0.5.1 (OBSERVATORY_V051_NARRATIVE, status ACTIVE below). v0.5's own 65/65 tests still pass; kept as a historical artifact, not deleted.",
       "path": "reports/dashboards/herald_observatory_v05_narrative_dashboard.html",
       "type": "dashboard_html",
-      "status": "OBSERVATORY_V05_PARTIAL",
+      "status": "SUPERSEDED",
       "tracked_in_git": false,
       "origin_decision": "DEC-067"
     },
@@ -684,10 +690,10 @@
       "claim_authorized": "French-language layperson-facing presentation of the same v0.4 granular evidence plus a validated FR/NL/PT observed-vs-expected prediction layer (PT at municipal grain, causal persistence/Ridge, no proxy, no HPC). Relations are predictive precedence ('semble précéder'), not causal claims; causality is discussed only inside a collapsible technical section, framed as an explicit prohibition.",
       "claim_forbidden": "NL gemeente proxy as relation evidence (structurally excluded); blocked proxy edges as a discovery/finding; any neural/candidate relation dataset (none exists in this repository — explicitly stated as such in the dashboard, not fabricated).",
       "can_regenerate": true,
-      "notes": "Presentation-only layer with one new data-engineering addition (PT municipal forecast). v0.4 dashboard/exports and v0.5 dashboard/exports remain untouched. See tests/test_observatory_v051_narrative_dashboard.py and reports/HERALD_OBSERVATORY_V051_CORRECTION_AUDIT.md for full pass/fail record.",
+      "notes": "Presentation-only layer with one new data-engineering addition (PT municipal forecast). v0.4 dashboard/exports and v0.5 dashboard/exports remain untouched. See tests/test_observatory_v051_narrative_dashboard.py and reports/HERALD_OBSERVATORY_V051_CORRECTION_AUDIT.md for full pass/fail record. Milestone label was 'OBSERVATORY_V051_NARRATIVE_READY' (free text); corrected to ACTIVE 2026-06-18 traceability re-audit. Final decision is OBSERVATORY_V051_CANDIDATE_NEEDS_MAP_REDESIGN (see DEC-068 in HERALD_METHODOLOGICAL_DECISION_LOG.md): this is the current best-draft dashboard (103/103 structural tests pass) but is NOT visually validated (no Playwright/screenshot) and is explicitly slated for a modular, map-first redesign per the product owner's next-step direction — not yet a finally-accepted artifact.",
       "path": "reports/dashboards/herald_observatory_v051_narrative_dashboard.html",
       "type": "dashboard_html",
-      "status": "OBSERVATORY_V051_NARRATIVE_READY",
+      "status": "ACTIVE",
       "tracked_in_git": false,
       "origin_decision": "OBSERVATORY_V051_CORRECTION"
     },
@@ -698,7 +704,7 @@
       "description": "Fine-grain threshold calibration policy: original ROBUST_ORIGINAL tier (|beta|>=0.10) unchanged; new FINE_GRAIN_SUPPORTED tier (|beta|>=0.09, requires bss>=0.80 plus COVID-robust OR >=2 consecutive windows OR cross-country replication); new non-training EXPLORATORY_FINE_GRAIN tier (0.07-0.09, bss>=0.90). Calibrated using FR ZE2020 + PT Municipal observed data only; NL gemeente proxy explicitly excluded from calibration.",
       "path": "data/processed/phase7_threshold_calibration/fine_grain_label_policy.json",
       "type": "policy_json",
-      "status": "FINE_GRAIN_THRESHOLD_POLICY_READY",
+      "status": "ACTIVE",
       "tracked_in_git": false,
       "can_regenerate": true,
       "files": [
@@ -709,7 +715,7 @@
       "tests": "43/43 PASS (tests/test_dec066_threshold_calibration.py)",
       "claim_authorized": "FR=1 ROBUST + 3 FINE_GRAIN + 5 EXPLORATORY; NL=8 ROBUST; PT_NUTS3=16 ROBUST; PT_MUNI=2 ROBUST + 1 EXPLORATORY (per HERALD_DEC066_FINE_GRAIN_THRESHOLD_CALIBRATION.md). Ecological scale effect confirmed across PT NUTS3/NL COROP/FR-PT_MUNI.",
       "claim_forbidden": "Using EXPLORATORY_FINE_GRAIN tier as a training label under any circumstance. Calibrating against NL gemeente proxy data.",
-      "notes": "Report: reports/HERALD_DEC066_FINE_GRAIN_THRESHOLD_CALIBRATION.md.",
+      "notes": "Report: reports/HERALD_DEC066_FINE_GRAIN_THRESHOLD_CALIBRATION.md. Milestone label was 'FINE_GRAIN_THRESHOLD_POLICY_READY' (free text); corrected to ACTIVE 2026-06-18 traceability re-audit. Policy is calibrated and in active use for DEC-066 fine-grain tiering.",
       "origin_decision": "DEC-066"
     },
     {

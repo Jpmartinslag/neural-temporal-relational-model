@@ -163,7 +163,11 @@ data/external/eurostat_business_demography/raw/
 # ── Large narrative-dashboard export blobs (regenerable from
 #    build_observatory_v05*_narrative_exports.py; territory_view.json
 #    alone is ~65MB per version) ─────────────────────────────────────
+#    manifest.json is small (~2KB, checksums only) and IS meant to be
+#    committed for traceability — explicitly un-ignored below.
 data/processed/herald_observatory_v05_narrative/*.json
 data/processed/herald_observatory_v05_narrative/*.csv
+!data/processed/herald_observatory_v05_narrative/manifest.json
 data/processed/herald_observatory_v051_narrative/*.json
 data/processed/herald_observatory_v051_narrative/*.csv
+!data/processed/herald_observatory_v051_narrative/manifest.json
