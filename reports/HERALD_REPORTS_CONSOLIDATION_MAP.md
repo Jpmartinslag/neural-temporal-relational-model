@@ -1,20 +1,20 @@
 # HERALD Reports Consolidation Map
 
 **Created:** 2026-06-18 (documentation/curation pass).
-**Purpose:** This repository has 200+ `reports/*.md` files. This map says which
-canonical synthesis document now represents each cluster of older reports — it does
-**not** merge files physically, delete anything, or move folders. Every file named
-below still exists exactly where it was; this is a reading guide, not a migration.
+**Purpose:** This repository had 200+ `reports/*.md` files. This map says which
+canonical synthesis document now represents each cluster of older reports. It does
+**not** move folders or alter any DEC-*/scientific result.
 
-**2026-06-18 update:** the five documents in `reports/canonical/` are now the primary
-synthesis layer and supersede the single-document pointers used in the first version of
-this map (which pointed mostly at `HERALD_PROJECT_TRAJECTORY.md`/`HERALD_ARCHITECTURE_OVERVIEW.md`
-directly). Those documents still exist and are still accurate — they are now the
-*source material the canonical docs are built from*, not themselves the entry point.
+**2026-06-18 update (git index cleanup):** most individual files named in this map have
+since been removed from the git index via `git rm --cached` — they remain on the local
+filesystem and in full git history, but are no longer part of the tracked/public tree.
+See `reports/canonical/HERALD_CANONICAL_CONSOLIDATION_AUDIT.md` for the exact per-file
+disposition (kept/removed, category, risk). This map stays at the cluster level; it does
+not repeat that file-by-file detail.
 
-For per-file classification (ACTIVE/historical/closed-branch), see
-`reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`. For the narrative version of how these
-clusters relate chronologically, see `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md`.
+For per-file classification, see `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` and the
+consolidation audit above. For the narrative version of how these clusters relate
+chronologically, see `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md`.
 
 ---
 
@@ -27,12 +27,12 @@ clusters relate chronologically, see `reports/canonical/HERALD_01_PROJECT_PHASES
 | DEC-048→DEC-059 neural relation-learning research track | `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md` (§4) + `reports/canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md` | Still active as a research direction; not wired into any dashboard. Individual DEC reports remain the source of truth for specific numbers (e.g. AUC values). |
 | Phase 7 sector precedence + DEC-060→DEC-066 granularity work | `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md` ("Granularity push" phase) + `reports/canonical/HERALD_02_DATA_PROVENANCE_AND_GRANULARITY.md` | `HERALD_DEC065_NL_GEMEENTE_PROXY_PHASE7_AUDIT.md` is the authoritative source for the NL proxy block — do not cite the superseded draft. |
 | Observatory v0.1→v0.5.1 contracts and audits | `reports/canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md` | v0.5.1 is the current candidate; v0.3/v0.4/v0.4.1 remain valid as the stable scientific baseline the candidate is built on; v0.5 is superseded for dashboard-readiness only. |
-| Regime/V6/V7 architecture search, dual-graph design docs (pre-P6) | `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` ("Dual graph / regime / V7 architecture search") | Superseded by the final P6/DUAL_GRAPH_S1_FAIL result; kept only for traceability of design rationale. |
-| Pre-HERALD ATLAS_IAT reports | Not represented by any current HERALD document — out of scope by definition | `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` ("Out of HERALD scope"). |
-| Repository/dashboard cleanup plans (multiple prior passes) | This document + `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` (this 2026-06-18 pass is latest in that lineage) | Earlier cleanup passes are historical record, not superseded instructions to redo. |
-| `reports/HERALD_PROJECT_TRAJECTORY.md` (first trajectory doc, superseded as entry point) | `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md` | Still accurate; kept as the detailed narrative source the canonical doc's Phase Map table is built from. |
-| `reports/HERALD_ARCHITECTURE_OVERVIEW.md` (first architecture doc, superseded as entry point) | `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md` | Still accurate; kept as the detailed architecture source. |
-| `reports/HERALD_RESEARCH_GANTT.md` (detailed Gantt, superseded as entry point) | `reports/canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md` (§4, Mermaid Gantt) | Still the authoritative detailed timeline with per-task status checks; the canonical doc's Gantt is a Mermaid-rendered summary. |
+| Regime/V6/V7 architecture search, dual-graph design docs (pre-P6) | `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md` (France foundation phase) + `reports/canonical/HERALD_CANONICAL_CONSOLIDATION_AUDIT.md` | Superseded by the final P6/DUAL_GRAPH_S1_FAIL result; removed from git index, recoverable via git history. |
+| Pre-HERALD ATLAS_IAT reports | Not represented by any current HERALD document — out of scope by definition | Removed from git index; see `reports/canonical/HERALD_CANONICAL_CONSOLIDATION_AUDIT.md`. |
+| Repository/dashboard cleanup plans (multiple prior passes) | This document + `reports/canonical/HERALD_CANONICAL_CONSOLIDATION_AUDIT.md` (this 2026-06-18 pass is latest in that lineage) | Earlier cleanup passes are historical record, removed from git index, recoverable via git history. |
+| `reports/HERALD_PROJECT_TRAJECTORY.md` (first trajectory doc) | `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md` | **Removed from git index** (`ALREADY_FULLY_REPRESENTED`) — content fully absorbed into the canonical's Phase Map; recoverable via git history. |
+| `reports/HERALD_ARCHITECTURE_OVERVIEW.md` (first architecture doc) | `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md` | **Removed from git index** (`ALREADY_FULLY_REPRESENTED`) — architecture diagram and method tables absorbed into the canonical; recoverable via git history. |
+| `reports/HERALD_RESEARCH_GANTT.md` (detailed Gantt) | `reports/canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md` (§4, Mermaid Gantt) | **Removed from git index** (`ALREADY_FULLY_REPRESENTED`) — milestones absorbed into the canonical's Mermaid Gantt; recoverable via git history. |
 
 ---
 

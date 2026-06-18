@@ -93,6 +93,48 @@ branch — a new DEC-* entry with new evidence and a pre-registered gate is requ
 
 ---
 
+## 4b. Synthetic benchmark and diagnostic chain (DEC-039→047) feeding the research track
+
+Before the real-data SharedRelationEncoder work in §4, a synthetic benchmark and a chain
+of diagnostics established what was and wasn't an architecture problem:
+
+- **DEC-039/040 — Synthetic controlled benchmark (Phase 9):** `SMOKE PASS` — 10
+  territories × 5 sectors × 12 years generator with ground-truth relations, crises,
+  structural breaks, MCAR/MAR/block missing patterns; B1–B8 baselines implemented;
+  strictly causal features (no leakage). Architecture validated at smoke scale; full
+  benchmark run (`run_full_benchmark.py`) not yet authorized.
+- **DEC-042 — Graph usage diagnostic:** corrected AUC=0.727 (Phase 9 retroactive).
+- **DEC-043/044 — Phase 10 lagged graph architecture:** `PHASE10_PARTIAL`. The AUC
+  discrepancy between DEC-042 (0.727) and Phase 10's `herald_contemp` (0.40) was
+  diagnosed as `MODEL_DIFFERENCE`, not a metric bug — the two are not directly comparable.
+- **DEC-045 — Phase 11 true synthetic generalization:** edge structure transfers
+  zero-shot to unseen scenarios (AUC=0.611 OOD), but the MLP decoder does **not**
+  generalize under extreme dynamics shift (85–90% nonlinear vs 0–30% training).
+- **DEC-046 — Research-only architecture survey:** documents the investigation
+  direction following DEC-045; recommends few-shot adapter evaluation next (DEC-047).
+- **DEC-047 — Few-shot adaptation benchmark:** `FEWSHOT_ADAPTATION_FAILED`. Frozen
+  attention + adapted decoder does not beat the ffill baseline (B0 ffill MAE≈0.244 vs
+  all neural strategies ≈0.281). Root cause (per DEC-048's later diagnostic, §4 above):
+  distribution gap too large for 50-epoch fine-tuning without masked pretraining first.
+
+This chain is why DEC-048's masked-pretraining diagnostic (§4) was run next, and why the
+real-data SharedRelationEncoder line in §4 starts from a pretrained, not a from-scratch,
+decoder.
+
+---
+
+## 4c. Literature review (background, not a HERALD result)
+
+A literature review for the dynamic-economic-graph and recommendation work was conducted
+2026-06-10 across 25 search axes (`HERALD_DYNAMIC_ECONOMIC_GRAPH_LITERATURE_REVIEW.md`,
+removed from the git index in the 2026-06-18 root cleanup, recoverable via git history).
+It surveys methods for short annual NUTS3 panels (T≈13) and explicitly does not claim any
+surveyed method will work on HERALD data — all require empirical validation, which is
+exactly what §2-4 above report. Master reference list:
+`reports/bibliography/HERALD_REFERENCES_MASTER.md` (kept tracked).
+
+---
+
 ## 5. What cannot be claimed (Charter §5, restated)
 
 - "HERALD provides economic recommendations" — module does not exist.

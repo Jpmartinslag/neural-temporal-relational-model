@@ -204,7 +204,7 @@
       "path": "reports/HERALD_INTELLIGENCE_LAYER_SPEC.md",
       "type": "specification_md",
       "status": "ARCHIVED",
-      "tracked_in_git": true,
+      "tracked_in_git": false,
       "size_bytes": null,
       "sha256_prefix": null,
       "origin_decision": null,
@@ -213,7 +213,7 @@
       "claim_authorized": "Structural reference for Observatory v0.1 intelligence layer. Do not promote fixed weights. Do not use P6 graph.",
       "claim_forbidden": "Operational recommendations. Current intelligence capability.",
       "can_regenerate": false,
-      "notes": "Reuse structure only. Rankings are opportunity hypotheses, not validated recommendations."
+      "notes": "Reuse structure only. Rankings are opportunity hypotheses, not validated recommendations. Removed from git index 2026-06-18 canonical consolidation (ALREADY_FULLY_REPRESENTED, see reports/canonical/HERALD_CANONICAL_CONSOLIDATION_AUDIT.md); file remains on disk and in git history."
     },
     {
       "id": "GRAPH_TEMPORAL_PREFLIGHT_V1",
@@ -396,7 +396,7 @@
       "path": "reports/HERALD_PHASE3E_QTENSOR_ARCH_AUDIT.md",
       "type": "result_report_md",
       "status": "ACTIVE",
-      "tracked_in_git": true,
+      "tracked_in_git": false,
       "size_bytes": null,
       "sha256_prefix": null,
       "origin_decision": "DEC-002 (baseline); Q7 selection confirmed in Phase 3E",
@@ -408,7 +408,7 @@
       "claim_authorized": "HERALD Q7 WMAPE 0.0204 (mean 2021-2025), 0.0115 (2025), France 306 ZE. Status: PENDING_REAUDIT — causal audit of Phase 3E/2R pipeline features (growth_1y/2y, effectifs_lag1) not yet formally complete for French track. Not usable as headline claim until audit is done.",
       "claim_forbidden": "Extension to non-French geographies. LOCO claim. Leakage-free claim extended to growth_1y Phase 4A/4D versions. Citing WMAPE 0.0204 as a headline validated result before causal pipeline audit is complete.",
       "can_regenerate": true,
-      "notes": "French institutional data (SIDE/SIRENE, URSSAF effectifs). Causal protocol confirmed in Phase 3E. Note: growth_1y leakage issue is a Phase 4A/4D problem only. PENDING_REAUDIT status added DEC-030."
+      "notes": "French institutional data (SIDE/SIRENE, URSSAF effectifs). Causal protocol confirmed in Phase 3E. Note: growth_1y leakage issue is a Phase 4A/4D problem only. PENDING_REAUDIT status added DEC-030. Removed from git index 2026-06-18 canonical consolidation (ALREADY_FULLY_REPRESENTED, headline number restated in reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md and HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md); file remains on disk and in git history."
     },
     {
       "id": "EUROPEAN_SECTOR_COVERAGE_PREFLIGHT",
