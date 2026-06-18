@@ -49,9 +49,16 @@ France-first scope chosen: **ZE2020** (280 employment zones) as the territorial 
 **SIDE/SIRENE** establishment-creation data as the target. An architecture search (Phase
 2: regime/latent-dim/autoregression variants; Phase 3: Q-tensor/labor-tutor variants) ran
 2026-05-12→05-27 and selected **HERALD Q7** (WMAPE 0.0204, 306 ZE, 2021–2025,
-rolling-window) — confirmed by Phase 2R. **Caveat that must travel with this number
-everywhere it is cited:** PENDING_REAUDIT — the causal audit of `growth_1y/2y` and
-`effectifs_lag1` features is not yet formally complete. A first operational dashboard
+rolling-window) — confirmed by Phase 2R. **Why Q7, not a marginally stronger
+alternative:** Phase 3E's own ranking shows `Q12_effectifs_lag1_a10guard` with a
+slightly better sector-level WMAPE (0.15509 vs Q7's 0.15612) and a statistically
+negligible global-WMAPE edge (Δ=+0.000027, 9/20 wins for Q7) — Q7 was kept as the
+default because that gap falls inside seed noise and does not justify the added
+architectural complexity of Q12's A10 guard (per the Phase 3E audit's own
+reasoning, found in deep audit review of the removed source file, 2026-06-18).
+**Caveat that must travel with this number everywhere it is cited:**
+PENDING_REAUDIT — the causal audit of `growth_1y/2y` and `effectifs_lag1`
+features is not yet formally complete. A first operational dashboard
 (`herald_france_final_dashboard.html`) was committed 2026-05-28.
 
 ### May–June 2026: Internationalization, LOCO, leakage, harmonization
