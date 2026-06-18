@@ -38,6 +38,10 @@ Built on top of the five above, for cross-cutting traceability:
     with its DEC trace.
 12. `canonical/HERALD_12_FINAL_PHASE_MAP.md` — the single end-to-end phase table.
 
+`canonical/HERALD_13_ORGANIZATION_BACKLOG.md` is an organizational chore list (not a
+scientific document) — uncommitted worktree state and future data/code/HPC decisions.
+`01`-`12` are the science/structure base; `13` is housekeeping against that base.
+
 ## Control Documents
 
 - `HERALD_CURRENT_STATE.md` — current component status and next step.

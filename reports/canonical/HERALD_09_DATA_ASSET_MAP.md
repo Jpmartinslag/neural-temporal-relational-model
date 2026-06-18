@@ -17,7 +17,7 @@ wins — it is the authoritative per-artifact source.
 | `data/processed/herald_observatory_v04_granular/granular_relation_edges.csv` | FR ZE2020=9, NL COROP=8, PT Municipal=3 | observed | Yes (DEC-066 tiers) | Yes | DEC-034/064/066 |
 | `data/processed/herald_observatory_v04_granular/blocked_proxy_edges.csv` | NL gemeente proxy, 121 rows | proxy, structurally invalid | **No** | Context-only, must show `BLOCKED_PROXY_ARTIFACT` tag | DEC-065 |
 | `data/processed/european_panel/enterprise_birth_pt_it_at_mainland_panel.csv` | PT/IT/AT, Path H | observed | Yes (LOCO baseline) | Yes | DEC-005/006, canonical #1 |
-| `data/processed/european_panel/pt_municipal_sector_panel.csv` | PT, 278 municipalities | observed | Yes | Yes | DEC-062/064 |
+| `data/processed/european_panel/pt_municipal_sector_panel.csv` | PT, 278 municipalities (`PT_MUNICIPALITY_CONTINENTE`) | observed | Yes | Yes | DEC-062/064 |
 | `data/processed/european_panel/nl_gemeente_birth_proxy_panel.csv` | NL, 355 gemeenten | **proxy_disaggregated_by_stock_share** | **No** (relation labels) | Context-only | DEC-063/065 |
 | `data/processed/phase7_pt_municipal/results/covid_robust_edges.csv` | PT Municipal, 2 pairs | observed, COVID-robust | Yes | Yes | DEC-064 |
 | `data/processed/sector_precedence_results/covid_robust_edges.csv` | FR/NL/PT original-scale Phase 7 | observed | Yes | Yes | DEC-034 |
