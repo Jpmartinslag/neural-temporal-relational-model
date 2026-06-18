@@ -4,7 +4,13 @@ This directory is now intentionally small at the top level.
 
 The old phase-by-phase reports were consolidated into five canonical synthesis
 documents under `reports/canonical/`. Historical reports are still recoverable from
-git history, but they are no longer the public entry point.
+git history (every one of the 210 removed files was individually re-read and verified
+against the canonicals — see `canonical/HERALD_DEEP_REPORT_AUDIT.md`), but they are no
+longer the public entry point.
+
+**Do not start with:** `hpc_results/` (raw HPC outputs), raw data under
+`data/external/*/raw/`, or any dashboard HTML other than the current candidate. These
+require cross-referencing the decision log before any number is trusted.
 
 ## Read First
 
@@ -24,6 +30,13 @@ Built on top of the five above, for cross-cutting traceability:
    narrative form, for the article.
 8. `canonical/HERALD_08_REPOSITORY_TRACEABILITY_MAP.md` — what each folder is and what
    not to cite from it.
+9. `canonical/HERALD_09_DATA_ASSET_MAP.md` — every data path classified (canonical,
+   valid-processed, raw-regenerable, historical, blocked-for-training).
+10. `canonical/HERALD_10_CODE_PATH_MAP.md` — every `src/` module classified (active,
+    historical, closed branch, research-track).
+11. `canonical/HERALD_11_HPC_AND_RESULTS_MAP.md` — every HPC job/result classified
+    with its DEC trace.
+12. `canonical/HERALD_12_FINAL_PHASE_MAP.md` — the single end-to-end phase table.
 
 ## Control Documents
 
