@@ -1,0 +1,51 @@
+{
+  "dec_references": [
+    "DEC-063",
+    "DEC-064",
+    "DEC-065",
+    "DEC-066",
+    "DEC-067_OBSERVATORY_V05_NARRATIVE"
+  ],
+  "generated_at": "2026-06-18T10:38:55.488998+00:00",
+  "name": "HERALD Observatory v0.5 \u2014 Narrative presentation layer",
+  "no_data_vocabulary": {
+    "insufficient_evidence": "Insufficient evidence",
+    "no_evidence": "No evidence",
+    "proxy_context": "Proxy / context (not relation evidence)",
+    "pt_kz_structural_absent": "Sector not available for Portugal"
+  },
+  "output_files": {
+    "blocked_proxy_edges_v04_copy.csv": "80b35680bdb3c1d8",
+    "map_state_by_year_sector.json": "0316034152cf2b26",
+    "prediction_view.csv": "a043a934e12b79ea",
+    "relation_timeline.json": "4a9f6fc0177e5bcc",
+    "relation_view.csv": "a049758b83e9f36f",
+    "sector_view.csv": "7d5e9333d2ec3898",
+    "territory_view.csv": "39c7d038b15e783f"
+  },
+  "row_counts": {
+    "blocked_proxy_edges_v04_copy": 121,
+    "prediction_view": 42120,
+    "relation_view": 20,
+    "sector_view": 441,
+    "territory_view": 142650
+  },
+  "rules": {
+    "blocked_proxy_edges_isolated": true,
+    "nl_gemeente_proxy_allowed_in_territory_view": true,
+    "nl_gemeente_proxy_relation_edges_forbidden": true,
+    "prediction_layer_countries": [
+      "FR",
+      "NL"
+    ],
+    "prediction_layer_excludes_pt_reason": "v0.3 forecast grain is PT NUTS3 (25 coarse territories); v0.4 granular state is PT MUNICIPALITY (278 fine territories) \u2014 different grains, no validated join exists. See reports/HERALD_OBSERVATORY_V05_PREDICTION_GAP.md.",
+    "pt_kz_structural_absent": true
+  },
+  "source_files": {
+    "blocked_proxy_edges.csv": "80b35680bdb3c1d8",
+    "granular_relation_edges.csv": "b8a56ca0addfc11b",
+    "granular_territory_state_panel.csv": "73c598aca5ba9940",
+    "herald_observatory_v03_panel.csv": "1f9636c5021fbf51"
+  },
+  "version": "0.5"
+}

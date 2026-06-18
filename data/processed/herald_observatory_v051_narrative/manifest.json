@@ -1,0 +1,61 @@
+{
+  "dec_references": [
+    "DEC-063",
+    "DEC-064",
+    "DEC-065",
+    "DEC-066",
+    "DEC-067_OBSERVATORY_V05_NARRATIVE",
+    "OBSERVATORY_V051_CORRECTION"
+  ],
+  "generated_at": "2026-06-18T10:38:40.763463+00:00",
+  "name": "HERALD Observatory v0.5.1 \u2014 Narrative presentation layer (corrected)",
+  "no_data_vocabulary": {
+    "donnee_insuffisante": "Donn\u00e9e insuffisante",
+    "proxy_territorial": "Proxy territorial (contexte uniquement)",
+    "secteur_absent_portugal": "Secteur non disponible pour le Portugal"
+  },
+  "output_files": {
+    "blocked_proxy_edges_v04_copy.csv": "80b35680bdb3c1d8",
+    "economic_basins.json": "88d1e0952b14cee8",
+    "map_state_by_year_sector.json": "a3a0a44a961ce72c",
+    "prediction_lookup.json": "3ee911fb32b4f515",
+    "prediction_view.csv": "98d76f3ada29f90a",
+    "pt_municipal_prediction_view.csv": "e18bb8f1735d87f8",
+    "relation_timeline.json": "a60bd08b689d74d1",
+    "relation_view.csv": "47d6829cee7c1549",
+    "sector_view.csv": "109e8c51c99f11cf",
+    "territory_view.csv": "5d32d4910a77d68f"
+  },
+  "row_counts": {
+    "blocked_proxy_edges_v04_copy": 121,
+    "prediction_view": 82152,
+    "prediction_view_pt_municipal": 40032,
+    "relation_view": 20,
+    "sector_view": 441,
+    "territory_view": 142650
+  },
+  "rules": {
+    "blocked_proxy_edges_isolated": true,
+    "language": "fr",
+    "nl_gemeente_proxy_allowed_in_territory_view": true,
+    "nl_gemeente_proxy_relation_edges_forbidden": true,
+    "prediction_layer_countries": [
+      "FR",
+      "NL",
+      "PT"
+    ],
+    "pt_kz_structural_absent": true,
+    "pt_municipal_prediction_method": "causal_persistence_or_ridge_ar1_on_observed_municipal_panel",
+    "pt_municipal_prediction_note": "PT municipal forecast generated via causal persistence/Ridge on observed municipal panel; no proxy, no HPC.",
+    "pt_municipal_prediction_status": "CLOSED"
+  },
+  "source_files": {
+    "blocked_proxy_edges.csv": "80b35680bdb3c1d8",
+    "granular_relation_edges.csv": "b8a56ca0addfc11b",
+    "granular_territory_state_panel.csv": "73c598aca5ba9940",
+    "herald_observatory_v03_panel.csv": "1f9636c5021fbf51",
+    "pt_municipal_phase7_panel.csv": "19c4675bbf8323e0"
+  },
+  "supersedes": "0.5 (OBSERVATORY_V05_PARTIAL \u2014 see HERALD_OBSERVATORY_V051_CORRECTION_AUDIT.md)",
+  "version": "0.5.1"
+}
