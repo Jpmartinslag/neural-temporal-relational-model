@@ -80,8 +80,11 @@ branch — a new DEC-* entry with new evidence and a pre-registered gate is requ
 - **Synthetic data:** in-sample AUC=0.960, unseen-pair AUC=0.690 — strong, better than the
   earlier per-pair `GraphRelationHead` (OOS AUC=0.529, pure memorization).
 - **Real data (DEC-056, fine-tuned with Phase 7 weak labels DEC-058/059):** sign
-  concordance 0.438 (zero-shot) to ~0.667 (best fine-tuned variant) — better than chance,
-  but DEC-059 found 4 of 7 negative controls within 0.05 of the best variant. No robust
+  concordance 0.438 (zero-shot, DEC-056). DEC-058's first fine-tuned figure (0.667) was
+  later found by DEC-059 to be inflated by a single unreliable FR label (FR has only 1
+  Phase 7 promoted edge, `LOW_EVIDENCE`); DEC-059's own honest figure, excluding that
+  fold, is **0.500** — DEC-059 also found 4 of 7 negative controls (permuted/shuffled
+  labels) within 0.05 of this figure, i.e. not clearly separated from noise. No robust
   cross-country replication. COVID/window sensitivity unresolved. **Zero abstentions** in
   any run — every pair gets a score, none flagged `INSUFFICIENT_EVIDENCE` even where
   evidence is thin (a documented gap between the policy taxonomy and the implementation,
