@@ -8,22 +8,31 @@ robust, supported, exploratory, or blocked — so nothing is presented with
 more confidence than the data supports. A recommendation layer is planned
 but not yet built.
 
-**To pick this repository up cold, read in this order:** `README.md` (this file) →
-`reports/HERALD_PROJECT_TRAJECTORY.md` → `reports/HERALD_CURRENT_STATE.md` →
-`reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` →
-`reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`. Full scope and authorised/forbidden
-claims are defined in `reports/HERALD_PROJECT_CHARTER.md`, which prevails over
-any informal description, including this one. Local agent handoff notes may
-exist as `CODEX_MEMORY.md`, but this file is intentionally not versioned.
+**To pick this repository up cold, read README.md, then the five canonical reports in
+`reports/canonical/`, in order:**
+
+1. `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md` — phase-by-phase history
+2. `reports/canonical/HERALD_02_DATA_PROVENANCE_AND_GRANULARITY.md` — what data exists, what it can be used for
+3. `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md` — current architecture, validated vs closed vs partial methods
+4. `reports/canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md` — every claim, its evidence, and whether it's citable
+5. `reports/canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md` — dashboard state and what's left for the article
+
+These five replace dozens of individual phase/audit reports as the entry point. The
+older reports are not deleted — `reports/HERALD_REPORTS_CONSOLIDATION_MAP.md` says which
+canonical document represents each one. For full decision-by-decision traceability, see
+`reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` and `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`.
+Full scope and authorised/forbidden claims are defined in
+`reports/HERALD_PROJECT_CHARTER.md`, which prevails over any informal description,
+including this one.
 
 ---
 
-## Project trajectory
+## Project trajectory (short version)
 
-Full narrative: `reports/HERALD_PROJECT_TRAJECTORY.md`. Note: repository evidence
-(earliest commit) begins **2026-04-08** — no March 2026 activity is documented in this
-repo, so "Mar–Apr" below should be read as "Apr" in terms of verifiable git/report
-history.
+Full phase-by-phase account: `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md`.
+Note: repository evidence (earliest commit) begins **2026-04-08** — no March 2026 activity
+is documented in this repo, so "Mar–Apr" below should be read as "Apr" in terms of
+verifiable git/report history.
 
 | Period | What happened | Status |
 |---|---|---|
@@ -174,6 +183,7 @@ python3 -m pytest tests/test_herald_artifact_registry.py -q
 
 ## Where to read decisions and data
 
+- **Canonical entry point (5 documents):** `reports/canonical/` — see the read order at the top of this file.
 - **Decisions:** `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-068) — never renumbered or deleted, only corrected/superseded explicitly.
 - **Active document index:** `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` — classifies every report (active / historical / blocked / regenerable).
 - **Artifact registry:** `reports/herald_artifact_registry.json` — path, status, allowed/forbidden use per artifact.
