@@ -16,23 +16,22 @@ structural tests is not the same as being visually validated or finally
 accepted):
 French UI, architecture-first layout, FR+NL+PT prediction (PT closed via a
 direct causal persistence/Ridge re-run on the observed PT municipal panel, no
-proxy, no HPC), real geographic heatmap, graph wired to the map. **None of
-v0.4.1/v0.5/v0.5.1's files are committed to git yet** — all still untracked
-working-tree files as of this consolidation. Many unrelated parallel
+proxy, no HPC), real geographic heatmap, graph wired to the map. **v0.5.1 (and
+the v0.5 predecessor, kept for audit trail) are now committed to git**
+(commits `e51a7d1`, `dd49d0f`, `1b2cb49`, pushed to `main`) — committed as a
+**candidate**, not as a finally-accepted dashboard. Many unrelated parallel
 workstreams (Italy/Austria/Belgium/Netherlands ingestion, economic_graph
 tensors, dual_graph experiments, synthetic_benchmark phases) are also dirty
 in the working tree — NOT part of this consolidation, not touched here.
 
 **Authorized next steps:**
-- Commit/push the Observatory v0.4.1/v0.5/v0.5.1 files (a separate session will do this).
 - Modularize the next dashboard iteration, **starting with the map** (product
   owner's signaled direction — not yet implemented, no code written for this yet).
 - Visual validation of v0.5.1 with Playwright once available in-environment.
 - Extend PT municipal prediction validation; close out remaining July/August
   Gantt items (see `reports/HERALD_RESEARCH_GANTT.md`).
-- Fix the artifact-registry schema drift documented below (6 pre-existing
-  test failures in `tests/test_herald_artifact_registry.py` — entries added
-  since DEC-038 lack `path`/`type`/`status`/`tracked_in_git`/`can_regenerate`).
+- Artifact-registry schema drift was fixed 2026-06-18 (`tests/test_herald_artifact_registry.py`
+  is green, 13/13) — no longer an open next step, kept here only as history.
 
 **Forbidden next steps:**
 - Do NOT relaunch any HPC job (no new DEC-* authorizes one; graph-temporal,
@@ -60,10 +59,10 @@ in the working tree — NOT part of this consolidation, not touched here.
   heatmap). Kept for audit trail; do not present as current.
 - v0.5.1 (`herald_observatory_v051_narrative_dashboard.html`, 18.2 MB) —
   CURRENT CANDIDATE (`OBSERVATORY_V051_CANDIDATE_NEEDS_MAP_REDESIGN`, not a
-  final accepted dashboard). French, PT prediction integrated, real heatmap,
-  graph-to-map filter wired. Limitation: not committed to git; no
-  Playwright/screenshot validation in this environment, only structural (DOM id / embedded JSON /
-  handler cross-reference) checks.
+  final accepted dashboard). **Committed to git** (commit `1b2cb49`). French,
+  PT prediction integrated, real heatmap, graph-to-map filter wired.
+  Limitation: no Playwright/screenshot validation in this environment, only
+  structural (DOM id / embedded JSON / handler cross-reference) checks.
 
 **Active data sources:** FR ZE2020 (observed, SIDE/SIRENE), PT Municipal 278
 continental municipalities (observed, INE 0009703/0014099), NL COROP 40
