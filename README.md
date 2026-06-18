@@ -94,24 +94,34 @@ graph/prediction layers on top of it.
 
 ## Research Gantt — working target
 
-This is a working target, not an externally confirmed deadline. The Mar/Apr columns
-reflect the project-trajectory framing above; verifiable git history begins 2026-04-08
-(see caveat in "Project trajectory").
+This is a working target, not an externally confirmed deadline. GitHub renders
+this block as a Mermaid Gantt chart in Markdown. Repository evidence begins
+2026-04-08; March remains an undocumented pre-repo framing month unless an
+external note is added.
 
-Legend: `█` completed/current work · `▒` planned work · `×` closed branch · `·` no active work.
+```mermaid
+gantt
+    title HERALD research timeline — working target
+    dateFormat  YYYY-MM-DD
+    axisFormat  %b %Y
 
-```text
-                                      Mar Apr May Jun Jul Aug Sep   Status
-France prediction foundation           ·  ███ ███  ·   ·   ·   ·    done
-France ZE/SIDE/SIRENE dashboard        ·  ██  ███  ·   ·   ·   ·    done
-European harmonization + LOCO          ·   ·  ███ ██   ·   ·   ·    done
-Graph branches tested and closed       ·   ·   ×× ×××  ·   ·   ·    closed
-Sector precedence + Observatory        ·   ·   ·  ███  ·   ·   ·    done
-Granular FR/PT/NL evidence             ·   ·   ·  ███  ·   ·   ·    done
-Dashboard modularization: map first    ·   ·   ·  ██  ▒▒▒  ·   ·    now
-Dynamic economic map + validation       ·   ·   ·   ·  ▒▒▒ ▒▒   ·    next
-Article figures + methods/results      ·   ·   ·   ·   ▒  ▒▒▒ ▒▒    planned
-Final review and delivery              ·   ·   ·   ·   ·   ▒  ▒▒▒   planned
+    section Foundation
+    France prediction foundation              :done, fr_pred, 2026-04-08, 2026-05-20
+    France ZE/SIDE/SIRENE dashboard           :done, fr_dash, 2026-04-15, 2026-05-28
+
+    section Validation and pruning
+    European harmonization and LOCO baselines :done, eu_loco, 2026-05-20, 2026-06-10
+    Graph branches tested and closed          :done, graph_closed, 2026-05-25, 2026-06-12
+
+    section Observatory evidence
+    Sector precedence and Observatory layer   :done, obs_sector, 2026-06-10, 2026-06-17
+    Granular FR/PT/NL evidence                :done, granular, 2026-06-15, 2026-06-18
+
+    section Next work
+    Dashboard modularization — map first      :active, map_first, 2026-06-18, 2026-07-20
+    Dynamic economic map and validation       :map_validation, 2026-07-10, 2026-08-10
+    Article figures, methods, and results     :article, 2026-07-20, 2026-09-05
+    Final review and delivery                 :review, 2026-08-20, 2026-09-12
 ```
 
 Full detail: `reports/HERALD_RESEARCH_GANTT.md`.
