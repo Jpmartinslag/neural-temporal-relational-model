@@ -32,7 +32,10 @@ lost.**
 | `GENERATED_DASHBOARD_OR_EXPORT` | Build output, regenerable from a builder script. |
 | `DO_NOT_START_HERE` | Real artefacts but not an entry point. |
 
-**Start with `reports/canonical/` (5 documents, in numbered order).**
+**Start with `reports/canonical/` (8 documents, in numbered order: the 5 entry-point
+canonicals + 3 second-level traceability maps — `HERALD_06_PHASE_TECHNIQUE_MATRIX.md`,
+`HERALD_07_METHOD_LINEAGE_FOR_ARTICLE.md`, `HERALD_08_REPOSITORY_TRACEABILITY_MAP.md`).**
+All 8 are `CANONICAL_READ_FIRST`.
 
 ---
 
@@ -52,7 +55,8 @@ plus the 3 kept folders.
 | `reports/HERALD_REPORTS_CONSOLIDATION_MAP.md` | `CANONICAL_READ_FIRST` | Which canonical doc represents which report cluster |
 | `reports/herald_artifact_registry.json` | `CANONICAL_READ_FIRST` | Artefact manifest with status and claims |
 
-Plus `reports/canonical/` (6 files: the 5 canonical docs + the consolidation audit),
+Plus `reports/canonical/` (9 files: the 5 entry-point canonicals, the 3 second-level
+traceability maps (06/07/08), and the consolidation audit),
 `reports/dashboards/` (current and historical dashboard HTML + builders), and
 `reports/bibliography/` (references) — all unconditionally kept per policy.
 

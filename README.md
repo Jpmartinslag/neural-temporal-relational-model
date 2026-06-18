@@ -27,6 +27,21 @@ including this one.
 
 ---
 
+## Traceability maps
+
+Three second-level canonical documents, built on top of the five above, for "how many
+phases / what technique / what data / what decision / what failed / what's the
+architecture / what's left" at a glance:
+
+- `reports/canonical/HERALD_06_PHASE_TECHNIQUE_MATRIX.md` — one row per phase/block:
+  data, granularity, technique, validation, result, DEC-*, status, citability.
+- `reports/canonical/HERALD_07_METHOD_LINEAGE_FOR_ARTICLE.md` — the scientific line of
+  reasoning in narrative form, written as raw material for the article.
+- `reports/canonical/HERALD_08_REPOSITORY_TRACEABILITY_MAP.md` — what each top-level
+  folder is, its status, and what must never be cited as a primary source from it.
+
+---
+
 ## Project trajectory (short version)
 
 Full phase-by-phase account: `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md`.

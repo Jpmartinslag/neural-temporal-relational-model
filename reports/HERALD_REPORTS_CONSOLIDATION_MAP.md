@@ -36,6 +36,19 @@ chronologically, see `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.
 
 ---
 
+## Second-level canonical maps (2026-06-18 addition)
+
+In addition to the cluster-level mapping above, three second-level documents now exist
+in `reports/canonical/` for cross-cutting traceability rather than per-cluster synthesis:
+
+| Need | Canonical |
+|---|---|
+| Phase/technique/data/decision matrix (one row per phase) | `reports/canonical/HERALD_06_PHASE_TECHNIQUE_MATRIX.md` |
+| Narrative scientific reasoning for the article | `reports/canonical/HERALD_07_METHOD_LINEAGE_FOR_ARTICLE.md` |
+| Repository folder structure and what not to cite from where | `reports/canonical/HERALD_08_REPOSITORY_TRACEABILITY_MAP.md` |
+
+---
+
 ## How to use this map
 
 1. If you need a **current number or claim**, go to the "Represented by" column first.

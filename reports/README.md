@@ -14,6 +14,17 @@ git history, but they are no longer the public entry point.
 4. `canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md`
 5. `canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md`
 
+## Second-level canonical maps
+
+Built on top of the five above, for cross-cutting traceability:
+
+6. `canonical/HERALD_06_PHASE_TECHNIQUE_MATRIX.md` — one row per phase/block (data,
+   granularity, technique, validation, result, DEC-*, status, citability).
+7. `canonical/HERALD_07_METHOD_LINEAGE_FOR_ARTICLE.md` — the scientific reasoning in
+   narrative form, for the article.
+8. `canonical/HERALD_08_REPOSITORY_TRACEABILITY_MAP.md` — what each folder is and what
+   not to cite from it.
+
 ## Control Documents
 
 - `HERALD_CURRENT_STATE.md` — current component status and next step.
