@@ -26,25 +26,37 @@ instead of it.
 | `GENERATED_DASHBOARD_OR_EXPORT` | Build output, regenerable from a builder script; not itself a scientific claim. |
 | `DO_NOT_START_HERE` | Real artefacts but not an entry point for understanding the project (pre-HERALD, operational housekeeping, raw HPC dumps). |
 
-See `reports/HERALD_PROJECT_TRAJECTORY.md` for the narrative version of how these
-pieces fit together chronologically, and `reports/HERALD_REPORTS_CONSOLIDATION_MAP.md`
-for which canonical synthesis document now represents each cluster of older reports.
+**Start with `reports/canonical/` (5 documents, in numbered order)** — they are the
+intended entry point as of 2026-06-18 and replace dozens of individual reports for that
+purpose. See `reports/HERALD_REPORTS_CONSOLIDATION_MAP.md` for which canonical document
+represents each cluster of older reports below.
 
 ---
 
 ## Source of Truth Documents (read first) — `CANONICAL_READ_FIRST`
 
+**2026-06-18 update:** the five documents in `reports/canonical/` are now the primary
+entry point, in order. `README.md` introduces them; everything below them in this table
+is deep-reference material, not a second entry point.
+
 | Document | Purpose | Status |
 |----------|---------|--------|
-| `README.md` | Public entry point, project trajectory summary, repository map | ACTIVE |
-| `reports/HERALD_PROJECT_TRAJECTORY.md` | Narrative evolution of the project, April→June 2026, with caveats preserved | ACTIVE |
-| `reports/HERALD_CURRENT_STATE.md` | State per component, blockers, next step | ACTIVE |
-| `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` | All decisions DEC-001→DEC-037 | ACTIVE |
+| `README.md` | Public entry point, links to the 5 canonical reports, repository map | ACTIVE |
+| `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md` | Phase-by-phase project history with Phase Map table | ACTIVE — **canonical #1** |
+| `reports/canonical/HERALD_02_DATA_PROVENANCE_AND_GRANULARITY.md` | All data sources, evidence levels, granularity comparison | ACTIVE — **canonical #2** |
+| `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md` | Current architecture, validated/closed/partial methods, Mermaid diagram | ACTIVE — **canonical #3** |
+| `reports/canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md` | Every claim, evidence, status, citability | ACTIVE — **canonical #4** |
+| `reports/canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md` | Dashboard lineage, why v0.5.1 is a candidate, article roadmap with Mermaid Gantt | ACTIVE — **canonical #5** |
+| `reports/HERALD_PROJECT_TRAJECTORY.md` | Narrative source feeding canonical #1 | ACTIVE, `represented_by: HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md` |
+| `reports/HERALD_CURRENT_STATE.md` | State per component, blockers, next step — primary source for canonicals #1/#4 | ACTIVE |
+| `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` | All decisions DEC-001→DEC-068 — authoritative, never represented_by anything | ACTIVE |
 | `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` | Classifies every report into 7 categories | ACTIVE |
 | `reports/HERALD_REPORTS_CONSOLIDATION_MAP.md` | Which canonical doc represents which report cluster | ACTIVE |
-| `reports/HERALD_PROJECT_CHARTER.md` | Official direction, scope, permitted/forbidden claims | ACTIVE |
-| `reports/HERALD_EVIDENCE_MATRIX.md` | All claims and their evidentiary status (32 claims) | ACTIVE |
-| `reports/HERALD_RESEARCH_GANTT.md` | Timeline and task dependencies | ACTIVE |
+| `reports/HERALD_PROJECT_CHARTER.md` | Official direction, scope, permitted/forbidden claims — authoritative | ACTIVE |
+| `reports/HERALD_EVIDENCE_MATRIX.md` | All claims and their evidentiary status (32 claims) — primary source for canonical #4 | ACTIVE |
+| `reports/HERALD_RESEARCH_GANTT.md` | Detailed timeline/status checks feeding canonical #5's Gantt | ACTIVE, `represented_by: HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md` (summary only — this remains the detailed source) |
+| `reports/HERALD_ARCHITECTURE_OVERVIEW.md` | Architecture detail feeding canonical #3 | ACTIVE, `represented_by: HERALD_03_METHODS_AND_ARCHITECTURE.md` |
+| `reports/HERALD_GRANULAR_EVIDENCE_POLICY.md` | Evidence-tier policy feeding canonical #2 | ACTIVE, `represented_by: HERALD_02_DATA_PROVENANCE_AND_GRANULARITY.md` |
 | `hpc/HPC_PHASE_INDEX.md` | HPC phase registry and status | ACTIVE |
 | `hpc/hpc_phase_registry.json` | Machine-readable HPC registry | ACTIVE |
 | `reports/herald_artifact_registry.json` | Artefact manifest with status and claims | ACTIVE |
@@ -54,6 +66,7 @@ for which canonical synthesis document now represents each cluster of older repo
 ## Active Scientific Reports
 
 ### France / Phase 2–3 — `SOURCE_AUDITS`
+**Represented by:** `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md` (France foundation phase).
 Explains where France's prediction layer (Q7) came from. The headline number itself
 is PENDING_REAUDIT (see below) — these are the audits that justify trusting the
 selection process, not a substitute for the reaudit.
@@ -63,6 +76,7 @@ selection process, not a substitute for the reaudit.
 | `reports/HERALD_PHASE2R_CONFIRMATORY_AUDIT.md` | France confirmatory result | ACTIVE |
 
 ### International Harmonization / Phase 4 — `CURRENT_SCIENTIFIC_EVIDENCE` (PASS rows) / `SUPERSEDED_OR_CLOSED_BRANCH` (FAIL rows)
+**Represented by:** `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md` (harmonization phase) + `reports/canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md` (claim table).
 | Document | Covers | Status |
 |----------|--------|--------|
 | `reports/HERALD_PHASE4N_RESULTS_AUDIT.md` | LOCO baseline PT/IT/AT | ACTIVE |
@@ -77,6 +91,7 @@ selection process, not a substitute for the reaudit.
 | `reports/HERALD_LEAK_AUDIT_FINAL_20260507.md` | Integrity audit | ACTIVE |
 
 ### Dynamic Economic Graph / Phase 5–6 — `CURRENT_SCIENTIFIC_EVIDENCE` (G1-L2/G2 PASS rows) / `SUPERSEDED_OR_CLOSED_BRANCH` (communities, Phase 5, P6 dual-graph rows)
+**Represented by:** `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md` (§2-3) + `reports/canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md`.
 | Document | Covers | Status |
 |----------|--------|--------|
 | `reports/HERALD_G0_FORMAL_CONTRACT.md` | G0 conceptual contract (10/10) | ACTIVE |
@@ -90,6 +105,7 @@ selection process, not a substitute for the reaudit.
 | `reports/HERALD_DYNAMIC_ECONOMIC_GRAPH_ROADMAP.md` | G0→G6 roadmap | ACTIVE |
 
 ### Graph-Temporal Architecture — `SUPERSEDED_OR_CLOSED_BRANCH`
+**Represented by:** `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md` (§3, closed branches table).
 S1_FR_FAIL (DEC-031) closed the whole branch; contract/preflight docs kept for
 traceability of why the architecture was chosen before it failed.
 | Document | Covers | Status |
@@ -101,6 +117,7 @@ traceability of why the architecture was chosen before it failed.
 | `reports/HERALD_GRAPH_TEMPORAL_S1_FR_AUDIT.md` | S1_FR_FAIL (DEC-031) — GConvGRU/EvolveGCN-H fail frozen gate | ACTIVE (closed branch) |
 
 ### Economic Observatory — `CURRENT_SCIENTIFIC_EVIDENCE` (contracts/methods) + `GENERATED_DASHBOARD_OR_EXPORT` (the .html files)
+**Represented by:** `reports/canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md`.
 | Document | Covers | Status |
 |----------|--------|--------|
 | `reports/HERALD_OBSERVATORY_V01_DATA_CONTRACT.md` | Aggregate v0.1.1 + sector v0.2 contract, evidence separation and causal guarantees (DEC-032) | ACTIVE |
@@ -116,6 +133,7 @@ traceability of why the architecture was chosen before it failed.
 | `reports/dashboards/herald_observatory_v03_dashboard.html` | Observatory v0.3: choropleth map + sector graph + states + territory + provenance (DEC-035/036, 6.2 MB self-contained) | ACTIVE |
 
 ### Granular FR/PT/NL Evidence (DEC-063→DEC-066, Observatory v0.4) — `CURRENT_SCIENTIFIC_EVIDENCE` (contracts/audits) + `GENERATED_DASHBOARD_OR_EXPORT` (dashboard/exports)
+**Represented by:** `reports/canonical/HERALD_02_DATA_PROVENANCE_AND_GRANULARITY.md`.
 | Document | Covers | Status |
 |----------|--------|--------|
 | `reports/HERALD_DEC063_GRANULAR_FR_PT_NL_EVIDENCE_MODEL.md` | FR/PT/NL granular evidence model, NL gemeente proxy construction | ACTIVE |
@@ -142,6 +160,7 @@ traceability of why the architecture was chosen before it failed.
 | `tests/test_observatory_v05_narrative_dashboard.py` | 65 tests: no raw NaN, sector names always paired with codes, PT/KZ structural absence, NL gemeente proxy exclusion, blocked-edge isolation, determinism | ACTIVE (historical, untouched, still passes) |
 
 ### Layperson Narrative Observatory v0.5.1 (correction of v0.5 dashboard-readiness) — `CURRENT_SCIENTIFIC_EVIDENCE` (audit) + `GENERATED_DASHBOARD_OR_EXPORT` (dashboard/exports) — **current candidate, not final** (DEC-068)
+**Represented by:** `reports/canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md` (§1-2).
 | Document | Covers | Status |
 |----------|--------|--------|
 | `reports/HERALD_OBSERVATORY_V051_CORRECTION_AUDIT.md` | Point-by-point record of what was wrong in v0.5 and what v0.5.1 fixed | ACTIVE |
@@ -225,6 +244,7 @@ read in full for this pass (only their phase/decision context was checked) — i
 claim from one of these files needs to be cited, re-verify it against the decision log first.
 
 ### `CURRENT_SCIENTIFIC_EVIDENCE` — research track (DEC-048→DEC-062, real-data and synthetic relation-learning)
+**Represented by:** `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md` (§4) + `reports/canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md`.
 | Document | Covers |
 |----------|--------|
 | `reports/HERALD_DEC048_FAILURE_CAUSE_DIAGNOSTIC.md` | DEC-048 training-budget diagnostic |
@@ -303,7 +323,7 @@ historical only, not citable for current claims.
 superseded by Phase 3E Q7 (already ACTIVE above via `HERALD_PHASE3E_QTENSOR_ARCH_AUDIT.md`).
 
 ### `SUPERSEDED_OR_CLOSED_BRANCH` / `HISTORICAL_BUT_IMPORTANT` — Other closed/early-exploration branches
-`HERALD_ECONOGNN_TRANSFERABILITY_AUDIT.md` — EconoGNN reference audit, concluded `REFERENCE_ONLY` (see CODEX_MEMORY DEC-028 section); historical.
+`HERALD_ECONOGNN_TRANSFERABILITY_AUDIT.md` — EconoGNN reference audit, concluded `REFERENCE_ONLY`; historical.
 `HERALD_ARDECO_FR_EXTENSION_CONTRACT.md`, `HERALD_ARDECO_RIDGE_FR_AUDIT.md` — ARDECO extension exploration, not part of the current canonical pipeline; historical.
 `HERALD_AUTO_REGULATION_HYPOTHESIS_AUDIT.md`, `HERALD_RARE_REBOUND_DATA_AUDIT.md`,
 `HERALD_2021_INSTABILITY_DIAGNOSIS.md`, `HERALD_2021_STABILITY_LITERATURE_REVIEW.md`,
