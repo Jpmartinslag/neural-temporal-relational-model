@@ -98,18 +98,21 @@ This is a working target, not an externally confirmed deadline. The Mar/Apr colu
 reflect the project-trajectory framing above; verifiable git history begins 2026-04-08
 (see caveat in "Project trajectory").
 
-| Workstream | Mar | Apr | May | Jun | Jul | Aug | Sep | Status |
-|---|---:|---:|---:|---:|---:|---:|---:|---|
-| France prediction foundation | | ███ | ██ | | | | | Done |
-| France dashboard and ZE/SIDE/SIRENE pipeline | | ██ | ███ | | | | | Done |
-| European harmonization and LOCO baselines | | | ███ | ██ | | | | Done |
-| Failed graph branches and methodological pruning | | | ██ | ███ | | | | Closed |
-| Sector precedence and Observatory evidence layer | | | | ███ | | | | Done |
-| Granular FR/PT/NL evidence and proxy audit | | | | ███ | | | | Done |
-| Dashboard modularization — map first | | | | ██ | ███ | | | Now |
-| Dynamic economic map and visual validation | | | | | ███ | ██ | | Next |
-| Figures, tables, methodology/results writing | | | | | ██ | ███ | ██ | Planned |
-| Final review and delivery | | | | | | ██ | ███ | Planned |
+Legend: `█` completed/current work · `▒` planned work · `×` closed branch · `·` no active work.
+
+```text
+                                      Mar Apr May Jun Jul Aug Sep   Status
+France prediction foundation           ·  ███ ███  ·   ·   ·   ·    done
+France ZE/SIDE/SIRENE dashboard        ·  ██  ███  ·   ·   ·   ·    done
+European harmonization + LOCO          ·   ·  ███ ██   ·   ·   ·    done
+Graph branches tested and closed       ·   ·   ×× ×××  ·   ·   ·    closed
+Sector precedence + Observatory        ·   ·   ·  ███  ·   ·   ·    done
+Granular FR/PT/NL evidence             ·   ·   ·  ███  ·   ·   ·    done
+Dashboard modularization: map first    ·   ·   ·  ██  ▒▒▒  ·   ·    now
+Dynamic economic map + validation       ·   ·   ·   ·  ▒▒▒ ▒▒   ·    next
+Article figures + methods/results      ·   ·   ·   ·   ▒  ▒▒▒ ▒▒    planned
+Final review and delivery              ·   ·   ·   ·   ·   ▒  ▒▒▒   planned
+```
 
 Full detail: `reports/HERALD_RESEARCH_GANTT.md`.
 
@@ -129,9 +132,7 @@ traceability, not current) · **generated** (build output, regenerable) ·
 | `data/` | active | Raw, intermediate, and canonical processed panels. Read `reports/herald_artifact_registry.json` before trusting any file's provenance. |
 | `hpc/` | active + historical mix | SLURM batch scripts for both open and closed phases — check the phase name against the decision log before reusing a script. |
 | `scripts/`, `tools/` | active, narrow-purpose | Small standalone audit/merge utilities, not part of the main pipeline. |
-| `docs/architecture/` | historical | Older architecture diagrams/views (e.g. LikeC4). `reports/HERALD_ARCHITECTURE_OVERVIEW.md` is the current source. |
-| `package.json`, `package-lock.json` | legacy tooling, not needed for dashboard/reproduction | Only used to run the historical LikeC4 diagrams under `docs/architecture/herald_likec4` (`npm run likec4:*`). The current Observatory dashboards are pure Python; no Node dependency. |
-| `.graphifyignore` | legacy tooling | Config for the external `/graphify` repo-mapping tool, not part of the HERALD pipeline. |
+| `docs/architecture/` | historical | Older architecture diagrams/views (e.g. LikeC4). `reports/HERALD_ARCHITECTURE_OVERVIEW.md` is the current source. Any local Node/Graphify helper files are intentionally ignored and are not required for current dashboard reproduction. |
 | `metadata/` | historical | Older data catalogs, partly superseded by `reports/herald_artifact_registry.json`. Verify before relying on it. |
 | `hpc_results/` | generated, do-not-start-here | Raw job outputs, mostly from closed/superseded branches. Cross-reference against the decision log first. |
 | large exports under `data/processed/herald_observatory_v0*_narrative/` | generated | Regenerable presentation-layer exports; only their small `manifest.json` is git-tracked. |
