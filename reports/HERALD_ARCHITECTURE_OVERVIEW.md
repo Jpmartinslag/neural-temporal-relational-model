@@ -208,6 +208,43 @@ the corresponding test suite on every run.
 
 ---
 
+## 5b. Historical development path
+
+This architecture wasn't designed all at once — it's the surviving path through a
+series of tested-and-kept or tested-and-closed branches. Full narrative with sources:
+`reports/HERALD_PROJECT_TRAJECTORY.md`.
+
+```
+France prediction foundation (Apr-May 2026: ZE2020, SIDE/SIRENE, Q7)
+        │
+        ▼
+European baseline (Jun 2026: PT/IT/AT LOCO, persistence/Ridge validated;
+                    geographic-lag and spatial-Durbin branches tested and CLOSED)
+        │
+        ▼
+Relation layer (Jun 2026: G1-L2 co-growth PASS; Phase 7 sector precedence;
+                 P6 dual graph and graph-temporal GConvGRU/EvolveGCN-H tested and CLOSED;
+                 neural SharedRelationEncoder kept as research track, real-data PARTIAL)
+        │
+        ▼
+Granular evidence (Jun 2026: PT municipal Phase 7 closed; NL gemeente proxy
+                    structurally BLOCKED for relation labels; fine-grain threshold policy)
+        │
+        ▼
+Dashboard candidate (Jun 2026: Observatory v0.3 -> v0.4/v0.4.1 -> v0.5 (rejected UX)
+                      -> v0.5.1, current candidate, never visually validated)
+        │
+        ▼
+Future: Recommendation layer (NOT STARTED, requires Bloco 1 + Bloco 2 complete)
+```
+
+Each arrow is a gate, not a default. Branches that failed their pre-registered gate
+(geographic lag, P6 dual graph, graph-temporal, NL gemeente proxy relation labels) are
+closed per Charter §8 and require a new DEC-* with new evidence to reopen — they are
+not simply unfinished work.
+
+---
+
 ## 6. What's still missing
 
 - **Recommendation layer:** 0% — not started, by design (requires Bloco 1+2 complete).

@@ -4,6 +4,16 @@
 
 ---
 
+**Addendum 2026-06-18:** Some statuses in the original Charter are superseded by
+DEC-034→DEC-068. Sector→sector precedence is now implemented statistically through
+Phase 7; recommendation remains future; neural graph prediction remains
+unsupported/partial. The original text below is left unchanged — read it together with
+the decision log, not as a standalone current-state claim. See
+`reports/HERALD_PROJECT_TRAJECTORY.md` for the narrative version and
+`reports/HERALD_CURRENT_STATE.md` for the current per-component status.
+
+---
+
 ## 1. Official Name and Purpose
 
 **HERALD** — *Heterogeneous Economic Relational Adaptive Learning for territorial Dynamics*
@@ -44,7 +54,7 @@ States are descriptive labels derived from observed series. They are not predict
 - Attributes to track: direction (positive/negative), intensity, temporal lag, stability, uncertainty, variance/covariance.
 - **Permitted language:** association, co-movement, predictive precedence.
 - **Forbidden language:** structural economic causality, Granger causality as structural proof.
-- Current status: **not yet implemented**. G2 territorial aggregate dynamics (territory↔territory within sector) exist but are not a sector→sector layer. Individual sector→sector associations remain untested.
+- Current status: **not yet implemented**. G2 territorial aggregate dynamics (territory↔territory within sector) exist but are not a sector→sector layer. Individual sector→sector associations remain untested. **[SUPERSEDED — see 2026-06-18 addendum above]** This is implemented as of Phase 7 (DEC-034, 2026-06-12): 20 observed sector→sector edges (FR=9, NL COROP=8, PT Municipal=3), bootstrap/permutation/FDR-validated. See `reports/HERALD_CURRENT_STATE.md` ("Sector→sector relations").
 
 ### 2.5 Explanation
 - Identify which variables, sectors, and territories are associated with observed changes.

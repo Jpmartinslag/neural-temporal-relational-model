@@ -8,14 +8,31 @@ robust, supported, exploratory, or blocked — so nothing is presented with
 more confidence than the data supports. A recommendation layer is planned
 but not yet built.
 
-**To pick this repository up cold, read in this order:** `CODEX_MEMORY.md` →
-`README.md` (this file) → `reports/HERALD_CURRENT_STATE.md` →
+**To pick this repository up cold, read in this order:** `README.md` (this file) →
+`reports/HERALD_PROJECT_TRAJECTORY.md` → `reports/HERALD_CURRENT_STATE.md` →
 `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` →
 `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`. Full scope and authorised/forbidden
 claims are defined in `reports/HERALD_PROJECT_CHARTER.md`, which prevails over
-any informal description, including this one.
+any informal description, including this one. Local agent handoff notes may
+exist as `CODEX_MEMORY.md`, but this file is intentionally not versioned.
 
 ---
+
+## Project trajectory
+
+Full narrative: `reports/HERALD_PROJECT_TRAJECTORY.md`. Note: repository evidence
+(earliest commit) begins **2026-04-08** — no March 2026 activity is documented in this
+repo, so "Mar–Apr" below should be read as "Apr" in terms of verifiable git/report
+history.
+
+| Period | What happened | Status |
+|---|---|---|
+| Apr–May 2026 | France prediction foundation: ZE2020, SIDE/SIRENE, Q7 architecture selection, France dashboard | Historical foundation |
+| Late May–Jun 2026 | European harmonization (PT/IT/AT LOCO) and failure-driven pruning of graph branches | Core baseline |
+| Early Jun 2026 | Closed graph branches (P6 dual graph, graph-temporal) documented; pivot to descriptive sector graph | Closed branches documented |
+| Mid Jun 2026 | Sector precedence (Phase 7), Observatory v0.3/v0.4, FR/NL/PT relation evidence | Current evidence layer |
+| Mid–Late Jun 2026 | Granular PT/NL audit, PT municipal Phase 7, NL gemeente proxy blocked, v0.5.1 candidate | Current candidate |
+| Jul–Sep 2026 | Modular map-first dashboard, figures, article writing | Next work |
 
 ## Current state — June 2026
 
@@ -77,20 +94,22 @@ graph/prediction layers on top of it.
 
 ## Research Gantt — working target
 
-This is a working target, not an externally confirmed deadline.
+This is a working target, not an externally confirmed deadline. The Mar/Apr columns
+reflect the project-trajectory framing above; verifiable git history begins 2026-04-08
+(see caveat in "Project trajectory").
 
-| Workstream | Jun 2026 | Jul 2026 | Aug 2026 | Early Sep 2026 | Status |
-|---|---|---|---|---|---|
-| Scientific freeze and repository organization | DONE | | | | DONE |
-| Dashboard modularization — map first | NOW | TODO | | | NOW |
-| Dynamic economic map | | TODO | REVIEW | | TODO |
-| Visual validation / Playwright screenshots | | TODO | REVIEW | | TODO |
-| Architecture and methodology figures | | TODO | TODO | | TODO |
-| Final result tables and article figures | | | TODO | REVIEW | TODO |
-| Methodology writing | | | TODO | REVIEW | TODO |
-| Results writing | | | TODO | REVIEW | TODO |
-| Discussion and limitations | | | | TODO | TODO |
-| Final review and delivery | | | | DELIVERY | TODO |
+| Workstream | Mar | Apr | May | Jun | Jul | Aug | Sep | Status |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| France prediction foundation | | ███ | ██ | | | | | Done |
+| France dashboard and ZE/SIDE/SIRENE pipeline | | ██ | ███ | | | | | Done |
+| European harmonization and LOCO baselines | | | ███ | ██ | | | | Done |
+| Failed graph branches and methodological pruning | | | ██ | ███ | | | | Closed |
+| Sector precedence and Observatory evidence layer | | | | ███ | | | | Done |
+| Granular FR/PT/NL evidence and proxy audit | | | | ███ | | | | Done |
+| Dashboard modularization — map first | | | | ██ | ███ | | | Now |
+| Dynamic economic map and visual validation | | | | | ███ | ██ | | Next |
+| Figures, tables, methodology/results writing | | | | | ██ | ███ | ██ | Planned |
+| Final review and delivery | | | | | | ██ | ███ | Planned |
 
 Full detail: `reports/HERALD_RESEARCH_GANTT.md`.
 
@@ -111,6 +130,8 @@ traceability, not current) · **generated** (build output, regenerable) ·
 | `hpc/` | active + historical mix | SLURM batch scripts for both open and closed phases — check the phase name against the decision log before reusing a script. |
 | `scripts/`, `tools/` | active, narrow-purpose | Small standalone audit/merge utilities, not part of the main pipeline. |
 | `docs/architecture/` | historical | Older architecture diagrams/views (e.g. LikeC4). `reports/HERALD_ARCHITECTURE_OVERVIEW.md` is the current source. |
+| `package.json`, `package-lock.json` | legacy tooling, not needed for dashboard/reproduction | Only used to run the historical LikeC4 diagrams under `docs/architecture/herald_likec4` (`npm run likec4:*`). The current Observatory dashboards are pure Python; no Node dependency. |
+| `.graphifyignore` | legacy tooling | Config for the external `/graphify` repo-mapping tool, not part of the HERALD pipeline. |
 | `metadata/` | historical | Older data catalogs, partly superseded by `reports/herald_artifact_registry.json`. Verify before relying on it. |
 | `hpc_results/` | generated, do-not-start-here | Raw job outputs, mostly from closed/superseded branches. Cross-reference against the decision log first. |
 | large exports under `data/processed/herald_observatory_v0*_narrative/` | generated | Regenerable presentation-layer exports; only their small `manifest.json` is git-tracked. |
@@ -123,7 +144,7 @@ contributor should read first): `reports/HERALD_REPOSITORY_STRUCTURE.md`.
 ## How to run tests
 
 No single recommended root test command (the root also collects unrelated
-vendored packages — see `CODEX_MEMORY.md`). Run targeted suites instead:
+vendored packages). Run targeted suites instead:
 
 ```bash
 # Observatory suites (fast, ~30-40s for the heaviest one)

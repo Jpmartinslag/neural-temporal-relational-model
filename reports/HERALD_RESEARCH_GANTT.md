@@ -7,6 +7,28 @@
 
 ---
 
+## March→September project arc (added 2026-06-18, traceability)
+
+The schedule below this section ("June→September") only ever covered June onward,
+which understated the project's actual age. This section restores the earlier arc.
+**Caveat:** verifiable repository evidence (earliest git commit, earliest dated report)
+begins **2026-04-08**; no March 2026 artefact was found in this repo. The "March" slot
+below is included because the project brief that requested this restoration assumed a
+March start — if real March 2026 work exists outside this repository, slot it in here
+explicitly with a source; otherwise treat April as the actual documented start. Full
+narrative with sources: `reports/HERALD_PROJECT_TRAJECTORY.md`.
+
+| Period | Work | Evidence |
+|---|---|---|
+| March 2026 | No documented artefact found in this repository. | — (see caveat above) |
+| April 2026 | First commits (2026-04-08): data foundation, target/proxy definition, annual baseline, STGNN/spatial tensor packages. France scope set: ZE2020, SIDE/SIRENE. | `git log --reverse`, `src/modeles/`, `src/data/` |
+| May 2026 | Phase 2/3 France architecture search (2026-05-12→05-27); **Q7 selected** (WMAPE 0.0204, PENDING_REAUDIT); France dashboard committed (2026-05-28); Phase 4 internationalization begins same day. | `reports/HERALD_PHASE3E_QTENSOR_ARCH_AUDIT.md`, `reports/HERALD_PHASE2R_CONFIRMATORY_AUDIT.md` |
+| June 2026 (consolidation) | DEC-001→DEC-068: leakage fix, causal LOCO baselines, closed graph branches (4P/4Q, P6, graph-temporal), Phase 7 sector precedence, granular FR/PT/NL evidence, PT municipal Phase 7, NL gemeente proxy blocked, Observatory v0.3→v0.5.1. | `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` |
+| July–August 2026 | Dashboard modularization (map-first), visual validation, figures, methodology/results writing. | Planned — see schedule below |
+| Early September 2026 | Final writing, review, submission/delivery. | Planned — see schedule below |
+
+---
+
 ## June→September schedule (2026-06-18 draft, current)
 
 Status check against this plan, verified against the decision log before writing:
