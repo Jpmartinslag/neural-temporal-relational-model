@@ -52,7 +52,9 @@ architecture / what's left" at a glance:
 `reports/canonical/HERALD_13_ORGANIZATION_BACKLOG.md` is different in kind from
 `01`-`12`: it is an **organizational chore list** (uncommitted worktree state, data/code/HPC
 items needing a future keep/archive decision), not a scientific or structural result.
-Read it only if you're picking up housekeeping work, not for the science.
+`reports/canonical/HERALD_14_WORKTREE_DECISION_AUDIT.md` turns that raw inventory into a
+per-group decision table (commit/gitignore/keep-local/needs-new-DEC/etc.) — read it
+before acting on anything in #13. Neither #13 nor #14 is a source of scientific claims.
 
 ---
 

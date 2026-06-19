@@ -40,7 +40,9 @@ Built on top of the five above, for cross-cutting traceability:
 
 `canonical/HERALD_13_ORGANIZATION_BACKLOG.md` is an organizational chore list (not a
 scientific document) — uncommitted worktree state and future data/code/HPC decisions.
-`01`-`12` are the science/structure base; `13` is housekeeping against that base.
+`canonical/HERALD_14_WORKTREE_DECISION_AUDIT.md` is the decision layer on top of it:
+per-group commit/gitignore/keep-local/requires-new-DEC/human-review calls. `01`-`12` are
+the science/structure base; `13`-`14` are housekeeping against that base.
 
 ## Control Documents
 

@@ -50,9 +50,11 @@ canonicals + 7 second-level traceability maps — `HERALD_06_PHASE_TECHNIQUE_MAT
 `HERALD_11_HPC_AND_RESULTS_MAP.md`, `HERALD_12_FINAL_PHASE_MAP.md`, plus the
 `HERALD_CANONICAL_CONSOLIDATION_AUDIT.md` and `HERALD_DEEP_REPORT_AUDIT.md` audit
 trail).** All 12 numbered documents are `CANONICAL_READ_FIRST` and are the scientific/
-structural base. `HERALD_13_ORGANIZATION_BACKLOG.md` is a separate, non-scientific
-housekeeping chore list — read it only for worktree/data/code/HPC organizational
-cleanup, not as a source of any claim.
+structural base. `HERALD_13_ORGANIZATION_BACKLOG.md` and
+`HERALD_14_WORKTREE_DECISION_AUDIT.md` are separate, non-scientific housekeeping
+documents — #13 is the raw worktree inventory, #14 is the per-group decision matrix on
+top of it (commit/gitignore/keep-local/requires-new-DEC/human-review). Read them only
+for organizational cleanup, never as a source of any scientific claim.
 
 ---
 
@@ -72,9 +74,10 @@ plus the 3 kept folders.
 | `reports/HERALD_REPORTS_CONSOLIDATION_MAP.md` | `CANONICAL_READ_FIRST` | Which canonical doc represents which report cluster |
 | `reports/herald_artifact_registry.json` | `CANONICAL_READ_FIRST` | Artefact manifest with status and claims |
 
-Plus `reports/canonical/` (15 files: the 5 entry-point canonicals, the 7 second-level
+Plus `reports/canonical/` (16 files: the 5 entry-point canonicals, the 7 second-level
 traceability maps (06-12), the 2 audit docs — consolidation + deep verification — and
-the non-scientific `HERALD_13_ORGANIZATION_BACKLOG.md` chore list),
+the 2 non-scientific housekeeping docs `HERALD_13_ORGANIZATION_BACKLOG.md` and
+`HERALD_14_WORKTREE_DECISION_AUDIT.md`),
 `reports/dashboards/` (current and historical dashboard HTML + builders), and
 `reports/bibliography/` (references) — all unconditionally kept per policy.
 
