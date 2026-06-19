@@ -17,14 +17,26 @@ can act (or explicitly defer) without re-deriving this analysis.
 
 Several scripts that produce **already-cited, already-frozen DEC results** are not in
 the git index at all — only their output reports/exports were ever committed. Most
-notably: `data/processed/sector_precedence_results/` (the literal source of Phase 7's
-headline DEC-034 numbers — 20 edges, FR=9/NL=8/PT=3 — cited in every canonical doc) is
-**entirely untracked**, as are the builder scripts for G1-L1 (DEC-017), G1-observable,
-and the closed-branch P6 dual-graph target/tensor builders. This is a traceability gap,
-not a new scientific finding — the numbers themselves are unaffected (they're already
+notably: `data/processed/sector_precedence_results/` (the raw Phase 7 HPC bundle behind
+DEC-034) was **entirely untracked**, as are the builder scripts for G1-L1 (DEC-017),
+G1-observable, and the closed-branch P6 dual-graph target/tensor builders. This is a
+traceability gap, not a new scientific finding — the numbers themselves are unaffected
+(they're already
+
 frozen in the decision log), but reproducing them from a fresh clone currently would not
-be possible. This is flagged `HIGH` risk below specifically for the sector-precedence
-group, `MEDIUM` for the others, and is the single item most worth a human decision soon.
+have been possible. This was `HIGH` risk for the sector-precedence group specifically,
+`MEDIUM` for the others.
+
+**Resolved 2026-06-19 (sector precedence only):** `data/processed/sector_precedence_results/`
+is now committed. Resolving it surfaced one correction: the original phrasing of this
+finding conflated two different artifacts. `sector_precedence_results/` is the **raw**
+Phase 7 run (DEC-034): 25 main-promoted edges (FR=1/NL=8/PT=16), 12 of which are
+COVID-robust (FR=0/NL=3/PT=9). The "20 edges, FR=9/NL=8/PT=3" figure that earlier drafts
+of this audit cited belongs to a **different, already-tracked** file —
+`data/processed/herald_observatory_v04_granular/granular_relation_edges.csv` (the
+DEC-066 fine-grain-relabeled export). Both are real and both are correctly cited
+elsewhere; they must not be conflated. See the resolved row in the table below. The
+G1-L1/observable and dual-graph rows remain open (`COMMIT_AFTER_TESTS`, not yet acted on).
 
 Separately: the Italy/Austria group is not just a re-run — `git diff` shows the Italy
 panel's **column order changed** (`region_name`/`year` swapped) via a new shared
@@ -46,7 +58,7 @@ and should not be committed without a new DEC covering the territorial-scope dec
 | Eurostat business demography (raw cache) | `data/external/eurostat_business_demography/` | untracked | 191M | Feeds DEC-038 coverage work / the AT/IT extension above | DATA | n/a (raw cache) | LOW | `ADD_TO_GITIGNORE` | Raw ingestion cache, regenerable from `src/data/ingest_eurostat_enterprise_birth_panel.py`; matches the existing `.gitignore` pattern for `data/external/*/raw/` in spirit | Add `data/external/eurostat_business_demography/` (or its raw subfolder) to `.gitignore` |
 | `nuts3_2021_eurostat.geojson` | `data/external/nuts3_2021_eurostat.geojson` | untracked | 7.2M | Geometry input, likely for the mainland-scope split above | DATA | n/a | LOW | `ADD_TO_GITIGNORE` or `KEEP_LOCAL_ONLY` | Geometry input file, regenerable from the Eurostat source; not a processed/canonical export | Confirm regeneration script, then gitignore |
 | Eurostat JSON-stat decoder (new utility) | `src/data/european_panel/eurostat_jsonstat.py`, `tests/test_eurostat_jsonstat.py` | untracked, bundled pair | tiny | Generic utility behind the Italy fix above | CODE + TEST | ACTIVE (utility) | MEDIUM | `COMMIT_AFTER_TESTS` | Code+test bundle exists together; this is a clean, generic, well-tested utility — but committing it alongside the Italy adapter change implicitly endorses the scope change, so sequence it after the DEC above | `pytest tests/test_eurostat_jsonstat.py -q`, then `git add src/.../eurostat_jsonstat.py tests/test_eurostat_jsonstat.py` |
-| Sector precedence results (Phase 7 headline source data) | `data/processed/sector_precedence_results/` | **untracked, never committed** | 1.9M | DEC-033/034 — the literal source of the "20 edges" headline number | RESULT | **VALID** (already cited everywhere) but **untracked** | **HIGH** | `COMMIT_AFTER_TESTS` | This is the source data behind a frozen, already-cited result. Not committing it means the headline Phase 7 numbers cannot be reproduced from git alone | `pytest tests/test_*sector_precedence*` (if present) or rerun the builder deterministically, confirm checksums match the cited numbers, then commit |
+| Sector precedence results (Phase 7 DEC-034 raw HPC bundle) | `data/processed/sector_precedence_results/`, `hpc/phase7_sector_precedence/configs/full_run.json` | was untracked, **now committed** | 1.9M data + 1 small config | DEC-033/034 — raw source: 25 main promoted (FR=1/NL=8/PT=16), 12 COVID-robust (FR=0/NL=3/PT=9) | RESULT + HPC config | **VALID** (`SECTOR_PRECEDENCE_PROTOTYPE_READY`), own audit PASS, commit_sha verified in repo history, 0 NaN/Inf among promoted rows, 0 NL gemeente proxy presence | RESOLVED (was HIGH) | `RESOLVED_COMMITTED` | Verified internally consistent (own `audit_report.json` PASS) and externally consistent (commit_sha `3665f53` exists, matches a real "implement signed sector precedence graph" commit); `tests/test_phase7_hpc_assets.py` + `tests/test_sector_precedence_graph.py` (47 tests) pass | See commit hash in Part 7 below |
 | G1-L1 / G1-observable builders (source for an already-cited DEC-017 result) | `src/data/european_panel/build_g1_l1_sector_graph.py`, `build_g1_observable_graph.py`, `tests/test_g1_l1_sector_graph.py`, `tests/test_g1_observable_graph.py`, plus outputs `data/processed/economic_graph/g1_l1_sector/`, `g1_observable/`, `g2_preflight/g2_persistence.csv`, `sector_panel_fr_nuts3.csv` | untracked, bundled code+test pairs | ~5-7M each output dir | DEC-017 (`NOT_SUPPORTED`), G0/G1 contract | CODE + TEST + RESULT | CLOSED (`NOT_SUPPORTED`) but **source untracked** | MEDIUM | `COMMIT_AFTER_TESTS` | Same traceability gap as sector_precedence_results, but for a *closed* (rejected) branch — committing is for audit trail, not to reopen it | `pytest tests/test_g1_l1_sector_graph.py tests/test_g1_observable_graph.py -q`, then commit code+tests; outputs can stay gitignored |
 | Dual graph (P6) outputs | `data/processed/dual_graph_pilot_all_folds/`, `dual_graph_preflight/`, `dual_graph_tensors/`, plus `src/data/european_panel/build_dual_graph_tensors.py`, `audit_dual_graph_targets.py`, `tests/test_dual_graph_targets.py`, `tests/test_dual_graph_tensors.py` | mixed (data untracked, code+test untracked bundled pairs) | ~7M data | DEC-029, `DUAL_GRAPH_S1_FAIL` | DATA + CODE + TEST | **CLOSED_FAIL** | LOW | `KEEP_LOCAL_ONLY` (data); `COMMIT_AFTER_TESTS` (code+tests, for audit trail only) | Per Charter §8, this branch is closed — no reuse without a new DEC. Code+tests are worth preserving for traceability of *why* it failed; the bulky tensor/pilot data is regenerable and not needed in git | `pytest tests/test_dual_graph_*.py -q`; commit code+tests only, leave data gitignored |
 | Graph-temporal outputs | `data/processed/graph_temporal_s1/folds_observed/`, `data/processed/graph_temporal_v2/` | untracked | ~12M | DEC-031, `S1_FR_FAIL` | DATA (RESULT) | **CLOSED_FAIL** | LOW | `KEEP_LOCAL_ONLY` | Closed branch; the result is already frozen and cited (canonical #4/#10). This is regenerable tensor data, no code found untracked alongside it in this pass | None — leave as-is or add to `.gitignore` explicitly |
@@ -70,7 +82,8 @@ and should not be committed without a new DEC covering the territorial-scope dec
 | Recommended action | Count of groups |
 |---|---|
 | `REQUIRES_NEW_DEC` | 2 (Italy mainland-scope, Austria mainland Path H) |
-| `COMMIT_AFTER_TESTS` | 9 (sector precedence, G1-L1/observable, dual-graph code+tests, hpc/phase4 scripts, Phase 7 config, real weak-label outputs, `scripts/`, eurostat decoder, NL gemeente/ARDECO/Eurostat-ingestion bundle) |
+| `RESOLVED_COMMITTED` | 1 (sector precedence results + Phase 7 config, 2026-06-19) |
+| `COMMIT_AFTER_TESTS` | 7 (G1-L1/observable, dual-graph code+tests, hpc/phase4 scripts, real weak-label outputs, eurostat decoder, NL gemeente/ARDECO/Eurostat-ingestion bundle) — top-level `scripts/` symlinks excluded: they embed an absolute local path (`/home/jpdark/...`) and would break on any other clone |
 | `ADD_TO_GITIGNORE` | 4 (Eurostat business demography raw, NUTS3 geojson, synthetic_benchmark outputs, hpc_results) |
 | `KEEP_LOCAL_ONLY` | 2 (dual-graph data, graph-temporal data) |
 | `DO_NOT_TOUCH_DASHBOARD_YET` | 2 (dashboard HTML, narrative manifests) |

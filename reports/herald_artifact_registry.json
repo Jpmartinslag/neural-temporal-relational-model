@@ -335,7 +335,7 @@
       "path": "data/processed/sector_precedence_results/",
       "type": "result_directory",
       "status": "FROZEN",
-      "tracked_in_git": false,
+      "tracked_in_git": true,
       "size_bytes": null,
       "sha256_prefix": null,
       "origin_decision": "DEC-034",
@@ -343,10 +343,10 @@
       "input_data": [
         "data/processed/herald_observatory_v02/herald_observatory_v02_panel.csv"
       ],
-      "claim_authorized": "12 COVID-robust sector precedence edges (NL=3, PT=9), 2 countries. SECTOR_PRECEDENCE_PROTOTYPE_READY. Associations only — predictive precedence, not structural causality. Slurm job 7455266, 710/710 COMPLETED. Audit PASS.",
-      "claim_forbidden": "Structural economic causality. Policy intervention claims. Mechanism claims (labour/capital flows). Extension to countries not in the panel without re-running the study.",
+      "claim_authorized": "Raw Phase 7 HPC run (710 tasks, 5456 raw edges): 25 promoted main edges (FR=1, NL=8, PT=16), 12 of which are COVID-robust (NL=3, PT=9; FR contributes 0 COVID-robust edges, consistent with DEC-060). SECTOR_PRECEDENCE_PROTOTYPE_READY. Associations only — predictive precedence, not structural causality. Slurm job 7455266, 710/710 COMPLETED. Audit PASS (own audit_report.json: 0 errors, 0 Inf, FDR verified). No NL gemeente proxy present in this bundle. Distinct from the later DEC-066 fine-grain relabeled export (`herald_observatory_v04_granular/granular_relation_edges.csv`, 20 edges FR=9/NL=8/PT=3) — do not conflate the two counts.",
+      "claim_forbidden": "Structural economic causality. Policy intervention claims. Mechanism claims (labour/capital flows). Extension to countries not in the panel without re-running the study. Citing this bundle's edge counts as the same thing as the DEC-066 granular export's 20/9/8/3 figure.",
       "can_regenerate": true,
-      "notes": "Panel SHA256=a6f8a5b2a34f17fac028518bf7955f7d8931c7a498b0af57b1afae5eb62c742e. Key files: decision.json (verdict), covid_robust_edges.csv, all_edges.csv, audit/audit_report.json. Not versioned (large CSV); regenerable from panel + manifest."
+      "notes": "Panel SHA256=a6f8a5b2a34f17fac028518bf7955f7d8931c7a498b0af57b1afae5eb62c742e; commit_sha 3665f531c33103d106859fdaccc27aaa9de88a36 (verified present in repo history). Key files: decision.json (verdict), covid_robust_edges.csv, all_edges.csv, audit/audit_report.json. Tracked in git 2026-06-19 for provenance/reproducibility of the DEC-034 headline claim (deep-audit finding: this source was previously untracked despite being cited everywhere)."
     },
     {
       "id": "OBSERVATORY_V03",
@@ -566,7 +566,7 @@
       "claim_forbidden": "Pooling with NL gemeente proxy edges. Causal language. Claiming COROP-scale precision at gemeente scale.",
       "path": "data/processed/sector_precedence_results/",
       "type": "result_directory",
-      "tracked_in_git": false,
+      "tracked_in_git": true,
       "can_regenerate": true,
       "origin_decision": "DEC-034",
       "notes": "Milestone label was 'VALID_OBSERVED' (free text); corrected to ACTIVE 2026-06-18 traceability re-audit. relation_label_status field (unchanged) already carries the VALID_OBSERVED claim-validity record."
