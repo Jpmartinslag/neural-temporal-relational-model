@@ -11,6 +11,18 @@ the structural maps in canonicals #9/#10/#11. Nothing was moved, renamed, delete
 
 ---
 
+## Superseded by decision audit
+
+The raw inventory below is preserved as-is for traceability, but the **operational
+decision** for each group (commit now / commit after tests / gitignore / keep local /
+requires new DEC / do-not-touch-dashboard / human review) now lives in
+**`reports/canonical/HERALD_14_WORKTREE_DECISION_AUDIT.md`** — read that document first
+if you're about to act on any item below. This document remains the raw, ungrouped
+chore list; #14 is the grouped, justified, actionable version of the same worktree
+state.
+
+---
+
 ## 1. Worktree — uncommitted/untracked changes not addressed by this pass
 
 These are pre-existing in the working tree, untouched by any of the recent

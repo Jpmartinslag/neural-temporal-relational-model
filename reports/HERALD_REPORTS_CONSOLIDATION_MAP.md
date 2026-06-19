@@ -51,6 +51,7 @@ in `reports/canonical/` for cross-cutting traceability rather than per-cluster s
 | Every HPC job/result classified with its DEC trace | `reports/canonical/HERALD_11_HPC_AND_RESULTS_MAP.md` |
 | Single end-to-end phase table (period/question/data/technique/validation/result/status) | `reports/canonical/HERALD_12_FINAL_PHASE_MAP.md` |
 | Organizational chore list (worktree/data/code/HPC cleanup — not a scientific document) | `reports/canonical/HERALD_13_ORGANIZATION_BACKLOG.md` |
+| Per-group worktree decision matrix (commit/gitignore/keep-local/requires-new-DEC/human-review) | `reports/canonical/HERALD_14_WORKTREE_DECISION_AUDIT.md` |
 
 ---
 
