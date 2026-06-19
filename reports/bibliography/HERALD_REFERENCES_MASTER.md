@@ -562,17 +562,111 @@
 
 ---
 
+---
+
+## Axis 15 — Weak Supervision and Real Relation Learning (DEC-057)
+
+### R-043 — Ratner et al. (2017) — Snorkel
+**Key:** `ratner2017snorkel`
+**Title:** Snorkel: Rapid Training Data Creation with Weak Supervision
+**Authors:** Alexander Ratner, Stephen H. Bach, Henry Ehrenberg, Jason Fries, Sen Wu, Christopher Re
+**Year:** 2017
+**URL:** https://arxiv.org/abs/1711.10160
+**Status:** `PREPRINT`
+**Theme:** Weak supervision, labeling functions, noisy heuristic labels, label model
+**Used in project:** Methodological basis for treating Phase 7 as weak/noisy evidence rather than ground truth.
+
+### R-044 — Sagawa et al. (2019/2020) — Group DRO
+**Key:** `sagawa2019groupdro`
+**Title:** Distributionally Robust Neural Networks for Group Shifts: On the Importance of Regularization for Worst-Case Generalization
+**Authors:** Shiori Sagawa, Pang Wei Koh, Tatsunori B. Hashimoto, Percy Liang
+**Year:** 2019 (ICLR 2020)
+**URL:** https://arxiv.org/abs/1911.08731
+**Status:** `PREPRINT`
+**Theme:** Group distributionally robust optimization, worst-group generalization, domain shift
+**Used in project:** Candidate objective for leave-one-country-out robustness and preventing the model from optimizing only the easiest country/window.
+
+### R-045 — Arjovsky et al. (2019) — IRM
+**Key:** `arjovsky2019irm`
+**Title:** Invariant Risk Minimization
+**Authors:** Martin Arjovsky, Leon Bottou, Ishaan Gulrajani, David Lopez-Paz
+**Year:** 2019
+**URL:** https://arxiv.org/abs/1907.02893
+**Status:** `PREPRINT`
+**Theme:** Invariant predictors across environments, out-of-distribution generalization
+**Used in project:** Conceptual reference for separating cross-country invariant relation patterns from country-specific associations. Use cautiously because practical IRM is fragile in small samples.
+
+### R-046 — Han et al. (2018) — Co-teaching
+**Key:** `han2018coteaching`
+**Title:** Co-teaching: Robust Training of Deep Neural Networks with Extremely Noisy Labels
+**Authors:** Bo Han, Quanming Yao, Xingrui Yu, Gang Niu, Miao Xu, Weihua Hu, Ivor Tsang, Masashi Sugiyama
+**Year:** 2018
+**URL:** https://arxiv.org/abs/1804.06872
+**Status:** `PREPRINT`
+**Theme:** Robust training with noisy labels, small-loss filtering, dual-network teaching
+**Used in project:** Possible secondary option if Phase 7 weak labels are too noisy; not recommended as first implementation due added complexity.
+
+### R-047 — Bekker & Davis (2018) — PU Learning Survey
+**Key:** `bekker2018pu`
+**Title:** Learning from positive and unlabeled data: a survey
+**Authors:** Jessa Bekker, Jesse Davis
+**Year:** 2018
+**URL:** https://arxiv.org/abs/1811.04820
+**Status:** `PREPRINT`
+**Theme:** Positive-unlabeled learning, unlabeled negatives, label uncertainty
+**Used in project:** Relevant because non-promoted Phase 7 sector pairs should not automatically be treated as true negatives.
+
+### R-048 — He et al. (2022) — MSGNN
+**Key:** `he2022msgnn`
+**Title:** MSGNN: A Spectral Graph Neural Network Based on a Novel Magnetic Signed Laplacian
+**Authors:** Yixuan He, Michael Perlmutter, Gesine Reinert, Mihai Cucuringu
+**Year:** 2022
+**URL:** https://arxiv.org/abs/2209.00546
+**Status:** `PREPRINT`
+**Theme:** Signed and directed graph learning, link prediction with sign and direction
+**Used in project:** Reference for treating sign and direction jointly; useful conceptually, but HERALD should avoid adopting a full spectral GNN before weak-label validation.
+
+### R-049 — Huang et al. (2021) — SDGNN
+**Key:** `huang2021sdgnn`
+**Title:** SDGNN: Learning Node Representation for Signed Directed Networks
+**Authors:** Junjie Huang, Huawei Shen, Liang Hou, Xueqi Cheng
+**Year:** 2021
+**URL:** https://arxiv.org/abs/2101.02390
+**Status:** `PREPRINT`
+**Theme:** Signed directed network embeddings, sign and direction reconstruction
+**Used in project:** Secondary reference for independent sign/direction objectives.
+
+### R-050 — Hou et al. (2022) — GraphMAE
+**Key:** `hou2022graphmae`
+**Title:** GraphMAE: Self-Supervised Masked Graph Autoencoders
+**Authors:** Zhenyu Hou, Xiao Liu, Yukuo Cen, Yuxiao Dong, Hongxia Yang, Chunjie Wang, Jie Tang
+**Year:** 2022
+**URL:** https://arxiv.org/abs/2205.10803
+**Status:** `PREPRINT`
+**Theme:** Masked graph autoencoders, self-supervised graph representation learning
+**Used in project:** Secondary option for relation embedding pretraining if weak labels are insufficient.
+
+### R-051 — Nie et al. (2022/2023) — PatchTST
+**Key:** `nie2022patchtst`
+**Title:** A Time Series is Worth 64 Words: Long-term Forecasting with Transformers
+**Authors:** Yuqi Nie, Nam H. Nguyen, Phanwadee Sinthong, Jayant Kalagnanam
+**Year:** 2022 (ICLR 2023)
+**URL:** https://arxiv.org/abs/2211.14730
+**Status:** `PREPRINT`
+**Theme:** Time-series patching, self-supervised representation transfer
+**Used in project:** Secondary reference for masked time-series pretraining; not the immediate next step.
+
 ## Metrics
 
 | Metric | Count |
 |--------|------:|
-| Total references | 42 |
+| Total references | 51 |
 | VERIFIED_PRIMARY | 28 |
 | VERIFIED_INSTITUTIONAL | 2 |
-| PREPRINT | 3 |
+| PREPRINT | 12 |
 | UNVERIFIED | 9 |
 | POSSIBLE_HALLUCINATION | 0 |
-| Axes covered | 14 |
+| Axes covered | 15 |
 
 **Note on count:** The literature review comparative table (section 13) describes ~30 works, of which approximately 25 are explicitly keyed here. The remaining ~5 are referenced descriptively in the text (e.g. financial TVGL applications, product space Brazil analysis) without independent primary verification — they are not counted as references until verified.
 
