@@ -1,0 +1,59 @@
+{
+  "audit_result": "PASS",
+  "errors": 0,
+  "total_edges": 5456,
+  "manifest_tasks": 710,
+  "findings": [
+    {
+      "level": "INFO",
+      "code": "SCHEMA_OK",
+      "message": "All required columns present (18 total)"
+    },
+    {
+      "level": "INFO",
+      "code": "TASKS_COMPLETE",
+      "message": "All 710 tasks represented"
+    },
+    {
+      "level": "INFO",
+      "code": "NAN_PRESENT",
+      "message": "368/5456 edges have NaN (expected for low-sample edges)"
+    },
+    {
+      "level": "INFO",
+      "code": "NO_INF",
+      "message": "No Inf values in numeric columns"
+    },
+    {
+      "level": "INFO",
+      "code": "P_RANGE_OK",
+      "message": "p_perm in (0, 1] for all 5088 non-NaN edges"
+    },
+    {
+      "level": "INFO",
+      "code": "FDR_VERIFIED",
+      "message": "BH/FDR recomputed matches merged (max diff=1.11e-16)"
+    },
+    {
+      "level": "INFO",
+      "code": "PROMOTION_MAIN",
+      "message": "Promoted edges (main): 25"
+    },
+    {
+      "level": "INFO",
+      "code": "PROMOTION_WO20",
+      "message": "Promoted edges (without_2020): 34"
+    },
+    {
+      "level": "INFO",
+      "code": "COVID_ROBUST",
+      "message": "COVID-robust edges: 12 (2 countries)"
+    },
+    {
+      "level": "INFO",
+      "code": "SUMMARY",
+      "message": "Audit result: PASS \u2014 9 findings"
+    }
+  ],
+  "generated_at": "2026-06-12T14:35:20.850558+00:00"
+}

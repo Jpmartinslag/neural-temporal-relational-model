@@ -20,7 +20,7 @@ wins — it is the authoritative per-artifact source.
 | `data/processed/european_panel/pt_municipal_sector_panel.csv` | PT, 278 municipalities (`PT_MUNICIPALITY_CONTINENTE`) | observed | Yes | Yes | DEC-062/064 |
 | `data/processed/european_panel/nl_gemeente_birth_proxy_panel.csv` | NL, 355 gemeenten | **proxy_disaggregated_by_stock_share** | **No** (relation labels) | Context-only | DEC-063/065 |
 | `data/processed/phase7_pt_municipal/results/covid_robust_edges.csv` | PT Municipal, 2 pairs | observed, COVID-robust | Yes | Yes | DEC-064 |
-| `data/processed/sector_precedence_results/covid_robust_edges.csv` | FR/NL/PT original-scale Phase 7 | observed | Yes | Yes | DEC-034 |
+| `data/processed/sector_precedence_results/` (raw DEC-034 HPC bundle: `decision.json`, `all_edges.csv`, `latest.csv`, `covid_robust_edges.csv`, `main_with_sensitivity.csv`, `run_manifest.json`, `audit/`) | FR/NL/PT original-scale Phase 7 — 25 main promoted (FR=1/NL=8/PT=16), 12 COVID-robust (FR=0/NL=3/PT=9) | observed | Yes | Yes | DEC-034 — **now tracked in git (2026-06-19)** for headline-claim provenance, see `HERALD_14_WORKTREE_DECISION_AUDIT.md`. Distinct from the DEC-066 fine-grain `granular_relation_edges.csv` (20 edges, FR=9/NL=8/PT=3) above — do not conflate the two counts |
 | `data/processed/phase7_threshold_calibration/fine_grain_label_policy.json` | All countries | policy artefact | n/a (defines the rule, not a label) | n/a | DEC-066 |
 | `data/processed/geometries/pt_municipalities_continental.geojson` | PT, 278 features | observed geometry | n/a | Yes (map rendering) | Observatory v0.4.1 |
 

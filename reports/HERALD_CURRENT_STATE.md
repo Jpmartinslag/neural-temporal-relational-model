@@ -97,7 +97,7 @@ outline — none exists yet.
 | Territorial graph (G1-L2) | **75%** | FR/NL/PT PASS; community detection NOT_SUPPORTED |
 | Aggregate dynamics (G2) | **75%** | FR robust; NL/PT COVID-sensitive |
 | Economic states | **60%** | Deterministic observed states exported for aggregate PT/IT/AT and sector FR/NL/PT |
-| Sector→sector graph | **90%** | SECTOR_PRECEDENCE_PROTOTYPE_READY: 12 COVID-robust edges (NL=3, PT=9); integrated in Observatory v0.3 (DEC-034/035) |
+| Sector→sector graph | **90%** | SECTOR_PRECEDENCE_PROTOTYPE_READY: 25 main-promoted edges (FR=1/NL=8/PT=16), 12 COVID-robust (NL=3, PT=9); integrated in Observatory v0.3 (DEC-034/035). Raw source (`data/processed/sector_precedence_results/`) tracked in git 2026-06-19 for headline-claim provenance |
 | Explanation | **30%** | Descriptive co-growth associations; no attention/associative explanation validated |
 | Dashboard | **85%** | Observatory v0.3: choropleth map + sector graph + economic states + territory heatmaps + Phase 8 territorial contribution layer (Section 6, toggle, divergent scale); 14,095 KB self-contained (DEC-036/037) |
 | Recommendation | **35%** | Intelligence layer structure exists; weights/claims not validated |

@@ -1,0 +1,9 @@
+{
+  "n_permutations": 999,
+  "n_bootstraps": 500,
+  "window_years": 6,
+  "seed": 42,
+  "scenario_exclusions": {
+    "without_2020": [2020]
+  }
+}
