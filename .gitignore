@@ -69,6 +69,29 @@ data/processed/graph_temporal_v2/**/*.npz
 data/processed/graph_temporal_preflight/**/*.npz
 data/processed/dual_graph_tensors/**/*.npz
 data/processed/dual_graph_pilot_all_folds/per_run/
+# Closed-branch (DEC-029) artefacts not covered by the npz-only rule above —
+# code+tests are tracked; these are regenerable run outputs.
+data/processed/dual_graph_tensors/manifest.json
+data/processed/dual_graph_preflight/
+# Phase 7/Phase 8 copies regenerable from now-tracked builders.
+data/processed/herald_observatory_v02/sector_precedence/
+data/processed/herald_observatory_v03/
+data/processed/herald_observatory_v04/
+# G1-L1/G1-observable outputs (code+tests tracked, DEC-017 NOT_SUPPORTED).
+data/processed/economic_graph/g1_l1_sector/
+data/processed/economic_graph/g1_observable/
+data/processed/economic_graph/g2_preflight/g2_persistence.csv
+# Input panel for dual-graph/G1 builders, regenerable from build_fr_nuts3_sector_panel.py.
+data/processed/economic_graph/sector_panel_fr_nuts3.csv
+data/processed/european_panel/fr_nuts3_panel.csv
+# Phase 4G joint-panel intermediate outputs (regenerable).
+data/processed/phase4g/
+# Synthetic benchmark research-track run outputs (DEC-039→059, regenerable).
+data/processed/synthetic_benchmark/
+# Supplementary per-window/per-pair score dumps; headline figures already
+# frozen in the decision log and canonicals (DEC-059).
+data/processed/real_dec059_results/all_window_scores.csv
+data/processed/real_weak_label_results/weak_label_scores.csv
 # Large edge CSV (253 MB, regenerable from sector panel)
 data/processed/economic_graph/g1_l2_cogrowth/g1_l2_edges.csv
 # Observatory CSV panels are deterministic and regenerable; keep JSON provenance.
@@ -185,6 +208,10 @@ data/external/belgium/raw/
 data/external/italy/raw/
 data/external/netherlands/raw/
 data/external/eurostat_business_demography/raw/
+# Large raw SDMX-CSV downloads outside raw/ (190 MB combined; regenerable
+# from the Eurostat API, see DEC-038 / eurostat_jsonstat.py decoder).
+data/external/eurostat_business_demography/*.csv
+data/external/nuts3_2021_eurostat.geojson
 
 # ── Large narrative-dashboard export blobs (regenerable from
 #    build_observatory_v05*_narrative_exports.py; territory_view.json
