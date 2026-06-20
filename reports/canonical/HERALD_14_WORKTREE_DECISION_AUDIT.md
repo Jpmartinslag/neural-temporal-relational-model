@@ -11,23 +11,32 @@ opened in full); `sed -n` on script/test headers and imports only (no test execu
 **Purpose:** turn the raw worktree-dirty inventory into a per-group decision so a human
 can act (or explicitly defer) without re-deriving this analysis.
 
-**2026-06-19 session update:** 8 commits executed this pass, all small/single-scope,
+**2026-06-19 session update:** 7 commits executed this pass, all small/single-scope,
 each with its own test run and push to `origin/main`: `06f35f3` (ARDECO), `1d705f5`
 (France NUTS3 sector panel), `98df8ce` (Eurostat JSON-stat decoder), `0f6ca6f` (NL
 gemeente Phase 7 panel builder), `9646028` (Phase 4O/4P/4Q spatial diagnostics),
-`d1cf1a8` (`.gitignore` additions, no code/data committed). None touched dashboard,
-Italy/Austria, `hpc_results/`, or any DEC/claim/gate. See the updated rows and summary
-table below for what each resolved, and the single consolidated human-decision request
-at the end of this document for what remains.
+`d1cf1a8` (`.gitignore` additions, no code/data committed), `668db56` (this audit's
+own first update, doc-only). None touched dashboard, Italy/Austria, `hpc_results/`, or
+any DEC/claim/gate. See the updated rows and summary table below for what each
+resolved, and the single consolidated human-decision request at the end of this
+document for what remains.
 
-**2026-06-19 second pass (re-verification, zero commits):** every remaining
+**2026-06-19 second pass (re-verification):** every remaining
 `HUMAN_REVIEW_REQUIRED`/`REQUIRES_NEW_DEC` row was independently re-checked —
 `grep`'d each of the ~17 untested `hpc/phase4/*.py` scripts and the 3 Eurostat/fold-
 controls files against every file in `tests/` by name; none are imported by any test.
 Italy/Austria diffs and `data/external/austria/` size were re-confirmed unchanged from
-the prior session. No new safe block was found, so **no commit was made this pass** —
-per this task's own success criterion, an accurate "nothing safe left" is better than
-inventing one.
+the prior session. **No new code/data block was found safe to commit; only this
+documentation re-verification addendum was committed, as `b65a566`** — per this
+task's own success criterion, an accurate "nothing safe left in code/data" is better
+than inventing a code/data commit.
+
+**2026-06-19 third pass (doc consistency fix, doc-only):** corrected two errors found
+in this section by manual cross-check against `git log`/`git show`: the session-update
+paragraph above had miscounted 8 commits where 7 occurred, and the second-pass
+paragraph's "zero commits" / "no commit was made this pass" wording contradicted the
+fact that `b65a566` itself was a real (documentation-only) commit. No code, data,
+dashboard, or HPC file was touched by this fix — see git history for the commit hash.
 
 ---
 
