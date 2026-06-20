@@ -20,6 +20,15 @@ Italy/Austria, `hpc_results/`, or any DEC/claim/gate. See the updated rows and s
 table below for what each resolved, and the single consolidated human-decision request
 at the end of this document for what remains.
 
+**2026-06-19 second pass (re-verification, zero commits):** every remaining
+`HUMAN_REVIEW_REQUIRED`/`REQUIRES_NEW_DEC` row was independently re-checked —
+`grep`'d each of the ~17 untested `hpc/phase4/*.py` scripts and the 3 Eurostat/fold-
+controls files against every file in `tests/` by name; none are imported by any test.
+Italy/Austria diffs and `data/external/austria/` size were re-confirmed unchanged from
+the prior session. No new safe block was found, so **no commit was made this pass** —
+per this task's own success criterion, an accurate "nothing safe left" is better than
+inventing one.
+
 ---
 
 ## Key finding worth flagging before the table
