@@ -8,6 +8,29 @@ consolidation task's explicit instruction not to mass-rename.
 
 ---
 
+## 0. Repository name and project identity
+
+The current GitHub repository name, `territorial-recommender-stgnn-mas`, contains a
+legacy architecture phrase. `STGNN/MAS` is **not** the current HERALD architecture and
+must not be used as the project's present identity in new documentation.
+
+Historical references to STGNN-style experiments may remain when they describe closed
+or superseded branches, because they are part of the project traceability record. New
+project-level wording should use:
+
+| Concept | Canonical wording |
+|---|---|
+| Project name | `HERALD` |
+| Project identity | `HERALD — European Territorial Economic Intelligence` |
+| Recommended repository name if renamed | `herald-territorial-economic-intelligence` |
+| Current methodology wording | territorial economic intelligence; temporal forecasting; economic states; sector temporal-precedence relations; dynamic economic graphs only where validated |
+| Avoid as current identity | `STGNN`, `MAS`, `territorial-recommender-stgnn-mas` |
+
+This is a documentation-level naming rule only. It does not rename the GitHub repository,
+change the remote URL, or rewrite historical audit references.
+
+---
+
 ## 1. Dashboard version naming
 
 | Version | File | In-code/decision name | Status |
