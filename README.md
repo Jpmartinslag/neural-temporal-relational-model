@@ -188,7 +188,7 @@ traceability, not current) · **generated** (build output, regenerable) ·
 | `data/` | active | Raw, intermediate, and canonical processed panels. Read `reports/herald_artifact_registry.json` before trusting any file's provenance. |
 | `hpc/` | active + historical mix | SLURM batch scripts for both open and closed phases — check the phase name against the decision log before reusing a script. |
 | `scripts/`, `tools/` | active, narrow-purpose | Small standalone audit/merge utilities, not part of the main pipeline. |
-| `docs/architecture/` | historical | Older architecture diagrams/views (e.g. LikeC4). `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md` is the current source. Any local Node/Graphify helper files are intentionally ignored and are not required for current dashboard reproduction. |
+| `docs/architecture/` | removed from public tree | Legacy LikeC4 architecture views were removed because they no longer reflect HERALD's current architecture. Use `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md` as the current source. |
 | `metadata/` | historical | Older data catalogs, partly superseded by `reports/herald_artifact_registry.json`. Verify before relying on it. |
 | `hpc_results/` | generated, do-not-start-here | Raw job outputs, mostly from closed/superseded branches (graph-temporal, P6 dual-graph, geographic-graph — all CLOSED). Cross-reference against the decision log first. |
 | `data/external/*/raw/` | generated, do-not-start-here | Raw, regenerable ingestion caches. Gitignored; regenerate via the corresponding `src/data/ingest_*`/`build_*` script, never edit by hand. |
