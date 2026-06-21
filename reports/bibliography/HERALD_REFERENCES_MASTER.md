@@ -148,9 +148,9 @@
 **Title:** Granger Causality: A Review and Recent Advances  
 **Authors:** Ali Shojaie, Emily B. Fox  
 **Year:** 2022  
-**Venue:** *Annual Review of Statistics and Its Application*, 9  
+**Venue:** *Annual Review of Statistics and Its Application*, 9, 289–319  
 **arXiv:** https://arxiv.org/abs/2105.02675  
-**Status:** `UNVERIFIED` (arXiv confirmed; journal DOI to be verified)  
+**Status:** `VERIFIED_PRIMARY` (confirmed via Annual Reviews publisher page, 2026-06-21)  
 **Theme:** Granger causality, limitations, VAR, neural extensions  
 **Used in project:** Methodological caution: Granger ≠ structural causality  
 **Claim supported:** Granger predictability is not economic causality; must be clearly labeled  
@@ -224,7 +224,7 @@
 **Year:** 2002  
 **Venue:** *Regional Studies*, 36(2), 113–124  
 **DOI:** https://doi.org/10.1080/00343400220121909  
-**Status:** `UNVERIFIED` (standard reference; DOI to be confirmed)  
+**Status:** `VERIFIED_PRIMARY` (confirmed via Taylor & Francis publisher page, 2026-06-21)  
 **Theme:** New firm formation, regional growth, entrepreneurship  
 **Used in project:** Background for enterprise birth as economic indicator  
 
@@ -239,7 +239,7 @@
 **Year:** 1988  
 **Venue:** Kluwer Academic Publishers  
 **DOI:** https://doi.org/10.1007/978-94-015-7799-1  
-**Status:** `UNVERIFIED` (standard textbook; DOI to be confirmed)  
+**Status:** `VERIFIED_PRIMARY` (DOI/ISBN 978-94-015-7799-1 confirmed against Springer/Kluwer record, 2026-06-21)  
 **Theme:** Spatial autocorrelation, Moran's I, spatial lag, spatial error models  
 **Used in project:** Theoretical basis for Phase 4O-C Moran's I protocol  
 
@@ -250,7 +250,7 @@
 **Year:** 1950  
 **Venue:** *Biometrika*, 37(1/2), 17–23  
 **DOI:** https://doi.org/10.2307/2332142  
-**Status:** `UNVERIFIED` (classic reference; DOI to be confirmed)  
+**Status:** `VERIFIED_PRIMARY` (confirmed via JSTOR/Oxford Academic, 2026-06-21)  
 **Theme:** Moran's I, spatial autocorrelation  
 **Used in project:** Primary statistic in Phase 4O-C  
 
@@ -265,7 +265,7 @@
 **Year:** 2019  
 **Venue:** *NAACL 2019*  
 **arXiv:** https://arxiv.org/abs/1902.10186  
-**Status:** `UNVERIFIED` (arXiv confirmed; proceedings DOI to be verified)  
+**Status:** `VERIFIED_PRIMARY` (confirmed via ACL Anthology N19-1357, 2026-06-21)  
 **Theme:** Attention mechanism, explainability, faithfulness  
 **Used in project:** Critical caution: attention weights ≠ economic explanation  
 **Claim supported:** Attention weights are not reliable explanations; permutation test required  
@@ -282,7 +282,8 @@
 **Authors:** Frank Neffke, Martin Henning, Ron Boschma  
 **Year:** 2011  
 **Venue:** *Economic Geography*, 87(3), 237–265  
-**Status:** `UNVERIFIED` (standard reference; DOI to be confirmed)  
+**DOI:** https://doi.org/10.1111/j.1944-8287.2011.01121.x  
+**Status:** `VERIFIED_PRIMARY` (confirmed via Wiley Online Library, 2026-06-21)  
 **Theme:** Skill relatedness, regional diversification, labor flows, industry relatedness  
 **Used in project:** Background for sector similarity edges (G1); relatedness concept  
 **Risk:** Uses plant-level labor flow microdata not available at NUTS3 level for our project  
@@ -294,7 +295,7 @@
 **Year:** 2012  
 **Venue:** *Econometrica*, 80(5), 1977–2016  
 **DOI:** https://doi.org/10.3982/ECTA9623  
-**Status:** `UNVERIFIED` (standard reference; DOI to be confirmed)  
+**Status:** `VERIFIED_PRIMARY` (confirmed via Econometric Society/Wiley, 2026-06-21)  
 **Theme:** Input-output networks, shock propagation, production networks  
 **Used in project:** I-O edges in G1 (layer 5); Bloco 3 recommendation background  
 
@@ -305,7 +306,7 @@
 **Year:** 2008  
 **Venue:** *Journal of Statistical Mechanics: Theory and Experiment*, P10008  
 **DOI:** https://doi.org/10.1088/1742-5468/2008/10/P10008  
-**Status:** `UNVERIFIED` (standard reference; DOI to be confirmed)  
+**Status:** `VERIFIED_PRIMARY` (confirmed via IOPscience, 2026-06-21)  
 **Theme:** Community detection, Louvain algorithm, modularity  
 **Used in project:** G2 static community detection baseline  
 
@@ -338,7 +339,7 @@
 **Year:** 1954  
 **Venue:** *Biometrika*, 41(1/2), 100–115  
 **DOI:** https://doi.org/10.1093/biomet/41.1-2.100  
-**Status:** `UNVERIFIED` (classic reference; DOI to be confirmed)  
+**Status:** `VERIFIED_PRIMARY` (confirmed via Oxford Academic, 2026-06-21)  
 **Theme:** CUSUM, sequential change detection  
 **Used in project:** G3 change-point detection baseline  
 
@@ -485,7 +486,7 @@
 **Code:** https://github.com/THUDM/GraphMAE
 **Status:** `VERIFIED_PRIMARY`
 **Theme:** Masked node feature reconstruction, graph pretraining, GNN encoder
-**Used in project:** Conceptual basis for masked pretraining task in PATH 1 and PATH 2
+**Used in project:** Conceptual basis for masked pretraining task in PATH 1 and PATH 2 (DEC-046, Axis 13); also a secondary option for relation embedding pretraining if Axis 15 weak labels prove insufficient (Axis 15 use, formerly duplicated as R-050 — merged here 2026-06-21, see audit log)
 
 ### R-037 — Nie, Nguyen, Sinthong & Kalagnanam (2023) — PatchTST
 **Key:** `nie2023patchtst`
@@ -497,7 +498,7 @@
 **Code:** https://github.com/yuqinie98/PatchTST
 **Status:** `VERIFIED_PRIMARY`
 **Theme:** Patch tokenization, masked time-series pretraining, long-horizon forecasting
-**Used in project:** Reference for masked temporal pretraining; T=20 too short for full patches
+**Used in project:** Reference for masked temporal pretraining; T=20 too short for full patches (DEC-046, Axis 13); also a secondary reference for masked time-series pretraining, not the immediate next step (Axis 15 use, formerly duplicated as R-051 — merged here 2026-06-21, see audit log)
 
 ### R-038 — Dong, Wu, Zhang, Zhang, Wang & Long (2023) — SimMTM
 **Key:** `dong2023simmtm`
@@ -636,47 +637,24 @@
 **Theme:** Signed directed network embeddings, sign and direction reconstruction
 **Used in project:** Secondary reference for independent sign/direction objectives.
 
-### R-050 — Hou et al. (2022) — GraphMAE
-**Key:** `hou2022graphmae`
-**Title:** GraphMAE: Self-Supervised Masked Graph Autoencoders
-**Authors:** Zhenyu Hou, Xiao Liu, Yukuo Cen, Yuxiao Dong, Hongxia Yang, Chunjie Wang, Jie Tang
-**Year:** 2022
-**URL:** https://arxiv.org/abs/2205.10803
-**Status:** `PREPRINT`
-**Theme:** Masked graph autoencoders, self-supervised graph representation learning
-**Used in project:** Secondary option for relation embedding pretraining if weak labels are insufficient.
-
-### R-051 — Nie et al. (2022/2023) — PatchTST
-**Key:** `nie2022patchtst`
-**Title:** A Time Series is Worth 64 Words: Long-term Forecasting with Transformers
-**Authors:** Yuqi Nie, Nam H. Nguyen, Phanwadee Sinthong, Jayant Kalagnanam
-**Year:** 2022 (ICLR 2023)
-**URL:** https://arxiv.org/abs/2211.14730
-**Status:** `PREPRINT`
-**Theme:** Time-series patching, self-supervised representation transfer
-**Used in project:** Secondary reference for masked time-series pretraining; not the immediate next step.
-
 ## Metrics
 
 | Metric | Count |
 |--------|------:|
-| Total references | 51 |
-| VERIFIED_PRIMARY | 28 |
+| Total references | 49 |
+| VERIFIED_PRIMARY | 37 |
 | VERIFIED_INSTITUTIONAL | 2 |
-| PREPRINT | 12 |
-| UNVERIFIED | 9 |
+| PREPRINT | 10 |
+| UNVERIFIED | 0 |
 | POSSIBLE_HALLUCINATION | 0 |
 | Axes covered | 15 |
 
 **Note on count:** The literature review comparative table (section 13) describes ~30 works, of which approximately 25 are explicitly keyed here. The remaining ~5 are referenced descriptively in the text (e.g. financial TVGL applications, product space Brazil analysis) without independent primary verification — they are not counted as references until verified.
 
-**Priority verifications needed:**
-1. R-010 (Shojaie 2022) — confirm Annual Review of Statistics DOI
-2. R-016 (Audretsch 2002) — confirm Regional Studies DOI
-3. R-017 (Anselin 1988) — confirm book DOI
-4. R-018 (Moran 1950) — confirm Biometrika DOI
-5. R-019 (Jain 2019) — confirm NAACL DOI
-6. R-020 (Neffke 2011) — confirm Economic Geography DOI
-7. R-021 (Acemoglu 2012) — confirm Econometrica DOI
-8. R-022 (Blondel 2008) — confirm JSTAT DOI
-9. R-025 (Page 1954) — confirm Biometrika DOI
+**2026-06-21 bibliography hygiene audit:** see `HERALD_BIBLIOGRAPHY_AUDIT_LOG.md` in this
+directory for the full classification of every entry (KEEP_VERIFIED_USED /
+KEEP_VERIFIED_BACKGROUND / REMOVE / NEEDS_HUMAN_CHECK) and the two duplicate entries
+removed (former R-050, R-051). All nine previously `UNVERIFIED` entries (R-010, R-016
+through R-022, R-025) were checked against their publisher/DOI/proceedings page on
+2026-06-21 and are real, correctly cited works — reclassified `VERIFIED_PRIMARY` above.
+No reference in this file was found to be hallucinated or non-existent.
