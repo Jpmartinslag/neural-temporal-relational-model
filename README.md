@@ -25,6 +25,12 @@ Full scope and authorised/forbidden claims are defined in
 `reports/HERALD_PROJECT_CHARTER.md`, which prevails over any informal description,
 including this one.
 
+**Repository naming note:** the current GitHub repository name still contains the legacy
+architecture phrase `territorial-recommender-stgnn-mas`. That name is historical and should
+not be read as the current HERALD architecture. The current project identity is **HERALD —
+European Territorial Economic Intelligence**. If the repository is renamed, the recommended
+target name is `herald-territorial-economic-intelligence`.
+
 ---
 
 ## Traceability maps
