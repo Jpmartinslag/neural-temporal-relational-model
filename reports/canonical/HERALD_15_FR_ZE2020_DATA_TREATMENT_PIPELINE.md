@@ -247,7 +247,8 @@ pass's two new registry entries — `PANEL_FR_ZE2020_CLEAN_TREATED` and
      exists but its lineage was not re-derived in this pass).
    - No growth/lag/model features of any kind — those belong to a future
      modeling-input stage, and must use the lag-only formulas in section 5.
-   - No model-ready file (`fr_ze2020_model_ready_panel.csv`) — not created.
+   - No model-ready file (`fr_ze2020_model_ready_panel.csv`) — **not created at
+     the time this list was first written; it now exists, see section 10.**
    - The 2025 extension (`target_side_establishments_annual_core_through_2025_v1.csv`)
      was not reconciled against this pass's raw-commune re-derivation; this
      panel stops at 2024, matching the raw source's actual coverage.
