@@ -256,7 +256,7 @@ pass's two new registry entries — `PANEL_FR_ZE2020_CLEAN_TREATED` and
 
 ---
 
-## 9. Recommended next step
+## 9. Recommended next step (as of this section's original writing)
 
 Only after this data layer is reviewed: build a separate, explicitly-named
 model-input stage (e.g. `fr_ze2020_model_ready_panel.csv`) that adds
@@ -264,3 +264,86 @@ lag-only features (`growth_1y_safe`, `growth_2y_safe`, `lag_1`, `lag_2`,
 `lag_3`) on top of this panel, plus `mask_lag_*_available` columns — never by
 editing this panel in place, and never by reintroducing
 `dynamic_stgnn_feature_panel_v1.csv` as a primary source.
+
+**Done — see section 10 below.**
+
+---
+
+## 10. Step 3 — Model-ready causal panel
+
+**Input:** `data/processed/france_ze2020/fr_ze2020_clean_panel.csv` (section
+3 schema, read-only — confirmed byte-identical before and after this step by
+`tests/test_fr_ze2020_model_ready_panel.py::test_clean_panel_input_not_modified_by_this_stage`).
+
+**Output:** `data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv`
+(3,640 rows, same 280 zones × 2012-2024 grain, 15 columns), built by
+`src/data/france_ze2020/build_fr_ze2020_model_ready_panel.py`.
+
+**Columns added on top of the clean panel:**
+
+| Column | Meaning |
+|---|---|
+| `observed_value` | Copy of `establishment_creations` from the clean panel — the single target value used at this stage (kept separate from `enterprise_creations` to avoid ambiguity about which series the future model targets). |
+| `target_variable` | Constant string `"establishment_creations"` — documents which clean-panel column `observed_value` came from. |
+| `lag_1` / `lag_2` / `lag_3` | `observed_value` of the same `ze2020`, 1/2/3 years earlier (`groupby("ze2020")["observed_value"].shift(1/2/3)`). `NaN` for the first 1/2/3 years of each zone's series (2012-2014) — not filled. |
+| `growth_1y_safe` | `(lag_1 - lag_2) / lag_2` — both terms strictly t-1 and earlier. |
+| `growth_2y_safe` | `(lag_1 - lag_3) / lag_3` — both terms strictly t-1 and earlier. |
+| `mask_observed_available` / `mask_lag_1_available` / `mask_lag_2_available` / `mask_lag_3_available` | 1 if the corresponding value is non-null for this row, else 0. |
+| `node_id` | Integer 0-279, assigned by sorting the 280 distinct `ze2020` values ascending. Stable/deterministic; additive only — `ze2020` remains the join key, `node_id` never replaces it. |
+
+**Why `growth_1y_safe`/`growth_2y_safe` are causal:** both formulas read only
+`lag_1`, `lag_2`, `lag_3` — values already shifted to `t-1`/`t-2`/`t-3` — and
+never `observed_value` of the current row. This is the opposite construction
+from the legacy `growth_1y`/`growth_2y` columns audited in section 5
+(`pct_change()` directly on the target column itself, i.e. same-row
+target-derived). `tests/test_fr_ze2020_model_ready_panel.py::test_growth_1y_safe_does_not_reconstruct_current_year_value`
+checks this explicitly: solving `lag_1 * (1 + growth_1y_safe)` recovers
+`lag_1` itself (last year's value), never the current row's
+`observed_value`.
+
+**Why `dynamic_stgnn_feature_panel_v1.csv` is still not used as a source:**
+same reason as section 5 — its `growth_1y`/`growth_2y` are leaky and its
+`feature_forecast_safe` flag is a hardcoded constant, not real signal.
+`build_fr_ze2020_model_ready_panel.py` reads only the clean panel from this
+pass; `tests/test_fr_ze2020_model_ready_panel.py::test_builder_does_not_read_legacy_dynamic_stgnn_panels`
+asserts the builder's executable code contains no reference to
+`dynamic_stgnn_feature_panel` (the module docstring is allowed to name it,
+to document the exclusion).
+
+**Masking, not fabrication:** 2012 rows have `lag_1/2/3 = NaN` and
+`mask_lag_*_available = 0` for every zone (no prior year exists in the
+panel). 2013 rows have `lag_1` available but `lag_2/3` still `NaN`/0. 2014
+adds `lag_2`. 2015 is the first year with all three lags and both growth
+features populated. No early year was dropped and no missing lag was filled
+with zero, mean, or forward-fill — verified by
+`test_masks_reflect_lag_availability_at_panel_start` and
+`test_no_nan_silently_filled_where_mask_says_unavailable`.
+
+**What this stage explicitly does NOT do:** no training, no model
+evaluation, no sector dimension, no graph/network structure, no
+`is_covid_year`/`is_post_covid_rebound`/`feature_forecast_safe`/
+`has_urssaf_source` columns (all checked absent by
+`test_no_forbidden_columns`). This panel is the base for a future training
+stage — building, running, or evaluating that model is a separate task, not
+performed here.
+
+**Tests:** `tests/test_fr_ze2020_model_ready_panel.py` (13 tests, all
+passing) — schema, `ze2020` zero-padded-string invariant, 280-zone count,
+`node_id` determinism/coverage/non-replacement of `ze2020`, the Alençon
+(`0051`) lag/growth worked example for 2012-2015, mask correctness at the
+start of the panel, no forbidden columns, no read of the legacy STGNN panel,
+and byte-identical clean-panel input. Combined with the existing
+`tests/test_fr_ze2020_clean_panel.py` (12 tests) and
+`tests/test_herald_artifact_registry.py` (13 tests): 38 tests pass across
+the full FR ZE2020 data pipeline plus the artifact registry.
+
+**Registry:** `PANEL_FR_ZE2020_MODEL_READY_CAUSAL` added to
+`reports/herald_artifact_registry.json`, alongside the existing
+`PANEL_FR_ZE2020_CLEAN_TREATED` and `FR_DYNAMIC_STGNN_LEGACY_FEATURE_PANEL`
+entries.
+
+**Next step (still not done):** train/evaluate a model against this panel —
+explicitly out of scope for this pass. The recommended follow-up is to audit
+`train_herald_v6.py`/`train_herald_v7.py` and `scripts/02_ridge_ar_official.py`
+for whether they can be pointed at `fr_ze2020_model_ready_panel.csv` instead
+of the legacy leaky panel, as a separate, reviewed task.
