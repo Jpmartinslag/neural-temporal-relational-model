@@ -732,6 +732,47 @@
       "claim_forbidden": "Treating the synthetic-data result as a real-data validated finding. Any claim that this architecture is production-ready or feeds the current Observatory dashboards (it does not -- the v0.5.1 dashboard explicitly states no neural candidate-relation dataset exists in this repository for real data today).",
       "notes": "Large, regenerable, checkpoint-heavy directory (*.pt/*.ckpt files now covered by .gitignore as of the 2026-06-18 consolidation pass). Not committed; not part of the Observatory dashboard data path.",
       "origin_decision": "DEC-039 to DEC-059 (research track, multiple decisions)"
+    },
+    {
+      "id": "PANEL_FR_ZE2020_CLEAN_TREATED",
+      "phase": "data-treatment (France ZE2020 cleanup pass)",
+      "path": "data/processed/france_ze2020/fr_ze2020_clean_panel.csv",
+      "type": "panel_csv",
+      "status": "ACTIVE",
+      "tracked_in_git": true,
+      "size_bytes": 153041,
+      "sha256_prefix": "6183e43d7ceb732877c3",
+      "origin_decision": "none yet (pre-DEC data-layer cleanup; not a modeling decision)",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_clean_panel.py",
+      "input_data": [
+        "data/interim/tables/side_communal_creations_official_2012_2024_v0.csv"
+      ],
+      "claim_authorized": "FR ZE2020 (280 zones, continental France excluding Corsica and the DOM, see HERALD_15 section 4), 2012-2024, observed establishment_creations / enterprise_creations (INSEE SIDE official, commune-level aggregated to ZE2020). Values verified identical to data/processed/target_side_establishments_annual_core_v0.csv (max abs diff 0.0, see tests/test_fr_ze2020_clean_panel.py). No growth/lag/model features in this file.",
+      "claim_forbidden": "Treating this as a model-ready panel (it is not -- no growth, no lags, no sector breakdown yet). Extending the 280-zone scope to Corsica/DOM without re-deriving from raw. Citing this file as having any relationship to dynamic_stgnn_feature_panel_v1.csv beyond sharing the same INSEE SIDE source values.",
+      "can_regenerate": true,
+      "notes": "Canonical entry point for the France ZE2020 DATA layer (ingestion/cleaning only). See reports/canonical/HERALD_15_FR_ZE2020_DATA_TREATMENT_PIPELINE.md. Independent of the legacy STGNN-named pipeline; does not feed Q7 training (train_herald_v6.py) and does not replace it."
+    },
+    {
+      "id": "FR_DYNAMIC_STGNN_LEGACY_FEATURE_PANEL",
+      "phase": "pre-Q7 (legacy STGNN-era panel)",
+      "path": "data/processed/dynamic_stgnn_feature_panel_v1.csv",
+      "type": "panel_csv",
+      "status": "ACTIVE",
+      "tracked_in_git": true,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "pre-dates DEC log; consumed by Q7 (train_herald_v6.py, scripts/02_ridge_ar_official.py) and by src/data/european_panel/adapters/france_adapter.py",
+      "generator_script": "src/modeles/build_dynamic_stgnn_feature_panel_v1.py",
+      "input_data": [
+        "data/raw/employment/flores/",
+        "data/raw/employment/urssaf/urssaf_etab_emploi_ze_annual_raw.csv",
+        "data/raw/business_demography/side/DS_SIDE_STOCKS_ET_COM_2023_CSV.zip",
+        "data/processed/target_side_establishments_annual_core_v0.csv"
+      ],
+      "claim_authorized": "Legacy/historical feature source for Q7 France training and for the FranceAdapter input to the canonical European panel (where growth_1y/growth_2y are recomputed causally downstream by enforce_causal_growth() in src/data/european_panel/build_european_panel.py -- confirmed safe for data/processed/european_panel/france_panel.csv). FLORES/SIDE-stock t-1 lag construction and URSSAF lag construction inside this file's own pipelines A/B/A2 are causal by design.",
+      "claim_forbidden": "growth_1y and growth_2y AS STORED IN THIS FILE are computed via pct_change(1)/pct_change(2) directly on the target column side_establishment_creations_official (build_dynamic_stgnn_feature_panel_v1.py, pipeline_c_unified, lines ~307-308) -- i.e. growth_1y[t] is a deterministic function of target[t] itself, not a t-1 lag feature. Any consumer that reads growth_1y/growth_2y AS-IS from this file (e.g. as a Ridge feature -- see SPAT_COLS in scripts/02_ridge_ar_official.py, comment 'forecast-safe' is incorrect for this pair) is using target-derived leakage, independent of any train/test temporal split. feature_forecast_safe is hardcoded to 1 for every row (pipeline_c_unified, line ~350) and must not be read as a real per-row QC signal. Do not use this file as the primary source for any NEW France data-treatment work -- use data/processed/france_ze2020/fr_ze2020_clean_panel.csv instead.",
+      "can_regenerate": true,
+      "notes": "STGNN in the filename is legacy naming (pre-Q7 architecture search); not the current HERALD architecture identity (reports/HERALD_NAMING_CONVENTIONS.md section 0). This finding sharpens, for the French/Q7 track specifically, what reports/herald_artifact_registry.json's HERALD_Q7_FRANCE_RESULT entry and the PENDING_REAUDIT status already flag as unresolved -- it does not change that entry's claim text (training/evaluation is out of scope for this data-layer pass). See reports/canonical/HERALD_15_FR_ZE2020_DATA_TREATMENT_PIPELINE.md section 5."
     }
   ]
 }
