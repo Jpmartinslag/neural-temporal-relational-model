@@ -23,6 +23,8 @@ wins — it is the authoritative per-artifact source.
 | `data/processed/sector_precedence_results/` (raw DEC-034 HPC bundle: `decision.json`, `all_edges.csv`, `latest.csv`, `covid_robust_edges.csv`, `main_with_sensitivity.csv`, `run_manifest.json`, `audit/`) | FR/NL/PT original-scale Phase 7 — 25 main promoted (FR=1/NL=8/PT=16), 12 COVID-robust (FR=0/NL=3/PT=9) | observed | Yes | Yes | DEC-034 — **now tracked in git (2026-06-19)** for headline-claim provenance, see `HERALD_14_WORKTREE_DECISION_AUDIT.md`. Distinct from the DEC-066 fine-grain `granular_relation_edges.csv` (20 edges, FR=9/NL=8/PT=3) above — do not conflate the two counts |
 | `data/processed/phase7_threshold_calibration/fine_grain_label_policy.json` | All countries | policy artefact | n/a (defines the rule, not a label) | n/a | DEC-066 |
 | `data/processed/geometries/pt_municipalities_continental.geojson` | PT, 278 features | observed geometry | n/a | Yes (map rendering) | Observatory v0.4.1 |
+| `data/processed/france_ze2020/fr_ze2020_clean_panel.csv` | FR ZE2020, 280 zones, 2012-2024 | observed | Not directly (no growth/lag/model features) | Yes (raw series) | New data-treatment pass, see `HERALD_15_FR_ZE2020_DATA_TREATMENT_PIPELINE.md`; registry `PANEL_FR_ZE2020_CLEAN_TREATED` |
+| `data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv` | FR ZE2020, 280 zones, 2012-2024 | observed + causal lag/growth features | Yes (model-INPUT only, no model trained yet) | Yes (raw series) | `HERALD_15` section 10; registry `PANEL_FR_ZE2020_MODEL_READY_CAUSAL` |
 
 ## 2. Valid processed data (not yet a headline claim, but observed and usable)
 
