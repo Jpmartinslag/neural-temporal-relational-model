@@ -53,6 +53,11 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     future ZE2020/sector relational layer: artifact inventory, what's usable now vs.
     needs provenance, the scientific hypothesis, and a staged MVP. Planning only — no
     graph/neural model implemented, no claim made.
+16. `canonical/HERALD_18_FR_ZE2020_TRAINING_PLAN.md` — audits the 4 current FR ZE2020
+    training scripts, defines the local training architecture (Task A: ZE-level
+    forecast; Task B: sector graph), and specifies (but does not run) the HPC-ready
+    hypotheses and checklist for the next HPC step. No HPC job launched, no headline
+    claim.
 
 ## Control Documents
 
