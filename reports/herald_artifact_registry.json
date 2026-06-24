@@ -967,6 +967,29 @@
       "claim_forbidden": "Citing relation_signals (signal_strength / learned_or_aggregated_weight) as a causal or structural economic relationship -- it is an observed correlation/aggregation weight, exploratory only. Citing WMAPE as a validated result or as evidence the graph approach is or isn't worthwhile generally (n=5 eval years, 1 edge specification, 1 architecture -- a single smoke run). Treating this as the project's final graph/GNN architecture or as authorization for HPC-scale graph training -- neither is authorized. Any automatic recommendation, policy, or ranking (none exists, verified by test). Reusing graph_adjacency_core_v0.csv/mobility_v0.csv -- explicitly not read anywhere in this script (verified by test).",
       "can_regenerate": true,
       "notes": "MVP3-B. 15/15 tests pass (tests/test_fr_ze2020_sector_graph_prototype.py). Data finding from this pass: exactly one zone-sector-year row in fr_ze2020_sector_relational_features.csv has sector_establishment_creations=0, producing +-inf in its dependent growth_lag columns (division by zero) -- that upstream file is unchanged (already committed/tested for MVP2 Categoria C); this script's own completeness filter was hardened to use np.isfinite (not just notna()) to exclude the affected row. Full graph construction (both edge types, all 35,280 node-year rows / 2,520 unique nodes) takes ~1 minute locally -- smoke-mode scale, no HPC."
+    },
+    {
+      "id": "FR_ZE2020_TRAINING_BLOCK_SUMMARY_V1",
+      "phase": "training block organization (2026-06-24)",
+      "path": "data/processed/france_ze2020/fr_ze2020_training_block_summary_v1.csv",
+      "type": "analysis_csv",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (organizational consolidation, not a modeling decision) -- see reports/canonical/HERALD_18_FR_ZE2020_TRAINING_PLAN.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_training_block.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv",
+        "data/processed/france_ze2020/fr_ze2020_relational_model_ready_panel.csv",
+        "data/processed/france_ze2020/fr_ze2020_relational_sector_prototype_panel.csv",
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv",
+        "data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv"
+      ],
+      "claim_authorized": "Consolidated one-row-per-model summary (model_family, model_name, target, grain, eval_year_start, eval_year_end, mean_wmape, claim_status, source_script) across all 4 current FR ZE2020 training scripts -- this script implements NO new model, only imports and calls their existing run_* functions (verified by test). Two grains reported side by side (ze_x_year and ze_x_sector_x_year) for visibility, never as a single ranking (different targets, not directly comparable). Every row claim_status=training_block_summary_smoke_local_only.",
+      "claim_forbidden": "Ranking model_family/model_name across the two different grains as if directly comparable (observed_value vs. sector_share are different targets). Citing mean_wmape as a validated or headline result. Treating this consolidation as authorization for HPC -- HERALD_18 section 5 explicitly states none of the 4 scripts is READY_FOR_HPC_SPEC yet. Any automatic recommendation derived from this summary (none exists, verified by test).",
+      "can_regenerate": true,
+      "notes": "10/10 tests pass (tests/test_fr_ze2020_training_block_runner.py). Building the sector graph node table (~1 minute) dominates the runtime regardless of eval_years requested."
     }
   ]
 }
