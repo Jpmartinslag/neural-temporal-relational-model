@@ -58,6 +58,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     forecast; Task B: sector graph), and specifies (but does not run) the HPC-ready
     hypotheses and checklist for the next HPC step. No HPC job launched, no headline
     claim.
+17. `canonical/HERALD_19_FR_ZE2020_HPC_SPEC.md` — executable HPC spec for the FR
+    ZE2020 training block (5 seeds x the 4 scripts), pre-registered gates G1-G5,
+    and the `hpc/france_ze2020/` infrastructure. `SPEC_READY`, not launched — `sbatch`
+    requires an explicit `--confirm-submit` flag.
 
 ## Control Documents
 
