@@ -30,6 +30,7 @@ wins — it is the authoritative per-artifact source.
 
 | Path | Country/phase | Notes |
 |---|---|---|
+| `data/processed/france_ze2020/fr_ze2020_relational_model_ready_panel.csv` | FR ZE2020, 280 zones, 2012-2024 | MVP2 relational smoke panel (Category A only -- ZE-to-ZE trajectory similarity, top-5 positive-correlation neighbors, expanding window). Built on top of `fr_ze2020_model_ready_panel.csv` without modifying it. Relational features unavailable 2012-2016, available 2017-2024. See `HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md` section 10; registry `PANEL_FR_ZE2020_RELATIONAL_MODEL_READY` |
 | `data/processed/european_panel/at_panel.csv`, `be_panel.csv`, `france_panel.csv`, `fr_nuts3_panel.csv`, `it_panel.csv`, `nl_panel.csv`, `pt_panel.csv` | per-country canonical panels | Inputs to the European panel adapters (DEC-002); BE remains target-heterogeneous (DEC-003) |
 | `data/processed/european_panel/european_panel_all.csv` | pooled FR/NL/BE/PT | **Pooled WMAPE from this file is sensitivity-only**, never a primary result (Charter §5, DEC-003) |
 | `data/processed/european_panel/european_sector_coverage_matrix.csv` | 27-country preflight | DEC-038 eligibility classification, no model trained from it |
