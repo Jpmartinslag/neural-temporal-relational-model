@@ -109,17 +109,16 @@ def neighbor_features_for_year(panel: pd.DataFrame, eval_year: int, top_k: int =
     for zone in current.index:
         neighbors: list[str] = []
         weights: list[float] = []
+        candidates = pd.Series(dtype=float)
         if corr is not None and zone in corr.index:
             candidates = corr.loc[zone].drop(labels=[zone], errors="ignore").dropna()
             candidates = candidates[candidates > 0].sort_values(ascending=False).head(top_k)
             neighbors = candidates.index.tolist()
             weights = candidates.to_numpy(dtype=float).tolist()
 
-        neighbor_rows = current.loc[current.index.intersection(neighbors)]
+        neighbor_rows = current.reindex(neighbors)
         valid = neighbor_rows.dropna(subset=["lag_1", "growth_1y_safe"])
-        valid_weights = np.array(
-            [w for n, w in zip(neighbors, weights) if n in valid.index], dtype=float
-        )
+        valid_weights = candidates.reindex(valid.index).to_numpy(dtype=float)
         count = len(valid)
 
         if count == 0:
