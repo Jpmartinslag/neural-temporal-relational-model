@@ -119,6 +119,18 @@ outline — none exists yet.
 | BE | Persistence (Phase 4E-B b3) | 0.1488 | VALIDATED |
 | Cross-country combination | 50/50 persistence+Ridge | 0.0871 | EXPLORATORY, not promoted |
 
+**France ZE2020 minimal current baseline (2026-06-24, exploratory smoke):**
+`src/modeles/france_ze2020/train_fr_ze2020_baselines.py` is the first trainer that reads
+`data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv` (persistence + Ridge,
+lag-only features, eval years 2019-2024). This is unrelated to, and not comparable with,
+the Q7 France result below — it reads a different (clean, causal) panel over a different
+year range and is explicitly `claim_status=exploratory_smoke`, not a headline result. Every
+other France training script (`train_herald_v3..v7`, `semi_v1/v2`, `regime_experiment`,
+`train_dynamic_stgnn_models_v1`, `train_temporal_baselines_v1`, `sector_baselines_v1`,
+`run_herald_prospective_forecast_v1`, `src/analyse/02_ridge_ar_official.py`) still reads the
+legacy, `INVALID_FOR_CLAIMS` panel and is `LEGACY_DO_NOT_USE` for any new work. Full audit:
+`reports/canonical/HERALD_16_MODEL_TRAINING_BLOCK_AUDIT.md`.
+
 **Last valid decision:** DEC-006 (Phase 4N persistence baseline); DEC-010 (Phase 4P spatial lag FAIL); DEC-011 (Phase 4Q Spatial Durbin FAIL).
 **Blocker:** Conformal intervals are exploratory; no promoted interval method.
 **Next step (historical — superseded by the 2026-06-18 re-audit at the top of this

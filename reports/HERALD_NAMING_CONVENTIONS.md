@@ -195,6 +195,11 @@ was out of scope for this pass.
 `ZE2020` (FR), `COROP` (NL observed), `GEMEENTE_PROXY` (NL, context-only),
 `MUNICIPALITY` / `MUNICIPALITY_CONTINENTE` (PT — see §5 above for the inconsistency).
 
+### `claim_status` (smoke/organizational baseline outputs — added 2026-06-24)
+| Value | Meaning |
+|---|---|
+| `exploratory_smoke` | Organizational/local baseline output (e.g. `train_fr_ze2020_baselines.py`'s persistence/Ridge predictions and metrics) — explicitly **not** a validated or headline result, never to be cited or compared against a `PENDING_REAUDIT`/`ACTIVE` result without first aligning eval years and panel lineage. See `reports/canonical/HERALD_16_MODEL_TRAINING_BLOCK_AUDIT.md`. |
+
 ### Structural-absence vocabulary
 `structural_absent` (boolean/flag field), `STRUCTURAL_ABSENT` (status constant),
 `INSUFFICIENT_DATA` (state label shown in dashboards for PT/KZ rows) — all three are used

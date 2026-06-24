@@ -37,6 +37,7 @@ produces.
 |---|---|---|
 | `src/data/european_panel/build_pt_municipal_prediction_layer.py` | PT municipal causal persistence/Ridge forecast (no proxy, no HPC) | DEC-068 |
 | `src/modeles/sector_baselines_v1.py`, `train_temporal_baselines_v1.py` | Persistence/Ridge baselines | DEC-006 |
+| `src/modeles/france_ze2020/train_fr_ze2020_baselines.py` | FR ZE2020 minimal current baseline: persistence + Ridge(lag-only), reads `fr_ze2020_model_ready_panel.csv` only, never the legacy `dynamic_stgnn_feature_panel_v1.csv` | New 2026-06-24, see `HERALD_16_MODEL_TRAINING_BLOCK_AUDIT.md` — explicitly exploratory/smoke, not a headline claim |
 | `src/modeles/run_ardeco_ridge_fr.py` | ARDECO-extended FR Ridge | Closed exploration (HERALD_ARDECO_* reports, removed from index) |
 | `src/analyse/02_ridge_ar_official.py`, `01_sector_baselines.py`, `03_select_gate.py` | France Ridge AR / sector baselines / gate selection | Pre-Q7 architecture search |
 
@@ -85,7 +86,11 @@ produces.
 `plot_herald_v3_dashboard.py`, `plot_herald_v3_v6_dashboard.py`,
 `plot_herald_v6_2025_dashboard.py`
 — all predate Q7 selection (Phase 3E); kept for traceability, not safe to reuse without
-re-validating against the current causal protocol (DEC-001 leakage discipline).
+re-validating against the current causal protocol (DEC-001 leakage discipline). Full
+file-by-file entrada/saída/model-type table, plus the import-chain detail (`v7`/`semi_v2`/
+`regime_experiment`/`sector_baselines_v1`/`run_herald_prospective_forecast_v1` all
+transitively depend on `train_herald_v6.py`'s `PANEL_PATH`):
+`reports/canonical/HERALD_16_MODEL_TRAINING_BLOCK_AUDIT.md` §1.
 
 ## CLOSED_BRANCH (reopening requires a new DEC, Charter §8)
 

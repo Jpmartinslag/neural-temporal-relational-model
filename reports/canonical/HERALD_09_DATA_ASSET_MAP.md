@@ -61,6 +61,7 @@ wins — it is the authoritative per-artifact source.
 | `data/processed/ardeco_extension/`, `france_relation_audit/`, `municipal_granularity_audit/`, `granular_phase7_preflight/` | Closed/superseded preflight or exploratory outputs | DEC-060/061/062 (granularity) absorb the relevant findings |
 | `data/processed/phase16_dec053/`, `phase16_dec054/`, `phase16_dec055/` | Research-track checkpoints (SharedRelationEncoder) | DEC-053/054/055, canonical #3 §4 |
 | `data/processed/graph_adjacency_*.csv`, `graph_edge*.csv`, `graph_node*.csv` (core_v0/ze2020_core_v0) | Early G0/G1 graph artefacts | Superseded by `economic_graph/` outputs |
+| `data/processed/graph_adjacency_core_v0.csv` (280×280 binary, FR ZE2020 geographic adjacency), `graph_adjacency_mobility_v0.csv` (280×280 weighted, FR ZE2020 mobility — described in `reports/HERALD_INTELLIGENCE_LAYER_SPEC.md` as pre-COVID mobility weights), `graph_node_index_core_v0.csv` (280-row node index) | Generator script **not found in current tree** — provenance unverified | Consumed only by `HISTORICAL_EXPERIMENT` (`train_herald_v3..v7`, `semi_v1`, `herald_map_utils.py`); candidate raw material for a *future* ZE2020 relation graph, but not validated — see `reports/canonical/HERALD_16_MODEL_TRAINING_BLOCK_AUDIT.md` §4.1 |
 
 ## 5. Blocked for training (must never become a relation/training label)
 
