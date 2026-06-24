@@ -1011,6 +1011,49 @@
       "claim_forbidden": "Citing this as evidence that the relational/neural/graph candidates improve forecasting -- HPC job 7498752 (5 seeds) found the opposite (gate G3 FAIL for all 3 candidates, HERALD_19); this file does not change that finding, it deliberately stops asking the predictive question. Citing rank_within_family (ranked by signal_strength alone) as if it were ranked by reliability -- the highest-signal_strength ze_to_ze_similarity rows are mostly one-year spikes with low stability_score, documented explicitly in HERALD_20 section 2. Any causal claim, any automatic recommendation, any policy/investment ranking (none exists, verified by test -- no recommendation/recommended_action/policy_action column anywhere). Pooling ze_to_ze_similarity and sector_to_sector relations from the unrelated, country-aggregate Phase 7 layer into this ZE-grain table without a grain-reconciliation decision.",
       "can_regenerate": true,
       "notes": "28/28 new tests pass (15 tests/test_fr_ze2020_exploratory_relation_signals.py + 13 tests/test_fr_ze2020_exploratory_relation_examples.py). Deterministic: rebuilding twice from the same inputs produces an identical table (verified by test)."
+    },
+    {
+      "id": "FR_ZE2020_GEOMETRY",
+      "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
+      "path": "data/external/ze2020_geometry.geojson",
+      "type": "geojson",
+      "status": "ACTIVE",
+      "tracked_in_git": true,
+      "size_bytes": 268066,
+      "sha256_prefix": "1d87bff61fbde27a3d22",
+      "origin_decision": "reports/HERALD_METHODOLOGICAL_DECISION_LOG.md (Observatory map decision, ~line 1131); not previously a standalone registry entry -- backfilled here because src/data/france_ze2020/build_fr_ze2020_dashboard_mvp.py is now a second, independent consumer",
+      "generator_script": "not found in current tree (same provenance gap pattern as graph_adjacency_core_v0.csv/mobility_v0.csv, HERALD_16 section 4.1) -- content-verified only",
+      "input_data": [],
+      "claim_authorized": "306 ZE2020 polygon features (property 'ze2020', already zero-padded 4-char string), already used by Observatory v0.3/v0.4 dashboards. Re-verified 2026-06-24 for the new FR ZE2020 MVP dashboard: 280/280 canonical panel zones covered exactly, the remaining 26 features are exactly the Corsica/DOM zones already excluded by the canonical 280-zone scope (HERALD_15 section 4) -- not a coincidence, a structural match.",
+      "claim_forbidden": "Using any of the 26 non-canonical (Corsica/DOM) features as if they were in the 280-zone canonical scope. Treating this as a validated source of ZE-to-ZE adjacency/contiguity for modeling (HERALD_17 section 1 item 15 already classifies that use as CANDIDATE_RAW_RELATION, refused for MVP2 -- this entry is about the geometry for MAP RENDERING only, a different use).",
+      "can_regenerate": false,
+      "notes": "Generator script not in tree, same gap as the legacy ZE adjacency matrices -- but this file's content (polygon shapes + ze2020 codes) is independently verifiable by exact join coverage against the canonical panel, re-checked at every build of fr_ze2020_dashboard_mvp.html (tests/test_fr_ze2020_dashboard_mvp.py::test_geometry_coverage_documented_when_present)."
+    },
+    {
+      "id": "FR_ZE2020_DASHBOARD_MVP",
+      "phase": "dashboard MVP (2026-06-24)",
+      "path": "reports/dashboards/fr_ze2020_dashboard_mvp.html",
+      "type": "dashboard_html",
+      "status": "ACTIVE",
+      "tracked_in_git": true,
+      "size_bytes": 12644806,
+      "sha256_prefix": "71e1d268d65e3e3a67a2",
+      "origin_decision": "none (presentation layer, not a modeling or scientific decision) -- see reports/canonical/HERALD_22_FR_ZE2020_DASHBOARD_MVP.md",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_dashboard_mvp.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_clean_panel.csv",
+        "data/processed/france_ze2020/fr_ze2020_baseline_predictions_v1.csv",
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv",
+        "data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv",
+        "data/processed/france_ze2020/fr_ze2020_sector_graph_predictions_v1.csv",
+        "data/processed/france_ze2020/fr_ze2020_exploratory_relation_signals.csv",
+        "data/processed/france_ze2020/fr_ze2020_exploratory_relation_examples.csv",
+        "data/external/ze2020_geometry.geojson"
+      ],
+      "claim_authorized": "Standalone, self-contained HTML MVP (Plotly embedded locally, offline-capable) for the France ZE2020 track ONLY -- separate from and does not modify the Observatory v0.3/v0.4/v0.5/v0.5.1 dashboards. Shows: a France-only choropleth map (280/280 geometry coverage, 4 selectable color metrics), a per-zone prediction panel using the already-audited persistence/ridge baseline (explicitly labeled as control, never claimed superior), a descriptive sector composition panel, and an exploratory relation panel (radial mini-graph + ranked tables + curated examples) sourced from HERALD_20/21. Block 1 ('Arquitetura') is intentionally empty placeholder cards, no invented narrative. If fr_ze2020_baseline_predictions_v1.csv is absent, the prediction panel shows observed-only with an explicit message, never a fabricated series (verified by test).",
+      "claim_forbidden": "Any causal claim, any recommendation/recommended_action/policy_action language (verified absent by test). Claiming the geometry covers Corsica/DOM (it does not, by design). Claiming the sector real-vs-predicted comparison is a validated result (it is the already-negative sector_graph_smoke output from HERALD_19, shown with its caveat, never hidden). Treating this as the project's final/public dashboard -- it is a separate MVP for the France ZE2020 track, the Observatory v0.5.1 candidate remains the multi-country presentation track.",
+      "can_regenerate": true,
+      "notes": "16/16 new tests pass (tests/test_fr_ze2020_dashboard_mvp.py). No real browser/Playwright available in this environment (same limitation already documented for every Observatory dashboard) -- validated structurally (embedded JSON parses and is complete, DOM ids referenced by JS exist in the HTML, Plotly.newPlot targets exist as divs, onchange/onclick handlers reference defined functions) instead of a screenshot. Manual visual confirmation in a real browser is recommended before presenting."
     }
   ]
 }
