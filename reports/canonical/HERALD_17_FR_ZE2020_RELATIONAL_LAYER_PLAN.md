@@ -654,3 +654,171 @@ Categoria A (§10), que não foi pedido nesta pass e não foi executado. Próxim
 passo sugerido para a apresentação de amanhã: apresentar o protótipo como
 "previsão temporal + relações exploratórias (território e setor)", sem
 recomendação automática final — exatamente como entregue aqui.
+
+---
+
+## 12. MVP3 neural prototypes — smoke only (2026-06-24)
+
+**Status: protótipo/smoke. Nenhum claim de performance final. Nenhuma
+causalidade. Nenhuma recomendação automática em lugar nenhum.**
+
+Dois protótipos neurais leves, construídos em sequência (não em paralelo).
+Nenhum dos dois substitui ou modifica os baselines/painéis já existentes —
+ambos leem os painéis já causais como entrada read-only.
+
+**Nota de implementação (PyTorch):** `import torch` falha neste ambiente
+(`ModuleNotFoundError`) e a tarefa proíbe adicionar dependência pesada nova —
+então os dois protótipos usam `sklearn.neural_network.MLPRegressor` (já
+dependência existente do projeto) em vez de PyTorch puro. Para o MVP3-B, "message
+passing" é manual (agregação numpy/pandas dos vizinhos), exatamente o fallback
+"GraphSAGE simplificado manual" já autorizado pela tarefa quando PyG não está
+disponível.
+
+### MVP3-A — Neural relacional leve (ZE-level)
+
+- **Script:** `src/modeles/france_ze2020/train_fr_ze2020_neural_relational_mlp.py`.
+- **Entrada:** `fr_ze2020_relational_sector_prototype_panel.csv` (read-only) +
+  um self-join read-only contra `fr_ze2020_sector_relational_features.csv`
+  para resolver `national_sector_share_lag_1`/`national_sector_growth_lag_1`
+  do setor dominante de cada ZE (essas duas colunas só existem no grão
+  setor×ano, não no grão ZE×ano do painel prototype).
+- **17 features:** temporais (5) + ZE→ZE (4) + setoriais (8), todas `_lag_1`/
+  `_lag_2`/`growth_*_safe`, nunca o ano-alvo. Target: `observed_value`.
+- **Achado metodológico não-trivial desta pass:** treinar o MLP direto sobre
+  `observed_value` (escala 230-182.052, std≈10.500) colapsa para prever
+  próximo de zero — WMAPE≈0,999, sintoma clássico de rede neural sobre target
+  de escala muito heterogênea sem normalização do target. Corrigido
+  reformulando o target como razão `observed_value/lag_1` (centrada em ~1,0,
+  desvio ~0,08), prevendo a razão, depois reconstruindo
+  `y_hat = razão_prevista × lag_1` (classe `RatioToLevelMLP`). WMAPE cai de
+  0,999 para ~0,24 — ainda pior que os baselines, mas um resultado smoke
+  honesto, não um pipeline quebrado.
+- **4 modelos, mesmo conjunto de teste por ano** (persistence, ridge_temporal,
+  ridge_relational, mlp_relational) — janela comparável 2021-2024 (mesma
+  exigida pelos outros 3 modelos via `RIDGE_MIN_TRAIN_YEARS=4` sobre o
+  histórico relacional, que só começa em 2017):
+
+  | Modelo | WMAPE médio (2021-2024) |
+  |---|---|
+  | persistence | ≈0,077 |
+  | ridge_temporal | ≈0,088 |
+  | ridge_relational | ≈0,092 |
+  | mlp_relational | ≈0,239 |
+
+  **Leitura honesta:** o MLP relacional não superou nenhum baseline nesta
+  especificação smoke — nem mesmo a persistência simples. Consistente com o
+  padrão já observado em todo o MVP2: nenhuma das tentativas relacionais até
+  aqui bateu o baseline temporal puro. Isso demonstra exatamente o ponto
+  metodológico de Shchur et al. (§0b): testar o simples antes do sofisticado
+  evita conclusões infladas sobre arquiteturas mais complexas.
+- **Sinais exploratórios:** permutation importance (10 repetições, seed fixa)
+  por feature por ano de avaliação, em `fr_ze2020_neural_relational_feature_signals_v1.csv`.
+  `lag_1`/`lag_2`/`lag_3` dominam a importância (esperado, dado que `lag_1`
+  também participa da reconstrução razão→nível) — **exploratório, não
+  causalidade**.
+- **Saídas:** `fr_ze2020_neural_relational_predictions_v1.csv`,
+  `fr_ze2020_neural_relational_metrics_v1.csv`,
+  `fr_ze2020_neural_relational_feature_signals_v1.csv` — toda linha
+  `claim_status=neural_relational_smoke`.
+
+### MVP3-B — Grafo experimental ZE2020×setor
+
+- **Script:** `src/modeles/france_ze2020/train_fr_ze2020_sector_graph_prototype.py`.
+- **Nós:** `ze2020_sector_code` (ex.: `0051_GI`), 32.760 nós (280×9×13
+  ano-zona-setor). **Entrada:** `fr_ze2020_sector_panel.csv` +
+  `fr_ze2020_sector_relational_features.csv` (read-only).
+- **2 tipos de aresta implementados + 1 simplificação documentada:**
+  1. **Intra-ZE (composição):** cada nó conectado aos 8 nós-setor irmãos da
+     mesma ZE×ano. Mensagem = média dos `sector_share_lag_1`/
+     `sector_growth_lag_1` próprios dos irmãos (já causais, nenhuma janela
+     temporal nova necessária).
+  2. **Cross-ZE, mesmo setor, trajetória similar:** para cada setor×ano,
+     correlação de Pearson ZE↔ZE sobre o histórico de `sector_growth_lag_1`
+     restrito a anos `< ano` (mesmo método expansivo da Categoria A, agora
+     por setor). Top-5 vizinhas positivas; mensagem = média de
+     `sector_share_lag_1`/`sector_growth_lag_1` das vizinhas.
+  3. **"Mesmo setor nacional" — simplificação documentada:** em vez de um
+     terceiro conjunto literal de arestas conectando todo nó ao mesmo
+     `sector_code` nacionalmente (que duplicaria o mecanismo top-k do tipo 2
+     a custo muito maior para um protótipo smoke), isso já está dobrado nas
+     **features do próprio nó** (`national_sector_share_lag_1`/
+     `national_sector_growth_lag_1` já vêm do painel setorial) — todo nó já
+     "vê" o sinal nacional sem aresta separada.
+- **Modelo:** `h_i = MLP([x_i, média_vizinhos_intra-ZE, média_vizinhos_cross-ZE])`
+  — exatamente o "GraphSAGE simplificado manual" sugerido, via
+  `sklearn.neural_network.MLPRegressor` sobre 16 features (11 próprias + 5 de
+  mensagem).
+- **Target:** `sector_share` (não `sector_establishment_creations`) — decisão
+  proativa, não reativa: dado o achado do MVP3-A sobre instabilidade de target
+  de escala heterogênea, foi escolhido direto o target já limitado a [0,1],
+  evitando repetir o mesmo problema. Baseline: `y_hat = sector_share_lag_1`
+  (persistência no próprio nó ZE×setor).
+- **Achado de dados nesta pass:** exatamente 1 linha de
+  `fr_ze2020_sector_relational_features.csv` tem `sector_establishment_creations=0`,
+  causando `growth_lag_1`/`growth_lag_2` = `+inf` (divisão por zero) para a
+  linha que a usa como `lag_2`/`lag_3`. Esse arquivo já está committed/testado
+  (MVP2 Categoria C) e não foi alterado; o filtro de completude deste script
+  novo foi reforçado para usar `np.isfinite` (não só `notna()`), excluindo o
+  caso — documentado, não corrigido silenciosamente na fonte.
+- **Resultado smoke (2021-2024, mesmo conjunto de teste):**
+
+  | Modelo | WMAPE médio |
+  |---|---|
+  | persistence_sector | ≈0,116 |
+  | graph_mlp | ≈0,132 |
+
+  **Leitura honesta:** o grafo experimental tampouco superou a persistência
+  simples nesta especificação — mas ficou na mesma ordem de grandeza (não
+  degenerado), resultado smoke coerente com o padrão geral do projeto.
+- **Sinais de relação exploratórios** (`fr_ze2020_sector_graph_relation_signals_v1.csv`,
+  top-20 por ano por tipo): `intra_ze_composition` (correlação entre os 2
+  setores de maior share da ZE, ex.: GI↔MN com correlação >0,98 em algumas
+  ZEs) e `cross_ze_same_sector` (pares ZE-ZE mais correlacionados dentro do
+  mesmo setor, ex.: `3206_KZ`↔`7618_KZ` com correlação ≈0,9998). **Exploratório,
+  associação observada, não causalidade.**
+- **Saídas:** `fr_ze2020_sector_graph_predictions_v1.csv`,
+  `fr_ze2020_sector_graph_metrics_v1.csv`,
+  `fr_ze2020_sector_graph_relation_signals_v1.csv` — toda linha
+  `claim_status=sector_graph_smoke`.
+
+### Por que isto demonstra o valor da IA, sem prometer mais do que entrega
+
+Nenhum dos dois protótipos bateu os baselines simples nesta pass — e isso é
+honestamente reportado, não escondido. O ponto destes protótipos não é "provar
+que IA já ganha": é demonstrar a arquitetura (representação relacional +
+setorial antes da previsão, mensagens de vizinhança manuais, sinais
+exploratórios separados da previsão) que permitiria, com mais dados, mais
+épocas, ou uma especificação de similaridade melhor, aprender combinações
+não-lineares e relações latentes que uma regressão linear não consegue
+representar por construção — exatamente a diferença entre "testar se vale a
+pena" (o que MVP2/MVP3 fazem) e "assumir que vale a pena" (o que nenhuma DEC
+deste projeto autoriza sem evidência).
+
+### O que isto NÃO é
+
+- **Não é claim de performance final** — os dois resultados smoke são
+  negativos/neutros e reportados como tal.
+- **Não é causalidade** — todo `signal_strength`/`importance_score` é
+  associação observada (correlação ou permutation importance), nunca efeito
+  causal.
+- **Não é recomendação automática** — nenhuma coluna `recommendation`,
+  nenhum ranking, nenhuma sugestão de política pública em nenhum dos 6 CSVs
+  novos (verificado por teste).
+- **Não é o grafo neural final do projeto** — MVP3-B é experimental e usa
+  message passing manual com `MLPRegressor`, não uma arquitetura GNN treinada
+  em escala; nenhuma DEC autoriza isso como arquitetura final.
+
+### Testes
+
+14/14 (`tests/test_fr_ze2020_neural_relational_mlp.py`) + 15/15
+(`tests/test_fr_ze2020_sector_graph_prototype.py`) — 29 testes novos. Bateria
+completa do trilho FR ZE2020 (Categoria A + Categoria C + MVP3): 130/130.
+
+### Decisão pendente atualizada (2026-06-24)
+
+Nenhum dos dois protótipos MVP3 produziu sinal forte o suficiente para
+justificar escalar (mais épocas, arquitetura maior, HPC). Ambos permanecem
+explicitamente smoke/experimentais. Próxima decisão pendente: se vale a pena
+iterar a especificação (outra definição de similaridade, mais features, mais
+épocas controladas) antes de considerar qualquer treino em escala — nenhuma
+DEC nova foi aberta para autorizar isso nesta pass.
