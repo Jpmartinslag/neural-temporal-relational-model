@@ -69,6 +69,11 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     already-computed ZE-to-ZE / ZE-to-sector / intra-ZE relation signals into one
     interpretable table, after HERALD_19 found no predictive gain. No new model, no
     causal claim, no automatic recommendation.
+19. `canonical/HERALD_21_FR_ZE2020_RELATION_LAYER_AUDIT.md` — audit of HERALD_20
+    before accepting it as canonical: schema/content/builder/doc/registry checks,
+    `RELATION_LAYER_AUDITED`. Found and fixed 2 small gaps (missing "ZE2020 as
+    functional economic node" framing; missing causal_effect/causal_impact column
+    check in tests) — no methodology change, no new training.
 
 ## Control Documents
 

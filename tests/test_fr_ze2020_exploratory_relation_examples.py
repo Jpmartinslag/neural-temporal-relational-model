@@ -20,7 +20,13 @@ BUILDER_PATH = (
     REPO_ROOT / "src/data/france_ze2020/build_fr_ze2020_exploratory_relation_examples.py"
 )
 
-FORBIDDEN_COLUMN_NAMES = {"recommendation", "recommended_action", "policy_action"}
+FORBIDDEN_COLUMN_NAMES = {
+    "recommendation",
+    "recommended_action",
+    "policy_action",
+    "causal_effect",
+    "causal_impact",
+}
 PREDICTIVE_METRIC_NAMES = {"wmape", "mae", "rmse", "y_pred", "y_true"}
 
 

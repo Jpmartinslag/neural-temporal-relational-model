@@ -134,6 +134,11 @@ principal por `relation_family` + `rank_within_family`.
    `ze_sector_specialization`; ZE2020×setor (`node_id`, 2.520 combinações únicas) para
    `intra_ze_sector_interaction` e `ze_to_ze_same_sector_signal`. Setor isolado aparece
    só como atributo (`sector_code`/`sector_label`), não como nó próprio nesta pass.
+   **Premissa herdada de HERALD_17 §4, reafirmada aqui:** a ZE2020 é tratada como nó
+   econômico funcional — uma unidade que já aproxima um mercado de trabalho local
+   (mobilidade, emprego, atividade concentrada) — não como uma divisão geográfica
+   arbitrária. É essa premissa que justifica usar ZE2020 como nó de uma rede de
+   relações em primeiro lugar.
 2. **O que são as arestas?** Similaridade temporal entre ZEs (`ze_to_ze_similarity`,
    correlação de trajetória, top-5 por ano); mesma trajetória dentro do mesmo setor
    entre ZEs diferentes (`ze_to_ze_same_sector_signal`); composição dentro da própria ZE
