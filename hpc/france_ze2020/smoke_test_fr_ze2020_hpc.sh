@@ -68,9 +68,14 @@ for f in files:
         print(f"EMPTY: {path}")
         ok = False
         continue
+    # +-Inf only -- NaN can be legitimate here (e.g. n_train_years is None
+    # for the persistence model, which does no fitting; already verified
+    # correct by each script's own test suite). Inf would mean a real bug
+    # (e.g. the division-by-zero edge case documented in HERALD_17 section
+    # 12 for the sector pipeline), so that is what this smoke check guards.
     numeric = df.select_dtypes(include=[np.number])
-    if not np.isfinite(numeric.to_numpy(dtype=float)).all():
-        print(f"NON-FINITE VALUES: {path}")
+    if np.isinf(numeric.to_numpy(dtype=float)).any():
+        print(f"INFINITE VALUES: {path}")
         ok = False
     print(f"OK: {path} ({len(df)} rows)")
 
