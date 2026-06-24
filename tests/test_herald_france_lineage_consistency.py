@@ -15,9 +15,13 @@ REGISTRY_PATH = REPO_ROOT / "reports" / "herald_artifact_registry.json"
 HERALD_15_PATH = (
     REPO_ROOT / "reports" / "canonical" / "HERALD_15_FR_ZE2020_DATA_TREATMENT_PIPELINE.md"
 )
+HERALD_17_PATH = (
+    REPO_ROOT / "reports" / "canonical" / "HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md"
+)
 
 CANONICAL_IDS = {"PANEL_FR_ZE2020_CLEAN_TREATED", "PANEL_FR_ZE2020_MODEL_READY_CAUSAL"}
 LEGACY_ID = "FR_DYNAMIC_STGNN_LEGACY_FEATURE_PANEL"
+SECTOR_GRAPH_ID = "FR_ZE2020_SECTOR_GRAPH_PROTOTYPE_PREDICTIONS_V1"
 
 # Statuses that would incorrectly present the legacy panel as current.
 NON_LEGACY_STATUSES = {"ACTIVE"}
@@ -33,6 +37,11 @@ def artifacts():
 @pytest.fixture(scope="module")
 def herald_15_text():
     return HERALD_15_PATH.read_text()
+
+
+@pytest.fixture(scope="module")
+def herald_17_text():
+    return HERALD_17_PATH.read_text()
 
 
 def test_canonical_france_panels_present_in_registry(artifacts):
@@ -86,3 +95,18 @@ def test_herald_15_doc_names_canonical_chain(herald_15_text):
 def test_herald_15_doc_flags_legacy_panel_as_not_current(herald_15_text):
     assert "LEGACY_DO_NOT_USE" in herald_15_text
     assert "dynamic_stgnn_feature_panel_v1.csv" in herald_15_text
+
+
+def test_sector_graph_registry_distinguishes_nodes_from_node_year_rows(artifacts):
+    a = artifacts.get(SECTOR_GRAPH_ID)
+    assert a is not None, f"{SECTOR_GRAPH_ID} missing from registry"
+    haystack = " ".join([a.get("claim_authorized", ""), a.get("notes", "")])
+    assert "2,520 unique nodes" in haystack
+    assert "32,760 node-year rows" in haystack
+    assert "32,760 nodes" not in haystack
+
+
+def test_herald_17_distinguishes_nodes_from_node_year_rows(herald_17_text):
+    assert "2.520 nós únicos" in herald_17_text
+    assert "32.760 linhas nó-ano" in herald_17_text
+    assert "32.760 nós" not in herald_17_text
