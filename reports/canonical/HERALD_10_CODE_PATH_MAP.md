@@ -23,6 +23,7 @@ produces.
 
 | Path | Output | DEC |
 |---|---|---|
+| `src/data/france_ze2020/build_fr_ze2020_relational_model_ready_panel.py` | FR ZE2020 relational MVP2 panel (Category A trajectory similarity only) | New 2026-06-24, see `HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md` section 10 -- smoke/exploratory, not a headline claim |
 | `src/data/european_panel/build_european_panel.py` | Canonical FR/NL/BE/PT panel | DEC-002/003 |
 | `src/data/european_panel/build_enterprise_birth_subpanel.py` | Path H PT/IT/AT harmonized panel | DEC-005 |
 | `src/data/european_panel/build_fr_nuts3_sector_panel.py`, `build_pt_municipal_sector_panel.py` | FR NUTS3, PT municipal sector panels | DEC-062/064 |
@@ -38,6 +39,7 @@ produces.
 | `src/data/european_panel/build_pt_municipal_prediction_layer.py` | PT municipal causal persistence/Ridge forecast (no proxy, no HPC) | DEC-068 |
 | `src/modeles/sector_baselines_v1.py`, `train_temporal_baselines_v1.py` | Persistence/Ridge baselines | DEC-006 |
 | `src/modeles/france_ze2020/train_fr_ze2020_baselines.py` | FR ZE2020 minimal current baseline: persistence + Ridge(lag-only), reads `fr_ze2020_model_ready_panel.csv` only, never the legacy `dynamic_stgnn_feature_panel_v1.csv` | New 2026-06-24, see `HERALD_16_MODEL_TRAINING_BLOCK_AUDIT.md` — explicitly exploratory/smoke, not a headline claim |
+| `src/modeles/france_ze2020/train_fr_ze2020_relational_baselines.py` | MVP2 relational smoke comparison: persistence vs. ridge_temporal (reuses the script above, not modified) vs. ridge_relational (+3 trajectory-similarity features) | New 2026-06-24, see `HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md` section 10 — relational features did not beat either baseline in this smoke run; `claim_status=relational_smoke_result` |
 | `src/modeles/run_ardeco_ridge_fr.py` | ARDECO-extended FR Ridge | Closed exploration (HERALD_ARDECO_* reports, removed from index) |
 | `src/analyse/02_ridge_ar_official.py`, `01_sector_baselines.py`, `03_select_gate.py` | France Ridge AR / sector baselines / gate selection | Pre-Q7 architecture search |
 
