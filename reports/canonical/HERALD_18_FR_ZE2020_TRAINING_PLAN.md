@@ -71,6 +71,12 @@ em ambos os protótipos neurais.
 8. **O que é relação exploratória?** Qualquer `signal_strength`, `importance_score`,
    `learned_or_aggregated_weight`, ou coeficiente de correlação/agregação reportado
    junto da previsão — sempre rotulado como associação observada, nunca como efeito.
+   Tratar como **hipótese econômica para interpretação por especialista** (ex.: "estas
+   ZEs com composição setorial parecida merecem revisão conjunta por um economista"),
+   nunca como descoberta validada — sem precedência temporal testada formalmente
+   ainda (isso é o que o Phase 7 do projeto já faz para setor→setor noutra trilha;
+   aqui as relações são território→território e território×setor, não testadas pelo
+   mesmo método de precedência).
 9. **O que NÃO pode ser tratado como causal?** Nada do que sai destes scripts:
    diferenças de WMAPE entre modelos, pesos de agregação de vizinhos, permutation
    importance, correlação setor-setor ou ZE-ZE. Nenhum desses é — nem se aproxima de
@@ -86,6 +92,17 @@ econômica antes da previsão** — exatamente por isso a Tarefa A já injeta as
 relacionais e setoriais diretamente no vetor de entrada do MLP (não como um termo de
 correção aditivo sobre uma previsão Ridge já feita), e por isso a Tarefa B constrói o
 grafo ZE×setor como representação primária, não como pós-processamento.
+
+**Por que isso justifica tentar IA/grafo, e não só estatística simples (resumo de
+HERALD_17 §12, repetido aqui porque a pergunta é central para este documento):**
+Ridge/persistence só conseguem combinar features linearmente, com pesos fixos por
+toda a amostra. A hipótese de uma camada relacional + neural é que ela pode aprender
+**combinações não-lineares e relações latentes** entre composição setorial,
+trajetória territorial e contexto nacional — coisas que uma regressão linear não
+representa por construção, não porque ainda não foi tentada. Nenhum dos protótipos
+smoke (§1) confirmou essa hipótese até agora (todos perderam para o baseline simples)
+— a justificativa é arquitetural/conceitual, não um resultado já obtido. Por isso o
+gate do §5 exige sinal medido, não promessa, antes de qualquer HPC.
 
 ---
 
