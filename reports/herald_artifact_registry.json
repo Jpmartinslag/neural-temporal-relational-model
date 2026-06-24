@@ -849,6 +849,84 @@
       "claim_forbidden": "Citing the WMAPE numbers as a validated or headline result, or as evidence either for or against the broader relational-layer hypothesis (n=4 eval years, 1 similarity definition, 1 alpha -- a single smoke run, not a gated experiment). Averaging ridge_relational's WMAPE together with persistence/ridge_temporal's across mismatched eval-year sets (2019-2020 have no ridge_relational result) -- only the comparable-window (2021-2024) mean is meaningful, per the same year-alignment rule already learned for the HERALD Intelligence Layer. Treating this as authorization for MVP3 (graph model) -- it is not; MVP3 remains pending a new DEC per HERALD_17 section 9.",
       "can_regenerate": true,
       "notes": "Output intentionally left untracked/regenerable, matching FR_ZE2020_BASELINE_PREDICTIONS_V1's convention. Companion metrics file fr_ze2020_relational_baseline_metrics_v1.csv produced by the same script, covered by this same entry. Generator script and its test (tests/test_fr_ze2020_relational_baselines.py, 11/11 PASS) are committed."
+    },
+    {
+      "id": "PANEL_FR_ZE2020_SECTOR_COMPOSITION",
+      "phase": "relational layer MVP2 Categoria C (2026-06-24)",
+      "path": "data/processed/france_ze2020/fr_ze2020_sector_panel.csv",
+      "type": "panel_csv",
+      "status": "ACTIVE",
+      "tracked_in_git": true,
+      "size_bytes": 2945488,
+      "sha256_prefix": "4a9d0d8a050e32c6dad3",
+      "origin_decision": "none yet (MVP2 Categoria C prototype step per reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md; not a modeling decision)",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_sector_panel.py",
+      "input_data": [
+        "data/processed/side_creations_a10_ze2020_v1.csv",
+        "data/processed/france_ze2020/fr_ze2020_clean_panel.csv"
+      ],
+      "claim_authorized": "FR ZE2020 (280 zones), 2012-2024, long-format sector composition: sector_code/sector_label (9 A10 sectors: BE/FZ/GI/JZ/KZ/LZ/MN/OQ/RU), sector_establishment_creations, total_establishment_creations (anchored to the canonical clean panel's establishment_creations, NOT the A10 source's own total column, though both reconcile exactly), sector_share, sector_rank_in_ze_year, mask_sector_available. Audited and re-verified at every build: source side_creations_a10_ze2020_v1.csv's total column reconciles EXACTLY with the canonical panel (max abs diff 0.0, 3640/3640 rows) -- the builder raises ValueError and refuses to write output if this ever stops holding. No missing values, no negative values, no duplicate (ze2020, year) rows in the source. This is an OBSERVED/SECTORAL panel, NOT model-ready: no lag, no growth, no causal masking yet.",
+      "claim_forbidden": "Treating side_creations_a10_ze2020_v1.csv (the underlying source) as a definitive/canonical source -- it remains CANDIDATE_NEEDS_PROVENANCE (no generator script found in the current tree, same gap pattern as graph_adjacency_core_v0.csv/mobility_v0.csv, HERALD_16 section 4.1). Using sector_share without lagging it first in any model-input context (this file is contemporaneous, not causal-safe by itself -- see PANEL_FR_ZE2020_SECTOR_RELATIONAL_FEATURES below for the lagged version). Treating this as a trained-model result or performance claim (none exists).",
+      "can_regenerate": true,
+      "notes": "MVP2 Categoria C step 1 of reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md section 11. 16/16 tests pass (tests/test_fr_ze2020_sector_panel.py), including a test that the builder raises on a deliberately corrupted reconciliation input."
+    },
+    {
+      "id": "PANEL_FR_ZE2020_SECTOR_RELATIONAL_FEATURES",
+      "phase": "relational layer MVP2 Categoria C (2026-06-24)",
+      "path": "data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv",
+      "type": "panel_csv",
+      "status": "ACTIVE",
+      "tracked_in_git": true,
+      "size_bytes": 6513153,
+      "sha256_prefix": "d17aa9d736ae5c2d263d",
+      "origin_decision": "none yet (MVP2 Categoria C prototype step; not a modeling decision)",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_sector_relational_features.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv"
+      ],
+      "claim_authorized": "FR ZE2020 x sector x year long panel (32,760 rows = 280 zones x 13 years x 9 sectors), causal lag-only features at 3 grains: (1) ZE x sector own history (sector_share_lag_1, sector_growth_lag_1 ending at t-1, sector_growth_lag_2 ending at t-2); (2) ZE x year sector-distribution aggregates computed contemporaneously then shifted by 1 (dominant_sector_lag_1, dominant_sector_share_lag_1, sector_diversity_lag_1 [normalized Shannon entropy], sector_concentration_hhi_lag_1, commerce_share_lag_1 [GI], construction_share_lag_1 [FZ]); (3) sector x year national aggregates (national_sector_share_lag_1, national_sector_growth_lag_1), same compute-then-shift pattern, summed over all 280 zones. Every lag column has a paired mask column; availability boundaries verified by test (growth_lag_1 from 2014, growth_lag_2 from 2015, ZE distribution aggregates from 2013, national growth from 2014). Two leakage tests pass: truncation-invariance and current-year-mutation-invariance, for every output column.",
+      "claim_forbidden": "services_share_lag_1 was deliberately NOT implemented -- A10 has no single 'services' code (JZ/MN/OQ/RU are all services-like but economically heterogeneous); do not approximate it by summing an arbitrary subset without a new documented decision. Treating any of these features as evidence of predictive value -- none has been tested against a baseline yet (that would be a future MVP2-C comparative step, analogous to PANEL_FR_ZE2020_RELATIONAL_MODEL_READY's MVP2 Categoria A smoke comparison, not performed in this pass). Treating commerce_share_lag_1 (GI = 'Trade, transport and hospitality') as pure commerce -- it is the closest single A10 category, not an exact match.",
+      "can_regenerate": true,
+      "notes": "MVP2 Categoria C step 2. 15/15 tests pass (tests/test_fr_ze2020_sector_relational_features.py)."
+    },
+    {
+      "id": "PANEL_FR_ZE2020_RELATIONAL_SECTOR_PROTOTYPE",
+      "phase": "relational layer MVP2 Categoria C (2026-06-24)",
+      "path": "data/processed/france_ze2020/fr_ze2020_relational_sector_prototype_panel.csv",
+      "type": "panel_csv",
+      "status": "ACTIVE",
+      "tracked_in_git": true,
+      "size_bytes": 917751,
+      "sha256_prefix": "24c8d32bfdc5ddfc73a8",
+      "origin_decision": "none yet (MVP2 integration step; not a modeling decision)",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_relational_sector_prototype_panel.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_relational_model_ready_panel.csv",
+        "data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv"
+      ],
+      "claim_authorized": "All PANEL_FR_ZE2020_RELATIONAL_MODEL_READY columns (time + ZE-to-ZE Category A) unchanged, plus the ZE x year sector-distribution aggregate columns from PANEL_FR_ZE2020_SECTOR_RELATIONAL_FEATURES and a derived top_sector_signal_lag_1 (the dominant sector's own sector_growth_lag_1, looked up by matching sector_code) -- one row per (ze2020, year), 3640 rows, row count unchanged from the Category A panel (left join, no fan-out, asserted in the builder). Represents time + ZE-to-ZE + ZE-x-sector in a single tabular row -- the base for a future graph/neural candidate, explicitly NOT a graph and NOT a trained model.",
+      "claim_forbidden": "Citing this as evidence of predictive value for the sector layer (no model has been compared against it). Treating it as a graph structure -- it is a flat table, no edges, no message passing. Treating top_sector_signal_lag_1 as a causal driver of observed_value -- it is a descriptive lag feature, association only.",
+      "can_regenerate": true,
+      "notes": "MVP2 Categoria C step 3 (integration). 9/9 tests pass (tests/test_fr_ze2020_relational_sector_prototype.py), including a checksum pin on the unmodified Category A input."
+    },
+    {
+      "id": "FR_ZE2020_RELATIONAL_PROTOTYPE_EXAMPLES_V1",
+      "phase": "relational layer MVP2 Categoria C (2026-06-24)",
+      "path": "data/processed/france_ze2020/fr_ze2020_relational_prototype_examples.csv",
+      "type": "analysis_csv",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (export/presentation step, not a modeling decision)",
+      "generator_script": "src/modeles/france_ze2020/export_fr_ze2020_relational_prototype_examples.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_relational_sector_prototype_panel.csv"
+      ],
+      "claim_authorized": "2,240 rows (zone-years where both Category A and Category C features are available, 2017-2024) with observed_value, lag_1, predicted_baseline (= lag_1, persistence, no fitting), the ZE-to-ZE relational signal, the ZE-to-sector signal, and a deterministic, template-generated exploratory_note per row -- never an LLM call, never a ranking, never a recommendation. Every note ends with an explicit non-causality caveat ('Relação exploratória, sem claim causal.').",
+      "claim_forbidden": "Treating exploratory_note as a recommendation, a ranking, or an investment signal of any kind. Treating predicted_baseline as a validated forecast (it is literally lag_1, not a fitted model). Presenting this export as a finished dashboard or a final deliverable -- it is an intermediate, interpretable example table for the relational-layer prototype only.",
+      "can_regenerate": true,
+      "notes": "MVP2 Categoria C step 4 (export). Intentionally left untracked/regenerable, same convention as the other smoke/export outputs in this track (FR_ZE2020_BASELINE_PREDICTIONS_V1, FR_ZE2020_RELATIONAL_BASELINE_PREDICTIONS_V1)."
     }
   ]
 }

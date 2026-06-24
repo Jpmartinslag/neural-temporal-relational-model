@@ -509,3 +509,148 @@ move a agulha nessa decisão em nenhuma direção — nem a acelera (o resultado
 neutro/levemente negativo) nem a encerra (faltam testar Categoria B/C e variações
 de definição de similaridade antes de considerar a hipótese da camada relacional
 esgotada).
+
+---
+
+## 11. MVP2 Categoria C — ZE×setor prototype (2026-06-24)
+
+**Status: protótipo/smoke. Nenhuma rede neural/grafo final foi criada. Nenhuma
+recomendação automática foi gerada. Nenhum claim causal ou de performance final é
+feito.**
+
+### Por que ZE×setor aproxima o futuro grafo econômico
+
+A hipótese central deste plano (§4) é que a ZE2020 deve ser tratada como nó
+econômico funcional, não como simples divisão geográfica — e que um grafo
+econômico futuro precisa aprender representações territoriais **e setoriais**
+antes da previsão. A Categoria A (§10) já deu à ZE uma vizinhança (ZE→ZE); a
+Categoria C dá a cada ZE uma **composição interna** (que setores a compõem, em
+que proporção, como essa composição evolui) — exatamente o segundo eixo que o
+grafo bipartido território×setor da hipótese original (§4, "o modelo deve
+aprender relações entre território e território; setor e setor; território e
+setor") precisa para existir como dado tabular antes de qualquer arquitetura de
+grafo. Sem essa camada, "ZE×setor" seria apenas uma frase no plano, não um dado.
+
+### Auditoria do painel A10 (Parte 1)
+
+`data/processed/side_creations_a10_ze2020_v1.csv` — auditado nesta pass:
+
+| Verificação | Resultado |
+|---|---|
+| Colunas | `target_year, ZE2020, BE, FZ, GI, JZ, KZ, LZ, MN, OQ, RU, total` |
+| Anos | 2012-2024 (13 anos), sem buraco |
+| Nº de ZE2020 | 280 (idêntico ao conjunto canônico) |
+| Setores A10 | 9 (BE/FZ/GI/JZ/KZ/LZ/MN/OQ/RU — mesma nomenclatura já usada em `sector_panel_fr_nuts3.csv`/`sector_panel_fr_nl_pt.csv` e nos rótulos de `build_observatory_v05_narrative_exports.py`) |
+| `ze2020` zero-padded 4 chars | Não no arquivo bruto (`int64`); corrigido no builder via `.str.zfill(4)` |
+| `total` vs. `fr_ze2020_clean_panel.csv` | **Reconcilia exatamente — diff máx. absoluta = 0.0, 3.640/3.640 linhas** (re-verificado nesta pass, mesmo resultado do MVP2 Categoria A) |
+| Valores negativos | Nenhum (`BE..RU`/`total` todos ≥ 0) |
+| Cada ZE×ano tem os 9 setores | Sim — formato wide, 1 linha por ZE×ano, 9 colunas de setor sempre presentes |
+| Missing | Zero valores nulos em qualquer coluna |
+| `total == soma dos 9 setores` | Diff máx. absoluta = 0.0 (3.640/3.640 linhas) |
+| Uso de valor futuro | N/A neste nível (painel bruto observado, sem features ainda — a auditoria de causalidade se aplica às etapas 2-3 abaixo) |
+
+**Documentado e mantido:** o arquivo não tem builder próprio encontrado na árvore
+atual (mesmo padrão de lacuna já documentado para `graph_adjacency_core_v0.csv`/
+`mobility_v0.csv`, HERALD_16 §4.1) — é `CANDIDATE_NEEDS_PROVENANCE`. Usado nesta
+pass apenas porque os checks acima passam, e **o builder novo
+(`build_fr_ze2020_sector_panel.py`) re-verifica a reconciliação com o painel
+canônico a cada execução e se recusa (`raise ValueError`) a escrever output se
+ela algum dia parar de bater** — o caveat é reforçado em código, não só em
+documentação. Não pode se tornar fonte definitiva sem auditoria de proveniência
+adicional (localizar ou reconstruir o gerador original).
+
+### O que foi construído (Partes 2-5)
+
+| Etapa | Script | Output | Grão |
+|---|---|---|---|
+| 1. Painel setorial observado | `src/data/france_ze2020/build_fr_ze2020_sector_panel.py` | `data/processed/france_ze2020/fr_ze2020_sector_panel.csv` (32.760 linhas) | ZE×setor×ano |
+| 2. Features setoriais causais | `src/data/france_ze2020/build_fr_ze2020_sector_relational_features.py` | `data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv` (32.760 linhas) | ZE×setor×ano (com agregados ZE×ano e setor-nacional×ano embutidos) |
+| 3. Integração com Categoria A | `src/data/france_ze2020/build_fr_ze2020_relational_sector_prototype_panel.py` | `data/processed/france_ze2020/fr_ze2020_relational_sector_prototype_panel.csv` (3.640 linhas) | ZE×ano (tempo + ZE→ZE + ZE×setor numa única linha) |
+| 4. Saída exploratória | `src/modeles/france_ze2020/export_fr_ze2020_relational_prototype_examples.py` | `data/processed/france_ze2020/fr_ze2020_relational_prototype_examples.csv` (2.240 linhas — só onde Categoria A e Categoria C estão ambas disponíveis, 2017-2024) | ZE×ano, formato interpretável |
+
+**Features setoriais implementadas** (todas `_lag_1`/`_lag_2`, nunca o ano-alvo):
+
+- **ZE×setor (própria história):** `sector_share_lag_1`, `sector_growth_lag_1`
+  (crescimento terminando em t-1, usa `lag_1`/`lag_2` da própria série),
+  `sector_growth_lag_2` (crescimento terminando em t-2, um passo mais atrás, usa
+  `lag_2`/`lag_3`) — mesma lógica causal de `growth_1y_safe`/`growth_2y_safe`,
+  aplicada a duas observações de crescimento consecutivas em vez de duas janelas
+  de referência diferentes.
+- **ZE×ano (distribuição setorial da zona):** `dominant_sector_lag_1`,
+  `dominant_sector_share_lag_1`, `sector_diversity_lag_1` (entropia de Shannon
+  normalizada, 0-1), `sector_concentration_hhi_lag_1` (índice
+  Herfindahl-Hirschman, 1/9-1), `commerce_share_lag_1` (setor GI — "Trade,
+  transport and hospitality", o A10 mais próximo de comércio), `construction_share_lag_1`
+  (setor FZ). Calculadas como estatística **contemporânea** da distribuição em
+  t-1, depois deslocadas para a linha t — nunca a distribuição do próprio ano t.
+- **Setor-nacional×ano:** `national_sector_share_lag_1`, `national_sector_growth_lag_1`
+  (mesma soma sobre as 280 zonas, mesmo padrão calcular-depois-deslocar).
+- **Integração:** `top_sector_signal_lag_1` = o próprio `sector_growth_lag_1` do
+  setor que é dominante na zona naquele ano — "como está indo o setor que hoje
+  domina esta ZE", composto só de colunas já causais.
+
+### Features recusadas (Parte 1/3)
+
+| Feature pedida | Decisão | Motivo |
+|---|---|---|
+| `services_share_lag_1` | **Não implementada** | A10 não tem um único código "serviços" — `JZ`/`MN`/`OQ`/`RU` são todos "services-like" mas economicamente heterogêneos (informação/comunicação, profissional/administrativo, administração pública/educação/saúde, artes/outros). Escolher um subconjunto arbitrário seria uma decisão de modelagem disfarçada de dado. A própria tarefa qualificou esta feature com "se possível" — exercido aqui o "não". |
+| Painel A10 como fonte definitiva | **Não promovido** | Permanece `CANDIDATE_NEEDS_PROVENANCE`; usado só como candidato derivado com caveat reforçado em código (ver auditoria acima) |
+
+### Como evitamos vazamento temporal (camada setorial)
+
+Mesmas três camadas de proteção da Categoria A, replicadas para a Categoria C e
+testadas (`tests/test_fr_ze2020_sector_relational_features.py`,
+`tests/test_fr_ze2020_relational_sector_prototype.py`):
+
+1. Todo `_lag_1`/`_lag_2` é construído por **deslocamento (`shift`) dentro do
+   grupo correto** (ZE×setor, ZE, ou setor-nacional) — nunca por um cálculo que
+   olhe o ano-alvo.
+2. Estatísticas agregadas (distribuição ZE×ano, totais nacionais) são calculadas
+   **contemporaneamente primeiro, deslocadas depois** — a ordem de operações é
+   verificada, não assumida.
+3. **Dois testes de invariância, replicados em cada uma das 3 etapas:**
+   truncar o input em `year <= eval_year` produz exatamente os mesmos valores
+   em `eval_year` que o painel completo; e mutar os valores do próprio
+   `eval_year` (`sector_establishment_creations`/`sector_share` para valores
+   extremos) não altera nenhuma feature `_lag_*` daquele mesmo `eval_year`.
+
+### O que isto NÃO é
+
+- **Não é o grafo neural final** — não há nó, aresta aprendida, ou arquitetura
+  de rede em lugar nenhum desta pass. MVP3 continua bloqueado (§9, §10).
+- **Não é recomendação automática** — a saída exploratória (`exploratory_note`)
+  é uma frase-modelo determinística construída de colunas já causais, nunca uma
+  sugestão de ação, nunca um ranking, nunca um "deveria investir aqui".
+- **Não é claim causal nem de performance** — nenhum WMAPE foi recalculado nesta
+  pass; nenhuma reconciliação ou disponibilidade de feature é apresentada como
+  evidência de valor preditivo (isso é exatamente o que um futuro MVP2-C
+  comparativo, análogo ao da Categoria A em §10, teria que testar antes de
+  qualquer claim).
+- **É, sim,** a base relacional econômica — tempo + ZE→ZE + ZE×setor numa
+  única linha por zona-ano (`fr_ze2020_relational_sector_prototype_panel.csv`),
+  exatamente o "não é GNN ainda, mas é a base para o futuro grafo" pedido.
+
+### Exemplo de saída exploratória
+
+```
+ze2020=0051 (Alençon), 2017: ZE com trade, transport and hospitality como
+setor dominante (share=31%); trajetória similar a 5 outras ZEs com sinal
+recente de crescimento. Relação exploratória, sem claim causal.
+```
+
+### Testes
+
+16/16 (`tests/test_fr_ze2020_sector_panel.py`) + 15/15
+(`tests/test_fr_ze2020_sector_relational_features.py`) + 9/9
+(`tests/test_fr_ze2020_relational_sector_prototype.py`) — 40 testes novos. Bateria
+completa do trilho FR ZE2020 (incl. Categoria A e baselines): 124/124.
+
+### Decisão pendente atualizada (2026-06-24)
+
+MVP3 (grafo neural) continua **não autorizado**. A Categoria C amplia a base de
+dados relacional (tempo + ZE→ZE + ZE×setor), mas não testa ainda se a composição
+setorial tem valor preditivo — isso exigiria um MVP2-C comparativo análogo ao da
+Categoria A (§10), que não foi pedido nesta pass e não foi executado. Próximo
+passo sugerido para a apresentação de amanhã: apresentar o protótipo como
+"previsão temporal + relações exploratórias (território e setor)", sem
+recomendação automática final — exatamente como entregue aqui.
