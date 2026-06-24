@@ -95,7 +95,7 @@ def test_builder_does_not_read_legacy_or_unprovenanced_matrices():
 
 
 def test_row_count_matches_280_zones_13_years_9_sectors(features):
-    assert len(features) == 280 * 13 * 9
+    assert len(features) == 280 * 14 * 9
 
 
 def test_sector_growth_lag_1_unavailable_before_2014(features):

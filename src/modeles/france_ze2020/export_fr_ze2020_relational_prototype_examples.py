@@ -16,7 +16,7 @@ sentence built from already-causal columns -- never an LLM call, never a
 recommendation, always closed with an explicit non-causality caveat.
 
 Only rows where BOTH the ZE-to-ZE relational features and the ZE-to-sector
-distribution features are available are included (2017-2024 in the current
+distribution features are available are included (2017-2025 in the current
 panel) -- this is a complete, reproducible export, not a hand-picked sample;
 read it selectively (e.g. by ze2020) for illustration.
 

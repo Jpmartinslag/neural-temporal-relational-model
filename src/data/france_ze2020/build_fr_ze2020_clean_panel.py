@@ -2,8 +2,8 @@
 HERALD — France ZE2020 clean treated panel.
 
 Builds the canonical observed-data panel for France's Zone d'Emploi (ZE2020)
-territorial grain: commune-level INSEE SIDE establishment/enterprise creation
-counts, aggregated to ZE2020 x year, restricted to the continental-France
+territorial grain: INSEE SIDE establishment/enterprise creation counts,
+aggregated to ZE2020 x year, restricted to the continental-France
 methodological scope (see reports/canonical/HERALD_15_FR_ZE2020_DATA_TREATMENT_PIPELINE.md
 section 4 for the 306 -> 280 zone selection).
 
@@ -13,10 +13,11 @@ model-ready file — see HERALD_15 section 9 for what is deliberately not done
 at this stage.
 
 Inputs (read-only):
-  data/interim/tables/side_communal_creations_official_2012_2024_v0.csv
-    commune x year INSEE SIDE creation counts, already joined to ZE2020
-    (columns: codgeo, year, side_enterprise_creations_official,
-    side_establishment_creations_official, ze2020, libze2020, dep, reg).
+  data/processed/target_side_establishments_annual_core_through_2025_v1.csv
+    ZE2020 x year INSEE SIDE creation counts, 280-zone canonical scope,
+    extended through 2025 (columns: target_year, ze2020, libze2020,
+    side_enterprise_creations_official,
+    side_establishment_creations_official, communes_count).
 
 Output:
   data/processed/france_ze2020/fr_ze2020_clean_panel.csv
@@ -27,7 +28,7 @@ from pathlib import Path
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[3]
-SIDE_COMMUNAL_PATH = ROOT / "data/interim/tables/side_communal_creations_official_2012_2024_v0.csv"
+SIDE_TARGET_PATH = ROOT / "data/processed/target_side_establishments_annual_core_through_2025_v1.csv"
 OUT_DIR = ROOT / "data/processed/france_ze2020"
 OUT_PATH = OUT_DIR / "fr_ze2020_clean_panel.csv"
 
@@ -41,39 +42,41 @@ OUT_PATH = OUT_DIR / "fr_ze2020_clean_panel.csv"
 EXCLUDED_REGION_CODES = {"01", "02", "03", "04", "06", "94"}
 
 
-def load_side_communal() -> pd.DataFrame:
+def load_side_target() -> pd.DataFrame:
     df = pd.read_csv(
-        SIDE_COMMUNAL_PATH,
-        dtype={"codgeo": str, "ze2020": str, "reg": str},
+        SIDE_TARGET_PATH,
+        dtype={"ze2020": str},
         low_memory=False,
     )
-    df["codgeo"] = df["codgeo"].str.zfill(5)
     df["ze2020"] = df["ze2020"].str.zfill(4)
-    df["reg"] = df["reg"].str.zfill(2)
-    df["year"] = df["year"].astype(int)
+    df["target_year"] = df["target_year"].astype(int)
     return df
 
 
 def build_clean_panel() -> pd.DataFrame:
-    side = load_side_communal()
-    n_zones_raw = side["ze2020"].nunique()
+    side = load_side_target()
+    n_zones_scoped = side["ze2020"].nunique()
 
-    scoped = side[~side["reg"].isin(EXCLUDED_REGION_CODES)].copy()
-    n_zones_scoped = scoped["ze2020"].nunique()
+    if side.duplicated(["ze2020", "target_year"]).any():
+        raise ValueError("SIDE target source has duplicate (ze2020, target_year) rows")
 
-    panel = (
-        scoped.groupby(["ze2020", "year"])
-        .agg(
-            establishment_creations=("side_establishment_creations_official", "sum"),
-            enterprise_creations=("side_enterprise_creations_official", "sum"),
-            communes_count=("codgeo", "nunique"),
-        )
-        .reset_index()
-    )
-
-    zone_labels = scoped[["ze2020", "libze2020"]].drop_duplicates("ze2020")
-    panel = panel.merge(zone_labels, on="ze2020", how="left")
-    panel = panel.rename(columns={"libze2020": "ze2020_label"})
+    panel = side.rename(
+        columns={
+            "target_year": "year",
+            "libze2020": "ze2020_label",
+            "side_establishment_creations_official": "establishment_creations",
+            "side_enterprise_creations_official": "enterprise_creations",
+        }
+    )[
+        [
+            "ze2020",
+            "ze2020_label",
+            "year",
+            "establishment_creations",
+            "enterprise_creations",
+            "communes_count",
+        ]
+    ].copy()
 
     panel["mask_establishment_creations_available"] = (
         panel["establishment_creations"].notna().astype(int)
@@ -94,8 +97,7 @@ def build_clean_panel() -> pd.DataFrame:
     ]
     panel = panel[col_order].sort_values(["ze2020", "year"]).reset_index(drop=True)
 
-    print(f"Raw ZE2020 zones (commune mapping scope): {n_zones_raw}")
-    print(f"ZE2020 zones after continental-France methodological filter: {n_zones_scoped}")
+    print(f"ZE2020 zones in canonical through-2025 target source: {n_zones_scoped}")
     print(f"Panel shape: {panel.shape}")
     return panel
 

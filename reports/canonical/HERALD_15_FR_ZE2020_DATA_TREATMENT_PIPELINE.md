@@ -25,15 +25,15 @@ Status vocabulary used in this table only (distinct from, and narrower than,
 | File | Role | Generator | Consumer(s) | Status | Note |
 |---|---|---|---|---|---|
 | `data/interim/mappings/commune_to_ze2020_2026.csv` | Official commune (CODGEO) → ZE2020 mapping, 34,875 communes, 306 zones | not traced in this pass (likely INSEE nomenclature import) | `build_dynamic_stgnn_feature_panel_v1.py`, this pass's new builder (indirectly, via the interim table below) | RAW_CANONICAL | 306 is the raw/full nomenclature count, before any methodological filter |
-| `data/interim/tables/side_communal_creations_official_2012_2024_v0.csv` | Commune × year INSEE SIDE creation counts (enterprise + establishment), already joined to ZE2020/region | **no generator script found in the current tree** | `src/data/france_ze2020/build_fr_ze2020_clean_panel.py` (new, this pass) | INTERIM_CANONICAL | UNKNOWN_REVIEW_REQUIRED for provenance only — content independently verified consistent (see section 4) |
+| `data/interim/tables/side_communal_creations_official_2012_2024_v0.csv` | Commune × year INSEE SIDE creation counts (enterprise + establishment), already joined to ZE2020/region | **no generator script found in the current tree** | Historical cross-check source for 2012-2024 | INTERIM_CANONICAL | UNKNOWN_REVIEW_REQUIRED for provenance only — content independently verified consistent for the pre-2025 pass |
 | `data/raw/business_demography/side/*.zip` (DS_SIDE_*, TAB_SIDE_*) | Raw INSEE SIDE establishment/enterprise stock & creation extracts | INSEE downloads | `build_dynamic_stgnn_feature_panel_v1.py` (subset: `DS_SIDE_STOCKS_ET_COM_2023_CSV.zip`) | RAW_CANONICAL | Most files in this directory are not read by any builder found in this pass — flagged, not removed |
 | `data/raw/employment/flores/*.zip` (TD_FLORES_*, DS_FLORES_*) | Raw INSEE FLORES establishment/salaried-jobs extracts, commune (TD, 2016-2021) and ZE2020 (DS, 2022-2023) format | INSEE downloads | `build_dynamic_stgnn_feature_panel_v1.py` pipeline A | RAW_CANONICAL | |
 | `data/raw/employment/urssaf/urssaf_etab_emploi_ze_annual_raw.csv` | Raw URSSAF employer/employment/payroll by ZE × year | URSSAF download | `build_dynamic_stgnn_feature_panel_v1.py` pipeline A2 | RAW_CANONICAL | |
-| `data/processed/target_side_establishments_annual_core_v0.csv` | Official SIDE establishment-creation target, ZE2020 × year, 280 zones, 2012-2024 | **no `.py` committed alongside it** (commit `bbd2d49`, data-only) | `build_dynamic_stgnn_feature_panel_v1.py` pipeline C; cross-checked by the new builder | UNKNOWN_REVIEW_REQUIRED (generator) / PROCESSED_CANONICAL (content, verified) | Values match this pass's independent re-derivation exactly (diff 0.0) |
-| `data/processed/target_side_establishments_annual_core_through_2025_v1.csv` | Same as above, extended to 2025 | `src/modeles/integrate_side_2025_for_herald_v6.py` | `build_dynamic_stgnn_feature_panel_v1.py`-adjacent (V6 track) | PROCESSED_CANONICAL | 2025 raw commune-level source not located in this pass; not reconciled against the new builder |
+| `data/processed/target_side_establishments_annual_core_v0.csv` | Official SIDE establishment-creation target, ZE2020 × year, 280 zones, 2012-2024 | **no `.py` committed alongside it** (commit `bbd2d49`, data-only) | Historical cross-check source | UNKNOWN_REVIEW_REQUIRED (generator) / PROCESSED_CANONICAL (content, verified) | Superseded for the current clean chain by the `through_2025` file below |
+| `data/processed/target_side_establishments_annual_core_through_2025_v1.csv` | Official SIDE establishment/enterprise creation target, ZE2020 × year, 280 zones, 2012-2025 | `src/modeles/integrate_side_2025_for_herald_v6.py` | `src/data/france_ze2020/build_fr_ze2020_clean_panel.py` | PROCESSED_CANONICAL | Current source for the canonical clean panel. 2025 raw commune-level source not located in this pass; provenance caveat documented, but schema/counts reconcile and are guarded by tests. |
 | `data/processed/flores_panel_ze2020_annual_v1.csv` | FLORES features, t-1 lag, ZE2020 × year | `build_dynamic_stgnn_feature_panel_v1.py` pipeline A | pipeline C (same script) | LEGACY_DO_NOT_USE (naming only — content itself is causal/t-1, no defect found) | |
 | `data/processed/side_stocks_lagged_ze2020_annual_v1.csv` | SIDE stock features, t-1 lag, ZE2020 × year | `build_dynamic_stgnn_feature_panel_v1.py` pipeline B | pipeline C (same script) | LEGACY_DO_NOT_USE (naming only) | |
-| `data/processed/side_creations_a10_ze2020_v1.csv` | A10 sector-level SIDE creations, ZE2020 × year | not traced in this pass | `france_adapter.py` | UNKNOWN_REVIEW_REQUIRED | Sector-level panel — out of scope for this pass (see section 9) |
+| `data/processed/side_creations_a10_ze2020_through_2025_v1.csv` | A10 sector-level SIDE creations, ZE2020 × year, 2012-2025 | not traced in this pass | `src/data/france_ze2020/build_fr_ze2020_sector_panel.py` | UNKNOWN_REVIEW_REQUIRED / content-verified candidate | Current sector source; reconciles exactly to the clean panel total at every build. |
 | `data/processed/dynamic_stgnn_feature_panel_v1.csv` | Legacy unified FR feature panel, 280 ZE2020 × 2012-2024 | `build_dynamic_stgnn_feature_panel_v1.py` pipeline C | `train_herald_v3..v7.py`, `scripts/02_ridge_ar_official.py`, `france_adapter.py`, several `src/analyse/*` scripts | **LEGACY_DO_NOT_USE as a source for new data work** (still actively consumed by training — see section 5) | Contains the confirmed `growth_1y`/`growth_2y` target leak — section 5 |
 | `metadata/dynamic_stgnn_walk_forward_splits_v1.csv` | Walk-forward fold boundaries (2021-2024) | `build_dynamic_stgnn_feature_panel_v1.py` pipeline D | training scripts | LEGACY_DO_NOT_USE (naming only) | Content itself (year boundaries) is not leaky |
 | `src/data/european_panel/adapters/france_adapter.py` | Converts the legacy FR panel to the European canonical schema | — | `build_european_panel.py` | LOCAL_ONLY to the European-panel track (out of scope) | Reads `growth_1y`/`growth_2y` AS-IS from the legacy panel, but they are unconditionally overwritten downstream (next row) |
@@ -66,14 +66,14 @@ pass.
 
 ## 3. Canonical panel schema
 
-`data/processed/france_ze2020/fr_ze2020_clean_panel.csv` — 3,640 rows (280
-zones × 13 years), 8 columns:
+`data/processed/france_ze2020/fr_ze2020_clean_panel.csv` — 3,920 rows (280
+zones × 14 years), 8 columns:
 
 | Column | Type | Meaning |
 |---|---|---|
 | `ze2020` | string, zero-padded, always 4 characters (e.g. `"0051"`) | INSEE Zone d'Emploi 2020 code. **Must be read with `dtype={"ze2020": str}`** — a naive `pd.read_csv` will infer it as an integer and silently drop the leading zero (see `tests/test_fr_ze2020_clean_panel.py::test_ze2020_zero_stripped_if_read_without_dtype`, which documents this as an expected gotcha, not a bug to fix — CSV cannot store a string-vs-int type hint). |
 | `ze2020_label` | string | Human-readable zone name (e.g. `"Bourg-en-Bresse"`). Documented metadata, not used for joins. |
-| `year` | integer | Calendar year, 2012-2024. No alternate name (`annee`/`date`/`t`). |
+| `year` | integer | Calendar year, 2012-2025. No alternate name (`annee`/`date`/`t`). |
 | `establishment_creations` | float | INSEE SIDE official *créations d'établissements*, summed from commune level. This is the value used historically as the model target (`TARGET_COL` in `train_herald_v6.py`). |
 | `enterprise_creations` | float | INSEE SIDE official *créations d'entreprises*, summed from commune level. A distinct INSEE concept from establishment creations — kept as a second observed value, not a duplicate. |
 | `communes_count` | integer | Number of communes aggregated into this zone for this year. Documented metadata (zone composition can shift slightly year to year due to commune mergers). |
@@ -95,8 +95,7 @@ This is a **deliberate methodological scope filter, not data loss**.
 
 - The raw INSEE commune→ZE2020 nomenclature (`commune_to_ze2020_2026.csv`)
   covers **306** zones across all of France including overseas departments.
-- The canonical FR panel — both the pre-existing
-  `target_side_establishments_annual_core_v0.csv` and this pass's new
+- The canonical FR panel — both the pre-existing target files and this pass's new
   `fr_ze2020_clean_panel.csv` — covers **280** zones: **continental
   /metropolitan France, excluding Corsica and the overseas departments
   (DOM)**.
@@ -193,8 +192,8 @@ fabricated values). Two masks are included:
 | `mask_establishment_creations_available` | 1 if `establishment_creations` is non-null for this zone-year |
 | `mask_enterprise_creations_available` | 1 if `enterprise_creations` is non-null for this zone-year |
 
-In the current source data both masks are 1 for all 3,640 rows (full
-observed coverage 2012-2024 for all 280 zones) — the masks exist so that any
+In the current source data both masks are 1 for all 3,920 rows (full
+observed coverage 2012-2025 for all 280 zones) — the masks exist so that any
 future gap (e.g. a later year with partial INSEE release) is flagged
 explicitly rather than silently producing a `NaN` or a fabricated fill value.
 No `mask_lag_*_available` masks exist yet because no lag features exist yet
@@ -207,12 +206,12 @@ No `mask_lag_*_available` masks exist yet because no lag features exist yet
 `tests/test_fr_ze2020_clean_panel.py` (12 tests, all passing) covers:
 schema column set, `ze2020` zero-padded-string invariant (plus the
 documented CSV dtype gotcha), `year` integer type, 280-zone count, full
-2012-2024 year coverage, no duplicate zone×year rows, no `stgnn`/
+2012-2025 year coverage, no duplicate zone×year rows, no `stgnn`/
 `growth_1y`/`growth_2y`/`feature_forecast_safe`/`has_urssaf_source`/
 `node_idx` columns, mask columns carry real (non-constant-disguised) 0/1
 signal, territorial join against the raw commune mapping without int/string
 mixing, and an exact-value regression check against the pre-existing
-official target panel (max abs diff `0.0` across 3,640 matched rows).
+official target panel (max abs diff `0.0` across 3,920 matched rows).
 
 `tests/test_herald_artifact_registry.py` (13 tests, all passing after this
 pass's two new registry entries — `PANEL_FR_ZE2020_CLEAN_TREATED` and
@@ -222,9 +221,10 @@ pass's two new registry entries — `PANEL_FR_ZE2020_CLEAN_TREATED` and
 
 ## 8. Plain-language summary
 
-1. **What raw data enters?** Commune-level INSEE SIDE establishment/enterprise
-   creation counts, already joined to the official ZE2020 nomenclature
-   (`data/interim/tables/side_communal_creations_official_2012_2024_v0.csv`).
+1. **What raw data enters?** INSEE SIDE establishment/enterprise creation
+   counts already aggregated to the canonical ZE2020 target source and
+   extended through 2025
+   (`data/processed/target_side_establishments_annual_core_through_2025_v1.csv`).
 2. **What script treats it?** `src/data/france_ze2020/build_fr_ze2020_clean_panel.py`.
 3. **What gets standardized?** Territorial codes are forced to a 4-character
    zero-padded string; years to plain integers; the methodological 280-zone
@@ -243,15 +243,16 @@ pass's two new registry entries — `PANEL_FR_ZE2020_CLEAN_TREATED` and
 7. **What columns exist in the canonical panel?** See section 3.
 8. **What does each column mean?** See section 3.
 9. **What is explicitly NOT done yet at this stage?**
-   - No sector-level (A10) panel built yet (`side_creations_a10_ze2020_v1.csv`
-     exists but its lineage was not re-derived in this pass).
+   - The sector-level (A10) panel now exists in the later relational layer
+     (`fr_ze2020_sector_panel.csv`, see HERALD_17); its underlying source
+     remains content-verified but still needs provenance reauditing.
    - No growth/lag/model features of any kind — those belong to a future
      modeling-input stage, and must use the lag-only formulas in section 5.
-   - No model-ready file (`fr_ze2020_model_ready_panel.csv`) — **not created at
-     the time this list was first written; it now exists, see section 10.**
-   - The 2025 extension (`target_side_establishments_annual_core_through_2025_v1.csv`)
-     was not reconciled against this pass's raw-commune re-derivation; this
-     panel stops at 2024, matching the raw source's actual coverage.
+   - No model-ready file in this first stage (`fr_ze2020_model_ready_panel.csv`
+     now exists as a separate stage, see section 10).
+   - 2025 is included through `target_side_establishments_annual_core_through_2025_v1.csv`.
+     The 2025 source remains a processed target source, not a newly re-derived
+     raw-commune file.
    - No claim about model performance, causality, or readiness is made by
      this document.
 
@@ -277,7 +278,7 @@ editing this panel in place, and never by reintroducing
 `tests/test_fr_ze2020_model_ready_panel.py::test_clean_panel_input_not_modified_by_this_stage`).
 
 **Output:** `data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv`
-(3,640 rows, same 280 zones × 2012-2024 grain, 15 columns), built by
+(3,920 rows, same 280 zones × 2012-2025 grain, 15 columns), built by
 `src/data/france_ze2020/build_fr_ze2020_model_ready_panel.py`.
 
 **Columns added on top of the clean panel:**

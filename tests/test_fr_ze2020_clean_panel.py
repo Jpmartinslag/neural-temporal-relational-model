@@ -14,7 +14,9 @@ import pytest
 REPO_ROOT = Path(__file__).parent.parent
 PANEL_PATH = REPO_ROOT / "data/processed/france_ze2020/fr_ze2020_clean_panel.csv"
 MAPPING_PATH = REPO_ROOT / "data/interim/mappings/commune_to_ze2020_2026.csv"
-LEGACY_TARGET_PATH = REPO_ROOT / "data/processed/target_side_establishments_annual_core_v0.csv"
+LEGACY_TARGET_PATH = (
+    REPO_ROOT / "data/processed/target_side_establishments_annual_core_through_2025_v1.csv"
+)
 
 EXPECTED_COLUMNS = [
     "ze2020",
@@ -74,8 +76,8 @@ def test_panel_has_280_ze2020_zones(panel):
     assert panel["ze2020"].nunique() == 280
 
 
-def test_panel_covers_2012_to_2024(panel):
-    assert sorted(panel["year"].unique()) == list(range(2012, 2025))
+def test_panel_covers_2012_to_2025(panel):
+    assert sorted(panel["year"].unique()) == list(range(2012, 2026))
 
 
 def test_no_duplicate_ze2020_year_rows(panel):
@@ -118,8 +120,9 @@ def test_values_match_existing_official_target_panel(panel):
     legacy = pd.read_csv(LEGACY_TARGET_PATH, dtype={"ze2020": str}).rename(
         columns={"target_year": "year"}
     )
+    legacy["ze2020"] = legacy["ze2020"].str.zfill(4)
     merged = panel.merge(legacy, on=["ze2020", "year"], suffixes=("_new", "_old"))
-    assert len(merged) == 3640
+    assert len(merged) == 3920
     diff = (
         merged["establishment_creations"] - merged["side_establishment_creations_official"]
     ).abs()

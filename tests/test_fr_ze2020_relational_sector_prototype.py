@@ -65,7 +65,7 @@ def test_schema_extends_relational_panel_with_sector_columns(prototype):
 
 def test_row_count_unchanged_from_relational_panel(prototype):
     relational = load_relational_panel()
-    assert len(prototype) == len(relational) == 3640
+    assert len(prototype) == len(relational) == 3920
 
 
 def test_no_forbidden_columns(prototype):
@@ -129,5 +129,5 @@ def test_relational_panel_checksum_matches_recorded_value():
     step depends on it staying byte-identical to what was reconciled when
     this test was written."""
     content = RELATIONAL_PANEL_PATH.read_bytes()
-    assert len(content) == 528058
-    assert hashlib.sha256(content).hexdigest().startswith("351a174ced652644cc1f")
+    assert len(content) == 576032
+    assert hashlib.sha256(content).hexdigest().startswith("b8faad7bd88238be2e4f")

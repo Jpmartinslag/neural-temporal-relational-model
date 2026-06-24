@@ -20,8 +20,8 @@ BUILDER_PATH = REPO_ROOT / "src/data/france_ze2020/build_fr_ze2020_model_ready_p
 
 # Recorded when fr_ze2020_clean_panel.csv was created (PANEL_FR_ZE2020_CLEAN_TREATED
 # in reports/herald_artifact_registry.json) -- this stage must not modify it.
-CLEAN_PANEL_EXPECTED_SIZE_BYTES = 153041
-CLEAN_PANEL_EXPECTED_SHA256_PREFIX = "6183e43d7ceb732877c3"
+CLEAN_PANEL_EXPECTED_SIZE_BYTES = 149288
+CLEAN_PANEL_EXPECTED_SHA256_PREFIX = "8ae8fc0a8f4713eb5fc3"
 
 EXPECTED_COLUMNS = [
     "ze2020",

@@ -47,7 +47,7 @@ FEATURE_MASK_COLS = ["mask_lag_1_available", "mask_lag_2_available", "mask_lag_3
 RIDGE_ALPHA = 1.0
 RIDGE_MIN_TRAIN_YEARS = 4
 
-DEFAULT_EVAL_YEARS = [2019, 2020, 2021, 2022, 2023, 2024]
+DEFAULT_EVAL_YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
 
 CLAIM_STATUS = "exploratory_smoke"
 
