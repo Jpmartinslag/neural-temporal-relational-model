@@ -487,11 +487,20 @@ teste mínimo.
   possíveis — ver MVP2 itens ainda não testados em §5); autorização implícita para
   MVP3.
 
+### Status fechado do MVP2 Categoria A
+
+**Fechado tecnicamente em 2026-06-24:** o painel relacional Categoria A foi
+regenerado após corrigir o alinhamento entre pesos de similaridade e códigos ZE
+em `similar_ze_lag_1_weighted_mean` (`44ef924`). A correção não muda a leitura
+metodológica: o MVP2 é causal, reprodutível e útil como etapa de avaliação, mas
+esta especificação de similaridade de trajetória não trouxe ganho preditivo sobre
+os baselines simples na janela comparável.
+
 ### Testes
 
-13/13 (`tests/test_fr_ze2020_relational_model_ready_panel.py`) + 11/11
+15/15 (`tests/test_fr_ze2020_relational_model_ready_panel.py`) + 11/11
 (`tests/test_fr_ze2020_relational_baselines.py`), mais a bateria completa de
-regressão (82/82, ver §8/commit).
+regressão (84/84, ver commits `6d07106`, `6a5ecb5`, `44ef924`).
 
 ### Decisão pendente atualizada
 
