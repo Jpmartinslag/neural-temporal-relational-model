@@ -77,9 +77,17 @@ def load_all_metrics(seed_dirs: dict[int, Path]) -> pd.DataFrame:
 
 
 def gate_g1_no_errors(seed_dirs: dict[int, Path], expected_seeds: list[int]) -> dict:
+    """NaN is not flagged here: n_train_years is legitimately None/NaN for
+    the persistence model (it never fits anything -- already correct,
+    tested behavior in each script's own suite). Only +-Inf is checked,
+    which would indicate a real bug (e.g. the division-by-zero edge case
+    documented in HERALD_17 section 12). Same false-positive found and
+    fixed in smoke_test_fr_ze2020_hpc.sh applies here -- this function had
+    the identical np.isfinite() bug, caught when auditing the first real
+    array run (job 7498752, 2026-06-24)."""
     missing_seeds = [s for s in expected_seeds if s not in seed_dirs]
     missing_files = []
-    non_finite_files = []
+    infinite_files = []
     for seed, seed_dir in seed_dirs.items():
         for fname in METRIC_FILES + SIGNAL_FILES:
             fpath = seed_dir / fname
@@ -88,14 +96,14 @@ def gate_g1_no_errors(seed_dirs: dict[int, Path], expected_seeds: list[int]) -> 
                 continue
             df = pd.read_csv(fpath)
             numeric = df.select_dtypes(include=[np.number])
-            if not numeric.empty and not np.isfinite(numeric.to_numpy(dtype=float)).all():
-                non_finite_files.append(str(fpath))
-    passed = not missing_seeds and not missing_files and not non_finite_files
+            if not numeric.empty and np.isinf(numeric.to_numpy(dtype=float)).any():
+                infinite_files.append(str(fpath))
+    passed = not missing_seeds and not missing_files and not infinite_files
     return {
         "passed": passed,
         "missing_seeds": missing_seeds,
         "missing_files": missing_files,
-        "non_finite_files": non_finite_files,
+        "infinite_files": infinite_files,
     }
 
 
