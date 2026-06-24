@@ -3,12 +3,12 @@ HERALD -- France ZE2020 sector composition panel (MVP2 Category C, step 1).
 
 Audit summary (full table in
 reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md, "MVP2
-Categoria C" section): data/processed/side_creations_a10_ze2020_v1.csv has
+Categoria C" section): data/processed/side_creations_a10_ze2020_through_2025_v1.csv has
 no generator script in the current tree (same gap pattern documented for
 the legacy ZE adjacency matrices, HERALD_16 section 4.1) -- it is a
 CANDIDATE_NEEDS_PROVENANCE source. It is used here ONLY because its values
 independently reconcile EXACTLY with the canonical
-fr_ze2020_clean_panel.csv: 280 zones, 13 years (2012-2024), 9 A10 sectors,
+fr_ze2020_clean_panel.csv: 280 zones, 14 years (2012-2025), 9 A10 sectors,
 no duplicates, no missing values, no negative values, and `total` equals
 the sum of the 9 sector columns for every row (max abs diff 0.0). This
 builder RE-VERIFIES the reconciliation against the canonical panel at every
@@ -21,7 +21,7 @@ graph input (Category C of the relational plan), not a validated or final
 data source.
 
 Input (read-only):
-  data/processed/side_creations_a10_ze2020_v1.csv      (candidate, no
+  data/processed/side_creations_a10_ze2020_through_2025_v1.csv      (candidate, no
     generator in tree -- content-verified only, see above)
   data/processed/france_ze2020/fr_ze2020_clean_panel.csv  (canonical anchor
     for ze2020_label and total_establishment_creations)
@@ -37,7 +37,7 @@ from pathlib import Path
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[3]
-A10_SOURCE_PATH = ROOT / "data/processed/side_creations_a10_ze2020_v1.csv"
+A10_SOURCE_PATH = ROOT / "data/processed/side_creations_a10_ze2020_through_2025_v1.csv"
 CLEAN_PANEL_PATH = ROOT / "data/processed/france_ze2020/fr_ze2020_clean_panel.csv"
 OUT_DIR = ROOT / "data/processed/france_ze2020"
 OUT_PATH = OUT_DIR / "fr_ze2020_sector_panel.csv"
@@ -146,7 +146,8 @@ def main() -> None:
     panel.to_csv(OUT_PATH, index=False)
 
     print(f"Zones: {panel['ze2020'].nunique()}, sectors: {panel['sector_code'].nunique()}")
-    print(f"Rows: {len(panel)} (expected {280 * 13 * 9})")
+    n_years = panel["year"].nunique()
+    print(f"Rows: {len(panel)} (expected {280 * n_years * 9})")
     print(f"Saved: {OUT_PATH}")
 
 

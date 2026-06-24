@@ -5,7 +5,7 @@ step). See reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md,
 
 Joins, WITHOUT modifying either input:
   data/processed/france_ze2020/fr_ze2020_relational_model_ready_panel.csv
-    (time + ZE-to-ZE trajectory similarity, Category A, 280 zones x 13 years)
+    (time + ZE-to-ZE trajectory similarity, Category A, 280 zones x 14 years)
   data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv
     (ZE x sector causal features, Category C) -- only the ZE x year grain
     columns (the sector-distribution aggregates, already identical across a

@@ -2,7 +2,7 @@
 Consistency tests for the FR ZE2020 sector composition panel (MVP2 Category
 C, step 1). Generator: src/data/france_ze2020/build_fr_ze2020_sector_panel.py.
 
-Audited source (data/processed/side_creations_a10_ze2020_v1.csv) has no
+Audited source (data/processed/side_creations_a10_ze2020_through_2025_v1.csv) has no
 generator script in the current tree -- CANDIDATE_NEEDS_PROVENANCE, used
 only because its values reconcile exactly with the canonical clean panel.
 See reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md, "MVP2
@@ -64,11 +64,11 @@ def a10_raw():
     return load_a10_source()
 
 
-def test_a10_source_audit_280_zones_13_years_9_sectors(a10_raw):
+def test_a10_source_audit_280_zones_14_years_9_sectors(a10_raw):
     assert a10_raw["ze2020"].nunique() == 280
-    assert a10_raw["year"].nunique() == 13
-    assert sorted(a10_raw["year"].unique()) == list(range(2012, 2025))
-    assert len(a10_raw) == 280 * 13
+    assert a10_raw["year"].nunique() == 14
+    assert sorted(a10_raw["year"].unique()) == list(range(2012, 2026))
+    assert len(a10_raw) == 280 * 14
     for sector in SECTOR_CODES:
         assert sector in a10_raw.columns
 
@@ -117,11 +117,11 @@ def test_ze2020_is_zero_padded_4char_string(panel):
     assert (panel["ze2020"].str.len() == 4).all()
 
 
-def test_panel_has_280_zones_13_years_9_sectors(panel):
+def test_panel_has_280_zones_14_years_9_sectors(panel):
     assert panel["ze2020"].nunique() == 280
-    assert panel["year"].nunique() == 13
+    assert panel["year"].nunique() == 14
     assert panel["sector_code"].nunique() == 9
-    assert len(panel) == 280 * 13 * 9
+    assert len(panel) == 280 * 14 * 9
 
 
 def test_sector_shares_sum_to_approximately_one_per_ze_year(panel):

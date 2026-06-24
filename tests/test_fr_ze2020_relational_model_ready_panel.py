@@ -31,8 +31,8 @@ BUILDER_PATH = REPO_ROOT / "src/data/france_ze2020/build_fr_ze2020_relational_mo
 
 # Recorded for the model-ready panel as it stood when this stage was built --
 # this stage must not modify its input.
-MODEL_READY_EXPECTED_SIZE_BYTES = 413620
-MODEL_READY_EXPECTED_SHA256_PREFIX = "dae0b9fe98d67af393a4"
+MODEL_READY_EXPECTED_SIZE_BYTES = 448363
+MODEL_READY_EXPECTED_SHA256_PREFIX = "6cc188fcc4f92516b07f"
 
 BASE_COLUMNS = [
     "ze2020",

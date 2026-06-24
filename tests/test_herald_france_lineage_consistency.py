@@ -102,11 +102,11 @@ def test_sector_graph_registry_distinguishes_nodes_from_node_year_rows(artifacts
     assert a is not None, f"{SECTOR_GRAPH_ID} missing from registry"
     haystack = " ".join([a.get("claim_authorized", ""), a.get("notes", "")])
     assert "2,520 unique nodes" in haystack
-    assert "32,760 node-year rows" in haystack
+    assert "35,280 node-year rows" in haystack
     assert "32,760 nodes" not in haystack
 
 
 def test_herald_17_distinguishes_nodes_from_node_year_rows(herald_17_text):
     assert "2.520 nós únicos" in herald_17_text
-    assert "32.760 linhas nó-ano" in herald_17_text
+    assert "35.280 linhas nó-ano" in herald_17_text
     assert "32.760 nós" not in herald_17_text

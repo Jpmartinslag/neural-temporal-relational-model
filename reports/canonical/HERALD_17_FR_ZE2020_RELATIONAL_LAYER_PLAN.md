@@ -67,7 +67,7 @@ vocabulário já existente em `reports/HERALD_NAMING_CONVENTIONS.md` §6 e
 | 3 | `data/processed/graph_adjacency_core_v0.csv` | ZE→ZE, vizinhança geográfica binária | ZE2020, 280×280 | **Não** — script ausente da árvore atual (HERALD_16 §4.1) | `CANDIDATE_NEEDS_PROVENANCE` | Não como input confiável; sim como matéria-prima candidata | **Verificado nesta pass:** simétrica, diagonal zero, mesmo conjunto de 280 zonas e mesma ordenação `node_idx`/`node_id` do painel canônico atual (0 divergências em 280 linhas, comparado contra `fr_ze2020_model_ready_panel.csv`). Consistência estrutural alta, mas o método de construção (limiar de distância? contiguidade administrativa?) é desconhecido. |
 | 4 | `data/processed/graph_adjacency_mobility_v0.csv` | ZE→ZE, mobilidade ponderada (pré-COVID) | ZE2020, 280×280 | **Não** — idem | `CANDIDATE_NEEDS_PROVENANCE` | Não como input confiável; sim como matéria-prima candidata | Assimétrica (fluxo direcional), linhas somam 1.0 (normalizada). Mesma verificação estrutural do item 3 aplica. `reports/HERALD_INTELLIGENCE_LAYER_SPEC.md` descreve como "mobilité pré-COVID, peut sous-représenter télétravail". |
 | 5 | `data/processed/graph_node_index_core_v0.csv` | índice ZE2020 ↔ `node_idx` (não é relação em si) | ZE2020, 280 linhas | Não | `CANDIDATE_NEEDS_PROVENANCE` | Sim, como índice apenas | Ordenação idêntica ao `node_id` de `fr_ze2020_model_ready_panel.csv` (verificado nesta pass) — útil se as matrizes 3/4 forem revalidadas, mas não certifica os *valores* delas. |
-| 6 | `data/processed/side_creations_a10_ze2020_v1.csv` | ZE × setor (A10), criações por ano | ZE2020 × 9 setores A10, 280×13×9 | Parcial — dado commitado junto com V4/V5 (`bc43a79`), sem builder dedicado na árvore | `CANDIDATE_NEEDS_PROVENANCE` | Sim, com cautela | **Novo achado desta pass:** a coluna `total` reconcilia exatamente (diff máx. absoluta = 0.0, 3640/3640 linhas) com `establishment_creations` do painel canônico `fr_ze2020_clean_panel.csv`. Conteúdo internamente consistente com a linhagem canônica atual, mesmo sem builder próprio na árvore. Candidato mais forte da Categoria C — ver §2.C. |
+| 6 | `data/processed/side_creations_a10_ze2020_through_2025_v1.csv` | ZE × setor (A10), criações por ano | ZE2020 × 9 setores A10, 280×14×9 | Parcial — dado commitado junto com V4/V5 (`bc43a79`), sem builder dedicado na árvore | `CANDIDATE_NEEDS_PROVENANCE` | Sim, com cautela | **Novo achado desta pass:** a coluna `total` reconcilia exatamente (diff máx. absoluta = 0.0, 3920/3920 linhas) com `establishment_creations` do painel canônico `fr_ze2020_clean_panel.csv`. Conteúdo internamente consistente com a linhagem canônica atual, mesmo sem builder próprio na árvore. Candidato mais forte da Categoria C — ver §2.C. |
 | 7 | `data/processed/herald_observatory_v04_granular/granular_relation_edges.csv` | setor→setor (precedência temporal, lag-1) | país-agregado (FR/NL_COROP/PT_Municipal), **não desagregado por ZE** | Sim — `build_sector_precedence_graph.py` + `build_observatory_v04_granular_exports.py` | `SECTOR_RELATION_EVIDENCE` | Sim, por tier (DEC-066) | FR=9 arestas, mas só 1 `ROBUST_ORIGINAL` (RU→MN, ela própria `FR_COVID_SENSITIVE`, DEC-060); as outras 8 são `FINE_GRAIN_SUPPORTED`/`EXPLORATORY_FINE_GRAIN`. Relação agregada nacional, não ZE-específica. |
 | 8 | `data/processed/sector_precedence_results/` | setor→setor, bundle bruto Phase 7 | país-agregado | Sim — DEC-034, `SECTOR_PRECEDENCE_PROTOTYPE_READY` | `SECTOR_RELATION_EVIDENCE` | Sim (frozen) | Mesma ressalva do item 7: agregado, não por ZE. |
 | 9 | `data/processed/france_relation_audit/` | diagnóstico (não é dado relacional) | ZE2020 e NUTS3 comparados | Sim — `run_dec060_france_signal_audit.py` | `CLOSED_BRANCH_REFERENCE` | Sim, como referência metodológica | DEC-060: explica por que FR tem sinal setorial fraco — efeito de escala ecológica (zonas pequenas → \|β\| menor), não falha de método. Essencial para calibrar expectativas de qualquer relação setorial ZE-específica futura. |
@@ -143,7 +143,7 @@ HPC, e o próprio DEC-060 já recomenda cautela com o threshold atual nessa esca
 
 ### C. Relações ZE × setor (especialização/composição)
 
-**O que já existe:** item 6 (`side_creations_a10_ze2020_v1.csv`) — o candidato mais
+**O que já existe:** item 6 (`side_creations_a10_ze2020_through_2025_v1.csv`) — o candidato mais
 promissor desta auditoria. Reconciliado nesta pass contra o painel canônico (diff 0.0).
 
 **O que falta:** um painel canônico de setor por ZE construído com o **mesmo rigor** da
@@ -390,7 +390,7 @@ antes de GNN (§0b).
 - **Script:** `src/data/france_ze2020/build_fr_ze2020_relational_model_ready_panel.py`.
 - **Entrada (única, somente leitura):** `data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv`.
 - **Saída:** `data/processed/france_ze2020/fr_ze2020_relational_model_ready_panel.csv`
-  (3.640 linhas, 280 zonas × 13 anos, todas as 15 colunas do painel model-ready
+  (3.920 linhas, 280 zonas × 14 anos, todas as 15 colunas do painel model-ready
   preservadas inalteradas + 5 colunas novas).
 - **Método:** para cada ano de avaliação `t`, calcula uma matriz de correlação de
   Pearson ZE↔ZE sobre o histórico de `growth_1y_safe` restrito a anos estritamente
@@ -403,15 +403,15 @@ antes de GNN (§0b).
   `similar_ze_growth_1y_safe_mean`, `similar_ze_count`, `relational_feature_available`.
 - **Disponibilidade verificada:** `relational_feature_available=0` para 2012-2016 (sem
   histórico suficiente — `growth_1y_safe` só existe a partir de 2014, e exigimos 3 anos
-  de sobreposição mínima); `=1` para 2017-2024, com exatamente 5 vizinhos válidos para
-  as 280×8=2.240 linhas elegíveis.
+  de sobreposição mínima); `=1` para 2017-2025, com exatamente 5 vizinhos válidos para
+  as 280×8=2.520 linhas elegíveis.
 
 ### O que foi recusado e por quê
 
 | Categoria | Recusado? | Motivo |
 |---|---|---|
 | B — sinal setorial agregado nacional | Recusado nesta pass | Não há, no painel canônico atual, nenhum sinal setorial nacional já validado *na granularidade de ano* que pudesse ser simplesmente "broadcast" sem reconstruir o pipeline de `granular_relation_edges.csv` por ano-base — escopo maior do que um MVP2 mínimo; fica para uma iteração futura do MVP2, não para esta pass |
-| C — composição/exposição setorial por ZE | **`BLOQUEADO/PENDING_PROVENANCE`** | `side_creations_a10_ze2020_v1.csv` (HERALD_17 §1, item 6) não tem builder na árvore atual, apesar de seus valores reconciliarem exatamente com o painel canônico. Construir um painel setorial com o mesmo rigor de máscaras/causal-safety de HERALD_15 é trabalho novo de dados, não uma feature de modelo — fica para uma pass futura dedicada (ver `fr_ze2020_sector_panel.csv` em HERALD_17 §6) |
+| C — composição/exposição setorial por ZE | **`BLOQUEADO/PENDING_PROVENANCE`** | `side_creations_a10_ze2020_through_2025_v1.csv` (HERALD_17 §1, item 6) não tem builder na árvore atual, apesar de seus valores reconciliarem exatamente com o painel canônico. Construir um painel setorial com o mesmo rigor de máscaras/causal-safety de HERALD_15 é trabalho novo de dados, não uma feature de modelo — fica para uma pass futura dedicada (ver `fr_ze2020_sector_panel.csv` em HERALD_17 §6) |
 | A (alternativa) — contiguidade geográfica via `ze2020_geometry.geojson` | Recusado nesta pass | Construiria um SEGUNDO tipo de relação ZE→ZE (contiguidade espacial) além da similaridade de trajetória já implementada; nenhum builder existe ainda, e contiguidade geográfica já falhou 2 vezes neste projeto como insumo preditivo (DEC-008/009, DEC-031) — adicionar mais uma sem necessidade não está nas features "mínimas" pedidas |
 | `graph_adjacency_core_v0.csv` / `graph_adjacency_mobility_v0.csv` | **Recusado, por regra explícita desta etapa** | Gerador ausente da árvore atual (HERALD_16 §4.1); nunca usados como fonte confiável nesta pass, nem direta nem indiretamente — confirmado por teste (`test_builder_reads_only_model_ready_panel_as_base`) |
 
@@ -451,20 +451,20 @@ teste mínimo.
 - **3 modelos, mesmo conjunto de teste por ano** (persistence, `ridge_temporal` —
   idêntico ao baseline original — e `ridge_relational` — mesmas features +
   `similar_ze_lag_1_mean`/`similar_ze_lag_1_weighted_mean`/`similar_ze_growth_1y_safe_mean`).
-- **Janela comparável (2021-2024 — os únicos anos em que `ridge_relational` tem
+- **Janela comparável (2021-2025 — os únicos anos em que `ridge_relational` tem
   histórico suficiente, `RIDGE_MIN_TRAIN_YEARS=4` aplicado à disponibilidade
   relacional, que só começa em 2017):**
 
-  | Modelo | WMAPE médio (2021-2024) |
+  | Modelo | WMAPE médio (2021-2025) |
   |---|---|
-  | persistence | ≈0,077 |
-  | ridge_temporal | ≈0,085 |
-  | ridge_relational | ≈0,092 |
+  | persistence | ≈0,070 |
+  | ridge_temporal | ≈0,073 |
+  | ridge_relational | ≈0,080 |
 
   **Leitura honesta:** nesta execução smoke, as features relacionais de similaridade
   de trajetória **não superaram** nem a persistência nem o Ridge temporal puro — pelo
   contrário, o WMAPE médio piorou. Isso não encerra a hipótese (é uma única
-  execução, uma única definição de similaridade, um único alpha, 4 anos de
+  execução, uma única definição de similaridade, um único alpha, 5 anos de
   avaliação), mas também não a sustenta. **Não constitui evidência a favor nem
   contra a camada relacional como um todo** — apenas contra esta primeira
   especificação simples de Categoria A.
@@ -533,20 +533,20 @@ grafo. Sem essa camada, "ZE×setor" seria apenas uma frase no plano, não um dad
 
 ### Auditoria do painel A10 (Parte 1)
 
-`data/processed/side_creations_a10_ze2020_v1.csv` — auditado nesta pass:
+`data/processed/side_creations_a10_ze2020_through_2025_v1.csv` — auditado nesta pass:
 
 | Verificação | Resultado |
 |---|---|
 | Colunas | `target_year, ZE2020, BE, FZ, GI, JZ, KZ, LZ, MN, OQ, RU, total` |
-| Anos | 2012-2024 (13 anos), sem buraco |
+| Anos | 2012-2025 (14 anos), sem buraco |
 | Nº de ZE2020 | 280 (idêntico ao conjunto canônico) |
 | Setores A10 | 9 (BE/FZ/GI/JZ/KZ/LZ/MN/OQ/RU — mesma nomenclatura já usada em `sector_panel_fr_nuts3.csv`/`sector_panel_fr_nl_pt.csv` e nos rótulos de `build_observatory_v05_narrative_exports.py`) |
 | `ze2020` zero-padded 4 chars | Não no arquivo bruto (`int64`); corrigido no builder via `.str.zfill(4)` |
-| `total` vs. `fr_ze2020_clean_panel.csv` | **Reconcilia exatamente — diff máx. absoluta = 0.0, 3.640/3.640 linhas** (re-verificado nesta pass, mesmo resultado do MVP2 Categoria A) |
+| `total` vs. `fr_ze2020_clean_panel.csv` | **Reconcilia exatamente — diff máx. absoluta = 0.0, 3.920/3.920 linhas** (re-verificado nesta pass, mesmo resultado do MVP2 Categoria A) |
 | Valores negativos | Nenhum (`BE..RU`/`total` todos ≥ 0) |
 | Cada ZE×ano tem os 9 setores | Sim — formato wide, 1 linha por ZE×ano, 9 colunas de setor sempre presentes |
 | Missing | Zero valores nulos em qualquer coluna |
-| `total == soma dos 9 setores` | Diff máx. absoluta = 0.0 (3.640/3.640 linhas) |
+| `total == soma dos 9 setores` | Diff máx. absoluta = 0.0 (3.920/3.920 linhas) |
 | Uso de valor futuro | N/A neste nível (painel bruto observado, sem features ainda — a auditoria de causalidade se aplica às etapas 2-3 abaixo) |
 
 **Documentado e mantido:** o arquivo não tem builder próprio encontrado na árvore
@@ -563,10 +563,10 @@ adicional (localizar ou reconstruir o gerador original).
 
 | Etapa | Script | Output | Grão |
 |---|---|---|---|
-| 1. Painel setorial observado | `src/data/france_ze2020/build_fr_ze2020_sector_panel.py` | `data/processed/france_ze2020/fr_ze2020_sector_panel.csv` (32.760 linhas) | ZE×setor×ano |
-| 2. Features setoriais causais | `src/data/france_ze2020/build_fr_ze2020_sector_relational_features.py` | `data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv` (32.760 linhas) | ZE×setor×ano (com agregados ZE×ano e setor-nacional×ano embutidos) |
-| 3. Integração com Categoria A | `src/data/france_ze2020/build_fr_ze2020_relational_sector_prototype_panel.py` | `data/processed/france_ze2020/fr_ze2020_relational_sector_prototype_panel.csv` (3.640 linhas) | ZE×ano (tempo + ZE→ZE + ZE×setor numa única linha) |
-| 4. Saída exploratória | `src/modeles/france_ze2020/export_fr_ze2020_relational_prototype_examples.py` | `data/processed/france_ze2020/fr_ze2020_relational_prototype_examples.csv` (2.240 linhas — só onde Categoria A e Categoria C estão ambas disponíveis, 2017-2024) | ZE×ano, formato interpretável |
+| 1. Painel setorial observado | `src/data/france_ze2020/build_fr_ze2020_sector_panel.py` | `data/processed/france_ze2020/fr_ze2020_sector_panel.csv` (35.280 linhas) | ZE×setor×ano |
+| 2. Features setoriais causais | `src/data/france_ze2020/build_fr_ze2020_sector_relational_features.py` | `data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv` (35.280 linhas) | ZE×setor×ano (com agregados ZE×ano e setor-nacional×ano embutidos) |
+| 3. Integração com Categoria A | `src/data/france_ze2020/build_fr_ze2020_relational_sector_prototype_panel.py` | `data/processed/france_ze2020/fr_ze2020_relational_sector_prototype_panel.csv` (3.920 linhas) | ZE×ano (tempo + ZE→ZE + ZE×setor numa única linha) |
+| 4. Saída exploratória | `src/modeles/france_ze2020/export_fr_ze2020_relational_prototype_examples.py` | `data/processed/france_ze2020/fr_ze2020_relational_prototype_examples.csv` (2.520 linhas — só onde Categoria A e Categoria C estão ambas disponíveis, 2017-2025) | ZE×ano, formato interpretável |
 
 **Features setoriais implementadas** (todas `_lag_1`/`_lag_2`, nunca o ano-alvo):
 
@@ -694,16 +694,16 @@ disponível.
   0,999 para ~0,24 — ainda pior que os baselines, mas um resultado smoke
   honesto, não um pipeline quebrado.
 - **4 modelos, mesmo conjunto de teste por ano** (persistence, ridge_temporal,
-  ridge_relational, mlp_relational) — janela comparável 2021-2024 (mesma
+  ridge_relational, mlp_relational) — janela comparável 2021-2025 (mesma
   exigida pelos outros 3 modelos via `RIDGE_MIN_TRAIN_YEARS=4` sobre o
   histórico relacional, que só começa em 2017):
 
-  | Modelo | WMAPE médio (2021-2024) |
+  | Modelo | WMAPE médio (2021-2025) |
   |---|---|
-  | persistence | ≈0,077 |
-  | ridge_temporal | ≈0,088 |
-  | ridge_relational | ≈0,092 |
-  | mlp_relational | ≈0,239 |
+  | persistence | ≈0,070 |
+  | ridge_temporal | ≈0,076 |
+  | ridge_relational | ≈0,080 |
+  | mlp_relational | ≈0,203 |
 
   **Leitura honesta:** o MLP relacional não superou nenhum baseline nesta
   especificação smoke — nem mesmo a persistência simples. Consistente com o
@@ -725,8 +725,8 @@ disponível.
 
 - **Script:** `src/modeles/france_ze2020/train_fr_ze2020_sector_graph_prototype.py`.
 - **Nós:** `ze2020_sector_code` (ex.: `0051_GI`), 2.520 nós únicos
-  (280 ZE×9 setores), observados como 32.760 linhas nó-ano
-  (280×9×13 anos). **Entrada:** `fr_ze2020_sector_panel.csv` +
+  (280 ZE×9 setores), observados como 35.280 linhas nó-ano
+  (280×9×14 anos). **Entrada:** `fr_ze2020_sector_panel.csv` +
   `fr_ze2020_sector_relational_features.csv` (read-only).
 - **2 tipos de aresta implementados + 1 simplificação documentada:**
   1. **Intra-ZE (composição):** cada nó conectado aos 8 nós-setor irmãos da
@@ -761,12 +761,12 @@ disponível.
   (MVP2 Categoria C) e não foi alterado; o filtro de completude deste script
   novo foi reforçado para usar `np.isfinite` (não só `notna()`), excluindo o
   caso — documentado, não corrigido silenciosamente na fonte.
-- **Resultado smoke (2021-2024, mesmo conjunto de teste):**
+- **Resultado smoke (2021-2025, mesmo conjunto de teste):**
 
   | Modelo | WMAPE médio |
   |---|---|
-  | persistence_sector | ≈0,116 |
-  | graph_mlp | ≈0,132 |
+  | persistence_sector | ≈0,109 |
+  | graph_mlp | ≈0,121 |
 
   **Leitura honesta:** o grafo experimental tampouco superou a persistência
   simples nesta especificação — mas ficou na mesma ordem de grandeza (não
