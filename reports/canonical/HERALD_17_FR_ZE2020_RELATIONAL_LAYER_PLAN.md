@@ -724,8 +724,9 @@ disponível.
 ### MVP3-B — Grafo experimental ZE2020×setor
 
 - **Script:** `src/modeles/france_ze2020/train_fr_ze2020_sector_graph_prototype.py`.
-- **Nós:** `ze2020_sector_code` (ex.: `0051_GI`), 32.760 nós (280×9×13
-  ano-zona-setor). **Entrada:** `fr_ze2020_sector_panel.csv` +
+- **Nós:** `ze2020_sector_code` (ex.: `0051_GI`), 2.520 nós únicos
+  (280 ZE×9 setores), observados como 32.760 linhas nó-ano
+  (280×9×13 anos). **Entrada:** `fr_ze2020_sector_panel.csv` +
   `fr_ze2020_sector_relational_features.csv` (read-only).
 - **2 tipos de aresta implementados + 1 simplificação documentada:**
   1. **Intra-ZE (composição):** cada nó conectado aos 8 nós-setor irmãos da
