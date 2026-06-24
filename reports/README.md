@@ -49,6 +49,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
 14. `canonical/HERALD_16_MODEL_TRAINING_BLOCK_AUDIT.md` — its training-side counterpart:
     every training script classified current/legacy/experimental/closed, and the minimal
     current FR ZE2020 baseline path. Also housekeeping, not a new scientific result.
+15. `canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md` — audit and plan for a
+    future ZE2020/sector relational layer: artifact inventory, what's usable now vs.
+    needs provenance, the scientific hypothesis, and a staged MVP. Planning only — no
+    graph/neural model implemented, no claim made.
 
 ## Control Documents
 
