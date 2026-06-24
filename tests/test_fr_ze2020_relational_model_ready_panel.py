@@ -179,6 +179,29 @@ def test_no_relational_feature_uses_the_target_years_own_observed_value():
         pd.testing.assert_series_equal(full_at_t[col], trunc_at_t[col], check_names=False)
 
 
+def test_relational_features_invariant_to_current_year_observed_value_mutation():
+    """The row-year target must not affect relational features for that same
+    row-year. Mutating observed_value at eval_year to an extreme value must
+    leave all relational columns unchanged."""
+    panel_full = load_model_ready_panel()
+    eval_year = 2020
+
+    baseline = build_relational_model_ready_panel(panel_full)
+    mutated_input = panel_full.copy()
+    mutated_input.loc[mutated_input["year"] == eval_year, "observed_value"] = 999999999.0
+    mutated = build_relational_model_ready_panel(mutated_input)
+
+    baseline_at_t = (
+        baseline[baseline["year"] == eval_year].set_index("ze2020").sort_index()
+    )
+    mutated_at_t = mutated[mutated["year"] == eval_year].set_index("ze2020").sort_index()
+
+    for col in RELATIONAL_COLUMNS:
+        pd.testing.assert_series_equal(
+            baseline_at_t[col], mutated_at_t[col], check_names=False
+        )
+
+
 def test_similarity_uses_strictly_prior_years_only():
     """For evaluation year t, neighbors must be selected using a similarity
     matrix built only from years < t -- never including year t itself."""
@@ -193,6 +216,35 @@ def test_similarity_uses_strictly_prior_years_only():
 
     history_years = panel[panel["year"] < eval_year]["year"].unique()
     assert eval_year not in history_years
+
+
+def test_weighted_mean_aligns_weights_to_neighbor_codes():
+    """Regression test for the weighted mean math: similarity weights must
+    be matched to the same ZE codes as the lag values, not accidentally
+    paired by positional order after pandas reorders an index."""
+    from src.data.france_ze2020.build_fr_ze2020_relational_model_ready_panel import (
+        TOP_K,
+        similarity_matrix_for_year,
+    )
+
+    panel = load_model_ready_panel()
+    built = build_relational_model_ready_panel(panel)
+    eval_year = 2020
+    zone = ALENCON_ZE2020
+    current = panel[panel["year"] == eval_year].set_index("ze2020")
+    corr = similarity_matrix_for_year(panel, eval_year)
+    assert corr is not None
+
+    candidates = corr.loc[zone].drop(labels=[zone], errors="ignore").dropna()
+    candidates = candidates[candidates > 0].sort_values(ascending=False).head(TOP_K)
+    valid = current.reindex(candidates.index).dropna(subset=["lag_1", "growth_1y_safe"])
+    weights = candidates.reindex(valid.index).to_numpy(dtype=float)
+    expected = float((valid["lag_1"].to_numpy(dtype=float) * (weights / weights.sum())).sum())
+
+    actual = built[(built["ze2020"] == zone) & (built["year"] == eval_year)].iloc[0][
+        "similar_ze_lag_1_weighted_mean"
+    ]
+    assert actual == pytest.approx(expected)
 
 
 def test_alencon_relational_features_are_internally_consistent(panel):
