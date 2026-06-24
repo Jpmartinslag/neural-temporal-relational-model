@@ -80,6 +80,7 @@ produces.
 | `src/data/european_panel/build_observatory_v04_dashboard.py` | v0.4/v0.4.1 dashboard | ACTIVE, stable baseline |
 | `src/data/european_panel/build_observatory_v05_narrative_dashboard.py` | v0.5 dashboard | HISTORICAL (rejected UX, superseded) |
 | `src/data/european_panel/build_observatory_v051_narrative_dashboard.py` + `_template.py` | v0.5.1 dashboard | Current candidate, not final |
+| `src/data/france_ze2020/build_fr_ze2020_dashboard_mvp.py` | `fr_ze2020_dashboard_mvp.html` -- France ZE2020-only MVP (map, prediction-as-control, sector view, exploratory relation graph) | New 2026-06-24, see `HERALD_22_FR_ZE2020_DASHBOARD_MVP.md` -- separate from the Observatory dashboards above, no causal/recommendation language, no fabricated prediction |
 
 ## HISTORICAL_EXPERIMENT (pre-Q7 France architecture search, superseded)
 

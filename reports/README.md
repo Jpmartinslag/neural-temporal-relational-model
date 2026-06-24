@@ -74,6 +74,12 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     `RELATION_LAYER_AUDITED`. Found and fixed 2 small gaps (missing "ZE2020 as
     functional economic node" framing; missing causal_effect/causal_impact column
     check in tests) — no methodology change, no new training.
+20. `canonical/HERALD_22_FR_ZE2020_DASHBOARD_MVP.md` — first France-ZE2020-only
+    dashboard MVP (map + prediction-as-control + sector view + exploratory relation
+    graph), separate from the Observatory v0.3/v0.4/v0.5/v0.5.1 dashboards. Geometry
+    (`data/external/ze2020_geometry.geojson`) verified 280/280 canonical coverage.
+    `DASHBOARD_MVP_READY`. No causal/recommendation language, no fabricated
+    prediction series.
 
 ## Control Documents
 

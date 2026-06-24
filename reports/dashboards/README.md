@@ -2,6 +2,20 @@
 
 Ce dossier contient les dashboards HTML présentables du modèle HERALD France.
 
+## France ZE2020 MVP (2026-06-24)
+
+```text
+fr_ze2020_dashboard_mvp.html
+```
+
+Dashboard MVP separe, propre au bloc France/ZE2020 (pas une mise a jour des
+dashboards Observatory ci-dessous). Voir
+`reports/canonical/HERALD_22_FR_ZE2020_DASHBOARD_MVP.md`. Carte (geometrie
+verifiee 280/280), prevision = controle (persistence/ridge), vue sectorielle
+descriptive, graphe relationnel exploratoire (HERALD_20/21). Aucune
+recommandation, aucun claim causal, aucune serie predite fabriquee si le
+fichier de predictions est absent.
+
 ## Dashboard principal
 
 ```text
