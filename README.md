@@ -69,6 +69,11 @@ is its training-side counterpart: every script in the training block classified
 current/legacy/experimental/closed, and the minimal current baseline path. Like #13-#14,
 these two are organizational/data-lineage documents, not new scientific results.
 
+`reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md` audits what exists today
+for a future ZE2020/sector relational layer (territorial adjacency, sector precedence,
+sector-by-zone composition) and proposes a staged MVP before any graph/neural model is
+built. Planning only — no model implemented, no claim made, nothing else touched.
+
 ---
 
 ## Project trajectory (short version)
