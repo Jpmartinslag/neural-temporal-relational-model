@@ -62,6 +62,13 @@ items needing a future keep/archive decision), not a scientific or structural re
 per-group decision table (commit/gitignore/keep-local/needs-new-DEC/etc.) — read it
 before acting on anything in #13. Neither #13 nor #14 is a source of scientific claims.
 
+`reports/canonical/HERALD_15_FR_ZE2020_DATA_TREATMENT_PIPELINE.md` documents the France
+ZE2020 data layer specifically (raw ingestion through the canonical
+`fr_ze2020_model_ready_panel.csv`), and `reports/canonical/HERALD_16_MODEL_TRAINING_BLOCK_AUDIT.md`
+is its training-side counterpart: every script in the training block classified
+current/legacy/experimental/closed, and the minimal current baseline path. Like #13-#14,
+these two are organizational/data-lineage documents, not new scientific results.
+
 ---
 
 ## Project trajectory (short version)

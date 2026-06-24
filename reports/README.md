@@ -44,6 +44,12 @@ scientific document) — uncommitted worktree state and future data/code/HPC dec
 per-group commit/gitignore/keep-local/requires-new-DEC/human-review calls. `01`-`12` are
 the science/structure base; `13`-`14` are housekeeping against that base.
 
+13. `canonical/HERALD_15_FR_ZE2020_DATA_TREATMENT_PIPELINE.md` — France ZE2020 data layer
+    (raw ingestion through `fr_ze2020_model_ready_panel.csv`), separate from training.
+14. `canonical/HERALD_16_MODEL_TRAINING_BLOCK_AUDIT.md` — its training-side counterpart:
+    every training script classified current/legacy/experimental/closed, and the minimal
+    current FR ZE2020 baseline path. Also housekeeping, not a new scientific result.
+
 ## Control Documents
 
 - `HERALD_CURRENT_STATE.md` — current component status and next step.

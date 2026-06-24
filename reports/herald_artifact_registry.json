@@ -761,7 +761,7 @@
       "tracked_in_git": true,
       "size_bytes": null,
       "sha256_prefix": null,
-      "origin_decision": "pre-dates DEC log; consumed by Q7 (train_herald_v6.py, scripts/02_ridge_ar_official.py) and by src/data/european_panel/adapters/france_adapter.py",
+      "origin_decision": "pre-dates DEC log; consumed by Q7 (train_herald_v6.py, src/analyse/02_ridge_ar_official.py) and by src/data/european_panel/adapters/france_adapter.py",
       "generator_script": "src/modeles/build_dynamic_stgnn_feature_panel_v1.py",
       "input_data": [
         "data/raw/employment/flores/",
@@ -770,7 +770,7 @@
         "data/processed/target_side_establishments_annual_core_v0.csv"
       ],
       "claim_authorized": "Historical/audit reference only: legacy feature source consumed by the pre-reaudit Q7 France training run (HERALD_Q7_FRANCE_RESULT, PENDING_REAUDIT) and by the FranceAdapter input to the canonical European panel (where growth_1y/growth_2y are recomputed causally downstream by enforce_causal_growth() in src/data/european_panel/build_european_panel.py -- confirmed safe for data/processed/european_panel/france_panel.csv). FLORES/SIDE-stock t-1 lag construction and URSSAF lag construction inside this file's own pipelines A/B/A2 are causal by design. LEGACY_DO_NOT_USE_FOR_CURRENT_METHOD: not the current France ZE2020 data-treatment source -- see PANEL_FR_ZE2020_CLEAN_TREATED / PANEL_FR_ZE2020_MODEL_READY_CAUSAL.",
-      "claim_forbidden": "Using this file, or any score/result derived from it, as a current pipeline source, a current model-ready input, or proof of current performance without the pending causal-feature reaudit. growth_1y and growth_2y AS STORED IN THIS FILE are computed via pct_change(1)/pct_change(2) directly on the target column side_establishment_creations_official (build_dynamic_stgnn_feature_panel_v1.py, pipeline_c_unified, lines ~307-308) -- i.e. growth_1y[t] is a deterministic function of target[t] itself, not a t-1 lag feature. Any consumer that reads growth_1y/growth_2y AS-IS from this file (e.g. as a Ridge feature -- see SPAT_COLS in scripts/02_ridge_ar_official.py, comment 'forecast-safe' is incorrect for this pair) is using target-derived leakage, independent of any train/test temporal split. feature_forecast_safe is hardcoded to 1 for every row (pipeline_c_unified, line ~350) and must not be read as a real per-row QC signal. Do not use this file as the primary source for any NEW France data-treatment work -- use data/processed/france_ze2020/fr_ze2020_clean_panel.csv (and fr_ze2020_model_ready_panel.csv for model-input work) instead.",
+      "claim_forbidden": "Using this file, or any score/result derived from it, as a current pipeline source, a current model-ready input, or proof of current performance without the pending causal-feature reaudit. growth_1y and growth_2y AS STORED IN THIS FILE are computed via pct_change(1)/pct_change(2) directly on the target column side_establishment_creations_official (build_dynamic_stgnn_feature_panel_v1.py, pipeline_c_unified, lines ~307-308) -- i.e. growth_1y[t] is a deterministic function of target[t] itself, not a t-1 lag feature. Any consumer that reads growth_1y/growth_2y AS-IS from this file (e.g. as a Ridge feature -- see SPAT_COLS in src/analyse/02_ridge_ar_official.py, comment 'forecast-safe' is incorrect for this pair) is using target-derived leakage, independent of any train/test temporal split. feature_forecast_safe is hardcoded to 1 for every row (pipeline_c_unified, line ~350) and must not be read as a real per-row QC signal. Do not use this file as the primary source for any NEW France data-treatment work -- use data/processed/france_ze2020/fr_ze2020_clean_panel.csv (and fr_ze2020_model_ready_panel.csv for model-input work) instead.",
       "can_regenerate": true,
       "notes": "STGNN in the filename is legacy naming (pre-Q7 architecture search); not the current HERALD architecture identity (reports/HERALD_NAMING_CONVENTIONS.md section 0). LEGACY_DO_NOT_USE_FOR_CURRENT_METHOD. This finding sharpens, for the French/Q7 track specifically, what reports/herald_artifact_registry.json's HERALD_Q7_FRANCE_RESULT entry and the PENDING_REAUDIT status already flag as unresolved -- it does not change that entry's claim text (training/evaluation is out of scope for this data-layer pass). See reports/canonical/HERALD_15_FR_ZE2020_DATA_TREATMENT_PIPELINE.md section 5. Status set to INVALID_FOR_CLAIMS (2026-06-23 lineage-consistency pass) -- file remains on disk/git for traceability and is still read by historical training scripts pending reaudit, but must not back any current performance or methodology claim."
     },
@@ -792,6 +792,25 @@
       "claim_forbidden": "Treating this as a trained-model result or a performance claim of any kind (none exists yet). Using it interchangeably with data/processed/dynamic_stgnn_feature_panel_v1.csv's growth_1y/growth_2y, which are leaky (see FR_DYNAMIC_STGNN_LEGACY_FEATURE_PANEL above) -- this file's growth_1y_safe/growth_2y_safe are a deliberately different, lag-only formula and must not be conflated with the legacy columns despite the similar name. Adding a sector dimension or graph/network structure to this file -- explicitly out of scope for this stage.",
       "can_regenerate": true,
       "notes": "Step 3 (model-ready causal panel) of the France ZE2020 data pipeline, built on top of PANEL_FR_ZE2020_CLEAN_TREATED. See reports/canonical/HERALD_15_FR_ZE2020_DATA_TREATMENT_PIPELINE.md section 10. Does not read data/processed/dynamic_stgnn_feature_panel_v1.csv or any dynamic_stgnn_* file. Does not feed Q7 training (train_herald_v6.py) and does not replace it -- this is a separate, newly built panel for a future modeling stage. Tests: tests/test_fr_ze2020_model_ready_panel.py."
+    },
+    {
+      "id": "FR_ZE2020_BASELINE_PREDICTIONS_V1",
+      "phase": "model-training-block audit (2026-06-24)",
+      "path": "data/processed/france_ze2020/fr_ze2020_baseline_predictions_v1.csv",
+      "type": "analysis_csv",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (organizational/smoke pass, not a modeling decision) -- see reports/canonical/HERALD_16_MODEL_TRAINING_BLOCK_AUDIT.md",
+      "generator_script": "src/modeles/france_ze2020/train_fr_ze2020_baselines.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv"
+      ],
+      "claim_authorized": "Exploratory smoke baseline only: causal rolling-origin persistence (y_hat=lag_1) and Ridge(lag_1, lag_2, lag_3, growth_1y_safe, growth_2y_safe) per-zone forecasts, eval years 2019-2024, RIDGE_MIN_TRAIN_YEARS=4, RIDGE_ALPHA=1.0. First script in the repository to read fr_ze2020_model_ready_panel.csv for training/evaluation. Every row carries claim_status=exploratory_smoke.",
+      "claim_forbidden": "Citing the WMAPE numbers in this file (or in the companion fr_ze2020_baseline_metrics_v1.csv) as a validated or headline HERALD result. Comparing them to HERALD_Q7_FRANCE_RESULT or any train_herald_v3..v7/semi/regime output without first noting those read a different, INVALID_FOR_CLAIMS panel (FR_DYNAMIC_STGNN_LEGACY_FEATURE_PANEL) over a different year range -- the two are not on the same evidentiary footing and must not be presented side by side as comparable models. Treating this as a graph or sector-level result (it is zone-level, no-graph, no-sector-dimension by construction).",
+      "can_regenerate": true,
+      "notes": "Output is intentionally left untracked/regenerable (run the generator script to reproduce) rather than committed, matching this repository's convention for smoke/exploratory results (see HERALD_14_WORKTREE_DECISION_AUDIT.md 'RESOLVED_COMMITTED_CODE_TESTS' rows). The generator script and its test (tests/test_fr_ze2020_baselines.py, 12/12 PASS) are committed. A companion metrics file, fr_ze2020_baseline_metrics_v1.csv, is produced by the same script and is covered by this same entry."
     }
   ]
 }
