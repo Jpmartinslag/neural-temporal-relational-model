@@ -85,9 +85,12 @@ produces.
 `generate_herald_phase4_dashboard.py`, `generate_herald_semi_v2_dashboard.py`,
 `plot_herald_v3_dashboard.py`, `plot_herald_v3_v6_dashboard.py`,
 `plot_herald_v6_2025_dashboard.py`
-— all predate Q7 selection (Phase 3E); kept for traceability, not safe to reuse without
-re-validating against the current causal protocol (DEC-001 leakage discipline). Full
-file-by-file entrada/saída/model-type table, plus the import-chain detail (`v7`/`semi_v2`/
+— all predate Q7 selection (Phase 3E); kept for traceability and, for the later
+`v6`/`v7`/`semi_v2`/`regime_experiment` cluster, as **historical architecture-improvement
+attempts** showing where the model design went. They are not safe to reuse for current
+claims without re-validating against the current causal protocol (DEC-001 leakage
+discipline) and the clean France ZE2020 model-ready panel. Full file-by-file
+entrada/saída/model-type table, plus the import-chain detail (`v7`/`semi_v2`/
 `regime_experiment`/`sector_baselines_v1`/`run_herald_prospective_forecast_v1` all
 transitively depend on `train_herald_v6.py`'s `PANEL_PATH`):
 `reports/canonical/HERALD_16_MODEL_TRAINING_BLOCK_AUDIT.md` §1.

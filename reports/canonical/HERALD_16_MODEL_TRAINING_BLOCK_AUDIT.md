@@ -31,7 +31,7 @@ gap is what Tarefa 3 below closes with a new, minimal, smoke-tested script.
 |---|---|
 | Does any current/active trainer read the new canonical panel (`fr_ze2020_model_ready_panel.csv`)? | **No, until this pass.** New script added: `src/modeles/france_ze2020/train_fr_ze2020_baselines.py` (Tarefa 3). |
 | Does any script claimed as "current" read the legacy panel (`dynamic_stgnn_feature_panel_v1.csv`)? | **No.** Every script that reads it is already classified `HISTORICAL_EXPERIMENT`/`LEGACY_DO_NOT_USE` in `HERALD_10_CODE_PATH_MAP.md`, and that classification is confirmed accurate by this pass (see §1). |
-| Were any legacy files moved or deleted? | **No.** Four of the legacy files (`train_herald_v6.py`, `v7.py`, `train_herald_semi_v2.py`, `train_herald_regime_experiment.py`) are currently **modified/uncommitted** in the worktree (real in-progress work per `HERALD_14_WORKTREE_DECISION_AUDIT.md`, still `HUMAN_REVIEW_REQUIRED`, unresolved). Moving any of them now would risk that in-progress work and is explicitly out of scope (see §5). |
+| Were any legacy files moved or deleted? | **No.** Four files (`train_herald_v6.py`, `v7.py`, `train_herald_semi_v2.py`, `train_herald_regime_experiment.py`) are currently **modified/uncommitted** in the worktree. Human clarification on 2026-06-24: these are intentional historical architecture-improvement attempts, not accidental scope creep. They remain outside the current canonical trainer and cannot support current claims without reauditing, but should be preserved as architecture-history evidence (see §5). |
 | Is there a current graph-forecast pipeline for ZE2020? | **No, and none is proposed.** Two prior FR ZE2020 graph-forecast attempts both failed/closed (DEC-031 `S1_FR_FAIL`, plus the dual-graph branch on FR NUTS3, DEC-029 `DUAL_GRAPH_S1_FAIL`). §4 documents what exists as raw material for *future* research, explicitly not a pipeline. |
 | Final status | **PARCIAL** — see §8. Documentation, one new smoke-tested script, and registry/map updates done; no file moved; nothing trained beyond local smoke. |
 
@@ -47,11 +47,11 @@ This is the track the task is about: every script that does or did try to foreca
 | `src/modeles/train_herald_v3.py` | `dynamic_stgnn_feature_panel_v1.csv` (`PANEL_PATH`), `graph_adjacency_core_v0.csv`, `graph_adjacency_mobility_v0.csv`, `graph_node_index_core_v0.csv`, raw URSSAF quarterly | `herald_v3_predictions_*_v1.csv`, `*_internals_*_v1.npz` | GRU quarterly encoder + gated dynamic graph residual (`HERALDv3Residual`) + Ridge persistence inside the same file | **Yes** | No | `LEGACY_DO_NOT_USE` | Standalone (no import of other `train_herald_*`). Tracked, clean (no pending diff). |
 | `src/modeles/train_herald_v4.py` | same as v3 + `side_creations_a10_ze2020_v1.csv` (A10 sector) | `herald_v4_predictions_*_v1.csv` | Sectoral dynamic graph residual (`HERALDv4Residual`) | **Yes** | No | `LEGACY_DO_NOT_USE` | Standalone. Tracked, clean. |
 | `src/modeles/train_herald_v5.py` | same as v4 | `herald_v5_predictions_{total,sector}_*_v1.csv` | GRU + A10 sector graph residual (`HERALDv5Residual`) | **Yes** | No | `LEGACY_DO_NOT_USE` | Standalone. Tracked, clean. |
-| `src/modeles/train_herald_v6.py` | same as v4/v5 | `herald_v6_predictions_{total,sector}_*_v1.csv`, `herald_v6_forecast_*_v1.csv` | GRU + graph residual; Ridge persistence/lag fit (`fit_zone_mask` param) | **Yes** | No | `LEGACY_DO_NOT_USE` | **Modified, uncommitted** (`HUMAN_REVIEW_REQUIRED` per HERALD_14 — new `fit_zone_mask` functionality, not reviewed). This is the "Q7 base" — `HERALD_Q7_FRANCE_RESULT` (`PENDING_REAUDIT`) traces here. Not touched by this pass. |
-| `src/modeles/train_herald_v7.py` | `import train_herald_v6 as base` → same panel | `herald_v7_predictions_{total,sector}_*_v1.csv` | `HERALDv7Residual`, built on v6 | **Yes** (transitively via v6) | No | `LEGACY_DO_NOT_USE` | **Modified, uncommitted.** Imports v6 directly — cannot be moved/isolated independently of v6. |
+| `src/modeles/train_herald_v6.py` | same as v4/v5 | `herald_v6_predictions_{total,sector}_*_v1.csv`, `herald_v6_forecast_*_v1.csv` | GRU + graph residual; Ridge persistence/lag fit (`fit_zone_mask` param) | **Yes** | No | `HISTORICAL_ARCHITECTURE_ATTEMPT` / `PENDING_REAUDIT` | **Modified, uncommitted.** Human clarification on 2026-06-24: intentional architecture-history attempt, not accidental scope creep. This is the "Q7 base" — `HERALD_Q7_FRANCE_RESULT` (`PENDING_REAUDIT`) traces here. It is preserved to explain architectural evolution, but it is not the current canonical trainer and cannot support current claims until reaudited against the clean panel. |
+| `src/modeles/train_herald_v7.py` | `import train_herald_v6 as base` → same panel | `herald_v7_predictions_{total,sector}_*_v1.csv` | `HERALDv7Residual`, built on v6 | **Yes** (transitively via v6) | No | `HISTORICAL_ARCHITECTURE_ATTEMPT` / `PENDING_REAUDIT` | **Modified, uncommitted.** Intentional architecture-history attempt building on v6. Imports v6 directly, so it cannot be moved/isolated independently of v6. Not current, not claim-bearing without reauditing. |
 | `src/modeles/train_herald_semi_v1.py` | `dynamic_stgnn_feature_panel_v1.csv` directly (standalone, predates the `import ... as base` pattern) | `herald_semi_predictions_{total,sector}_*_v1.csv`, `herald_semi_forecast_*_v1.csv` | GRU + graph residual variant | **Yes** | No | `LEGACY_DO_NOT_USE` | Standalone. Tracked, clean. |
-| `src/modeles/train_herald_semi_v2.py` | `import train_herald_v6 as base`, `import train_herald_v7 as v7`, `from herald_fold_controls import apply_fold_eu_control`, `herald_phase3c_labor_tutor_features.csv` | `herald_semi_v2_predictions_{total,sector}_*_v1.csv` | Ensemble/blend over v6+v7 + labor-tutor features + fold EU control | **Yes** (transitively) | No | `LEGACY_DO_NOT_USE` | **Modified, uncommitted.** Depends on untracked `herald_fold_controls.py` (no test — also `HUMAN_REVIEW_REQUIRED`). |
-| `src/modeles/train_herald_regime_experiment.py` | `import train_herald_v6 as base`, `import train_herald_semi_v2 as semiv2`, `herald_regime_modes.py` | (regime-mode experiment outputs, no fixed `OUT_*` constant — CLI-driven) | Regime-gated variant (covid/rebound/growth modes) on top of v6+semi_v2 | **Yes** (transitively) | No | `EXPERIMENTAL_RESEARCH` | **Modified, uncommitted.** Furthest from anything validated — experiment on top of two other unreviewed experiments. |
+| `src/modeles/train_herald_semi_v2.py` | `import train_herald_v6 as base`, `import train_herald_v7 as v7`, `from herald_fold_controls import apply_fold_eu_control`, `herald_phase3c_labor_tutor_features.csv` | `herald_semi_v2_predictions_{total,sector}_*_v1.csv` | Ensemble/blend over v6+v7 + labor-tutor features + fold EU control | **Yes** (transitively) | No | `HISTORICAL_ARCHITECTURE_ATTEMPT` / `PENDING_REAUDIT` | **Modified, uncommitted.** Intentional architecture-history attempt. Depends on untracked `herald_fold_controls.py` (no test). Preserved as evolution evidence, but not current and not claim-bearing. |
+| `src/modeles/train_herald_regime_experiment.py` | `import train_herald_v6 as base`, `import train_herald_semi_v2 as semiv2`, `herald_regime_modes.py` | (regime-mode experiment outputs, no fixed `OUT_*` constant — CLI-driven) | Regime-gated variant (covid/rebound/growth modes) on top of v6+semi_v2 | **Yes** (transitively) | No | `HISTORICAL_ARCHITECTURE_ATTEMPT` / `PENDING_REAUDIT` | **Modified, uncommitted.** Intentional architecture-history attempt, furthest from anything validated because it stacks on v6 and semi_v2. Preserved to show the architecture direction explored, but not current and not claim-bearing. |
 | `src/modeles/train_dynamic_stgnn_models_v1.py` | `dynamic_stgnn_feature_panel_v1.csv` directly | `dynamic_stgnn_model_predictions_v1.csv` | 3 candidate architectures: `DiffusionGRUResidual`, `GraphWaveNetResidual`, `DynamicSTGNNResidual`, + Ridge baseline | **Yes** | No | `LEGACY_DO_NOT_USE` | Earliest architecture-search file (predates the v3-v7 naming scheme). Standalone. Tracked, clean. |
 | `src/modeles/train_temporal_baselines_v1.py` | `dynamic_stgnn_feature_panel_v1.csv` directly | `temporal_baselines_predictions_*_v1.csv` | Ridge (lag features) + `LocalLSTM` (per-zone univariate) — **no graph** | **Yes** | No | `LEGACY_DO_NOT_USE` | Conceptually the closest pre-existing analog to a "minimal baseline" file — but reads the leaky panel. Listed `ACTIVE_PREDICTION` in HERALD_10 (DEC-006) for its *cross-country* persistence/Ridge role; for **France specifically** it is legacy because of the panel, not the method. Tracked, clean. |
 | `src/modeles/sector_baselines_v1.py` | `import train_herald_v6 as base` for `PANEL_PATH`/splits | predictions CSV (`--predictions-out`) | A10 sector naive baselines (lag-1, historical mean) — no fitting | **Yes** (transitively) | No | `LEGACY_DO_NOT_USE` | Naive-only (no `Ridge`/`nn.Module`). Tracked, clean. |
@@ -184,11 +184,13 @@ unverified legacy matrix).
 **Decision: document-only, no file moved.** Per the task's own fallback rule ("se mover for
 arriscado: deixar no lugar; marcar em docs/mapa"), moving is not safe right now because:
 
-1. Four of the legacy files (`train_herald_v6.py`, `v7.py`, `train_herald_semi_v2.py`,
+1. Four files (`train_herald_v6.py`, `v7.py`, `train_herald_semi_v2.py`,
    `train_herald_regime_experiment.py`) are **currently modified, uncommitted**, with real
-   new functionality pending a human review decision (`HERALD_14`, row "train_herald_v6.py,
-   v7.py, ... (modified)"). Relocating them mid-review risks that in-progress work and
-   pre-empts a decision this pass has no authority to make.
+   new functionality. Human clarification on 2026-06-24 resolved the intent question:
+   these are deliberate architecture-improvement attempts kept as historical evidence of
+   where the architecture went, not accidental scope creep. Relocating them now would still
+   be risky because their code is dirty, transitively imported, and not reaudited against the
+   new `fr_ze2020_model_ready_panel.csv` path.
 2. The import chain (`v7`/`semi_v2`/`regime_experiment`/`sector_baselines_v1`/
    `run_herald_prospective_forecast_v1` all do `import train_herald_v6 as base`, relying on
    `src/modeles/` being on `sys.path` directly, not as a package) means any single file move
@@ -198,9 +200,10 @@ arriscado: deixar no lugar; marcar em docs/mapa"), moving is not safe right now 
    unreviewed `semi_v2`).
 
 **What this pass does instead:** every file in §1 already carries an explicit
-`LEGACY_DO_NOT_USE` (or `EXPERIMENTAL_RESEARCH`/`UNKNOWN_REVIEW_REQUIRED`) status in the
-table above, cross-referenced against `HERALD_10_CODE_PATH_MAP.md` (§6 below records the one
-new cross-reference added there). No script that depends on the legacy panel is described
+`LEGACY_DO_NOT_USE`, `HISTORICAL_ARCHITECTURE_ATTEMPT`/`PENDING_REAUDIT`,
+`EXPERIMENTAL_RESEARCH`, or `UNKNOWN_REVIEW_REQUIRED` status in the table above,
+cross-referenced against `HERALD_10_CODE_PATH_MAP.md` (§6 below records the one new
+cross-reference added there). No script that depends on the legacy panel is described
 anywhere in this repository's documentation as a current or recommended training path.
 
 ---
