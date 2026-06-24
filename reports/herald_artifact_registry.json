@@ -990,6 +990,27 @@
       "claim_forbidden": "Ranking model_family/model_name across the two different grains as if directly comparable (observed_value vs. sector_share are different targets). Citing mean_wmape as a validated or headline result. Treating this consolidation as authorization for HPC -- HERALD_18 section 5 explicitly states none of the 4 scripts is READY_FOR_HPC_SPEC yet. Any automatic recommendation derived from this summary (none exists, verified by test).",
       "can_regenerate": true,
       "notes": "10/10 tests pass (tests/test_fr_ze2020_training_block_runner.py). Building the sector graph node table (~1 minute) dominates the runtime regardless of eval_years requested."
+    },
+    {
+      "id": "FR_ZE2020_EXPLORATORY_RELATION_SIGNALS_V1",
+      "phase": "relational analysis reorientation (2026-06-24)",
+      "path": "data/processed/france_ze2020/fr_ze2020_exploratory_relation_signals.csv",
+      "type": "analysis_csv",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (analysis/extraction layer, not a modeling decision) -- see reports/canonical/HERALD_20_FR_ZE2020_EXPLORATORY_RELATION_SIGNALS.md",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_exploratory_relation_signals.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv",
+        "data/processed/france_ze2020/fr_ze2020_sector_graph_relation_signals_v1.csv",
+        "data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv"
+      ],
+      "claim_authorized": "6,215 rows across 4 deterministic relation families extracted/reorganized from ALREADY-COMPUTED outputs (no new training, no new model): ze_to_ze_similarity (5,769, reconstructed as an explicit edge list from build_fr_ze2020_relational_model_ready_panel.py's similarity_matrix_for_year, which previously only ever exported aggregated neighbor means), ze_to_ze_same_sector_signal (102) and intra_ze_sector_interaction (64) (both read directly from fr_ze2020_sector_graph_relation_signals_v1.csv), ze_sector_specialization (280, one row per zone, modal dominant sector across the panel). stability_score means YEAR-recurrence, not seed-to-seed model stability -- all 4 families are deterministic given the input panels (no MLP/random component), which is also why HPC job 7498752's gate G4 found these specific signals identical across all 5 seeds. Two requested families (sector_to_sector_comovement, temporal_precedence_signal) are explicitly NOT populated -- documented gaps (different grain / no test run yet), not fabricated. Every row claim_status=exploratory_association_not_causal, every row carries a non-empty non-causality caveat (verified by test). Companion file fr_ze2020_exploratory_relation_examples.csv (20 curated rows, presentation schema, plain_language_interpretation copied verbatim from this file) covered by the same claim.",
+      "claim_forbidden": "Citing this as evidence that the relational/neural/graph candidates improve forecasting -- HPC job 7498752 (5 seeds) found the opposite (gate G3 FAIL for all 3 candidates, HERALD_19); this file does not change that finding, it deliberately stops asking the predictive question. Citing rank_within_family (ranked by signal_strength alone) as if it were ranked by reliability -- the highest-signal_strength ze_to_ze_similarity rows are mostly one-year spikes with low stability_score, documented explicitly in HERALD_20 section 2. Any causal claim, any automatic recommendation, any policy/investment ranking (none exists, verified by test -- no recommendation/recommended_action/policy_action column anywhere). Pooling ze_to_ze_similarity and sector_to_sector relations from the unrelated, country-aggregate Phase 7 layer into this ZE-grain table without a grain-reconciliation decision.",
+      "can_regenerate": true,
+      "notes": "28/28 new tests pass (15 tests/test_fr_ze2020_exploratory_relation_signals.py + 13 tests/test_fr_ze2020_exploratory_relation_examples.py). Deterministic: rebuilding twice from the same inputs produces an identical table (verified by test)."
     }
   ]
 }

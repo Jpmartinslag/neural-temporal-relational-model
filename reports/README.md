@@ -60,8 +60,15 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     claim.
 17. `canonical/HERALD_19_FR_ZE2020_HPC_SPEC.md` — executable HPC spec for the FR
     ZE2020 training block (5 seeds x the 4 scripts), pre-registered gates G1-G5,
-    and the `hpc/france_ze2020/` infrastructure. `SPEC_READY`, not launched — `sbatch`
-    requires an explicit `--confirm-submit` flag.
+    and the `hpc/france_ze2020/` infrastructure. Launched 2026-06-24 (job `7498752`,
+    5/5 tasks COMPLETED): gate G3 (candidate beats baseline in >=3/5 seeds) FAILED
+    for all 3 candidates -- no predictive gain, confirmed robustly across seeds,
+    not just the single-seed local smoke. G4 (relation-signal stability) PASSED.
+18. `canonical/HERALD_20_FR_ZE2020_EXPLORATORY_RELATION_SIGNALS.md` — reorientation
+    from predictive performance to relational analysis: extracts and organizes the
+    already-computed ZE-to-ZE / ZE-to-sector / intra-ZE relation signals into one
+    interpretable table, after HERALD_19 found no predictive gain. No new model, no
+    causal claim, no automatic recommendation.
 
 ## Control Documents
 
