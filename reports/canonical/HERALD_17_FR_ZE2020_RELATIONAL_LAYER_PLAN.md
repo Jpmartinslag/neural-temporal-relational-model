@@ -29,6 +29,27 @@ plano assume essa restrição como ponto de partida, não como descoberta nova.
 
 ---
 
+## 0b. Técnicas existentes verificadas (motivação metodológica do MVP2)
+
+Pesquisa curta (não é revisão bibliográfica longa) para confirmar que o MVP2 é uma etapa
+metodológica conhecida — testar agregações relacionais simples antes de qualquer GNN —
+e não uma invenção ad-hoc deste projeto.
+
+| Técnica | Ideia central | Relação com ZE2020 | Serve para o MVP2? | Risco/cuidado metodológico |
+|---|---|---|---|---|
+| Spatial Lag / SLX model (LeSage & Pace; PySAL `spreg`, `spreg.ML_Lag`/`spreg.GM_Lag`) | A variável dependente ou os preditores são "lagados espacialmente" por `Wy`/`WX`, a média ponderada dos vizinhos via uma matriz de pesos `W` | É a justificativa formal direta do MVP2: "vizinhos pesados" é exatamente o que as features `similar_ze_*` calculam, só que com `W` definido por similaridade de trajetória em vez de uma matriz geográfica fixa | Sim — é a referência metodológica central | Um SAR/SLX completo estima um parâmetro espacial com inferência formal; aqui usamos só a feature agregada como input de Ridge, sem estimar esse parâmetro — mais simples, sem claim de autocorrelação espacial validada |
+| Bartik (1991) shift-share / shift-share instruments (ver NBER w24408, w33236) | Decompõe o crescimento local em um componente nacional por setor × uma composição local pré-determinada (pesos fixos no tempo) | Mapeia diretamente para a Categoria C (composição setorial da ZE × sinal setorial nacional) | Motivacional apenas — Categoria C está `BLOQUEADO/PENDING_PROVENANCE` nesta pass (ver §1, item 6, e §B abaixo) | Shift-share é desenhado para identificação causal via instrumento; aqui seria usado só como *feature* preditiva — nunca como prova de efeito causal |
+| Hidalgo, Klinger, Barabási & Hausmann (2007), "The Product Space Conditions the Development of Nations", *Science* 317 | Relacionamento entre produtos/setores via co-ocorrência de especialização revelada, usado para prever diversificação futura | Análogo conceitual à Categoria B/C (relatedness entre setores em vez de geografia) | Não nesta pass — precisa do painel setorial, que está bloqueado | Relatedness de produto/setor não é território; adaptar exigiria o dado setorial canônico que ainda não existe (§B) |
+| k-NN / graph feature engineering antes de GNN (prática padrão de pré-processamento; ver também `KNN-GNN`, k-NN graph construction) | Construir um grafo via k-vizinhos-mais-próximos num espaço de features, agregar estatísticas dos vizinhos como *feature tabular* antes de qualquer rede neural de grafo | É exatamente o método do MVP2: similaridade de trajetória, top-k positivo, agregação simples (média/média ponderada) | Sim — é o método central implementado nesta pass | É preciso garantir que o espaço de features usado para achar vizinhos não inclua o ano-alvo — resolvido aqui via janela expansiva estritamente `< t` (ver §10) |
+| Shchur, Mumme, Bojchevski & Günnemann (2018), "Pitfalls of Graph Neural Network Evaluation" (NeurIPS RLR workshop; arXiv:1811.05868) | Sob comparação justa (mesmos splits, mesmo tuning), baselines simples (MLP, regressão logística, label propagation) batem arquiteturas GNN mais sofisticadas em vários benchmarks-padrão | Justificativa direta de por que este projeto testa features relacionais simples (MVP2) antes de qualquer GNN (MVP3) — e por que os 3 modelos do MVP2 precisam compartilhar exatamente o mesmo conjunto de teste por ano (ver §10) | Sim — justificativa metodológica central da ordem MVP2→MVP3 | A lição é sobre rigor de avaliação (splits/tuning idênticos); aplicada aqui ao exigir mesmo `n_test` por ano entre os 3 modelos antes de comparar WMAPE |
+
+Conclusão da pesquisa: o MVP2 não é uma técnica nova — é a aplicação direta de "spatial-lag-like
+feature engineering" (vizinhança ponderada) e da prática estabelecida de testar baselines
+simples antes de GNN, adaptada para usar similaridade de trajetória (não uma matriz
+geográfica sem proveniência) como definição de vizinhança.
+
+---
+
 ## 1. Inventário de artefatos existentes
 
 Vocabulário de status usado nesta tabela (subconjunto do pedido na tarefa, alinhado ao
@@ -350,4 +371,132 @@ Este plano não autoriza nenhuma das seguintes ações — todas aguardam decis�
 4. **Qualquer MVP3 (grafo neural)** — explicitamente bloqueado até MVP2 mostrar sinal
    medido contra um gate pré-registrado, e até uma nova DEC ser aberta.
 
-Nenhuma destas quatro coisas foi feita nesta pass.
+Status em 2026-06-24: item 2 foi implementado nesta pass (ver §10 abaixo). Item 1
+permanece bloqueado (sem proveniência suficiente). Itens 3 e 4 permanecem como estavam.
+
+---
+
+## 10. MVP2 implementation — relational simple features (2026-06-24)
+
+**Status: smoke/exploratório. Nenhuma rede neural/grafo foi criada ou treinada. Nenhum
+claim final de performance é feito.**
+
+### O que foi implementado
+
+**Categoria A apenas — similaridade de trajetória entre ZEs**, motivada pela técnica
+"spatial-lag-like feature engineering" e pela prática de k-NN/graph-feature-engineering
+antes de GNN (§0b).
+
+- **Script:** `src/data/france_ze2020/build_fr_ze2020_relational_model_ready_panel.py`.
+- **Entrada (única, somente leitura):** `data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv`.
+- **Saída:** `data/processed/france_ze2020/fr_ze2020_relational_model_ready_panel.csv`
+  (3.640 linhas, 280 zonas × 13 anos, todas as 15 colunas do painel model-ready
+  preservadas inalteradas + 5 colunas novas).
+- **Método:** para cada ano de avaliação `t`, calcula uma matriz de correlação de
+  Pearson ZE↔ZE sobre o histórico de `growth_1y_safe` restrito a anos estritamente
+  `< t` (janela expansiva). Para cada zona, seleciona as até 5 zonas com correlação
+  positiva mais alta (excluindo ela mesma). As features lêem apenas os valores
+  `lag_1`/`growth_1y_safe` dessas vizinhas na própria linha do ano `t` — que já são,
+  por construção do painel model-ready, valores defasados a `t-1` — nunca o
+  `observed_value` de nenhuma zona no ano `t`.
+- **Colunas novas:** `similar_ze_lag_1_mean`, `similar_ze_lag_1_weighted_mean`,
+  `similar_ze_growth_1y_safe_mean`, `similar_ze_count`, `relational_feature_available`.
+- **Disponibilidade verificada:** `relational_feature_available=0` para 2012-2016 (sem
+  histórico suficiente — `growth_1y_safe` só existe a partir de 2014, e exigimos 3 anos
+  de sobreposição mínima); `=1` para 2017-2024, com exatamente 5 vizinhos válidos para
+  as 280×8=2.240 linhas elegíveis.
+
+### O que foi recusado e por quê
+
+| Categoria | Recusado? | Motivo |
+|---|---|---|
+| B — sinal setorial agregado nacional | Recusado nesta pass | Não há, no painel canônico atual, nenhum sinal setorial nacional já validado *na granularidade de ano* que pudesse ser simplesmente "broadcast" sem reconstruir o pipeline de `granular_relation_edges.csv` por ano-base — escopo maior do que um MVP2 mínimo; fica para uma iteração futura do MVP2, não para esta pass |
+| C — composição/exposição setorial por ZE | **`BLOQUEADO/PENDING_PROVENANCE`** | `side_creations_a10_ze2020_v1.csv` (HERALD_17 §1, item 6) não tem builder na árvore atual, apesar de seus valores reconciliarem exatamente com o painel canônico. Construir um painel setorial com o mesmo rigor de máscaras/causal-safety de HERALD_15 é trabalho novo de dados, não uma feature de modelo — fica para uma pass futura dedicada (ver `fr_ze2020_sector_panel.csv` em HERALD_17 §6) |
+| A (alternativa) — contiguidade geográfica via `ze2020_geometry.geojson` | Recusado nesta pass | Construiria um SEGUNDO tipo de relação ZE→ZE (contiguidade espacial) além da similaridade de trajetória já implementada; nenhum builder existe ainda, e contiguidade geográfica já falhou 2 vezes neste projeto como insumo preditivo (DEC-008/009, DEC-031) — adicionar mais uma sem necessidade não está nas features "mínimas" pedidas |
+| `graph_adjacency_core_v0.csv` / `graph_adjacency_mobility_v0.csv` | **Recusado, por regra explícita desta etapa** | Gerador ausente da árvore atual (HERALD_16 §4.1); nunca usados como fonte confiável nesta pass, nem direta nem indiretamente — confirmado por teste (`test_builder_reads_only_model_ready_panel_as_base`) |
+
+### Como evitamos vazamento temporal
+
+Três camadas de proteção, todas testadas:
+
+1. A matriz de similaridade em si só usa `panel[panel["year"] < eval_year]` — nunca o
+   ano avaliado (`tests/test_fr_ze2020_relational_model_ready_panel.py::test_similarity_uses_strictly_prior_years_only`).
+2. As features das vizinhas usam `lag_1`/`growth_1y_safe`, que já são, pela construção
+   do painel model-ready (HERALD_15 §10), estritamente `t-1`/anteriores — nunca o
+   `observed_value` do ano `t` de nenhuma zona, alvo ou vizinha.
+3. **Teste de invariância a truncamento de futuro:** construir o painel relacional a
+   partir do painel completo e a partir de um painel truncado em `year <= eval_year`
+   produz exatamente os mesmos valores relacionais em `eval_year` (diferença máxima
+   absoluta = 0.0, verificado para `eval_year=2020` antes de escrever o teste e
+   confirmado por `test_no_relational_feature_uses_the_target_years_own_observed_value`)
+   — prova direta de que linhas de anos futuros não têm efeito nenhum.
+
+### Por que isso vem antes de qualquer GNN
+
+Per Charter §8 e o histórico já registrado deste projeto (3 FAILs prévios em
+tentativas de grafo preditivo: DEC-008/009 Itália, DEC-029 FR NUTS3 grafo duplo,
+DEC-031 FR ZE2020 `graph_temporal`), nenhuma rede neural de grafo deve ser tentada
+sem primeiro mostrar, com o método mais simples possível, que a relação proposta
+carrega algum valor preditivo — exatamente a lição de Shchur et al. (2018) sobre
+testar baselines simples antes de arquiteturas sofisticadas (§0b). O MVP2 é esse
+teste mínimo.
+
+### Baseline relacional leve — resultado smoke
+
+- **Script:** `src/modeles/france_ze2020/train_fr_ze2020_relational_baselines.py`
+  (script novo; **não modifica** `train_fr_ze2020_baselines.py` — importa e reutiliza
+  `predict_persistence`/`compute_wmape`/as constantes de janela de avaliação de lá,
+  e define seu próprio `fit_predict_ridge` parametrizado por lista de features, para
+  rodar Ridge tanto sobre as features temporais quanto sobre temporais+relacionais).
+- **3 modelos, mesmo conjunto de teste por ano** (persistence, `ridge_temporal` —
+  idêntico ao baseline original — e `ridge_relational` — mesmas features +
+  `similar_ze_lag_1_mean`/`similar_ze_lag_1_weighted_mean`/`similar_ze_growth_1y_safe_mean`).
+- **Janela comparável (2021-2024 — os únicos anos em que `ridge_relational` tem
+  histórico suficiente, `RIDGE_MIN_TRAIN_YEARS=4` aplicado à disponibilidade
+  relacional, que só começa em 2017):**
+
+  | Modelo | WMAPE médio (2021-2024) |
+  |---|---|
+  | persistence | ≈0,077 |
+  | ridge_temporal | ≈0,085 |
+  | ridge_relational | ≈0,092 |
+
+  **Leitura honesta:** nesta execução smoke, as features relacionais de similaridade
+  de trajetória **não superaram** nem a persistência nem o Ridge temporal puro — pelo
+  contrário, o WMAPE médio piorou. Isso não encerra a hipótese (é uma única
+  execução, uma única definição de similaridade, um único alpha, 4 anos de
+  avaliação), mas também não a sustenta. **Não constitui evidência a favor nem
+  contra a camada relacional como um todo** — apenas contra esta primeira
+  especificação simples de Categoria A.
+- **2019-2020:** `ridge_relational` não roda (histórico relacional insuficiente,
+  comportamento esperado e testado, não um bug) — `persistence`/`ridge_temporal`
+  seguem rodando normalmente para esses anos, como no baseline original.
+- Outputs: `data/processed/france_ze2020/fr_ze2020_relational_baseline_predictions_v1.csv`,
+  `fr_ze2020_relational_baseline_metrics_v1.csv` — ambos com `claim_status=relational_smoke_result`
+  em toda linha, intencionalmente não versionados (regeneráveis), mesmo padrão de
+  `FR_ZE2020_BASELINE_PREDICTIONS_V1`.
+
+### Claims autorizados e proibidos para este passo
+
+- **Autorizado:** smoke/exploratório; comparação interna entre os 3 modelos sob o
+  mesmo conjunto de teste; relato honesto de que a especificação testada não
+  superou os baselines existentes.
+- **Proibido:** claim final de performance; causalidade; recomendação automática;
+  prova de influência econômica entre ZEs; tratar este resultado negativo como
+  encerramento da hipótese da camada relacional (era uma especificação entre várias
+  possíveis — ver MVP2 itens ainda não testados em §5); autorização implícita para
+  MVP3.
+
+### Testes
+
+13/13 (`tests/test_fr_ze2020_relational_model_ready_panel.py`) + 11/11
+(`tests/test_fr_ze2020_relational_baselines.py`), mais a bateria completa de
+regressão (82/82, ver §8/commit).
+
+### Decisão pendente atualizada
+
+MVP3 (grafo neural) continua **não autorizado**. O resultado smoke desta pass não
+move a agulha nessa decisão em nenhuma direção — nem a acelera (o resultado foi
+neutro/levemente negativo) nem a encerra (faltam testar Categoria B/C e variações
+de definição de similaridade antes de considerar a hipótese da camada relacional
+esgotada).

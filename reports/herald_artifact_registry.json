@@ -811,6 +811,44 @@
       "claim_forbidden": "Citing the WMAPE numbers in this file (or in the companion fr_ze2020_baseline_metrics_v1.csv) as a validated or headline HERALD result. Comparing them to HERALD_Q7_FRANCE_RESULT or any train_herald_v3..v7/semi/regime output without first noting those read a different, INVALID_FOR_CLAIMS panel (FR_DYNAMIC_STGNN_LEGACY_FEATURE_PANEL) over a different year range -- the two are not on the same evidentiary footing and must not be presented side by side as comparable models. Treating this as a graph or sector-level result (it is zone-level, no-graph, no-sector-dimension by construction).",
       "can_regenerate": true,
       "notes": "Output is intentionally left untracked/regenerable (run the generator script to reproduce) rather than committed, matching this repository's convention for smoke/exploratory results (see HERALD_14_WORKTREE_DECISION_AUDIT.md 'RESOLVED_COMMITTED_CODE_TESTS' rows). The generator script and its test (tests/test_fr_ze2020_baselines.py, 12/12 PASS) are committed. A companion metrics file, fr_ze2020_baseline_metrics_v1.csv, is produced by the same script and is covered by this same entry."
+    },
+    {
+      "id": "PANEL_FR_ZE2020_RELATIONAL_MODEL_READY",
+      "phase": "relational layer MVP2 (2026-06-24)",
+      "path": "data/processed/france_ze2020/fr_ze2020_relational_model_ready_panel.csv",
+      "type": "panel_csv",
+      "status": "ACTIVE",
+      "tracked_in_git": true,
+      "size_bytes": 528082,
+      "sha256_prefix": "f400f4fc881f02b14bdf",
+      "origin_decision": "none yet (MVP2 smoke step per reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md; not a modeling decision)",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_relational_model_ready_panel.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv"
+      ],
+      "claim_authorized": "All PANEL_FR_ZE2020_MODEL_READY_CAUSAL columns unchanged, plus 5 Category-A relational columns (similar_ze_lag_1_mean, similar_ze_lag_1_weighted_mean, similar_ze_growth_1y_safe_mean, similar_ze_count, relational_feature_available) computed per evaluation year from a ZE-to-ZE Pearson correlation matrix over growth_1y_safe history restricted to strictly prior years (expanding window), top-5 positively-correlated neighbors, reading only each neighbor's own already-lagged lag_1/growth_1y_safe values -- never any zone's current-year observed_value. Relational features are unavailable (relational_feature_available=0, NaN means) for 2012-2016 (insufficient history) and available for 2017-2024 (verified: 280/280 zones each year). Does not use graph_adjacency_core_v0.csv / graph_adjacency_mobility_v0.csv (generator missing from tree, HERALD_16 section 4.1) or any sector-level feature (Category C blocked pending provenance, see HERALD_17).",
+      "claim_forbidden": "Treating this as a trained-model result or performance claim (none exists yet -- see FR_ZE2020_RELATIONAL_BASELINE_PREDICTIONS_V1 below for the smoke comparison, itself not a headline claim). Adding sector composition/exposure features to this file without first resolving side_creations_a10_ze2020_v1.csv's missing provenance (HERALD_17 section 1, item 6). Citing similar_ze_* features as a validated economic relation -- they are a candidate engineering feature, not a tested association.",
+      "can_regenerate": true,
+      "notes": "MVP2 (Category A only) of reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md. Does not modify fr_ze2020_model_ready_panel.csv (read-only input, checksum-verified unchanged by tests/test_fr_ze2020_relational_model_ready_panel.py). 13/13 tests pass, including a no-future-leakage check (truncating the input to years <= eval_year reproduces identical relational features at eval_year)."
+    },
+    {
+      "id": "FR_ZE2020_RELATIONAL_BASELINE_PREDICTIONS_V1",
+      "phase": "relational layer MVP2 (2026-06-24)",
+      "path": "data/processed/france_ze2020/fr_ze2020_relational_baseline_predictions_v1.csv",
+      "type": "analysis_csv",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (organizational/smoke comparison, not a modeling decision) -- see reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md",
+      "generator_script": "src/modeles/france_ze2020/train_fr_ze2020_relational_baselines.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_relational_model_ready_panel.csv"
+      ],
+      "claim_authorized": "Relational smoke comparison only: persistence vs. ridge_temporal (= train_fr_ze2020_baselines.py's existing Ridge, not modified) vs. ridge_relational (same Ridge plus the 3 Category-A relational features), same held-out test rows per eval year, eval years 2019-2024 where data allows (ridge_relational only runs from 2021 onward -- needs RIDGE_MIN_TRAIN_YEARS=4 years of relational history, available only from 2017). Comparable-window result (2021-2024, all 3 models present): persistence WMAPE ~0.077, ridge_temporal ~0.085, ridge_relational ~0.092 -- relational features did NOT beat either baseline in this smoke run. Every row carries claim_status=relational_smoke_result.",
+      "claim_forbidden": "Citing the WMAPE numbers as a validated or headline result, or as evidence either for or against the broader relational-layer hypothesis (n=4 eval years, 1 similarity definition, 1 alpha -- a single smoke run, not a gated experiment). Averaging ridge_relational's WMAPE together with persistence/ridge_temporal's across mismatched eval-year sets (2019-2020 have no ridge_relational result) -- only the comparable-window (2021-2024) mean is meaningful, per the same year-alignment rule already learned for the HERALD Intelligence Layer. Treating this as authorization for MVP3 (graph model) -- it is not; MVP3 remains pending a new DEC per HERALD_17 section 9.",
+      "can_regenerate": true,
+      "notes": "Output intentionally left untracked/regenerable, matching FR_ZE2020_BASELINE_PREDICTIONS_V1's convention. Companion metrics file fr_ze2020_relational_baseline_metrics_v1.csv produced by the same script, covered by this same entry. Generator script and its test (tests/test_fr_ze2020_relational_baselines.py, 11/11 PASS) are committed."
     }
   ]
 }
