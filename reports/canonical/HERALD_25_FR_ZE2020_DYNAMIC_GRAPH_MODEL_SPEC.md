@@ -508,6 +508,49 @@ pattern.
 
 ---
 
+## 12e. HPC package prepared
+
+Implemented 2026-07-01:
+
+```text
+hpc/france_ze2020_dynamic_graph/
+```
+
+Contents:
+
+| File | Role |
+|---|---|
+| `run_fr_ze2020_dynamic_graph_ranker_task.sh` | one-seed ranker task |
+| `run_fr_ze2020_dynamic_graph_falsification_task.sh` | one-seed falsification task |
+| `run_fr_ze2020_dynamic_graph_ranker_array.sbatch` | 5-seed Slurm array |
+| `run_fr_ze2020_dynamic_graph_falsification_array.sbatch` | 5-seed falsification Slurm array |
+| `submit_fr_ze2020_dynamic_graph_ranker_hpc.sh` | dry-run submitter, real submit only with `--confirm-submit` |
+| `submit_fr_ze2020_dynamic_graph_falsifications_hpc.sh` | dry-run falsification submitter, real submit only with `--confirm-submit` |
+| `audit_fr_ze2020_dynamic_graph_results.py` | descriptive post-run audit, no auto-promotion |
+
+Default HPC target:
+
+```text
+target_horizon=1
+seeds=42 43 44 45 46
+eval_years=2017..2024
+```
+
+Validation:
+
+```text
+tests/test_fr_ze2020_dynamic_graph_hpc_audit.py
+```
+
+HPC launch is still a separate operational action. Before launch:
+
+1. sync the latest local commits and dynamic graph CSVs to `meso`;
+2. run remote smoke for ranker and falsification with one seed and one eval year;
+3. run submit scripts without `--confirm-submit` to verify Slurm command construction;
+4. only then submit arrays with explicit confirmation.
+
+---
+
 ## 13. References
 
 Primary project references:
