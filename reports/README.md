@@ -80,6 +80,20 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     (`data/external/ze2020_geometry.geojson`) verified 280/280 canonical coverage.
     `DASHBOARD_MVP_READY`. No causal/recommendation language, no fabricated
     prediction series.
+21. `canonical/HERALD_23_TEMPORAL_RELATIONAL_RECOMMENDATION_OBJECTIVE.md` — canonical
+    reframing of the project objective: forecasting is now a control/auxiliary task;
+    the main target is temporal-relational representation learning for auditable
+    indicators and future exploratory ZE×sector ranking. No operational recommendation
+    claim and no final validated STGNN claim.
+22. `canonical/HERALD_24_FR_ZE2020_SECTOR_RANKING_TRAINING_SPEC.md` — first concrete
+    training spec for the reframed objective: a retrospective ZE×sector ranking task,
+    its baselines, metrics, and HPC launch target. Exploratory only; no automatic
+    recommendation and no causal claim.
+23. `canonical/HERALD_25_FR_ZE2020_DYNAMIC_GRAPH_MODEL_SPEC.md` — construction spec for
+    the next model block: a dynamic ZE2020 x A10-sector graph, with explicit node/edge
+    schemas, leakage rules, typed relations, ranking objective, falsification gates, and
+    conditions required before HERALD can be described as a new dynamic graph model.
+    Specification only; no model result and no operational recommendation claim.
 
 ## Control Documents
 

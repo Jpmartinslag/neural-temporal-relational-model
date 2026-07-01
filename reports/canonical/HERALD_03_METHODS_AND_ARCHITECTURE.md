@@ -16,20 +16,26 @@ flowchart TD
     A["1. Territorial data<br/>country x territory x sector x year"] --> B
     A --> C
     A --> D
+    A --> R["Temporal-relational representation<br/>territory + sector + time"]
 
     B["2. Local prediction<br/>persistence / Ridge AR(1), causal, rolling-origin"]
     C["3. Economic state<br/>descriptive label: growth/accel/decel/stagnation/decline/recovery"]
     D["4. Sector relations<br/>signed lag-1 precedence, bootstrap/permutation/FDR"]
 
+    D --> R
+    R --> B
+    R --> I["Indicators<br/>signal / stability / specialization / proximity"]
+
     B --> E["5. Evidence tier<br/>observed / proxy / robust / supported / exploratory / blocked"]
     C --> E
     D --> E
+    I --> E
 
     E --> F["6. Observatory<br/>visualization only, never causal, never a recommendation"]
 
     D -.->|"research track, NOT wired in"| G["SharedRelationEncoder<br/>synthetic: strong; real data: PARTIAL"]
 
-    F --> H["FUTURE: Recommendation layer<br/>NOT STARTED — requires Bloco 1 + Bloco 2 complete"]
+    I -.->|"future validation"| H["FUTURE: ZE x sector ranking<br/>assisted recommendation, NOT operational"]
 
     style G stroke-dasharray: 5 5
     style H stroke-dasharray: 5 5
@@ -39,6 +45,21 @@ This mirrors the 6-stage / 4-component diagram built into the v0.5.1 dashboard
 ("Méthode HERALD"). The dashed boxes are explicitly **not** part of the current
 Observatory output: the neural research track is informative but unwired, and the
 recommendation layer does not exist.
+
+**Reframed objective (2026-07-01, see `HERALD_23`):** HERALD is no longer framed as a
+project whose main scientific objective is to make graph/neural models beat forecasting
+baselines. Forecasting remains a causal control and auxiliary task. The central objective
+is to learn temporal-relational representations of territories and sectors that produce
+auditable indicators and exploratory ZE×sector rankings for assisted territorial economic
+recommendation. This does not create an operational recommendation layer and does not
+validate a final temporal graph neural architecture.
+
+**Model positioning (2026-07-01):** The long-term target is closer to a dynamic graph
+learning architecture than to a static GNN. EconoGNN (`R-008`) is an economic precedent,
+but HERALD is not currently an "EconoGNN for ZE2020". To justify a new named model, the
+project must still formalize a dynamic ZE2020×sector graph, train a temporal graph
+encoder, and pass ablations/placebos showing that time, sector structure, and real
+relations add information beyond simple baselines.
 
 ---
 
@@ -135,6 +156,13 @@ It surveys methods for short annual NUTS3 panels (T≈13) and explicitly does no
 surveyed method will work on HERALD data — all require empirical validation, which is
 exactly what §2-4 above report. Master reference list:
 `reports/bibliography/HERALD_REFERENCES_MASTER.md` (kept tracked).
+
+The 2026-07-01 bibliography update adds recent anchors for this reframed path:
+dynamic graph neural-network surveys (`R-050`, `R-051`, `R-052`), spatio-temporal GNN
+review evidence (`R-053`), economic-network forecasting (`R-054`), economic-complexity
+optimization for recommendation (`R-055`), subnational complexity (`R-056`), and spatial
+dynamic panel baselines (`R-057`). These are methodological anchors only; none upgrades a
+HERALD prototype to a validated model without new experiments.
 
 ---
 
