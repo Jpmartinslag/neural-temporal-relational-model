@@ -637,17 +637,109 @@
 **Theme:** Signed directed network embeddings, sign and direction reconstruction
 **Used in project:** Secondary reference for independent sign/direction objectives.
 
+---
+
+## Axis 16 — Temporal-Relational Ranking and Dynamic Graph Framing (2026-07)
+
+### R-050 — Feng et al. (2024) — Dynamic GNN Survey
+**Key:** `feng2024dynamicgnnsurvey`
+**Title:** A Comprehensive Survey of Dynamic Graph Neural Networks: Models, Frameworks, Benchmarks, Experiments and Challenges
+**Authors:** ZhengZhao Feng, Rui Wang, TianXing Wang, Mingli Song, Sai Wu, Shuibing He
+**Year:** 2024
+**URL:** https://arxiv.org/abs/2405.00476
+**Status:** `PREPRINT`
+**Theme:** Dynamic graph neural networks, model taxonomy, frameworks, benchmarks, challenges
+**Used in project:** Background for positioning HERALD as a dynamic temporal-relational architecture rather than a static GNN.
+**Risk:** Survey reference only; does not validate HERALD results.
+
+### R-051 — Zheng, Yi & Wei (2024) — Dynamic GNN Survey
+**Key:** `zheng2024dynamicgnnsurvey`
+**Title:** A survey of dynamic graph neural networks
+**Authors:** Yanping Zheng, Lu Yi, Zhewei Wei
+**Year:** 2024
+**URL:** https://arxiv.org/abs/2404.18211
+**Status:** `PREPRINT`
+**Theme:** Dynamic graph neural networks, temporal dependency, evolving topology and attributes
+**Used in project:** Supports the distinction between static GNNs and dynamic graphs with time-varying node/edge information.
+**Risk:** Background only; no claim that HERALD has a validated DGNN yet.
+
+### R-052 — Yang, Adam & Chatelain (2023) — Dynamic Graph Representation Learning
+**Key:** `yang2023dynamicgraphsurvey`
+**Title:** Dynamic Graph Representation Learning with Neural Networks: A Survey
+**Authors:** Leshanshui Yang, Sebastien Adam, Clement Chatelain
+**Year:** 2023
+**URL:** https://arxiv.org/abs/2304.05729
+**Status:** `PREPRINT`
+**Theme:** Dynamic graph representation learning, temporal graph learning settings
+**Used in project:** Reference for framing HERALD's central object as learned temporal-relational representations.
+**Risk:** Survey reference only; not a HERALD implementation.
+
+### R-053 — Corradini et al. (2024) — Spatio-Temporal GNN Review
+**Key:** `corradini2024stgnnreview`
+**Title:** A Systematic Literature Review of Spatio-Temporal Graph Neural Network Models for Time Series Forecasting and Classification
+**Authors:** Flavio Corradini, Marco Gori, Carlo Lucheroni, Marco Piangerelli, Martina Zannotti
+**Year:** 2024
+**URL:** https://arxiv.org/abs/2410.22377
+**Status:** `PREPRINT`
+**Theme:** Spatio-temporal graph neural networks, forecasting, classification, reproducibility, explainability, scalability
+**Used in project:** Supports rigorous baseline comparison and caution around explainability/reproducibility for ST-GNN claims.
+**Risk:** Literature review only; does not justify promoting neural results without gates.
+
+### R-054 — Silva, Wilhelm & Amancio (2024) — Trade Networks and Forecasting
+**Key:** `silva2024tradeforecasting`
+**Title:** Machine learning and economic forecasting: the role of international trade networks
+**Authors:** Thiago C. Silva, Paulo V. B. Wilhelm, Diego R. Amancio
+**Year:** 2024
+**URL:** https://arxiv.org/abs/2404.08712
+**Status:** `PREPRINT`
+**Theme:** Economic forecasting, network topology descriptors, non-linear machine learning, SHAP
+**Used in project:** Motivation for testing whether network/relational descriptors add information beyond simple temporal baselines.
+**Risk:** Country-level international trade setting; not direct evidence for ZE2020 ranking.
+
+### R-055 — Stojkoski & Hidalgo (2025) — Optimizing Economic Complexity
+**Key:** `stojkoski2025optimizingcomplexity`
+**Title:** Optimizing Economic Complexity
+**Authors:** Viktor Stojkoski, Cesar A. Hidalgo
+**Year:** 2025
+**URL:** https://arxiv.org/abs/2503.04476
+**Status:** `PREPRINT`
+**Theme:** Economic complexity, diversification opportunities, optimization objective
+**Used in project:** Warning that relatedness signals are not enough for recommendation; a ranking/recommendation layer needs an explicit objective and retrospective validation.
+**Risk:** Preprint and different scale; use as methodological caution, not as a HERALD result.
+
+### R-056 — Fritz & Manduca (2019) — Metropolitan Economic Complexity
+**Key:** `fritz2019metroeconomiccomplexity`
+**Title:** The Economic Complexity of US Metropolitan Areas
+**Authors:** Benedikt S. L. Fritz, Robert A. Manduca
+**Year:** 2019
+**URL:** https://arxiv.org/abs/1901.08112
+**Status:** `PREPRINT`
+**Theme:** Economic complexity, industry employment, metropolitan/subnational geography
+**Used in project:** Supports adapting complexity/relatedness reasoning from countries to subnational functional territories.
+**Risk:** US metropolitan areas and employment data; not direct validation for French ZE2020 enterprise creation.
+
+### R-057 — Chen et al. (2025) — Spatial Dynamic Panel Baseline
+**Key:** `chen2025spatialdynamicpanel`
+**Title:** IV Estimation of Heterogeneous Spatial Dynamic Panel Models with Interactive Effects
+**Authors:** Jia Chen, Guowei Cui, Vasilis Sarafidis, Takashi Yamagata
+**Year:** 2025
+**URL:** https://arxiv.org/abs/2501.18467
+**Status:** `PREPRINT`
+**Theme:** Spatial dynamic panel models, heterogeneity, regional economic growth, spatial and temporal dependencies
+**Used in project:** Candidate econometric baseline family for future HERALD falsification against neural/dynamic graph claims.
+**Risk:** Econometric method reference; may require assumptions and data length not satisfied by the current ZE2020 annual panel.
+
 ## Metrics
 
 | Metric | Count |
 |--------|------:|
-| Total references | 49 |
+| Total references | 57 |
 | VERIFIED_PRIMARY | 37 |
 | VERIFIED_INSTITUTIONAL | 2 |
-| PREPRINT | 10 |
+| PREPRINT | 18 |
 | UNVERIFIED | 0 |
 | POSSIBLE_HALLUCINATION | 0 |
-| Axes covered | 15 |
+| Axes covered | 16 |
 
 **Note on count:** The literature review comparative table (section 13) describes ~30 works, of which approximately 25 are explicitly keyed here. The remaining ~5 are referenced descriptively in the text (e.g. financial TVGL applications, product space Brazil analysis) without independent primary verification — they are not counted as references until verified.
 
