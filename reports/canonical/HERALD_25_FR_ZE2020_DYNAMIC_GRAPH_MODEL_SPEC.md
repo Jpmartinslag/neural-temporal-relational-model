@@ -419,6 +419,57 @@ finite weights, label/feature separation, and claim hygiene.
 
 ---
 
+## 12c. First smoke encoder implemented
+
+Implemented 2026-07-01:
+
+```text
+src/modeles/france_ze2020/train_fr_ze2020_dynamic_graph_ranker.py
+```
+
+This is the first `HERALD-DG-Rank prototype` smoke implementation. It is deliberately
+small:
+
+```text
+nodes + typed edges
+        |
+        v
+manual typed message passing
+        |
+        v
+Ridge / MLP ranking heads
+        |
+        v
+retrospective ZE x sector ranking metrics
+```
+
+Message formula:
+
+```text
+message_i,t,type,f =
+    sum_j(edge_weight_j,i,t,type * feature_j,t,f)
+    / sum_j(abs(edge_weight_j,i,t,type))
+```
+
+Non-finite message values are set to `0.0` after aggregation. This prevents unusable
+neighbor histories from entering the model as `NaN`/`Inf`; the original node-level
+availability remains represented by masks and `feature_complete`.
+
+The smoke encoder does not make the project a validated dynamic graph model. It only
+establishes that the HERALD_25 graph input can be consumed by a typed temporal-relational
+ranker without reintroducing forbidden legacy inputs.
+
+Validation:
+
+```text
+tests/test_fr_ze2020_dynamic_graph_ranker.py
+```
+
+The tests check typed-message construction, label/feature separation, finite model
+features on usable rows, 1-year and 3-year target support, and claim hygiene.
+
+---
+
 ## 13. References
 
 Primary project references:
