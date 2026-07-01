@@ -470,6 +470,44 @@ features on usable rows, 1-year and 3-year target support, and claim hygiene.
 
 ---
 
+## 12d. Falsification runner implemented
+
+Implemented 2026-07-01:
+
+```text
+src/modeles/france_ze2020/run_fr_ze2020_dynamic_graph_falsifications.py
+```
+
+The runner applies in-memory perturbations only. It does not overwrite the canonical
+dynamic graph input files.
+
+Implemented scenarios:
+
+| Scenario | Purpose |
+|---|---|
+| `full_control` | reference run |
+| `no_edges` | tests whether graph messages add anything beyond node features |
+| `random_edge_weights` | tests whether edge weights matter beyond their marginal distribution |
+| `random_edge_targets` | tests whether the specific source-target structure matters |
+| `no_cross_ze_same_sector` | removes same-sector cross-ZE relations |
+| `no_intra_ze_sector` | removes intra-ZE sector interaction edges |
+| `no_ze_similarity` | removes trajectory-similarity edges |
+| `temporal_shuffle` | shuffles temporal node features within decision year |
+| `sector_shuffle` | shuffles sector-composition node features within ZE-year |
+
+Validation:
+
+```text
+tests/test_fr_ze2020_dynamic_graph_falsifications.py
+```
+
+This makes the dynamic graph block ready for a small local falsification run. It is not
+yet a full HPC launch specification. Before HPC, create a dedicated `hpc/france_ze2020_dynamic_graph/`
+folder with smoke, array, task, submit, and audit scripts following the HERALD_19/HERALD_24
+pattern.
+
+---
+
 ## 13. References
 
 Primary project references:
