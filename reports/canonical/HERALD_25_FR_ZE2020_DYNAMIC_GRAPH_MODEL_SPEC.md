@@ -367,6 +367,58 @@ surface remains small enough to audit.
 
 ---
 
+## 12b. First construction lot implemented
+
+Implemented 2026-07-01:
+
+```text
+src/data/france_ze2020/build_fr_ze2020_dynamic_graph_inputs.py
+```
+
+Outputs:
+
+```text
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges.csv
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_splits.csv
+```
+
+Observed output sizes:
+
+| File | Rows | Meaning |
+|---|---:|---|
+| `fr_ze2020_dynamic_graph_nodes.csv` | 35,280 | 280 ZE2020 x 9 A10 sectors x 14 decision years |
+| `fr_ze2020_dynamic_graph_edges.csv` | 52,087 | typed exploratory edges from already-audited relation signals |
+| `fr_ze2020_dynamic_graph_splits.csv` | 14 | one split row per decision year |
+
+Implemented edge types:
+
+```text
+cross_ze_same_sector
+intra_ze_sector
+ze_similarity
+```
+
+Deliberate non-implementation:
+
+```text
+ze_sector_specialization
+```
+
+Reason: specialization is a node/territory-sector attribute candidate, not an edge. The
+builder does not fabricate self-loops or pseudo-edges from this family.
+
+Validation:
+
+```text
+tests/test_fr_ze2020_dynamic_graph_inputs.py
+```
+
+The tests check schema, determinism, forbidden legacy inputs, node/edge consistency,
+finite weights, label/feature separation, and claim hygiene.
+
+---
+
 ## 13. References
 
 Primary project references:
@@ -386,4 +438,3 @@ Literature anchors:
 - `R-055` optimizing economic complexity
 - `R-056` metropolitan economic complexity
 - `R-057` spatial dynamic panel baseline
-

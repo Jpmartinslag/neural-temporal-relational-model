@@ -1013,6 +1013,26 @@
       "notes": "28/28 new tests pass (15 tests/test_fr_ze2020_exploratory_relation_signals.py + 13 tests/test_fr_ze2020_exploratory_relation_examples.py). Deterministic: rebuilding twice from the same inputs produces an identical table (verified by test)."
     },
     {
+      "id": "FR_ZE2020_DYNAMIC_GRAPH_INPUTS_V1",
+      "phase": "dynamic graph model preparation (2026-07-01)",
+      "path": "data/processed/france_ze2020/",
+      "type": "model_input_bundle",
+      "status": "REGENERABLE",
+      "tracked_in_git": true,
+      "size_bytes": 32164241,
+      "sha256_prefix": "b77859b18fcc4b704c52",
+      "origin_decision": "none (construction layer for HERALD_25, not a model result) -- see reports/canonical/HERALD_25_FR_ZE2020_DYNAMIC_GRAPH_MODEL_SPEC.md",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_dynamic_graph_inputs.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv",
+        "data/processed/france_ze2020/fr_ze2020_exploratory_relation_signals.csv"
+      ],
+      "claim_authorized": "Dynamic graph input bundle for the HERALD_25 prototype path: 35,280 node-year rows (280 ZE2020 x 9 A10 sectors x 14 decision years), 52,087 typed exploratory edges, and 14 split rows. Implemented edge types are cross_ze_same_sector, intra_ze_sector, and ze_similarity. Labels future_growth_1y/future_growth_3y remain present for evaluation but are explicitly separate from NODE_FEATURE_COLUMNS. ze_sector_specialization is deliberately not converted into an edge because it is a node/sector attribute candidate, not a relation between two nodes.",
+      "claim_forbidden": "Treating this bundle as a trained model, a validated dynamic GNN, or evidence that HERALD beats baselines. Treating edge_weight/signal_strength as causal influence. Treating any row as an automatic recommendation, policy action, or investment signal. Reintroducing dynamic_stgnn_feature_panel* or graph_adjacency_core_v0/mobility_v0 as inputs without a new provenance decision.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_dynamic_graph_inputs.py. Builder reads only the ranking panel and exploratory relation signals. No model training is performed."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
