@@ -256,6 +256,10 @@ share of edges that survive pruning thresholds
 
 No model training.
 
+**Implemented 2026-07-02.** The script reports type/year counts, target-node degree
+statistics, edge age, stability and volatile-edge shares. It writes optional audit CSV/JSON
+outputs only when `--output-dir` is supplied.
+
 ### Lot B — pruned stable edge builder
 
 Create:
@@ -272,6 +276,73 @@ fr_ze2020_dynamic_graph_edges_pruned_stable.csv.gz
 
 No learned weights yet.
 
+**Implemented 2026-07-02.**
+
+```text
+script: src/data/france_ze2020/build_fr_ze2020_dynamic_edge_variants.py
+output: data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_pruned_stable.csv.gz
+rows:   31,551
+size:   589,818 bytes
+sha256: e5900849f16834fd66a33fab0c2eb2017af5ef5720e78130cef1071cd0060d42
+```
+
+Pruning rule:
+
+```text
+top_k_per_node = 5
+stability_score >= 0.25
+abs(signal_strength) >= 0.30
+edge_age <= 5
+```
+
+Retained share versus the expanding edge-memory table:
+
+```text
+31,551 / 258,460 = 0.1221
+```
+
+This is a candidate edge variant only. It has not passed ranker/falsification gates.
+
+### Lot B2 — stateful edge builder
+
+Implemented in the same builder:
+
+```text
+script: src/data/france_ze2020/build_fr_ze2020_dynamic_edge_variants.py
+output: data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful.csv.gz
+rows:   258,460
+size:   3,633,728 bytes
+sha256: d8f9bfedb4c3ba7a5d20b67c381e6abc0b11b30ae6e0986e3bb6c94675bcb06f
+```
+
+This variant does not cut edges. It reweights the expanding edge-memory table with a
+pre-registered state multiplier:
+
+```text
+persistent_relation: 1.00
+reappearing_relation: 0.75
+new_relation: 0.50
+decaying_relation: 0.35
+volatile_relation: 0.15
+```
+
+Actual states present in v1:
+
+| Edge state | Rows |
+|---|---:|
+| `volatile_relation` | 220,336 |
+| `decaying_relation` | 22,028 |
+| `new_relation` | 16,096 |
+
+Weight formula:
+
+```text
+edge_weight = signal_strength * stability_score * state_multiplier / (1 + edge_age)
+```
+
+The aim is to keep exploratory relation visibility while penalizing noisy or old
+relations. It remains an edge candidate, not a validated graph structure.
+
 ### Lot C — local ranker/falsification smoke
 
 Use existing ranker and falsification scripts with:
@@ -280,7 +351,88 @@ Use existing ranker and falsification scripts with:
 --edges fr_ze2020_dynamic_graph_edges_pruned_stable.csv.gz
 ```
 
-Run one seed / one or two years first. If clean, run 5 seeds on HPC.
+**Executed locally 2026-07-02.**
+
+Smoke 1:
+
+```text
+seed:       42
+eval year:  2024
+epochs:     15 for ranker, 10 for falsification
+```
+
+The run completed, but `no_edges` remained better than `full_control`.
+
+Smoke 2:
+
+```text
+seed:       42
+eval years: 2017..2024
+epochs:     10
+scenarios:  full_control, no_edges, random_edge_weights, temporal_shuffle, sector_shuffle
+```
+
+Mean NDCG@K:
+
+| Scenario | Ridge dynamic graph | MLP dynamic graph | Reading |
+|---|---:|---:|---|
+| `full_control` | 0.5078 | 0.4786 | pruned-stable graph candidate |
+| `no_edges` | 0.5250 | 0.5029 | better than graph candidate |
+| `random_edge_weights` | 0.5067 | 0.4823 | near full control |
+| `sector_shuffle` | 0.4866 | 0.4468 | sector signal still matters |
+| `temporal_shuffle` | 0.4456 | 0.4166 | time order still matters |
+
+Decision:
+
+```text
+Do not launch HPC for pruned_stable v1.
+```
+
+Reason:
+
+```text
+The local all-year smoke fails G2: full_control does not beat no_edges.
+The result confirms that simple pruning alone is not enough.
+```
+
+This is not a failure of the pipeline. It is a falsification result: the next work should
+move to stateful or learned edge weights rather than spending HPC budget on this exact
+pruned-stable specification.
+
+Stateful smoke:
+
+```text
+seed:       42
+eval years: 2017..2024
+epochs:     10
+scenarios:  full_control, no_edges, random_edge_weights, temporal_shuffle, sector_shuffle
+```
+
+Mean NDCG@K:
+
+| Scenario | Ridge dynamic graph | MLP dynamic graph | Reading |
+|---|---:|---:|---|
+| `full_control` | 0.5179 | 0.4498 | stateful graph candidate |
+| `no_edges` | 0.5250 | 0.5029 | still better than graph candidate |
+| `random_edge_weights` | 0.5146 | 0.4573 | close to full control |
+| `sector_shuffle` | 0.5064 | 0.4451 | sector signal still matters |
+| `temporal_shuffle` | 0.4616 | 0.3910 | time order still matters |
+
+Decision:
+
+```text
+Do not launch HPC for stateful v1.
+```
+
+Reason:
+
+```text
+Stateful v1 improves Ridge versus pruned_stable v1, but still fails G2:
+full_control does not beat no_edges.
+```
+
+The next edge work should therefore focus on learned edge weights or a stronger edge
+selection objective, not heavier training over either fixed v1 edge variant.
 
 ### Lot D — learned edge gate
 
@@ -331,4 +483,6 @@ Start with Lot A and Lot B:
 4. launch HPC only if local smoke is clean.
 
 Do not move to heavier neural architecture until at least one edge variant beats
-`no_edges` under the pre-registered gates.
+`no_edges` under the pre-registered gates. The `pruned_stable` v1 and `stateful` v1
+variants did not pass that gate locally, so both remain audited edge candidates, not
+promoted training inputs.
