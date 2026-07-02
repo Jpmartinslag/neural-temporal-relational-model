@@ -4,7 +4,7 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=12G
 #SBATCH --time=03:00:00
-#SBATCH --array=0-39
+#SBATCH --array=0-59
 #SBATCH --output=hpc_results/fr_ze2020_dynamic_edge_variants_default/logs/task_%a.out
 #SBATCH --error=hpc_results/fr_ze2020_dynamic_edge_variants_default/logs/task_%a.err
 
@@ -20,6 +20,10 @@ VARIANT_NAMES=(
   stateful_sector_topk
   feature_compatible
   feature_compatible_topk
+  learned_stateful
+  learned_stateful_topk
+  learned_sector_only
+  learned_sector_topk
 )
 VARIANT_PATHS=(
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_expanding.csv.gz
@@ -30,6 +34,10 @@ VARIANT_PATHS=(
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_topk.csv.gz
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_feature_compatible.csv.gz
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_feature_compatible_topk.csv.gz
+  data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_stateful.csv.gz
+  data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_stateful_topk.csv.gz
+  data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_sector_only.csv.gz
+  data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_sector_topk.csv.gz
 )
 
 VARIANT_INDEX=$((SLURM_ARRAY_TASK_ID / ${#SEEDS[@]}))
