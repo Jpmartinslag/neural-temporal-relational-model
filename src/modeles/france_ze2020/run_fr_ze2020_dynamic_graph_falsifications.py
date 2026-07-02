@@ -60,6 +60,7 @@ SECTOR_COLUMNS = [
 SCENARIOS = [
     "full_control",
     "no_edges",
+    "edge_sign_only",
     "random_edge_weights",
     "random_edge_targets",
     "no_cross_ze_same_sector",
@@ -108,6 +109,10 @@ def apply_dynamic_graph_falsification(
         return out_nodes, out_edges
     if scenario == "no_edges":
         return out_nodes, _empty_edges_like(out_edges)
+    if scenario == "edge_sign_only":
+        out_edges["edge_weight"] = np.sign(out_edges["edge_weight"].to_numpy(dtype=float))
+        out_edges.loc[out_edges["edge_weight"] == 0, "edge_weight"] = 1.0
+        return out_nodes, out_edges
     if scenario == "random_edge_weights":
         out_edges["edge_weight"] = rng.permutation(out_edges["edge_weight"].to_numpy())
         return out_nodes, out_edges
