@@ -17,9 +17,11 @@ done
 RUN_ID="$(date +%Y%m%d_%H%M%S)"
 OUTDIR="hpc_results/fr_ze2020_dynamic_graph_ranker_${RUN_ID}"
 LOGDIR="${OUTDIR}/logs"
+EDGES_PATH="${FR_ZE2020_DYNAMIC_GRAPH_EDGES:-data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges.csv}"
 
 echo "=========================================="
 echo "France ZE2020 dynamic graph ranker submit -- RUN_ID=${RUN_ID}"
+echo "EDGES_PATH=${EDGES_PATH}"
 echo "=========================================="
 
 if [[ ! -f "src/modeles/france_ze2020/train_fr_ze2020_dynamic_graph_ranker.py" ]]; then
@@ -30,8 +32,8 @@ if [[ ! -f "data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv" ]]; 
   echo "ERROR: dynamic graph nodes not found -- did you rsync first?" >&2
   exit 1
 fi
-if [[ ! -f "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges.csv" ]]; then
-  echo "ERROR: dynamic graph edges not found -- did you rsync first?" >&2
+if [[ ! -f "${EDGES_PATH}" ]]; then
+  echo "ERROR: dynamic graph edges not found at ${EDGES_PATH} -- did you rsync first?" >&2
   exit 1
 fi
 if ! command -v sbatch >/dev/null 2>&1; then
@@ -44,7 +46,7 @@ mkdir -p "${LOGDIR}"
 SBATCH_CMD=(sbatch
   "--output=${LOGDIR}/task_%a.out"
   "--error=${LOGDIR}/task_%a.err"
-  "--export=ALL,RUN_ID=${RUN_ID}"
+  "--export=ALL,RUN_ID=${RUN_ID},FR_ZE2020_DYNAMIC_GRAPH_EDGES=${EDGES_PATH}"
   "hpc/france_ze2020_dynamic_graph/run_fr_ze2020_dynamic_graph_ranker_array.sbatch"
 )
 
@@ -60,4 +62,3 @@ if [[ "${CONFIRM}" -eq 1 ]]; then
 else
   echo "DRY RUN -- no job submitted (pass --confirm-submit to actually submit)."
 fi
-

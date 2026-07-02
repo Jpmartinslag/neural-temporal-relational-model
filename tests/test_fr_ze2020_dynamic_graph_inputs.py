@@ -5,6 +5,7 @@ import pandas as pd
 
 from src.data.france_ze2020.build_fr_ze2020_dynamic_graph_inputs import (
     EDGES_OUT_PATH,
+    EXPANDING_EDGES_OUT_PATH,
     LABEL_COLUMNS,
     NODES_OUT_PATH,
     NODE_FEATURE_COLUMNS,
@@ -37,6 +38,7 @@ FORBIDDEN_CLAIMS = [
 def test_dynamic_graph_outputs_exist_and_schema():
     nodes = pd.read_csv(NODES_OUT_PATH, dtype={"ze2020": str})
     edges = pd.read_csv(EDGES_OUT_PATH)
+    expanding_edges = pd.read_csv(EXPANDING_EDGES_OUT_PATH)
     splits = pd.read_csv(SPLITS_OUT_PATH)
 
     assert len(nodes) == 280 * 9 * 14
@@ -61,23 +63,35 @@ def test_dynamic_graph_outputs_exist_and_schema():
         "source_relation_id",
         "claim_status",
     }
+    expected_expanding_edge_cols = {
+        *expected_edge_cols,
+        "source_relation_year_end",
+        "edge_age",
+        "edge_memory_mode",
+    }
     assert expected_edge_cols.issubset(edges.columns)
+    assert expected_expanding_edge_cols.issubset(expanding_edges.columns)
     assert set(edges["edge_type"]) == {
         "cross_ze_same_sector",
         "intra_ze_sector",
         "ze_similarity",
     }
+    assert set(expanding_edges["edge_type"]) == set(edges["edge_type"])
     assert len(splits) == 14
 
 
 def test_dynamic_graph_build_is_deterministic():
     disk_nodes = pd.read_csv(NODES_OUT_PATH, dtype={"ze2020": str}).sort_index(axis=1)
     disk_edges = pd.read_csv(EDGES_OUT_PATH).sort_index(axis=1)
+    disk_expanding_edges = pd.read_csv(EXPANDING_EDGES_OUT_PATH).sort_index(axis=1)
     disk_splits = pd.read_csv(SPLITS_OUT_PATH).sort_index(axis=1)
 
-    nodes, edges, splits = build_dynamic_graph_inputs()
+    nodes, edges, expanding_edges, splits = build_dynamic_graph_inputs()
     pd.testing.assert_frame_equal(disk_nodes, nodes.sort_index(axis=1), check_dtype=False)
     pd.testing.assert_frame_equal(disk_edges, edges.sort_index(axis=1), check_dtype=False)
+    pd.testing.assert_frame_equal(
+        disk_expanding_edges, expanding_edges.sort_index(axis=1), check_dtype=False
+    )
     pd.testing.assert_frame_equal(disk_splits, splits.sort_index(axis=1), check_dtype=False)
 
 
@@ -93,18 +107,34 @@ def test_edges_only_reference_existing_nodes_in_same_year():
 
 
 def test_edges_are_finite_and_exploratory_not_causal():
-    edges = pd.read_csv(EDGES_OUT_PATH)
-    for col in ["edge_weight", "signal_strength", "stability_score"]:
-        assert np.isfinite(edges[col].to_numpy(dtype=float)).all()
-    assert edges["signal_strength"].between(-1, 1).all()
-    assert edges["stability_score"].between(0, 1).all()
-    assert set(edges["claim_status"]) == {"dynamic_graph_edge_exploratory_not_causal"}
+    for path in [EDGES_OUT_PATH, EXPANDING_EDGES_OUT_PATH]:
+        edges = pd.read_csv(path)
+        for col in ["edge_weight", "signal_strength", "stability_score"]:
+            assert np.isfinite(edges[col].to_numpy(dtype=float)).all()
+        assert edges["signal_strength"].between(-1, 1).all()
+        assert edges["stability_score"].between(0, 1).all()
+        assert set(edges["claim_status"]) == {"dynamic_graph_edge_exploratory_not_causal"}
+
+
+def test_expanding_edges_are_causal_memory_snapshots():
+    instant_edges = pd.read_csv(EDGES_OUT_PATH)
+    expanding_edges = pd.read_csv(EXPANDING_EDGES_OUT_PATH)
+    assert len(expanding_edges) > len(instant_edges)
+    assert set(expanding_edges["edge_memory_mode"]) == {"expanding_stability_decay"}
+    assert (expanding_edges["edge_age"] >= 0).all()
+    assert (expanding_edges["source_relation_year_end"] <= expanding_edges["decision_year"]).all()
+    assert (
+        expanding_edges["edge_age"]
+        == expanding_edges["decision_year"] - expanding_edges["source_relation_year_end"]
+    ).all()
+    assert "instant" not in set(expanding_edges["edge_memory_mode"])
 
 
 def test_specialization_signal_is_not_fabricated_as_edge():
-    edges = pd.read_csv(EDGES_OUT_PATH)
-    assert "ze_sector_specialization" not in set(edges["edge_type"])
-    assert not edges["source_relation_id"].str.contains("ze_sector_specialization", na=False).any()
+    for path in [EDGES_OUT_PATH, EXPANDING_EDGES_OUT_PATH]:
+        edges = pd.read_csv(path)
+        assert "ze_sector_specialization" not in set(edges["edge_type"])
+        assert not edges["source_relation_id"].str.contains("ze_sector_specialization", na=False).any()
 
 
 def test_label_columns_are_separate_from_feature_columns():
@@ -124,7 +154,7 @@ def test_script_does_not_read_forbidden_legacy_inputs_in_executable_paths():
 
 
 def test_no_forbidden_claim_columns():
-    for path in [NODES_OUT_PATH, EDGES_OUT_PATH, SPLITS_OUT_PATH]:
+    for path in [NODES_OUT_PATH, EDGES_OUT_PATH, EXPANDING_EDGES_OUT_PATH, SPLITS_OUT_PATH]:
         df = pd.read_csv(path)
         lowered = {c.lower() for c in df.columns}
         for term in FORBIDDEN_CLAIMS[1:]:

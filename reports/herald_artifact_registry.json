@@ -1019,15 +1019,15 @@
       "type": "model_input_bundle",
       "status": "REGENERABLE",
       "tracked_in_git": true,
-      "size_bytes": 32164241,
-      "sha256_prefix": "b77859b18fcc4b704c52",
+      "size_bytes": 36623117,
+      "sha256_prefix": "ce23c59ee2523b01beab",
       "origin_decision": "none (construction layer for HERALD_25, not a model result) -- see reports/canonical/HERALD_25_FR_ZE2020_DYNAMIC_GRAPH_MODEL_SPEC.md",
       "generator_script": "src/data/france_ze2020/build_fr_ze2020_dynamic_graph_inputs.py",
       "input_data": [
         "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv",
         "data/processed/france_ze2020/fr_ze2020_exploratory_relation_signals.csv"
       ],
-      "claim_authorized": "Dynamic graph input bundle for the HERALD_25 prototype path: 35,280 node-year rows (280 ZE2020 x 9 A10 sectors x 14 decision years), 52,087 typed exploratory edges, and 14 split rows. Implemented edge types are cross_ze_same_sector, intra_ze_sector, and ze_similarity. Labels future_growth_1y/future_growth_3y remain present for evaluation but are explicitly separate from NODE_FEATURE_COLUMNS. ze_sector_specialization is deliberately not converted into an edge because it is a node/sector attribute candidate, not a relation between two nodes.",
+      "claim_authorized": "Dynamic graph input bundle for the HERALD_25 prototype path: 35,280 node-year rows (280 ZE2020 x 9 A10 sectors x 14 decision years), 52,087 instant typed exploratory edges, 258,460 expanding edge-memory rows, and 14 split rows. Implemented edge types are cross_ze_same_sector, intra_ze_sector, and ze_similarity. The expanding edge-memory file keeps a relation observed at source_relation_year_end=s available for later decision years t>=s with edge_weight=signal_strength*stability_score/(1+edge_age), edge_age=t-s, edge_memory_mode=expanding_stability_decay. Labels future_growth_1y/future_growth_3y remain present for evaluation but are explicitly separate from NODE_FEATURE_COLUMNS. ze_sector_specialization is deliberately not converted into an edge because it is a node/sector attribute candidate, not a relation between two nodes.",
       "claim_forbidden": "Treating this bundle as a trained model, a validated dynamic GNN, or evidence that HERALD beats baselines. Treating edge_weight/signal_strength as causal influence. Treating any row as an automatic recommendation, policy action, or investment signal. Reintroducing dynamic_stgnn_feature_panel* or graph_adjacency_core_v0/mobility_v0 as inputs without a new provenance decision.",
       "can_regenerate": true,
       "notes": "Tests: tests/test_fr_ze2020_dynamic_graph_inputs.py. Builder reads only the ranking panel and exploratory relation signals. No model training is performed."

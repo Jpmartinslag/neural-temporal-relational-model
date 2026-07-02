@@ -12,6 +12,7 @@ Reads only audited France ZE2020 inputs:
 Outputs:
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges.csv
+  data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_expanding.csv
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_splits.csv
 """
 
@@ -28,6 +29,7 @@ RANKING_PANEL_PATH = OUT_DIR / "fr_ze2020_sector_ranking_panel.csv"
 RELATION_SIGNALS_PATH = OUT_DIR / "fr_ze2020_exploratory_relation_signals.csv"
 NODES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_nodes.csv"
 EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges.csv"
+EXPANDING_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_expanding.csv.gz"
 SPLITS_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_splits.csv"
 
 FORBIDDEN_INPUT_STEMS = (
@@ -167,8 +169,17 @@ def _base_edge_row(
     stability_score: float,
     source_basis: str,
     relation_id: str,
+    source_relation_year_end: int | None = None,
+    edge_age: int = 0,
+    edge_memory_mode: str = "instant",
 ) -> dict[str, object]:
-    edge_id = f"{edge_type}__{decision_year}__{source_node_id}__{target_node_id}__{relation_id}"
+    if edge_memory_mode == "instant":
+        edge_id = f"{edge_type}__{decision_year}__{source_node_id}__{target_node_id}__{relation_id}"
+    else:
+        edge_id = (
+            f"{edge_type}__{edge_memory_mode}__{decision_year}__{source_node_id}__"
+            f"{target_node_id}__{relation_id}"
+        )
     return {
         "edge_id": edge_id,
         "source_node_id": source_node_id,
@@ -180,6 +191,9 @@ def _base_edge_row(
         "stability_score": float(stability_score),
         "source_basis": source_basis,
         "source_relation_id": relation_id,
+        "source_relation_year_end": int(source_relation_year_end if source_relation_year_end is not None else decision_year),
+        "edge_age": int(edge_age),
+        "edge_memory_mode": edge_memory_mode,
         "claim_status": "dynamic_graph_edge_exploratory_not_causal",
     }
 
@@ -221,6 +235,9 @@ def build_dynamic_graph_edges(
                         stability_score=stability,
                         source_basis=source_basis,
                         relation_id=relation_id,
+                        source_relation_year_end=decision_year,
+                        edge_age=0,
+                        edge_memory_mode="instant",
                     )
                 )
 
@@ -240,6 +257,9 @@ def build_dynamic_graph_edges(
                         stability_score=stability,
                         source_basis=source_basis,
                         relation_id=relation_id,
+                        source_relation_year_end=decision_year,
+                        edge_age=0,
+                        edge_memory_mode="instant",
                     )
                 )
 
@@ -262,6 +282,9 @@ def build_dynamic_graph_edges(
                         stability_score=stability,
                         source_basis=source_basis,
                         relation_id=relation_id,
+                        source_relation_year_end=decision_year,
+                        edge_age=0,
+                        edge_memory_mode="instant",
                     )
                 )
 
@@ -288,7 +311,164 @@ def build_dynamic_graph_edges(
     edges = pd.DataFrame(rows).drop_duplicates("edge_id")
     edges = edges[np.isfinite(edges["edge_weight"].astype(float))]
     edges = edges[edges["source_node_id"] != edges["target_node_id"]]
-    return edges.sort_values(["decision_year", "edge_type", "source_node_id", "target_node_id"]).reset_index(drop=True)
+    columns = [
+        "edge_id",
+        "source_node_id",
+        "target_node_id",
+        "decision_year",
+        "edge_type",
+        "edge_weight",
+        "signal_strength",
+        "stability_score",
+        "source_basis",
+        "source_relation_id",
+        "claim_status",
+    ]
+    return (
+        edges[columns]
+        .sort_values(["decision_year", "edge_type", "source_node_id", "target_node_id"])
+        .reset_index(drop=True)
+    )
+
+
+def _memory_weight(signal_strength: float, stability_score: float, edge_age: int) -> float:
+    return float(signal_strength) * float(stability_score) / float(1 + edge_age)
+
+
+def build_dynamic_graph_edges_expanding(
+    nodes: pd.DataFrame | None = None,
+    relation_signals: pd.DataFrame | None = None,
+) -> pd.DataFrame:
+    """Build causal edge-memory snapshots.
+
+    A relation observed with year_end=s can be used for every decision_year t >= s.
+    The edge weight is damped by stability and recency:
+
+        signal_strength * stability_score / (1 + t - s)
+
+    This keeps historical signals available without pretending that a one-year spike is
+    as reliable as a recurrent relation.
+    """
+    _assert_no_forbidden_paths()
+    if nodes is None:
+        nodes = build_dynamic_graph_nodes()
+    if relation_signals is None:
+        relation_signals = load_relation_signals()
+
+    node_lookup = _valid_node_lookup(nodes)
+    sector_codes = sorted(nodes["sector_code"].dropna().unique())
+    years = sorted(nodes["decision_year"].astype(int).unique())
+    rows: list[dict[str, object]] = []
+
+    for row in relation_signals.itertuples(index=False):
+        family = getattr(row, "relation_family")
+        source_year = int(getattr(row, "year_end"))
+        strength = float(getattr(row, "signal_strength"))
+        stability = float(getattr(row, "stability_score"))
+        relation_id = str(getattr(row, "relation_id"))
+        source_basis = str(getattr(row, "evidence_source"))
+        decision_years = [year for year in years if year >= source_year]
+
+        for decision_year in decision_years:
+            edge_age = decision_year - source_year
+            edge_weight = _memory_weight(strength, stability, edge_age)
+
+            if family == "intra_ze_sector_interaction":
+                source_node_id = str(getattr(row, "source_id"))
+                target_node_id = str(getattr(row, "target_id"))
+                if (source_node_id, decision_year) in node_lookup and (target_node_id, decision_year) in node_lookup:
+                    rows.append(
+                        _base_edge_row(
+                            source_node_id=source_node_id,
+                            target_node_id=target_node_id,
+                            decision_year=decision_year,
+                            edge_type="intra_ze_sector",
+                            edge_weight=edge_weight,
+                            signal_strength=strength,
+                            stability_score=stability,
+                            source_basis=source_basis,
+                            relation_id=relation_id,
+                            source_relation_year_end=source_year,
+                            edge_age=edge_age,
+                            edge_memory_mode="expanding_stability_decay",
+                        )
+                    )
+
+            elif family == "ze_to_ze_same_sector_signal":
+                sector_code = str(getattr(row, "sector_code"))
+                source_node_id = _node_id(str(getattr(row, "source_id")), sector_code)
+                target_node_id = _node_id(str(getattr(row, "target_id")), sector_code)
+                if (source_node_id, decision_year) in node_lookup and (target_node_id, decision_year) in node_lookup:
+                    rows.append(
+                        _base_edge_row(
+                            source_node_id=source_node_id,
+                            target_node_id=target_node_id,
+                            decision_year=decision_year,
+                            edge_type="cross_ze_same_sector",
+                            edge_weight=edge_weight,
+                            signal_strength=strength,
+                            stability_score=stability,
+                            source_basis=source_basis,
+                            relation_id=relation_id,
+                            source_relation_year_end=source_year,
+                            edge_age=edge_age,
+                            edge_memory_mode="expanding_stability_decay",
+                        )
+                    )
+
+            elif family == "ze_to_ze_similarity":
+                for sector_code in sector_codes:
+                    source_node_id = _node_id(str(getattr(row, "source_id")), sector_code)
+                    target_node_id = _node_id(str(getattr(row, "target_id")), sector_code)
+                    if (source_node_id, decision_year) not in node_lookup:
+                        continue
+                    if (target_node_id, decision_year) not in node_lookup:
+                        continue
+                    rows.append(
+                        _base_edge_row(
+                            source_node_id=source_node_id,
+                            target_node_id=target_node_id,
+                            decision_year=decision_year,
+                            edge_type="ze_similarity",
+                            edge_weight=edge_weight,
+                            signal_strength=strength,
+                            stability_score=stability,
+                            source_basis=source_basis,
+                            relation_id=relation_id,
+                            source_relation_year_end=source_year,
+                            edge_age=edge_age,
+                            edge_memory_mode="expanding_stability_decay",
+                        )
+                    )
+
+            elif family == "ze_sector_specialization":
+                continue
+
+    if not rows:
+        columns = [
+            "edge_id",
+            "source_node_id",
+            "target_node_id",
+            "decision_year",
+            "edge_type",
+            "edge_weight",
+            "signal_strength",
+            "stability_score",
+            "source_basis",
+            "source_relation_id",
+            "source_relation_year_end",
+            "edge_age",
+            "edge_memory_mode",
+            "claim_status",
+        ]
+        return pd.DataFrame(columns=columns)
+
+    edges = pd.DataFrame(rows).drop_duplicates("edge_id")
+    edges = edges[np.isfinite(edges["edge_weight"].astype(float))]
+    edges = edges[edges["source_node_id"] != edges["target_node_id"]]
+    return edges.sort_values(
+        ["decision_year", "edge_type", "source_node_id", "target_node_id", "source_relation_year_end"]
+    ).reset_index(drop=True)
 
 
 def build_dynamic_graph_splits(nodes: pd.DataFrame | None = None) -> pd.DataFrame:
@@ -316,21 +496,24 @@ def build_dynamic_graph_splits(nodes: pd.DataFrame | None = None) -> pd.DataFram
     return pd.DataFrame(rows)
 
 
-def build_dynamic_graph_inputs() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def build_dynamic_graph_inputs() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     nodes = build_dynamic_graph_nodes()
     edges = build_dynamic_graph_edges(nodes=nodes)
+    expanding_edges = build_dynamic_graph_edges_expanding(nodes=nodes)
     splits = build_dynamic_graph_splits(nodes=nodes)
-    return nodes, edges, splits
+    return nodes, edges, expanding_edges, splits
 
 
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    nodes, edges, splits = build_dynamic_graph_inputs()
+    nodes, edges, expanding_edges, splits = build_dynamic_graph_inputs()
     nodes.to_csv(NODES_OUT_PATH, index=False)
     edges.to_csv(EDGES_OUT_PATH, index=False)
+    expanding_edges.to_csv(EXPANDING_EDGES_OUT_PATH, index=False)
     splits.to_csv(SPLITS_OUT_PATH, index=False)
     print(f"Nodes: {len(nodes)} -> {NODES_OUT_PATH}")
     print(f"Edges: {len(edges)} -> {EDGES_OUT_PATH}")
+    print(f"Expanding edges: {len(expanding_edges)} -> {EXPANDING_EDGES_OUT_PATH}")
     print(f"Splits: {len(splits)} -> {SPLITS_OUT_PATH}")
     print(f"Years: {nodes['decision_year'].min()}-{nodes['decision_year'].max()}")
     print(f"Edge types: {', '.join(sorted(edges['edge_type'].unique())) if len(edges) else 'none'}")

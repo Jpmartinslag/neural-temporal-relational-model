@@ -11,6 +11,7 @@ OUTDIR="${WORKDIR}/hpc_results/fr_ze2020_dynamic_graph_ranker_${RUN_ID}/seed_${S
 PYTHON="${HOME}/.conda/envs/herald-v5/bin/python"
 MAX_EPOCHS="${FR_ZE2020_DYNAMIC_GRAPH_MAX_EPOCHS:-250}"
 TARGET_HORIZON="${FR_ZE2020_DYNAMIC_GRAPH_TARGET_HORIZON:-1}"
+EDGES_PATH="${FR_ZE2020_DYNAMIC_GRAPH_EDGES:-data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges.csv}"
 if [[ "${TARGET_HORIZON}" == "1" ]]; then
   DEFAULT_EVAL_YEARS="2017 2018 2019 2020 2021 2022 2023 2024"
 else
@@ -23,6 +24,7 @@ echo "HERALD France ZE2020 dynamic graph ranker -- seed ${SEED}"
 echo "Node: $(hostname)"
 echo "Date: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 echo "RUN_ID=${RUN_ID} OUTDIR=${OUTDIR}"
+echo "EDGES_PATH=${EDGES_PATH}"
 echo "=========================================="
 
 cd "${WORKDIR}"
@@ -51,10 +53,12 @@ if failed:
 print("Forbidden-source check: PASS")
 PYEOF
 
-"${PYTHON}" - <<'PYEOF'
+"${PYTHON}" - "${EDGES_PATH}" <<'PYEOF'
+import sys
 import pandas as pd
+edges_path = sys.argv[1]
 nodes = pd.read_csv("data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv", nrows=5)
-edges = pd.read_csv("data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges.csv", nrows=5)
+edges = pd.read_csv(edges_path, nrows=5)
 required_nodes = {"node_id", "ze2020", "sector_code", "decision_year", "future_growth_1y", "future_growth_3y"}
 required_edges = {"source_node_id", "target_node_id", "decision_year", "edge_type", "edge_weight"}
 if missing := required_nodes - set(nodes.columns):
@@ -66,6 +70,7 @@ PYEOF
 
 "${PYTHON}" src/modeles/france_ze2020/train_fr_ze2020_dynamic_graph_ranker.py \
   --output-dir "${OUTDIR}" \
+  --edges "${EDGES_PATH}" \
   --target-horizon "${TARGET_HORIZON}" \
   --eval-years ${EVAL_YEARS} \
   --max-epochs "${MAX_EPOCHS}" \
@@ -73,4 +78,3 @@ PYEOF
 
 echo "Dynamic graph ranker task seed=${SEED} complete: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 echo "Outputs in ${OUTDIR}"
-

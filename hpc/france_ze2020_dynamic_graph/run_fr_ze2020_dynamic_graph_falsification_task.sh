@@ -11,6 +11,7 @@ OUTDIR="${WORKDIR}/hpc_results/fr_ze2020_dynamic_graph_falsifications_${RUN_ID}/
 PYTHON="${HOME}/.conda/envs/herald-v5/bin/python"
 MAX_EPOCHS="${FR_ZE2020_DYNAMIC_GRAPH_MAX_EPOCHS:-250}"
 TARGET_HORIZON="${FR_ZE2020_DYNAMIC_GRAPH_TARGET_HORIZON:-1}"
+EDGES_PATH="${FR_ZE2020_DYNAMIC_GRAPH_EDGES:-data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges.csv}"
 if [[ "${TARGET_HORIZON}" == "1" ]]; then
   DEFAULT_EVAL_YEARS="2017 2018 2019 2020 2021 2022 2023 2024"
 else
@@ -24,6 +25,7 @@ echo "HERALD France ZE2020 dynamic graph falsifications -- seed ${SEED}"
 echo "Node: $(hostname)"
 echo "Date: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 echo "RUN_ID=${RUN_ID} OUTDIR=${OUTDIR}"
+echo "EDGES_PATH=${EDGES_PATH}"
 echo "=========================================="
 
 cd "${WORKDIR}"
@@ -54,6 +56,7 @@ PYEOF
 
 "${PYTHON}" src/modeles/france_ze2020/run_fr_ze2020_dynamic_graph_falsifications.py \
   --output-dir "${OUTDIR}" \
+  --edges "${EDGES_PATH}" \
   --target-horizon "${TARGET_HORIZON}" \
   --eval-years ${EVAL_YEARS} \
   --scenarios ${SCENARIOS} \
@@ -62,4 +65,3 @@ PYEOF
 
 echo "Dynamic graph falsification task seed=${SEED} complete: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 echo "Outputs in ${OUTDIR}"
-

@@ -145,8 +145,24 @@ The next construction block should create these files, in this order:
 ```text
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges.csv
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_expanding.csv.gz
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_splits.csv
 ```
+
+The edge bundle has two auditable views:
+
+- `fr_ze2020_dynamic_graph_edges.csv`: instant snapshot. A relation is present only at
+  its observed `year_end`.
+- `fr_ze2020_dynamic_graph_edges_expanding.csv.gz`: expanding memory snapshot. A
+  relation observed at year `s` can be used at any later decision year `t >= s`, with
+  recency/stability decay:
+
+```text
+edge_weight(t) = signal_strength(s) * stability_score(s) / (1 + t - s)
+```
+
+This second file is a graph-construction hypothesis. It does not convert an exploratory
+association into causality, and it does not create an automatic recommendation.
 
 Later training may create:
 
@@ -380,6 +396,7 @@ Outputs:
 ```text
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges.csv
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_expanding.csv.gz
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_splits.csv
 ```
 
@@ -388,7 +405,8 @@ Observed output sizes:
 | File | Rows | Meaning |
 |---|---:|---|
 | `fr_ze2020_dynamic_graph_nodes.csv` | 35,280 | 280 ZE2020 x 9 A10 sectors x 14 decision years |
-| `fr_ze2020_dynamic_graph_edges.csv` | 52,087 | typed exploratory edges from already-audited relation signals |
+| `fr_ze2020_dynamic_graph_edges.csv` | 52,087 | instant typed exploratory edges from already-audited relation signals |
+| `fr_ze2020_dynamic_graph_edges_expanding.csv.gz` | 258,460 | expanding edge-memory view with `edge_memory_mode=expanding_stability_decay` |
 | `fr_ze2020_dynamic_graph_splits.csv` | 14 | one split row per decision year |
 
 Implemented edge types:
