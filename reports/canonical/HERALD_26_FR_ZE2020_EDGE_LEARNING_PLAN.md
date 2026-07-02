@@ -97,7 +97,11 @@ Recommended names:
 ```text
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_pruned_stable.csv.gz
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful.csv.gz
-data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_candidates.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_topk.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_topk.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_feature_compatible.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_feature_compatible_topk.csv.gz
 ```
 
 ### 3.1 Pruned stable graph
@@ -283,7 +287,7 @@ script: src/data/france_ze2020/build_fr_ze2020_dynamic_edge_variants.py
 output: data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_pruned_stable.csv.gz
 rows:   31,551
 size:   589,818 bytes
-sha256: e5900849f16834fd66a33fab0c2eb2017af5ef5720e78130cef1071cd0060d42
+sha256: 8cf728720b5feb56590326e09ac11ba0ae5fbfb58a83f90920d7a7f34121b5f9
 ```
 
 Pruning rule:
@@ -312,7 +316,7 @@ script: src/data/france_ze2020/build_fr_ze2020_dynamic_edge_variants.py
 output: data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful.csv.gz
 rows:   258,460
 size:   3,633,728 bytes
-sha256: d8f9bfedb4c3ba7a5d20b67c381e6abc0b11b30ae6e0986e3bb6c94675bcb06f
+sha256: 329ec5ddee5b4cd2a3aa96fba084b4fafff6b866c9b6ce73cf6959b6d4bd9f0d
 ```
 
 This variant does not cut edges. It reweights the expanding edge-memory table with a
@@ -342,6 +346,33 @@ edge_weight = signal_strength * stability_score * state_multiplier / (1 + edge_a
 
 The aim is to keep exploratory relation visibility while penalizing noisy or old
 relations. It remains an edge candidate, not a validated graph structure.
+
+### Lot B3 — batch edge hypothesis bundle
+
+Implemented 2026-07-02 in the same builder. The bundle is intentionally redundant:
+the goal is to falsify edge-construction hypotheses in parallel instead of spending
+manual time on one variant at a time.
+
+| Variant | File | Rows | Size bytes | Purpose |
+|---|---|---:|---:|---|
+| `pruned_stable` | `fr_ze2020_dynamic_graph_edges_pruned_stable.csv.gz` | 31,551 | 589,818 | strong stable-edge pruning |
+| `stateful` | `fr_ze2020_dynamic_graph_edges_stateful.csv.gz` | 258,460 | 3,633,728 | temporal state reweighting |
+| `stateful_sector_only` | `fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz` | 637 | 23,278 | remove noisy ZE-similarity family |
+| `stateful_topk` | `fr_ze2020_dynamic_graph_edges_stateful_topk.csv.gz` | 107,275 | 1,708,851 | cap incoming degree after stateful weighting |
+| `stateful_sector_topk` | `fr_ze2020_dynamic_graph_edges_stateful_sector_topk.csv.gz` | 637 | 29,405 | sector-only plus top-k cap |
+| `feature_compatible` | `fr_ze2020_dynamic_graph_edges_feature_compatible.csv.gz` | 258,460 | 14,254,732 | gate stateful edges by known source-target feature compatibility |
+| `feature_compatible_topk` | `fr_ze2020_dynamic_graph_edges_feature_compatible_topk.csv.gz` | 107,275 | 7,320,223 | feature-compatible plus top-k cap |
+
+The feature-compatible variants use only known node features at the decision year:
+
+```text
+sector_growth_lag_1
+sector_share_t
+national_sector_growth_lag_1
+```
+
+They do not use the future label of the decision year. They are adaptive edge-feature
+variants, not learned neural edge gates.
 
 ### Lot C — local ranker/falsification smoke
 
@@ -431,12 +462,49 @@ Stateful v1 improves Ridge versus pruned_stable v1, but still fails G2:
 full_control does not beat no_edges.
 ```
 
-The next edge work should therefore focus on learned edge weights or a stronger edge
-selection objective, not heavier training over either fixed v1 edge variant.
+Feature-compatible-top-k integration smoke:
 
-### Lot D — learned edge gate
+```text
+seed:       42
+eval year:  2024
+epochs:     5
+scenarios:  full_control, no_edges, random_edge_weights, temporal_shuffle, sector_shuffle
+```
 
-Only after Lot B:
+The run completed without schema/runtime errors. It is not interpreted as a model result
+because it is one year and one seed only.
+
+The next edge work is now a batch falsification run: all variants should be tested under
+the same seeds/scenarios before deciding whether learned edge weights are justified.
+
+### Lot D — HPC edge-variant falsification batch
+
+Created:
+
+```text
+hpc/france_ze2020_dynamic_graph/run_fr_ze2020_edge_variant_falsification_task.sh
+hpc/france_ze2020_dynamic_graph/run_fr_ze2020_edge_variant_falsification_array.sbatch
+hpc/france_ze2020_dynamic_graph/submit_fr_ze2020_edge_variant_falsifications_hpc.sh
+```
+
+Design:
+
+```text
+8 edge inputs x 5 seeds = 40 Slurm array tasks
+seeds = 42, 43, 44, 45, 46
+target_horizon = 1
+eval_years = 2017..2024
+scenarios = full_control, no_edges, random_edge_weights, random_edge_targets,
+            no_cross_ze_same_sector, no_intra_ze_sector, no_ze_similarity,
+            temporal_shuffle, sector_shuffle
+```
+
+The batch is falsification-only. Passing one metric does not automatically promote an
+edge variant; results must still be audited after collection.
+
+### Lot E — learned edge gate
+
+Only after the batch falsification:
 
 ```text
 fr_ze2020_dynamic_graph_edges_learned_candidates.csv.gz
@@ -483,6 +551,6 @@ Start with Lot A and Lot B:
 4. launch HPC only if local smoke is clean.
 
 Do not move to heavier neural architecture until at least one edge variant beats
-`no_edges` under the pre-registered gates. The `pruned_stable` v1 and `stateful` v1
-variants did not pass that gate locally, so both remain audited edge candidates, not
-promoted training inputs.
+`no_edges` under the pre-registered gates. The fixed/adaptive edge bundle must be audited
+first. If every variant still fails `no_edges`, the next move is learned edge weights or a
+different relation objective, not deeper MLP/STGNN training.

@@ -14,10 +14,26 @@ from src.data.france_ze2020.build_fr_ze2020_dynamic_edge_variants import (
     STATEFUL_EDGE_MEMORY_MODE,
     STATEFUL_EDGE_VARIANT,
     STATEFUL_EDGES_OUT_PATH,
+    STATEFUL_SECTOR_ONLY_EDGE_VARIANT,
+    STATEFUL_SECTOR_ONLY_EDGES_OUT_PATH,
+    STATEFUL_SECTOR_TOPK_EDGE_VARIANT,
+    STATEFUL_SECTOR_TOPK_EDGES_OUT_PATH,
+    STATEFUL_TOPK_EDGE_VARIANT,
+    STATEFUL_TOPK_EDGES_OUT_PATH,
     STATE_MULTIPLIERS,
+    FEATURE_COMPATIBLE_EDGE_MEMORY_MODE,
+    FEATURE_COMPATIBLE_EDGE_VARIANT,
+    FEATURE_COMPATIBLE_EDGES_OUT_PATH,
+    FEATURE_COMPATIBLE_TOPK_EDGE_VARIANT,
+    FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH,
+    SECTOR_EDGE_TYPES,
     build_pruned_stable_edges,
+    build_feature_compatible_edges,
+    build_sector_only_edges,
     build_stateful_edges,
+    build_topk_edges,
     load_expanding_edges,
+    load_nodes,
 )
 from src.data.france_ze2020.build_fr_ze2020_dynamic_graph_inputs import (
     EXPANDING_EDGES_OUT_PATH,
@@ -117,6 +133,21 @@ def test_stateful_edges_exist_and_schema():
     assert set(edges["edge_state"]).issubset(STATE_MULTIPLIERS)
 
 
+def test_all_edge_variant_files_exist_and_have_expected_variant_names():
+    paths = {
+        STATEFUL_SECTOR_ONLY_EDGES_OUT_PATH: STATEFUL_SECTOR_ONLY_EDGE_VARIANT,
+        STATEFUL_TOPK_EDGES_OUT_PATH: STATEFUL_TOPK_EDGE_VARIANT,
+        STATEFUL_SECTOR_TOPK_EDGES_OUT_PATH: STATEFUL_SECTOR_TOPK_EDGE_VARIANT,
+        FEATURE_COMPATIBLE_EDGES_OUT_PATH: FEATURE_COMPATIBLE_EDGE_VARIANT,
+        FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH: FEATURE_COMPATIBLE_TOPK_EDGE_VARIANT,
+    }
+    for path, variant in paths.items():
+        edges = pd.read_csv(path)
+        assert not edges.empty
+        assert set(edges["edge_variant"]) == {variant}
+        assert set(edges["claim_status"]) == {CLAIM_STATUS}
+
+
 def test_pruned_stable_edges_apply_thresholds_and_top_k():
     edges = pd.read_csv(PRUNED_STABLE_EDGES_OUT_PATH)
     assert (edges["stability_score"] >= DEFAULT_MIN_STABILITY).all()
@@ -160,6 +191,27 @@ def test_stateful_edges_reweight_expanding_edges_without_changing_grain():
     assert np.allclose(stateful["edge_weight"], expected_weight)
 
 
+def test_sector_only_variants_remove_ze_similarity():
+    stateful = pd.read_csv(STATEFUL_EDGES_OUT_PATH)
+    sector_only = pd.read_csv(STATEFUL_SECTOR_ONLY_EDGES_OUT_PATH)
+    sector_topk = pd.read_csv(STATEFUL_SECTOR_TOPK_EDGES_OUT_PATH)
+    assert set(sector_only["edge_type"]).issubset(SECTOR_EDGE_TYPES)
+    assert set(sector_topk["edge_type"]).issubset(SECTOR_EDGE_TYPES)
+    assert 0 < len(sector_only) < len(stateful)
+    assert len(sector_topk) <= len(sector_only)
+
+
+def test_topk_variants_limit_incoming_degree():
+    for path in [STATEFUL_TOPK_EDGES_OUT_PATH, FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH]:
+        edges = pd.read_csv(path)
+        assert edges["rank_within_target_year"].between(1, DEFAULT_TOP_K_PER_NODE).all()
+        assert (
+            edges.groupby(["decision_year", "target_node_id"]).size().max()
+            <= DEFAULT_TOP_K_PER_NODE
+        )
+        assert set(edges["variant_top_k_per_node"]) == {DEFAULT_TOP_K_PER_NODE}
+
+
 def test_pruned_stable_edges_are_finite_and_non_causal():
     edges = pd.read_csv(PRUNED_STABLE_EDGES_OUT_PATH)
     for col in ["edge_weight", "signal_strength", "stability_score", "edge_priority"]:
@@ -188,6 +240,19 @@ def test_stateful_edges_are_finite_and_non_causal():
     assert not FORBIDDEN_COLUMNS.intersection(lowered)
 
 
+def test_feature_compatible_edges_are_finite_and_bounded():
+    edges = pd.read_csv(FEATURE_COMPATIBLE_EDGES_OUT_PATH)
+    assert set(edges["edge_memory_mode"]) == {FEATURE_COMPATIBLE_EDGE_MEMORY_MODE}
+    compatibility_cols = [c for c in edges.columns if c.endswith("_compatibility")]
+    assert compatibility_cols
+    for col in [*compatibility_cols, "feature_compatibility_score", "edge_weight"]:
+        assert np.isfinite(edges[col].to_numpy(dtype=float)).all()
+    for col in [*compatibility_cols, "feature_compatibility_score"]:
+        assert edges[col].between(0, 1).all()
+    lowered = {col.lower() for col in edges.columns}
+    assert not FORBIDDEN_COLUMNS.intersection(lowered)
+
+
 def test_pruned_stable_builder_is_deterministic():
     disk = pd.read_csv(PRUNED_STABLE_EDGES_OUT_PATH).sort_index(axis=1)
     rebuilt = build_pruned_stable_edges().sort_index(axis=1)
@@ -198,6 +263,30 @@ def test_stateful_builder_is_deterministic():
     disk = pd.read_csv(STATEFUL_EDGES_OUT_PATH).sort_index(axis=1)
     rebuilt = build_stateful_edges().sort_index(axis=1)
     pd.testing.assert_frame_equal(disk, rebuilt, check_dtype=False)
+
+
+def test_derived_builders_are_deterministic():
+    stateful = build_stateful_edges()
+    nodes = load_nodes()
+    expected = {
+        STATEFUL_SECTOR_ONLY_EDGES_OUT_PATH: build_sector_only_edges(stateful),
+        STATEFUL_TOPK_EDGES_OUT_PATH: build_topk_edges(
+            stateful,
+            edge_variant=STATEFUL_TOPK_EDGE_VARIANT,
+        ),
+        STATEFUL_SECTOR_TOPK_EDGES_OUT_PATH: build_topk_edges(
+            build_sector_only_edges(stateful),
+            edge_variant=STATEFUL_SECTOR_TOPK_EDGE_VARIANT,
+        ),
+        FEATURE_COMPATIBLE_EDGES_OUT_PATH: build_feature_compatible_edges(stateful, nodes),
+    }
+    expected[FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH] = build_topk_edges(
+        expected[FEATURE_COMPATIBLE_EDGES_OUT_PATH],
+        edge_variant=FEATURE_COMPATIBLE_TOPK_EDGE_VARIANT,
+    )
+    for path, rebuilt in expected.items():
+        disk = pd.read_csv(path).sort_index(axis=1)
+        pd.testing.assert_frame_equal(disk, rebuilt.sort_index(axis=1), check_dtype=False)
 
 
 def test_pruned_stable_builder_accepts_explicit_input():

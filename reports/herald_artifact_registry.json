@@ -1039,17 +1039,17 @@
       "type": "edge_variant_bundle",
       "status": "REGENERABLE",
       "tracked_in_git": true,
-      "size_bytes": 4223546,
-      "sha256_prefix": "e5900849f16834fd66a3 / d8f9bfedb4c3ba7a5d20",
+      "size_bytes": 32018911,
+      "sha256_prefix": "8cf728720b5feb565903 / 329ec5ddee5b4cd2a3aa / 23f575494d7ba7fc1f79",
       "origin_decision": "none (HERALD_26 edge-learning preparation, not a model result) -- see reports/canonical/HERALD_26_FR_ZE2020_EDGE_LEARNING_PLAN.md",
       "generator_script": "src/data/france_ze2020/build_fr_ze2020_dynamic_edge_variants.py",
       "input_data": [
         "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_expanding.csv.gz"
       ],
-      "claim_authorized": "HERALD_26 edge-variant bundle for the France ZE2020 dynamic graph. Contains fr_ze2020_dynamic_graph_edges_pruned_stable.csv.gz (31,551 edges retained from 258,460 using fixed filters top_k_per_node=5, stability_score>=0.25, abs(signal_strength)>=0.30, edge_age<=5) and fr_ze2020_dynamic_graph_edges_stateful.csv.gz (258,460 edges reweighted with edge_state and state_multiplier, formula edge_weight=signal_strength*stability_score*state_multiplier/(1+edge_age)). Construction/audit plus local smoke only: neither variant passed the no_edges gate, so neither is promoted to HPC or model claims.",
-      "claim_forbidden": "Treating these files as proof that graph edges improve ranking or forecasting. Treating pruned/stateful edges as causal economic influence. Treating pruning thresholds or state multipliers as optimized or validated -- they are HERALD_26 candidates, tested locally and not promoted. Any automatic recommendation, policy action, or investment signal.",
+      "claim_authorized": "HERALD_26 edge-variant bundle for the France ZE2020 dynamic graph. Contains pruned_stable (31,551 edges), stateful (258,460), stateful_sector_only (637), stateful_topk (107,275), stateful_sector_topk (637), feature_compatible (258,460), and feature_compatible_topk (107,275). Feature-compatible variants gate stateful edges using only known decision-year node features: sector_growth_lag_1, sector_share_t, and national_sector_growth_lag_1. Construction/audit plus local smoke only; the bundle is prepared for HPC falsification, not promoted as a model claim.",
+      "claim_forbidden": "Treating these files as proof that graph edges improve ranking or forecasting before the HERALD_26 HPC falsification batch is audited. Treating pruned/stateful/feature-compatible edges as causal economic influence. Treating pruning thresholds, state multipliers, or feature-compatibility scores as optimized or validated. Any automatic recommendation, policy action, or investment signal.",
       "can_regenerate": true,
-      "notes": "Tests: tests/test_fr_ze2020_dynamic_edge_variants.py (14/14 PASS). Companion audit-only script: src/modeles/france_ze2020/audit_fr_ze2020_dynamic_edge_variants.py. Local smoke pruned_stable: full_control NDCG@K 0.5078 Ridge / 0.4786 MLP versus no_edges 0.5250 Ridge / 0.5029 MLP. Local smoke stateful: full_control 0.5179 Ridge / 0.4498 MLP versus no_edges 0.5250 Ridge / 0.5029 MLP. No HPC launch for these exact variants. These files do not overwrite HERALD_25 instant or expanding edge inputs."
+      "notes": "Tests: tests/test_fr_ze2020_dynamic_edge_variants.py (19/19 PASS). Companion audit-only script: src/modeles/france_ze2020/audit_fr_ze2020_dynamic_edge_variants.py. Local smoke pruned_stable: full_control NDCG@K 0.5078 Ridge / 0.4786 MLP versus no_edges 0.5250 Ridge / 0.5029 MLP. Local smoke stateful: full_control 0.5179 Ridge / 0.4498 MLP versus no_edges 0.5250 Ridge / 0.5029 MLP. Feature-compatible-top-k integration smoke for 2024 completed without schema/runtime errors. HPC batch scripts: hpc/france_ze2020_dynamic_graph/run_fr_ze2020_edge_variant_falsification_*. These files do not overwrite HERALD_25 instant or expanding edge inputs."
     },
     {
       "id": "FR_ZE2020_GEOMETRY",
