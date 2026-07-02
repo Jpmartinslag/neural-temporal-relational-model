@@ -27,11 +27,17 @@ if str(ROOT) not in sys.path:
 
 from src.data.france_ze2020.build_fr_ze2020_dynamic_graph_inputs import (
     EXPANDING_EDGES_OUT_PATH,
+    NODES_OUT_PATH,
     OUT_DIR,
 )
 
 PRUNED_STABLE_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_pruned_stable.csv.gz"
 STATEFUL_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_stateful.csv.gz"
+STATEFUL_SECTOR_ONLY_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz"
+STATEFUL_TOPK_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_stateful_topk.csv.gz"
+STATEFUL_SECTOR_TOPK_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_stateful_sector_topk.csv.gz"
+FEATURE_COMPATIBLE_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_feature_compatible.csv.gz"
+FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_feature_compatible_topk.csv.gz"
 
 DEFAULT_TOP_K_PER_NODE = 5
 DEFAULT_MIN_STABILITY = 0.25
@@ -40,7 +46,13 @@ DEFAULT_MAX_EDGE_AGE = 5
 CLAIM_STATUS = "dynamic_graph_edge_variant_exploratory_not_causal"
 EDGE_VARIANT = "pruned_stable"
 STATEFUL_EDGE_VARIANT = "stateful"
+STATEFUL_SECTOR_ONLY_EDGE_VARIANT = "stateful_sector_only"
+STATEFUL_TOPK_EDGE_VARIANT = "stateful_topk"
+STATEFUL_SECTOR_TOPK_EDGE_VARIANT = "stateful_sector_topk"
+FEATURE_COMPATIBLE_EDGE_VARIANT = "feature_compatible"
+FEATURE_COMPATIBLE_TOPK_EDGE_VARIANT = "feature_compatible_topk"
 STATEFUL_EDGE_MEMORY_MODE = "stateful_decay"
+FEATURE_COMPATIBLE_EDGE_MEMORY_MODE = "feature_compatible_stateful_decay"
 STATE_MULTIPLIERS = {
     "persistent_relation": 1.00,
     "reappearing_relation": 0.75,
@@ -49,6 +61,12 @@ STATE_MULTIPLIERS = {
     "volatile_relation": 0.15,
 }
 STATEFUL_RECENT_WINDOW = 3
+SECTOR_EDGE_TYPES = {"cross_ze_same_sector", "intra_ze_sector"}
+FEATURE_COMPATIBILITY_COLUMNS = [
+    "sector_growth_lag_1",
+    "sector_share_t",
+    "national_sector_growth_lag_1",
+]
 
 
 def load_expanding_edges(path: Path = EXPANDING_EDGES_OUT_PATH) -> pd.DataFrame:
@@ -57,6 +75,19 @@ def load_expanding_edges(path: Path = EXPANDING_EDGES_OUT_PATH) -> pd.DataFrame:
     edges["source_relation_year_end"] = edges["source_relation_year_end"].astype(int)
     edges["edge_age"] = edges["edge_age"].astype(int)
     return edges
+
+
+def load_nodes(path: Path = NODES_OUT_PATH) -> pd.DataFrame:
+    nodes = pd.read_csv(path, dtype={"ze2020": str, "sector_code": str})
+    nodes["decision_year"] = nodes["decision_year"].astype(int)
+    missing = set(FEATURE_COMPATIBILITY_COLUMNS).difference(nodes.columns)
+    if missing:
+        raise ValueError(f"Node table missing required compatibility columns: {sorted(missing)}")
+    return nodes
+
+
+def write_gzip_csv(df: pd.DataFrame, path: Path) -> None:
+    df.to_csv(path, index=False, compression={"method": "gzip", "mtime": 1})
 
 
 def build_pruned_stable_edges(
@@ -260,6 +291,109 @@ def build_stateful_edges(edges: pd.DataFrame | None = None) -> pd.DataFrame:
     ).reset_index(drop=True)
 
 
+def build_sector_only_edges(
+    edges: pd.DataFrame,
+    *,
+    edge_variant: str = STATEFUL_SECTOR_ONLY_EDGE_VARIANT,
+) -> pd.DataFrame:
+    out = edges[edges["edge_type"].isin(SECTOR_EDGE_TYPES)].copy()
+    if out.empty:
+        return edges.iloc[0:0].copy()
+    out["edge_variant"] = edge_variant
+    out["edge_id"] = edge_variant + "__" + out["edge_id"].astype(str)
+    return out.reset_index(drop=True)
+
+
+def build_topk_edges(
+    edges: pd.DataFrame,
+    *,
+    edge_variant: str,
+    top_k_per_node: int = DEFAULT_TOP_K_PER_NODE,
+) -> pd.DataFrame:
+    if top_k_per_node < 1:
+        raise ValueError("top_k_per_node must be >= 1")
+    out = edges.copy()
+    if out.empty:
+        return out
+    out["edge_priority"] = (
+        out["edge_weight"].astype(float).abs()
+        * out["stability_score"].astype(float)
+        / (1.0 + out["edge_age"].astype(float))
+    )
+    out = out.sort_values(
+        [
+            "decision_year",
+            "target_node_id",
+            "edge_priority",
+            "stability_score",
+            "source_node_id",
+        ],
+        ascending=[True, True, False, False, True],
+    )
+    out["rank_within_target_year"] = (
+        out.groupby(["decision_year", "target_node_id"]).cumcount() + 1
+    )
+    out = out[out["rank_within_target_year"] <= top_k_per_node].copy()
+    out["edge_variant"] = edge_variant
+    out["edge_id"] = edge_variant + "__" + out["edge_id"].astype(str)
+    out["variant_top_k_per_node"] = int(top_k_per_node)
+    return out.sort_values(
+        ["decision_year", "target_node_id", "rank_within_target_year", "edge_type", "source_node_id"]
+    ).reset_index(drop=True)
+
+
+def build_feature_compatible_edges(
+    edges: pd.DataFrame,
+    nodes: pd.DataFrame | None = None,
+    *,
+    edge_variant: str = FEATURE_COMPATIBLE_EDGE_VARIANT,
+) -> pd.DataFrame:
+    """Gate stateful edges by source-target compatibility in known node features."""
+    if nodes is None:
+        nodes = load_nodes()
+    out = edges.copy()
+    if out.empty:
+        return out
+
+    source = nodes[["node_id", "decision_year", *FEATURE_COMPATIBILITY_COLUMNS]].rename(
+        columns={
+            "node_id": "source_node_id",
+            **{col: f"source_{col}" for col in FEATURE_COMPATIBILITY_COLUMNS},
+        }
+    )
+    target = nodes[["node_id", "decision_year", *FEATURE_COMPATIBILITY_COLUMNS]].rename(
+        columns={
+            "node_id": "target_node_id",
+            **{col: f"target_{col}" for col in FEATURE_COMPATIBILITY_COLUMNS},
+        }
+    )
+    out = out.merge(source, on=["source_node_id", "decision_year"], how="left")
+    out = out.merge(target, on=["target_node_id", "decision_year"], how="left")
+    for col in FEATURE_COMPATIBILITY_COLUMNS:
+        source_col = f"source_{col}"
+        target_col = f"target_{col}"
+        diff = (out[source_col].astype(float) - out[target_col].astype(float)).abs()
+        diff = diff.replace([np.inf, -np.inf], np.nan)
+        scale = float(diff.median(skipna=True))
+        if not np.isfinite(scale) or scale <= 0:
+            scale = 1.0
+        out[f"{col}_compatibility"] = 1.0 / (1.0 + diff.fillna(scale) / scale)
+
+    compatibility_cols = [f"{col}_compatibility" for col in FEATURE_COMPATIBILITY_COLUMNS]
+    out["feature_compatibility_score"] = out[compatibility_cols].mean(axis=1)
+    out["edge_weight"] = out["edge_weight"].astype(float) * out["feature_compatibility_score"].astype(float)
+    out["edge_memory_mode"] = FEATURE_COMPATIBLE_EDGE_MEMORY_MODE
+    out["edge_variant"] = edge_variant
+    out["edge_id"] = edge_variant + "__" + out["edge_id"].astype(str)
+    out["claim_status"] = CLAIM_STATUS
+    return out.drop(
+        columns=[
+            *(f"source_{col}" for col in FEATURE_COMPATIBILITY_COLUMNS),
+            *(f"target_{col}" for col in FEATURE_COMPATIBILITY_COLUMNS),
+        ]
+    ).sort_values(["decision_year", "target_node_id", "edge_type", "source_node_id"]).reset_index(drop=True)
+
+
 def _classify_edge_state(
     *,
     decision_year: int,
@@ -339,12 +473,34 @@ def _empty_stateful_schema() -> pd.DataFrame:
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     expanding_edges = load_expanding_edges()
+    nodes = load_nodes()
     pruned_edges = build_pruned_stable_edges(expanding_edges)
-    pruned_edges.to_csv(PRUNED_STABLE_EDGES_OUT_PATH, index=False)
+    write_gzip_csv(pruned_edges, PRUNED_STABLE_EDGES_OUT_PATH)
     stateful_edges = build_stateful_edges(expanding_edges)
-    stateful_edges.to_csv(STATEFUL_EDGES_OUT_PATH, index=False)
+    write_gzip_csv(stateful_edges, STATEFUL_EDGES_OUT_PATH)
+    stateful_sector_edges = build_sector_only_edges(stateful_edges)
+    write_gzip_csv(stateful_sector_edges, STATEFUL_SECTOR_ONLY_EDGES_OUT_PATH)
+    stateful_topk_edges = build_topk_edges(stateful_edges, edge_variant=STATEFUL_TOPK_EDGE_VARIANT)
+    write_gzip_csv(stateful_topk_edges, STATEFUL_TOPK_EDGES_OUT_PATH)
+    stateful_sector_topk_edges = build_topk_edges(
+        stateful_sector_edges,
+        edge_variant=STATEFUL_SECTOR_TOPK_EDGE_VARIANT,
+    )
+    write_gzip_csv(stateful_sector_topk_edges, STATEFUL_SECTOR_TOPK_EDGES_OUT_PATH)
+    feature_compatible_edges = build_feature_compatible_edges(stateful_edges, nodes)
+    write_gzip_csv(feature_compatible_edges, FEATURE_COMPATIBLE_EDGES_OUT_PATH)
+    feature_compatible_topk_edges = build_topk_edges(
+        feature_compatible_edges,
+        edge_variant=FEATURE_COMPATIBLE_TOPK_EDGE_VARIANT,
+    )
+    write_gzip_csv(feature_compatible_topk_edges, FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH)
     print(f"Pruned stable edges: {len(pruned_edges)} -> {PRUNED_STABLE_EDGES_OUT_PATH}")
     print(f"Stateful edges: {len(stateful_edges)} -> {STATEFUL_EDGES_OUT_PATH}")
+    print(f"Stateful sector-only edges: {len(stateful_sector_edges)} -> {STATEFUL_SECTOR_ONLY_EDGES_OUT_PATH}")
+    print(f"Stateful top-k edges: {len(stateful_topk_edges)} -> {STATEFUL_TOPK_EDGES_OUT_PATH}")
+    print(f"Stateful sector top-k edges: {len(stateful_sector_topk_edges)} -> {STATEFUL_SECTOR_TOPK_EDGES_OUT_PATH}")
+    print(f"Feature-compatible edges: {len(feature_compatible_edges)} -> {FEATURE_COMPATIBLE_EDGES_OUT_PATH}")
+    print(f"Feature-compatible top-k edges: {len(feature_compatible_topk_edges)} -> {FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH}")
     if not pruned_edges.empty:
         print(f"Pruned years: {pruned_edges['decision_year'].min()}-{pruned_edges['decision_year'].max()}")
         print(f"Pruned edge types: {', '.join(sorted(pruned_edges['edge_type'].unique()))}")
