@@ -39,6 +39,10 @@ required_files=(
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_stateful_topk.csv.gz
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_sector_only.csv.gz
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_sector_topk.csv.gz
+  data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_precision_stateful.csv.gz
+  data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_precision_stateful_topk.csv.gz
+  data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_precision_sector_only.csv.gz
+  data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_precision_sector_topk.csv.gz
 )
 for path in "${required_files[@]}"; do
   if [[ ! -f "${path}" ]]; then

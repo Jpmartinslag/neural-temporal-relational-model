@@ -45,6 +45,10 @@ LEARNED_STATEFUL_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_learn
 LEARNED_STATEFUL_TOPK_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_learned_stateful_topk.csv.gz"
 LEARNED_SECTOR_ONLY_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_learned_sector_only.csv.gz"
 LEARNED_SECTOR_TOPK_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_learned_sector_topk.csv.gz"
+PRECISION_STATEFUL_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_precision_stateful.csv.gz"
+PRECISION_STATEFUL_TOPK_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_precision_stateful_topk.csv.gz"
+PRECISION_SECTOR_ONLY_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_precision_sector_only.csv.gz"
+PRECISION_SECTOR_TOPK_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_precision_sector_topk.csv.gz"
 
 DEFAULT_TOP_K_PER_NODE = 5
 DEFAULT_MIN_STABILITY = 0.25
@@ -62,9 +66,14 @@ LEARNED_STATEFUL_EDGE_VARIANT = "learned_stateful"
 LEARNED_STATEFUL_TOPK_EDGE_VARIANT = "learned_stateful_topk"
 LEARNED_SECTOR_ONLY_EDGE_VARIANT = "learned_sector_only"
 LEARNED_SECTOR_TOPK_EDGE_VARIANT = "learned_sector_topk"
+PRECISION_STATEFUL_EDGE_VARIANT = "precision_stateful"
+PRECISION_STATEFUL_TOPK_EDGE_VARIANT = "precision_stateful_topk"
+PRECISION_SECTOR_ONLY_EDGE_VARIANT = "precision_sector_only"
+PRECISION_SECTOR_TOPK_EDGE_VARIANT = "precision_sector_topk"
 STATEFUL_EDGE_MEMORY_MODE = "stateful_decay"
 FEATURE_COMPATIBLE_EDGE_MEMORY_MODE = "feature_compatible_stateful_decay"
 LEARNED_EDGE_MEMORY_MODE = "rolling_logistic_edge_gate"
+PRECISION_EDGE_MEMORY_MODE = "rolling_historical_precision_gate"
 STATE_MULTIPLIERS = {
     "persistent_relation": 1.00,
     "reappearing_relation": 0.75,
@@ -99,6 +108,9 @@ LEARNED_EDGE_FEATURE_COLUMNS = [
     "edge_type_intra_ze_sector",
     "edge_type_ze_similarity",
 ]
+PRECISION_PRIOR_STRENGTH = 4.0
+PRECISION_MIN_PRIOR_ROWS = 5
+PRECISION_MIN_LIFT = 1.0
 
 
 def load_expanding_edges(path: Path = EXPANDING_EDGES_OUT_PATH) -> pd.DataFrame:
@@ -492,6 +504,118 @@ def build_learned_edge_gate_edges(
     return out.sort_values(["decision_year", "target_node_id", "edge_type", "source_node_id"]).reset_index(drop=True)
 
 
+def build_historical_precision_edges(
+    edges: pd.DataFrame,
+    nodes: pd.DataFrame | None = None,
+    *,
+    edge_variant: str = PRECISION_STATEFUL_EDGE_VARIANT,
+    min_lift: float = PRECISION_MIN_LIFT,
+    min_prior_rows: int = PRECISION_MIN_PRIOR_ROWS,
+    prior_strength: float = PRECISION_PRIOR_STRENGTH,
+) -> pd.DataFrame:
+    """Gate edges by rolling historical precision of comparable edge families.
+
+    For decision year t, the gate uses only rows from years < t. Comparable
+    families are defined by edge type, source sector, target sector, and signal
+    sign. The target is whether the target node was a top-3 future one-year
+    growth sector inside its ZE-year. This is a falsification input only, not a
+    causal or recommendation claim.
+    """
+    if min_lift < 0:
+        raise ValueError("min_lift must be non-negative")
+    if min_prior_rows < 0:
+        raise ValueError("min_prior_rows must be non-negative")
+    if prior_strength < 0:
+        raise ValueError("prior_strength must be non-negative")
+    if nodes is None:
+        nodes = load_nodes()
+
+    out = _edge_learning_frame(edges, nodes)
+    if out.empty:
+        return out
+
+    node_lookup = nodes[["node_id", "sector_code"]].drop_duplicates("node_id").copy()
+    source_sector = node_lookup.rename(
+        columns={"node_id": "source_node_id", "sector_code": "source_sector_code"}
+    )
+    target_sector = node_lookup.rename(
+        columns={"node_id": "target_node_id", "sector_code": "target_sector_code"}
+    )
+    out = out.merge(source_sector, on="source_node_id", how="left")
+    out = out.merge(target_sector, on="target_node_id", how="left")
+    out["signal_sign"] = np.sign(out["signal_strength"].astype(float)).astype(int)
+    out.loc[out["signal_sign"] == 0, "signal_sign"] = 1
+    family_cols = ["edge_type", "source_sector_code", "target_sector_code", "signal_sign"]
+
+    out["historical_precision_gate"] = 0.5
+    out["historical_precision_rate"] = np.nan
+    out["historical_precision_base_rate"] = np.nan
+    out["historical_precision_lift"] = 1.0
+    out["historical_precision_prior_rows"] = 0
+    out["historical_precision_keep"] = 0
+
+    years = sorted(int(y) for y in out["decision_year"].unique())
+    for year in years:
+        train = out[(out["decision_year"] < year) & (out["edge_learning_label_available"] == 1)].copy()
+        apply_idx = out.index[out["decision_year"] == year]
+        if train.empty:
+            continue
+        base_rate = float(train["target_top3_growth_1y_label"].mean())
+        if not np.isfinite(base_rate) or base_rate <= 0:
+            continue
+
+        stats = (
+            train.groupby(family_cols, dropna=False)["target_top3_growth_1y_label"]
+            .agg(["sum", "count"])
+            .reset_index()
+        )
+        stats["historical_precision_rate"] = (
+            stats["sum"].astype(float) + prior_strength * base_rate
+        ) / (stats["count"].astype(float) + prior_strength)
+        stats["historical_precision_lift"] = stats["historical_precision_rate"] / base_rate
+        stats = stats.rename(columns={"count": "historical_precision_prior_rows"})
+
+        current = out.loc[apply_idx, family_cols].copy()
+        current["_row_index"] = apply_idx
+        current = current.merge(
+            stats[
+                [
+                    *family_cols,
+                    "historical_precision_rate",
+                    "historical_precision_lift",
+                    "historical_precision_prior_rows",
+                ]
+            ],
+            on=family_cols,
+            how="left",
+        )
+        valid = current["historical_precision_prior_rows"].fillna(0).astype(int) >= min_prior_rows
+        gates = current["historical_precision_lift"].clip(lower=0.25, upper=2.0).fillna(0.5)
+        row_idx = current["_row_index"].to_numpy()
+        out.loc[row_idx, "historical_precision_gate"] = gates.to_numpy(dtype=float)
+        out.loc[row_idx, "historical_precision_rate"] = current["historical_precision_rate"].to_numpy(dtype=float)
+        out.loc[row_idx, "historical_precision_base_rate"] = base_rate
+        out.loc[row_idx, "historical_precision_lift"] = current["historical_precision_lift"].fillna(1.0).to_numpy(dtype=float)
+        out.loc[row_idx, "historical_precision_prior_rows"] = (
+            current["historical_precision_prior_rows"].fillna(0).astype(int).to_numpy()
+        )
+        keep = valid & (current["historical_precision_lift"].fillna(0) >= min_lift)
+        out.loc[row_idx, "historical_precision_keep"] = keep.astype(int).to_numpy()
+
+    out = out[out["historical_precision_keep"] == 1].copy()
+    if out.empty:
+        return out
+    out["edge_weight"] = out["edge_weight"].astype(float) * out["historical_precision_gate"].astype(float)
+    out["edge_memory_mode"] = PRECISION_EDGE_MEMORY_MODE
+    out["edge_variant"] = edge_variant
+    out["edge_id"] = edge_variant + "__" + out["edge_id"].astype(str)
+    out["precision_min_lift"] = float(min_lift)
+    out["precision_min_prior_rows"] = int(min_prior_rows)
+    out["precision_prior_strength"] = float(prior_strength)
+    out["claim_status"] = CLAIM_STATUS
+    return out.sort_values(["decision_year", "target_node_id", "edge_type", "source_node_id"]).reset_index(drop=True)
+
+
 def _edge_learning_frame(edges: pd.DataFrame, nodes: pd.DataFrame) -> pd.DataFrame:
     out = edges.copy()
     if out.empty:
@@ -681,6 +805,24 @@ def main() -> None:
         edge_variant=LEARNED_SECTOR_TOPK_EDGE_VARIANT,
     )
     write_gzip_csv(learned_sector_topk_edges, LEARNED_SECTOR_TOPK_EDGES_OUT_PATH)
+    precision_stateful_edges = build_historical_precision_edges(stateful_edges, nodes)
+    write_gzip_csv(precision_stateful_edges, PRECISION_STATEFUL_EDGES_OUT_PATH)
+    precision_stateful_topk_edges = build_topk_edges(
+        precision_stateful_edges,
+        edge_variant=PRECISION_STATEFUL_TOPK_EDGE_VARIANT,
+    )
+    write_gzip_csv(precision_stateful_topk_edges, PRECISION_STATEFUL_TOPK_EDGES_OUT_PATH)
+    precision_sector_edges = build_historical_precision_edges(
+        stateful_sector_edges,
+        nodes,
+        edge_variant=PRECISION_SECTOR_ONLY_EDGE_VARIANT,
+    )
+    write_gzip_csv(precision_sector_edges, PRECISION_SECTOR_ONLY_EDGES_OUT_PATH)
+    precision_sector_topk_edges = build_topk_edges(
+        precision_sector_edges,
+        edge_variant=PRECISION_SECTOR_TOPK_EDGE_VARIANT,
+    )
+    write_gzip_csv(precision_sector_topk_edges, PRECISION_SECTOR_TOPK_EDGES_OUT_PATH)
     print(f"Pruned stable edges: {len(pruned_edges)} -> {PRUNED_STABLE_EDGES_OUT_PATH}")
     print(f"Stateful edges: {len(stateful_edges)} -> {STATEFUL_EDGES_OUT_PATH}")
     print(f"Stateful sector-only edges: {len(stateful_sector_edges)} -> {STATEFUL_SECTOR_ONLY_EDGES_OUT_PATH}")
@@ -692,6 +834,10 @@ def main() -> None:
     print(f"Learned stateful top-k edges: {len(learned_stateful_topk_edges)} -> {LEARNED_STATEFUL_TOPK_EDGES_OUT_PATH}")
     print(f"Learned sector-only edges: {len(learned_sector_edges)} -> {LEARNED_SECTOR_ONLY_EDGES_OUT_PATH}")
     print(f"Learned sector top-k edges: {len(learned_sector_topk_edges)} -> {LEARNED_SECTOR_TOPK_EDGES_OUT_PATH}")
+    print(f"Precision stateful edges: {len(precision_stateful_edges)} -> {PRECISION_STATEFUL_EDGES_OUT_PATH}")
+    print(f"Precision stateful top-k edges: {len(precision_stateful_topk_edges)} -> {PRECISION_STATEFUL_TOPK_EDGES_OUT_PATH}")
+    print(f"Precision sector-only edges: {len(precision_sector_edges)} -> {PRECISION_SECTOR_ONLY_EDGES_OUT_PATH}")
+    print(f"Precision sector top-k edges: {len(precision_sector_topk_edges)} -> {PRECISION_SECTOR_TOPK_EDGES_OUT_PATH}")
     if not pruned_edges.empty:
         print(f"Pruned years: {pruned_edges['decision_year'].min()}-{pruned_edges['decision_year'].max()}")
         print(f"Pruned edge types: {', '.join(sorted(pruned_edges['edge_type'].unique()))}")
