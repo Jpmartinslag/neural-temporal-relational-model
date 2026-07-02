@@ -12,7 +12,7 @@ Reads only audited France ZE2020 inputs:
 Outputs:
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges.csv
-  data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_expanding.csv
+  data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_expanding.csv.gz
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_splits.csv
 """
 
