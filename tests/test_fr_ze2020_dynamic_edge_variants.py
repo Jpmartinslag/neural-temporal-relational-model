@@ -35,7 +35,17 @@ from src.data.france_ze2020.build_fr_ze2020_dynamic_edge_variants import (
     LEARNED_STATEFUL_EDGES_OUT_PATH,
     LEARNED_STATEFUL_TOPK_EDGE_VARIANT,
     LEARNED_STATEFUL_TOPK_EDGES_OUT_PATH,
+    PRECISION_EDGE_MEMORY_MODE,
+    PRECISION_SECTOR_ONLY_EDGE_VARIANT,
+    PRECISION_SECTOR_ONLY_EDGES_OUT_PATH,
+    PRECISION_SECTOR_TOPK_EDGE_VARIANT,
+    PRECISION_SECTOR_TOPK_EDGES_OUT_PATH,
+    PRECISION_STATEFUL_EDGE_VARIANT,
+    PRECISION_STATEFUL_EDGES_OUT_PATH,
+    PRECISION_STATEFUL_TOPK_EDGE_VARIANT,
+    PRECISION_STATEFUL_TOPK_EDGES_OUT_PATH,
     SECTOR_EDGE_TYPES,
+    build_historical_precision_edges,
     build_pruned_stable_edges,
     build_feature_compatible_edges,
     build_learned_edge_gate_edges,
@@ -154,6 +164,10 @@ def test_all_edge_variant_files_exist_and_have_expected_variant_names():
         LEARNED_STATEFUL_TOPK_EDGES_OUT_PATH: LEARNED_STATEFUL_TOPK_EDGE_VARIANT,
         LEARNED_SECTOR_ONLY_EDGES_OUT_PATH: LEARNED_SECTOR_ONLY_EDGE_VARIANT,
         LEARNED_SECTOR_TOPK_EDGES_OUT_PATH: LEARNED_SECTOR_TOPK_EDGE_VARIANT,
+        PRECISION_STATEFUL_EDGES_OUT_PATH: PRECISION_STATEFUL_EDGE_VARIANT,
+        PRECISION_STATEFUL_TOPK_EDGES_OUT_PATH: PRECISION_STATEFUL_TOPK_EDGE_VARIANT,
+        PRECISION_SECTOR_ONLY_EDGES_OUT_PATH: PRECISION_SECTOR_ONLY_EDGE_VARIANT,
+        PRECISION_SECTOR_TOPK_EDGES_OUT_PATH: PRECISION_SECTOR_TOPK_EDGE_VARIANT,
     }
     for path, variant in paths.items():
         edges = pd.read_csv(path)
@@ -216,7 +230,12 @@ def test_sector_only_variants_remove_ze_similarity():
 
 
 def test_topk_variants_limit_incoming_degree():
-    for path in [STATEFUL_TOPK_EDGES_OUT_PATH, FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH]:
+    for path in [
+        STATEFUL_TOPK_EDGES_OUT_PATH,
+        FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH,
+        LEARNED_STATEFUL_TOPK_EDGES_OUT_PATH,
+        PRECISION_STATEFUL_TOPK_EDGES_OUT_PATH,
+    ]:
         edges = pd.read_csv(path)
         assert edges["rank_within_target_year"].between(1, DEFAULT_TOP_K_PER_NODE).all()
         assert (
@@ -286,6 +305,33 @@ def test_learned_edge_gate_variants_are_rolling_and_bounded():
         assert not FORBIDDEN_COLUMNS.intersection(lowered)
 
 
+def test_historical_precision_variants_are_rolling_and_bounded():
+    for path in [
+        PRECISION_STATEFUL_EDGES_OUT_PATH,
+        PRECISION_STATEFUL_TOPK_EDGES_OUT_PATH,
+        PRECISION_SECTOR_ONLY_EDGES_OUT_PATH,
+        PRECISION_SECTOR_TOPK_EDGES_OUT_PATH,
+    ]:
+        edges = pd.read_csv(path)
+        assert not edges.empty
+        assert set(edges["edge_memory_mode"]) == {PRECISION_EDGE_MEMORY_MODE}
+        assert edges["historical_precision_gate"].between(0.25, 2.0).all()
+        assert (edges["historical_precision_lift"] >= 1.0).all()
+        assert (edges["historical_precision_prior_rows"] >= 5).all()
+        assert (edges["historical_precision_keep"] == 1).all()
+        assert (edges["source_relation_year_end"] <= edges["decision_year"]).all()
+        for col in [
+            "historical_precision_gate",
+            "historical_precision_rate",
+            "historical_precision_base_rate",
+            "historical_precision_lift",
+            "edge_weight",
+        ]:
+            assert np.isfinite(edges[col].to_numpy(dtype=float)).all()
+        lowered = {col.lower() for col in edges.columns}
+        assert not FORBIDDEN_COLUMNS.intersection(lowered)
+
+
 def test_pruned_stable_builder_is_deterministic():
     disk = pd.read_csv(PRUNED_STABLE_EDGES_OUT_PATH).sort_index(axis=1)
     rebuilt = build_pruned_stable_edges().sort_index(axis=1)
@@ -330,6 +376,20 @@ def test_derived_builders_are_deterministic():
     expected[LEARNED_SECTOR_TOPK_EDGES_OUT_PATH] = build_topk_edges(
         expected[LEARNED_SECTOR_ONLY_EDGES_OUT_PATH],
         edge_variant=LEARNED_SECTOR_TOPK_EDGE_VARIANT,
+    )
+    expected[PRECISION_STATEFUL_EDGES_OUT_PATH] = build_historical_precision_edges(stateful, nodes)
+    expected[PRECISION_STATEFUL_TOPK_EDGES_OUT_PATH] = build_topk_edges(
+        expected[PRECISION_STATEFUL_EDGES_OUT_PATH],
+        edge_variant=PRECISION_STATEFUL_TOPK_EDGE_VARIANT,
+    )
+    expected[PRECISION_SECTOR_ONLY_EDGES_OUT_PATH] = build_historical_precision_edges(
+        build_sector_only_edges(stateful),
+        nodes,
+        edge_variant=PRECISION_SECTOR_ONLY_EDGE_VARIANT,
+    )
+    expected[PRECISION_SECTOR_TOPK_EDGES_OUT_PATH] = build_topk_edges(
+        expected[PRECISION_SECTOR_ONLY_EDGES_OUT_PATH],
+        edge_variant=PRECISION_SECTOR_TOPK_EDGE_VARIANT,
     )
     for path, rebuilt in expected.items():
         disk = pd.read_csv(path).sort_index(axis=1)

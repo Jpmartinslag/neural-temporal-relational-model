@@ -106,6 +106,10 @@ data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_stateful.csv.
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_stateful_topk.csv.gz
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_sector_only.csv.gz
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_sector_topk.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_precision_stateful.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_precision_stateful_topk.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_precision_sector_only.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_precision_sector_topk.csv.gz
 ```
 
 ### 3.1 Pruned stable graph
@@ -371,6 +375,10 @@ manual time on one variant at a time.
 | `learned_stateful_topk` | `fr_ze2020_dynamic_graph_edges_learned_stateful_topk.csv.gz` | 107,275 | 9,613,982 | learned-stateful plus top-k cap |
 | `learned_sector_only` | `fr_ze2020_dynamic_graph_edges_learned_sector_only.csv.gz` | 637 | 64,058 | rolling learned gate over sector-only edges |
 | `learned_sector_topk` | `fr_ze2020_dynamic_graph_edges_learned_sector_topk.csv.gz` | 637 | 72,160 | learned-sector plus top-k cap |
+| `precision_stateful` | `fr_ze2020_dynamic_graph_edges_precision_stateful.csv.gz` | 129,622 | 8,971,155 | rolling historical-precision gate over all stateful edges |
+| `precision_stateful_topk` | `fr_ze2020_dynamic_graph_edges_precision_stateful_topk.csv.gz` | 51,005 | 4,212,173 | precision-stateful plus top-k cap |
+| `precision_sector_only` | `fr_ze2020_dynamic_graph_edges_precision_sector_only.csv.gz` | 235 | 20,832 | historical-precision gate over sector-only edges |
+| `precision_sector_topk` | `fr_ze2020_dynamic_graph_edges_precision_sector_topk.csv.gz` | 235 | 23,356 | precision-sector plus top-k cap |
 
 The feature-compatible variants use only known node features at the decision year:
 
@@ -424,6 +432,52 @@ learned_edge_gate = 0.5
 ```
 
 is used when no prior training history or only one label class exists.
+
+### Lot B5 — rolling historical-precision gates
+
+Implemented 2026-07-02 after HPC run
+`hpc_results/fr_ze2020_dynamic_edge_variants_20260702_121925/` showed that
+sector-only MLP variants beat `no_edges` but did not beat the stronger
+`random_edge_weights` placebo.
+
+The follow-up hypothesis is stricter: an edge family should be kept only if
+similar edges had retrospective top-3 sector-ranking precision above the
+rolling base rate in prior years.
+
+For decision year `t`, the gate uses only edge rows from years `< t`.
+
+Comparable edge families:
+
+```text
+edge_type
+source_sector_code
+target_sector_code
+sign(signal_strength)
+```
+
+Smoothed historical precision:
+
+```text
+base_rate_t = mean(target_top3_growth_1y_label | year < t)
+
+precision_rate_family,t =
+  (positive_family_history + prior_strength * base_rate_t)
+  / (family_history_rows + prior_strength)
+
+historical_precision_lift = precision_rate_family,t / base_rate_t
+edge_weight = stateful_edge_weight * clip(historical_precision_lift, 0.25, 2.0)
+```
+
+The kept variants require:
+
+```text
+historical_precision_prior_rows >= 5
+historical_precision_lift >= 1.0
+```
+
+This is not a causal claim. It is a falsification input designed to test whether
+rolling historical edge families carry more ranking signal than random edge
+weights.
 
 ### Lot C — local ranker/falsification smoke
 
@@ -541,7 +595,7 @@ hpc/france_ze2020_dynamic_graph/submit_fr_ze2020_edge_variant_falsifications_hpc
 Design:
 
 ```text
-12 edge inputs x 5 seeds = 60 Slurm array tasks
+16 edge inputs x 5 seeds = 80 Slurm array tasks
 seeds = 42, 43, 44, 45, 46
 target_horizon = 1
 eval_years = 2017..2024
@@ -552,6 +606,13 @@ scenarios = full_control, no_edges, random_edge_weights, random_edge_targets,
 
 The batch is falsification-only. Passing one metric does not automatically promote an
 edge variant; results must still be audited after collection.
+
+**Completed batch 20260702_121925.** The 12-variant batch completed 60/60 tasks
+with exit `0:0`. Ridge did not beat `no_edges` for any variant. MLP sector-only
+variants improved versus `no_edges`, but the leading sector-only variants still
+failed the `random_edge_weights` placebo. This is evidence that the sector layer
+contains signal, but not yet evidence that the learned edge weights are
+structurally better than a strong random-weight control.
 
 ### Lot E — learned edge gate
 
