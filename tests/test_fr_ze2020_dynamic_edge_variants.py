@@ -26,9 +26,19 @@ from src.data.france_ze2020.build_fr_ze2020_dynamic_edge_variants import (
     FEATURE_COMPATIBLE_EDGES_OUT_PATH,
     FEATURE_COMPATIBLE_TOPK_EDGE_VARIANT,
     FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH,
+    LEARNED_EDGE_MEMORY_MODE,
+    LEARNED_SECTOR_ONLY_EDGE_VARIANT,
+    LEARNED_SECTOR_ONLY_EDGES_OUT_PATH,
+    LEARNED_SECTOR_TOPK_EDGE_VARIANT,
+    LEARNED_SECTOR_TOPK_EDGES_OUT_PATH,
+    LEARNED_STATEFUL_EDGE_VARIANT,
+    LEARNED_STATEFUL_EDGES_OUT_PATH,
+    LEARNED_STATEFUL_TOPK_EDGE_VARIANT,
+    LEARNED_STATEFUL_TOPK_EDGES_OUT_PATH,
     SECTOR_EDGE_TYPES,
     build_pruned_stable_edges,
     build_feature_compatible_edges,
+    build_learned_edge_gate_edges,
     build_sector_only_edges,
     build_stateful_edges,
     build_topk_edges,
@@ -140,6 +150,10 @@ def test_all_edge_variant_files_exist_and_have_expected_variant_names():
         STATEFUL_SECTOR_TOPK_EDGES_OUT_PATH: STATEFUL_SECTOR_TOPK_EDGE_VARIANT,
         FEATURE_COMPATIBLE_EDGES_OUT_PATH: FEATURE_COMPATIBLE_EDGE_VARIANT,
         FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH: FEATURE_COMPATIBLE_TOPK_EDGE_VARIANT,
+        LEARNED_STATEFUL_EDGES_OUT_PATH: LEARNED_STATEFUL_EDGE_VARIANT,
+        LEARNED_STATEFUL_TOPK_EDGES_OUT_PATH: LEARNED_STATEFUL_TOPK_EDGE_VARIANT,
+        LEARNED_SECTOR_ONLY_EDGES_OUT_PATH: LEARNED_SECTOR_ONLY_EDGE_VARIANT,
+        LEARNED_SECTOR_TOPK_EDGES_OUT_PATH: LEARNED_SECTOR_TOPK_EDGE_VARIANT,
     }
     for path, variant in paths.items():
         edges = pd.read_csv(path)
@@ -253,6 +267,25 @@ def test_feature_compatible_edges_are_finite_and_bounded():
     assert not FORBIDDEN_COLUMNS.intersection(lowered)
 
 
+def test_learned_edge_gate_variants_are_rolling_and_bounded():
+    for path in [
+        LEARNED_STATEFUL_EDGES_OUT_PATH,
+        LEARNED_STATEFUL_TOPK_EDGES_OUT_PATH,
+        LEARNED_SECTOR_ONLY_EDGES_OUT_PATH,
+        LEARNED_SECTOR_TOPK_EDGES_OUT_PATH,
+    ]:
+        edges = pd.read_csv(path)
+        assert set(edges["edge_memory_mode"]) == {LEARNED_EDGE_MEMORY_MODE}
+        assert edges["learned_edge_gate"].between(0, 1).all()
+        assert np.isfinite(edges["learned_edge_gate"].to_numpy(dtype=float)).all()
+        assert (edges["source_relation_year_end"] <= edges["decision_year"]).all()
+        assert (edges["learned_edge_gate_training_rows"] >= 0).all()
+        assert edges.groupby("decision_year")["learned_edge_gate_training_rows"].first().is_monotonic_increasing
+        assert edges["learned_edge_gate"].std() > 0
+        lowered = {col.lower() for col in edges.columns}
+        assert not FORBIDDEN_COLUMNS.intersection(lowered)
+
+
 def test_pruned_stable_builder_is_deterministic():
     disk = pd.read_csv(PRUNED_STABLE_EDGES_OUT_PATH).sort_index(axis=1)
     rebuilt = build_pruned_stable_edges().sort_index(axis=1)
@@ -283,6 +316,20 @@ def test_derived_builders_are_deterministic():
     expected[FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH] = build_topk_edges(
         expected[FEATURE_COMPATIBLE_EDGES_OUT_PATH],
         edge_variant=FEATURE_COMPATIBLE_TOPK_EDGE_VARIANT,
+    )
+    expected[LEARNED_STATEFUL_EDGES_OUT_PATH] = build_learned_edge_gate_edges(stateful, nodes)
+    expected[LEARNED_STATEFUL_TOPK_EDGES_OUT_PATH] = build_topk_edges(
+        expected[LEARNED_STATEFUL_EDGES_OUT_PATH],
+        edge_variant=LEARNED_STATEFUL_TOPK_EDGE_VARIANT,
+    )
+    expected[LEARNED_SECTOR_ONLY_EDGES_OUT_PATH] = build_learned_edge_gate_edges(
+        build_sector_only_edges(stateful),
+        nodes,
+        edge_variant=LEARNED_SECTOR_ONLY_EDGE_VARIANT,
+    )
+    expected[LEARNED_SECTOR_TOPK_EDGES_OUT_PATH] = build_topk_edges(
+        expected[LEARNED_SECTOR_ONLY_EDGES_OUT_PATH],
+        edge_variant=LEARNED_SECTOR_TOPK_EDGE_VARIANT,
     )
     for path, rebuilt in expected.items():
         disk = pd.read_csv(path).sort_index(axis=1)

@@ -102,6 +102,10 @@ data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_topk.csv.gz
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_topk.csv.gz
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_feature_compatible.csv.gz
 data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_feature_compatible_topk.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_stateful.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_stateful_topk.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_sector_only.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_sector_topk.csv.gz
 ```
 
 ### 3.1 Pruned stable graph
@@ -278,7 +282,8 @@ First output:
 fr_ze2020_dynamic_graph_edges_pruned_stable.csv.gz
 ```
 
-No learned weights yet.
+This first pruned output has no learned weights. Rolling learned-edge gates were
+added later in Lot B4 as separate files; this pruned-stable file remains unchanged.
 
 **Implemented 2026-07-02.**
 
@@ -362,6 +367,10 @@ manual time on one variant at a time.
 | `stateful_sector_topk` | `fr_ze2020_dynamic_graph_edges_stateful_sector_topk.csv.gz` | 637 | 29,405 | sector-only plus top-k cap |
 | `feature_compatible` | `fr_ze2020_dynamic_graph_edges_feature_compatible.csv.gz` | 258,460 | 14,254,732 | gate stateful edges by known source-target feature compatibility |
 | `feature_compatible_topk` | `fr_ze2020_dynamic_graph_edges_feature_compatible_topk.csv.gz` | 107,275 | 7,320,223 | feature-compatible plus top-k cap |
+| `learned_stateful` | `fr_ze2020_dynamic_graph_edges_learned_stateful.csv.gz` | 258,460 | 19,613,759 | rolling learned gate over all stateful edges |
+| `learned_stateful_topk` | `fr_ze2020_dynamic_graph_edges_learned_stateful_topk.csv.gz` | 107,275 | 9,613,982 | learned-stateful plus top-k cap |
+| `learned_sector_only` | `fr_ze2020_dynamic_graph_edges_learned_sector_only.csv.gz` | 637 | 64,058 | rolling learned gate over sector-only edges |
+| `learned_sector_topk` | `fr_ze2020_dynamic_graph_edges_learned_sector_topk.csv.gz` | 637 | 72,160 | learned-sector plus top-k cap |
 
 The feature-compatible variants use only known node features at the decision year:
 
@@ -373,6 +382,48 @@ national_sector_growth_lag_1
 
 They do not use the future label of the decision year. They are adaptive edge-feature
 variants, not learned neural edge gates.
+
+### Lot B4 — rolling learned-edge gates
+
+Implemented 2026-07-02 after the first 40-task HPC falsification showed that
+`stateful_sector_only` was the least weak edge family but still fragile against random
+edge weights.
+
+For decision year `t`, the learned gate trains only on edge rows from years `< t`.
+The label is whether the target ZE-sector node was in the top-3 future one-year growth
+sectors inside its ZE-year in a prior year. This makes the gate retrospective and
+rolling-origin; it is not allowed to see the target label for year `t`.
+
+Gate features:
+
+```text
+abs_signal_strength
+stability_score
+edge_age
+state_multiplier
+recent_observation_count
+total_observation_count
+source/target sector_growth_lag_1
+source/target sector_share_t
+source/target national_sector_growth_lag_1
+absolute source-target differences
+edge_type dummies
+```
+
+The learned gate is a small balanced logistic regression:
+
+```text
+learned_edge_gate = P(target_top3_growth_1y | prior-year edge features)
+edge_weight = stateful_edge_weight * learned_edge_gate
+```
+
+Neutral fallback:
+
+```text
+learned_edge_gate = 0.5
+```
+
+is used when no prior training history or only one label class exists.
 
 ### Lot C — local ranker/falsification smoke
 
@@ -490,7 +541,7 @@ hpc/france_ze2020_dynamic_graph/submit_fr_ze2020_edge_variant_falsifications_hpc
 Design:
 
 ```text
-8 edge inputs x 5 seeds = 40 Slurm array tasks
+12 edge inputs x 5 seeds = 60 Slurm array tasks
 seeds = 42, 43, 44, 45, 46
 target_horizon = 1
 eval_years = 2017..2024
@@ -504,14 +555,21 @@ edge variant; results must still be audited after collection.
 
 ### Lot E — learned edge gate
 
-Only after the batch falsification:
+Superseded by Lot B4 on 2026-07-02. The learned gate was implemented before the
+next HPC batch because the first 40-task edge-variant run found no robust edge
+win and identified sector-only/stateful variants as the least weak candidates.
+
+The implemented files are:
 
 ```text
-fr_ze2020_dynamic_graph_edges_learned_candidates.csv.gz
+fr_ze2020_dynamic_graph_edges_learned_stateful.csv.gz
+fr_ze2020_dynamic_graph_edges_learned_stateful_topk.csv.gz
+fr_ze2020_dynamic_graph_edges_learned_sector_only.csv.gz
+fr_ze2020_dynamic_graph_edges_learned_sector_topk.csv.gz
 ```
 
-This can be a light logistic/MLP gate over edge features. It must be evaluated against
-the same `no_edges` and random-edge placebos.
+They must be evaluated against the same `no_edges` and random-edge placebos
+before any claim about edge usefulness.
 
 ---
 

@@ -20,6 +20,9 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
@@ -38,6 +41,10 @@ STATEFUL_TOPK_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_stateful
 STATEFUL_SECTOR_TOPK_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_stateful_sector_topk.csv.gz"
 FEATURE_COMPATIBLE_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_feature_compatible.csv.gz"
 FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_feature_compatible_topk.csv.gz"
+LEARNED_STATEFUL_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_learned_stateful.csv.gz"
+LEARNED_STATEFUL_TOPK_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_learned_stateful_topk.csv.gz"
+LEARNED_SECTOR_ONLY_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_learned_sector_only.csv.gz"
+LEARNED_SECTOR_TOPK_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_learned_sector_topk.csv.gz"
 
 DEFAULT_TOP_K_PER_NODE = 5
 DEFAULT_MIN_STABILITY = 0.25
@@ -51,8 +58,13 @@ STATEFUL_TOPK_EDGE_VARIANT = "stateful_topk"
 STATEFUL_SECTOR_TOPK_EDGE_VARIANT = "stateful_sector_topk"
 FEATURE_COMPATIBLE_EDGE_VARIANT = "feature_compatible"
 FEATURE_COMPATIBLE_TOPK_EDGE_VARIANT = "feature_compatible_topk"
+LEARNED_STATEFUL_EDGE_VARIANT = "learned_stateful"
+LEARNED_STATEFUL_TOPK_EDGE_VARIANT = "learned_stateful_topk"
+LEARNED_SECTOR_ONLY_EDGE_VARIANT = "learned_sector_only"
+LEARNED_SECTOR_TOPK_EDGE_VARIANT = "learned_sector_topk"
 STATEFUL_EDGE_MEMORY_MODE = "stateful_decay"
 FEATURE_COMPATIBLE_EDGE_MEMORY_MODE = "feature_compatible_stateful_decay"
+LEARNED_EDGE_MEMORY_MODE = "rolling_logistic_edge_gate"
 STATE_MULTIPLIERS = {
     "persistent_relation": 1.00,
     "reappearing_relation": 0.75,
@@ -66,6 +78,26 @@ FEATURE_COMPATIBILITY_COLUMNS = [
     "sector_growth_lag_1",
     "sector_share_t",
     "national_sector_growth_lag_1",
+]
+LEARNED_EDGE_FEATURE_COLUMNS = [
+    "abs_signal_strength",
+    "stability_score",
+    "edge_age",
+    "state_multiplier",
+    "recent_observation_count",
+    "total_observation_count",
+    "source_sector_growth_lag_1",
+    "target_sector_growth_lag_1",
+    "abs_diff_sector_growth_lag_1",
+    "source_sector_share_t",
+    "target_sector_share_t",
+    "abs_diff_sector_share_t",
+    "source_national_sector_growth_lag_1",
+    "target_national_sector_growth_lag_1",
+    "abs_diff_national_sector_growth_lag_1",
+    "edge_type_cross_ze_same_sector",
+    "edge_type_intra_ze_sector",
+    "edge_type_ze_similarity",
 ]
 
 
@@ -394,6 +426,143 @@ def build_feature_compatible_edges(
     ).sort_values(["decision_year", "target_node_id", "edge_type", "source_node_id"]).reset_index(drop=True)
 
 
+def build_learned_edge_gate_edges(
+    edges: pd.DataFrame,
+    nodes: pd.DataFrame | None = None,
+    *,
+    edge_variant: str = LEARNED_STATEFUL_EDGE_VARIANT,
+) -> pd.DataFrame:
+    """Learn a rolling-origin edge gate from prior years only.
+
+    The label is whether the target ZE-sector node belongs to the top-3 future one-year
+    growth sectors inside its ZE-year. For decision year t, the logistic gate is trained
+    only on edge rows from years < t. Early years or single-class histories receive the
+    neutral gate 0.5.
+    """
+    if nodes is None:
+        nodes = load_nodes()
+    out = _edge_learning_frame(edges, nodes)
+    if out.empty:
+        return out
+
+    out["learned_edge_gate"] = 0.5
+    out["learned_edge_gate_training_rows"] = 0
+    out["learned_edge_gate_positive_rate"] = np.nan
+    years = sorted(int(y) for y in out["decision_year"].unique())
+    for year in years:
+        train = out[(out["decision_year"] < year) & (out["edge_learning_label_available"] == 1)].copy()
+        apply_idx = out.index[out["decision_year"] == year]
+        if train.empty or train["target_top3_growth_1y_label"].nunique() < 2:
+            continue
+        train = train[np.isfinite(train[LEARNED_EDGE_FEATURE_COLUMNS].to_numpy(dtype=float)).all(axis=1)]
+        if train.empty or train["target_top3_growth_1y_label"].nunique() < 2:
+            continue
+        current = out.loc[apply_idx]
+        current_ok = np.isfinite(current[LEARNED_EDGE_FEATURE_COLUMNS].to_numpy(dtype=float)).all(axis=1)
+        if not current_ok.any():
+            continue
+        model = Pipeline(
+            [
+                ("scaler", StandardScaler()),
+                (
+                    "logit",
+                    LogisticRegression(
+                        C=0.5,
+                        class_weight="balanced",
+                        max_iter=500,
+                        random_state=42,
+                    ),
+                ),
+            ]
+        )
+        model.fit(train[LEARNED_EDGE_FEATURE_COLUMNS], train["target_top3_growth_1y_label"])
+        proba = model.predict_proba(current.loc[current_ok, LEARNED_EDGE_FEATURE_COLUMNS])[:, 1]
+        gated_idx = current.index[current_ok]
+        out.loc[gated_idx, "learned_edge_gate"] = proba
+        out.loc[apply_idx, "learned_edge_gate_training_rows"] = int(len(train))
+        out.loc[apply_idx, "learned_edge_gate_positive_rate"] = float(
+            train["target_top3_growth_1y_label"].mean()
+        )
+
+    out["edge_weight"] = out["edge_weight"].astype(float) * out["learned_edge_gate"].astype(float)
+    out["edge_memory_mode"] = LEARNED_EDGE_MEMORY_MODE
+    out["edge_variant"] = edge_variant
+    out["edge_id"] = edge_variant + "__" + out["edge_id"].astype(str)
+    out["claim_status"] = CLAIM_STATUS
+    return out.sort_values(["decision_year", "target_node_id", "edge_type", "source_node_id"]).reset_index(drop=True)
+
+
+def _edge_learning_frame(edges: pd.DataFrame, nodes: pd.DataFrame) -> pd.DataFrame:
+    out = edges.copy()
+    if out.empty:
+        return out
+
+    node_cols = ["node_id", "ze2020", "decision_year", "future_growth_1y", *FEATURE_COMPATIBILITY_COLUMNS]
+    node = nodes[node_cols].copy()
+    node["future_rank_growth_1y_in_ze_year"] = (
+        node.groupby(["ze2020", "decision_year"])["future_growth_1y"].rank(
+            ascending=False,
+            method="min",
+        )
+    )
+    node["target_top3_growth_1y_label"] = (
+        (node["future_rank_growth_1y_in_ze_year"] <= 3)
+        & np.isfinite(node["future_growth_1y"].to_numpy(dtype=float))
+    ).astype(int)
+    node["edge_learning_label_available"] = np.isfinite(node["future_growth_1y"].to_numpy(dtype=float)).astype(int)
+
+    source = node[["node_id", "decision_year", *FEATURE_COMPATIBILITY_COLUMNS]].rename(
+        columns={
+            "node_id": "source_node_id",
+            **{col: f"source_{col}" for col in FEATURE_COMPATIBILITY_COLUMNS},
+        }
+    )
+    target = node[
+        [
+            "node_id",
+            "decision_year",
+            "target_top3_growth_1y_label",
+            "edge_learning_label_available",
+            *FEATURE_COMPATIBILITY_COLUMNS,
+        ]
+    ].rename(
+        columns={
+            "node_id": "target_node_id",
+            **{col: f"target_{col}" for col in FEATURE_COMPATIBILITY_COLUMNS},
+        }
+    )
+    out = out.merge(source, on=["source_node_id", "decision_year"], how="left")
+    out = out.merge(target, on=["target_node_id", "decision_year"], how="left")
+    out["abs_signal_strength"] = out["signal_strength"].astype(float).abs()
+    out["target_top3_growth_1y_label"] = out["target_top3_growth_1y_label"].fillna(0).astype(int)
+    out["edge_learning_label_available"] = out["edge_learning_label_available"].fillna(0).astype(int)
+    for col in FEATURE_COMPATIBILITY_COLUMNS:
+        source_col = f"source_{col}"
+        target_col = f"target_{col}"
+        out[f"abs_diff_{col}"] = (
+            out[source_col].astype(float) - out[target_col].astype(float)
+        ).abs()
+    out = pd.concat(
+        [
+            out,
+            pd.get_dummies(out["edge_type"], prefix="edge_type", dtype=int),
+        ],
+        axis=1,
+    )
+    for col in [
+        "edge_type_cross_ze_same_sector",
+        "edge_type_intra_ze_sector",
+        "edge_type_ze_similarity",
+    ]:
+        if col not in out.columns:
+            out[col] = 0
+    for col in LEARNED_EDGE_FEATURE_COLUMNS:
+        out[col] = out[col].replace([np.inf, -np.inf], np.nan)
+        median = out[col].median(skipna=True)
+        out[col] = out[col].fillna(0.0 if not np.isfinite(median) else median)
+    return out
+
+
 def _classify_edge_state(
     *,
     decision_year: int,
@@ -494,6 +663,24 @@ def main() -> None:
         edge_variant=FEATURE_COMPATIBLE_TOPK_EDGE_VARIANT,
     )
     write_gzip_csv(feature_compatible_topk_edges, FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH)
+    learned_stateful_edges = build_learned_edge_gate_edges(stateful_edges, nodes)
+    write_gzip_csv(learned_stateful_edges, LEARNED_STATEFUL_EDGES_OUT_PATH)
+    learned_stateful_topk_edges = build_topk_edges(
+        learned_stateful_edges,
+        edge_variant=LEARNED_STATEFUL_TOPK_EDGE_VARIANT,
+    )
+    write_gzip_csv(learned_stateful_topk_edges, LEARNED_STATEFUL_TOPK_EDGES_OUT_PATH)
+    learned_sector_edges = build_learned_edge_gate_edges(
+        stateful_sector_edges,
+        nodes,
+        edge_variant=LEARNED_SECTOR_ONLY_EDGE_VARIANT,
+    )
+    write_gzip_csv(learned_sector_edges, LEARNED_SECTOR_ONLY_EDGES_OUT_PATH)
+    learned_sector_topk_edges = build_topk_edges(
+        learned_sector_edges,
+        edge_variant=LEARNED_SECTOR_TOPK_EDGE_VARIANT,
+    )
+    write_gzip_csv(learned_sector_topk_edges, LEARNED_SECTOR_TOPK_EDGES_OUT_PATH)
     print(f"Pruned stable edges: {len(pruned_edges)} -> {PRUNED_STABLE_EDGES_OUT_PATH}")
     print(f"Stateful edges: {len(stateful_edges)} -> {STATEFUL_EDGES_OUT_PATH}")
     print(f"Stateful sector-only edges: {len(stateful_sector_edges)} -> {STATEFUL_SECTOR_ONLY_EDGES_OUT_PATH}")
@@ -501,6 +688,10 @@ def main() -> None:
     print(f"Stateful sector top-k edges: {len(stateful_sector_topk_edges)} -> {STATEFUL_SECTOR_TOPK_EDGES_OUT_PATH}")
     print(f"Feature-compatible edges: {len(feature_compatible_edges)} -> {FEATURE_COMPATIBLE_EDGES_OUT_PATH}")
     print(f"Feature-compatible top-k edges: {len(feature_compatible_topk_edges)} -> {FEATURE_COMPATIBLE_TOPK_EDGES_OUT_PATH}")
+    print(f"Learned stateful edges: {len(learned_stateful_edges)} -> {LEARNED_STATEFUL_EDGES_OUT_PATH}")
+    print(f"Learned stateful top-k edges: {len(learned_stateful_topk_edges)} -> {LEARNED_STATEFUL_TOPK_EDGES_OUT_PATH}")
+    print(f"Learned sector-only edges: {len(learned_sector_edges)} -> {LEARNED_SECTOR_ONLY_EDGES_OUT_PATH}")
+    print(f"Learned sector top-k edges: {len(learned_sector_topk_edges)} -> {LEARNED_SECTOR_TOPK_EDGES_OUT_PATH}")
     if not pruned_edges.empty:
         print(f"Pruned years: {pruned_edges['decision_year'].min()}-{pruned_edges['decision_year'].max()}")
         print(f"Pruned edge types: {', '.join(sorted(pruned_edges['edge_type'].unique()))}")
