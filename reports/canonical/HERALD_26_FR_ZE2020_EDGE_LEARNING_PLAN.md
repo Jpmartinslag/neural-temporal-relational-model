@@ -618,6 +618,28 @@ failed the `random_edge_weights` placebo. This is evidence that the sector layer
 contains signal, but not yet evidence that the learned edge weights are
 structurally better than a strong random-weight control.
 
+**Completed batch 20260702_172150.** The 16-variant batch completed 80/80 tasks
+with exit `0:0` and added the `edge_sign_only` diagnostic. The strongest
+sector-only MLP variants still improved over `no_edges`, but `edge_sign_only`
+matched or slightly exceeded `full_control` on the leading candidates:
+
+| Variant | Model | `full_control` | `edge_sign_only` | Delta |
+|---|---|---:|---:|---:|
+| `stateful_sector_only` | `mlp_dynamic_graph` | 0.4899 | 0.4902 | -0.0002 |
+| `learned_sector_only` | `mlp_dynamic_graph` | 0.4889 | 0.4902 | -0.0013 |
+| `learned_sector_only` | `ridge_dynamic_graph` | 0.5247 | 0.5241 | +0.0006 |
+
+Reading: the current message encoder mostly uses edge presence/sign, not edge
+magnitude as an economic intensity. This does not invalidate the temporal or
+sector signal, but it rejects the current aggregation layer as a convincing
+dynamic graph relation learner.
+
+Local rejected shortcut: a direct logistic edge scorer was tested as a minimal
+alternative after this batch. It underperformed the existing candidates and
+remained insensitive to the sign-only diagnostic, so it was reverted and no HPC
+run was launched. The next move should be a true pairwise/message objective, not
+another shallow scorer wrapped around the same aggregated messages.
+
 ### Lot E — learned edge gate
 
 Superseded by Lot B4 on 2026-07-02. The learned gate was implemented before the
@@ -673,7 +695,8 @@ Start with Lot A and Lot B:
 3. run local ranker/falsification smoke;
 4. launch HPC only if local smoke is clean.
 
-Do not move to heavier neural architecture until at least one edge variant beats
-`no_edges` under the pre-registered gates. The fixed/adaptive edge bundle must be audited
-first. If every variant still fails `no_edges`, the next move is learned edge weights or a
-different relation objective, not deeper MLP/STGNN training.
+Do not move to deeper neural training on the same aggregated message encoder.
+The 20260702_172150 batch shows that the current layer is not using edge
+magnitude as economic intensity. The next executable step is a different
+relation objective: pairwise edge prediction, contrastive ZE-sector embeddings,
+or attention/message learning where the edge contribution is inspected directly.
