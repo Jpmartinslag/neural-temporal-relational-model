@@ -14,7 +14,7 @@ OUTDIR="${WORKDIR}/hpc_results/fr_ze2020_dynamic_edge_variants_${RUN_ID}/${EDGE_
 MAX_EPOCHS="${FR_ZE2020_DYNAMIC_EDGE_MAX_EPOCHS:-120}"
 TARGET_HORIZON="${FR_ZE2020_DYNAMIC_EDGE_TARGET_HORIZON:-1}"
 EVAL_YEARS="${FR_ZE2020_DYNAMIC_EDGE_EVAL_YEARS:-2017 2018 2019 2020 2021 2022 2023 2024}"
-SCENARIOS="${FR_ZE2020_DYNAMIC_EDGE_SCENARIOS:-full_control no_edges random_edge_weights random_edge_targets no_cross_ze_same_sector no_intra_ze_sector no_ze_similarity temporal_shuffle sector_shuffle}"
+SCENARIOS="${FR_ZE2020_DYNAMIC_EDGE_SCENARIOS:-full_control no_edges edge_sign_only random_edge_weights random_edge_targets no_cross_ze_same_sector no_intra_ze_sector no_ze_similarity temporal_shuffle sector_shuffle}"
 
 echo "=========================================="
 echo "HERALD France ZE2020 dynamic edge variant falsification"

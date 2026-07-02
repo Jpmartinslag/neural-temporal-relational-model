@@ -29,6 +29,7 @@ def test_dynamic_graph_falsification_scenarios_are_explicit():
     assert SCENARIOS == [
         "full_control",
         "no_edges",
+        "edge_sign_only",
         "random_edge_weights",
         "random_edge_targets",
         "no_cross_ze_same_sector",
@@ -53,6 +54,17 @@ def test_edge_type_ablation_removes_only_one_type():
     )
     assert "ze_similarity" not in set(out_edges["edge_type"])
     assert {"cross_ze_same_sector", "intra_ze_sector"}.issubset(set(out_edges["edge_type"]))
+
+
+def test_edge_sign_only_removes_weight_magnitude_but_keeps_sign():
+    nodes, edges = _load_inputs()
+    sample = edges.head(1000).copy()
+    _, out_edges = apply_dynamic_graph_falsification(nodes, sample, "edge_sign_only", seed=42)
+    assert set(out_edges["edge_weight"].abs()) == {1.0}
+    assert np.array_equal(
+        np.sign(out_edges["edge_weight"].to_numpy(dtype=float)),
+        np.sign(sample["edge_weight"].to_numpy(dtype=float)),
+    )
 
 
 def test_random_edge_weights_preserves_distribution_not_order():

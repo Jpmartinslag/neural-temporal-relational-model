@@ -599,13 +599,17 @@ Design:
 seeds = 42, 43, 44, 45, 46
 target_horizon = 1
 eval_years = 2017..2024
-scenarios = full_control, no_edges, random_edge_weights, random_edge_targets,
+scenarios = full_control, no_edges, edge_sign_only, random_edge_weights, random_edge_targets,
             no_cross_ze_same_sector, no_intra_ze_sector, no_ze_similarity,
             temporal_shuffle, sector_shuffle
 ```
 
 The batch is falsification-only. Passing one metric does not automatically promote an
 edge variant; results must still be audited after collection.
+
+`edge_sign_only` is a diagnostic placebo: it keeps only the sign of each edge
+weight (`-1` or `+1`) and removes magnitude. If it matches `full_control`, the
+message encoder is mostly using edge presence/sign, not economic intensity.
 
 **Completed batch 20260702_121925.** The 12-variant batch completed 60/60 tasks
 with exit `0:0`. Ridge did not beat `no_edges` for any variant. MLP sector-only
