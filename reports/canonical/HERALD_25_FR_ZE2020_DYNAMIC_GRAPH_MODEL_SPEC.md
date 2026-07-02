@@ -567,6 +567,48 @@ HPC launch is still a separate operational action. Before launch:
 3. run submit scripts without `--confirm-submit` to verify Slurm command construction;
 4. only then submit arrays with explicit confirmation.
 
+### 12f. First expanded-edge HPC result
+
+Executed 2026-07-02:
+
+```text
+ranker:        hpc_results/fr_ze2020_dynamic_graph_ranker_20260702_091544/
+falsification: hpc_results/fr_ze2020_dynamic_graph_falsifications_20260702_091540/
+edge file:     fr_ze2020_dynamic_graph_edges_expanding.csv.gz
+```
+
+Audit reading:
+
+```text
+ridge_dynamic_graph mean NDCG@K = 0.5169
+mlp_dynamic_graph   mean NDCG@K = 0.4822
+national_growth     mean NDCG@K = 0.3861
+```
+
+Falsification reading:
+
+```text
+temporal_shuffle hurts Ridge by about -0.055 NDCG@K
+sector_shuffle hurts Ridge by about -0.009 NDCG@K
+no_edges improves Ridge by about +0.008 NDCG@K
+```
+
+Conclusion:
+
+```text
+temporal signal is supported
+sector signal is weak-to-moderate
+current expanded edges are not yet supported as useful graph structure
+neural advantage is not supported
+```
+
+Therefore the next block is not heavier training. The next block is edge construction,
+edge selection, and edge learning. See:
+
+```text
+HERALD_26_FR_ZE2020_EDGE_LEARNING_PLAN.md
+```
+
 ---
 
 ## 13. References
@@ -575,6 +617,7 @@ Primary project references:
 
 - `HERALD_23_TEMPORAL_RELATIONAL_RECOMMENDATION_OBJECTIVE.md`
 - `HERALD_24_FR_ZE2020_SECTOR_RANKING_TRAINING_SPEC.md`
+- `HERALD_26_FR_ZE2020_EDGE_LEARNING_PLAN.md`
 - `HERALD_REFERENCES_MASTER.md`
 
 Literature anchors:
@@ -588,3 +631,8 @@ Literature anchors:
 - `R-055` optimizing economic complexity
 - `R-056` metropolitan economic complexity
 - `R-057` spatial dynamic panel baseline
+- `R-058` graph structure learning / Pro-GNN
+- `R-059` robust GNNs on noisy graphs
+- `R-060` edge temporal states
+- `R-061` adaptive graph sparsification
+- `R-062` adaptive spatiotemporal augmentation

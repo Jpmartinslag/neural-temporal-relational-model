@@ -94,6 +94,11 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     schemas, leakage rules, typed relations, ranking objective, falsification gates, and
     conditions required before HERALD can be described as a new dynamic graph model.
     Specification only; no model result and no operational recommendation claim.
+24. `canonical/HERALD_26_FR_ZE2020_EDGE_LEARNING_PLAN.md` — post-HERALD_25 edge-layer
+    plan: documents the expanded-edge HPC finding (time signal strong, sector signal
+    moderate, current edges not yet useful), adds edge-denoising/structure-learning
+    references, and defines the next pruned/stateful/learned edge variants before any
+    heavier neural claim.
 
 ## Control Documents
 

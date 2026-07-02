@@ -729,14 +729,69 @@
 **Used in project:** Candidate econometric baseline family for future HERALD falsification against neural/dynamic graph claims.
 **Risk:** Econometric method reference; may require assumptions and data length not satisfied by the current ZE2020 annual panel.
 
+### R-058 — Jin et al. (2020) — Pro-GNN
+**Key:** `jin2020prog_nn`
+**Title:** Graph Structure Learning for Robust Graph Neural Networks
+**Authors:** Wei Jin, Yao Ma, Xiaorui Liu, Xianfeng Tang, Suhang Wang, Jiliang Tang
+**Year:** 2020
+**URL:** https://arxiv.org/abs/2005.10203
+**Status:** `PREPRINT`
+**Theme:** Graph structure learning, noisy edge denoising, robust GNNs
+**Used in project:** Methodological anchor for learning or denoising HERALD edge weights instead of trusting the first candidate graph.
+**Risk:** Developed for robustness/adversarial graph settings; HERALD annual economic graphs need a frugal adaptation and placebo tests.
+
+### R-059 — Dai, Jin, Liu & Wang (2022) — Noisy Graphs with Sparse Labels
+**Key:** `dai2022robustnoisygraphs`
+**Title:** Towards Robust Graph Neural Networks for Noisy Graphs with Sparse Labels
+**Authors:** Enyan Dai, Wei Jin, Hui Liu, Suhang Wang
+**Year:** 2022
+**URL:** https://arxiv.org/abs/2201.00232
+**Status:** `PREPRINT`
+**Theme:** Noisy edges, sparse labels, graph denoising, robust message passing
+**Used in project:** Supports treating weak ZE2020 relation candidates as noisy supervision rather than ground-truth edges.
+**Risk:** Node-label setting differs from HERALD ZE x sector ranking; use as design caution, not direct evidence.
+
+### R-060 — Hu et al. (2023) — Edge Temporal States
+**Key:** `hu2023rsgt`
+**Title:** Dynamic Graph Representation Learning via Edge Temporal States Modeling and Structure-reinforced Transformer
+**Authors:** Shengxiang Hu, Guobing Zou, Song Yang, Shiyi Lin, Yanglan Gan, Bofeng Zhang
+**Year:** 2023
+**URL:** https://arxiv.org/abs/2304.10079
+**Status:** `PREPRINT`
+**Theme:** Dynamic graph representation learning, temporal edge states, evolving edge weights
+**Used in project:** Direct motivation for encoding HERALD edges as states such as new, persistent, decaying, recurrent, or volatile.
+**Risk:** Transformer architecture and benchmark setting are heavier than HERALD's current frugal prototype.
+
+### R-061 — Duan et al. (2023) — Adaptive Graph Sparsification
+**Key:** `duan2023localizedastgnn`
+**Title:** Localised Adaptive Spatial-Temporal Graph Neural Network
+**Authors:** Wenying Duan, Xiaoxi He, Zimu Zhou, Lothar Thiele, Hong Rao
+**Year:** 2023
+**URL:** https://arxiv.org/abs/2306.06930
+**Status:** `PREPRINT`
+**Theme:** Spatio-temporal GNNs, adaptive graph sparsification, edge pruning, locality
+**Used in project:** Supports testing sparse/pruned HERALD graphs after the expanded-edge HPC run showed that removing edges can improve Ridge.
+**Risk:** Traffic/spatio-temporal benchmark context; use as a falsification and pruning reference only.
+
+### R-062 — Chu et al. (2025) — STAA
+**Key:** `chu2025staa`
+**Title:** Adaptive Spatiotemporal Augmentation for Improving Dynamic Graph Learning
+**Authors:** Xu Chu, Hanlin Xue, Bingce Wang, Xiaoyang Liu, Weiping Li, Tong Mo, Tuoyu Feng, Zhijie Tan
+**Year:** 2025
+**URL:** https://arxiv.org/abs/2501.10010
+**Status:** `PREPRINT`
+**Theme:** Dynamic graph augmentation, noisy temporal edges, spatiotemporal diffusion, random walk
+**Used in project:** Motivation for penalizing volatile recent HERALD edges and testing diffusion/denoising before neural claims.
+**Risk:** Different tasks and datasets; should guide HERALD edge-construction experiments, not be cited as validation.
+
 ## Metrics
 
 | Metric | Count |
 |--------|------:|
-| Total references | 57 |
+| Total references | 62 |
 | VERIFIED_PRIMARY | 37 |
 | VERIFIED_INSTITUTIONAL | 2 |
-| PREPRINT | 18 |
+| PREPRINT | 23 |
 | UNVERIFIED | 0 |
 | POSSIBLE_HALLUCINATION | 0 |
 | Axes covered | 16 |
