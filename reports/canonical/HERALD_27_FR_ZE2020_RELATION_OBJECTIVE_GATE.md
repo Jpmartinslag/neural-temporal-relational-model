@@ -320,6 +320,8 @@ ROC-AUC
 Average Precision
 Precision@K over candidate pairs
 year-by-year metrics
+target-popularity baseline
+source-target pair-history baseline
 ```
 
 Promotion gate:
@@ -348,22 +350,33 @@ python3 src/modeles/france_ze2020/train_fr_ze2020_dynamic_relation_learner.py \
   --k 20
 ```
 
-Summary:
+Summary after adding explicit recurrence/popularity baselines:
 
-| Scenario | Negative strategy | `relation_logit` ROC-AUC | Average precision | Reading |
-|---|---|---:|---:|---|
-| `easy_random_negatives` | `easy_random` | 0.951 | 0.931 | easy negatives are too easy |
-| `full_control` | `typed_hard` | 0.762 | 0.783 | relation structure is distinguishable |
-| `edge_sign_only` | `typed_hard` | 0.762 | 0.783 | edge magnitude still not used |
-| `temporal_shuffle` | `typed_hard` | 0.787 | 0.801 | temporal order is not yet essential for this objective |
-| `sector_shuffle` | `typed_hard` | 0.760 | 0.785 | current pair task still survives sector shuffle |
-| `random_edge_targets` | `typed_hard` | 0.957 | 0.966 | target-randomization control exposes a weak task design |
+| Scenario | Negative strategy | Best model/control | Mean ROC-AUC | Mean average precision | Reading |
+|---|---|---|---:|---:|---|
+| `easy_random_negatives` | `easy_random` | `relation_logit` | 0.951 | 0.931 | easy negatives are too easy |
+| `full_control` | `typed_hard` | `pair_history` | 0.894 | 0.894 | pair recurrence beats the learned classifier |
+| `edge_sign_only` | `typed_hard` | `pair_history` | 0.894 | 0.894 | edge magnitude still not used |
+| `temporal_shuffle` | `typed_hard` | `pair_history` | 0.894 | 0.894 | current task does not force temporal representation learning |
+| `sector_shuffle` | `typed_hard` | `pair_history` | 0.894 | 0.894 | current task does not force sector representation learning |
+| `random_edge_targets` | `typed_hard` | `relation_logit` | 0.957 | 0.966 | target-randomization control exposes a weak task design |
+
+For the core `full_control` / `typed_hard` scenario:
+
+| Model/control | Mean ROC-AUC | Mean average precision | Mean precision@K |
+|---|---:|---:|---:|
+| `pair_history` | 0.894 | 0.894 | 0.990 |
+| `target_popularity` | 0.891 | 0.884 | 0.975 |
+| `relation_logit` | 0.762 | 0.783 | 0.810 |
+| `random` | 0.488 | 0.507 | 0.480 |
 
 Interpretation:
 
 ```text
 The local relation learner can distinguish observed typed edges from controlled
-non-edges, but it does not yet prove dynamic temporal-relational learning.
+non-edges, but it does not yet prove dynamic temporal-relational learning. In
+the core scenario, simple source-target recurrence and target popularity are
+stronger than the learned node-pair classifier.
 ```
 
 The strongest warning is `random_edge_targets`: this control should have hurt if

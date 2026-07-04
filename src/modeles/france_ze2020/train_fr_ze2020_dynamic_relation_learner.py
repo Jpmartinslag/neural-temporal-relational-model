@@ -276,6 +276,23 @@ def _fit_relation_logit(
     return model.predict_proba(test[feature_cols])[:, 1]
 
 
+def _history_count_score(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    group_cols: list[str],
+) -> np.ndarray:
+    positives = train[train["relation_label"] == 1]
+    if positives.empty:
+        return np.zeros(len(test), dtype=float)
+    counts = positives.groupby(group_cols).size().rename("_history_score").reset_index()
+    scored = test.merge(counts, on=group_cols, how="left")
+    score = scored["_history_score"].fillna(0).to_numpy(dtype=float)
+    max_score = float(score.max())
+    if max_score > 0:
+        score = score / max_score
+    return score
+
+
 def run_dynamic_relation_learner(
     nodes: pd.DataFrame,
     edges: pd.DataFrame,
@@ -315,6 +332,14 @@ def run_dynamic_relation_learner(
             scores = {
                 "relation_logit": _fit_relation_logit(
                     train, test, feature_cols=feature_cols, seed=seed, max_iter=max_iter
+                ),
+                "target_popularity": _history_count_score(
+                    train, test, group_cols=["target_node_id", "edge_type"]
+                ),
+                "pair_history": _history_count_score(
+                    train,
+                    test,
+                    group_cols=["source_node_id", "target_node_id", "edge_type"],
                 ),
                 "random": np.random.default_rng(seed + eval_year).random(len(test)),
             }

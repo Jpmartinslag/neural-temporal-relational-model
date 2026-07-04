@@ -103,8 +103,9 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     local smoke after the edge-sign placebo: confirms that the current encoder mostly
     uses edge presence/sign rather than economic magnitude, separates retrospective
     evaluation from 2025 inference, and locally tests dynamic relation learning with
-    typed hard negatives. Result: relation structure is distinguishable, but random-target
-    and shuffle controls still block HPC/model promotion.
+    typed hard negatives plus recurrence/popularity controls. Result: relation structure is
+    distinguishable, but pair-history/target-popularity, random-target, and shuffle controls
+    still block HPC/model promotion.
 
 ## Control Documents
 
