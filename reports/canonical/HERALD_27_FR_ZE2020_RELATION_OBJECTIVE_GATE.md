@@ -323,6 +323,7 @@ year-by-year metrics
 target-popularity baseline
 source-target pair-history baseline
 all-pair and unseen-pair test modes
+same-year and lag-1 node-feature modes
 ```
 
 Promotion gate:
@@ -406,6 +407,34 @@ The relation classifier has signal on unseen pairs once direct recurrence is
 blocked. This is useful, but still not enough for promotion: temporal_shuffle
 improves to ROC-AUC 0.831 / AP 0.665, and random_edge_targets remains very high
 (ROC-AUC 0.957 / AP 0.965).
+```
+
+Lagged-feature variant:
+
+```text
+--test-pair-mode unseen_pair --node-feature-lag 1
+```
+
+This predicts relation labels at year `t` using source/target node features
+from year `t-1`. It is closer to future-relation prediction than the same-year
+diagnostic.
+
+Core `full_control` / `typed_hard` result under `unseen_pair` + lag-1 features:
+
+| Model/control | Mean ROC-AUC | Mean average precision | Mean precision@K |
+|---|---:|---:|---:|
+| `relation_logit` | 0.786 | 0.550 | 0.500 |
+| `target_popularity` | 0.521 | 0.206 | 0.210 |
+| `random` | 0.490 | 0.190 | 0.150 |
+| `pair_history` | 0.500 | 0.177 | 0.170 |
+
+Reading:
+
+```text
+Lag-1 features preserve a relation signal above recurrence/popularity controls,
+but still do not validate dynamic temporal learning: temporal_shuffle remains
+essentially tied with full_control (ROC-AUC 0.774 / AP 0.555), and
+random_edge_targets remains much higher (ROC-AUC 0.939 / AP 0.951).
 ```
 
 The strongest warning is `random_edge_targets`: this control should have hurt if
