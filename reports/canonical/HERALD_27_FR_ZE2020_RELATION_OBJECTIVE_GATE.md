@@ -1,11 +1,10 @@
 # HERALD 27 — France ZE2020 Relation Objective Gate
 
 **Created:** 2026-07-04.
-**Status:** `RELATION_OBJECTIVE_GATE_READY`.
-**Scope:** pre-training audit before any new neural/dynamic graph run after
-HERALD_26. This document does not implement a model, does not launch HPC, does
-not validate a new graph architecture, and does not create an operational
-recommendation layer.
+**Status:** `RELATION_OBJECTIVE_GATE_AND_LOCAL_SMOKE_READY`.
+**Scope:** pre-training audit and local relation-learner smoke after HERALD_26.
+This document does not launch HPC, does not validate a new graph architecture,
+and does not create an operational recommendation layer.
 
 ---
 
@@ -233,8 +232,7 @@ Required controls for any relation-objective model:
 
 ```text
 random negative pairs
-same-ZE hard negatives
-same-sector hard negatives
+typed hard negatives
 same-year hard negatives
 degree/popularity baseline
 edge-sign-only control
@@ -274,11 +272,11 @@ placebos, not as a generic neural ranker.
 
 ---
 
-## 7. Next executable lot
+## 7. Local executable lot
 
-Do not launch HPC yet.
+HPC remains blocked.
 
-Next local lot:
+Implemented local lot:
 
 ```text
 src/modeles/france_ze2020/train_fr_ze2020_dynamic_relation_learner.py
@@ -298,13 +296,22 @@ Minimum scenarios:
 ```text
 full_control
 easy_random_negatives
-same_sector_hard_negatives
-same_ze_hard_negatives
+typed_hard_negatives
 edge_sign_only
 random_edge_targets
 temporal_shuffle
 sector_shuffle
 ```
+
+`typed_hard_negatives` means:
+
+```text
+cross_ze_same_sector: negative target keeps the same sector but changes ZE.
+intra_ze_sector:      negative target keeps the same ZE but changes sector.
+```
+
+This avoids an artificial shortcut where the model separates positives and
+negatives only because the negative pair violates the edge type's own semantics.
 
 Minimum metrics:
 
@@ -327,13 +334,68 @@ step is revising relation labels/edge construction.
 
 ---
 
-## 8. Claim policy
+## 8. Local smoke result
+
+Local smoke command:
+
+```text
+python3 src/modeles/france_ze2020/train_fr_ze2020_dynamic_relation_learner.py \
+  --output-dir /tmp/fr_ze2020_dynamic_relation_learner_smoke_typed \
+  --scenarios full_control easy_random_negatives typed_hard_negatives \
+              edge_sign_only random_edge_targets temporal_shuffle sector_shuffle \
+  --eval-years 2021 2022 2023 2024 2025 \
+  --max-iter 150 \
+  --k 20
+```
+
+Summary:
+
+| Scenario | Negative strategy | `relation_logit` ROC-AUC | Average precision | Reading |
+|---|---|---:|---:|---|
+| `easy_random_negatives` | `easy_random` | 0.951 | 0.931 | easy negatives are too easy |
+| `full_control` | `typed_hard` | 0.762 | 0.783 | relation structure is distinguishable |
+| `edge_sign_only` | `typed_hard` | 0.762 | 0.783 | edge magnitude still not used |
+| `temporal_shuffle` | `typed_hard` | 0.787 | 0.801 | temporal order is not yet essential for this objective |
+| `sector_shuffle` | `typed_hard` | 0.760 | 0.785 | current pair task still survives sector shuffle |
+| `random_edge_targets` | `typed_hard` | 0.957 | 0.966 | target-randomization control exposes a weak task design |
+
+Interpretation:
+
+```text
+The local relation learner can distinguish observed typed edges from controlled
+non-edges, but it does not yet prove dynamic temporal-relational learning.
+```
+
+The strongest warning is `random_edge_targets`: this control should have hurt if
+the task were truly learning meaningful source-target relation structure. Its
+improvement suggests that the current classification task can still be solved by
+node/type distribution artifacts.
+
+Decision:
+
+```text
+Do not launch HPC from this local learner.
+Do not promote it as a graph model.
+Use it as a diagnostic showing that the next objective must be stricter:
+future-edge prediction, held-out-pair validation, or contrastive embeddings with
+harder source-target controls.
+```
+
+Tests:
+
+```text
+tests/test_fr_ze2020_dynamic_relation_learner.py: 8 passed
+```
+
+---
+
+## 9. Claim policy
 
 Allowed after this gate:
 
 ```text
-HERALD has identified a cleaner next objective: dynamic relation learning over
-ZE2020 x sector nodes.
+HERALD has identified and locally tested a cleaner next objective: dynamic
+relation learning over ZE2020 x sector nodes.
 ```
 
 Forbidden:
@@ -344,12 +406,13 @@ HERALD learns causal economic influence.
 HERALD can recommend sectors automatically.
 2025 rankings are validated outcomes.
 Edge weights are economic intensity in the current encoder.
+The local relation learner validates a dynamic graph model.
 ```
 
 Current scientific position:
 
 ```text
 The data chain is usable, but the next model must be redesigned around relation
-learning and hard falsification. The present blocker is methodological, not just
-computational.
+learning and stricter source-target falsification. The present blocker is
+methodological, not just computational.
 ```
