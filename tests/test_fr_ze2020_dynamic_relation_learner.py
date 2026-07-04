@@ -8,6 +8,7 @@ from src.modeles.france_ze2020.train_fr_ze2020_dynamic_relation_learner import (
     CLAIM_STATUS,
     DEFAULT_EDGES_PATH,
     SCENARIOS,
+    TEST_PAIR_MODES,
     apply_relation_scenario,
     build_pairwise_relation_samples,
     load_edges,
@@ -35,6 +36,7 @@ def test_relation_learner_scenarios_are_explicit():
         "temporal_shuffle",
         "sector_shuffle",
     ]
+    assert TEST_PAIR_MODES == ["all", "unseen_pair"]
 
 
 def test_pairwise_samples_have_balanced_positive_and_negative_rows():
@@ -132,7 +134,31 @@ def test_summary_has_one_row_per_scenario_model():
     )
     summary = summarize_metrics(metrics)
     assert {"falsification_scenario", "model", "mean_average_precision"}.issubset(summary.columns)
+    assert set(summary["test_pair_mode"]) == {"all"}
     assert summary["mean_roc_auc"].between(0, 1).all()
+
+
+def test_unseen_pair_mode_excludes_train_positive_pairs_from_test():
+    nodes, edges = _load_inputs()
+    predictions, metrics, _ = run_dynamic_relation_learner(
+        nodes,
+        edges,
+        scenarios=["full_control"],
+        eval_years=[2021],
+        negative_ratio=1,
+        min_train_years=2,
+        seed=42,
+        max_iter=100,
+        k=20,
+        test_pair_mode="unseen_pair",
+    )
+    assert set(metrics["test_pair_mode"]) == {"unseen_pair"}
+    positive_pairs = edges[edges["decision_year"] < 2021][
+        ["source_node_id", "target_node_id", "edge_type"]
+    ].drop_duplicates()
+    seen = set(map(tuple, positive_pairs.to_numpy()))
+    tested = predictions[["source_node_id", "target_node_id", "edge_type"]].drop_duplicates()
+    assert not any(tuple(row) in seen for row in tested.to_numpy())
 
 
 def test_relation_learner_has_no_forbidden_outputs_or_legacy_inputs():

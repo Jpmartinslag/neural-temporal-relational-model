@@ -322,6 +322,7 @@ Precision@K over candidate pairs
 year-by-year metrics
 target-popularity baseline
 source-target pair-history baseline
+all-pair and unseen-pair test modes
 ```
 
 Promotion gate:
@@ -377,6 +378,34 @@ The local relation learner can distinguish observed typed edges from controlled
 non-edges, but it does not yet prove dynamic temporal-relational learning. In
 the core scenario, simple source-target recurrence and target popularity are
 stronger than the learned node-pair classifier.
+```
+
+Additional stricter split:
+
+```text
+--test-pair-mode unseen_pair
+```
+
+This removes from each test year any pair that already appeared as a positive
+training relation. It tests whether the model can identify newly appearing
+relations instead of repeated source-target pairs.
+
+Core `full_control` / `typed_hard` result under `unseen_pair`:
+
+| Model/control | Mean ROC-AUC | Mean average precision | Mean precision@K |
+|---|---:|---:|---:|
+| `relation_logit` | 0.743 | 0.579 | 0.438 |
+| `target_popularity` | 0.515 | 0.195 | 0.175 |
+| `random` | 0.491 | 0.190 | 0.163 |
+| `pair_history` | 0.500 | 0.172 | 0.163 |
+
+Reading:
+
+```text
+The relation classifier has signal on unseen pairs once direct recurrence is
+blocked. This is useful, but still not enough for promotion: temporal_shuffle
+improves to ROC-AUC 0.831 / AP 0.665, and random_edge_targets remains very high
+(ROC-AUC 0.957 / AP 0.965).
 ```
 
 The strongest warning is `random_edge_targets`: this control should have hurt if
