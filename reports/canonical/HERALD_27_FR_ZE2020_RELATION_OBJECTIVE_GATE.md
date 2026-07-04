@@ -1,0 +1,355 @@
+# HERALD 27 — France ZE2020 Relation Objective Gate
+
+**Created:** 2026-07-04.
+**Status:** `RELATION_OBJECTIVE_GATE_READY`.
+**Scope:** pre-training audit before any new neural/dynamic graph run after
+HERALD_26. This document does not implement a model, does not launch HPC, does
+not validate a new graph architecture, and does not create an operational
+recommendation layer.
+
+---
+
+## 1. Why this gate exists
+
+HERALD_23 reframed the project away from "better forecast" and toward temporal-
+relational representation learning for auditable indicators and future
+exploratory ZE x sector ranking.
+
+HERALD_24 then created the ZE x sector ranking bridge.
+
+HERALD_25/HERALD_26 tested the first dynamic graph path and found:
+
+```text
+time signal:      supported
+sector signal:    supported / moderate
+edge magnitude:   not supported in the current message encoder
+neural advantage: not supported yet
+```
+
+The 20260702 edge-sign placebo is the key blocker: `edge_sign_only` matched or
+slightly exceeded `full_control` on the leading edge variants. This means the
+current aggregated-message model mostly uses edge presence/sign, not economic
+edge intensity.
+
+Therefore the next run must not be "more epochs on the same graph". The next
+run needs a relation objective that tests whether HERALD learns relationships
+between ZE-sector nodes.
+
+---
+
+## 2. Hypotheses retained
+
+### H1 — Temporal signal
+
+Retained.
+
+Question:
+
+```text
+Does ordering and lag history matter?
+```
+
+Current evidence:
+
+```text
+temporal_shuffle hurts results in ranking/dynamic-graph falsifications
+```
+
+Required next check:
+
+```text
+Any new relation learner must keep temporal-shuffle and year-order controls.
+```
+
+### H2 — Sector structure
+
+Retained.
+
+Question:
+
+```text
+Does A10 sector structure add information beyond a flat territorial table?
+```
+
+Current evidence:
+
+```text
+sector-shuffle and sector-only variants show that sector structure carries signal
+```
+
+Required next check:
+
+```text
+Any new relation learner must include no-sector and sector-shuffle controls.
+```
+
+### H3 — Current edge weights
+
+Rejected for the current message encoder.
+
+Question:
+
+```text
+Does edge_weight magnitude behave as economic intensity?
+```
+
+Current evidence:
+
+```text
+edge_sign_only ≈ full_control on the best candidates
+```
+
+Reading:
+
+```text
+The current encoder uses edge existence/sign more than magnitude.
+```
+
+Consequence:
+
+```text
+Do not promote current edge_weight as learned economic intensity.
+Do not launch deeper neural training on the same aggregated-message design.
+```
+
+### H4 — Relation learning
+
+Still open.
+
+Question:
+
+```text
+Can HERALD learn a temporal-relational representation h_{ZE,sector,t} that is
+useful for ranking or relation inspection?
+```
+
+This has not been answered by HERALD_25/HERALD_26, because those runs tested
+hand-built edge aggregation more than a direct relation-learning objective.
+
+---
+
+## 3. Input audit
+
+### Canonical inputs still allowed
+
+```text
+data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges.csv
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_expanding.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_learned_sector_only.csv.gz
+data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_precision_sector_only.csv.gz
+```
+
+### Forbidden inputs remain forbidden
+
+```text
+dynamic_stgnn_feature_panel*
+graph_adjacency_core_v0.csv
+graph_adjacency_mobility_v0.csv
+train_herald_v6/v7/semi_v2/regime outputs as current evidence
+```
+
+### 2025 finding
+
+2025 is present in the observed sector panel and in dynamic graph nodes/edges,
+but it is not a normal retrospective training/evaluation year in the current
+ranking panel:
+
+```text
+fr_ze2020_dynamic_graph_nodes.csv:
+  2025 rows exist: 2,520
+  feature_complete in 2025: 0 / 2,520
+```
+
+Reason:
+
+```text
+HERALD_24 defines decision_year=T using feature rows from year=T+1, because the
+feature file's lag columns represent values observed up to T.
+```
+
+So:
+
+```text
+decision_year=2024 can be evaluated for 1-year target using observed 2025.
+decision_year=2025 cannot be evaluated retrospectively without future 2026.
+decision_year=2025 should instead be handled by a separate inference panel.
+```
+
+Required before any "2025 recommendation/ranking" output:
+
+```text
+Build a separate inference-safe panel, for example:
+data/processed/france_ze2020/fr_ze2020_sector_ranking_inference_2025.csv
+```
+
+This panel must have features available through 2025, no future label required,
+and a different claim status from retrospective evaluation rows.
+
+---
+
+## 4. Objective correction
+
+The next model should not start as:
+
+```text
+predict future_growth with aggregated messages
+```
+
+That was already tested and the edge layer failed the sign/magnitude placebo.
+
+The next objective should test relation learning directly:
+
+```text
+learn h_{i,t} for node i=(ZE2020, sector)
+```
+
+Then evaluate one or more of:
+
+| Objective | What it tests | Caveat |
+|---|---|---|
+| temporal edge prediction | whether future/held-out relations are distinguishable from plausible non-relations | depends heavily on negative sampling |
+| edge-state reconstruction | whether the model learns persistent/new/decaying relation states | does not prove economic causality |
+| contrastive ZE-sector embedding | whether related nodes are closer than controlled negatives | requires careful negatives |
+| ranking auxiliary head | whether learned representations help ZE x sector ranking | ranking remains exploratory |
+
+The simplest acceptable next prototype is not a new "validated dynamic GNN".
+It is:
+
+```text
+dynamic relation learner smoke
+```
+
+---
+
+## 5. Negative sampling warning
+
+Dynamic link/relation learning is sensitive to negative sampling. Random
+non-edges may be too easy and can produce a false positive result.
+
+Required controls for any relation-objective model:
+
+```text
+random negative pairs
+same-ZE hard negatives
+same-sector hard negatives
+same-year hard negatives
+degree/popularity baseline
+edge-sign-only control
+random-edge-target control
+temporal shuffle
+sector shuffle
+```
+
+Do not accept a relation learner that only beats easy random negatives.
+
+---
+
+## 6. Literature check
+
+Recent temporal graph work supports the gate rather than contradicting it:
+
+- Jiang and Pu (2023), *Exploring Time Granularity on Temporal Graphs for
+  Dynamic Link Prediction in Real-world Networks*: time granularity and negative
+  sampling strongly affect dynamic link prediction.
+- Hu et al. (2024 revision), *Dynamic Graph Representation Learning via Edge
+  Temporal States Modeling and Structure-reinforced Transformer*: edge temporal
+  states should be modeled explicitly; static weights can miss changing
+  inter-node relationships.
+- Daniluk and Dabrowski (2023), *Temporal graph models fail to capture global
+  temporal dynamics*: simple baselines and negative-sampling design can expose
+  degeneration in temporal graph models.
+- Romero et al. (2023), *New Perspectives on the Evaluation of Link Prediction
+  Algorithms for Dynamic Graphs*: dynamic link-prediction evaluation depends
+  critically on the kind of negative samples used and varies over time.
+
+Implication for HERALD:
+
+```text
+The next model must be evaluated as a temporal relation learner with hard
+placebos, not as a generic neural ranker.
+```
+
+---
+
+## 7. Next executable lot
+
+Do not launch HPC yet.
+
+Next local lot:
+
+```text
+src/modeles/france_ze2020/train_fr_ze2020_dynamic_relation_learner.py
+tests/test_fr_ze2020_dynamic_relation_learner.py
+```
+
+Minimum behavior:
+
+```text
+input:  dynamic graph nodes + one audited edge candidate file
+output: local-only metrics/predictions under data/processed/france_ze2020/
+claim:  exploratory relation-learning smoke, not recommendation
+```
+
+Minimum scenarios:
+
+```text
+full_control
+easy_random_negatives
+same_sector_hard_negatives
+same_ze_hard_negatives
+edge_sign_only
+random_edge_targets
+temporal_shuffle
+sector_shuffle
+```
+
+Minimum metrics:
+
+```text
+ROC-AUC
+Average Precision
+Precision@K over candidate pairs
+year-by-year metrics
+```
+
+Promotion gate:
+
+```text
+The model must beat hard negatives and simple popularity/degree baselines across
+multiple years before any HPC batch is prepared.
+```
+
+If this local gate fails, the next step is not a deeper neural network. The next
+step is revising relation labels/edge construction.
+
+---
+
+## 8. Claim policy
+
+Allowed after this gate:
+
+```text
+HERALD has identified a cleaner next objective: dynamic relation learning over
+ZE2020 x sector nodes.
+```
+
+Forbidden:
+
+```text
+HERALD has validated a new dynamic GNN.
+HERALD learns causal economic influence.
+HERALD can recommend sectors automatically.
+2025 rankings are validated outcomes.
+Edge weights are economic intensity in the current encoder.
+```
+
+Current scientific position:
+
+```text
+The data chain is usable, but the next model must be redesigned around relation
+learning and hard falsification. The present blocker is methodological, not just
+computational.
+```

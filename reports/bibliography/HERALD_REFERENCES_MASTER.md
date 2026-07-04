@@ -784,14 +784,47 @@
 **Used in project:** Motivation for penalizing volatile recent HERALD edges and testing diffusion/denoising before neural claims.
 **Risk:** Different tasks and datasets; should guide HERALD edge-construction experiments, not be cited as validation.
 
+### R-063 — Jiang & Pu (2023) — Temporal Graph Time Granularity
+**Key:** `jiang2023timegranularity`
+**Title:** Exploring Time Granularity on Temporal Graphs for Dynamic Link Prediction in Real-world Networks
+**Authors:** Xiangjian Jiang, Yanyi Pu
+**Year:** 2023
+**URL:** https://arxiv.org/abs/2311.12255
+**Status:** `PREPRINT`
+**Theme:** Dynamic graph neural networks, temporal granularity, negative sampling, dynamic link prediction
+**Used in project:** Supports HERALD_27's gate that a relation learner must treat time granularity and negative sampling as methodological choices, not defaults.
+**Risk:** Generic dynamic-link benchmarks; not economic-territorial data and not direct validation for ZE2020 ranking.
+
+### R-064 — Daniluk & Dabrowski (2023) — Temporal Graph Dynamics Baseline Failure
+**Key:** `daniluk2023temporalgraphfail`
+**Title:** Temporal graph models fail to capture global temporal dynamics
+**Authors:** Michal Daniluk, Jacek Dabrowski
+**Year:** 2023
+**URL:** https://arxiv.org/abs/2309.15730
+**Status:** `PREPRINT`
+**Theme:** Temporal graph benchmarks, strong simple baselines, negative sampling, model degeneration
+**Used in project:** Warning that HERALD relation-learning claims must beat simple popularity/degree and hard-negative controls, not only easy random negatives.
+**Risk:** Benchmark critique in non-economic temporal graphs; use as falsification guidance only.
+
+### R-065 — Romero, De Bie & Lijffijt (2023) — Dynamic Link Prediction Evaluation
+**Key:** `romero2023dynamiclinkevaluation`
+**Title:** New Perspectives on the Evaluation of Link Prediction Algorithms for Dynamic Graphs
+**Authors:** Raphael Romero, Tijl De Bie, Jefrey Lijffijt
+**Year:** 2023
+**URL:** https://arxiv.org/abs/2311.18486
+**Status:** `PREPRINT`
+**Theme:** Dynamic link prediction, negative sampling, temporal evaluation, node/edge-level diagnostics
+**Used in project:** Supports HERALD_27's requirement that future relation-learning evaluation report hard-negative and year-by-year diagnostics.
+**Risk:** Methodological evaluation paper; not a HERALD result and not evidence that any current edge family is useful.
+
 ## Metrics
 
 | Metric | Count |
 |--------|------:|
-| Total references | 62 |
+| Total references | 65 |
 | VERIFIED_PRIMARY | 37 |
 | VERIFIED_INSTITUTIONAL | 2 |
-| PREPRINT | 23 |
+| PREPRINT | 26 |
 | UNVERIFIED | 0 |
 | POSSIBLE_HALLUCINATION | 0 |
 | Axes covered | 16 |

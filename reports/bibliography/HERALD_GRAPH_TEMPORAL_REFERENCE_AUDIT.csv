@@ -21,3 +21,6 @@ ying2019gnnexplainer,2019,Conference,https://proceedings.neurips.cc/paper/2019/h
 zeng2023dlinear,2023,Conference,https://doi.org/10.1609/aaai.v37i9.26317,VERIFIED_PRIMARY,Simple neural time-series baseline,Not graph-based
 oreshkin2020nbeats,2020,Conference,https://openreview.net/forum?id=r1ecqn4YwB,VERIFIED_PRIMARY,Frugal neural forecasting baseline,Not graph-based
 bergmeir2018cv,2018,Journal,https://doi.org/10.1016/j.csda.2017.11.003,VERIFIED_PRIMARY,Temporal evaluation protocol,Does not define HERALD graph model
+jiang2023timegranularity,2023,Preprint,https://arxiv.org/abs/2311.12255,PREPRINT,Temporal graph granularity and negative sampling,Generic dynamic-link benchmarks not ZE2020 economics
+daniluk2023temporalgraphfail,2023,Preprint,https://arxiv.org/abs/2309.15730,PREPRINT,Simple baselines and negative-sampling failure modes,Use as falsification warning not model validation
+romero2023dynamiclinkevaluation,2023,Preprint,https://arxiv.org/abs/2311.18486,PREPRINT,Dynamic link-prediction evaluation and negative sampling diagnostics,Methodological evaluation not HERALD evidence

@@ -99,6 +99,11 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     moderate, current edges not yet useful), adds edge-denoising/structure-learning
     references, and defines the next pruned/stateful/learned edge variants before any
     heavier neural claim.
+25. `canonical/HERALD_27_FR_ZE2020_RELATION_OBJECTIVE_GATE.md` — pre-training gate after
+    the edge-sign placebo: confirms that the current encoder mostly uses edge
+    presence/sign rather than economic magnitude, separates retrospective evaluation from
+    2025 inference, and defines the next allowed local objective as dynamic relation
+    learning with hard negative controls before any HPC launch.
 
 ## Control Documents
 
