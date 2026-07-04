@@ -135,13 +135,30 @@ def apply_relation_scenario(
         out_edges["edge_weight"] = np.sign(out_edges["edge_weight"].to_numpy(dtype=float))
         out_edges.loc[out_edges["edge_weight"] == 0, "edge_weight"] = 1.0
     elif scenario == "random_edge_targets":
-        for _, idx in out_edges.groupby(["decision_year", "edge_type"], sort=False).groups.items():
+        source_parts = out_edges["source_node_id"].map(_split_node_id)
+        out_edges["_source_ze"] = [part[0] for part in source_parts]
+        out_edges["_source_sector"] = [part[1] for part in source_parts]
+        cross_mask = out_edges["edge_type"] == "cross_ze_same_sector"
+        intra_mask = out_edges["edge_type"] == "intra_ze_sector"
+        random_groups = []
+        random_groups.extend(
+            out_edges.loc[cross_mask]
+            .groupby(["decision_year", "edge_type", "_source_sector"], sort=False)
+            .groups.values()
+        )
+        random_groups.extend(
+            out_edges.loc[intra_mask]
+            .groupby(["decision_year", "edge_type", "_source_ze"], sort=False)
+            .groups.values()
+        )
+        for idx in random_groups:
             idx_list = list(idx)
             if len(idx_list) <= 1:
                 continue
             out_edges.loc[idx_list, "target_node_id"] = rng.permutation(
                 out_edges.loc[idx_list, "target_node_id"].to_numpy()
             )
+        out_edges = out_edges.drop(columns=["_source_ze", "_source_sector"])
         out_edges = out_edges[out_edges["source_node_id"] != out_edges["target_node_id"]].copy()
     elif scenario == "temporal_shuffle":
         out_nodes = _shuffle_columns(out_nodes, TEMPORAL_COLUMNS, seed=seed, group_cols=["decision_year"])

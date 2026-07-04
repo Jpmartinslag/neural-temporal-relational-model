@@ -437,10 +437,40 @@ essentially tied with full_control (ROC-AUC 0.774 / AP 0.555), and
 random_edge_targets remains much higher (ROC-AUC 0.939 / AP 0.951).
 ```
 
-The strongest warning is `random_edge_targets`: this control should have hurt if
-the task were truly learning meaningful source-target relation structure. Its
-improvement suggests that the current classification task can still be solved by
-node/type distribution artifacts.
+Correction after semantic random-target audit:
+
+```text
+The first random_edge_targets control was too easy because it could break edge-
+type semantics. It now randomizes targets while preserving the edge type's
+basic constraint: cross_ze_same_sector keeps the same sector, and intra_ze_sector
+keeps the same ZE.
+```
+
+With `unseen_pair` + lag-1 features after that correction:
+
+| Scenario | Best model/control | Mean ROC-AUC | Mean average precision | Reading |
+|---|---|---:|---:|---|
+| `full_control` | `relation_logit` | 0.786 | 0.550 | signal above simple controls |
+| `edge_sign_only` | `relation_logit` | 0.786 | 0.550 | magnitude still not used |
+| `temporal_shuffle` | `relation_logit` | 0.774 | 0.555 | temporal order still not used enough |
+| `sector_shuffle` | `relation_logit` | 0.775 | 0.547 | sector structure still not used enough |
+| `random_edge_targets` | `target_popularity` | 0.796 | 0.746 | target popularity remains a strong artifact |
+| `random_edge_targets` | `relation_logit` | 0.665 | 0.555 | corrected random-target no longer creates the previous artificial classifier spike |
+
+Updated reading:
+
+```text
+The previous extreme random-target result was partly a flawed placebo. After
+fixing that placebo, relation_logit has a real but still weak relation signal.
+The promotion blocker is now sharper: full_control remains almost tied with
+edge_sign_only, temporal_shuffle, and sector_shuffle. Therefore the current
+objective still does not demonstrate dynamic temporal-relation learning.
+```
+
+The strongest warning is now the near-tie between `full_control`,
+`edge_sign_only`, `temporal_shuffle`, and `sector_shuffle`. The corrected
+`random_edge_targets` control still exposes target-popularity artifacts, but it
+no longer creates the earlier artificial relation-logit spike.
 
 Decision:
 
@@ -455,7 +485,7 @@ harder source-target controls.
 Tests:
 
 ```text
-tests/test_fr_ze2020_dynamic_relation_learner.py: 8 passed
+tests/test_fr_ze2020_dynamic_relation_learner.py: 11 passed
 ```
 
 ---
