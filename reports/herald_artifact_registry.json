@@ -1052,6 +1052,26 @@
       "notes": "Tests: tests/test_fr_ze2020_dynamic_edge_variants.py. Companion audit-only script: src/modeles/france_ze2020/audit_fr_ze2020_dynamic_edge_variants.py. Local smoke pruned_stable: full_control NDCG@K 0.5078 Ridge / 0.4786 MLP versus no_edges 0.5250 Ridge / 0.5029 MLP. HPC batch 20260702_121925: sector-only MLP variants improved versus no_edges but failed random_edge_weights; Ridge did not beat no_edges. Precision-sector-only integration smoke for 2024 completed without schema/runtime errors. HPC batch scripts: hpc/france_ze2020_dynamic_graph/run_fr_ze2020_edge_variant_falsification_*. These files do not overwrite HERALD_25 instant or expanding edge inputs."
     },
     {
+      "id": "FR_ZE2020_DYNAMIC_RELATION_LEARNER_SMOKE_V1",
+      "phase": "dynamic relation objective gate (2026-07-04)",
+      "path": "data/processed/france_ze2020/fr_ze2020_dynamic_relation_learner_{predictions,metrics,summary,manifest}_v1.csv",
+      "type": "model_smoke_output",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_27 local relation-objective diagnostic, not a model result) -- see reports/canonical/HERALD_27_FR_ZE2020_RELATION_OBJECTIVE_GATE.md",
+      "generator_script": "src/modeles/france_ze2020/train_fr_ze2020_dynamic_relation_learner.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv",
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz"
+      ],
+      "claim_authorized": "Local relation-objective smoke only: a balanced logistic classifier over source/target node-pair features distinguishes observed typed ZE2020 x sector candidate edges from controlled non-edges. It uses typed hard negatives by default (cross_ze_same_sector keeps the same sector and changes ZE; intra_ze_sector keeps the same ZE and changes sector). Local smoke over 2021-2025 showed relation_logit full_control ROC-AUC ~0.762 / AP ~0.783 against typed_hard negatives, while easy random negatives were much easier (ROC-AUC ~0.951 / AP ~0.931). Every output row uses claim_status=dynamic_relation_learner_smoke_exploratory_not_recommendation.",
+      "claim_forbidden": "Treating this as a validated dynamic graph model, a validated GNN, or authorization for HPC. Treating the local relation learner as evidence of causal economic influence or automatic sector recommendation. Treating edge magnitude as learned economic intensity -- edge_sign_only exactly matched full_control in the local smoke. Treating the task as solved -- random_edge_targets improved the metric and temporal/sector shuffles did not hurt, which blocks promotion and points to source-target/type distribution artifacts.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_dynamic_relation_learner.py. Local smoke outputs were written to /tmp, not tracked. No HPC job launched."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
