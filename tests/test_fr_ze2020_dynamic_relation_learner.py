@@ -53,6 +53,20 @@ def test_pairwise_samples_have_balanced_positive_and_negative_rows():
     assert {"observed_edge", "easy_random_non_edge"} == set(samples["sample_role"])
 
 
+def test_node_feature_lag_uses_previous_year_features():
+    nodes, edges = _load_inputs()
+    samples = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="typed_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        seed=42,
+    )
+    assert not samples.empty
+    assert (samples["node_feature_year"] == samples["decision_year"] - 1).all()
+
+
 def test_typed_hard_negatives_respect_edge_type_semantics():
     nodes, edges = _load_inputs()
     samples = build_pairwise_relation_samples(
@@ -135,6 +149,7 @@ def test_summary_has_one_row_per_scenario_model():
     summary = summarize_metrics(metrics)
     assert {"falsification_scenario", "model", "mean_average_precision"}.issubset(summary.columns)
     assert set(summary["test_pair_mode"]) == {"all"}
+    assert set(summary["node_feature_lag"]) == {0}
     assert summary["mean_roc_auc"].between(0, 1).all()
 
 
@@ -159,6 +174,27 @@ def test_unseen_pair_mode_excludes_train_positive_pairs_from_test():
     seen = set(map(tuple, positive_pairs.to_numpy()))
     tested = predictions[["source_node_id", "target_node_id", "edge_type"]].drop_duplicates()
     assert not any(tuple(row) in seen for row in tested.to_numpy())
+
+
+def test_node_feature_lag_is_reported_in_metrics_and_predictions():
+    nodes, edges = _load_inputs()
+    predictions, metrics, manifest = run_dynamic_relation_learner(
+        nodes,
+        edges,
+        scenarios=["full_control"],
+        eval_years=[2022],
+        negative_ratio=1,
+        min_train_years=2,
+        seed=42,
+        max_iter=100,
+        k=20,
+        test_pair_mode="unseen_pair",
+        node_feature_lag=1,
+    )
+    assert not predictions.empty
+    assert (predictions["node_feature_year"] == predictions["decision_year"] - 1).all()
+    assert set(metrics["node_feature_lag"]) == {1}
+    assert set(manifest["node_feature_lag"]) == {1}
 
 
 def test_relation_learner_has_no_forbidden_outputs_or_legacy_inputs():

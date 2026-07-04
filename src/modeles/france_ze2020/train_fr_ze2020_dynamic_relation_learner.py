@@ -156,20 +156,24 @@ def build_pairwise_relation_samples(
     edges: pd.DataFrame,
     negative_strategy: str = "easy_random",
     negative_ratio: int = 1,
+    node_feature_lag: int = 0,
     seed: int = SEED,
 ) -> pd.DataFrame:
     if negative_ratio < 1:
         raise ValueError("negative_ratio must be >= 1")
+    if node_feature_lag < 0:
+        raise ValueError("node_feature_lag must be >= 0")
 
     node = _node_frame(nodes)
     valid_node_year = set(zip(node["node_id"], node["decision_year"].astype(int)))
     positives = edges[
         ["source_node_id", "target_node_id", "decision_year", "edge_type"]
     ].copy()
+    positives["node_feature_year"] = positives["decision_year"].astype(int) - int(node_feature_lag)
     positives = positives[
         positives.apply(
-            lambda r: (r["source_node_id"], int(r["decision_year"])) in valid_node_year
-            and (r["target_node_id"], int(r["decision_year"])) in valid_node_year,
+            lambda r: (r["source_node_id"], int(r["node_feature_year"])) in valid_node_year
+            and (r["target_node_id"], int(r["node_feature_year"])) in valid_node_year,
             axis=1,
         )
     ].drop_duplicates()
@@ -190,7 +194,8 @@ def build_pairwise_relation_samples(
 
     for row in positives.itertuples(index=False):
         year = int(row.decision_year)
-        nodes_year = nodes_by_year.get(year)
+        feature_year = int(row.node_feature_year)
+        nodes_year = nodes_by_year.get(feature_year)
         if nodes_year is None:
             continue
         candidates = [
@@ -211,6 +216,7 @@ def build_pairwise_relation_samples(
                     "source_node_id": row.source_node_id,
                     "target_node_id": target,
                     "decision_year": year,
+                    "node_feature_year": feature_year,
                     "edge_type": row.edge_type,
                     "relation_label": 0,
                     "sample_role": f"{negative_strategy}_non_edge",
@@ -222,15 +228,15 @@ def build_pairwise_relation_samples(
     if samples.empty:
         raise ValueError("No relation samples could be built")
 
-    source = node.rename(columns={"node_id": "source_node_id"})
+    source = node.rename(columns={"node_id": "source_node_id", "decision_year": "node_feature_year"})
     source = source.rename(columns={c: f"source_{c}" for c in ["ze2020", "sector_code", *BASE_FEATURE_COLUMNS]})
     source = source.drop(columns=["feature_complete"])
-    target = node.rename(columns={"node_id": "target_node_id"})
+    target = node.rename(columns={"node_id": "target_node_id", "decision_year": "node_feature_year"})
     target = target.rename(columns={c: f"target_{c}" for c in ["ze2020", "sector_code", *BASE_FEATURE_COLUMNS]})
     target = target.drop(columns=["feature_complete"])
 
-    samples = samples.merge(source, on=["source_node_id", "decision_year"], how="inner")
-    samples = samples.merge(target, on=["target_node_id", "decision_year"], how="inner")
+    samples = samples.merge(source, on=["source_node_id", "node_feature_year"], how="inner")
+    samples = samples.merge(target, on=["target_node_id", "node_feature_year"], how="inner")
     samples["same_ze"] = (samples["source_ze2020"] == samples["target_ze2020"]).astype(int)
     samples["same_sector"] = (samples["source_sector_code"] == samples["target_sector_code"]).astype(int)
     return samples.sort_values(["decision_year", "edge_type", "source_node_id", "target_node_id"]).reset_index(drop=True)
@@ -329,9 +335,12 @@ def run_dynamic_relation_learner(
     max_iter: int = 300,
     k: int = 50,
     test_pair_mode: str = "all",
+    node_feature_lag: int = 0,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     if test_pair_mode not in TEST_PAIR_MODES:
         raise ValueError(f"Unknown test_pair_mode: {test_pair_mode}")
+    if node_feature_lag < 0:
+        raise ValueError("node_feature_lag must be >= 0")
 
     prediction_frames = []
     metric_rows = []
@@ -346,6 +355,7 @@ def run_dynamic_relation_learner(
             scenario_edges,
             negative_strategy=negative_strategy,
             negative_ratio=negative_ratio,
+            node_feature_lag=node_feature_lag,
             seed=seed,
         )
         feature_cols = relation_feature_columns(samples)
@@ -381,6 +391,7 @@ def run_dynamic_relation_learner(
                         "source_node_id",
                         "target_node_id",
                         "decision_year",
+                        "node_feature_year",
                         "edge_type",
                         "relation_label",
                         "sample_role",
@@ -407,6 +418,7 @@ def run_dynamic_relation_learner(
                         "n_train_years": int(train["decision_year"].nunique()),
                         "n_features": int(len(feature_cols)),
                         "test_pair_mode": test_pair_mode,
+                        "node_feature_lag": int(node_feature_lag),
                         "claim_status": CLAIM_STATUS,
                     }
                 )
@@ -418,6 +430,7 @@ def run_dynamic_relation_learner(
                 "seed": int(seed),
                 "eval_years": " ".join(str(y) for y in eval_years),
                 "test_pair_mode": test_pair_mode,
+                "node_feature_lag": int(node_feature_lag),
                 "claim_status": CLAIM_STATUS,
             }
         )
@@ -430,7 +443,13 @@ def run_dynamic_relation_learner(
 def summarize_metrics(metrics: pd.DataFrame) -> pd.DataFrame:
     return (
         metrics.groupby(
-            ["falsification_scenario", "negative_strategy", "test_pair_mode", "model"],
+            [
+                "falsification_scenario",
+                "negative_strategy",
+                "test_pair_mode",
+                "node_feature_lag",
+                "model",
+            ],
             as_index=False,
         )
         .agg(
@@ -459,6 +478,7 @@ def main() -> None:
     parser.add_argument("--max-iter", type=int, default=300)
     parser.add_argument("--k", type=int, default=50)
     parser.add_argument("--test-pair-mode", default="all", choices=TEST_PAIR_MODES)
+    parser.add_argument("--node-feature-lag", type=int, default=0)
     args = parser.parse_args()
 
     joined_paths = "\n".join(str(p) for p in [args.nodes, args.edges])
@@ -479,6 +499,7 @@ def main() -> None:
         max_iter=args.max_iter,
         k=args.k,
         test_pair_mode=args.test_pair_mode,
+        node_feature_lag=args.node_feature_lag,
     )
     summary = summarize_metrics(metrics)
 
@@ -506,6 +527,7 @@ def main() -> None:
                 "scenarios": args.scenarios,
                 "eval_years": args.eval_years,
                 "test_pair_mode": args.test_pair_mode,
+                "node_feature_lag": args.node_feature_lag,
                 "claim_status": CLAIM_STATUS,
             },
             indent=2,
