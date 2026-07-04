@@ -42,6 +42,7 @@ OUT_DIR = ROOT / "data/processed/france_ze2020"
 DEFAULT_EDGES_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz"
 DEFAULT_OUTPUT_DIR = OUT_DIR
 DEFAULT_EVAL_YEARS = [2021, 2022, 2023, 2024, 2025]
+TEST_PAIR_MODES = ["all", "unseen_pair"]
 SEED = 42
 CLAIM_STATUS = "dynamic_relation_learner_smoke_exploratory_not_recommendation"
 
@@ -293,6 +294,30 @@ def _history_count_score(
     return score
 
 
+def _filter_test_pairs(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    test_pair_mode: str,
+) -> pd.DataFrame:
+    if test_pair_mode == "all":
+        return test
+    if test_pair_mode != "unseen_pair":
+        raise ValueError(f"Unknown test_pair_mode: {test_pair_mode}")
+
+    train_positive_pairs = set(
+        zip(
+            train.loc[train["relation_label"] == 1, "source_node_id"],
+            train.loc[train["relation_label"] == 1, "target_node_id"],
+            train.loc[train["relation_label"] == 1, "edge_type"],
+        )
+    )
+    keep = [
+        (row.source_node_id, row.target_node_id, row.edge_type) not in train_positive_pairs
+        for row in test.itertuples(index=False)
+    ]
+    return test.loc[keep].copy()
+
+
 def run_dynamic_relation_learner(
     nodes: pd.DataFrame,
     edges: pd.DataFrame,
@@ -303,7 +328,11 @@ def run_dynamic_relation_learner(
     seed: int = SEED,
     max_iter: int = 300,
     k: int = 50,
+    test_pair_mode: str = "all",
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    if test_pair_mode not in TEST_PAIR_MODES:
+        raise ValueError(f"Unknown test_pair_mode: {test_pair_mode}")
+
     prediction_frames = []
     metric_rows = []
     manifest_rows = []
@@ -324,6 +353,7 @@ def run_dynamic_relation_learner(
         for eval_year in eval_years:
             train = samples[samples["decision_year"] < eval_year].copy()
             test = samples[samples["decision_year"] == eval_year].copy()
+            test = _filter_test_pairs(train, test, test_pair_mode=test_pair_mode)
             if test.empty or train["decision_year"].nunique() < min_train_years:
                 continue
             if train["relation_label"].nunique() < 2 or test["relation_label"].nunique() < 2:
@@ -376,6 +406,7 @@ def run_dynamic_relation_learner(
                         "n_test_rows": int(len(test)),
                         "n_train_years": int(train["decision_year"].nunique()),
                         "n_features": int(len(feature_cols)),
+                        "test_pair_mode": test_pair_mode,
                         "claim_status": CLAIM_STATUS,
                     }
                 )
@@ -386,6 +417,7 @@ def run_dynamic_relation_learner(
                 "negative_ratio": int(negative_ratio),
                 "seed": int(seed),
                 "eval_years": " ".join(str(y) for y in eval_years),
+                "test_pair_mode": test_pair_mode,
                 "claim_status": CLAIM_STATUS,
             }
         )
@@ -397,7 +429,10 @@ def run_dynamic_relation_learner(
 
 def summarize_metrics(metrics: pd.DataFrame) -> pd.DataFrame:
     return (
-        metrics.groupby(["falsification_scenario", "negative_strategy", "model"], as_index=False)
+        metrics.groupby(
+            ["falsification_scenario", "negative_strategy", "test_pair_mode", "model"],
+            as_index=False,
+        )
         .agg(
             mean_roc_auc=("roc_auc", "mean"),
             mean_average_precision=("average_precision", "mean"),
@@ -423,6 +458,7 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=SEED)
     parser.add_argument("--max-iter", type=int, default=300)
     parser.add_argument("--k", type=int, default=50)
+    parser.add_argument("--test-pair-mode", default="all", choices=TEST_PAIR_MODES)
     args = parser.parse_args()
 
     joined_paths = "\n".join(str(p) for p in [args.nodes, args.edges])
@@ -442,6 +478,7 @@ def main() -> None:
         seed=args.seed,
         max_iter=args.max_iter,
         k=args.k,
+        test_pair_mode=args.test_pair_mode,
     )
     summary = summarize_metrics(metrics)
 
@@ -468,6 +505,7 @@ def main() -> None:
                 "manifest": str(manifest_path),
                 "scenarios": args.scenarios,
                 "eval_years": args.eval_years,
+                "test_pair_mode": args.test_pair_mode,
                 "claim_status": CLAIM_STATUS,
             },
             indent=2,
