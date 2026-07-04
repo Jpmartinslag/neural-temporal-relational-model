@@ -103,6 +103,16 @@ def test_random_edge_targets_keeps_non_self_edges():
     _, out_edges, _ = apply_relation_scenario(nodes, edges.copy(), "random_edge_targets", seed=42)
     assert not out_edges.empty
     assert not (out_edges["source_node_id"] == out_edges["target_node_id"]).any()
+    parts = out_edges.assign(
+        source_ze=out_edges["source_node_id"].str.split("_").str[0].str.zfill(4),
+        source_sector=out_edges["source_node_id"].str.split("_").str[1],
+        target_ze=out_edges["target_node_id"].str.split("_").str[0].str.zfill(4),
+        target_sector=out_edges["target_node_id"].str.split("_").str[1],
+    )
+    cross = parts[parts["edge_type"] == "cross_ze_same_sector"]
+    intra = parts[parts["edge_type"] == "intra_ze_sector"]
+    assert (cross["source_sector"] == cross["target_sector"]).all()
+    assert (intra["source_ze"] == intra["target_ze"]).all()
 
 
 def test_relation_learner_smoke_outputs_metrics():
