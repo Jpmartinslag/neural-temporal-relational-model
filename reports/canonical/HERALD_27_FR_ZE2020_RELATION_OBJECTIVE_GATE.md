@@ -577,15 +577,17 @@ Result on `new_relation`, `unseen_pair`, lag-1 features:
 | `typed_hard` | 0.877 | 0.892 | previous typed-hard local signal |
 | `distance_hard` | 0.843 | 0.850 | harder negatives reduce but do not eliminate the signal |
 | `scaled_distance_hard` | 0.829 | 0.851 | standardized feature distance gives a similar AP, with lower ROC-AUC |
+| `pair_distance_hard` | 0.834 | 0.840 | matching source-target distance is slightly harder than target-distance matching |
 
 Reading:
 
 ```text
 Distance-matched negatives make the objective harder, confirming that part of
 the earlier signal came from target/distance shortcuts. Standardizing feature
-scales changes ROC-AUC but not AP materially. The signal does not collapse, so
-`new_relation` remains promising, but it is still a diagnostic gate rather than
-a promoted model.
+scales changes ROC-AUC but not AP materially. Matching the source-target
+distance directly is slightly harder, but the signal still does not collapse.
+Therefore `new_relation` remains promising, but it is still a diagnostic gate
+rather than a promoted model.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between
