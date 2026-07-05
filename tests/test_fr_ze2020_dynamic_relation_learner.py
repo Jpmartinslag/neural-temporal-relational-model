@@ -7,11 +7,13 @@ from src.data.france_ze2020.build_fr_ze2020_dynamic_graph_inputs import NODES_OU
 from src.modeles.france_ze2020.train_fr_ze2020_dynamic_relation_learner import (
     CLAIM_STATUS,
     DEFAULT_EDGES_PATH,
+    FEATURE_FAMILIES,
     SCENARIOS,
     TEST_PAIR_MODES,
     apply_relation_scenario,
     build_pairwise_relation_samples,
     load_edges,
+    node_features_for_family,
     run_dynamic_relation_learner,
     summarize_metrics,
 )
@@ -37,6 +39,19 @@ def test_relation_learner_scenarios_are_explicit():
         "sector_shuffle",
     ]
     assert TEST_PAIR_MODES == ["all", "unseen_pair"]
+    assert FEATURE_FAMILIES == ["all", "temporal_only", "sector_only", "non_temporal"]
+
+
+def test_feature_families_are_non_empty_and_distinct():
+    temporal = set(node_features_for_family("temporal_only"))
+    sector = set(node_features_for_family("sector_only"))
+    non_temporal = set(node_features_for_family("non_temporal"))
+    all_features = set(node_features_for_family("all"))
+    assert temporal
+    assert sector
+    assert temporal.issubset(all_features)
+    assert sector.issubset(all_features)
+    assert temporal.isdisjoint(non_temporal)
 
 
 def test_pairwise_samples_have_balanced_positive_and_negative_rows():
@@ -179,6 +194,7 @@ def test_summary_has_one_row_per_scenario_model():
     assert set(summary["test_pair_mode"]) == {"all"}
     assert set(summary["node_feature_lag"]) == {0}
     assert set(summary["positive_edge_states"]) == {"all"}
+    assert set(summary["feature_family"]) == {"all"}
     assert summary["mean_roc_auc"].between(0, 1).all()
 
 
@@ -247,6 +263,29 @@ def test_positive_edge_states_are_reported_in_metrics_and_predictions():
     assert set(positives["edge_state"]) == {"new_relation"}
     assert set(metrics["positive_edge_states"]) == {"new_relation"}
     assert set(manifest["positive_edge_states"]) == {"new_relation"}
+
+
+def test_feature_family_is_reported_in_metrics_and_predictions():
+    nodes, edges = _load_inputs()
+    predictions, metrics, manifest = run_dynamic_relation_learner(
+        nodes,
+        edges,
+        scenarios=["full_control"],
+        eval_years=[2022],
+        negative_ratio=1,
+        min_train_years=2,
+        seed=42,
+        max_iter=100,
+        k=20,
+        test_pair_mode="unseen_pair",
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        feature_family="temporal_only",
+    )
+    assert not predictions.empty
+    assert set(predictions["feature_family"]) == {"temporal_only"}
+    assert set(metrics["feature_family"]) == {"temporal_only"}
+    assert set(manifest["feature_family"]) == {"temporal_only"}
 
 
 def test_relation_learner_has_no_forbidden_outputs_or_legacy_inputs():
