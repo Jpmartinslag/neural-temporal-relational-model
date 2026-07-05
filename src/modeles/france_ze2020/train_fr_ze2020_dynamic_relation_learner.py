@@ -55,6 +55,7 @@ SCENARIOS = [
     "random_edge_targets",
     "temporal_shuffle",
     "sector_shuffle",
+    "temporal_sector_shuffle",
 ]
 
 NEGATIVE_STRATEGY_BY_SCENARIO = {
@@ -65,6 +66,7 @@ NEGATIVE_STRATEGY_BY_SCENARIO = {
     "random_edge_targets": "typed_hard",
     "temporal_shuffle": "typed_hard",
     "sector_shuffle": "typed_hard",
+    "temporal_sector_shuffle": "typed_hard",
 }
 
 FORBIDDEN_INPUT_STEMS = (
@@ -165,6 +167,11 @@ def apply_relation_scenario(
         out_nodes = _shuffle_columns(out_nodes, TEMPORAL_COLUMNS, seed=seed, group_cols=["decision_year"])
     elif scenario == "sector_shuffle":
         out_nodes = _shuffle_columns(out_nodes, SECTOR_COLUMNS, seed=seed, group_cols=["ze2020", "decision_year"])
+    elif scenario == "temporal_sector_shuffle":
+        out_nodes = _shuffle_columns(out_nodes, TEMPORAL_COLUMNS, seed=seed, group_cols=["decision_year"])
+        out_nodes = _shuffle_columns(
+            out_nodes, SECTOR_COLUMNS, seed=seed + 1, group_cols=["ze2020", "decision_year"]
+        )
 
     return out_nodes, out_edges, NEGATIVE_STRATEGY_BY_SCENARIO[scenario]
 

@@ -520,6 +520,25 @@ The combined model is still not promoted because the two information families
 can compensate for each other, making single-shuffle gates too weak.
 ```
 
+Combined shuffle check:
+
+| Scenario | Mean ROC-AUC | Mean average precision | Reading |
+|---|---:|---:|---|
+| `full_control` | 0.877 | 0.892 | combined temporal + sector signal |
+| `temporal_shuffle` | 0.838 | 0.867 | temporal-only perturbation is partly compensated by sector features |
+| `sector_shuffle` | 0.743 | 0.778 | sector perturbation hurts more clearly |
+| `temporal_sector_shuffle` | 0.648 | 0.690 | combined perturbation drops the signal substantially |
+| `random_edge_targets` | 0.847 | 0.865 | target-placebo still close enough to block promotion |
+
+Reading:
+
+```text
+The combined shuffle is the strongest local evidence so far that the
+`new_relation` target uses temporal and sector information jointly. It still
+does not authorize HPC/model promotion because corrected random_edge_targets
+remains close to full_control.
+```
+
 The strongest warning for the broad any-relation target is the near-tie between
 `full_control`, `edge_sign_only`, `temporal_shuffle`, and `sector_shuffle`. For
 the narrower `new_relation` target, sector structure starts to matter, but
