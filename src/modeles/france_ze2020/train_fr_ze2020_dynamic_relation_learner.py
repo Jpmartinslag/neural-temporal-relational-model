@@ -44,6 +44,7 @@ DEFAULT_OUTPUT_DIR = OUT_DIR
 DEFAULT_EVAL_YEARS = [2021, 2022, 2023, 2024, 2025]
 TEST_PAIR_MODES = ["all", "unseen_pair"]
 FEATURE_FAMILIES = ["all", "temporal_only", "sector_only", "non_temporal"]
+PAIR_FEATURE_MODES = ["both", "source_only", "target_only", "difference_only", "pair_structure_only"]
 SEED = 42
 CLAIM_STATUS = "dynamic_relation_learner_smoke_exploratory_not_recommendation"
 
@@ -292,7 +293,13 @@ def node_features_for_family(feature_family: str) -> list[str]:
     return list(BASE_FEATURE_COLUMNS)
 
 
-def relation_feature_columns(samples: pd.DataFrame, node_feature_columns: list[str] | None = None) -> list[str]:
+def relation_feature_columns(
+    samples: pd.DataFrame,
+    node_feature_columns: list[str] | None = None,
+    pair_feature_mode: str = "both",
+) -> list[str]:
+    if pair_feature_mode not in PAIR_FEATURE_MODES:
+        raise ValueError(f"Unknown pair_feature_mode: {pair_feature_mode}")
     node_feature_columns = node_feature_columns or list(BASE_FEATURE_COLUMNS)
     cols = ["same_ze", "same_sector"]
     for feature in node_feature_columns:
@@ -302,7 +309,14 @@ def relation_feature_columns(samples: pd.DataFrame, node_feature_columns: list[s
         product_col = f"product_{feature}"
         samples[absdiff_col] = (samples[source_col].astype(float) - samples[target_col].astype(float)).abs()
         samples[product_col] = samples[source_col].astype(float) * samples[target_col].astype(float)
-        cols.extend([source_col, target_col, absdiff_col, product_col])
+        if pair_feature_mode == "both":
+            cols.extend([source_col, target_col, absdiff_col, product_col])
+        elif pair_feature_mode == "source_only":
+            cols.append(source_col)
+        elif pair_feature_mode == "target_only":
+            cols.append(target_col)
+        elif pair_feature_mode == "difference_only":
+            cols.append(absdiff_col)
     for edge_type in sorted(samples["edge_type"].dropna().unique()):
         col = f"edge_type_{edge_type}"
         samples[col] = (samples["edge_type"] == edge_type).astype(int)
@@ -389,6 +403,7 @@ def run_dynamic_relation_learner(
     node_feature_lag: int = 0,
     positive_edge_states: list[str] | None = None,
     feature_family: str = "all",
+    pair_feature_mode: str = "both",
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     if test_pair_mode not in TEST_PAIR_MODES:
         raise ValueError(f"Unknown test_pair_mode: {test_pair_mode}")
@@ -413,7 +428,11 @@ def run_dynamic_relation_learner(
             positive_edge_states=positive_edge_states,
             seed=seed,
         )
-        feature_cols = relation_feature_columns(samples, node_feature_columns=node_feature_columns)
+        feature_cols = relation_feature_columns(
+            samples,
+            node_feature_columns=node_feature_columns,
+            pair_feature_mode=pair_feature_mode,
+        )
 
         for eval_year in eval_years:
             train = samples[samples["decision_year"] < eval_year].copy()
@@ -458,6 +477,7 @@ def run_dynamic_relation_learner(
                 pred["falsification_scenario"] = scenario
                 pred["negative_strategy"] = negative_strategy
                 pred["feature_family"] = feature_family
+                pred["pair_feature_mode"] = pair_feature_mode
                 pred["claim_status"] = CLAIM_STATUS
                 prediction_frames.append(pred)
                 metric_rows.append(
@@ -475,6 +495,7 @@ def run_dynamic_relation_learner(
                         "n_train_years": int(train["decision_year"].nunique()),
                         "n_features": int(len(feature_cols)),
                         "feature_family": feature_family,
+                        "pair_feature_mode": pair_feature_mode,
                         "test_pair_mode": test_pair_mode,
                         "node_feature_lag": int(node_feature_lag),
                         "positive_edge_states": (
@@ -491,6 +512,7 @@ def run_dynamic_relation_learner(
                 "seed": int(seed),
                 "eval_years": " ".join(str(y) for y in eval_years),
                 "feature_family": feature_family,
+                "pair_feature_mode": pair_feature_mode,
                 "test_pair_mode": test_pair_mode,
                 "node_feature_lag": int(node_feature_lag),
                 "positive_edge_states": "all"
@@ -515,6 +537,7 @@ def summarize_metrics(metrics: pd.DataFrame) -> pd.DataFrame:
                 "node_feature_lag",
                 "positive_edge_states",
                 "feature_family",
+                "pair_feature_mode",
                 "model",
             ],
             as_index=False,
@@ -548,6 +571,7 @@ def main() -> None:
     parser.add_argument("--node-feature-lag", type=int, default=0)
     parser.add_argument("--positive-edge-states", nargs="*", default=None)
     parser.add_argument("--feature-family", default="all", choices=FEATURE_FAMILIES)
+    parser.add_argument("--pair-feature-mode", default="both", choices=PAIR_FEATURE_MODES)
     args = parser.parse_args()
 
     joined_paths = "\n".join(str(p) for p in [args.nodes, args.edges])
@@ -571,6 +595,7 @@ def main() -> None:
         node_feature_lag=args.node_feature_lag,
         positive_edge_states=args.positive_edge_states,
         feature_family=args.feature_family,
+        pair_feature_mode=args.pair_feature_mode,
     )
     summary = summarize_metrics(metrics)
 
@@ -598,6 +623,7 @@ def main() -> None:
                 "scenarios": args.scenarios,
                 "eval_years": args.eval_years,
                 "feature_family": args.feature_family,
+                "pair_feature_mode": args.pair_feature_mode,
                 "test_pair_mode": args.test_pair_mode,
                 "node_feature_lag": args.node_feature_lag,
                 "positive_edge_states": "all"

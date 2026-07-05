@@ -104,11 +104,11 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     uses edge presence/sign rather than economic magnitude, separates retrospective
     evaluation from 2025 inference, and locally tests dynamic relation learning with
     typed hard negatives plus recurrence/popularity, unseen-pair, lagged-feature,
-    positive edge-state, feature-family, combined temporal+sector shuffle, and
-    semantics-preserving random-target controls. Result: `new_relation` is the most
-    promising local objective so far; temporal-only and sector-only signals are real
-    under targeted shuffles, but corrected random-target still blocks HPC/model
-    promotion.
+    positive edge-state, feature-family, pair-side, combined temporal+sector shuffle,
+    and semantics-preserving random-target controls. Result: `new_relation` is the
+    most promising local objective so far; temporal-only and sector-only signals are
+    real under targeted shuffles, but target/difference shortcuts still block
+    HPC/model promotion.
 
 ## Control Documents
 
