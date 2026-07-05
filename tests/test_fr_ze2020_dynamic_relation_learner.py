@@ -35,6 +35,7 @@ def test_relation_learner_scenarios_are_explicit():
         "full_control",
         "easy_random_negatives",
         "typed_hard_negatives",
+        "distance_hard_negatives",
         "edge_sign_only",
         "random_edge_targets",
         "temporal_shuffle",
@@ -153,6 +154,63 @@ def test_typed_hard_negatives_respect_edge_type_semantics():
     assert (cross["source_ze2020"] != cross["target_ze2020"]).all()
     assert (intra["source_ze2020"] == intra["target_ze2020"]).all()
     assert (intra["source_sector_code"] != intra["target_sector_code"]).all()
+
+
+def test_distance_hard_negatives_are_feature_close_to_positive_targets():
+    nodes, edges = _load_inputs()
+    typed = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="typed_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+    hard = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="distance_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+
+    def mean_target_distance(samples: pd.DataFrame) -> float:
+        positives = samples[samples["relation_label"] == 1][
+            ["source_node_id", "decision_year", "edge_type", "target_node_id"]
+        ].rename(columns={"target_node_id": "positive_target_node_id"})
+        negatives = samples[samples["relation_label"] == 0][
+            ["source_node_id", "decision_year", "edge_type", "target_node_id"]
+        ].rename(columns={"target_node_id": "negative_target_node_id"})
+        paired = positives.merge(negatives, on=["source_node_id", "decision_year", "edge_type"])
+        target_features = samples[
+            ["target_node_id", "decision_year", "target_sector_share_lag_1", "target_sector_growth_lag_1"]
+        ].drop_duplicates()
+        pos_features = target_features.rename(
+            columns={
+                "target_node_id": "positive_target_node_id",
+                "target_sector_share_lag_1": "positive_share",
+                "target_sector_growth_lag_1": "positive_growth",
+            }
+        )
+        neg_features = target_features.rename(
+            columns={
+                "target_node_id": "negative_target_node_id",
+                "target_sector_share_lag_1": "negative_share",
+                "target_sector_growth_lag_1": "negative_growth",
+            }
+        )
+        paired = paired.merge(pos_features, on=["positive_target_node_id", "decision_year"])
+        paired = paired.merge(neg_features, on=["negative_target_node_id", "decision_year"])
+        distance = (
+            (paired["positive_share"] - paired["negative_share"]).abs()
+            + (paired["positive_growth"] - paired["negative_growth"]).abs()
+        )
+        return float(distance.mean())
+
+    assert mean_target_distance(hard) <= mean_target_distance(typed)
 
 
 def test_edge_sign_only_removes_magnitude_only():

@@ -52,6 +52,7 @@ SCENARIOS = [
     "full_control",
     "easy_random_negatives",
     "typed_hard_negatives",
+    "distance_hard_negatives",
     "edge_sign_only",
     "random_edge_targets",
     "temporal_shuffle",
@@ -63,6 +64,7 @@ NEGATIVE_STRATEGY_BY_SCENARIO = {
     "full_control": "typed_hard",
     "easy_random_negatives": "easy_random",
     "typed_hard_negatives": "typed_hard",
+    "distance_hard_negatives": "distance_hard",
     "edge_sign_only": "typed_hard",
     "random_edge_targets": "typed_hard",
     "temporal_shuffle": "typed_hard",
@@ -106,13 +108,36 @@ def _candidate_targets(
     source_ze, source_sector = _split_node_id(source_node_id)
     if strategy == "easy_random":
         mask = nodes_year["node_id"] != source_node_id
-    elif strategy == "typed_hard" and edge_type == "cross_ze_same_sector":
+    elif strategy in {"typed_hard", "distance_hard"} and edge_type == "cross_ze_same_sector":
         mask = (nodes_year["sector_code"] == source_sector) & (nodes_year["node_id"] != source_node_id)
-    elif strategy == "typed_hard" and edge_type == "intra_ze_sector":
+    elif strategy in {"typed_hard", "distance_hard"} and edge_type == "intra_ze_sector":
         mask = (nodes_year["ze2020"] == source_ze) & (nodes_year["node_id"] != source_node_id)
     else:
         raise ValueError(f"Unknown negative strategy: {strategy}")
     return nodes_year.loc[mask, "node_id"].tolist()
+
+
+def _choose_negative_targets(
+    nodes_year: pd.DataFrame,
+    positive_target: str,
+    candidates: list[str],
+    strategy: str,
+    count: int,
+    rng: np.random.Generator,
+) -> list[str]:
+    if not candidates:
+        return []
+    if strategy != "distance_hard":
+        return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
+
+    indexed = nodes_year.set_index("node_id")
+    if positive_target not in indexed.index:
+        return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
+    candidate_frame = indexed.loc[candidates, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+    positive_vector = indexed.loc[positive_target, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+    distances = (candidate_frame - positive_vector).pow(2).sum(axis=1)
+    distances = distances.sort_values(kind="mergesort")
+    return distances.head(min(count, len(distances))).index.tolist()
 
 
 def _precision_at_k(labels: np.ndarray, scores: np.ndarray, k: int) -> float:
@@ -243,7 +268,15 @@ def build_pairwise_relation_samples(
         ]
         if not candidates:
             continue
-        for target in rng.choice(candidates, size=min(negative_ratio, len(candidates)), replace=False):
+        chosen_targets = _choose_negative_targets(
+            nodes_year,
+            positive_target=str(row.target_node_id),
+            candidates=candidates,
+            strategy=negative_strategy,
+            count=negative_ratio,
+            rng=rng,
+        )
+        for target in chosen_targets:
             negative_rows.append(
                 {
                     "source_node_id": row.source_node_id,
