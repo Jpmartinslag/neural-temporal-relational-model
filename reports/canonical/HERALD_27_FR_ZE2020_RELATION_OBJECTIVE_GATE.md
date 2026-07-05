@@ -559,6 +559,33 @@ diagnostic, but it means the next negative sampler must match target profile or
 feature distance more tightly before any dynamic relation claim.
 ```
 
+Distance-hard negative sampling:
+
+```text
+distance_hard_negatives
+```
+
+For each positive edge, this sampler keeps the typed-hard constraint and chooses
+the negative target closest to the positive target in node-feature space. It is
+designed to reduce the shortcut found above, where `difference_only` was already
+strong.
+
+Result on `new_relation`, `unseen_pair`, lag-1 features:
+
+| Negative strategy | Mean ROC-AUC | Mean average precision | Reading |
+|---|---:|---:|---|
+| `typed_hard` | 0.877 | 0.892 | previous typed-hard local signal |
+| `distance_hard` | 0.843 | 0.850 | harder negatives reduce but do not eliminate the signal |
+
+Reading:
+
+```text
+Distance-matched negatives make the objective harder, confirming that part of
+the earlier signal came from target/distance shortcuts. The signal does not
+collapse, so `new_relation` remains promising, but it is still a diagnostic
+gate rather than a promoted model.
+```
+
 The strongest warning for the broad any-relation target is the near-tie between
 `full_control`, `edge_sign_only`, `temporal_shuffle`, and `sector_shuffle`. For
 the narrower `new_relation` target, sector structure starts to matter, but
