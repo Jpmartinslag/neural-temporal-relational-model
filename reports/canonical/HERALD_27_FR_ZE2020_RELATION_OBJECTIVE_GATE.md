@@ -498,6 +498,28 @@ it is still a local smoke: temporal_shuffle and corrected random_edge_targets
 remain too close to full_control for promotion.
 ```
 
+Feature-family ablation on the same `new_relation` target:
+
+| Feature family | Scenario | Mean ROC-AUC | Mean average precision | Reading |
+|---|---|---:|---:|---|
+| `all` | `full_control` | 0.877 | 0.892 | strongest combined local signal |
+| `all` | `temporal_shuffle` | 0.838 | 0.867 | temporal perturbation hurts only mildly when sector features remain |
+| `all` | `sector_shuffle` | 0.743 | 0.778 | sector perturbation hurts clearly |
+| `temporal_only` | `full_control` | 0.816 | 0.863 | temporal features alone carry signal |
+| `temporal_only` | `temporal_shuffle` | 0.443 | 0.519 | temporal signal collapses when its order is broken |
+| `sector_only` | `full_control` | 0.849 | 0.886 | sector features alone carry signal |
+| `sector_only` | `sector_shuffle` | 0.476 | 0.520 | sector signal collapses when sector structure is broken |
+| `non_temporal` | `full_control` | 0.875 | 0.898 | non-temporal/sector-heavy features carry strong signal |
+
+Reading:
+
+```text
+The `new_relation` target is not pure noise: temporal-only and sector-only
+families each carry signal, and each collapses under its corresponding shuffle.
+The combined model is still not promoted because the two information families
+can compensate for each other, making single-shuffle gates too weak.
+```
+
 The strongest warning for the broad any-relation target is the near-tie between
 `full_control`, `edge_sign_only`, `temporal_shuffle`, and `sector_shuffle`. For
 the narrower `new_relation` target, sector structure starts to matter, but
