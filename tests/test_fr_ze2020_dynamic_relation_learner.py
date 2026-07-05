@@ -37,6 +37,7 @@ def test_relation_learner_scenarios_are_explicit():
         "random_edge_targets",
         "temporal_shuffle",
         "sector_shuffle",
+        "temporal_sector_shuffle",
     ]
     assert TEST_PAIR_MODES == ["all", "unseen_pair"]
     assert FEATURE_FAMILIES == ["all", "temporal_only", "sector_only", "non_temporal"]
@@ -146,6 +147,18 @@ def test_random_edge_targets_keeps_non_self_edges():
     intra = parts[parts["edge_type"] == "intra_ze_sector"]
     assert (cross["source_sector"] == cross["target_sector"]).all()
     assert (intra["source_ze"] == intra["target_ze"]).all()
+
+
+def test_temporal_sector_shuffle_changes_both_feature_families():
+    nodes, edges = _load_inputs()
+    out_nodes, _, _ = apply_relation_scenario(nodes, edges.copy(), "temporal_sector_shuffle", seed=42)
+    assert not out_nodes.empty
+    temporal_cols = [c for c in ["sector_growth_lag_1", "sector_growth_lag_2"] if c in out_nodes.columns]
+    sector_cols = [c for c in ["sector_share_lag_1", "sector_diversity_lag_1"] if c in out_nodes.columns]
+    assert temporal_cols
+    assert sector_cols
+    assert not out_nodes[temporal_cols].equals(nodes[temporal_cols])
+    assert not out_nodes[sector_cols].equals(nodes[sector_cols])
 
 
 def test_relation_learner_smoke_outputs_metrics():
