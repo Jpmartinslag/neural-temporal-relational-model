@@ -54,6 +54,7 @@ SCENARIOS = [
     "typed_hard_negatives",
     "distance_hard_negatives",
     "scaled_distance_hard_negatives",
+    "pair_distance_hard_negatives",
     "edge_sign_only",
     "random_edge_targets",
     "temporal_shuffle",
@@ -67,6 +68,7 @@ NEGATIVE_STRATEGY_BY_SCENARIO = {
     "typed_hard_negatives": "typed_hard",
     "distance_hard_negatives": "distance_hard",
     "scaled_distance_hard_negatives": "scaled_distance_hard",
+    "pair_distance_hard_negatives": "pair_distance_hard",
     "edge_sign_only": "typed_hard",
     "random_edge_targets": "typed_hard",
     "temporal_shuffle": "typed_hard",
@@ -110,9 +112,19 @@ def _candidate_targets(
     source_ze, source_sector = _split_node_id(source_node_id)
     if strategy == "easy_random":
         mask = nodes_year["node_id"] != source_node_id
-    elif strategy in {"typed_hard", "distance_hard", "scaled_distance_hard"} and edge_type == "cross_ze_same_sector":
+    elif strategy in {
+        "typed_hard",
+        "distance_hard",
+        "scaled_distance_hard",
+        "pair_distance_hard",
+    } and edge_type == "cross_ze_same_sector":
         mask = (nodes_year["sector_code"] == source_sector) & (nodes_year["node_id"] != source_node_id)
-    elif strategy in {"typed_hard", "distance_hard", "scaled_distance_hard"} and edge_type == "intra_ze_sector":
+    elif strategy in {
+        "typed_hard",
+        "distance_hard",
+        "scaled_distance_hard",
+        "pair_distance_hard",
+    } and edge_type == "intra_ze_sector":
         mask = (nodes_year["ze2020"] == source_ze) & (nodes_year["node_id"] != source_node_id)
     else:
         raise ValueError(f"Unknown negative strategy: {strategy}")
@@ -121,6 +133,7 @@ def _candidate_targets(
 
 def _choose_negative_targets(
     nodes_year: pd.DataFrame,
+    source_node_id: str,
     positive_target: str,
     candidates: list[str],
     strategy: str,
@@ -129,7 +142,7 @@ def _choose_negative_targets(
 ) -> list[str]:
     if not candidates:
         return []
-    if strategy not in {"distance_hard", "scaled_distance_hard"}:
+    if strategy not in {"distance_hard", "scaled_distance_hard", "pair_distance_hard"}:
         return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
 
     indexed = nodes_year.set_index("node_id")
@@ -137,6 +150,15 @@ def _choose_negative_targets(
         return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
     candidate_frame = indexed.loc[candidates, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
     positive_vector = indexed.loc[positive_target, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+    if strategy == "pair_distance_hard":
+        if source_node_id not in indexed.index:
+            return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
+        source_vector = indexed.loc[source_node_id, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+        positive_delta = (source_vector - positive_vector).abs()
+        candidate_delta = (candidate_frame - source_vector).abs()
+        distances = (candidate_delta - positive_delta).pow(2).sum(axis=1)
+        distances = distances.sort_values(kind="mergesort")
+        return distances.head(min(count, len(distances))).index.tolist()
     if strategy == "scaled_distance_hard":
         scale_frame = pd.concat([candidate_frame, positive_vector.to_frame().T], ignore_index=True)
         std = scale_frame.std(axis=0).replace(0, np.nan)
@@ -278,6 +300,7 @@ def build_pairwise_relation_samples(
             continue
         chosen_targets = _choose_negative_targets(
             nodes_year,
+            source_node_id=str(row.source_node_id),
             positive_target=str(row.target_node_id),
             candidates=candidates,
             strategy=negative_strategy,
