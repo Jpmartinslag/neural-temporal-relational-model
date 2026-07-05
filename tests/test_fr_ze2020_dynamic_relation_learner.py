@@ -36,6 +36,7 @@ def test_relation_learner_scenarios_are_explicit():
         "easy_random_negatives",
         "typed_hard_negatives",
         "distance_hard_negatives",
+        "scaled_distance_hard_negatives",
         "edge_sign_only",
         "random_edge_targets",
         "temporal_shuffle",
@@ -176,6 +177,15 @@ def test_distance_hard_negatives_are_feature_close_to_positive_targets():
         positive_edge_states=["new_relation"],
         seed=42,
     )
+    scaled_hard = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="scaled_distance_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
 
     def mean_target_distance(samples: pd.DataFrame) -> float:
         positives = samples[samples["relation_label"] == 1][
@@ -211,6 +221,7 @@ def test_distance_hard_negatives_are_feature_close_to_positive_targets():
         return float(distance.mean())
 
     assert mean_target_distance(hard) <= mean_target_distance(typed)
+    assert mean_target_distance(scaled_hard) <= mean_target_distance(typed)
 
 
 def test_edge_sign_only_removes_magnitude_only():
