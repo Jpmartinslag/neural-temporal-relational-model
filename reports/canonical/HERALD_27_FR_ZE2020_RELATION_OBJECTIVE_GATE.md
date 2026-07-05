@@ -467,19 +467,52 @@ edge_sign_only, temporal_shuffle, and sector_shuffle. Therefore the current
 objective still does not demonstrate dynamic temporal-relation learning.
 ```
 
-The strongest warning is now the near-tie between `full_control`,
-`edge_sign_only`, `temporal_shuffle`, and `sector_shuffle`. The corrected
-`random_edge_targets` control still exposes target-popularity artifacts, but it
-no longer creates the earlier artificial relation-logit spike.
+Emergent-relation target:
+
+```text
+--test-pair-mode unseen_pair --node-feature-lag 1 --positive-edge-states new_relation
+```
+
+This changes the question from "is this any observed relation?" to "can the
+model identify newly appearing relations from previous-year node features?".
+That is closer to the HERALD objective of learning dynamic territorial-sector
+signals before a future ranking/recommendation layer.
+
+Result:
+
+| Scenario | Model/control | Mean ROC-AUC | Mean average precision | Reading |
+|---|---|---:|---:|---|
+| `full_control` | `relation_logit` | 0.877 | 0.892 | strong local signal for new relations |
+| `sector_shuffle` | `relation_logit` | 0.743 | 0.778 | sector information matters for this target |
+| `temporal_shuffle` | `relation_logit` | 0.838 | 0.867 | temporal order still not used enough |
+| `random_edge_targets` | `relation_logit` | 0.847 | 0.865 | corrected target placebo still remains close |
+| `pair_history` | control | 0.500 | 0.500 | direct pair recurrence is neutral by construction |
+| `target_popularity` | control | 0.500 | 0.500 | target popularity is neutral by construction |
+
+Reading:
+
+```text
+This is the first more promising relation objective. It removes the direct
+recurrence/popularity shortcut and shows that sector structure matters. However,
+it is still a local smoke: temporal_shuffle and corrected random_edge_targets
+remain too close to full_control for promotion.
+```
+
+The strongest warning for the broad any-relation target is the near-tie between
+`full_control`, `edge_sign_only`, `temporal_shuffle`, and `sector_shuffle`. For
+the narrower `new_relation` target, sector structure starts to matter, but
+`temporal_shuffle` and corrected `random_edge_targets` remain too close to
+`full_control`.
 
 Decision:
 
 ```text
 Do not launch HPC from this local learner.
 Do not promote it as a graph model.
-Use it as a diagnostic showing that the next objective must be stricter:
-future-edge prediction, held-out-pair validation, or contrastive embeddings with
-harder source-target controls.
+Use it as a diagnostic showing that the next objective should focus on
+emergent relations (`new_relation`) and still needs stronger temporal controls,
+held-out-pair validation, or contrastive embeddings with harder source-target
+controls.
 ```
 
 Tests:

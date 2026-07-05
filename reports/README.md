@@ -104,9 +104,9 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     uses edge presence/sign rather than economic magnitude, separates retrospective
     evaluation from 2025 inference, and locally tests dynamic relation learning with
     typed hard negatives plus recurrence/popularity, unseen-pair, lagged-feature,
-    and semantics-preserving random-target controls. Result: relation structure is
-    distinguishable, but all-pair recurrence/popularity, corrected random-target,
-    shuffle, and lag-1 controls still block HPC/model promotion.
+    positive edge-state, and semantics-preserving random-target controls. Result:
+    `new_relation` is the most promising local objective so far, but temporal and
+    random-target controls still block HPC/model promotion.
 
 ## Control Documents
 

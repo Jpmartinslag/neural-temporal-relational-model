@@ -67,6 +67,24 @@ def test_node_feature_lag_uses_previous_year_features():
     assert (samples["node_feature_year"] == samples["decision_year"] - 1).all()
 
 
+def test_positive_edge_state_filter_keeps_only_requested_positive_state():
+    nodes, edges = _load_inputs()
+    samples = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="typed_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+    positives = samples[samples["relation_label"] == 1]
+    negatives = samples[samples["relation_label"] == 0]
+    assert not positives.empty
+    assert set(positives["edge_state"]) == {"new_relation"}
+    assert set(negatives["edge_state"]) == {"non_edge"}
+
+
 def test_typed_hard_negatives_respect_edge_type_semantics():
     nodes, edges = _load_inputs()
     samples = build_pairwise_relation_samples(
@@ -160,6 +178,7 @@ def test_summary_has_one_row_per_scenario_model():
     assert {"falsification_scenario", "model", "mean_average_precision"}.issubset(summary.columns)
     assert set(summary["test_pair_mode"]) == {"all"}
     assert set(summary["node_feature_lag"]) == {0}
+    assert set(summary["positive_edge_states"]) == {"all"}
     assert summary["mean_roc_auc"].between(0, 1).all()
 
 
@@ -205,6 +224,29 @@ def test_node_feature_lag_is_reported_in_metrics_and_predictions():
     assert (predictions["node_feature_year"] == predictions["decision_year"] - 1).all()
     assert set(metrics["node_feature_lag"]) == {1}
     assert set(manifest["node_feature_lag"]) == {1}
+
+
+def test_positive_edge_states_are_reported_in_metrics_and_predictions():
+    nodes, edges = _load_inputs()
+    predictions, metrics, manifest = run_dynamic_relation_learner(
+        nodes,
+        edges,
+        scenarios=["full_control"],
+        eval_years=[2022],
+        negative_ratio=1,
+        min_train_years=2,
+        seed=42,
+        max_iter=100,
+        k=20,
+        test_pair_mode="unseen_pair",
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+    )
+    assert not predictions.empty
+    positives = predictions[predictions["relation_label"] == 1]
+    assert set(positives["edge_state"]) == {"new_relation"}
+    assert set(metrics["positive_edge_states"]) == {"new_relation"}
+    assert set(manifest["positive_edge_states"]) == {"new_relation"}
 
 
 def test_relation_learner_has_no_forbidden_outputs_or_legacy_inputs():

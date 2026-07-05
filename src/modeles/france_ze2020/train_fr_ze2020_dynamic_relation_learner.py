@@ -174,6 +174,7 @@ def build_pairwise_relation_samples(
     negative_strategy: str = "easy_random",
     negative_ratio: int = 1,
     node_feature_lag: int = 0,
+    positive_edge_states: list[str] | None = None,
     seed: int = SEED,
 ) -> pd.DataFrame:
     if negative_ratio < 1:
@@ -183,9 +184,13 @@ def build_pairwise_relation_samples(
 
     node = _node_frame(nodes)
     valid_node_year = set(zip(node["node_id"], node["decision_year"].astype(int)))
-    positives = edges[
-        ["source_node_id", "target_node_id", "decision_year", "edge_type"]
-    ].copy()
+    edge_cols = ["source_node_id", "target_node_id", "decision_year", "edge_type"]
+    if positive_edge_states:
+        if "edge_state" not in edges.columns:
+            raise ValueError("positive_edge_states requires an edge_state column")
+        edges = edges[edges["edge_state"].isin(positive_edge_states)].copy()
+        edge_cols.append("edge_state")
+    positives = edges[edge_cols].copy()
     positives["node_feature_year"] = positives["decision_year"].astype(int) - int(node_feature_lag)
     positives = positives[
         positives.apply(
@@ -194,6 +199,8 @@ def build_pairwise_relation_samples(
             axis=1,
         )
     ].drop_duplicates()
+    if positives.empty:
+        raise ValueError("No positive relation samples remain after filtering")
     positives["relation_label"] = 1
     positives["sample_role"] = "observed_edge"
 
@@ -235,12 +242,15 @@ def build_pairwise_relation_samples(
                     "decision_year": year,
                     "node_feature_year": feature_year,
                     "edge_type": row.edge_type,
+                    "edge_state": "non_edge",
                     "relation_label": 0,
                     "sample_role": f"{negative_strategy}_non_edge",
                 }
             )
 
     negatives = pd.DataFrame(negative_rows)
+    if "edge_state" not in positives.columns:
+        positives["edge_state"] = "observed_edge"
     samples = pd.concat([positives, negatives], ignore_index=True)
     if samples.empty:
         raise ValueError("No relation samples could be built")
@@ -353,6 +363,7 @@ def run_dynamic_relation_learner(
     k: int = 50,
     test_pair_mode: str = "all",
     node_feature_lag: int = 0,
+    positive_edge_states: list[str] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     if test_pair_mode not in TEST_PAIR_MODES:
         raise ValueError(f"Unknown test_pair_mode: {test_pair_mode}")
@@ -373,6 +384,7 @@ def run_dynamic_relation_learner(
             negative_strategy=negative_strategy,
             negative_ratio=negative_ratio,
             node_feature_lag=node_feature_lag,
+            positive_edge_states=positive_edge_states,
             seed=seed,
         )
         feature_cols = relation_feature_columns(samples)
@@ -410,6 +422,7 @@ def run_dynamic_relation_learner(
                         "decision_year",
                         "node_feature_year",
                         "edge_type",
+                        "edge_state",
                         "relation_label",
                         "sample_role",
                     ]
@@ -436,6 +449,9 @@ def run_dynamic_relation_learner(
                         "n_features": int(len(feature_cols)),
                         "test_pair_mode": test_pair_mode,
                         "node_feature_lag": int(node_feature_lag),
+                        "positive_edge_states": (
+                            "all" if not positive_edge_states else " ".join(sorted(positive_edge_states))
+                        ),
                         "claim_status": CLAIM_STATUS,
                     }
                 )
@@ -448,6 +464,9 @@ def run_dynamic_relation_learner(
                 "eval_years": " ".join(str(y) for y in eval_years),
                 "test_pair_mode": test_pair_mode,
                 "node_feature_lag": int(node_feature_lag),
+                "positive_edge_states": "all"
+                if not positive_edge_states
+                else " ".join(sorted(positive_edge_states)),
                 "claim_status": CLAIM_STATUS,
             }
         )
@@ -465,6 +484,7 @@ def summarize_metrics(metrics: pd.DataFrame) -> pd.DataFrame:
                 "negative_strategy",
                 "test_pair_mode",
                 "node_feature_lag",
+                "positive_edge_states",
                 "model",
             ],
             as_index=False,
@@ -496,6 +516,7 @@ def main() -> None:
     parser.add_argument("--k", type=int, default=50)
     parser.add_argument("--test-pair-mode", default="all", choices=TEST_PAIR_MODES)
     parser.add_argument("--node-feature-lag", type=int, default=0)
+    parser.add_argument("--positive-edge-states", nargs="*", default=None)
     args = parser.parse_args()
 
     joined_paths = "\n".join(str(p) for p in [args.nodes, args.edges])
@@ -517,6 +538,7 @@ def main() -> None:
         k=args.k,
         test_pair_mode=args.test_pair_mode,
         node_feature_lag=args.node_feature_lag,
+        positive_edge_states=args.positive_edge_states,
     )
     summary = summarize_metrics(metrics)
 
@@ -545,6 +567,9 @@ def main() -> None:
                 "eval_years": args.eval_years,
                 "test_pair_mode": args.test_pair_mode,
                 "node_feature_lag": args.node_feature_lag,
+                "positive_edge_states": "all"
+                if not args.positive_edge_states
+                else " ".join(sorted(args.positive_edge_states)),
                 "claim_status": CLAIM_STATUS,
             },
             indent=2,
