@@ -8,12 +8,14 @@ from src.modeles.france_ze2020.train_fr_ze2020_dynamic_relation_learner import (
     CLAIM_STATUS,
     DEFAULT_EDGES_PATH,
     FEATURE_FAMILIES,
+    PAIR_FEATURE_MODES,
     SCENARIOS,
     TEST_PAIR_MODES,
     apply_relation_scenario,
     build_pairwise_relation_samples,
     load_edges,
     node_features_for_family,
+    relation_feature_columns,
     run_dynamic_relation_learner,
     summarize_metrics,
 )
@@ -41,6 +43,13 @@ def test_relation_learner_scenarios_are_explicit():
     ]
     assert TEST_PAIR_MODES == ["all", "unseen_pair"]
     assert FEATURE_FAMILIES == ["all", "temporal_only", "sector_only", "non_temporal"]
+    assert PAIR_FEATURE_MODES == [
+        "both",
+        "source_only",
+        "target_only",
+        "difference_only",
+        "pair_structure_only",
+    ]
 
 
 def test_feature_families_are_non_empty_and_distinct():
@@ -53,6 +62,30 @@ def test_feature_families_are_non_empty_and_distinct():
     assert temporal.issubset(all_features)
     assert sector.issubset(all_features)
     assert temporal.isdisjoint(non_temporal)
+
+
+def test_pair_feature_modes_select_expected_columns():
+    nodes, edges = _load_inputs()
+    samples = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="typed_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+    source_cols = relation_feature_columns(samples.copy(), ["sector_growth_lag_1"], "source_only")
+    target_cols = relation_feature_columns(samples.copy(), ["sector_growth_lag_1"], "target_only")
+    diff_cols = relation_feature_columns(samples.copy(), ["sector_growth_lag_1"], "difference_only")
+    structure_cols = relation_feature_columns(samples.copy(), ["sector_growth_lag_1"], "pair_structure_only")
+    assert "source_sector_growth_lag_1" in source_cols
+    assert "target_sector_growth_lag_1" not in source_cols
+    assert "target_sector_growth_lag_1" in target_cols
+    assert "source_sector_growth_lag_1" not in target_cols
+    assert "absdiff_sector_growth_lag_1" in diff_cols
+    assert "source_sector_growth_lag_1" not in diff_cols
+    assert set(structure_cols) == {"same_ze", "same_sector", "edge_type_cross_ze_same_sector", "edge_type_intra_ze_sector"}
 
 
 def test_pairwise_samples_have_balanced_positive_and_negative_rows():
@@ -208,6 +241,7 @@ def test_summary_has_one_row_per_scenario_model():
     assert set(summary["node_feature_lag"]) == {0}
     assert set(summary["positive_edge_states"]) == {"all"}
     assert set(summary["feature_family"]) == {"all"}
+    assert set(summary["pair_feature_mode"]) == {"both"}
     assert summary["mean_roc_auc"].between(0, 1).all()
 
 
@@ -299,6 +333,30 @@ def test_feature_family_is_reported_in_metrics_and_predictions():
     assert set(predictions["feature_family"]) == {"temporal_only"}
     assert set(metrics["feature_family"]) == {"temporal_only"}
     assert set(manifest["feature_family"]) == {"temporal_only"}
+
+
+def test_pair_feature_mode_is_reported_in_metrics_and_predictions():
+    nodes, edges = _load_inputs()
+    predictions, metrics, manifest = run_dynamic_relation_learner(
+        nodes,
+        edges,
+        scenarios=["full_control"],
+        eval_years=[2022],
+        negative_ratio=1,
+        min_train_years=2,
+        seed=42,
+        max_iter=100,
+        k=20,
+        test_pair_mode="unseen_pair",
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        feature_family="all",
+        pair_feature_mode="source_only",
+    )
+    assert not predictions.empty
+    assert set(predictions["pair_feature_mode"]) == {"source_only"}
+    assert set(metrics["pair_feature_mode"]) == {"source_only"}
+    assert set(manifest["pair_feature_mode"]) == {"source_only"}
 
 
 def test_relation_learner_has_no_forbidden_outputs_or_legacy_inputs():

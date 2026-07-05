@@ -539,6 +539,26 @@ does not authorize HPC/model promotion because corrected random_edge_targets
 remains close to full_control.
 ```
 
+Pair-side ablation:
+
+| Pair feature mode | Scenario | Mean ROC-AUC | Mean average precision | Reading |
+|---|---|---:|---:|---|
+| `both` | `full_control` | 0.877 | 0.892 | default pair representation |
+| `source_only` | `full_control` | 0.500 | 0.500 | source profile alone carries no signal |
+| `target_only` | `full_control` | 0.784 | 0.816 | target profile carries substantial signal |
+| `difference_only` | `full_control` | 0.860 | 0.881 | source-target distance carries strong signal |
+| `pair_structure_only` | `full_control` | 0.500 | 0.500 | edge type / same-zone / same-sector alone is neutral |
+| `difference_only` | `random_edge_targets` | 0.909 | 0.915 | corrected target placebo is still easy under distance features |
+
+Reading:
+
+```text
+The current `new_relation` classifier is not source-driven. It mostly uses the
+target node profile and source-target feature distance. This is useful as a
+diagnostic, but it means the next negative sampler must match target profile or
+feature distance more tightly before any dynamic relation claim.
+```
+
 The strongest warning for the broad any-relation target is the near-tie between
 `full_control`, `edge_sign_only`, `temporal_shuffle`, and `sector_shuffle`. For
 the narrower `new_relation` target, sector structure starts to matter, but
