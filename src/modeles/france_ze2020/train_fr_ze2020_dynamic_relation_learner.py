@@ -56,6 +56,7 @@ SCENARIOS = [
     "scaled_distance_hard_negatives",
     "pair_distance_hard_negatives",
     "target_preserving_hard_negatives",
+    "source_distance_target_preserving_negatives",
     "edge_sign_only",
     "random_edge_targets",
     "temporal_shuffle",
@@ -71,6 +72,7 @@ NEGATIVE_STRATEGY_BY_SCENARIO = {
     "scaled_distance_hard_negatives": "scaled_distance_hard",
     "pair_distance_hard_negatives": "pair_distance_hard",
     "target_preserving_hard_negatives": "target_preserving_hard",
+    "source_distance_target_preserving_negatives": "source_distance_target_preserving_hard",
     "edge_sign_only": "typed_hard",
     "random_edge_targets": "typed_hard",
     "temporal_shuffle": "typed_hard",
@@ -188,13 +190,26 @@ def _choose_negative_targets(
 
 
 def _choose_negative_sources(
+    nodes_year: pd.DataFrame,
+    positive_source: str,
     candidates: list[str],
+    strategy: str,
     count: int,
     rng: np.random.Generator,
 ) -> list[str]:
     if not candidates:
         return []
-    return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
+    if strategy != "source_distance_target_preserving_hard":
+        return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
+
+    indexed = nodes_year.set_index("node_id")
+    if positive_source not in indexed.index:
+        return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
+    candidate_frame = indexed.loc[candidates, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+    positive_vector = indexed.loc[positive_source, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+    distances = (candidate_frame - positive_vector).pow(2).sum(axis=1)
+    distances = distances.sort_values(kind="mergesort")
+    return distances.head(min(count, len(distances))).index.tolist()
 
 
 def _precision_at_k(labels: np.ndarray, scores: np.ndarray, k: int) -> float:
@@ -313,7 +328,7 @@ def build_pairwise_relation_samples(
         nodes_year = nodes_by_year.get(feature_year)
         if nodes_year is None:
             continue
-        if negative_strategy == "target_preserving_hard":
+        if negative_strategy in {"target_preserving_hard", "source_distance_target_preserving_hard"}:
             candidates = [
                 source
                 for source in _candidate_sources_for_target(
@@ -324,7 +339,14 @@ def build_pairwise_relation_samples(
                 if source != row.source_node_id
                 and (source, row.target_node_id, year, row.edge_type) not in existing
             ]
-            chosen_sources = _choose_negative_sources(candidates, count=negative_ratio, rng=rng)
+            chosen_sources = _choose_negative_sources(
+                nodes_year,
+                positive_source=str(row.source_node_id),
+                candidates=candidates,
+                strategy=negative_strategy,
+                count=negative_ratio,
+                rng=rng,
+            )
             for source in chosen_sources:
                 negative_rows.append(
                     {

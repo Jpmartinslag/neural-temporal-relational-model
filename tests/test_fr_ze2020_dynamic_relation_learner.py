@@ -39,6 +39,7 @@ def test_relation_learner_scenarios_are_explicit():
         "scaled_distance_hard_negatives",
         "pair_distance_hard_negatives",
         "target_preserving_hard_negatives",
+        "source_distance_target_preserving_negatives",
         "edge_sign_only",
         "random_edge_targets",
         "temporal_shuffle",
@@ -321,6 +322,54 @@ def test_target_preserving_hard_negatives_keep_positive_targets():
     assert (cross["source_ze2020"] != cross["target_ze2020"]).all()
     assert (intra["source_ze2020"] == intra["target_ze2020"]).all()
     assert (intra["source_sector_code"] != intra["target_sector_code"]).all()
+
+
+def test_source_distance_target_preserving_negatives_match_positive_source():
+    nodes, edges = _load_inputs()
+    random_source = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="target_preserving_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+    hard_source = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="source_distance_target_preserving_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+
+    def mean_source_distance(samples: pd.DataFrame) -> float:
+        positives = samples[samples["relation_label"] == 1][
+            ["target_node_id", "decision_year", "edge_type", "source_sector_share_lag_1", "source_sector_growth_lag_1"]
+        ].rename(
+            columns={
+                "source_sector_share_lag_1": "positive_source_share",
+                "source_sector_growth_lag_1": "positive_source_growth",
+            }
+        )
+        negatives = samples[samples["relation_label"] == 0][
+            ["target_node_id", "decision_year", "edge_type", "source_sector_share_lag_1", "source_sector_growth_lag_1"]
+        ].rename(
+            columns={
+                "source_sector_share_lag_1": "negative_source_share",
+                "source_sector_growth_lag_1": "negative_source_growth",
+            }
+        )
+        paired = positives.merge(negatives, on=["target_node_id", "decision_year", "edge_type"])
+        distance = (
+            (paired["positive_source_share"] - paired["negative_source_share"]).abs()
+            + (paired["positive_source_growth"] - paired["negative_source_growth"]).abs()
+        )
+        return float(distance.mean())
+
+    assert mean_source_distance(hard_source) <= mean_source_distance(random_source)
 
 
 def test_edge_sign_only_removes_magnitude_only():
