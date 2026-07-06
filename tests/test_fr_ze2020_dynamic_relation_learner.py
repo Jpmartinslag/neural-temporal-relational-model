@@ -57,6 +57,7 @@ def test_relation_learner_scenarios_are_explicit():
         "source_only",
         "target_only",
         "difference_only",
+        "compatibility_only",
         "pair_structure_only",
     ]
 
@@ -87,6 +88,7 @@ def test_pair_feature_modes_select_expected_columns():
     source_cols = relation_feature_columns(samples.copy(), ["sector_growth_lag_1"], "source_only")
     target_cols = relation_feature_columns(samples.copy(), ["sector_growth_lag_1"], "target_only")
     diff_cols = relation_feature_columns(samples.copy(), ["sector_growth_lag_1"], "difference_only")
+    compatibility_cols = relation_feature_columns(samples.copy(), ["sector_growth_lag_1"], "compatibility_only")
     structure_cols = relation_feature_columns(samples.copy(), ["sector_growth_lag_1"], "pair_structure_only")
     assert "source_sector_growth_lag_1" in source_cols
     assert "target_sector_growth_lag_1" not in source_cols
@@ -94,6 +96,10 @@ def test_pair_feature_modes_select_expected_columns():
     assert "source_sector_growth_lag_1" not in target_cols
     assert "absdiff_sector_growth_lag_1" in diff_cols
     assert "source_sector_growth_lag_1" not in diff_cols
+    assert "absdiff_sector_growth_lag_1" in compatibility_cols
+    assert "product_sector_growth_lag_1" in compatibility_cols
+    assert "source_sector_growth_lag_1" not in compatibility_cols
+    assert "target_sector_growth_lag_1" not in compatibility_cols
     assert set(structure_cols) == {"same_ze", "same_sector", "edge_type_cross_ze_same_sector", "edge_type_intra_ze_sector"}
 
 

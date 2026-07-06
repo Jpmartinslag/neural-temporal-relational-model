@@ -44,7 +44,14 @@ DEFAULT_OUTPUT_DIR = OUT_DIR
 DEFAULT_EVAL_YEARS = [2021, 2022, 2023, 2024, 2025]
 TEST_PAIR_MODES = ["all", "unseen_pair"]
 FEATURE_FAMILIES = ["all", "temporal_only", "sector_only", "non_temporal"]
-PAIR_FEATURE_MODES = ["both", "source_only", "target_only", "difference_only", "pair_structure_only"]
+PAIR_FEATURE_MODES = [
+    "both",
+    "source_only",
+    "target_only",
+    "difference_only",
+    "compatibility_only",
+    "pair_structure_only",
+]
 SEED = 42
 CLAIM_STATUS = "dynamic_relation_learner_smoke_exploratory_not_recommendation"
 
@@ -555,6 +562,8 @@ def relation_feature_columns(
             cols.append(target_col)
         elif pair_feature_mode == "difference_only":
             cols.append(absdiff_col)
+        elif pair_feature_mode == "compatibility_only":
+            cols.extend([absdiff_col, product_col])
     for edge_type in sorted(samples["edge_type"].dropna().unique()):
         col = f"edge_type_{edge_type}"
         samples[col] = (samples["edge_type"] == edge_type).astype(int)
