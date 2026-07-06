@@ -48,6 +48,12 @@ FEATURE_FAMILIES = [
     "temporal_only",
     "sector_only",
     "sector_context_only",
+    "sector_position_only",
+    "sector_share_only",
+    "sector_rank_only",
+    "dominant_sector_only",
+    "ze_composition_only",
+    "national_sector_only",
     "relation_memory_only",
     "non_temporal",
 ]
@@ -543,6 +549,28 @@ def node_features_for_family(feature_family: str) -> list[str]:
     if feature_family == "sector_context_only":
         sector_context = ["sector_count_t", *sector]
         return [col for col in sector_context if col in BASE_FEATURE_COLUMNS]
+    if feature_family == "sector_position_only":
+        sector_position = ["sector_share_t", "sector_rank_in_ze_year_t", "dominant_sector_flag_t"]
+        return [col for col in sector_position if col in BASE_FEATURE_COLUMNS]
+    if feature_family == "sector_share_only":
+        return ["sector_share_t"] if "sector_share_t" in BASE_FEATURE_COLUMNS else []
+    if feature_family == "sector_rank_only":
+        return ["sector_rank_in_ze_year_t"] if "sector_rank_in_ze_year_t" in BASE_FEATURE_COLUMNS else []
+    if feature_family == "dominant_sector_only":
+        return ["dominant_sector_flag_t"] if "dominant_sector_flag_t" in BASE_FEATURE_COLUMNS else []
+    if feature_family == "ze_composition_only":
+        ze_composition = [
+            "sector_count_t",
+            "dominant_sector_share_lag_1",
+            "sector_diversity_lag_1",
+            "sector_concentration_hhi_lag_1",
+            "commerce_share_lag_1",
+            "construction_share_lag_1",
+        ]
+        return [col for col in ze_composition if col in BASE_FEATURE_COLUMNS]
+    if feature_family == "national_sector_only":
+        national_sector = ["national_sector_share_lag_1", "national_sector_growth_lag_1"]
+        return [col for col in national_sector if col in BASE_FEATURE_COLUMNS]
     if feature_family == "relation_memory_only":
         return relation_memory
     if feature_family == "non_temporal":
