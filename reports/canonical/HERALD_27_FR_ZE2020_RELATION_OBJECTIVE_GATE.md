@@ -579,6 +579,7 @@ Result on `new_relation`, `unseen_pair`, lag-1 features:
 | `scaled_distance_hard` | 0.829 | 0.851 | standardized feature distance gives a similar AP, with lower ROC-AUC |
 | `pair_distance_hard` | 0.834 | 0.840 | matching source-target distance is slightly harder than target-distance matching |
 | `target_preserving_hard` | 0.919 | 0.906 | fixing the target does not collapse the signal; source profile becomes highly discriminative |
+| `source_distance_target_preserving_hard` | 0.883 | 0.882 | fixing the target and matching source profile reduces but does not eliminate the signal |
 
 Reading:
 
@@ -593,9 +594,11 @@ shortcut; `target_only` then collapses to AP=0.500, while `source_only` remains
 high at AP=0.888. A simple historical `source_popularity` baseline is neutral
 at AP=0.500, so the surviving source-side signal is not just "this source has
 often appeared before"; it is tied to the source node's temporal/sector feature
-profile. Therefore the surviving signal is not only "popular target", but it is
-still partly source-profile driven. `new_relation` remains promising, but it is
-still a diagnostic gate rather than a promoted model.
+profile. Matching the negative source to the positive source profile reduces AP
+from 0.906 to 0.882, but the signal does not collapse. Therefore the surviving
+signal is not only "popular target" or simple "active source"; it may contain
+source-target compatibility, but this is still a diagnostic gate rather than a
+promoted model.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between
