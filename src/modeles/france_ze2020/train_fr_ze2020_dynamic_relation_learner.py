@@ -55,6 +55,7 @@ SCENARIOS = [
     "distance_hard_negatives",
     "scaled_distance_hard_negatives",
     "pair_distance_hard_negatives",
+    "target_preserving_hard_negatives",
     "edge_sign_only",
     "random_edge_targets",
     "temporal_shuffle",
@@ -69,6 +70,7 @@ NEGATIVE_STRATEGY_BY_SCENARIO = {
     "distance_hard_negatives": "distance_hard",
     "scaled_distance_hard_negatives": "scaled_distance_hard",
     "pair_distance_hard_negatives": "pair_distance_hard",
+    "target_preserving_hard_negatives": "target_preserving_hard",
     "edge_sign_only": "typed_hard",
     "random_edge_targets": "typed_hard",
     "temporal_shuffle": "typed_hard",
@@ -131,6 +133,21 @@ def _candidate_targets(
     return nodes_year.loc[mask, "node_id"].tolist()
 
 
+def _candidate_sources_for_target(
+    nodes_year: pd.DataFrame,
+    target_node_id: str,
+    edge_type: str,
+) -> list[str]:
+    target_ze, target_sector = _split_node_id(target_node_id)
+    if edge_type == "cross_ze_same_sector":
+        mask = (nodes_year["sector_code"] == target_sector) & (nodes_year["node_id"] != target_node_id)
+    elif edge_type == "intra_ze_sector":
+        mask = (nodes_year["ze2020"] == target_ze) & (nodes_year["node_id"] != target_node_id)
+    else:
+        raise ValueError(f"Unknown edge_type for target-preserving negatives: {edge_type}")
+    return nodes_year.loc[mask, "node_id"].tolist()
+
+
 def _choose_negative_targets(
     nodes_year: pd.DataFrame,
     source_node_id: str,
@@ -168,6 +185,16 @@ def _choose_negative_targets(
     distances = (candidate_frame - positive_vector).pow(2).sum(axis=1)
     distances = distances.sort_values(kind="mergesort")
     return distances.head(min(count, len(distances))).index.tolist()
+
+
+def _choose_negative_sources(
+    candidates: list[str],
+    count: int,
+    rng: np.random.Generator,
+) -> list[str]:
+    if not candidates:
+        return []
+    return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
 
 
 def _precision_at_k(labels: np.ndarray, scores: np.ndarray, k: int) -> float:
@@ -286,40 +313,66 @@ def build_pairwise_relation_samples(
         nodes_year = nodes_by_year.get(feature_year)
         if nodes_year is None:
             continue
-        candidates = [
-            target
-            for target in _candidate_targets(
+        if negative_strategy == "target_preserving_hard":
+            candidates = [
+                source
+                for source in _candidate_sources_for_target(
+                    nodes_year,
+                    str(row.target_node_id),
+                    str(row.edge_type),
+                )
+                if source != row.source_node_id
+                and (source, row.target_node_id, year, row.edge_type) not in existing
+            ]
+            chosen_sources = _choose_negative_sources(candidates, count=negative_ratio, rng=rng)
+            for source in chosen_sources:
+                negative_rows.append(
+                    {
+                        "source_node_id": source,
+                        "target_node_id": row.target_node_id,
+                        "decision_year": year,
+                        "node_feature_year": feature_year,
+                        "edge_type": row.edge_type,
+                        "edge_state": "non_edge",
+                        "relation_label": 0,
+                        "sample_role": f"{negative_strategy}_non_edge",
+                    }
+                )
+        else:
+            candidates = [
+                target
+                for target in _candidate_targets(
+                    nodes_year,
+                    str(row.source_node_id),
+                    str(row.edge_type),
+                    negative_strategy,
+                )
+                if (row.source_node_id, target, year, row.edge_type) not in existing
+            ]
+            if not candidates:
+                continue
+            chosen_targets = _choose_negative_targets(
                 nodes_year,
-                str(row.source_node_id),
-                str(row.edge_type),
-                negative_strategy,
+                source_node_id=str(row.source_node_id),
+                positive_target=str(row.target_node_id),
+                candidates=candidates,
+                strategy=negative_strategy,
+                count=negative_ratio,
+                rng=rng,
             )
-            if (row.source_node_id, target, year, row.edge_type) not in existing
-        ]
-        if not candidates:
-            continue
-        chosen_targets = _choose_negative_targets(
-            nodes_year,
-            source_node_id=str(row.source_node_id),
-            positive_target=str(row.target_node_id),
-            candidates=candidates,
-            strategy=negative_strategy,
-            count=negative_ratio,
-            rng=rng,
-        )
-        for target in chosen_targets:
-            negative_rows.append(
-                {
-                    "source_node_id": row.source_node_id,
-                    "target_node_id": target,
-                    "decision_year": year,
-                    "node_feature_year": feature_year,
-                    "edge_type": row.edge_type,
-                    "edge_state": "non_edge",
-                    "relation_label": 0,
-                    "sample_role": f"{negative_strategy}_non_edge",
-                }
-            )
+            for target in chosen_targets:
+                negative_rows.append(
+                    {
+                        "source_node_id": row.source_node_id,
+                        "target_node_id": target,
+                        "decision_year": year,
+                        "node_feature_year": feature_year,
+                        "edge_type": row.edge_type,
+                        "edge_state": "non_edge",
+                        "relation_label": 0,
+                        "sample_role": f"{negative_strategy}_non_edge",
+                    }
+                )
 
     negatives = pd.DataFrame(negative_rows)
     if "edge_state" not in positives.columns:
