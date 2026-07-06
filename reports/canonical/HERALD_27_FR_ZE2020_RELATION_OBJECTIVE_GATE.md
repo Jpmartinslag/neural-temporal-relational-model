@@ -578,6 +578,7 @@ Result on `new_relation`, `unseen_pair`, lag-1 features:
 | `distance_hard` | 0.843 | 0.850 | harder negatives reduce but do not eliminate the signal |
 | `scaled_distance_hard` | 0.829 | 0.851 | standardized feature distance gives a similar AP, with lower ROC-AUC |
 | `pair_distance_hard` | 0.834 | 0.840 | matching source-target distance is slightly harder than target-distance matching |
+| `target_preserving_hard` | 0.919 | 0.906 | fixing the target does not collapse the signal; source profile becomes highly discriminative |
 
 Reading:
 
@@ -586,8 +587,12 @@ Distance-matched negatives make the objective harder, confirming that part of
 the earlier signal came from target/distance shortcuts. Standardizing feature
 scales changes ROC-AUC but not AP materially. Matching the source-target
 distance directly is slightly harder, but the signal still does not collapse.
-Therefore `new_relation` remains promising, but it is still a diagnostic gate
-rather than a promoted model.
+Target-preserving negatives fix the positive target and replace only the source
+with a semantically valid non-edge source. This removes the target-popularity
+shortcut; `target_only` then collapses to AP=0.500, while `source_only` remains
+high at AP=0.888. Therefore the surviving signal is not only "popular target",
+but it is still partly source-profile driven. `new_relation` remains promising,
+but it is still a diagnostic gate rather than a promoted model.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between
@@ -603,14 +608,14 @@ Do not launch HPC from this local learner.
 Do not promote it as a graph model.
 Use it as a diagnostic showing that the next objective should focus on
 emergent relations (`new_relation`) and still needs stronger temporal controls,
-held-out-pair validation, or contrastive embeddings with harder source-target
-controls.
+held-out-pair validation, and controls that distinguish source propensity from
+true source-target compatibility.
 ```
 
 Tests:
 
 ```text
-tests/test_fr_ze2020_dynamic_relation_learner.py: 11 passed
+tests/test_fr_ze2020_dynamic_relation_learner.py: 21 passed
 ```
 
 ---

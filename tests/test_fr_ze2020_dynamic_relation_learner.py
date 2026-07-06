@@ -38,6 +38,7 @@ def test_relation_learner_scenarios_are_explicit():
         "distance_hard_negatives",
         "scaled_distance_hard_negatives",
         "pair_distance_hard_negatives",
+        "target_preserving_hard_negatives",
         "edge_sign_only",
         "random_edge_targets",
         "temporal_shuffle",
@@ -289,6 +290,37 @@ def test_pair_distance_hard_negatives_match_source_target_distance():
         return float((positive_distance - negative_distance).abs().mean())
 
     assert mean_pair_distance_gap(hard) <= mean_pair_distance_gap(typed)
+
+
+def test_target_preserving_hard_negatives_keep_positive_targets():
+    nodes, edges = _load_inputs()
+    samples = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="target_preserving_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+    positives = samples[samples["relation_label"] == 1][
+        ["target_node_id", "decision_year", "edge_type"]
+    ].value_counts()
+    negatives = samples[samples["relation_label"] == 0][
+        ["target_node_id", "decision_year", "edge_type"]
+    ].value_counts()
+    assert not positives.empty
+    assert positives.to_dict() == negatives.to_dict()
+
+    negative_rows = samples[samples["relation_label"] == 0]
+    cross = negative_rows[negative_rows["edge_type"] == "cross_ze_same_sector"]
+    intra = negative_rows[negative_rows["edge_type"] == "intra_ze_sector"]
+    assert not cross.empty
+    assert not intra.empty
+    assert (cross["source_sector_code"] == cross["target_sector_code"]).all()
+    assert (cross["source_ze2020"] != cross["target_ze2020"]).all()
+    assert (intra["source_ze2020"] == intra["target_ze2020"]).all()
+    assert (intra["source_sector_code"] != intra["target_sector_code"]).all()
 
 
 def test_edge_sign_only_removes_magnitude_only():
