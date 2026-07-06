@@ -610,6 +610,15 @@ Local seed check for `dual_profile_hard`, seeds 42-46:
 | `source_popularity` | 0.500 | 0.507 | neutral |
 | `target_popularity` | 0.500 | 0.507 | neutral |
 
+Dual-profile shuffle controls:
+
+| Scenario | Mean ROC-AUC | Mean average precision | Reading |
+|---|---:|---:|---|
+| `dual_profile_hard` | 0.732 | 0.775 | baseline under the hardest current negative sampler |
+| `dual_profile_temporal_shuffle` | 0.646 | 0.725 | temporal perturbation hurts but does not collapse the signal |
+| `dual_profile_sector_shuffle` | 0.671 | 0.683 | sector perturbation hurts more clearly |
+| `dual_profile_temporal_sector_shuffle` | 0.385 | 0.491 | combined perturbation collapses below the neutral controls |
+
 Reading:
 
 ```text
@@ -642,6 +651,13 @@ The 5-seed local check confirms the `relation_logit` result is stable under the
 current deterministic sampler/estimator path. This is useful for reproducibility,
 but it is not the same as validating a neural/dynamic-graph architecture across
 stochastic training seeds.
+
+The dual-profile shuffle controls are the strongest evidence in this gate. When
+both temporal and sector structure are perturbed, the relation signal collapses
+from AP=0.775 to AP=0.491, while pair/source/target popularity controls remain
+neutral. This supports the hypothesis that the local compatibility signal uses
+joint temporal-sector information. The effect is still local and linear-logit
+based, so it remains a gate for the next objective rather than a validated model.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between

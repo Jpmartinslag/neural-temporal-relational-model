@@ -58,6 +58,9 @@ SCENARIOS = [
     "target_preserving_hard_negatives",
     "source_distance_target_preserving_negatives",
     "dual_profile_hard_negatives",
+    "dual_profile_temporal_shuffle",
+    "dual_profile_sector_shuffle",
+    "dual_profile_temporal_sector_shuffle",
     "edge_sign_only",
     "random_edge_targets",
     "temporal_shuffle",
@@ -75,6 +78,9 @@ NEGATIVE_STRATEGY_BY_SCENARIO = {
     "target_preserving_hard_negatives": "target_preserving_hard",
     "source_distance_target_preserving_negatives": "source_distance_target_preserving_hard",
     "dual_profile_hard_negatives": "dual_profile_hard",
+    "dual_profile_temporal_shuffle": "dual_profile_hard",
+    "dual_profile_sector_shuffle": "dual_profile_hard",
+    "dual_profile_temporal_sector_shuffle": "dual_profile_hard",
     "edge_sign_only": "typed_hard",
     "random_edge_targets": "typed_hard",
     "temporal_shuffle": "typed_hard",
@@ -331,11 +337,11 @@ def apply_relation_scenario(
             )
         out_edges = out_edges.drop(columns=["_source_ze", "_source_sector"])
         out_edges = out_edges[out_edges["source_node_id"] != out_edges["target_node_id"]].copy()
-    elif scenario == "temporal_shuffle":
+    elif scenario in {"temporal_shuffle", "dual_profile_temporal_shuffle"}:
         out_nodes = _shuffle_columns(out_nodes, TEMPORAL_COLUMNS, seed=seed, group_cols=["decision_year"])
-    elif scenario == "sector_shuffle":
+    elif scenario in {"sector_shuffle", "dual_profile_sector_shuffle"}:
         out_nodes = _shuffle_columns(out_nodes, SECTOR_COLUMNS, seed=seed, group_cols=["ze2020", "decision_year"])
-    elif scenario == "temporal_sector_shuffle":
+    elif scenario in {"temporal_sector_shuffle", "dual_profile_temporal_sector_shuffle"}:
         out_nodes = _shuffle_columns(out_nodes, TEMPORAL_COLUMNS, seed=seed, group_cols=["decision_year"])
         out_nodes = _shuffle_columns(
             out_nodes, SECTOR_COLUMNS, seed=seed + 1, group_cols=["ze2020", "decision_year"]
