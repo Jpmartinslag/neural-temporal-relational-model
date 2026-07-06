@@ -599,6 +599,7 @@ Pair-side ablation under `dual_profile_hard`:
 | `source_only` | 0.774 | 0.746 | source profile remains strong but no longer dominates AP |
 | `target_only` | 0.683 | 0.707 | target profile carries weaker residual signal |
 | `difference_only` | 0.706 | 0.764 | source-target distance is close to the full representation |
+| `compatibility_only` | 0.667 | 0.726 | distance+interaction signal remains above controls but below full/source/difference |
 
 Local seed check for `dual_profile_hard`, seeds 42-46:
 
@@ -618,6 +619,13 @@ Dual-profile shuffle controls:
 | `dual_profile_temporal_shuffle` | 0.646 | 0.725 | temporal perturbation hurts but does not collapse the signal |
 | `dual_profile_sector_shuffle` | 0.671 | 0.683 | sector perturbation hurts more clearly |
 | `dual_profile_temporal_sector_shuffle` | 0.385 | 0.491 | combined perturbation collapses below the neutral controls |
+
+Compatibility-only shuffle check:
+
+| Scenario | Mean ROC-AUC | Mean average precision | Reading |
+|---|---:|---:|---|
+| `dual_profile_hard` + `compatibility_only` | 0.667 | 0.726 | compatibility features carry local signal |
+| `dual_profile_temporal_sector_shuffle` + `compatibility_only` | 0.414 | 0.510 | combined shuffle removes nearly all compatibility signal |
 
 Reading:
 
@@ -658,6 +666,13 @@ from AP=0.775 to AP=0.491, while pair/source/target popularity controls remain
 neutral. This supports the hypothesis that the local compatibility signal uses
 joint temporal-sector information. The effect is still local and linear-logit
 based, so it remains a gate for the next objective rather than a validated model.
+
+The `compatibility_only` feature mode removes raw source and target profiles and
+keeps only source-target distance/interactions. It remains above neutral
+(AP=0.726), but below the full pair representation (AP=0.775) and close to the
+other pair-side controls. The combined temporal+sector shuffle drops it to
+AP=0.510, showing the compatibility signal is not merely static geometry in
+feature space.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between
