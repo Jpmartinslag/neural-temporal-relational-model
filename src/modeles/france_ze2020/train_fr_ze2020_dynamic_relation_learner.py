@@ -57,6 +57,7 @@ SCENARIOS = [
     "pair_distance_hard_negatives",
     "target_preserving_hard_negatives",
     "source_distance_target_preserving_negatives",
+    "dual_profile_hard_negatives",
     "edge_sign_only",
     "random_edge_targets",
     "temporal_shuffle",
@@ -73,6 +74,7 @@ NEGATIVE_STRATEGY_BY_SCENARIO = {
     "pair_distance_hard_negatives": "pair_distance_hard",
     "target_preserving_hard_negatives": "target_preserving_hard",
     "source_distance_target_preserving_negatives": "source_distance_target_preserving_hard",
+    "dual_profile_hard_negatives": "dual_profile_hard",
     "edge_sign_only": "typed_hard",
     "random_edge_targets": "typed_hard",
     "temporal_shuffle": "typed_hard",
@@ -212,6 +214,74 @@ def _choose_negative_sources(
     return distances.head(min(count, len(distances))).index.tolist()
 
 
+def _feature_distance(indexed: pd.DataFrame, node_a: str, node_b: str) -> float:
+    vector_a = indexed.loc[node_a, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+    vector_b = indexed.loc[node_b, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+    return float((vector_a - vector_b).pow(2).sum())
+
+
+def _closest_nodes(
+    indexed: pd.DataFrame,
+    candidates: list[str],
+    positive_node: str,
+    limit: int,
+) -> list[tuple[str, float]]:
+    if not candidates or positive_node not in indexed.index:
+        return []
+    candidate_frame = indexed.loc[candidates, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+    positive_vector = indexed.loc[positive_node, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+    distances = (candidate_frame - positive_vector).pow(2).sum(axis=1).sort_values(kind="mergesort")
+    return [(str(node_id), float(distance)) for node_id, distance in distances.head(limit).items()]
+
+
+def _choose_dual_profile_negative_pairs(
+    nodes_year: pd.DataFrame,
+    positive_source: str,
+    positive_target: str,
+    edge_type: str,
+    existing: set[tuple[object, object, int, object]],
+    decision_year: int,
+    count: int,
+) -> list[tuple[str, str]]:
+    indexed = nodes_year.set_index("node_id")
+    if positive_source not in indexed.index or positive_target not in indexed.index:
+        return []
+
+    positive_source_ze, positive_source_sector = _split_node_id(positive_source)
+    if edge_type == "cross_ze_same_sector":
+        source_mask = nodes_year["sector_code"] == positive_source_sector
+    elif edge_type == "intra_ze_sector":
+        source_mask = nodes_year["ze2020"] == positive_source_ze
+    else:
+        raise ValueError(f"Unknown edge_type for dual-profile negatives: {edge_type}")
+    source_candidates = [
+        source
+        for source in nodes_year.loc[source_mask, "node_id"].tolist()
+        if source != positive_source
+    ]
+    if not source_candidates:
+        return []
+    source_rank = _closest_nodes(indexed, [str(source) for source in source_candidates], positive_source, limit=12)
+
+    scored_pairs: list[tuple[float, str, str]] = []
+    for source, source_distance in source_rank:
+        target_candidates = [
+            target
+            for target in _candidate_targets(nodes_year, str(source), edge_type, "typed_hard")
+            if target != positive_target
+            and (source, target, decision_year, edge_type) not in existing
+        ]
+        if not target_candidates:
+            continue
+        target_rank = _closest_nodes(indexed, [str(target) for target in target_candidates], positive_target, limit=8)
+        for target, target_distance in target_rank:
+            score = source_distance + target_distance
+            scored_pairs.append((score, str(source), str(target)))
+
+    scored_pairs = sorted(scored_pairs, key=lambda item: (item[0], item[1], item[2]))
+    return [(source, target) for _, source, target in scored_pairs[:count]]
+
+
 def _precision_at_k(labels: np.ndarray, scores: np.ndarray, k: int) -> float:
     if len(labels) == 0:
         return float("nan")
@@ -328,7 +398,30 @@ def build_pairwise_relation_samples(
         nodes_year = nodes_by_year.get(feature_year)
         if nodes_year is None:
             continue
-        if negative_strategy in {"target_preserving_hard", "source_distance_target_preserving_hard"}:
+        if negative_strategy == "dual_profile_hard":
+            chosen_pairs = _choose_dual_profile_negative_pairs(
+                nodes_year,
+                positive_source=str(row.source_node_id),
+                positive_target=str(row.target_node_id),
+                edge_type=str(row.edge_type),
+                existing=existing,
+                decision_year=year,
+                count=negative_ratio,
+            )
+            for source, target in chosen_pairs:
+                negative_rows.append(
+                    {
+                        "source_node_id": source,
+                        "target_node_id": target,
+                        "decision_year": year,
+                        "node_feature_year": feature_year,
+                        "edge_type": row.edge_type,
+                        "edge_state": "non_edge",
+                        "relation_label": 0,
+                        "sample_role": f"{negative_strategy}_non_edge",
+                    }
+                )
+        elif negative_strategy in {"target_preserving_hard", "source_distance_target_preserving_hard"}:
             candidates = [
                 source
                 for source in _candidate_sources_for_target(

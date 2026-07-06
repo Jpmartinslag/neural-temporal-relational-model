@@ -40,6 +40,7 @@ def test_relation_learner_scenarios_are_explicit():
         "pair_distance_hard_negatives",
         "target_preserving_hard_negatives",
         "source_distance_target_preserving_negatives",
+        "dual_profile_hard_negatives",
         "edge_sign_only",
         "random_edge_targets",
         "temporal_shuffle",
@@ -370,6 +371,49 @@ def test_source_distance_target_preserving_negatives_match_positive_source():
         return float(distance.mean())
 
     assert mean_source_distance(hard_source) <= mean_source_distance(random_source)
+
+
+def test_dual_profile_hard_negatives_preserve_edge_type_semantics():
+    nodes, edges = _load_inputs()
+    samples = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="dual_profile_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+    counts = samples["relation_label"].value_counts().to_dict()
+    assert counts[0] == counts[1]
+
+    positives = set(
+        zip(
+            samples.loc[samples["relation_label"] == 1, "source_node_id"],
+            samples.loc[samples["relation_label"] == 1, "target_node_id"],
+            samples.loc[samples["relation_label"] == 1, "decision_year"],
+            samples.loc[samples["relation_label"] == 1, "edge_type"],
+        )
+    )
+    negatives = samples[samples["relation_label"] == 0]
+    negative_edges = set(
+        zip(
+            negatives["source_node_id"],
+            negatives["target_node_id"],
+            negatives["decision_year"],
+            negatives["edge_type"],
+        )
+    )
+    assert positives.isdisjoint(negative_edges)
+
+    cross = negatives[negatives["edge_type"] == "cross_ze_same_sector"]
+    intra = negatives[negatives["edge_type"] == "intra_ze_sector"]
+    assert not cross.empty
+    assert not intra.empty
+    assert (cross["source_sector_code"] == cross["target_sector_code"]).all()
+    assert (cross["source_ze2020"] != cross["target_ze2020"]).all()
+    assert (intra["source_ze2020"] == intra["target_ze2020"]).all()
+    assert (intra["source_sector_code"] != intra["target_sector_code"]).all()
 
 
 def test_edge_sign_only_removes_magnitude_only():
