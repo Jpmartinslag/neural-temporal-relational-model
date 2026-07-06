@@ -600,6 +600,16 @@ Pair-side ablation under `dual_profile_hard`:
 | `target_only` | 0.683 | 0.707 | target profile carries weaker residual signal |
 | `difference_only` | 0.706 | 0.764 | source-target distance is close to the full representation |
 
+Local seed check for `dual_profile_hard`, seeds 42-46:
+
+| Model | Mean ROC-AUC | Mean average precision | Reading |
+|---|---:|---:|---|
+| `relation_logit` | 0.732 | 0.775 | identical across 5 seeds because the sampler and logit path are deterministic |
+| `random` | 0.529 | 0.570 | random baseline varies as expected |
+| `pair_history` | 0.500 | 0.507 | neutral |
+| `source_popularity` | 0.500 | 0.507 | neutral |
+| `target_popularity` | 0.500 | 0.507 | neutral |
+
 Reading:
 
 ```text
@@ -627,6 +637,11 @@ AP (0.775 vs 0.746), although the margin is small and `difference_only` remains
 close (0.764). This supports continuing toward a compatibility-specific
 objective, but it is still not enough to launch HPC or promote a validated graph
 model.
+
+The 5-seed local check confirms the `relation_logit` result is stable under the
+current deterministic sampler/estimator path. This is useful for reproducibility,
+but it is not the same as validating a neural/dynamic-graph architecture across
+stochastic training seeds.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between
