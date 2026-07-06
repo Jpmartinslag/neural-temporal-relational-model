@@ -638,6 +638,15 @@ Compatibility-only feature-family check:
 | `relation_memory_only` | 0.519 | 0.519 | prior relation-memory features are near-neutral |
 | `all` | 0.726 | 0.510 | combined set is useful but not strictly additive |
 
+Sector-context split under `compatibility_only`:
+
+| Feature family | AP before combined shuffle | AP after combined shuffle | Reading |
+|---|---:|---:|---|
+| `sector_position_only` | 0.781 | 0.570 | strongest family so far; local sector position inside the ZE is highly informative |
+| `sector_share_only` | 0.693 | 0.560 | share alone carries signal but is weaker than the combined position profile |
+| `sector_rank_only` | 0.673 | 0.604 | rank alone survives shuffle more than desired, so it is not sufficient as a clean signal |
+| `dominant_sector_only` | 0.667 | 0.503 | dominant-sector flag alone collapses under shuffle, but is too coarse alone |
+
 Reading:
 
 ```text
@@ -695,6 +704,17 @@ Splitting the non-temporal family shows that the signal is not coming from simpl
 edge-memory recycling: `relation_memory_only` is near neutral (AP=0.519), while
 sector context remains informative (AP=0.705). This makes the next objective more
 credible as a ZE-sector compatibility task rather than a recurrence shortcut.
+
+The sector-context split is the clearest actionable result of this gate. The
+model is not only detecting whether a sector is dominant, nor only using its raw
+share or rank. The combined local sector-position profile -- share, within-ZE
+rank, and dominant-sector flag -- is stronger than each isolated component
+(AP=0.781 versus 0.693/0.673/0.667). This supports the next HERALD objective:
+representing ZE x sector nodes with their position inside the local economic
+structure before learning dynamic relations. The remaining warning is that
+`sector_rank_only` does not collapse enough under the combined shuffle
+(AP=0.604), so future falsification must keep checking whether ranking
+artifacts or coarse sector ordering explain part of the signal.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between
@@ -717,7 +737,7 @@ pair representation must beat source-only controls.
 Tests:
 
 ```text
-tests/test_fr_ze2020_dynamic_relation_learner.py: 22 passed
+tests/test_fr_ze2020_dynamic_relation_learner.py: 24 passed
 ```
 
 ---

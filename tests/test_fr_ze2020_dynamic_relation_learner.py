@@ -56,6 +56,12 @@ def test_relation_learner_scenarios_are_explicit():
         "temporal_only",
         "sector_only",
         "sector_context_only",
+        "sector_position_only",
+        "sector_share_only",
+        "sector_rank_only",
+        "dominant_sector_only",
+        "ze_composition_only",
+        "national_sector_only",
         "relation_memory_only",
         "non_temporal",
     ]
@@ -73,16 +79,34 @@ def test_feature_families_are_non_empty_and_distinct():
     temporal = set(node_features_for_family("temporal_only"))
     sector = set(node_features_for_family("sector_only"))
     sector_context = set(node_features_for_family("sector_context_only"))
+    sector_position = set(node_features_for_family("sector_position_only"))
+    sector_share = set(node_features_for_family("sector_share_only"))
+    sector_rank = set(node_features_for_family("sector_rank_only"))
+    dominant_sector = set(node_features_for_family("dominant_sector_only"))
+    ze_composition = set(node_features_for_family("ze_composition_only"))
+    national_sector = set(node_features_for_family("national_sector_only"))
     relation_memory = set(node_features_for_family("relation_memory_only"))
     non_temporal = set(node_features_for_family("non_temporal"))
     all_features = set(node_features_for_family("all"))
     assert temporal
     assert sector
     assert sector_context
+    assert sector_position == {"sector_share_t", "sector_rank_in_ze_year_t", "dominant_sector_flag_t"}
+    assert sector_share == {"sector_share_t"}
+    assert sector_rank == {"sector_rank_in_ze_year_t"}
+    assert dominant_sector == {"dominant_sector_flag_t"}
+    assert ze_composition
+    assert national_sector == {"national_sector_share_lag_1", "national_sector_growth_lag_1"}
     assert relation_memory == {"relation_stability_mean_to_t", "relation_count_to_t"}
     assert temporal.issubset(all_features)
     assert sector.issubset(all_features)
     assert sector.issubset(sector_context)
+    assert sector_position.issubset(sector_context)
+    assert sector_share.issubset(sector_position)
+    assert sector_rank.issubset(sector_position)
+    assert dominant_sector.issubset(sector_position)
+    assert ze_composition.issubset(sector_context)
+    assert national_sector.issubset(sector_context)
     assert relation_memory.issubset(non_temporal)
     assert temporal.isdisjoint(non_temporal)
 
