@@ -590,9 +590,12 @@ distance directly is slightly harder, but the signal still does not collapse.
 Target-preserving negatives fix the positive target and replace only the source
 with a semantically valid non-edge source. This removes the target-popularity
 shortcut; `target_only` then collapses to AP=0.500, while `source_only` remains
-high at AP=0.888. Therefore the surviving signal is not only "popular target",
-but it is still partly source-profile driven. `new_relation` remains promising,
-but it is still a diagnostic gate rather than a promoted model.
+high at AP=0.888. A simple historical `source_popularity` baseline is neutral
+at AP=0.500, so the surviving source-side signal is not just "this source has
+often appeared before"; it is tied to the source node's temporal/sector feature
+profile. Therefore the surviving signal is not only "popular target", but it is
+still partly source-profile driven. `new_relation` remains promising, but it is
+still a diagnostic gate rather than a promoted model.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between

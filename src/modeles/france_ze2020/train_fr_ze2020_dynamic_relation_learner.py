@@ -567,6 +567,9 @@ def run_dynamic_relation_learner(
                 "target_popularity": _history_count_score(
                     train, test, group_cols=["target_node_id", "edge_type"]
                 ),
+                "source_popularity": _history_count_score(
+                    train, test, group_cols=["source_node_id", "edge_type"]
+                ),
                 "pair_history": _history_count_score(
                     train,
                     test,
