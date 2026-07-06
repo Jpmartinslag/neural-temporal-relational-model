@@ -378,11 +378,19 @@ def test_relation_learner_smoke_outputs_metrics():
     assert not predictions.empty
     assert not metrics.empty
     assert set(metrics["falsification_scenario"]) == {"full_control", "typed_hard_negatives"}
-    assert {"relation_logit", "target_popularity", "pair_history", "random"}.issubset(set(metrics["model"]))
+    assert {
+        "relation_logit",
+        "target_popularity",
+        "source_popularity",
+        "pair_history",
+        "random",
+    }.issubset(set(metrics["model"]))
     assert metrics["roc_auc"].between(0, 1).all()
     assert metrics["average_precision"].between(0, 1).all()
     assert metrics["precision_at_k"].between(0, 1).all()
-    control_predictions = predictions[predictions["model"].isin(["target_popularity", "pair_history"])]
+    control_predictions = predictions[
+        predictions["model"].isin(["target_popularity", "source_popularity", "pair_history"])
+    ]
     assert not control_predictions.empty
     assert control_predictions["score"].between(0, 1).all()
     assert set(predictions["claim_status"]) == {CLAIM_STATUS}
