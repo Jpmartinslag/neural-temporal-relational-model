@@ -51,7 +51,14 @@ def test_relation_learner_scenarios_are_explicit():
         "temporal_sector_shuffle",
     ]
     assert TEST_PAIR_MODES == ["all", "unseen_pair"]
-    assert FEATURE_FAMILIES == ["all", "temporal_only", "sector_only", "non_temporal"]
+    assert FEATURE_FAMILIES == [
+        "all",
+        "temporal_only",
+        "sector_only",
+        "sector_context_only",
+        "relation_memory_only",
+        "non_temporal",
+    ]
     assert PAIR_FEATURE_MODES == [
         "both",
         "source_only",
@@ -65,12 +72,18 @@ def test_relation_learner_scenarios_are_explicit():
 def test_feature_families_are_non_empty_and_distinct():
     temporal = set(node_features_for_family("temporal_only"))
     sector = set(node_features_for_family("sector_only"))
+    sector_context = set(node_features_for_family("sector_context_only"))
+    relation_memory = set(node_features_for_family("relation_memory_only"))
     non_temporal = set(node_features_for_family("non_temporal"))
     all_features = set(node_features_for_family("all"))
     assert temporal
     assert sector
+    assert sector_context
+    assert relation_memory == {"relation_stability_mean_to_t", "relation_count_to_t"}
     assert temporal.issubset(all_features)
     assert sector.issubset(all_features)
+    assert sector.issubset(sector_context)
+    assert relation_memory.issubset(non_temporal)
     assert temporal.isdisjoint(non_temporal)
 
 
