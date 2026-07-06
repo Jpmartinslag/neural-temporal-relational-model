@@ -43,7 +43,14 @@ DEFAULT_EDGES_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_stateful_sector_on
 DEFAULT_OUTPUT_DIR = OUT_DIR
 DEFAULT_EVAL_YEARS = [2021, 2022, 2023, 2024, 2025]
 TEST_PAIR_MODES = ["all", "unseen_pair"]
-FEATURE_FAMILIES = ["all", "temporal_only", "sector_only", "non_temporal"]
+FEATURE_FAMILIES = [
+    "all",
+    "temporal_only",
+    "sector_only",
+    "sector_context_only",
+    "relation_memory_only",
+    "non_temporal",
+]
 PAIR_FEATURE_MODES = [
     "both",
     "source_only",
@@ -528,10 +535,16 @@ def node_features_for_family(feature_family: str) -> list[str]:
         raise ValueError(f"Unknown feature_family: {feature_family}")
     temporal = [col for col in BASE_FEATURE_COLUMNS if col in TEMPORAL_COLUMNS]
     sector = [col for col in BASE_FEATURE_COLUMNS if col in SECTOR_COLUMNS]
+    relation_memory = [col for col in ["relation_stability_mean_to_t", "relation_count_to_t"] if col in BASE_FEATURE_COLUMNS]
     if feature_family == "temporal_only":
         return temporal
     if feature_family == "sector_only":
         return sector
+    if feature_family == "sector_context_only":
+        sector_context = ["sector_count_t", *sector]
+        return [col for col in sector_context if col in BASE_FEATURE_COLUMNS]
+    if feature_family == "relation_memory_only":
+        return relation_memory
     if feature_family == "non_temporal":
         temporal_set = set(temporal)
         return [col for col in BASE_FEATURE_COLUMNS if col not in temporal_set]

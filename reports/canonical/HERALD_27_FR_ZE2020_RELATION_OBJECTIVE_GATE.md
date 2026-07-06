@@ -627,6 +627,17 @@ Compatibility-only shuffle check:
 | `dual_profile_hard` + `compatibility_only` | 0.667 | 0.726 | compatibility features carry local signal |
 | `dual_profile_temporal_sector_shuffle` + `compatibility_only` | 0.414 | 0.510 | combined shuffle removes nearly all compatibility signal |
 
+Compatibility-only feature-family check:
+
+| Feature family | AP before combined shuffle | AP after combined shuffle | Reading |
+|---|---:|---:|---|
+| `temporal_only` | 0.706 | 0.510 | temporal compatibility contributes signal |
+| `sector_only` | 0.690 | 0.517 | sector compatibility contributes signal |
+| `non_temporal` | 0.742 | 0.536 | non-temporal/composition features are strongest in this diagnostic |
+| `sector_context_only` | 0.705 | 0.512 | explicit sector context carries signal and collapses under shuffle |
+| `relation_memory_only` | 0.519 | 0.519 | prior relation-memory features are near-neutral |
+| `all` | 0.726 | 0.510 | combined set is useful but not strictly additive |
+
 Reading:
 
 ```text
@@ -673,6 +684,17 @@ keeps only source-target distance/interactions. It remains above neutral
 other pair-side controls. The combined temporal+sector shuffle drops it to
 AP=0.510, showing the compatibility signal is not merely static geometry in
 feature space.
+
+The feature-family split shows the compatibility signal is not purely temporal.
+Temporal-only and sector-only both carry signal, while non-temporal/composition
+features are strongest in this local diagnostic. This supports a future
+temporal-sector model, but it also warns against claiming that temporal dynamics
+alone explain the relation objective.
+
+Splitting the non-temporal family shows that the signal is not coming from simple
+edge-memory recycling: `relation_memory_only` is near neutral (AP=0.519), while
+sector context remains informative (AP=0.705). This makes the next objective more
+credible as a ZE-sector compatibility task rather than a recurrence shortcut.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between
