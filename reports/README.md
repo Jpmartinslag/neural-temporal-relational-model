@@ -108,7 +108,7 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     semantics-preserving random-target, and distance-hard/scaled/pair-distance controls. Result:
     `new_relation` is the most promising local objective so far; temporal-only and
     sector-only signals are real under targeted shuffles, but target/difference
-    shortcuts plus source-only dominance still block HPC/model promotion.
+    shortcuts plus small dual-profile margins still block HPC/model promotion.
 
 ## Control Documents
 

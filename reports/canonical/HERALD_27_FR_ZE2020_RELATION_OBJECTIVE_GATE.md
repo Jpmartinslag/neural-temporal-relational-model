@@ -580,6 +580,7 @@ Result on `new_relation`, `unseen_pair`, lag-1 features:
 | `pair_distance_hard` | 0.834 | 0.840 | matching source-target distance is slightly harder than target-distance matching |
 | `target_preserving_hard` | 0.919 | 0.906 | fixing the target does not collapse the signal; source profile becomes highly discriminative |
 | `source_distance_target_preserving_hard` | 0.883 | 0.882 | fixing the target and matching source profile reduces but does not eliminate the signal |
+| `dual_profile_hard` | 0.732 | 0.775 | matching both source and target profiles is the hardest control so far |
 
 Pair-side ablation under `source_distance_target_preserving_hard`:
 
@@ -589,6 +590,15 @@ Pair-side ablation under `source_distance_target_preserving_hard`:
 | `source_only` | 0.877 | 0.884 | source profile alone matches the full representation |
 | `target_only` | 0.500 | 0.500 | target is neutral because it is fixed by construction |
 | `difference_only` | 0.843 | 0.830 | compatibility/distance signal exists but is weaker than source profile |
+
+Pair-side ablation under `dual_profile_hard`:
+
+| Pair feature mode | Mean ROC-AUC | Mean average precision | Reading |
+|---|---:|---:|---|
+| `both` | 0.732 | 0.775 | full pair representation |
+| `source_only` | 0.774 | 0.746 | source profile remains strong but no longer dominates AP |
+| `target_only` | 0.683 | 0.707 | target profile carries weaker residual signal |
+| `difference_only` | 0.706 | 0.764 | source-target distance is close to the full representation |
 
 Reading:
 
@@ -610,6 +620,13 @@ signal is not only "popular target" or simple "active source". However,
 pair representation, while `difference_only` is weaker. This means the current
 objective still does not isolate source-target compatibility cleanly. It remains
 a diagnostic gate rather than a promoted model.
+
+The stricter `dual_profile_hard` control matches both sides of the pair. This is
+the first local check where the full pair representation beats `source_only` in
+AP (0.775 vs 0.746), although the margin is small and `difference_only` remains
+close (0.764). This supports continuing toward a compatibility-specific
+objective, but it is still not enough to launch HPC or promote a validated graph
+model.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between
