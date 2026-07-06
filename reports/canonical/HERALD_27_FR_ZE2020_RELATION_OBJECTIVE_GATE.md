@@ -581,6 +581,15 @@ Result on `new_relation`, `unseen_pair`, lag-1 features:
 | `target_preserving_hard` | 0.919 | 0.906 | fixing the target does not collapse the signal; source profile becomes highly discriminative |
 | `source_distance_target_preserving_hard` | 0.883 | 0.882 | fixing the target and matching source profile reduces but does not eliminate the signal |
 
+Pair-side ablation under `source_distance_target_preserving_hard`:
+
+| Pair feature mode | Mean ROC-AUC | Mean average precision | Reading |
+|---|---:|---:|---|
+| `both` | 0.883 | 0.882 | default source+target+difference representation |
+| `source_only` | 0.877 | 0.884 | source profile alone matches the full representation |
+| `target_only` | 0.500 | 0.500 | target is neutral because it is fixed by construction |
+| `difference_only` | 0.843 | 0.830 | compatibility/distance signal exists but is weaker than source profile |
+
 Reading:
 
 ```text
@@ -596,9 +605,11 @@ at AP=0.500, so the surviving source-side signal is not just "this source has
 often appeared before"; it is tied to the source node's temporal/sector feature
 profile. Matching the negative source to the positive source profile reduces AP
 from 0.906 to 0.882, but the signal does not collapse. Therefore the surviving
-signal is not only "popular target" or simple "active source"; it may contain
-source-target compatibility, but this is still a diagnostic gate rather than a
-promoted model.
+signal is not only "popular target" or simple "active source". However,
+`source_only` under the hardest current control is still as strong as the full
+pair representation, while `difference_only` is weaker. This means the current
+objective still does not isolate source-target compatibility cleanly. It remains
+a diagnostic gate rather than a promoted model.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between
@@ -614,14 +625,14 @@ Do not launch HPC from this local learner.
 Do not promote it as a graph model.
 Use it as a diagnostic showing that the next objective should focus on
 emergent relations (`new_relation`) and still needs stronger temporal controls,
-held-out-pair validation, and controls that distinguish source propensity from
-true source-target compatibility.
+held-out-pair validation, and a compatibility-specific objective where the full
+pair representation must beat source-only controls.
 ```
 
 Tests:
 
 ```text
-tests/test_fr_ze2020_dynamic_relation_learner.py: 21 passed
+tests/test_fr_ze2020_dynamic_relation_learner.py: 22 passed
 ```
 
 ---
