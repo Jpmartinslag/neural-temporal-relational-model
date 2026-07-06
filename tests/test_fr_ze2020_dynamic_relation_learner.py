@@ -41,6 +41,9 @@ def test_relation_learner_scenarios_are_explicit():
         "target_preserving_hard_negatives",
         "source_distance_target_preserving_negatives",
         "dual_profile_hard_negatives",
+        "dual_profile_temporal_shuffle",
+        "dual_profile_sector_shuffle",
+        "dual_profile_temporal_sector_shuffle",
         "edge_sign_only",
         "random_edge_targets",
         "temporal_shuffle",
@@ -453,6 +456,27 @@ def test_temporal_sector_shuffle_changes_both_feature_families():
     assert sector_cols
     assert not out_nodes[temporal_cols].equals(nodes[temporal_cols])
     assert not out_nodes[sector_cols].equals(nodes[sector_cols])
+
+
+def test_dual_profile_shuffle_scenarios_keep_dual_profile_negatives():
+    nodes, edges = _load_inputs()
+    scenario_expectations = {
+        "dual_profile_temporal_shuffle": ("temporal",),
+        "dual_profile_sector_shuffle": ("sector",),
+        "dual_profile_temporal_sector_shuffle": ("temporal", "sector"),
+    }
+    temporal_cols = [c for c in ["sector_growth_lag_1", "sector_growth_lag_2"] if c in nodes.columns]
+    sector_cols = [c for c in ["sector_share_t", "sector_rank_in_ze_year_t"] if c in nodes.columns]
+    assert temporal_cols
+    assert sector_cols
+
+    for scenario, changed in scenario_expectations.items():
+        out_nodes, _, strategy = apply_relation_scenario(nodes, edges.copy(), scenario, seed=42)
+        assert strategy == "dual_profile_hard"
+        if "temporal" in changed:
+            assert not out_nodes[temporal_cols].equals(nodes[temporal_cols])
+        if "sector" in changed:
+            assert not out_nodes[sector_cols].equals(nodes[sector_cols])
 
 
 def test_relation_learner_smoke_outputs_metrics():
