@@ -670,6 +670,8 @@ Endpoint-control check for the compact `sector_position_no_rank` family:
 | `source_distance_target_preserving_hard` | `compatibility_only` | 0.893 | 0.903 | compatibility signal remains strong but does not beat the source-only shortcut |
 | `endpoint_target_matched_hard` | `compatibility_only` | 0.839 | 0.870 | source fixed, negative target matched on compact endpoint profile |
 | `endpoint_source_matched_target_preserving_hard` | `compatibility_only` | 0.902 | 0.908 | target fixed, negative source matched on compact endpoint profile |
+| `dual_endpoint_matched_hard` | `compatibility_only` | 0.961 | 0.967 | both source and target matched on compact endpoint profile |
+| `dual_endpoint_temporal_sector_shuffle` | `compatibility_only` | 0.536 | 0.644 | same sampler after temporal+sector shuffle; AP drops sharply but endpoint margin remains positive |
 
 Reading:
 
@@ -766,6 +768,15 @@ Source-preserving endpoint-matched negatives produce a small compatibility
 margin over target-only. Target-preserving endpoint-matched negatives still
 leave source-only slightly stronger than compatibility-only. This is a useful
 direction, not a pass.
+
+The symmetric compact sampler, `dual_endpoint_matched_hard`, is the first local
+control where `compatibility_only` clearly beats both endpoint-only baselines
+while using only local sector weight and dominant-sector status for endpoint
+matching. However, the matching process itself creates a harder, more structured
+classification task. The paired `dual_endpoint_temporal_sector_shuffle` placebo
+cuts AP from 0.967 to 0.644, which is a real drop, but its endpoint margin
+remains positive. Therefore this is a promising local gate, not a validated
+dynamic relation model.
 ```
 
 Endpoint-margin audit:
@@ -783,6 +794,8 @@ Result on `sector_position_no_rank`, `new_relation`, lag-1 features,
 | `pair_distance_hard_negatives` | 0.864 | 0.879 | +0.015 | FAIL |
 | `source_preserving_endpoint_matched_negatives` | 0.849 | 0.870 | +0.021 | PASS, small and one-sided |
 | `target_preserving_endpoint_matched_negatives` | 0.913 | 0.908 | -0.004 | FAIL |
+| `dual_endpoint_matched_negatives` | 0.906 | 0.967 | +0.061 | PASS, strongest real local gate so far |
+| `dual_endpoint_temporal_sector_shuffle` | 0.591 | 0.644 | +0.053 | PASS, but after shuffled placebo |
 | `source_distance_target_preserving_negatives` | 0.914 | 0.903 | -0.011 | FAIL |
 | `dual_profile_hard_negatives` | 0.883 | 0.779 | -0.105 | FAIL |
 | `dual_profile_temporal_sector_shuffle` | 0.523 | 0.567 | +0.044 | PASS, but only on the shuffled placebo |
@@ -790,14 +803,15 @@ Result on `sector_position_no_rank`, `new_relation`, lag-1 features,
 Reading:
 
 ```text
-The compatibility-only representation now passes one real source-preserving
-endpoint-matched control by a very small margin (+0.021), but it still fails the
-target-preserving endpoint-matched control and the stricter dual-profile control.
-The pass on the combined-shuffle placebo is not useful evidence for promotion.
-Therefore the current local learner should not be deepened into HPC/neural
-training as-is. The next technical task is to make endpoint matching symmetric
-or add an explicit contrastive compatibility objective where the pair term is
-evaluated against source-only and target-only baselines by construction.
+The compatibility-only representation now passes the symmetric compact
+dual-endpoint control by a clear margin (+0.061) and has high AP (0.967). This is
+the strongest local evidence so far for a source-target compatibility mechanism.
+But the fair shuffled placebo still passes the endpoint-margin rule (+0.053),
+even though AP drops sharply to 0.644. Therefore the margin gate alone is not
+sufficient. The next gate must require both: (1) compatibility beats endpoint
+baselines, and (2) temporal+sector shuffle causes a large absolute degradation.
+Until that combined gate is formalized, this remains `PROMISING_LOCAL_GATE`, not
+HPC/neural promotion.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between

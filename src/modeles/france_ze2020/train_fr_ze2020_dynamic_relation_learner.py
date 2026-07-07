@@ -83,6 +83,8 @@ SCENARIOS = [
     "target_preserving_endpoint_matched_negatives",
     "source_distance_target_preserving_negatives",
     "dual_profile_hard_negatives",
+    "dual_endpoint_matched_negatives",
+    "dual_endpoint_temporal_sector_shuffle",
     "dual_profile_temporal_shuffle",
     "dual_profile_sector_shuffle",
     "dual_profile_temporal_sector_shuffle",
@@ -105,6 +107,8 @@ NEGATIVE_STRATEGY_BY_SCENARIO = {
     "target_preserving_endpoint_matched_negatives": "endpoint_source_matched_target_preserving_hard",
     "source_distance_target_preserving_negatives": "source_distance_target_preserving_hard",
     "dual_profile_hard_negatives": "dual_profile_hard",
+    "dual_endpoint_matched_negatives": "dual_endpoint_matched_hard",
+    "dual_endpoint_temporal_sector_shuffle": "dual_endpoint_matched_hard",
     "dual_profile_temporal_shuffle": "dual_profile_hard",
     "dual_profile_sector_shuffle": "dual_profile_hard",
     "dual_profile_temporal_sector_shuffle": "dual_profile_hard",
@@ -276,11 +280,13 @@ def _closest_nodes(
     candidates: list[str],
     positive_node: str,
     limit: int,
+    feature_columns: list[str] | None = None,
 ) -> list[tuple[str, float]]:
     if not candidates or positive_node not in indexed.index:
         return []
-    candidate_frame = indexed.loc[candidates, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
-    positive_vector = indexed.loc[positive_node, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+    feature_columns = feature_columns or BASE_FEATURE_COLUMNS
+    candidate_frame = indexed.loc[candidates, feature_columns].astype(float).replace([np.inf, -np.inf], np.nan)
+    positive_vector = indexed.loc[positive_node, feature_columns].astype(float).replace([np.inf, -np.inf], np.nan)
     distances = (candidate_frame - positive_vector).pow(2).sum(axis=1).sort_values(kind="mergesort")
     return [(str(node_id), float(distance)) for node_id, distance in distances.head(limit).items()]
 
@@ -293,6 +299,7 @@ def _choose_dual_profile_negative_pairs(
     existing: set[tuple[object, object, int, object]],
     decision_year: int,
     count: int,
+    feature_columns: list[str] | None = None,
 ) -> list[tuple[str, str]]:
     indexed = nodes_year.set_index("node_id")
     if positive_source not in indexed.index or positive_target not in indexed.index:
@@ -312,7 +319,13 @@ def _choose_dual_profile_negative_pairs(
     ]
     if not source_candidates:
         return []
-    source_rank = _closest_nodes(indexed, [str(source) for source in source_candidates], positive_source, limit=12)
+    source_rank = _closest_nodes(
+        indexed,
+        [str(source) for source in source_candidates],
+        positive_source,
+        limit=12,
+        feature_columns=feature_columns,
+    )
 
     scored_pairs: list[tuple[float, str, str]] = []
     for source, source_distance in source_rank:
@@ -324,7 +337,13 @@ def _choose_dual_profile_negative_pairs(
         ]
         if not target_candidates:
             continue
-        target_rank = _closest_nodes(indexed, [str(target) for target in target_candidates], positive_target, limit=8)
+        target_rank = _closest_nodes(
+            indexed,
+            [str(target) for target in target_candidates],
+            positive_target,
+            limit=8,
+            feature_columns=feature_columns,
+        )
         for target, target_distance in target_rank:
             score = source_distance + target_distance
             scored_pairs.append((score, str(source), str(target)))
@@ -386,7 +405,11 @@ def apply_relation_scenario(
         out_nodes = _shuffle_columns(out_nodes, TEMPORAL_COLUMNS, seed=seed, group_cols=["decision_year"])
     elif scenario in {"sector_shuffle", "dual_profile_sector_shuffle"}:
         out_nodes = _shuffle_columns(out_nodes, SECTOR_COLUMNS, seed=seed, group_cols=["ze2020", "decision_year"])
-    elif scenario in {"temporal_sector_shuffle", "dual_profile_temporal_sector_shuffle"}:
+    elif scenario in {
+        "temporal_sector_shuffle",
+        "dual_profile_temporal_sector_shuffle",
+        "dual_endpoint_temporal_sector_shuffle",
+    }:
         out_nodes = _shuffle_columns(out_nodes, TEMPORAL_COLUMNS, seed=seed, group_cols=["decision_year"])
         out_nodes = _shuffle_columns(
             out_nodes, SECTOR_COLUMNS, seed=seed + 1, group_cols=["ze2020", "decision_year"]
@@ -449,7 +472,7 @@ def build_pairwise_relation_samples(
         nodes_year = nodes_by_year.get(feature_year)
         if nodes_year is None:
             continue
-        if negative_strategy == "dual_profile_hard":
+        if negative_strategy in {"dual_profile_hard", "dual_endpoint_matched_hard"}:
             chosen_pairs = _choose_dual_profile_negative_pairs(
                 nodes_year,
                 positive_source=str(row.source_node_id),
@@ -458,6 +481,9 @@ def build_pairwise_relation_samples(
                 existing=existing,
                 decision_year=year,
                 count=negative_ratio,
+                feature_columns=ENDPOINT_MATCH_COLUMNS
+                if negative_strategy == "dual_endpoint_matched_hard"
+                else None,
             )
             for source, target in chosen_pairs:
                 negative_rows.append(
