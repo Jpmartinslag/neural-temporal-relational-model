@@ -928,13 +928,23 @@ the narrower `new_relation` target, sector structure starts to matter, but
 Decision:
 
 ```text
-Do not launch HPC from this local learner.
+Launch only the dedicated HERALD_28 HPC falsification batch for this relation objective.
 Do not promote it as a graph model.
 Use it as a diagnostic showing that the next objective should focus on
 emergent relations (`new_relation`) and still needs stronger temporal controls,
 held-out-pair validation, and a compatibility-specific objective where the full
 pair representation or compatibility-only representation must beat source-only
 and target-only endpoint baselines.
+```
+
+Update after the lift-over-formulas audit:
+
+```text
+HPC is now authorized only as a deeper falsification of the local relation
+objective. The HPC batch must compare the compatibility learner against the
+deterministic formulas, endpoint controls, and temporal/sector placebos. Passing
+that batch would support the next prototype design stage; it would still not
+validate a dynamic GNN, causal mechanism, or recommendation model.
 ```
 
 Tests:
