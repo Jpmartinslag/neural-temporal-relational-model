@@ -759,6 +759,35 @@ score compatibility as an added value over source-only and target-only endpoint
 baselines, not only report a high pair-classification AP.
 ```
 
+Endpoint-margin audit:
+
+```text
+script: src/modeles/france_ze2020/audit_fr_ze2020_relation_endpoint_controls.py
+gate:   compatibility AP must exceed max(source_only AP, target_only AP) by >= 0.02
+```
+
+Result on `sector_position_no_rank`, `new_relation`, lag-1 features,
+`unseen_pair`, 2021-2025:
+
+| Scenario | Best endpoint AP | Compatibility AP | Compatibility minus endpoint | Gate |
+|---|---:|---:|---:|---|
+| `pair_distance_hard_negatives` | 0.864 | 0.879 | +0.015 | FAIL |
+| `source_distance_target_preserving_negatives` | 0.914 | 0.903 | -0.011 | FAIL |
+| `dual_profile_hard_negatives` | 0.883 | 0.779 | -0.105 | FAIL |
+| `dual_profile_temporal_sector_shuffle` | 0.523 | 0.567 | +0.044 | PASS, but only on the shuffled placebo |
+
+Reading:
+
+```text
+The compatibility-only representation does not yet beat endpoint-only shortcuts
+on real controls with the registered 0.02 margin. Its only pass is on the
+combined-shuffle placebo, which is not useful evidence for promotion. Therefore
+the current local learner should not be deepened into HPC/neural training as-is.
+The next technical task is to redesign relation labels/negative sampling or add
+an explicit contrastive compatibility objective where the pair term is evaluated
+against source-only and target-only baselines by construction.
+```
+
 The strongest warning for the broad any-relation target is the near-tie between
 `full_control`, `edge_sign_only`, `temporal_shuffle`, and `sector_shuffle`. For
 the narrower `new_relation` target, sector structure starts to matter, but
@@ -780,7 +809,10 @@ and target-only endpoint baselines.
 Tests:
 
 ```text
-tests/test_fr_ze2020_dynamic_relation_learner.py: 24 passed
+tests/test_fr_ze2020_dynamic_relation_learner.py
+tests/test_fr_ze2020_relation_endpoint_controls.py
+tests/test_herald_artifact_registry.py
+latest targeted run: 40 passed
 ```
 
 ---
