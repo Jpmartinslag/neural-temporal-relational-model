@@ -1095,8 +1095,8 @@
       "type": "dashboard_html",
       "status": "ACTIVE",
       "tracked_in_git": true,
-      "size_bytes": 12644806,
-      "sha256_prefix": "71e1d268d65e3e3a67a2",
+      "size_bytes": 21353172,
+      "sha256_prefix": "df8ba5fadeea459c07fe",
       "origin_decision": "none (presentation layer, not a modeling or scientific decision) -- see reports/canonical/HERALD_22_FR_ZE2020_DASHBOARD_MVP.md",
       "generator_script": "src/data/france_ze2020/build_fr_ze2020_dashboard_mvp.py",
       "input_data": [
@@ -1107,12 +1107,13 @@
         "data/processed/france_ze2020/fr_ze2020_sector_graph_predictions_v1.csv",
         "data/processed/france_ze2020/fr_ze2020_exploratory_relation_signals.csv",
         "data/processed/france_ze2020/fr_ze2020_exploratory_relation_examples.csv",
-        "data/external/ze2020_geometry.geojson"
+        "data/external/ze2020_geometry.geojson",
+        "reports/dashboards/herald_france_final_dashboard.html"
       ],
-      "claim_authorized": "Standalone, self-contained HTML MVP (Plotly embedded locally, offline-capable) for the France ZE2020 track ONLY -- separate from and does not modify the Observatory v0.3/v0.4/v0.5/v0.5.1 dashboards. Shows: a France-only choropleth map (280/280 geometry coverage, 4 selectable color metrics), a per-zone prediction panel using the already-audited persistence/ridge baseline (explicitly labeled as control, never claimed superior), a descriptive sector composition panel, and an exploratory relation panel (radial mini-graph + ranked tables + curated examples) sourced from HERALD_20/21. Block 1 ('Arquitetura') is intentionally empty placeholder cards, no invented narrative. If fr_ze2020_baseline_predictions_v1.csv is absent, the prediction panel shows observed-only with an explicit message, never a fabricated series (verified by test).",
+      "claim_authorized": "Standalone, self-contained France ZE2020 dashboard (Plotly embedded locally, offline-capable) for presentation of the France ZE2020 track ONLY -- separate from and does not modify the Observatory v0.3/v0.4/v0.5/v0.5.1 dashboards. Shows: a filled architecture summary of the audited chain, a France-only choropleth map (280/280 geometry coverage, 4 selectable color metrics), a per-zone prediction panel using the already-audited persistence/ridge baseline (explicitly labeled as control, never claimed superior), a descriptive sector composition panel, an exploratory relation panel (radial mini-graph + ranked tables + curated examples) sourced from HERALD_20/21, model-signal summaries when available, and an embedded isolated copy of reports/dashboards/herald_france_final_dashboard.html for historical model comparison. The embedded comparison copy is renamed in visible text from HERALD to 'Modèle territorial' and isolated by iframe srcdoc so its JavaScript state does not mix with the ZE2020 relational panel. If fr_ze2020_baseline_predictions_v1.csv is absent, the prediction panel shows observed-only with an explicit message, never a fabricated series (verified by test).",
       "claim_forbidden": "Any causal claim, any recommendation/recommended_action/policy_action language (verified absent by test). Claiming the geometry covers Corsica/DOM (it does not, by design). Claiming the sector real-vs-predicted comparison is a validated result (it is the already-negative sector_graph_smoke output from HERALD_19, shown with its caveat, never hidden). Treating this as the project's final/public dashboard -- it is a separate MVP for the France ZE2020 track, the Observatory v0.5.1 candidate remains the multi-country presentation track.",
       "can_regenerate": true,
-      "notes": "16/16 new tests pass (tests/test_fr_ze2020_dashboard_mvp.py). No real browser/Playwright available in this environment (same limitation already documented for every Observatory dashboard) -- validated structurally (embedded JSON parses and is complete, DOM ids referenced by JS exist in the HTML, Plotly.newPlot targets exist as divs, onchange/onclick handlers reference defined functions) instead of a screenshot. Manual visual confirmation in a real browser is recommended before presenting."
+      "notes": "30/30 dashboard tests pass (tests/test_fr_ze2020_dashboard_mvp.py). No real browser/Playwright available in this environment (same limitation already documented for every Observatory dashboard) -- validated structurally (embedded JSON parses and is complete, DOM ids referenced by JS exist in the HTML, Plotly.newPlot targets exist as divs, onchange/onclick handlers reference defined functions, integrated iframe payload decodes and is renamed) instead of a screenshot. Manual visual confirmation in a real browser is recommended before presenting."
     }
   ]
 }
