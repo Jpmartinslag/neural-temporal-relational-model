@@ -802,6 +802,35 @@ ZE x sector endpoint profiles. It still does not validate a dynamic GNN or a
 recommendation model because it is a local logistic diagnostic over constructed
 candidate edges.
 ```
+
+Mechanism inspection for `dual_endpoint_matched_hard` + `compatibility_only`:
+
+| Eval year | AP | `absdiff_dominant_sector_flag_t` coef. | `product_sector_share_t` coef. | Reading |
+|---|---:|---:|---:|---|
+| 2022 | 1.000 | 1.024 | 0.573 | dominance asymmetry and shared sector mass both help |
+| 2023 | 1.000 | 1.615 | 0.603 | same pattern |
+| 2024 | 0.923 | 2.012 | 0.691 | same pattern, lower AP |
+| 2025 | 0.944 | 2.327 | 0.580 | same pattern |
+
+Sample-size warning:
+
+```text
+This diagnostic is small: 134 rows total after pairing, including 30 positive
+and 30 negative rows in 2025. The coefficient pattern is stable enough to guide
+the next objective, but not large enough to claim a validated mechanism.
+```
+
+Interpretation:
+
+```text
+The current local evidence does not say "same dominant sectors connect". It
+suggests a more interesting compatibility pattern: new relations are easier to
+separate when one endpoint is structurally dominant in its ZE-sector profile and
+the other is not, while the sector-share product remains positive. In economic
+language, this looks closer to dominant-to-non-dominant or anchor-to-peripheral
+compatibility than simple similarity. This is useful for the next contrastive
+objective because it gives an interpretable pair mechanism to test, not just an
+opaque score.
 ```
 
 Endpoint-margin audit:
