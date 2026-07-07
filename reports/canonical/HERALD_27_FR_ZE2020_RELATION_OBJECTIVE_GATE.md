@@ -833,6 +833,31 @@ objective because it gives an interpretable pair mechanism to test, not just an
 opaque score.
 ```
 
+Formula-only anchor/peripheral audit:
+
+```text
+script: src/modeles/france_ze2020/audit_fr_ze2020_anchor_peripheral_signal.py
+training: none
+claim: exploratory mechanism audit only
+```
+
+| Score | AP on dual endpoint | AP after matched shuffle | AP drop | Reading |
+|---|---:|---:|---:|---|
+| `dominance_asymmetry_score` | 0.821 | 0.561 | 0.260 | dominance asymmetry alone is informative |
+| `sector_share_product_score` | 0.829 | 0.536 | 0.293 | shared sector mass is slightly stronger |
+| `anchor_peripheral_score` | 0.821 | 0.556 | 0.265 | combined hand score is informative but not better than its components |
+
+Reading:
+
+```text
+The manual scores reproduce a large part of the learned compatibility signal
+without fitting a model. This makes the next objective more interpretable: test
+whether a contrastive/dynamic learner can improve on simple dominance-asymmetry
+and sector-share-product baselines. It also prevents overclaiming: if a future
+neural model only rediscovers these formulas, the contribution is representation
+and auditability, not black-box superiority.
+```
+
 Endpoint-margin audit:
 
 ```text
