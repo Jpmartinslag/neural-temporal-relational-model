@@ -57,6 +57,9 @@ def test_relation_learner_scenarios_are_explicit():
         "sector_only",
         "sector_context_only",
         "sector_position_only",
+        "sector_position_no_share",
+        "sector_position_no_rank",
+        "sector_position_no_dominant",
         "sector_share_only",
         "sector_rank_only",
         "dominant_sector_only",
@@ -80,6 +83,9 @@ def test_feature_families_are_non_empty_and_distinct():
     sector = set(node_features_for_family("sector_only"))
     sector_context = set(node_features_for_family("sector_context_only"))
     sector_position = set(node_features_for_family("sector_position_only"))
+    sector_position_no_share = set(node_features_for_family("sector_position_no_share"))
+    sector_position_no_rank = set(node_features_for_family("sector_position_no_rank"))
+    sector_position_no_dominant = set(node_features_for_family("sector_position_no_dominant"))
     sector_share = set(node_features_for_family("sector_share_only"))
     sector_rank = set(node_features_for_family("sector_rank_only"))
     dominant_sector = set(node_features_for_family("dominant_sector_only"))
@@ -92,6 +98,9 @@ def test_feature_families_are_non_empty_and_distinct():
     assert sector
     assert sector_context
     assert sector_position == {"sector_share_t", "sector_rank_in_ze_year_t", "dominant_sector_flag_t"}
+    assert sector_position_no_share == {"sector_rank_in_ze_year_t", "dominant_sector_flag_t"}
+    assert sector_position_no_rank == {"sector_share_t", "dominant_sector_flag_t"}
+    assert sector_position_no_dominant == {"sector_share_t", "sector_rank_in_ze_year_t"}
     assert sector_share == {"sector_share_t"}
     assert sector_rank == {"sector_rank_in_ze_year_t"}
     assert dominant_sector == {"dominant_sector_flag_t"}
@@ -102,6 +111,9 @@ def test_feature_families_are_non_empty_and_distinct():
     assert sector.issubset(all_features)
     assert sector.issubset(sector_context)
     assert sector_position.issubset(sector_context)
+    assert sector_position_no_share.issubset(sector_position)
+    assert sector_position_no_rank.issubset(sector_position)
+    assert sector_position_no_dominant.issubset(sector_position)
     assert sector_share.issubset(sector_position)
     assert sector_rank.issubset(sector_position)
     assert dominant_sector.issubset(sector_position)
