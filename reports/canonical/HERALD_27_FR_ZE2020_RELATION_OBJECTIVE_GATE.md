@@ -858,6 +858,32 @@ neural model only rediscovers these formulas, the contribution is representation
 and auditability, not black-box superiority.
 ```
 
+Lift over formula audit:
+
+```text
+script: src/modeles/france_ze2020/audit_fr_ze2020_relation_lift_over_formulas.py
+scope: same dual-endpoint gate, unseen-pair, lag-1 node features, new_relation target
+claim: local lift audit only
+```
+
+Mean over 2022-2025:
+
+| Scenario | Best formula AP | Compatibility learner AP | AP lift | Reading |
+|---|---:|---:|---:|---|
+| `dual_endpoint_matched_negatives` | 0.833 | 0.955 | +0.122 | learner adds signal beyond the best hand formula |
+| `dual_endpoint_temporal_sector_shuffle` | 0.619 | 0.650 | +0.031 | most of the lift weakens under the matched shuffle |
+
+Reading:
+
+```text
+This is the first check showing that the local compatibility learner is not only
+copying the anchor/peripheral formulas. The lift is meaningful on the real
+dual-endpoint gate and much smaller after temporal+sector shuffle. This supports
+building the next objective around learned source-target compatibility, while
+keeping the deterministic formulas as mandatory baselines. It still does not
+validate a dynamic GNN, HPC model, causal mechanism, or recommendation layer.
+```
+
 Endpoint-margin audit:
 
 ```text

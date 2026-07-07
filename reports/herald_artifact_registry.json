@@ -1112,6 +1112,26 @@
       "notes": "Tests: tests/test_fr_ze2020_anchor_peripheral_signal.py. Local audit outputs were written to /tmp in the 2026-07-07 run, not tracked. No HPC job launched."
     },
     {
+      "id": "FR_ZE2020_RELATION_LIFT_OVER_FORMULAS_AUDIT_V1",
+      "phase": "relation lift over formulas audit (2026-07-07)",
+      "path": "data/processed/france_ze2020/fr_ze2020_relation_lift_over_formulas_{metrics,run}_v1.*",
+      "type": "model_audit_output",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_27 lift-over-formulas audit, not a model result) -- see reports/canonical/HERALD_27_FR_ZE2020_RELATION_OBJECTIVE_GATE.md",
+      "generator_script": "src/modeles/france_ze2020/audit_fr_ze2020_relation_lift_over_formulas.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv",
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz"
+      ],
+      "claim_authorized": "Local audit only: compares the sector_position_no_rank compatibility learner against deterministic formula scores (dominance_asymmetry_score, sector_share_product_score, anchor_peripheral_score) on the same dual-endpoint matched new_relation gate with lag-1 node features and unseen-pair evaluation. Mean over 2022-2025: in the real dual-endpoint gate, relation_logit AP ~0.955 versus best formula AP ~0.833, lift ~+0.122. Under matched temporal+sector shuffle, relation_logit AP ~0.650 versus best formula AP ~0.619, lift ~+0.031. This supports a next learned compatibility objective while keeping formulas as mandatory controls.",
+      "claim_forbidden": "Treating the lift as a validated dynamic GNN, HPC readiness, causal influence, automatic recommendation, or proof of final model quality. Ignoring that this is still a small local audit over constructed candidate edges, not an end-to-end territorial recommendation experiment.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_relation_lift_over_formulas.py. Local audit outputs were written to /tmp in the 2026-07-07 run, not tracked. No HPC job launched."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
