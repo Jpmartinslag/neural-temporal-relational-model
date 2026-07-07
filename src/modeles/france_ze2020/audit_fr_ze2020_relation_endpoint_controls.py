@@ -47,6 +47,10 @@ DEFAULT_SCENARIOS = [
     "dual_profile_temporal_sector_shuffle",
 ]
 CLAIM_STATUS = "relation_endpoint_control_audit_exploratory_not_recommendation"
+SHUFFLE_REFERENCE_BY_SCENARIO = {
+    "dual_endpoint_matched_negatives": "dual_endpoint_temporal_sector_shuffle",
+    "dual_profile_hard_negatives": "dual_profile_temporal_sector_shuffle",
+}
 
 
 def run_endpoint_control_audit(
@@ -63,9 +67,12 @@ def run_endpoint_control_audit(
     max_iter: int = 300,
     k: int = 80,
     margin_threshold: float = 0.02,
+    shuffle_drop_threshold: float = 0.20,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     if margin_threshold < 0:
         raise ValueError("margin_threshold must be >= 0")
+    if shuffle_drop_threshold < 0:
+        raise ValueError("shuffle_drop_threshold must be >= 0")
     unknown_modes = sorted(set(pair_modes) - set(PAIR_FEATURE_MODES))
     if unknown_modes:
         raise ValueError(f"Unknown pair feature mode(s): {unknown_modes}")
@@ -126,6 +133,21 @@ def run_endpoint_control_audit(
     ).astype(int)
     wide["both_gate_pass"] = (wide["both_minus_best_endpoint_ap"] >= float(margin_threshold)).astype(int)
     wide["margin_threshold"] = float(margin_threshold)
+    wide["shuffle_drop_threshold"] = float(shuffle_drop_threshold)
+    wide["shuffle_reference_scenario"] = wide["falsification_scenario"].map(SHUFFLE_REFERENCE_BY_SCENARIO).fillna("")
+    wide["compatibility_ap_drop_vs_shuffle"] = pd.NA
+    ap_by_scenario = dict(zip(wide["falsification_scenario"], compatibility_ap))
+    for idx, row in wide.iterrows():
+        reference = row["shuffle_reference_scenario"]
+        if reference and reference in ap_by_scenario:
+            wide.loc[idx, "compatibility_ap_drop_vs_shuffle"] = (
+                row["mean_average_precision_compatibility_only"] - ap_by_scenario[reference]
+            )
+    compatibility_drop = pd.to_numeric(wide["compatibility_ap_drop_vs_shuffle"], errors="coerce")
+    wide["combined_gate_pass"] = (
+        (wide["compatibility_gate_pass"] == 1)
+        & (compatibility_drop.fillna(-float("inf")) >= float(shuffle_drop_threshold))
+    ).astype(int)
     wide["claim_status"] = CLAIM_STATUS
     return pair_summary, wide
 
@@ -147,6 +169,7 @@ def main() -> None:
     parser.add_argument("--max-iter", type=int, default=300)
     parser.add_argument("--k", type=int, default=80)
     parser.add_argument("--margin-threshold", type=float, default=0.02)
+    parser.add_argument("--shuffle-drop-threshold", type=float, default=0.20)
     args = parser.parse_args()
 
     nodes = load_nodes(args.nodes)
@@ -164,6 +187,7 @@ def main() -> None:
         max_iter=args.max_iter,
         k=args.k,
         margin_threshold=args.margin_threshold,
+        shuffle_drop_threshold=args.shuffle_drop_threshold,
     )
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -187,6 +211,7 @@ def main() -> None:
                 "positive_edge_states": " ".join(args.positive_edge_states or []),
                 "test_pair_mode": args.test_pair_mode,
                 "margin_threshold": args.margin_threshold,
+                "shuffle_drop_threshold": args.shuffle_drop_threshold,
                 "relation_learner_claim_status": RELATION_LEARNER_CLAIM_STATUS,
                 "claim_status": CLAIM_STATUS,
             },

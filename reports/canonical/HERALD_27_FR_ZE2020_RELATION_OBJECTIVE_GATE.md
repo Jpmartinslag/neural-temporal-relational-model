@@ -777,6 +777,31 @@ classification task. The paired `dual_endpoint_temporal_sector_shuffle` placebo
 cuts AP from 0.967 to 0.644, which is a real drop, but its endpoint margin
 remains positive. Therefore this is a promising local gate, not a validated
 dynamic relation model.
+
+Combined gate:
+
+```text
+endpoint margin gate: compatibility AP - max(source_only AP, target_only AP) >= 0.02
+shuffle drop gate:    compatibility AP(full) - compatibility AP(shuffle) >= 0.20
+```
+
+Result:
+
+| Scenario | Compatibility AP | Best endpoint AP | Endpoint margin | Shuffle reference | AP drop | Combined gate |
+|---|---:|---:|---:|---|---:|---|
+| `dual_endpoint_matched_negatives` | 0.967 | 0.906 | +0.061 | `dual_endpoint_temporal_sector_shuffle` | 0.323 | PASS |
+| `dual_endpoint_temporal_sector_shuffle` | 0.644 | 0.591 | +0.053 | n/a | n/a | FAIL |
+
+Reading:
+
+```text
+This is the first local HERALD_27 gate that passes both a source/target endpoint
+shortcut control and a temporal+sector shuffle degradation control. It supports
+continuing toward a contrastive/dynamic relation objective centered on compact
+ZE x sector endpoint profiles. It still does not validate a dynamic GNN or a
+recommendation model because it is a local logistic diagnostic over constructed
+candidate edges.
+```
 ```
 
 Endpoint-margin audit:
@@ -806,12 +831,12 @@ Reading:
 The compatibility-only representation now passes the symmetric compact
 dual-endpoint control by a clear margin (+0.061) and has high AP (0.967). This is
 the strongest local evidence so far for a source-target compatibility mechanism.
-But the fair shuffled placebo still passes the endpoint-margin rule (+0.053),
-even though AP drops sharply to 0.644. Therefore the margin gate alone is not
-sufficient. The next gate must require both: (1) compatibility beats endpoint
-baselines, and (2) temporal+sector shuffle causes a large absolute degradation.
-Until that combined gate is formalized, this remains `PROMISING_LOCAL_GATE`, not
-HPC/neural promotion.
+The fair shuffled placebo still passes the endpoint-margin rule (+0.053), so the
+margin gate alone is not sufficient. The added shuffle-drop rule solves that
+specific weakness: the full dual-endpoint control drops by 0.323 AP under the
+matched temporal+sector shuffle, passing the combined gate. This upgrades the
+status to `PROMISING_LOCAL_GATE_FOR_NEXT_OBJECTIVE`, still not HPC/neural
+promotion.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between
