@@ -38,6 +38,8 @@ DEFAULT_OUTPUT_DIR = ROOT / "data/processed/france_ze2020"
 DEFAULT_PAIR_MODES = ["both", "source_only", "target_only", "compatibility_only"]
 DEFAULT_SCENARIOS = [
     "pair_distance_hard_negatives",
+    "source_preserving_endpoint_matched_negatives",
+    "target_preserving_endpoint_matched_negatives",
     "source_distance_target_preserving_negatives",
     "dual_profile_hard_negatives",
     "dual_profile_temporal_sector_shuffle",

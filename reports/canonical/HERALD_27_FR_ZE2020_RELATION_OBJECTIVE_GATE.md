@@ -668,6 +668,8 @@ Endpoint-control check for the compact `sector_position_no_rank` family:
 | `source_distance_target_preserving_hard` | `source_only` | 0.902 | 0.914 | source profile alone explains most of this target-preserving control |
 | `source_distance_target_preserving_hard` | `target_only` | 0.500 | 0.500 | target-side shortcut is removed by construction |
 | `source_distance_target_preserving_hard` | `compatibility_only` | 0.893 | 0.903 | compatibility signal remains strong but does not beat the source-only shortcut |
+| `endpoint_target_matched_hard` | `compatibility_only` | 0.839 | 0.870 | source fixed, negative target matched on compact endpoint profile |
+| `endpoint_source_matched_target_preserving_hard` | `compatibility_only` | 0.902 | 0.908 | target fixed, negative source matched on compact endpoint profile |
 
 Reading:
 
@@ -757,6 +759,13 @@ from one endpoint profile depending on how negatives are built. This is not yet
 a clean proof of non-linear source-target interaction. The next objective must
 score compatibility as an added value over source-only and target-only endpoint
 baselines, not only report a high pair-classification AP.
+
+The compact endpoint-matched variants reduce the most obvious endpoint shortcut
+on the side that is replaced, but they do not solve the problem symmetrically.
+Source-preserving endpoint-matched negatives produce a small compatibility
+margin over target-only. Target-preserving endpoint-matched negatives still
+leave source-only slightly stronger than compatibility-only. This is a useful
+direction, not a pass.
 ```
 
 Endpoint-margin audit:
@@ -772,6 +781,8 @@ Result on `sector_position_no_rank`, `new_relation`, lag-1 features,
 | Scenario | Best endpoint AP | Compatibility AP | Compatibility minus endpoint | Gate |
 |---|---:|---:|---:|---|
 | `pair_distance_hard_negatives` | 0.864 | 0.879 | +0.015 | FAIL |
+| `source_preserving_endpoint_matched_negatives` | 0.849 | 0.870 | +0.021 | PASS, small and one-sided |
+| `target_preserving_endpoint_matched_negatives` | 0.913 | 0.908 | -0.004 | FAIL |
 | `source_distance_target_preserving_negatives` | 0.914 | 0.903 | -0.011 | FAIL |
 | `dual_profile_hard_negatives` | 0.883 | 0.779 | -0.105 | FAIL |
 | `dual_profile_temporal_sector_shuffle` | 0.523 | 0.567 | +0.044 | PASS, but only on the shuffled placebo |
@@ -779,13 +790,14 @@ Result on `sector_position_no_rank`, `new_relation`, lag-1 features,
 Reading:
 
 ```text
-The compatibility-only representation does not yet beat endpoint-only shortcuts
-on real controls with the registered 0.02 margin. Its only pass is on the
-combined-shuffle placebo, which is not useful evidence for promotion. Therefore
-the current local learner should not be deepened into HPC/neural training as-is.
-The next technical task is to redesign relation labels/negative sampling or add
-an explicit contrastive compatibility objective where the pair term is evaluated
-against source-only and target-only baselines by construction.
+The compatibility-only representation now passes one real source-preserving
+endpoint-matched control by a very small margin (+0.021), but it still fails the
+target-preserving endpoint-matched control and the stricter dual-profile control.
+The pass on the combined-shuffle placebo is not useful evidence for promotion.
+Therefore the current local learner should not be deepened into HPC/neural
+training as-is. The next technical task is to make endpoint matching symmetric
+or add an explicit contrastive compatibility objective where the pair term is
+evaluated against source-only and target-only baselines by construction.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between
