@@ -43,6 +43,8 @@ def test_relation_learner_scenarios_are_explicit():
         "target_preserving_endpoint_matched_negatives",
         "source_distance_target_preserving_negatives",
         "dual_profile_hard_negatives",
+        "dual_endpoint_matched_negatives",
+        "dual_endpoint_temporal_sector_shuffle",
         "dual_profile_temporal_shuffle",
         "dual_profile_sector_shuffle",
         "dual_profile_temporal_sector_shuffle",
@@ -602,6 +604,83 @@ def test_dual_profile_hard_negatives_preserve_edge_type_semantics():
     assert (intra["source_sector_code"] != intra["target_sector_code"]).all()
 
 
+def test_dual_endpoint_matched_negatives_match_both_compact_endpoints():
+    nodes, edges = _load_inputs()
+    dual_profile = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="dual_profile_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+    dual_endpoint = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="dual_endpoint_matched_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+
+    def mean_compact_endpoint_distance(samples: pd.DataFrame) -> float:
+        positives = samples[samples["relation_label"] == 1][
+            [
+                "decision_year",
+                "edge_type",
+                "source_node_id",
+                "target_node_id",
+                "source_sector_share_t",
+                "source_dominant_sector_flag_t",
+                "target_sector_share_t",
+                "target_dominant_sector_flag_t",
+            ]
+        ].rename(
+            columns={
+                "source_node_id": "positive_source_node_id",
+                "target_node_id": "positive_target_node_id",
+                "source_sector_share_t": "positive_source_share",
+                "source_dominant_sector_flag_t": "positive_source_dominant",
+                "target_sector_share_t": "positive_target_share",
+                "target_dominant_sector_flag_t": "positive_target_dominant",
+            }
+        )
+        negatives = samples[samples["relation_label"] == 0][
+            [
+                "decision_year",
+                "edge_type",
+                "source_node_id",
+                "target_node_id",
+                "source_sector_share_t",
+                "source_dominant_sector_flag_t",
+                "target_sector_share_t",
+                "target_dominant_sector_flag_t",
+            ]
+        ].rename(
+            columns={
+                "source_node_id": "negative_source_node_id",
+                "target_node_id": "negative_target_node_id",
+                "source_sector_share_t": "negative_source_share",
+                "source_dominant_sector_flag_t": "negative_source_dominant",
+                "target_sector_share_t": "negative_target_share",
+                "target_dominant_sector_flag_t": "negative_target_dominant",
+            }
+        )
+        paired = positives.merge(negatives, on=["decision_year", "edge_type"])
+        return float(
+            (
+                (paired["positive_source_share"] - paired["negative_source_share"]).abs()
+                + (paired["positive_source_dominant"] - paired["negative_source_dominant"]).abs()
+                + (paired["positive_target_share"] - paired["negative_target_share"]).abs()
+                + (paired["positive_target_dominant"] - paired["negative_target_dominant"]).abs()
+            ).mean()
+        )
+
+    assert mean_compact_endpoint_distance(dual_endpoint) <= mean_compact_endpoint_distance(dual_profile)
+
+
 def test_edge_sign_only_removes_magnitude_only():
     nodes, edges = _load_inputs()
     _, out_edges, _ = apply_relation_scenario(nodes, edges.copy(), "edge_sign_only", seed=42)
@@ -660,6 +739,23 @@ def test_dual_profile_shuffle_scenarios_keep_dual_profile_negatives():
             assert not out_nodes[temporal_cols].equals(nodes[temporal_cols])
         if "sector" in changed:
             assert not out_nodes[sector_cols].equals(nodes[sector_cols])
+
+
+def test_dual_endpoint_shuffle_scenario_keeps_endpoint_matched_negatives():
+    nodes, edges = _load_inputs()
+    out_nodes, _, strategy = apply_relation_scenario(
+        nodes,
+        edges.copy(),
+        "dual_endpoint_temporal_sector_shuffle",
+        seed=42,
+    )
+    assert strategy == "dual_endpoint_matched_hard"
+    temporal_cols = [c for c in ["sector_growth_lag_1", "sector_growth_lag_2"] if c in nodes.columns]
+    sector_cols = [c for c in ["sector_share_t", "sector_rank_in_ze_year_t"] if c in nodes.columns]
+    assert temporal_cols
+    assert sector_cols
+    assert not out_nodes[temporal_cols].equals(nodes[temporal_cols])
+    assert not out_nodes[sector_cols].equals(nodes[sector_cols])
 
 
 def test_relation_learner_smoke_outputs_metrics():

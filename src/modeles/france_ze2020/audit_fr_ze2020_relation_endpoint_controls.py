@@ -42,6 +42,8 @@ DEFAULT_SCENARIOS = [
     "target_preserving_endpoint_matched_negatives",
     "source_distance_target_preserving_negatives",
     "dual_profile_hard_negatives",
+    "dual_endpoint_matched_negatives",
+    "dual_endpoint_temporal_sector_shuffle",
     "dual_profile_temporal_sector_shuffle",
 ]
 CLAIM_STATUS = "relation_endpoint_control_audit_exploratory_not_recommendation"
