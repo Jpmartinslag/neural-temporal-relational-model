@@ -5,6 +5,7 @@ reports/canonical/HERALD_22_FR_ZE2020_DASHBOARD_MVP.md.
 """
 
 import ast
+import base64
 import json
 import re
 from pathlib import Path
@@ -18,6 +19,7 @@ from src.data.france_ze2020.build_fr_ze2020_dashboard_mvp import (
     OUT_PATH,
     PREDICTION_NOT_FOUND_MESSAGE,
     build_dashboard,
+    build_geometry_centroids,
     build_ze_data,
     load_clean_panel,
     load_geometry,
@@ -60,6 +62,52 @@ def test_no_forbidden_words_in_dashboard(html):
         assert phrase not in lowered
 
 
+def test_dashboard_language_is_professional_french_not_draft_portuguese(html):
+    forbidden_visible_terms = [
+        "MVP",
+        "exploratorio",
+        "Previsao",
+        "Previsão",
+        "Observado",
+        "Setor dominante",
+        "conteudo",
+        "Etapa",
+        "sinal=",
+        "estabilidade=",
+        "Na ZE",
+        "No setor",
+        "tem trajetória",
+    ]
+    for term in forbidden_visible_terms:
+        assert term not in html
+    required_terms = [
+        "France ZE2020 — Intelligence territoriale",
+        "Tableau comparatif intégré",
+        "Noeuds ZE x secteur",
+        "Carte territoriale ZE2020",
+        "Graphe des relations détectées",
+        "Signaux appris par les modèles",
+        "Réseau MLP relationnel",
+    ]
+    for term in required_terms:
+        assert term in html
+
+    assert "<h1>HERALD France" not in html
+    assert "[à compléter]" not in html
+
+
+def test_integrated_comparison_dashboard_is_embedded_and_renamed(html):
+    match = re.search(r'const INTEGRATED_DASHBOARD_B64 = "([^"]+)";', html)
+    assert match, "integrated dashboard payload missing"
+    decoded = base64.b64decode(match.group(1)).decode("utf-8")
+
+    assert "Modèle territorial" in decoded
+    assert "HERALD" not in decoded
+    assert "Comparaison modèles" in decoded
+    assert "Carte territoriale" in html
+    assert 'id="integrated-comparison-dashboard"' in html
+
+
 def test_builder_reads_only_canonical_sources():
     source = BUILDER_PATH.read_text()
     tree = ast.parse(source)
@@ -88,7 +136,7 @@ def test_plotly_targets_exist_as_html_divs(html):
 
 
 def test_event_handlers_reference_defined_functions(html):
-    handlers = set(re.findall(r'on(?:change|click)="([a-zA-Z0-9_]+)\(', html))
+    handlers = set(re.findall(r'on(?:change|click|input)="([a-zA-Z0-9_]+)\(', html))
     funcs_defined = set(re.findall(r"function ([a-zA-Z0-9_]+)\(", html))
     assert handlers.issubset(funcs_defined)
 
@@ -120,6 +168,133 @@ def test_geometry_coverage_documented_when_present():
     geo_codes = {f["properties"]["ze2020"] for f in geo["features"]}
     assert panel_codes.issubset(geo_codes)
     assert len(geo["features"]) == len(panel_codes)
+
+
+def test_geometry_centroids_cover_all_dashboard_zones():
+    panel = load_clean_panel()
+    panel_codes = set(panel["ze2020"].unique())
+    geo = load_geometry(panel_codes=panel_codes)
+    centroids = build_geometry_centroids(geo)
+    assert set(centroids) == panel_codes
+    assert all({"lon", "lat"}.issubset(v) for v in centroids.values())
+
+
+def test_dashboard_has_annual_slider_and_spatial_graph_layer(html):
+    assert 'id="year-slider"' in html
+    assert 'const CENTROIDS = ' in html
+    assert "type: 'scattergeo'" in html
+    assert 'id="map-family-select"' in html
+    assert 'id="relation-map-list"' in html
+
+
+def test_dashboard_has_dynamic_year_relation_mode_and_dark_map(html):
+    assert 'id="play-year-btn"' in html
+    assert "function toggleYearPlayback()" in html
+    assert 'id="relation-mode-select"' in html
+    assert "Signaux moyens récurrents" in html
+    assert "Signaux forts peu stables" in html
+    assert "bgcolor: '#171b2d'" in html
+    year_slider = re.search(r'id="year-slider" type="range" min="(\d+)" max="(\d+)"', html)
+    assert year_slider is not None
+    assert int(year_slider.group(1)) >= 2017
+    assert int(year_slider.group(2)) == 2025
+
+
+def test_dashboard_has_indirect_relation_layer(html):
+    assert 'id="graph-depth-select"' in html
+    assert "1 pas" in html
+    assert "2 pas" in html
+    assert "3 pas" in html
+    assert "4 pas" in html
+    assert "5 pas" in html
+    assert "6 pas, réseau élargi" in html
+    assert "function graphPathsForSelected(maxDepth)" in html
+    assert "Chemins relationnels indirects" in html
+    assert "chemin relationnel" in html
+    assert "dash: 'dot'" in html
+    assert "zone pont" in html
+    assert "Tous les signaux détectés" in html
+    assert 'id="edge-legend"' in html
+    assert "Chemin indirect" in html
+
+
+def test_dashboard_has_simple_network_mode_buttons(html):
+    assert 'id="mode-btns"' in html
+    assert "setNetworkMode('clear')" in html
+    assert "setNetworkMode('strong')" in html
+    assert "setNetworkMode('medium')" in html
+    assert "setNetworkMode('full')" in html
+    assert "Vue claire" in html
+    assert "Relations fortes" in html
+    assert "Relations moyennes" in html
+    assert "Réseau complet" in html
+    assert "function setNetworkMode(mode)" in html
+    assert "const NETWORK_MODES = " in html
+
+
+def test_dashboard_has_advanced_controls_collapsed_by_default(html):
+    assert '<details class="advanced-controls">' in html
+    assert "Mode avancé" in html
+    assert 'id="map-family-select"' in html
+    assert 'id="min-signal-slider"' in html
+    assert 'id="min-stability-slider"' in html
+    assert "function setSignalThreshold" in html
+    assert "function setStabilityThreshold" in html
+    assert '<option value="200">200</option>' in html
+    assert "minSignal" in html
+    assert "minStability" in html
+    assert "function signalBand(value, stability)" in html
+
+
+def test_indirect_paths_use_bridge_geometry_not_direct_line_only(html):
+    assert "r.path.map(function(ze) { return CENTROIDS[ze].lon; })" in html
+    assert "r.path.map(function(ze) { return CENTROIDS[ze].lat; })" in html
+    assert "r.path.slice(1, -1)" in html
+    assert "origine → zone pont → zone atteinte" in html
+
+
+def test_a10_sector_chart_is_selected_year_bar_with_labels(html):
+    assert "orientation: 'h'" in html
+    assert "d.sector_labels" in html
+    assert "Secteur dominant:" in html
+    assert "Structure sectorielle" in html
+
+
+def test_dominant_sector_map_has_color_legend(html):
+    assert 'id="map-legend"' in html
+    assert 'id="sector-legend"' in html
+    assert "function renderSectorLegend" in html
+    assert "legend-chip" in html
+    assert "SECTOR_COLORS" in html
+    assert "SECTOR_COLOR_INDEX" in html
+    assert "sectorLabel(s)" in html
+
+
+def test_sector_codes_are_embedded_and_colors_are_consistent(html):
+    match = re.search(r"const SECTOR_CODES_ALL = (.*?);\n", html)
+    assert match is not None
+    codes = json.loads(match.group(1))
+    assert len(codes) > 0
+    assert codes == sorted(codes)
+
+
+def test_relation_family_labels_are_translated_for_display(html):
+    assert "const FAMILY_LABELS_FR" in html
+    assert "function familyLabel(code)" in html
+    assert "Similarité ZE-ZE" in html
+    assert "Spécialisation sectorielle" in html
+
+
+def test_dashboard_does_not_use_forbidden_draft_terms():
+    """Checked against the builder's own HTML_TEMPLATE source rather than the
+    rendered output, which also embeds the (vendor, noisy) Plotly library --
+    e.g. the CSS color "whitesmoke" or Plotly's own debug hooks would cause
+    false positives there."""
+    source = BUILDER_PATH.read_text().lower()
+    for term in ["smoke", "debug", "prototype"]:
+        assert re.search(rf"\b{term}\b", source) is None, (
+            f"forbidden draft term '{term}' found in builder source"
+        )
 
 
 def test_geometry_missing_does_not_fabricate_a_map(tmp_path):
