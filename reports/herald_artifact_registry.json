@@ -1092,6 +1092,26 @@
       "notes": "Tests: tests/test_fr_ze2020_relation_endpoint_controls.py. Local audit outputs were written to /tmp in the 2026-07-07 run, not tracked. No HPC job launched."
     },
     {
+      "id": "FR_ZE2020_ANCHOR_PERIPHERAL_SIGNAL_AUDIT_V1",
+      "phase": "anchor/peripheral relation signal audit (2026-07-07)",
+      "path": "data/processed/france_ze2020/fr_ze2020_anchor_peripheral_signal_{scored_pairs,metrics,run}_v1.*",
+      "type": "model_audit_output",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_27 formula-only mechanism audit, not a model result) -- see reports/canonical/HERALD_27_FR_ZE2020_RELATION_OBJECTIVE_GATE.md",
+      "generator_script": "src/modeles/france_ze2020/audit_fr_ze2020_anchor_peripheral_signal.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv",
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz"
+      ],
+      "claim_authorized": "Formula-only local audit of interpretable pair scores on the dual-endpoint local relation gate. On 134 paired rows, dominance_asymmetry_score AP ~0.821 and drops to ~0.561 under matched temporal+sector shuffle; sector_share_product_score AP ~0.829 and drops to ~0.536; anchor_peripheral_score AP ~0.821 and drops to ~0.556. This supports an exploratory anchor/peripheral mechanism hypothesis for the next contrastive objective.",
+      "claim_forbidden": "Treating these formula scores as a trained model, validated mechanism, causal influence, automatic recommendation, GNN evidence, or HPC readiness. Ignoring the small sample size: 134 paired rows total in this diagnostic.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_anchor_peripheral_signal.py. Local audit outputs were written to /tmp in the 2026-07-07 run, not tracked. No HPC job launched."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
