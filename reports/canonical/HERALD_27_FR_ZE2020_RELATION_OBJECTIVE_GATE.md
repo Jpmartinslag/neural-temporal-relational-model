@@ -647,6 +647,15 @@ Sector-context split under `compatibility_only`:
 | `sector_rank_only` | 0.673 | 0.604 | rank alone survives shuffle more than desired, so it is not sufficient as a clean signal |
 | `dominant_sector_only` | 0.667 | 0.503 | dominant-sector flag alone collapses under shuffle, but is too coarse alone |
 
+Sector-position leave-one-out check under `compatibility_only`:
+
+| Feature family | AP before combined shuffle | AP after combined shuffle | Reading |
+|---|---:|---:|---|
+| `sector_position_only` | 0.781 | 0.570 | reference: share + rank + dominant flag |
+| `sector_position_no_share` | 0.709 | 0.619 | removing share weakens the signal and leaves too much shuffle residue |
+| `sector_position_no_rank` | 0.779 | 0.567 | removing rank preserves almost all useful signal |
+| `sector_position_no_dominant` | 0.711 | 0.568 | removing dominant flag weakens the signal clearly |
+
 Reading:
 
 ```text
@@ -715,6 +724,16 @@ structure before learning dynamic relations. The remaining warning is that
 `sector_rank_only` does not collapse enough under the combined shuffle
 (AP=0.604), so future falsification must keep checking whether ranking
 artifacts or coarse sector ordering explain part of the signal.
+
+The leave-one-out position check refines this reading. Removing `rank` almost
+does not hurt the relation objective (AP=0.779 versus 0.781), while removing
+`share` or the dominant-sector flag drops AP to about 0.71. The cleanest
+interpretable hypothesis is therefore not "ordinal sector rank" but local
+sector weight plus structural dominance: whether the sector has meaningful mass
+in the ZE and whether it anchors the local sector profile. This is useful for
+the dynamic architecture because it gives a compact, interpretable node
+description for ZE x sector learning. It is still a local diagnostic, not a
+validated recommendation signal.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between

@@ -49,6 +49,9 @@ FEATURE_FAMILIES = [
     "sector_only",
     "sector_context_only",
     "sector_position_only",
+    "sector_position_no_share",
+    "sector_position_no_rank",
+    "sector_position_no_dominant",
     "sector_share_only",
     "sector_rank_only",
     "dominant_sector_only",
@@ -552,6 +555,12 @@ def node_features_for_family(feature_family: str) -> list[str]:
     if feature_family == "sector_position_only":
         sector_position = ["sector_share_t", "sector_rank_in_ze_year_t", "dominant_sector_flag_t"]
         return [col for col in sector_position if col in BASE_FEATURE_COLUMNS]
+    if feature_family == "sector_position_no_share":
+        return [col for col in ["sector_rank_in_ze_year_t", "dominant_sector_flag_t"] if col in BASE_FEATURE_COLUMNS]
+    if feature_family == "sector_position_no_rank":
+        return [col for col in ["sector_share_t", "dominant_sector_flag_t"] if col in BASE_FEATURE_COLUMNS]
+    if feature_family == "sector_position_no_dominant":
+        return [col for col in ["sector_share_t", "sector_rank_in_ze_year_t"] if col in BASE_FEATURE_COLUMNS]
     if feature_family == "sector_share_only":
         return ["sector_share_t"] if "sector_share_t" in BASE_FEATURE_COLUMNS else []
     if feature_family == "sector_rank_only":
