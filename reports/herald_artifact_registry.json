@@ -1147,10 +1147,30 @@
         "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz",
         "src/modeles/france_ze2020/audit_fr_ze2020_relation_lift_over_formulas.py"
       ],
-      "claim_authorized": "Executable HPC falsification package for HERALD_27 relation objective only. Runs the lift-over-formulas audit across seeds 42-46 and relation controls, then audits G1-G5: integrity, lift over best formula, degradation under matched temporal+sector shuffle, seed stability, and output separation.",
+      "claim_authorized": "Executable HPC falsification package for HERALD_27 relation objective only. Run fr_ze2020_relation_objective_20260707_185547 (Slurm 7733592) completed 5/5 seeds and passed G1-G5: integrity, lift over best formula, degradation under matched temporal+sector shuffle, seed stability, and output separation. Main gate: relation_logit AP ~0.9545 versus best formula AP ~0.8328, lift ~+0.1217; matched shuffle AP drop ~0.3042.",
       "claim_forbidden": "Treating this HPC package as a validated dynamic GNN, a trained model result, a causal economic mechanism, or an automatic recommendation system. Treating a future PASS as sufficient for policy recommendation without a separate retrospective recommendation/ranking validation.",
       "can_regenerate": true,
-      "notes": "Tests: tests/test_fr_ze2020_relation_objective_hpc_audit.py. Submit wrapper is dry-run unless --confirm-submit is passed."
+      "notes": "Tests: tests/test_fr_ze2020_relation_objective_hpc_audit.py. Submit wrapper is dry-run unless --confirm-submit is passed. Raw gate report is local/ignored at reports/metrics/fr_ze2020_relation_objective_20260707_185547_gate_report.json."
+    },
+    {
+      "id": "FR_ZE2020_DYNAMIC_RELATION_ENCODER_V1",
+      "phase": "dynamic relation encoder prototype (2026-07-07)",
+      "path": "data/processed/france_ze2020/fr_ze2020_dynamic_relation_encoder_{edges,node_embeddings,metrics,run}_v1.*",
+      "type": "model_output",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_29 representation-layer prototype, not a final model result) -- see reports/canonical/HERALD_29_FR_ZE2020_DYNAMIC_RELATION_ENCODER.md",
+      "generator_script": "src/modeles/france_ze2020/train_fr_ze2020_dynamic_relation_encoder.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv",
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz"
+      ],
+      "claim_authorized": "Regenerable representation layer converting the passed HERALD_28 relation objective into learned source-target relation_score values and node-level ZE2020 x sector relation embeddings. Local smoke over 2022-2025 reproduces the relation objective: mean AP ~0.9545 and ROC-AUC ~0.9475 over 118 scored pairs. Node embeddings aggregate scores into in/out mean, max, top-3 mean, and count fields, deliberately excluding relation_label/sample_role/edge_state.",
+      "claim_forbidden": "Treating the encoder as a validated dynamic GNN, causal mechanism, automatic recommendation, or final downstream model. Using relation labels from the scored edge file as downstream features; only the node_embeddings representation is intended for downstream prototype tests.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_dynamic_relation_encoder.py. Local smoke outputs were written to /tmp in the 2026-07-07 run, not tracked."
     },
     {
       "id": "FR_ZE2020_GEOMETRY",

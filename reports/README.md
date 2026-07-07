@@ -112,8 +112,12 @@ the science/structure base; `13`-`14` are housekeeping against that base.
 26. `canonical/HERALD_28_FR_ZE2020_RELATION_OBJECTIVE_HPC_SPEC.md` — executable HPC
     falsification spec for the HERALD_27 relation objective: compares the local
     compatibility learner against deterministic formulas across seeds, endpoint controls,
-    and temporal/sector placebos. Falsification only; no dynamic-GNN, causal, or
-    recommendation claim.
+    and temporal/sector placebos. Run `7733592` passed G1-G5, authorizing the next
+    representation-layer prototype only; no dynamic-GNN, causal, or recommendation claim.
+27. `canonical/HERALD_29_FR_ZE2020_DYNAMIC_RELATION_ENCODER.md` — converts the passed
+    relation objective into a dynamic relation encoder: learned source-target scores and
+    node-level ZE2020 x sector relation embeddings. Representation layer only, not a final
+    model or recommendation claim.
 
 ## Control Documents
 

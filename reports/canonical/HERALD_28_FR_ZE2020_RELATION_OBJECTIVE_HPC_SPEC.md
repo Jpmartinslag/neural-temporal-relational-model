@@ -1,10 +1,13 @@
 # HERALD 28 -- France ZE2020 Relation Objective HPC Spec
 
-**Status:** `HPC_SPEC_READY_NOT_A_MODEL_CLAIM`.
+**Status:** `HPC_FALSIFICATION_PASS_NOT_A_MODEL_CLAIM`.
 
 This document specifies the HPC falsification batch for the HERALD_27 relation
 objective. It does not validate a dynamic GNN, does not authorize causal claims,
 and does not create automatic recommendations.
+
+Run `fr_ze2020_relation_objective_20260707_185547` completed on meso as Slurm
+job `7733592` with 5/5 seed tasks finished and empty stderr logs.
 
 ## 1. Question
 
@@ -91,7 +94,41 @@ recommendation validated
 causal mechanism discovered
 ```
 
-## 5. Files
+## 5. Result
+
+HPC audit status:
+
+```text
+RELATION_OBJECTIVE_HPC_AUDIT_PASS
+```
+
+| Gate | Result | Main number |
+|---|---|---:|
+| G1 no errors | PASS | 5/5 seeds found |
+| G2 real lift over formula | PASS | mean lift +0.1217 AP |
+| G3 shuffle degradation | PASS | mean AP drop 0.3042 |
+| G4 lift stability | PASS | CV 0.0 |
+| G5 output separation | PASS | no forbidden claim status |
+
+Main relation objective:
+
+| Scenario | Learner AP | Best formula AP | Lift |
+|---|---:|---:|---:|
+| `dual_endpoint_matched_negatives` | 0.9545 | 0.8328 | +0.1217 |
+| `dual_endpoint_temporal_sector_shuffle` | 0.6503 | 0.5973 | +0.0530 |
+
+Reading:
+
+```text
+The learned compatibility signal remains stronger than deterministic formulas
+across five seeds and drops clearly under matched temporal+sector shuffle. This
+authorizes the next prototype design stage: a dynamic relation encoder that
+exports learned source-target relation scores and node-level relation embeddings.
+It still does not validate a dynamic GNN, causal mechanism, or recommendation
+model.
+```
+
+## 6. Files
 
 HPC package:
 
@@ -116,7 +153,7 @@ fr_ze2020_relation_lift_over_formulas_metrics_v1.csv
 fr_ze2020_relation_lift_over_formulas_run_v1.json
 ```
 
-## 6. Launch
+## 7. Launch
 
 Dry run:
 
