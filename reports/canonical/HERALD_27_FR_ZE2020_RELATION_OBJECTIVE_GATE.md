@@ -656,6 +656,19 @@ Sector-position leave-one-out check under `compatibility_only`:
 | `sector_position_no_rank` | 0.779 | 0.567 | removing rank preserves almost all useful signal |
 | `sector_position_no_dominant` | 0.711 | 0.568 | removing dominant flag weakens the signal clearly |
 
+Endpoint-control check for the compact `sector_position_no_rank` family:
+
+| Control | Pair feature mode | Mean ROC-AUC | Mean AP | Reading |
+|---|---|---:|---:|---|
+| `pair_distance_hard` | `both` | 0.839 | 0.864 | preserving the source and changing only the target keeps strong signal |
+| `pair_distance_hard` | `source_only` | 0.500 | 0.500 | source-side shortcut is removed by construction |
+| `pair_distance_hard` | `target_only` | 0.819 | 0.864 | target profile alone remains highly informative |
+| `pair_distance_hard` | `compatibility_only` | 0.852 | 0.879 | source-target distance/interaction is strongest in this source-preserving control |
+| `source_distance_target_preserving_hard` | `both` | 0.907 | 0.917 | preserving the target and changing only the source keeps strong signal |
+| `source_distance_target_preserving_hard` | `source_only` | 0.902 | 0.914 | source profile alone explains most of this target-preserving control |
+| `source_distance_target_preserving_hard` | `target_only` | 0.500 | 0.500 | target-side shortcut is removed by construction |
+| `source_distance_target_preserving_hard` | `compatibility_only` | 0.893 | 0.903 | compatibility signal remains strong but does not beat the source-only shortcut |
+
 Reading:
 
 ```text
@@ -734,6 +747,16 @@ in the ZE and whether it anchors the local sector profile. This is useful for
 the dynamic architecture because it gives a compact, interpretable node
 description for ZE x sector learning. It is still a local diagnostic, not a
 validated recommendation signal.
+
+The endpoint-control check sharpens the warning. When the source is fixed,
+`source_only` correctly collapses to AP=0.500, but `target_only` remains high.
+When the target is fixed, `target_only` correctly collapses to AP=0.500, but
+`source_only` remains high. Therefore the compact `share + dominant flag`
+profile is informative, but the current objective can still be solved largely
+from one endpoint profile depending on how negatives are built. This is not yet
+a clean proof of non-linear source-target interaction. The next objective must
+score compatibility as an added value over source-only and target-only endpoint
+baselines, not only report a high pair-classification AP.
 ```
 
 The strongest warning for the broad any-relation target is the near-tie between
@@ -750,7 +773,8 @@ Do not promote it as a graph model.
 Use it as a diagnostic showing that the next objective should focus on
 emergent relations (`new_relation`) and still needs stronger temporal controls,
 held-out-pair validation, and a compatibility-specific objective where the full
-pair representation must beat source-only controls.
+pair representation or compatibility-only representation must beat source-only
+and target-only endpoint baselines.
 ```
 
 Tests:
