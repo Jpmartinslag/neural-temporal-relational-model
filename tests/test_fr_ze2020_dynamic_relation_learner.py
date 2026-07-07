@@ -38,7 +38,9 @@ def test_relation_learner_scenarios_are_explicit():
         "distance_hard_negatives",
         "scaled_distance_hard_negatives",
         "pair_distance_hard_negatives",
+        "source_preserving_endpoint_matched_negatives",
         "target_preserving_hard_negatives",
+        "target_preserving_endpoint_matched_negatives",
         "source_distance_target_preserving_negatives",
         "dual_profile_hard_negatives",
         "dual_profile_temporal_shuffle",
@@ -352,6 +354,71 @@ def test_pair_distance_hard_negatives_match_source_target_distance():
     assert mean_pair_distance_gap(hard) <= mean_pair_distance_gap(typed)
 
 
+def test_source_preserving_endpoint_matched_negatives_match_positive_target_endpoint():
+    nodes, edges = _load_inputs()
+    typed = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="typed_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+    endpoint_matched = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="endpoint_target_matched_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+
+    def mean_target_endpoint_distance(samples: pd.DataFrame) -> float:
+        positives = samples[samples["relation_label"] == 1][
+            [
+                "source_node_id",
+                "decision_year",
+                "edge_type",
+                "target_node_id",
+                "target_sector_share_t",
+                "target_dominant_sector_flag_t",
+            ]
+        ].rename(
+            columns={
+                "target_node_id": "positive_target_node_id",
+                "target_sector_share_t": "positive_target_share",
+                "target_dominant_sector_flag_t": "positive_target_dominant",
+            }
+        )
+        negatives = samples[samples["relation_label"] == 0][
+            [
+                "source_node_id",
+                "decision_year",
+                "edge_type",
+                "target_node_id",
+                "target_sector_share_t",
+                "target_dominant_sector_flag_t",
+            ]
+        ].rename(
+            columns={
+                "target_node_id": "negative_target_node_id",
+                "target_sector_share_t": "negative_target_share",
+                "target_dominant_sector_flag_t": "negative_target_dominant",
+            }
+        )
+        paired = positives.merge(negatives, on=["source_node_id", "decision_year", "edge_type"])
+        return float(
+            (
+                (paired["positive_target_share"] - paired["negative_target_share"]).abs()
+                + (paired["positive_target_dominant"] - paired["negative_target_dominant"]).abs()
+            ).mean()
+        )
+
+    assert mean_target_endpoint_distance(endpoint_matched) <= mean_target_endpoint_distance(typed)
+
+
 def test_target_preserving_hard_negatives_keep_positive_targets():
     nodes, edges = _load_inputs()
     samples = build_pairwise_relation_samples(
@@ -429,6 +496,67 @@ def test_source_distance_target_preserving_negatives_match_positive_source():
         return float(distance.mean())
 
     assert mean_source_distance(hard_source) <= mean_source_distance(random_source)
+
+
+def test_target_preserving_endpoint_matched_negatives_match_positive_source_endpoint():
+    nodes, edges = _load_inputs()
+    target_preserving = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="target_preserving_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+    endpoint_matched = build_pairwise_relation_samples(
+        nodes,
+        edges,
+        negative_strategy="endpoint_source_matched_target_preserving_hard",
+        negative_ratio=1,
+        node_feature_lag=1,
+        positive_edge_states=["new_relation"],
+        seed=42,
+    )
+
+    def mean_source_endpoint_distance(samples: pd.DataFrame) -> float:
+        positives = samples[samples["relation_label"] == 1][
+            [
+                "target_node_id",
+                "decision_year",
+                "edge_type",
+                "source_sector_share_t",
+                "source_dominant_sector_flag_t",
+            ]
+        ].rename(
+            columns={
+                "source_sector_share_t": "positive_source_share",
+                "source_dominant_sector_flag_t": "positive_source_dominant",
+            }
+        )
+        negatives = samples[samples["relation_label"] == 0][
+            [
+                "target_node_id",
+                "decision_year",
+                "edge_type",
+                "source_sector_share_t",
+                "source_dominant_sector_flag_t",
+            ]
+        ].rename(
+            columns={
+                "source_sector_share_t": "negative_source_share",
+                "source_dominant_sector_flag_t": "negative_source_dominant",
+            }
+        )
+        paired = positives.merge(negatives, on=["target_node_id", "decision_year", "edge_type"])
+        return float(
+            (
+                (paired["positive_source_share"] - paired["negative_source_share"]).abs()
+                + (paired["positive_source_dominant"] - paired["negative_source_dominant"]).abs()
+            ).mean()
+        )
+
+    assert mean_source_endpoint_distance(endpoint_matched) <= mean_source_endpoint_distance(target_preserving)
 
 
 def test_dual_profile_hard_negatives_preserve_edge_type_semantics():

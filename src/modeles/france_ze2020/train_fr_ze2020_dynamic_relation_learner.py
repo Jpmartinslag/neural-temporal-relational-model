@@ -78,7 +78,9 @@ SCENARIOS = [
     "distance_hard_negatives",
     "scaled_distance_hard_negatives",
     "pair_distance_hard_negatives",
+    "source_preserving_endpoint_matched_negatives",
     "target_preserving_hard_negatives",
+    "target_preserving_endpoint_matched_negatives",
     "source_distance_target_preserving_negatives",
     "dual_profile_hard_negatives",
     "dual_profile_temporal_shuffle",
@@ -98,7 +100,9 @@ NEGATIVE_STRATEGY_BY_SCENARIO = {
     "distance_hard_negatives": "distance_hard",
     "scaled_distance_hard_negatives": "scaled_distance_hard",
     "pair_distance_hard_negatives": "pair_distance_hard",
+    "source_preserving_endpoint_matched_negatives": "endpoint_target_matched_hard",
     "target_preserving_hard_negatives": "target_preserving_hard",
+    "target_preserving_endpoint_matched_negatives": "endpoint_source_matched_target_preserving_hard",
     "source_distance_target_preserving_negatives": "source_distance_target_preserving_hard",
     "dual_profile_hard_negatives": "dual_profile_hard",
     "dual_profile_temporal_shuffle": "dual_profile_hard",
@@ -116,6 +120,8 @@ FORBIDDEN_INPUT_STEMS = (
     "graph_adjacency_core_v0",
     "graph_adjacency_mobility_v0",
 )
+
+ENDPOINT_MATCH_COLUMNS = ["sector_share_t", "dominant_sector_flag_t"]
 
 
 def load_edges(path: Path = DEFAULT_EDGES_PATH) -> pd.DataFrame:
@@ -152,6 +158,7 @@ def _candidate_targets(
         "distance_hard",
         "scaled_distance_hard",
         "pair_distance_hard",
+        "endpoint_target_matched_hard",
     } and edge_type == "cross_ze_same_sector":
         mask = (nodes_year["sector_code"] == source_sector) & (nodes_year["node_id"] != source_node_id)
     elif strategy in {
@@ -159,6 +166,7 @@ def _candidate_targets(
         "distance_hard",
         "scaled_distance_hard",
         "pair_distance_hard",
+        "endpoint_target_matched_hard",
     } and edge_type == "intra_ze_sector":
         mask = (nodes_year["ze2020"] == source_ze) & (nodes_year["node_id"] != source_node_id)
     else:
@@ -192,14 +200,20 @@ def _choose_negative_targets(
 ) -> list[str]:
     if not candidates:
         return []
-    if strategy not in {"distance_hard", "scaled_distance_hard", "pair_distance_hard"}:
+    if strategy not in {
+        "distance_hard",
+        "scaled_distance_hard",
+        "pair_distance_hard",
+        "endpoint_target_matched_hard",
+    }:
         return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
 
     indexed = nodes_year.set_index("node_id")
     if positive_target not in indexed.index:
         return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
-    candidate_frame = indexed.loc[candidates, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
-    positive_vector = indexed.loc[positive_target, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+    feature_columns = ENDPOINT_MATCH_COLUMNS if strategy == "endpoint_target_matched_hard" else BASE_FEATURE_COLUMNS
+    candidate_frame = indexed.loc[candidates, feature_columns].astype(float).replace([np.inf, -np.inf], np.nan)
+    positive_vector = indexed.loc[positive_target, feature_columns].astype(float).replace([np.inf, -np.inf], np.nan)
     if strategy == "pair_distance_hard":
         if source_node_id not in indexed.index:
             return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
@@ -230,14 +244,22 @@ def _choose_negative_sources(
 ) -> list[str]:
     if not candidates:
         return []
-    if strategy != "source_distance_target_preserving_hard":
+    if strategy not in {
+        "source_distance_target_preserving_hard",
+        "endpoint_source_matched_target_preserving_hard",
+    }:
         return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
 
     indexed = nodes_year.set_index("node_id")
     if positive_source not in indexed.index:
         return rng.choice(candidates, size=min(count, len(candidates)), replace=False).tolist()
-    candidate_frame = indexed.loc[candidates, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
-    positive_vector = indexed.loc[positive_source, BASE_FEATURE_COLUMNS].astype(float).replace([np.inf, -np.inf], np.nan)
+    feature_columns = (
+        ENDPOINT_MATCH_COLUMNS
+        if strategy == "endpoint_source_matched_target_preserving_hard"
+        else BASE_FEATURE_COLUMNS
+    )
+    candidate_frame = indexed.loc[candidates, feature_columns].astype(float).replace([np.inf, -np.inf], np.nan)
+    positive_vector = indexed.loc[positive_source, feature_columns].astype(float).replace([np.inf, -np.inf], np.nan)
     distances = (candidate_frame - positive_vector).pow(2).sum(axis=1)
     distances = distances.sort_values(kind="mergesort")
     return distances.head(min(count, len(distances))).index.tolist()
@@ -450,7 +472,11 @@ def build_pairwise_relation_samples(
                         "sample_role": f"{negative_strategy}_non_edge",
                     }
                 )
-        elif negative_strategy in {"target_preserving_hard", "source_distance_target_preserving_hard"}:
+        elif negative_strategy in {
+            "target_preserving_hard",
+            "source_distance_target_preserving_hard",
+            "endpoint_source_matched_target_preserving_hard",
+        }:
             candidates = [
                 source
                 for source in _candidate_sources_for_target(
