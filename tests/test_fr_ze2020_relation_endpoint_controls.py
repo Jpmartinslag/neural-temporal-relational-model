@@ -48,6 +48,27 @@ def test_endpoint_control_audit_reports_all_pair_modes_and_margins():
     assert row["both_minus_best_endpoint_ap"] == (
         row["mean_average_precision_both"] - best_endpoint
     )
+    assert "combined_gate_pass" in endpoint_summary.columns
+    assert "compatibility_ap_drop_vs_shuffle" in endpoint_summary.columns
+
+
+def test_dual_endpoint_gate_requires_margin_and_shuffle_drop():
+    nodes, edges = _load_inputs()
+    _, endpoint_summary = run_endpoint_control_audit(
+        nodes,
+        edges,
+        scenarios=["dual_endpoint_matched_negatives", "dual_endpoint_temporal_sector_shuffle"],
+        eval_years=[2022, 2023],
+        positive_edge_states=["new_relation"],
+        max_iter=100,
+        k=20,
+        margin_threshold=0.02,
+        shuffle_drop_threshold=0.10,
+    )
+    rows = endpoint_summary.set_index("falsification_scenario")
+    assert rows.loc["dual_endpoint_matched_negatives", "compatibility_gate_pass"] == 1
+    assert rows.loc["dual_endpoint_matched_negatives", "compatibility_ap_drop_vs_shuffle"] > 0.10
+    assert rows.loc["dual_endpoint_matched_negatives", "combined_gate_pass"] == 1
 
 
 def test_endpoint_control_audit_keeps_exploratory_claim_status():
