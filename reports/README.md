@@ -109,6 +109,11 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     `new_relation` is the most promising local objective so far; temporal-only and
     sector-only signals are real under targeted shuffles, but target/difference
     shortcuts plus local-only compatibility/composition evidence still block HPC/model promotion.
+26. `canonical/HERALD_28_FR_ZE2020_RELATION_OBJECTIVE_HPC_SPEC.md` — executable HPC
+    falsification spec for the HERALD_27 relation objective: compares the local
+    compatibility learner against deterministic formulas across seeds, endpoint controls,
+    and temporal/sector placebos. Falsification only; no dynamic-GNN, causal, or
+    recommendation claim.
 
 ## Control Documents
 

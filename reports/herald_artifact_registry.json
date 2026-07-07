@@ -1132,6 +1132,27 @@
       "notes": "Tests: tests/test_fr_ze2020_relation_lift_over_formulas.py. Local audit outputs were written to /tmp in the 2026-07-07 run, not tracked. No HPC job launched."
     },
     {
+      "id": "FR_ZE2020_RELATION_OBJECTIVE_HPC_SPEC_V1",
+      "phase": "relation objective HPC falsification spec (2026-07-07)",
+      "path": "hpc/france_ze2020_relation_objective/",
+      "type": "hpc_spec",
+      "status": "ACTIVE",
+      "tracked_in_git": true,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_28 relation-objective HPC falsification spec, not a model result) -- see reports/canonical/HERALD_28_FR_ZE2020_RELATION_OBJECTIVE_HPC_SPEC.md",
+      "generator_script": "hpc/france_ze2020_relation_objective/submit_fr_ze2020_relation_objective_hpc.sh",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv",
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz",
+        "src/modeles/france_ze2020/audit_fr_ze2020_relation_lift_over_formulas.py"
+      ],
+      "claim_authorized": "Executable HPC falsification package for HERALD_27 relation objective only. Runs the lift-over-formulas audit across seeds 42-46 and relation controls, then audits G1-G5: integrity, lift over best formula, degradation under matched temporal+sector shuffle, seed stability, and output separation.",
+      "claim_forbidden": "Treating this HPC package as a validated dynamic GNN, a trained model result, a causal economic mechanism, or an automatic recommendation system. Treating a future PASS as sufficient for policy recommendation without a separate retrospective recommendation/ranking validation.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_relation_objective_hpc_audit.py. Submit wrapper is dry-run unless --confirm-submit is passed."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
