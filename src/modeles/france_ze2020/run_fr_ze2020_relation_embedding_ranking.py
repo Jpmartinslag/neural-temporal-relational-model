@@ -16,6 +16,10 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
 
 ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
@@ -40,6 +44,7 @@ FEATURE_CONFIGS = [
     "all_embeddings",
     "shuffled_dense_graph_embeddings",
 ]
+HEAD_MODES = ["regression", "classification"]
 CLAIM_STATUS = "relation_embedding_ranking_diagnostic_not_recommendation"
 FORBIDDEN_EMBEDDING_COLUMNS = {"relation_label", "sample_role", "edge_state"}
 
@@ -132,6 +137,165 @@ def run_one_config(
     return predictions, metrics
 
 
+def _classification_complete(
+    panel: pd.DataFrame,
+    feature_columns: list[str],
+    target_horizon: int,
+) -> tuple[pd.DataFrame, str, str]:
+    framed = ranking._with_target_label(panel, target_horizon=target_horizon)
+    target_col, label_col = ranking.target_columns(target_horizon)
+    finite_features = np.isfinite(framed[feature_columns].to_numpy(dtype=float)).all(axis=1)
+    finite_target = np.isfinite(framed[target_col].to_numpy(dtype=float))
+    complete = framed[(framed["ranking_feature_complete"] == 1) & finite_features & finite_target].copy()
+    return complete, target_col, label_col
+
+
+def _fit_predict_logit_top3(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    feature_columns: list[str],
+    label_col: str,
+    seed: int,
+) -> np.ndarray:
+    model = Pipeline(
+        [
+            ("scaler", StandardScaler()),
+            (
+                "logit",
+                LogisticRegression(
+                    class_weight="balanced",
+                    max_iter=500,
+                    random_state=seed,
+                ),
+            ),
+        ]
+    )
+    model.fit(train[feature_columns], train[label_col])
+    return model.predict_proba(test[feature_columns])[:, 1]
+
+
+def _fit_predict_mlp_top3(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    feature_columns: list[str],
+    label_col: str,
+    seed: int,
+    max_epochs: int,
+) -> np.ndarray:
+    model = Pipeline(
+        [
+            ("scaler", StandardScaler()),
+            (
+                "mlp",
+                MLPClassifier(
+                    hidden_layer_sizes=(32, 16),
+                    activation="relu",
+                    solver="adam",
+                    max_iter=max_epochs,
+                    random_state=seed,
+                    early_stopping=True,
+                    n_iter_no_change=15,
+                ),
+            ),
+        ]
+    )
+    model.fit(train[feature_columns], train[label_col])
+    return model.predict_proba(test[feature_columns])[:, 1]
+
+
+def run_one_config_classification(
+    panel: pd.DataFrame,
+    feature_columns: list[str],
+    config_name: str,
+    target_horizon: int,
+    eval_years: list[int],
+    seed: int,
+    max_epochs: int,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    complete, target_col, label_col = _classification_complete(
+        panel,
+        feature_columns=feature_columns,
+        target_horizon=target_horizon,
+    )
+    pred_rows = []
+    metric_rows = []
+    for eval_year in eval_years:
+        test = complete[complete["decision_year"] == eval_year].copy()
+        train = complete[complete["decision_year"] < eval_year].copy()
+        if test.empty or train["decision_year"].nunique() < 3:
+            continue
+        if train[label_col].nunique() < 2 or test[label_col].nunique() < 2:
+            continue
+
+        scores = {
+            "logit_top3_classifier": _fit_predict_logit_top3(
+                train,
+                test,
+                feature_columns=feature_columns,
+                label_col=label_col,
+                seed=seed,
+            ),
+            "mlp_top3_classifier": _fit_predict_mlp_top3(
+                train,
+                test,
+                feature_columns=feature_columns,
+                label_col=label_col,
+                seed=seed,
+                max_epochs=max_epochs,
+            ),
+        }
+        for model_name, score_values in scores.items():
+            pred = test[
+                [
+                    "ze2020",
+                    "ze2020_label",
+                    "sector_code",
+                    "sector_label",
+                    "decision_year",
+                    target_col,
+                    label_col,
+                ]
+            ].copy()
+            pred = pred.rename(columns={target_col: "target_growth", label_col: "target_top3_label"})
+            pred["target_horizon_years"] = target_horizon
+            pred["model"] = model_name
+            pred["score"] = score_values
+            pred["rank_predicted"] = pred.groupby(["ze2020", "decision_year"])["score"].rank(
+                ascending=False,
+                method="first",
+            )
+            pred["feature_config"] = config_name
+            pred["seed"] = seed
+            pred["claim_status"] = CLAIM_STATUS
+            pred_rows.append(pred)
+
+            metrics = ranking.ranking_metrics(
+                pred,
+                model_name,
+                ranking.DEFAULT_K,
+                target_col="target_growth",
+                label_col="target_top3_label",
+            )
+            metrics.update(
+                {
+                    "eval_year": eval_year,
+                    "target_horizon_years": target_horizon,
+                    "k": ranking.DEFAULT_K,
+                    "n_test_rows": len(test),
+                    "n_test_groups": test.groupby(["ze2020", "decision_year"]).ngroups,
+                    "n_train_years": train["decision_year"].nunique(),
+                    "feature_config": config_name,
+                    "seed": seed,
+                    "claim_status": CLAIM_STATUS,
+                }
+            )
+            metric_rows.append(metrics)
+
+    predictions = pd.concat(pred_rows, ignore_index=True) if pred_rows else pd.DataFrame()
+    metrics = pd.DataFrame(metric_rows)
+    return predictions, metrics
+
+
 def summarize_metrics(metrics: pd.DataFrame) -> pd.DataFrame:
     return (
         metrics.groupby(["target_horizon_years", "feature_config", "model"], as_index=False)
@@ -173,12 +337,17 @@ def run_relation_embedding_ranking_diagnostic(
     seeds: list[int],
     max_epochs: int,
     feature_configs: list[str] | None = None,
+    head_modes: list[str] | None = None,
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     merged, learned_cols, dense_graph_cols = merge_panel_embeddings(panel, embeddings)
     selected_configs = feature_configs or FEATURE_CONFIGS
     unknown = set(selected_configs).difference(FEATURE_CONFIGS)
     if unknown:
         raise ValueError(f"Unknown feature_configs: {sorted(unknown)}")
+    selected_heads = head_modes or ["regression"]
+    unknown_heads = set(selected_heads).difference(HEAD_MODES)
+    if unknown_heads:
+        raise ValueError(f"Unknown head_modes: {sorted(unknown_heads)}")
     base_features = list(ranking.MODEL_FEATURE_COLUMNS)
     no_relation_features = [col for col in base_features if not col.startswith("relation_")]
     configs = {
@@ -201,17 +370,30 @@ def run_relation_embedding_ranking_diagnostic(
             }
             for config_name in selected_configs:
                 frame, feature_columns = run_configs[config_name]
-                predictions, metrics = run_one_config(
-                    frame,
-                    feature_columns,
-                    config_name=config_name,
-                    target_horizon=target_horizon,
-                    eval_years=eval_years,
-                    seed=seed,
-                    max_epochs=max_epochs,
-                )
-                prediction_frames.append(predictions)
-                metric_frames.append(metrics)
+                if "regression" in selected_heads:
+                    predictions, metrics = run_one_config(
+                        frame,
+                        feature_columns,
+                        config_name=config_name,
+                        target_horizon=target_horizon,
+                        eval_years=eval_years,
+                        seed=seed,
+                        max_epochs=max_epochs,
+                    )
+                    prediction_frames.append(predictions)
+                    metric_frames.append(metrics)
+                if "classification" in selected_heads:
+                    predictions, metrics = run_one_config_classification(
+                        frame,
+                        feature_columns,
+                        config_name=config_name,
+                        target_horizon=target_horizon,
+                        eval_years=eval_years,
+                        seed=seed,
+                        max_epochs=max_epochs,
+                    )
+                    prediction_frames.append(predictions)
+                    metric_frames.append(metrics)
 
     predictions = pd.concat(prediction_frames, ignore_index=True)
     metrics = pd.concat(metric_frames, ignore_index=True)
@@ -233,6 +415,7 @@ def main() -> None:
     parser.add_argument("--target-horizons", nargs="+", type=int, choices=[1, 3], default=[1, 3])
     parser.add_argument("--seeds", nargs="+", type=int, default=DEFAULT_SEEDS)
     parser.add_argument("--feature-configs", nargs="+", choices=FEATURE_CONFIGS, default=FEATURE_CONFIGS)
+    parser.add_argument("--head-modes", nargs="+", choices=HEAD_MODES, default=["regression"])
     parser.add_argument("--max-epochs", type=int, default=120)
     args = parser.parse_args()
 
@@ -245,6 +428,7 @@ def main() -> None:
         seeds=args.seeds,
         max_epochs=args.max_epochs,
         feature_configs=args.feature_configs,
+        head_modes=args.head_modes,
     )
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
@@ -267,6 +451,7 @@ def main() -> None:
                 "target_horizons": args.target_horizons,
                 "seeds": args.seeds,
                 "feature_configs": args.feature_configs,
+                "head_modes": args.head_modes,
                 "max_epochs": args.max_epochs,
                 "claim_status": CLAIM_STATUS,
             },
