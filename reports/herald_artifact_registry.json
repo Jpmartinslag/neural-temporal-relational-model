@@ -1232,6 +1232,25 @@
       "notes": "Tests: tests/test_fr_ze2020_top3_entry_ranking_smoke.py. Local smoke outputs were written under /tmp/herald_top3_entry_ranking_smoke_h3, not tracked. MLP max-epoch convergence warnings remain a limitation of this smoke."
     },
     {
+      "id": "FR_ZE2020_TOP3_ENTRY_FALSIFICATION_TRIAGE_V1",
+      "phase": "target-aligned falsification triage (2026-07-08)",
+      "path": "<output-dir>/fr_ze2020_top3_entry_falsification_{predictions,metrics,summary,run}_v1.*",
+      "type": "model_diagnostic_output",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_33 local falsification triage, not a model result) -- see reports/canonical/HERALD_33_FR_ZE2020_TOP3_ENTRY_FALSIFICATION_TRIAGE.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_top3_entry_falsifications.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv"
+      ],
+      "claim_authorized": "Regenerable local falsification triage for future_top3_entry_3y_label. In a 2-seed local run over 2017-2022 with max_epochs=40, the MLP full-control formula-relation score reached mean NDCG@3 ~0.6602 versus no_relation ~0.6563 and shuffled_relation ~0.6588; temporal_shuffle and sector_shuffle degraded performance (~0.6131 and ~0.5870 for formula-relation MLP). Target_shuffle remained close to full control and is explicitly classified as a weak gate, not decisive validation.",
+      "claim_forbidden": "Treating this triage as a validated dynamic GNN, final model, causal mechanism, automatic recommendation, policy action, or proof of robust relation usefulness. Using target_shuffle alone as a decisive placebo. Treating output rows as recommended sectors.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_top3_entry_falsifications.py. Local outputs were written under /tmp/herald_top3_entry_falsifications_h3_local, not tracked. MLP max-epoch convergence warnings remain a limitation of this local triage."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
