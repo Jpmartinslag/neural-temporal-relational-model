@@ -48,6 +48,16 @@ processed inputs by default.
 The shuffled configuration is the key local placebo: if real graph embeddings do
 not beat this, the representation is not yet defensible as a ranking input.
 
+Two head modes are available:
+
+| Head mode | Models | Question |
+|---|---|---|
+| `regression` | Ridge and MLP over future growth | Can the model score sectors by realized growth? |
+| `classification` | Logistic and MLP classifiers over future top-3 labels | Can the model identify sectors that enter the future top-3? |
+
+The classification head is closer to the ranking objective because it directly
+learns the top-3 event rather than a continuous growth value.
+
 ## 4. Local Diagnostic
 
 Local run:
@@ -95,6 +105,40 @@ Reading:
 - Ridge is essentially unchanged;
 - no ranking claim is authorized.
 
+## 4b. Classification Head Smoke
+
+Local run:
+
+```text
+outputs:          /tmp/herald_relation_embedding_ranking_classifier_local/
+target horizons:  1y and 3y
+seeds:            42 43 44 45 46
+max_epochs:       80
+head mode:        classification
+feature configs:  base_formula_features, dense_graph_embeddings,
+                  shuffled_dense_graph_embeddings
+```
+
+Mean NDCG@3:
+
+| Target | Config | Logistic top-3 | MLP top-3 |
+|---|---|---:|---:|
+| 1y | base formula | 0.5051 | 0.4971 |
+| 1y | dense graph | 0.5046 | 0.4797 |
+| 1y | shuffled dense graph | 0.5036 | 0.4822 |
+| 3y | base formula | 0.4600 | 0.5047 |
+| 3y | dense graph | 0.4595 | 0.5076 |
+| 3y | shuffled dense graph | 0.4573 | 0.4907 |
+
+Reading:
+
+- for the 1-year target, dense graph embeddings do not help;
+- for the 3-year target, `mlp_top3_classifier` with dense graph embeddings is
+  slightly above base formula features (`+0.0030` NDCG@3) and more clearly above
+  shuffled dense graph (`+0.0170` NDCG@3);
+- this is the first ranking-head result aligned with the project objective, but
+  the margin is still too small for model promotion.
+
 ## 5. Interpretation
 
 The result is scientifically useful but not promotional:
@@ -108,6 +152,11 @@ downstream ranking representation.
 
 This means the next work should improve the representation objective or model
 architecture before any HPC-heavy claim.
+
+The classification-head smoke refines this reading: the 3-year
+`mlp_top3_classifier` does beat both the base and shuffled controls, but only by
+a small local margin. This is enough to justify a targeted follow-up, not enough
+to claim a validated architecture.
 
 ## 6. Claim Policy
 
@@ -136,7 +185,8 @@ The useful next step is narrower:
 
 ```text
 1. keep dense graph embeddings as a representation input;
-2. test a stronger model head or contrastive/auto-supervised objective;
+2. focus on the 3-year top-3 classification objective;
 3. keep the shuffled graph placebo and base formula control;
-4. only then prepare an HPC batch.
+4. add one more control: no relation features;
+5. then prepare a small targeted HPC batch, not a broad promoted model run.
 ```

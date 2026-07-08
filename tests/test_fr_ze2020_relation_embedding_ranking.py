@@ -5,6 +5,7 @@ import pandas as pd
 from src.modeles.france_ze2020.run_fr_ze2020_relation_embedding_ranking import (
     CLAIM_STATUS,
     FORBIDDEN_EMBEDDING_COLUMNS,
+    HEAD_MODES,
     coverage_summary,
     embedding_column_groups,
     merge_panel_embeddings,
@@ -49,6 +50,10 @@ def test_embedding_column_groups_split_sparse_and_dense_features():
     assert "relation_graph_in_count" in dense
     assert "relation_graph_embedding_available" in dense
     assert "claim_status" not in sparse
+
+
+def test_head_modes_include_regression_and_classification():
+    assert {"regression", "classification"}.issubset(set(HEAD_MODES))
 
 
 def test_merge_panel_embeddings_keeps_panel_rows_and_fills_missing():
@@ -112,6 +117,7 @@ def test_relation_embedding_ranking_diagnostic_smoke_if_embeddings_exist():
             "dense_graph_embeddings",
             "shuffled_dense_graph_embeddings",
         ],
+        head_modes=["classification"],
     )
     assert not predictions.empty
     assert not metrics.empty
@@ -124,3 +130,4 @@ def test_relation_embedding_ranking_diagnostic_smoke_if_embeddings_exist():
         "dense_graph_embeddings",
         "shuffled_dense_graph_embeddings",
     }.issubset(set(summary["feature_config"]))
+    assert {"logit_top3_classifier", "mlp_top3_classifier"}.issubset(set(summary["model"]))

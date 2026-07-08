@@ -120,8 +120,9 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     model or recommendation claim.
 28. `canonical/HERALD_30_FR_ZE2020_RELATION_EMBEDDING_RANKING_DIAGNOSTIC.md` — downstream
     diagnostic for HERALD_29 embeddings in the retrospective ZE2020 x sector ranking task.
-    The dense graph representation beats the shuffled-graph placebo slightly in the MLP head,
-    but remains below base formula features; no model promotion and no recommendation claim.
+    Regression heads remain below base formula features; the 3-year MLP top-3 classifier
+    shows a small local dense-graph lift over base and shuffled controls. No model promotion
+    and no recommendation claim.
 
 ## Control Documents
 
