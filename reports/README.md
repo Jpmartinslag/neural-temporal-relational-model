@@ -138,6 +138,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
 32. `canonical/HERALD_34_FR_ZE2020_TOP3_ENTRY_HPC_SPEC.md` — HPC falsification spec for
     the top-3 entry objective: 4 scenarios x 5 seeds, output isolation, and descriptive
     G1-G5 audit. Spec only until results are collected and audited.
+33. `canonical/HERALD_35_FR_ZE2020_TOP3_ENTRY_HPC_AUDIT.md` — audited HPC result for
+    HERALD_34: 20/20 tasks completed, all G1-G5 gates passed. Temporal and sector
+    shuffles degrade performance, and formula relation features add a small MLP signal.
+    No final model, no causal claim, no automatic recommendation.
 
 ## Control Documents
 

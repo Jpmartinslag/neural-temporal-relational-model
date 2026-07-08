@@ -1271,6 +1271,25 @@
       "notes": "Tests: tests/test_fr_ze2020_top3_entry_hpc.py plus HERALD_33 tests. The submitter is dry-run unless --confirm-submit is passed."
     },
     {
+      "id": "FR_ZE2020_TOP3_ENTRY_HPC_AUDIT_V1",
+      "phase": "target-aligned HPC falsification audit (2026-07-08)",
+      "path": "hpc_results/fr_ze2020_top3_entry_20260708_174219/fr_ze2020_top3_entry_hpc_audit_report.json",
+      "type": "hpc_audit_report",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_35 audited HPC result, not a final model result) -- see reports/canonical/HERALD_35_FR_ZE2020_TOP3_ENTRY_HPC_AUDIT.md",
+      "generator_script": "hpc/france_ze2020_top3_entry/audit_fr_ze2020_top3_entry_hpc_results.py",
+      "input_data": [
+        "hpc_results/fr_ze2020_top3_entry_20260708_174219/<scenario>/seed_<seed>/fr_ze2020_top3_entry_falsification_{predictions,metrics,summary,run}_v1.*"
+      ],
+      "claim_authorized": "Audited HPC falsification result for future_top3_entry_3y_label: Slurm job 7734742 completed 20/20 tasks with exit 0:0 and all G1-G5 gates passed. Full-control MLP NDCG@3: formula relation ~0.658672, no relation ~0.656976, shuffled relation ~0.654628. Temporal shuffle and sector shuffle degrade formula-relation MLP to ~0.613661 and ~0.578077. The relation signal is small but positive; time and sector structure are the stronger findings.",
+      "claim_forbidden": "Treating this audit as validation of a final dynamic GNN, automatic recommendation system, causal mechanism, policy action, or operational sector recommendation. Treating target_shuffle as the decisive placebo. Claiming the relation layer is already strong enough for deployment.",
+      "can_regenerate": true,
+      "notes": "Report copied locally from meso after audit. Bulky per-task HPC outputs remain under hpc_results and are not tracked."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
