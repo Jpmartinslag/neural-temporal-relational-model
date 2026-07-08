@@ -135,6 +135,9 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     triage around HERALD_32: temporal and sector shuffles degrade performance, formula
     relation gives a small MLP lift, and target shuffle is documented as a weak gate. No
     model/recommendation/causal promotion.
+32. `canonical/HERALD_34_FR_ZE2020_TOP3_ENTRY_HPC_SPEC.md` — HPC falsification spec for
+    the top-3 entry objective: 4 scenarios x 5 seeds, output isolation, and descriptive
+    G1-G5 audit. Spec only until results are collected and audited.
 
 ## Control Documents
 
