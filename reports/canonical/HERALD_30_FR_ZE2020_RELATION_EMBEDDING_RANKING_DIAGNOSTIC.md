@@ -202,6 +202,38 @@ Reading:
   no-relation control;
 - this blocks relation-feature integration into the ranking head for now.
 
+### Relation-only check
+
+A final local check isolated relation features from the strong temporal/sector
+features:
+
+```text
+target horizon:   3y
+seeds:            42 43 44
+head mode:        classification
+feature sets:     formula relation only, dense relation only, relation counts
+                  only, relation signal/stability only, all relation only
+control:          no_relation_features
+```
+
+Mean NDCG@3:
+
+| Feature set | Logistic top-3 | MLP top-3 |
+|---|---:|---:|
+| no relation features | 0.4601 | 0.5272 |
+| dense relation only | 0.3755 | 0.3749 |
+| relation counts only | 0.3752 | 0.3738 |
+| formula relation only | 0.3733 | 0.3741 |
+| relation signal/stability only | 0.3732 | 0.3751 |
+| all relation only | 0.3730 | 0.3747 |
+
+Reading:
+
+- relation features alone do not rank future top-3 sectors;
+- the issue is not simply feature interaction with the temporal/sector block;
+- the current relation layer is useful for exploration/visual interpretation,
+  but not yet for the ranking objective.
+
 ## 5. Interpretation
 
 The result is scientifically useful but not promotional:
@@ -225,6 +257,11 @@ current relation embeddings as a ranking input.
 The relation-gating triage strengthens that decision: the issue is not only
 that old or unstable edges are included. The current graph representation itself
 is not yet aligned with the ranking objective.
+
+The relation-only check further narrows the error: relation features do not
+carry enough top-3 ranking signal by themselves. A future relation objective must
+be trained or constructed directly around future top-3 movement, not around edge
+existence or descriptive compatibility.
 
 ## 6. Claim Policy
 
