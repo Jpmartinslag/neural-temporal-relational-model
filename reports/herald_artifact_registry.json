@@ -1174,6 +1174,26 @@
       "notes": "Tests: tests/test_fr_ze2020_dynamic_relation_encoder.py. Local smoke outputs were written to /tmp in the 2026-07-07 run, not tracked."
     },
     {
+      "id": "FR_ZE2020_RELATION_EMBEDDING_RANKING_DIAGNOSTIC_V1",
+      "phase": "relation embedding downstream diagnostic (2026-07-08)",
+      "path": "<output-dir>/fr_ze2020_relation_embedding_ranking_{predictions,metrics,summary,coverage,run}_v1.*",
+      "type": "model_diagnostic_output",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_30 downstream diagnostic, not a final model result) -- see reports/canonical/HERALD_30_FR_ZE2020_RELATION_EMBEDDING_RANKING_DIAGNOSTIC.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_relation_embedding_ranking.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv",
+        "data/processed/france_ze2020/fr_ze2020_dynamic_relation_encoder_node_embeddings_v1.csv"
+      ],
+      "claim_authorized": "Regenerable diagnostic comparing base formula ranking features, dense relation_graph_* embeddings, and shuffled dense-graph placebo. Local 5-seed smoke found weak non-random MLP signal versus shuffled dense graph, but dense graph embeddings remained below base formula features on both 1-year and 3-year NDCG@3.",
+      "claim_forbidden": "Treating this diagnostic as a validated dynamic GNN, validated recommendation system, causal mechanism, or evidence that relation embeddings improve ranking over base formula features. Treating any ranking row as an automatic sector recommendation or policy action.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_relation_embedding_ranking.py. Local outputs were written under /tmp/herald_relation_embedding_ranking_local_h1 and /tmp/herald_relation_embedding_ranking_local_h3, not tracked."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
