@@ -123,6 +123,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     Regression heads remain below base formula features; the 3-year MLP top-3 classifier
     shows dense graph above the shuffled-graph placebo, but the stricter no-relation control
     performs best. No HPC promotion, no model promotion, and no recommendation claim.
+29. `canonical/HERALD_31_FR_ZE2020_TOP3_ENTRY_TARGET_PREFLIGHT.md` — target preflight after
+    HERALD_30: defines and audits `future_top3_entry_{1,3}y_label`, confirming that the
+    3-year entry target has enough eligible rows for the next target-aligned relation model.
+    No model, no causal claim, and no recommendation claim.
 
 ## Control Documents
 

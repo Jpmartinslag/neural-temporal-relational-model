@@ -1194,6 +1194,25 @@
       "notes": "Tests: tests/test_fr_ze2020_relation_embedding_ranking.py. Local outputs were written under /tmp/herald_relation_embedding_ranking_local_h1 and /tmp/herald_relation_embedding_ranking_local_h3, not tracked."
     },
     {
+      "id": "FR_ZE2020_TOP3_ENTRY_TARGET_PREFLIGHT_V1",
+      "phase": "target preflight (2026-07-08)",
+      "path": "<output-dir>/fr_ze2020_top3_entry_target_preflight_{summary,by_year,run}_v1.*",
+      "type": "target_preflight_output",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_31 target preflight, not a model result) -- see reports/canonical/HERALD_31_FR_ZE2020_TOP3_ENTRY_TARGET_PREFLIGHT.md",
+      "generator_script": "src/modeles/france_ze2020/audit_fr_ze2020_top3_entry_target.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv"
+      ],
+      "claim_authorized": "Regenerable target preflight defining future_top3_entry_{1,3}y_label for ZE2020 x sector ranking. Local audit found 27,717 eligible rows for the 1-year target across 2014-2024 with 6,806 entry positives, and 22,677 eligible rows for the 3-year target across 2014-2022 with 5,700 entry positives. This authorizes a next target-aligned relation-model attempt around future top-3 entry, not another descriptive-edge ranking run.",
+      "claim_forbidden": "Treating the preflight as a trained model, dynamic-GNN validation, causal mechanism, automatic recommendation, policy action, or evidence that any relation layer improves ranking. Using 2023-2024 as 3-year target evaluation years before full future observations exist.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_top3_entry_target.py. The script writes nothing by default; optional outputs go only to the supplied --output-dir."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
