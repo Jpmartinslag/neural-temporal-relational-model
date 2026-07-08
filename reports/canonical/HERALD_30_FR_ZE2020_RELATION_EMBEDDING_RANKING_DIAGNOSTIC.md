@@ -139,6 +139,36 @@ Reading:
 - this is the first ranking-head result aligned with the project objective, but
   the margin is still too small for model promotion.
 
+### Added no-relation control
+
+Additional local control:
+
+```text
+outputs:          /tmp/herald_relation_embedding_ranking_classifier_h3_controls/
+target horizon:   3y
+seeds:            42 43 44 45 46
+head mode:        classification
+feature configs:  no_relation_features, base_formula_features,
+                  dense_graph_embeddings, shuffled_dense_graph_embeddings
+```
+
+Mean NDCG@3:
+
+| Config | Logistic top-3 | MLP top-3 |
+|---|---:|---:|
+| no relation features | 0.4601 | 0.5230 |
+| base formula | 0.4600 | 0.5047 |
+| dense graph | 0.4595 | 0.5076 |
+| shuffled dense graph | 0.4573 | 0.4907 |
+
+Reading:
+
+- the dense graph remains above shuffled dense graph;
+- however, removing relation features entirely performs best for the MLP
+  classifier (`0.5230` NDCG@3);
+- therefore the current relation/graph features are not yet a useful ranking
+  input, even though they contain non-random structure.
+
 ## 5. Interpretation
 
 The result is scientifically useful but not promotional:
@@ -153,10 +183,11 @@ downstream ranking representation.
 This means the next work should improve the representation objective or model
 architecture before any HPC-heavy claim.
 
-The classification-head smoke refines this reading: the 3-year
-`mlp_top3_classifier` does beat both the base and shuffled controls, but only by
-a small local margin. This is enough to justify a targeted follow-up, not enough
-to claim a validated architecture.
+The classification-head smoke initially looked promising because the 3-year
+`mlp_top3_classifier` beat the base and shuffled controls by a small local
+margin. The added no-relation control is stricter and changes the decision:
+removing relation features performs best. This blocks HPC promotion of the
+current relation embeddings as a ranking input.
 
 ## 6. Claim Policy
 
@@ -185,8 +216,10 @@ The useful next step is narrower:
 
 ```text
 1. keep dense graph embeddings as a representation input;
-2. focus on the 3-year top-3 classification objective;
-3. keep the shuffled graph placebo and base formula control;
-4. add one more control: no relation features;
-5. then prepare a small targeted HPC batch, not a broad promoted model run.
+2. do not launch the current relation-embedding ranking test to HPC as a model
+   promotion batch;
+3. diagnose why relation features reduce ranking performance versus no-relation
+   controls;
+4. rebuild a cleaner relation representation or apply feature selection/gating;
+5. only then rerun the 3-year top-3 classification objective.
 ```
