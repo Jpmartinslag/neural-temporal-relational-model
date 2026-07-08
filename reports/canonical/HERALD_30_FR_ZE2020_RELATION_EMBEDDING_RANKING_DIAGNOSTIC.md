@@ -169,6 +169,39 @@ Reading:
 - therefore the current relation/graph features are not yet a useful ranking
   input, even though they contain non-random structure.
 
+### Relation-gating triage
+
+A follow-up local triage tested whether filtering the dense graph by stability
+or recency fixes the issue:
+
+```text
+target horizon:   3y
+seeds:            42 43
+head mode:        classification
+tested filters:   all edges, recent only, age<=1, stability>=0.25,
+                  stability>=0.25 and age<=1, stability>=0.5 and age<=1
+base control:     no_relation_features
+```
+
+Mean NDCG@3, MLP top-3 classifier:
+
+| Feature set | NDCG@3 |
+|---|---:|
+| no relation features | 0.5283 |
+| all dense graph edges | 0.4987 |
+| stability >= 0.5 and age <= 1 | 0.4978 |
+| stability >= 0.25 and age <= 1 | 0.4933 |
+| stability >= 0.25, all ages | 0.4876 |
+| recent only | 0.4827 |
+| age <= 1 | 0.4782 |
+
+Reading:
+
+- simple stability/recency gating does not solve the problem;
+- the current dense graph features still reduce ranking quality versus the
+  no-relation control;
+- this blocks relation-feature integration into the ranking head for now.
+
 ## 5. Interpretation
 
 The result is scientifically useful but not promotional:
@@ -188,6 +221,10 @@ The classification-head smoke initially looked promising because the 3-year
 margin. The added no-relation control is stricter and changes the decision:
 removing relation features performs best. This blocks HPC promotion of the
 current relation embeddings as a ranking input.
+
+The relation-gating triage strengthens that decision: the issue is not only
+that old or unstable edges are included. The current graph representation itself
+is not yet aligned with the ranking objective.
 
 ## 6. Claim Policy
 
@@ -218,8 +255,8 @@ The useful next step is narrower:
 1. keep dense graph embeddings as a representation input;
 2. do not launch the current relation-embedding ranking test to HPC as a model
    promotion batch;
-3. diagnose why relation features reduce ranking performance versus no-relation
-   controls;
-4. rebuild a cleaner relation representation or apply feature selection/gating;
+3. keep relation signals available for exploration and dashboard interpretation;
+4. rebuild the relation objective so it is aligned with top-3 sector ranking, not
+   only edge existence/compatibility;
 5. only then rerun the 3-year top-3 classification objective.
 ```
