@@ -1213,6 +1213,25 @@
       "notes": "Tests: tests/test_fr_ze2020_top3_entry_target.py. The script writes nothing by default; optional outputs go only to the supplied --output-dir."
     },
     {
+      "id": "FR_ZE2020_TOP3_ENTRY_RANKING_SMOKE_V1",
+      "phase": "target-aligned ranking smoke (2026-07-08)",
+      "path": "<output-dir>/fr_ze2020_top3_entry_ranking_{predictions,metrics,summary,run}_v1.*",
+      "type": "model_diagnostic_output",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_32 local target-aligned smoke, not a model result) -- see reports/canonical/HERALD_32_FR_ZE2020_TOP3_ENTRY_RANKING_SMOKE.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_top3_entry_ranking_smoke.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv"
+      ],
+      "claim_authorized": "Regenerable local smoke for future_top3_entry_3y_label. Across decision years 2017-2022 and seeds 42-44, the MLP entry classifier with base formula relation features reached mean NDCG@3 ~0.6645 versus no_relation ~0.6533 and shuffled_relation ~0.6577. Logistic classifiers were essentially unchanged. This is a promising target-aligned diagnostic only and supports preparing deeper relation-model falsifications.",
+      "claim_forbidden": "Treating this smoke as a validated dynamic GNN, final model, causal mechanism, automatic recommendation, policy action, or proof that relation features are robustly useful under HPC/repeated falsification. Treating the output rows as recommended sectors.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_top3_entry_ranking_smoke.py. Local smoke outputs were written under /tmp/herald_top3_entry_ranking_smoke_h3, not tracked. MLP max-epoch convergence warnings remain a limitation of this smoke."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
