@@ -1251,6 +1251,26 @@
       "notes": "Tests: tests/test_fr_ze2020_top3_entry_falsifications.py. Local outputs were written under /tmp/herald_top3_entry_falsifications_h3_local, not tracked. MLP max-epoch convergence warnings remain a limitation of this local triage."
     },
     {
+      "id": "FR_ZE2020_TOP3_ENTRY_HPC_SPEC_V1",
+      "phase": "target-aligned HPC falsification spec (2026-07-08)",
+      "path": "hpc_results/fr_ze2020_top3_entry_<RUN_ID>/<scenario>/seed_<seed>/fr_ze2020_top3_entry_falsification_{predictions,metrics,summary,run}_v1.*",
+      "type": "hpc_model_diagnostic_output",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_34 HPC falsification spec, not a model result) -- see reports/canonical/HERALD_34_FR_ZE2020_TOP3_ENTRY_HPC_SPEC.md",
+      "generator_script": "hpc/france_ze2020_top3_entry/run_fr_ze2020_top3_entry_task.sh",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv",
+        "src/modeles/france_ze2020/run_fr_ze2020_top3_entry_falsifications.py"
+      ],
+      "claim_authorized": "Prepared HPC falsification batch for future_top3_entry_3y_label: 4 scenarios x 5 seeds, isolated outputs under hpc_results/fr_ze2020_top3_entry_<RUN_ID>/<scenario>/seed_<seed>/, and a descriptive G1-G5 audit script. Submission/result interpretation remains separate from this registry entry.",
+      "claim_forbidden": "Treating the HPC spec as a completed run, validated dynamic GNN, final model, causal mechanism, automatic recommendation, policy action, or proof that relation features improve ranking. Treating output rows as recommended sectors before a separate recommendation objective exists.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_top3_entry_hpc.py plus HERALD_33 tests. The submitter is dry-run unless --confirm-submit is passed."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
