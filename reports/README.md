@@ -127,6 +127,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     HERALD_30: defines and audits `future_top3_entry_{1,3}y_label`, confirming that the
     3-year entry target has enough eligible rows for the next target-aligned relation model.
     No model, no causal claim, and no recommendation claim.
+30. `canonical/HERALD_32_FR_ZE2020_TOP3_ENTRY_RANKING_SMOKE.md` — first target-aligned
+    local smoke for `future_top3_entry_3y_label`: MLP with formula relation features beats
+    both no-relation and shuffled-relation controls locally, but only as a small diagnostic
+    result. No dynamic-GNN/model/recommendation promotion.
 
 ## Control Documents
 
