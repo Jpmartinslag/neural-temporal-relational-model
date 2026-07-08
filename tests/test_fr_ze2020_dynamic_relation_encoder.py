@@ -7,6 +7,7 @@ import pytest
 from src.data.france_ze2020.build_fr_ze2020_dynamic_graph_inputs import NODES_OUT_PATH
 from src.modeles.france_ze2020.train_fr_ze2020_dynamic_relation_encoder import (
     CLAIM_STATUS,
+    build_dense_graph_signal_embeddings,
     build_relation_node_embeddings,
     run_dynamic_relation_encoder,
 )
@@ -79,6 +80,35 @@ def test_build_relation_node_embeddings_fills_missing_nodes_with_zero():
     assert source["relation_in_count"] == 0
     assert target["relation_in_count"] == 1
     assert target["relation_in_score_mean"] == pytest.approx(0.75)
+
+
+def test_build_dense_graph_signal_embeddings_covers_graph_connected_nodes():
+    nodes = pd.DataFrame(
+        {
+            "node_id": ["0001_A", "0002_A", "0003_A"],
+            "ze2020": ["0001", "0002", "0003"],
+            "sector_code": ["A", "A", "A"],
+            "decision_year": [2025, 2025, 2025],
+        }
+    )
+    graph_edges = pd.DataFrame(
+        {
+            "source_node_id": ["0001_A", "0002_A"],
+            "target_node_id": ["0002_A", "0001_A"],
+            "decision_year": [2025, 2025],
+            "edge_type": ["cross_ze_same_sector", "cross_ze_same_sector"],
+            "edge_weight": [0.4, 0.8],
+            "signal_strength": [0.5, 0.9],
+            "stability_score": [0.2, 0.7],
+        }
+    )
+    embeddings = build_dense_graph_signal_embeddings(nodes, graph_edges)
+    connected = embeddings[embeddings["node_id"].isin(["0001_A", "0002_A"])]
+    isolated = embeddings[embeddings["node_id"] == "0003_A"].iloc[0]
+    assert connected["relation_graph_embedding_available"].eq(1).all()
+    assert isolated["relation_graph_embedding_available"] == 0
+    assert embeddings["relation_graph_in_count"].sum() == 2
+    assert embeddings["relation_graph_out_count"].sum() == 2
 
 
 def test_dynamic_relation_encoder_has_no_forbidden_claims_or_inputs():
