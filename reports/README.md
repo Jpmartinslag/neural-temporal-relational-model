@@ -131,6 +131,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     local smoke for `future_top3_entry_3y_label`: MLP with formula relation features beats
     both no-relation and shuffled-relation controls locally, but only as a small diagnostic
     result. No dynamic-GNN/model/recommendation promotion.
+31. `canonical/HERALD_33_FR_ZE2020_TOP3_ENTRY_FALSIFICATION_TRIAGE.md` — local falsification
+    triage around HERALD_32: temporal and sector shuffles degrade performance, formula
+    relation gives a small MLP lift, and target shuffle is documented as a weak gate. No
+    model/recommendation/causal promotion.
 
 ## Control Documents
 
