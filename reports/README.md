@@ -118,6 +118,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     relation objective into a dynamic relation encoder: learned source-target scores and
     node-level ZE2020 x sector relation embeddings. Representation layer only, not a final
     model or recommendation claim.
+28. `canonical/HERALD_30_FR_ZE2020_RELATION_EMBEDDING_RANKING_DIAGNOSTIC.md` — downstream
+    diagnostic for HERALD_29 embeddings in the retrospective ZE2020 x sector ranking task.
+    The dense graph representation beats the shuffled-graph placebo slightly in the MLP head,
+    but remains below base formula features; no model promotion and no recommendation claim.
 
 ## Control Documents
 
