@@ -1165,9 +1165,10 @@
       "generator_script": "src/modeles/france_ze2020/train_fr_ze2020_dynamic_relation_encoder.py",
       "input_data": [
         "data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv",
-        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz"
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz",
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_expanding.csv.gz"
       ],
-      "claim_authorized": "Regenerable representation layer converting the passed HERALD_28 relation objective into learned source-target relation_score values and node-level ZE2020 x sector relation embeddings. Local smoke over 2022-2025 reproduces the relation objective: mean AP ~0.9545 and ROC-AUC ~0.9475 over 118 scored pairs. Node embeddings aggregate scores into in/out mean, max, top-3 mean, and count fields, deliberately excluding relation_label/sample_role/edge_state.",
+      "claim_authorized": "Regenerable representation layer converting the passed HERALD_28 relation objective into learned source-target relation_score values and node-level ZE2020 x sector relation embeddings. Local smoke over 2022-2025 reproduces the relation objective: mean AP ~0.9545 and ROC-AUC ~0.9475 over 118 scored pairs. Node embeddings aggregate learned scores into in/out mean, max, top-3 mean, and count fields, and add dense relation_graph_* graph-memory aggregates from audited expanding edge inputs. The embedding table deliberately excludes relation_label/sample_role/edge_state.",
       "claim_forbidden": "Treating the encoder as a validated dynamic GNN, causal mechanism, automatic recommendation, or final downstream model. Using relation labels from the scored edge file as downstream features; only the node_embeddings representation is intended for downstream prototype tests.",
       "can_regenerate": true,
       "notes": "Tests: tests/test_fr_ze2020_dynamic_relation_encoder.py. Local smoke outputs were written to /tmp in the 2026-07-07 run, not tracked."

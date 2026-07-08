@@ -29,6 +29,7 @@ Does a dynamic GNN improve the final territorial model?
 |---|---|
 | `fr_ze2020_dynamic_graph_nodes.csv` | node-year ZE2020 x sector features |
 | `fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz` | candidate typed relations |
+| `fr_ze2020_dynamic_graph_edges_expanding.csv.gz` | audited historical edge memory for dense node-year aggregates |
 | `train_fr_ze2020_dynamic_relation_learner.py` | rolling local compatibility learner |
 
 Configuration:
@@ -74,6 +75,29 @@ relation_out_count
 relation_embedding_available
 ```
 
+The learned relation scores are intentionally sparse because the objective
+scores controlled evaluation pairs, not every possible ZE2020 x sector node.
+The encoder therefore also exports dense graph-memory aggregates:
+
+```text
+relation_graph_in_weight_mean
+relation_graph_in_weight_abs_sum
+relation_graph_in_signal_mean
+relation_graph_in_stability_mean
+relation_graph_in_count
+relation_graph_out_weight_mean
+relation_graph_out_weight_abs_sum
+relation_graph_out_signal_mean
+relation_graph_out_stability_mean
+relation_graph_out_count
+relation_graph_in_<edge_type>_weight_mean
+relation_graph_embedding_available
+```
+
+These dense fields come from the audited dynamic graph edge memory and preserve
+the representation role of the layer. They are not learned labels and they are
+not recommendation scores.
+
 The node embedding table deliberately excludes `relation_label`, `sample_role`,
 and `edge_state`, so it can be used as a representation layer rather than a
 label leak.
@@ -93,13 +117,42 @@ Smoke over 2022-2025:
 These numbers reproduce the passed HERALD_28 relation objective. They are not a
 final model result; they confirm the encoder is a faithful representation layer.
 
+## 4b. Downstream Ranking Smoke
+
+Local diagnostic after adding dense graph-memory aggregates:
+
+| Coverage year | Learned sparse available | Dense graph available |
+|---:|---:|---:|
+| 2017-2021 | 0 / 2520 rows per year | 2520 / 2520 rows per year |
+| 2022 | 22 / 2520 | 2520 / 2520 |
+| 2023 | 22 / 2520 | 2520 / 2520 |
+| 2024 | 35 / 2520 | 2520 / 2520 |
+| 2025 | 80 / 2520 | 2520 / 2520 |
+
+The coverage problem is fixed for downstream representation tests. The ranking
+value is still mixed:
+
+| Target | Config | Ridge ΔNDCG@3 vs base | MLP ΔNDCG@3 vs base |
+|---|---|---:|---:|
+| 1y | learned sparse embeddings | +0.0001 | +0.0001 |
+| 1y | dense graph embeddings | -0.0177 | +0.0147 |
+| 1y | shuffled dense graph embeddings | -0.0135 | +0.0031 |
+| 3y | learned sparse embeddings | +0.0000 | +0.0182 |
+| 3y | dense graph embeddings | -0.0002 | +0.0054 |
+| 3y | shuffled dense graph embeddings | -0.0030 | -0.0190 |
+
+Interpretation: the dense representation is now usable as model input, but no
+downstream ranking claim is authorized yet. The next test must run repeated
+seeds and stronger placebos before any promotion.
+
 ## 5. Claim Policy
 
 Allowed:
 
 ```text
 HERALD now has a learned dynamic relation representation layer for ZE2020 x
-sector nodes, derived from a falsified relation objective.
+sector nodes, plus dense graph-memory aggregates derived from audited dynamic
+edge inputs.
 ```
 
 Forbidden:

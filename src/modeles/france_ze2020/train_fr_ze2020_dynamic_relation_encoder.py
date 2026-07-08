@@ -23,6 +23,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.data.france_ze2020.build_fr_ze2020_dynamic_graph_inputs import (  # noqa: E402
+    EXPANDING_EDGES_OUT_PATH,
     NODES_OUT_PATH,
 )
 from src.modeles.france_ze2020.train_fr_ze2020_dynamic_relation_learner import (  # noqa: E402
@@ -167,9 +168,79 @@ def build_relation_node_embeddings(nodes: pd.DataFrame, scored_edges: pd.DataFra
     return embeddings.sort_values(["decision_year", "node_id"]).reset_index(drop=True)
 
 
+def build_dense_graph_signal_embeddings(nodes: pd.DataFrame, graph_edges: pd.DataFrame) -> pd.DataFrame:
+    """Aggregate audited dynamic-graph edge memory into dense node-year signals.
+
+    The learned relation objective is intentionally sparse because it scores only
+    controlled evaluation pairs. These graph-memory aggregates keep a dense,
+    time-respecting representation available for downstream ranking without using labels.
+    """
+    base = nodes[["node_id", "decision_year"]].copy()
+    if graph_edges.empty:
+        base["relation_graph_embedding_available"] = 0
+        return base
+
+    edges = graph_edges.copy()
+    edges["edge_weight"] = edges["edge_weight"].astype(float)
+    edges["signal_strength"] = edges["signal_strength"].astype(float)
+    edges["stability_score"] = edges["stability_score"].astype(float)
+
+    incoming = (
+        edges.groupby(["target_node_id", "decision_year"])
+        .agg(
+            relation_graph_in_weight_mean=("edge_weight", "mean"),
+            relation_graph_in_weight_abs_sum=("edge_weight", lambda s: float(s.abs().sum())),
+            relation_graph_in_signal_mean=("signal_strength", "mean"),
+            relation_graph_in_stability_mean=("stability_score", "mean"),
+            relation_graph_in_count=("edge_weight", "size"),
+        )
+        .reset_index()
+        .rename(columns={"target_node_id": "node_id"})
+    )
+    outgoing = (
+        edges.groupby(["source_node_id", "decision_year"])
+        .agg(
+            relation_graph_out_weight_mean=("edge_weight", "mean"),
+            relation_graph_out_weight_abs_sum=("edge_weight", lambda s: float(s.abs().sum())),
+            relation_graph_out_signal_mean=("signal_strength", "mean"),
+            relation_graph_out_stability_mean=("stability_score", "mean"),
+            relation_graph_out_count=("edge_weight", "size"),
+        )
+        .reset_index()
+        .rename(columns={"source_node_id": "node_id"})
+    )
+
+    by_type = (
+        edges.pivot_table(
+            index=["target_node_id", "decision_year"],
+            columns="edge_type",
+            values="edge_weight",
+            aggfunc="mean",
+            fill_value=0.0,
+        )
+        .reset_index()
+        .rename(columns={"target_node_id": "node_id"})
+    )
+    by_type.columns = [
+        f"relation_graph_in_{col}_weight_mean" if col not in {"node_id", "decision_year"} else col
+        for col in by_type.columns
+    ]
+
+    dense = base.merge(incoming, on=["node_id", "decision_year"], how="left")
+    dense = dense.merge(outgoing, on=["node_id", "decision_year"], how="left")
+    dense = dense.merge(by_type, on=["node_id", "decision_year"], how="left")
+    relation_cols = [col for col in dense.columns if col.startswith("relation_graph_")]
+    dense[relation_cols] = dense[relation_cols].fillna(0.0)
+    dense["relation_graph_embedding_available"] = (
+        (dense["relation_graph_in_count"] > 0) | (dense["relation_graph_out_count"] > 0)
+    ).astype(int)
+    return dense.sort_values(["decision_year", "node_id"]).reset_index(drop=True)
+
+
 def run_dynamic_relation_encoder(
     nodes: pd.DataFrame,
     edges: pd.DataFrame,
+    dense_graph_edges: pd.DataFrame | None = None,
     eval_years: list[int] = DEFAULT_EVAL_YEARS,
     seed: int = 42,
     max_iter: int = 500,
@@ -191,6 +262,11 @@ def run_dynamic_relation_encoder(
     )
     scored_edges = _relation_score_edges(predictions)
     embeddings = build_relation_node_embeddings(nodes, scored_edges)
+    if dense_graph_edges is not None:
+        dense_embeddings = build_dense_graph_signal_embeddings(nodes, dense_graph_edges)
+        embeddings = embeddings.merge(dense_embeddings, on=["node_id", "decision_year"], how="left")
+        dense_cols = [col for col in embeddings.columns if col.startswith("relation_graph_")]
+        embeddings[dense_cols] = embeddings[dense_cols].fillna(0.0)
     metrics = _score_metrics(scored_edges)
     return scored_edges, embeddings, metrics
 
@@ -201,22 +277,25 @@ def main() -> None:
     )
     parser.add_argument("--nodes", type=Path, default=NODES_OUT_PATH)
     parser.add_argument("--edges", type=Path, default=DEFAULT_EDGES_PATH)
+    parser.add_argument("--dense-edges", type=Path, default=EXPANDING_EDGES_OUT_PATH)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--eval-years", nargs="+", type=int, default=DEFAULT_EVAL_YEARS)
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--max-iter", type=int, default=500)
     args = parser.parse_args()
 
-    joined_paths = "\n".join(str(path) for path in [args.nodes, args.edges])
+    joined_paths = "\n".join(str(path) for path in [args.nodes, args.edges, args.dense_edges])
     for stem in FORBIDDEN_INPUT_STEMS:
         if stem in joined_paths:
             raise ValueError(f"Forbidden legacy input referenced: {stem}")
 
     nodes = load_nodes(args.nodes)
     edges = load_edges(args.edges)
+    dense_edges = load_edges(args.dense_edges) if args.dense_edges else None
     scored_edges, embeddings, metrics = run_dynamic_relation_encoder(
         nodes=nodes,
         edges=edges,
+        dense_graph_edges=dense_edges,
         eval_years=args.eval_years,
         seed=args.seed,
         max_iter=args.max_iter,
@@ -236,6 +315,7 @@ def main() -> None:
             {
                 "nodes": str(args.nodes),
                 "edges": str(args.edges),
+                "dense_edges": str(args.dense_edges) if args.dense_edges else None,
                 "scored_edges": str(edges_path),
                 "node_embeddings": str(embeddings_path),
                 "metrics": str(metrics_path),
