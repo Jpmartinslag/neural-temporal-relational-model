@@ -1290,6 +1290,25 @@
       "notes": "Report copied locally from meso after audit. Bulky per-task HPC outputs remain under hpc_results and are not tracked."
     },
     {
+      "id": "FR_ZE2020_TOP3_ENTRY_LIFT_DIAGNOSTIC_V1",
+      "phase": "target-aligned relation-lift diagnostic (2026-07-08)",
+      "path": "<output-dir>/fr_ze2020_top3_entry_lift_{predictions,metrics,summary,run}_v1.*",
+      "type": "model_diagnostic_output",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_36 local relation-layer construction diagnostic, not a model result) -- see reports/canonical/HERALD_36_FR_ZE2020_TARGET_ALIGNED_RELATION_LIFT.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_top3_entry_lift_diagnostic.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv"
+      ],
+      "claim_authorized": "Regenerable local diagnostic for future_top3_entry_3y_label. Rolling relation-lift features are computed only from prior decision years. Across decision years 2017-2022 and seeds 42-44, base_plus_target_aligned_lifts reached MLP mean NDCG@3 ~0.664397 versus base_formula ~0.661768, no_relation ~0.653780, and shuffled_target_aligned_lifts ~0.650546. This is a small construction clue for the next relation-layer test.",
+      "claim_forbidden": "Treating this diagnostic as a validated dynamic GNN, final model, causal mechanism, automatic recommendation, policy action, or operational sector recommendation. Claiming robust relation-layer superiority before HPC falsification.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_top3_entry_lift_diagnostic.py plus top3 target/ranking smoke tests. Local outputs were written under /tmp/herald_top3_entry_lift_h3_local, not tracked. MLP max-epoch convergence warnings remain a limitation of this diagnostic."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",

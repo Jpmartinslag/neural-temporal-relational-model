@@ -142,6 +142,11 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     HERALD_34: 20/20 tasks completed, all G1-G5 gates passed. Temporal and sector
     shuffles degrade performance, and formula relation features add a small MLP signal.
     No final model, no causal claim, no automatic recommendation.
+34. `canonical/HERALD_36_FR_ZE2020_TARGET_ALIGNED_RELATION_LIFT.md` — local diagnostic
+    after HERALD_35: rolling prior-year relation-lift features aligned with
+    `future_top3_entry_3y_label` add a small MLP signal above no-relation, base formula,
+    and shuffled-lift controls. Construction clue only; no model promotion, causal claim,
+    or automatic recommendation.
 
 ## Control Documents
 
