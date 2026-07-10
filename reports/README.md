@@ -147,6 +147,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     `future_top3_entry_3y_label` add a small MLP signal above no-relation, base formula,
     and shuffled-lift controls. Construction clue only; no model promotion, causal claim,
     or automatic recommendation.
+35. `canonical/HERALD_37_FR_ZE2020_TOP3_ENTRY_LIFT_HPC_SPEC.md` — HPC falsification spec
+    for the HERALD_36 relation-lift hypothesis: 4 scenarios x 5 seeds, explicit G1-G6
+    descriptive gates, isolated outputs, and dry-run-safe submitter. Spec only until
+    results are collected and audited.
 
 ## Control Documents
 
