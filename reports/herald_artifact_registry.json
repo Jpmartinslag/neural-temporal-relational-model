@@ -1309,6 +1309,27 @@
       "notes": "Tests: tests/test_fr_ze2020_top3_entry_lift_diagnostic.py plus top3 target/ranking smoke tests. Local outputs were written under /tmp/herald_top3_entry_lift_h3_local, not tracked. MLP max-epoch convergence warnings remain a limitation of this diagnostic."
     },
     {
+      "id": "FR_ZE2020_TOP3_ENTRY_LIFT_HPC_SPEC_V1",
+      "phase": "target-aligned relation-lift HPC falsification spec (2026-07-10)",
+      "path": "hpc_results/fr_ze2020_top3_entry_lift_<RUN_ID>/<scenario>/seed_<seed>/fr_ze2020_top3_entry_lift_falsification_{predictions,metrics,summary,run}_v1.*",
+      "type": "hpc_model_diagnostic_output",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "none (HERALD_37 HPC falsification spec, not a model result) -- see reports/canonical/HERALD_37_FR_ZE2020_TOP3_ENTRY_LIFT_HPC_SPEC.md",
+      "generator_script": "hpc/france_ze2020_top3_entry_lift/run_fr_ze2020_top3_entry_lift_task.sh",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv",
+        "src/modeles/france_ze2020/run_fr_ze2020_top3_entry_lift_falsifications.py",
+        "src/modeles/france_ze2020/run_fr_ze2020_top3_entry_lift_diagnostic.py"
+      ],
+      "claim_authorized": "Prepared HPC falsification batch for the HERALD_36 target-aligned relation-lift hypothesis: 4 scenarios x 5 seeds, isolated outputs under hpc_results/fr_ze2020_top3_entry_lift_<RUN_ID>/<scenario>/seed_<seed>/, and descriptive G1-G6 audit gates. Submission/result interpretation remains separate from this registry entry.",
+      "claim_forbidden": "Treating the HPC spec as a completed run, validated dynamic GNN, final model, causal mechanism, automatic recommendation, policy action, or proof that relation-lift features improve ranking. Treating output rows as recommended sectors before a separate recommendation objective exists.",
+      "can_regenerate": true,
+      "notes": "Tests: tests/test_fr_ze2020_top3_entry_lift_hpc.py plus HERALD_36/HERALD_33 tests. The submitter is dry-run unless --confirm-submit is passed."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
