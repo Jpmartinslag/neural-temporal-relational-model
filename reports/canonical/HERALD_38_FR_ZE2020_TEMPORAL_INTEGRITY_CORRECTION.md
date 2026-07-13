@@ -133,3 +133,24 @@ now permutes the complete future-target bundle together (future value, count/sha
 rank, top-3 label, and availability mask). Only the ten target-shuffle tasks are invalid
 and require rerun; the full-control, temporal-shuffle, and sector-shuffle tasks remain
 valid negative evidence.
+
+### Corrected target-shuffle rerun
+
+Jobs `7755853` (top-3) and `7755854` (relation-lift) reran only array tasks `15-19`,
+covering seeds 42--46 for the corrected `target_shuffle`. All 10 tasks completed with
+exit `0:0`; logs contain no fatal error and all required prediction, metric, summary,
+and run-metadata files are present. The corrected outputs were combined for audit with
+the 30 unaffected tasks from jobs `7755806` and `7755807`.
+
+The target control now behaves as intended. For the top-3 base-formula MLP, mean NDCG
+falls from `0.608817` under full control to `0.419905` after target shuffle; full control
+wins all 20 paired seed-year comparisons (mean delta `+0.188912`). For the relation-lift
+MLP, mean NDCG falls from `0.594127` to `0.333430`; full control wins 19/20 paired
+comparisons (mean delta `+0.260697`). The lift auditor's target-shuffle gate therefore
+passes.
+
+This establishes that the evaluated task contains learnable target-aligned signal and
+that the corrected target placebo destroys much of it. It does not establish that the
+current relation features add useful information: lift still fails against no-relation,
+base-formula, and shuffled-lift controls, while temporal shuffle still does not degrade
+performance. The relation layer remains exploratory and is not promoted.
