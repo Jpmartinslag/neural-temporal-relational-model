@@ -19,6 +19,7 @@ SUMMARY_NAME = "fr_ze2020_top3_entry_lift_falsification_summary_v1.csv"
 RUN_NAME = "fr_ze2020_top3_entry_lift_falsification_run_v1.json"
 EXPECTED_SCENARIOS = ["full_control", "temporal_shuffle", "sector_shuffle", "target_shuffle"]
 EXPECTED_SEEDS = [42, 43, 44, 45, 46]
+MIN_PAIRED_WIN_RATE = 0.60
 FORBIDDEN_COLUMNS = {
     "recommendation",
     "recommended" + "_action",
@@ -73,15 +74,45 @@ def _load_task_metrics(task_dir: Path) -> pd.DataFrame:
     return metrics
 
 
-def _mean_ndcg(summary: pd.DataFrame, scenario: str, feature_config: str, model: str) -> float | None:
-    frame = summary[
-        (summary["falsification_scenario"] == scenario)
-        & (summary["feature_config"] == feature_config)
-        & (summary["model"] == model)
-    ]
-    if frame.empty:
-        return None
-    return float(frame["mean_ndcg_at_k"].iloc[0])
+def _paired_comparison(
+    metrics: pd.DataFrame,
+    *,
+    left_scenario: str,
+    left_config: str,
+    right_scenario: str,
+    right_config: str,
+) -> dict[str, float | int]:
+    model = "mlp_entry_classifier"
+    keys = ["seed"]
+    if "eval_year" in metrics.columns:
+        keys.append("eval_year")
+    left = metrics[
+        (metrics["falsification_scenario"] == left_scenario)
+        & (metrics["feature_config"] == left_config)
+        & (metrics["model"] == model)
+    ][keys + ["ndcg_at_k"]].rename(columns={"ndcg_at_k": "left_ndcg"})
+    right = metrics[
+        (metrics["falsification_scenario"] == right_scenario)
+        & (metrics["feature_config"] == right_config)
+        & (metrics["model"] == model)
+    ][keys + ["ndcg_at_k"]].rename(columns={"ndcg_at_k": "right_ndcg"})
+    paired = left.merge(right, on=keys, how="inner", validate="one_to_one")
+    delta = paired["left_ndcg"] - paired["right_ndcg"]
+    return {
+        "n_pairs": int(len(paired)),
+        "wins": int((delta > 0).sum()),
+        "win_rate": float((delta > 0).mean()) if len(delta) else 0.0,
+        "mean_delta": float(delta.mean()) if len(delta) else float("nan"),
+        "median_delta": float(delta.median()) if len(delta) else float("nan"),
+    }
+
+
+def _passes_paired_gate(result: dict[str, float | int]) -> bool:
+    return bool(
+        result["n_pairs"]
+        and result["win_rate"] >= MIN_PAIRED_WIN_RATE
+        and result["mean_delta"] > 0
+    )
 
 
 def audit_run(run_dir: Path) -> dict:
@@ -104,32 +135,64 @@ def audit_run(run_dir: Path) -> dict:
         .reset_index(drop=True)
     )
 
-    full_lift = _mean_ndcg(grouped, "full_control", "base_plus_target_aligned_lifts", "mlp_entry_classifier")
-    full_formula = _mean_ndcg(grouped, "full_control", "base_formula_features", "mlp_entry_classifier")
-    full_no_relation = _mean_ndcg(grouped, "full_control", "no_relation_features", "mlp_entry_classifier")
-    full_shuffled_lift = _mean_ndcg(grouped, "full_control", "shuffled_target_aligned_lifts", "mlp_entry_classifier")
-    temporal_lift = _mean_ndcg(grouped, "temporal_shuffle", "base_plus_target_aligned_lifts", "mlp_entry_classifier")
-    sector_lift = _mean_ndcg(grouped, "sector_shuffle", "base_plus_target_aligned_lifts", "mlp_entry_classifier")
+    comparisons = {
+        "lift_vs_no_relation": _paired_comparison(
+            metrics,
+            left_scenario="full_control",
+            left_config="base_plus_target_aligned_lifts",
+            right_scenario="full_control",
+            right_config="no_relation_features",
+        ),
+        "lift_vs_base_formula": _paired_comparison(
+            metrics,
+            left_scenario="full_control",
+            left_config="base_plus_target_aligned_lifts",
+            right_scenario="full_control",
+            right_config="base_formula_features",
+        ),
+        "lift_vs_shuffled_lift": _paired_comparison(
+            metrics,
+            left_scenario="full_control",
+            left_config="base_plus_target_aligned_lifts",
+            right_scenario="full_control",
+            right_config="shuffled_target_aligned_lifts",
+        ),
+        "full_vs_temporal_shuffle": _paired_comparison(
+            metrics,
+            left_scenario="full_control",
+            left_config="base_plus_target_aligned_lifts",
+            right_scenario="temporal_shuffle",
+            right_config="base_plus_target_aligned_lifts",
+        ),
+        "full_vs_sector_shuffle": _paired_comparison(
+            metrics,
+            left_scenario="full_control",
+            left_config="base_plus_target_aligned_lifts",
+            right_scenario="sector_shuffle",
+            right_config="base_plus_target_aligned_lifts",
+        ),
+        "full_vs_target_shuffle": _paired_comparison(
+            metrics,
+            left_scenario="full_control",
+            left_config="base_plus_target_aligned_lifts",
+            right_scenario="target_shuffle",
+            right_config="base_plus_target_aligned_lifts",
+        ),
+    }
 
     gates = {
         "G1_complete_outputs": len(task_dirs) == len(metrics_frames),
-        "G2_lift_beats_no_relation_mlp": (
-            full_lift is not None and full_no_relation is not None and full_lift > full_no_relation
-        ),
-        "G3_lift_beats_base_formula_mlp": (
-            full_lift is not None and full_formula is not None and full_lift > full_formula
-        ),
-        "G4_lift_beats_shuffled_lift_mlp": (
-            full_lift is not None and full_shuffled_lift is not None and full_lift > full_shuffled_lift
-        ),
+        "G2_lift_beats_no_relation_mlp": _passes_paired_gate(comparisons["lift_vs_no_relation"]),
+        "G3_lift_beats_base_formula_mlp": _passes_paired_gate(comparisons["lift_vs_base_formula"]),
+        "G4_lift_beats_shuffled_lift_mlp": _passes_paired_gate(comparisons["lift_vs_shuffled_lift"]),
         "G5_temporal_and_sector_shuffle_degrade_lift_mlp": (
-            full_lift is not None
-            and temporal_lift is not None
-            and sector_lift is not None
-            and temporal_lift < full_lift
-            and sector_lift < full_lift
+            _passes_paired_gate(comparisons["full_vs_temporal_shuffle"])
+            and _passes_paired_gate(comparisons["full_vs_sector_shuffle"])
         ),
         "G6_output_separation": True,
+        "G7_target_shuffle_degrades_lift_mlp": _passes_paired_gate(
+            comparisons["full_vs_target_shuffle"]
+        ),
     }
 
     return {
@@ -138,6 +201,7 @@ def audit_run(run_dir: Path) -> dict:
         "n_task_dirs": len(task_dirs),
         "n_metric_rows": int(len(metrics)),
         "gates": gates,
+        "paired_comparisons": comparisons,
         "model_summary": grouped.to_dict(orient="records"),
         "claim_status": "top3_entry_lift_hpc_audit_not_recommendation_not_causal",
     }

@@ -17,8 +17,8 @@
       "REGENERABLE",
       "ARCHIVED"
     ],
-    "last_updated": "2026-06-18",
-    "last_decision": "DEC-068 (consolidation pass: schema-drift fields backfilled for entries added since DEC-038; see HERALD_CURRENT_STATE.md finding)"
+    "last_updated": "2026-07-13",
+    "last_decision": "HERALD_38 temporal integrity correction (no new scientific claim or HPC authorization)"
   },
   "artifacts": [
     {
@@ -1008,9 +1008,49 @@
         "data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv"
       ],
       "claim_authorized": "6,215 rows across 4 deterministic relation families extracted/reorganized from ALREADY-COMPUTED outputs (no new training, no new model): ze_to_ze_similarity (5,769, reconstructed as an explicit edge list from build_fr_ze2020_relational_model_ready_panel.py's similarity_matrix_for_year, which previously only ever exported aggregated neighbor means), ze_to_ze_same_sector_signal (102) and intra_ze_sector_interaction (64) (both read directly from fr_ze2020_sector_graph_relation_signals_v1.csv), ze_sector_specialization (280, one row per zone, modal dominant sector across the panel). stability_score means YEAR-recurrence, not seed-to-seed model stability -- all 4 families are deterministic given the input panels (no MLP/random component), which is also why HPC job 7498752's gate G4 found these specific signals identical across all 5 seeds. Two requested families (sector_to_sector_comovement, temporal_precedence_signal) are explicitly NOT populated -- documented gaps (different grain / no test run yet), not fabricated. Every row claim_status=exploratory_association_not_causal, every row carries a non-empty non-causality caveat (verified by test). Companion file fr_ze2020_exploratory_relation_examples.csv (20 curated rows, presentation schema, plain_language_interpretation copied verbatim from this file) covered by the same claim.",
-      "claim_forbidden": "Citing this as evidence that the relational/neural/graph candidates improve forecasting -- HPC job 7498752 (5 seeds) found the opposite (gate G3 FAIL for all 3 candidates, HERALD_19); this file does not change that finding, it deliberately stops asking the predictive question. Citing rank_within_family (ranked by signal_strength alone) as if it were ranked by reliability -- the highest-signal_strength ze_to_ze_similarity rows are mostly one-year spikes with low stability_score, documented explicitly in HERALD_20 section 2. Any causal claim, any automatic recommendation, any policy/investment ranking (none exists, verified by test -- no recommendation/recommended_action/policy_action column anywhere). Pooling ze_to_ze_similarity and sector_to_sector relations from the unrelated, country-aggregate Phase 7 layer into this ZE-grain table without a grain-reconciliation decision.",
+      "claim_forbidden": "Using this retrospective full-window table as an as-of-time training, ranking, or dynamic-graph input: year_end and stability_score summarize observations beyond earlier decision years. Citing this as evidence that relational/neural/graph candidates improve forecasting. Treating rank_within_family as reliability, making any causal claim, automatic recommendation, or policy/investment ranking. Pooling unrelated country-aggregate Phase 7 relations into this ZE-grain table without a grain-reconciliation decision.",
       "can_regenerate": true,
       "notes": "28/28 new tests pass (15 tests/test_fr_ze2020_exploratory_relation_signals.py + 13 tests/test_fr_ze2020_exploratory_relation_examples.py). Deterministic: rebuilding twice from the same inputs produces an identical table (verified by test)."
+    },
+    {
+      "id": "FR_ZE2020_TEMPORAL_RELATION_SIGNALS_V1",
+      "phase": "temporal integrity correction (2026-07-13)",
+      "path": "data/processed/france_ze2020/fr_ze2020_temporal_relation_signals.csv.gz",
+      "type": "model_input_relation_snapshots",
+      "status": "REGENERABLE",
+      "tracked_in_git": true,
+      "size_bytes": 4483428,
+      "sha256_prefix": "d9d7917a7ffaa415c5c1",
+      "origin_decision": "HERALD_38 temporal integrity correction",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_temporal_relation_signals.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv",
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv"
+      ],
+      "claim_authorized": "Leakage-safe as-of-time relation snapshots: 226,980 rows for 2017-2025 across ze_similarity, cross_ze_same_sector, and intra_ze_sector. Every decision-year snapshot computes recurrence and stability using observations available only through that year.",
+      "claim_forbidden": "Treating association strength as causal influence, automatic recommendation, or validated model performance. Replacing these snapshots with the retrospective exploratory relation table in any model path.",
+      "can_regenerate": true,
+      "notes": "Truncation-invariance tests cover relation construction and recurrence denominators. See tests/test_fr_ze2020_temporal_relation_signals.py."
+    },
+    {
+      "id": "FR_ZE2020_SECTOR_RANKING_PANEL_V1",
+      "phase": "sector ranking input correction (2026-07-13)",
+      "path": "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv",
+      "type": "model_input_panel",
+      "status": "REGENERABLE",
+      "tracked_in_git": true,
+      "size_bytes": 15716547,
+      "sha256_prefix": "3882ce855b820259dd83",
+      "origin_decision": "HERALD_24 corrected by HERALD_38",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_sector_ranking_panel.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv",
+        "data/processed/france_ze2020/fr_ze2020_temporal_relation_signals.csv.gz"
+      ],
+      "claim_authorized": "Canonical 35,280-row ZE2020 x A10 sector x year ranking panel. Relation features use as-of-time snapshots. Future labels are evaluation fields and become training-eligible only when decision_year + target_horizon <= eval_year.",
+      "claim_forbidden": "Training on future labels before their horizon has matured, treating output scores as recommendations, or citing pre-HERALD_38 ranking results.",
+      "can_regenerate": true,
+      "notes": "See tests/test_fr_ze2020_sector_ranking.py and tests/test_fr_ze2020_sector_ranking_falsifications.py."
     },
     {
       "id": "FR_ZE2020_DYNAMIC_GRAPH_INPUTS_V1",
@@ -1019,18 +1059,18 @@
       "type": "model_input_bundle",
       "status": "REGENERABLE",
       "tracked_in_git": true,
-      "size_bytes": 36623117,
-      "sha256_prefix": "ce23c59ee2523b01beab",
+      "size_bytes": 97700904,
+      "sha256_prefix": "8bab0189d2773ae9a464 / 8ad787cf74cba67eaed1 / dc933722ad68cdbfb3e5",
       "origin_decision": "none (construction layer for HERALD_25, not a model result) -- see reports/canonical/HERALD_25_FR_ZE2020_DYNAMIC_GRAPH_MODEL_SPEC.md",
       "generator_script": "src/data/france_ze2020/build_fr_ze2020_dynamic_graph_inputs.py",
       "input_data": [
         "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv",
-        "data/processed/france_ze2020/fr_ze2020_exploratory_relation_signals.csv"
+        "data/processed/france_ze2020/fr_ze2020_temporal_relation_signals.csv.gz"
       ],
-      "claim_authorized": "Dynamic graph input bundle for the HERALD_25 prototype path: 35,280 node-year rows (280 ZE2020 x 9 A10 sectors x 14 decision years), 52,087 instant typed exploratory edges, 258,460 expanding edge-memory rows, and 14 split rows. Implemented edge types are cross_ze_same_sector, intra_ze_sector, and ze_similarity. The expanding edge-memory file keeps a relation observed at source_relation_year_end=s available for later decision years t>=s with edge_weight=signal_strength*stability_score/(1+edge_age), edge_age=t-s, edge_memory_mode=expanding_stability_decay. Labels future_growth_1y/future_growth_3y remain present for evaluation but are explicitly separate from NODE_FEATURE_COLUMNS. ze_sector_specialization is deliberately not converted into an edge because it is a node/sector attribute candidate, not a relation between two nodes.",
+      "claim_authorized": "Corrected dynamic graph input bundle: 35,280 node-year rows, 226,980 instant typed edges, 661,613 expanding-memory rows, and 14 split rows. Implemented edge types are cross_ze_same_sector, intra_ze_sector, and ze_similarity. Each edge snapshot is constructed from information available through its decision year.",
       "claim_forbidden": "Treating this bundle as a trained model, a validated dynamic GNN, or evidence that HERALD beats baselines. Treating edge_weight/signal_strength as causal influence. Treating any row as an automatic recommendation, policy action, or investment signal. Reintroducing dynamic_stgnn_feature_panel* or graph_adjacency_core_v0/mobility_v0 as inputs without a new provenance decision.",
       "can_regenerate": true,
-      "notes": "Tests: tests/test_fr_ze2020_dynamic_graph_inputs.py. Builder reads only the ranking panel and exploratory relation signals. No model training is performed."
+      "notes": "Tests: tests/test_fr_ze2020_dynamic_graph_inputs.py. Builder reads only the corrected ranking panel and temporal relation snapshots. Pre-HERALD_38 graph results are invalid for claims pending rerun."
     },
     {
       "id": "FR_ZE2020_DYNAMIC_EDGE_VARIANTS_V1",
@@ -1046,10 +1086,10 @@
       "input_data": [
         "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_expanding.csv.gz"
       ],
-      "claim_authorized": "HERALD_26 edge-variant bundle for the France ZE2020 dynamic graph. Contains pruned_stable (31,551 edges), stateful (258,460), stateful_sector_only (637), stateful_topk (107,275), stateful_sector_topk (637), feature_compatible (258,460), feature_compatible_topk (107,275), learned_stateful (258,460), learned_stateful_topk (107,275), learned_sector_only (637), learned_sector_topk (637), precision_stateful (129,622), precision_stateful_topk (51,005), precision_sector_only (235), and precision_sector_topk (235). Feature-compatible variants gate stateful edges using only known decision-year node features. Learned variants use a rolling-origin balanced logistic edge gate trained only on years prior to the decision year. Precision variants use rolling historical edge-family precision trained only on years prior to the decision year. Construction/audit plus local smoke only; the bundle is prepared for HPC falsification, not promoted as a model claim.",
+      "claim_authorized": "Regenerated HERALD_26 edge-variant bundle from the corrected 661,613-row expanding graph: pruned_stable 113,362; stateful 661,613; stateful_sector_only 327,632; stateful_topk 113,381; stateful_sector_topk 111,810; feature_compatible 661,613; feature_compatible_topk 113,381; learned_stateful 661,613; learned_stateful_topk 113,381; learned_sector_only 327,632; learned_sector_topk 111,810; precision_stateful 334,707; precision_stateful_topk 53,204; precision_sector_only 167,119; precision_sector_topk 53,183. Construction/falsification inputs only.",
       "claim_forbidden": "Treating these files as proof that graph edges improve ranking or forecasting before the HERALD_26 HPC falsification batch is audited. Treating pruned/stateful/feature-compatible/learned/precision edges as causal economic influence. Treating pruning thresholds, state multipliers, feature-compatibility scores, learned_edge_gate, or historical_precision_lift as optimized or validated. Any automatic recommendation, policy action, or investment signal.",
       "can_regenerate": true,
-      "notes": "Tests: tests/test_fr_ze2020_dynamic_edge_variants.py. Companion audit-only script: src/modeles/france_ze2020/audit_fr_ze2020_dynamic_edge_variants.py. Local smoke pruned_stable: full_control NDCG@K 0.5078 Ridge / 0.4786 MLP versus no_edges 0.5250 Ridge / 0.5029 MLP. HPC batch 20260702_121925: sector-only MLP variants improved versus no_edges but failed random_edge_weights; Ridge did not beat no_edges. Precision-sector-only integration smoke for 2024 completed without schema/runtime errors. HPC batch scripts: hpc/france_ze2020_dynamic_graph/run_fr_ze2020_edge_variant_falsification_*. These files do not overwrite HERALD_25 instant or expanding edge inputs."
+      "notes": "Tests: tests/test_fr_ze2020_dynamic_edge_variants.py. All local/HPC findings produced from the prior edge bundle are invalid for claims pending rerun on these regenerated inputs."
     },
     {
       "id": "FR_ZE2020_DYNAMIC_RELATION_LEARNER_SMOKE_V1",
@@ -1217,7 +1257,7 @@
       "phase": "target-aligned ranking smoke (2026-07-08)",
       "path": "<output-dir>/fr_ze2020_top3_entry_ranking_{predictions,metrics,summary,run}_v1.*",
       "type": "model_diagnostic_output",
-      "status": "REGENERABLE",
+      "status": "INVALID_FOR_CLAIMS",
       "tracked_in_git": false,
       "size_bytes": null,
       "sha256_prefix": null,
@@ -1226,7 +1266,7 @@
       "input_data": [
         "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv"
       ],
-      "claim_authorized": "Regenerable local smoke for future_top3_entry_3y_label. Across decision years 2017-2022 and seeds 42-44, the MLP entry classifier with base formula relation features reached mean NDCG@3 ~0.6645 versus no_relation ~0.6533 and shuffled_relation ~0.6577. Logistic classifiers were essentially unchanged. This is a promising target-aligned diagnostic only and supports preparing deeper relation-model falsifications.",
+      "claim_authorized": "Historical local smoke retained for traceability only. Its reported metrics are invalid for claims because 3-year labels were admitted before their outcome horizon had matured.",
       "claim_forbidden": "Treating this smoke as a validated dynamic GNN, final model, causal mechanism, automatic recommendation, policy action, or proof that relation features are robustly useful under HPC/repeated falsification. Treating the output rows as recommended sectors.",
       "can_regenerate": true,
       "notes": "Tests: tests/test_fr_ze2020_top3_entry_ranking_smoke.py. Local smoke outputs were written under /tmp/herald_top3_entry_ranking_smoke_h3, not tracked. MLP max-epoch convergence warnings remain a limitation of this smoke."
@@ -1236,7 +1276,7 @@
       "phase": "target-aligned falsification triage (2026-07-08)",
       "path": "<output-dir>/fr_ze2020_top3_entry_falsification_{predictions,metrics,summary,run}_v1.*",
       "type": "model_diagnostic_output",
-      "status": "REGENERABLE",
+      "status": "INVALID_FOR_CLAIMS",
       "tracked_in_git": false,
       "size_bytes": null,
       "sha256_prefix": null,
@@ -1245,7 +1285,7 @@
       "input_data": [
         "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv"
       ],
-      "claim_authorized": "Regenerable local falsification triage for future_top3_entry_3y_label. In a 2-seed local run over 2017-2022 with max_epochs=40, the MLP full-control formula-relation score reached mean NDCG@3 ~0.6602 versus no_relation ~0.6563 and shuffled_relation ~0.6588; temporal_shuffle and sector_shuffle degraded performance (~0.6131 and ~0.5870 for formula-relation MLP). Target_shuffle remained close to full control and is explicitly classified as a weak gate, not decisive validation.",
+      "claim_authorized": "Historical falsification triage retained for traceability only. Metrics are invalid for claims after the horizon-aware label-maturity correction.",
       "claim_forbidden": "Treating this triage as a validated dynamic GNN, final model, causal mechanism, automatic recommendation, policy action, or proof of robust relation usefulness. Using target_shuffle alone as a decisive placebo. Treating output rows as recommended sectors.",
       "can_regenerate": true,
       "notes": "Tests: tests/test_fr_ze2020_top3_entry_falsifications.py. Local outputs were written under /tmp/herald_top3_entry_falsifications_h3_local, not tracked. MLP max-epoch convergence warnings remain a limitation of this local triage."
@@ -1255,7 +1295,7 @@
       "phase": "target-aligned HPC falsification spec (2026-07-08)",
       "path": "hpc_results/fr_ze2020_top3_entry_<RUN_ID>/<scenario>/seed_<seed>/fr_ze2020_top3_entry_falsification_{predictions,metrics,summary,run}_v1.*",
       "type": "hpc_model_diagnostic_output",
-      "status": "REGENERABLE",
+      "status": "SUPERSEDED",
       "tracked_in_git": false,
       "size_bytes": null,
       "sha256_prefix": null,
@@ -1275,7 +1315,7 @@
       "phase": "target-aligned HPC falsification audit (2026-07-08)",
       "path": "hpc_results/fr_ze2020_top3_entry_20260708_174219/fr_ze2020_top3_entry_hpc_audit_report.json",
       "type": "hpc_audit_report",
-      "status": "REGENERABLE",
+      "status": "INVALID_FOR_CLAIMS",
       "tracked_in_git": false,
       "size_bytes": null,
       "sha256_prefix": null,
@@ -1284,7 +1324,7 @@
       "input_data": [
         "hpc_results/fr_ze2020_top3_entry_20260708_174219/<scenario>/seed_<seed>/fr_ze2020_top3_entry_falsification_{predictions,metrics,summary,run}_v1.*"
       ],
-      "claim_authorized": "Audited HPC falsification result for future_top3_entry_3y_label: Slurm job 7734742 completed 20/20 tasks with exit 0:0 and all G1-G5 gates passed. Full-control MLP NDCG@3: formula relation ~0.658672, no relation ~0.656976, shuffled relation ~0.654628. Temporal shuffle and sector shuffle degrade formula-relation MLP to ~0.613661 and ~0.578077. The relation signal is small but positive; time and sector structure are the stronger findings.",
+      "claim_authorized": "Job 7734742 completion remains a historical execution fact (20/20 tasks, exit 0:0). Its scientific metrics and gates are invalid for claims because the run used immature 3-year training labels.",
       "claim_forbidden": "Treating this audit as validation of a final dynamic GNN, automatic recommendation system, causal mechanism, policy action, or operational sector recommendation. Treating target_shuffle as the decisive placebo. Claiming the relation layer is already strong enough for deployment.",
       "can_regenerate": true,
       "notes": "Report copied locally from meso after audit. Bulky per-task HPC outputs remain under hpc_results and are not tracked."
@@ -1294,7 +1334,7 @@
       "phase": "target-aligned relation-lift diagnostic (2026-07-08)",
       "path": "<output-dir>/fr_ze2020_top3_entry_lift_{predictions,metrics,summary,run}_v1.*",
       "type": "model_diagnostic_output",
-      "status": "REGENERABLE",
+      "status": "INVALID_FOR_CLAIMS",
       "tracked_in_git": false,
       "size_bytes": null,
       "sha256_prefix": null,
@@ -1303,7 +1343,7 @@
       "input_data": [
         "data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv"
       ],
-      "claim_authorized": "Regenerable local diagnostic for future_top3_entry_3y_label. Rolling relation-lift features are computed only from prior decision years. Across decision years 2017-2022 and seeds 42-44, base_plus_target_aligned_lifts reached MLP mean NDCG@3 ~0.664397 versus base_formula ~0.661768, no_relation ~0.653780, and shuffled_target_aligned_lifts ~0.650546. This is a small construction clue for the next relation-layer test.",
+      "claim_authorized": "Historical local diagnostic retained for traceability only. Metrics are invalid for claims because rolling lift history and training admitted labels before the 3-year outcome horizon matured.",
       "claim_forbidden": "Treating this diagnostic as a validated dynamic GNN, final model, causal mechanism, automatic recommendation, policy action, or operational sector recommendation. Claiming robust relation-layer superiority before HPC falsification.",
       "can_regenerate": true,
       "notes": "Tests: tests/test_fr_ze2020_top3_entry_lift_diagnostic.py plus top3 target/ranking smoke tests. Local outputs were written under /tmp/herald_top3_entry_lift_h3_local, not tracked. MLP max-epoch convergence warnings remain a limitation of this diagnostic."
@@ -1313,7 +1353,7 @@
       "phase": "target-aligned relation-lift HPC falsification spec (2026-07-10)",
       "path": "hpc_results/fr_ze2020_top3_entry_lift_<RUN_ID>/<scenario>/seed_<seed>/fr_ze2020_top3_entry_lift_falsification_{predictions,metrics,summary,run}_v1.*",
       "type": "hpc_model_diagnostic_output",
-      "status": "REGENERABLE",
+      "status": "SUPERSEDED",
       "tracked_in_git": false,
       "size_bytes": null,
       "sha256_prefix": null,

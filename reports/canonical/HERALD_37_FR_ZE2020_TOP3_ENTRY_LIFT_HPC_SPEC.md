@@ -1,8 +1,12 @@
 # HERALD 37 -- France ZE2020 top-3 entry relation-lift HPC spec
 
-Status: HPC_SPEC_READY
+Status: SUPERSEDED_BY_HERALD_38
 
 Date: 2026-07-10
+
+This specification is retained for history. It used the pre-correction label split and
+retrospective relation input. A future HPC specification must be registered separately
+after the corrected local smoke.
 
 ## 1. Purpose
 

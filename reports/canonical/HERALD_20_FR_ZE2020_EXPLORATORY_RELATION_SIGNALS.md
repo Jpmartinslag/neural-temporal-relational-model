@@ -6,6 +6,13 @@ controlada por baselines (HERALD_18); o foco agora é a estrutura relacional
 território/setor que o bloco neural/grafo já calcula, organizada para leitura por um
 especialista.
 
+**Correction 2026-07-13 (HERALD_38):** this file is a retrospective interpretation
+export. Its `year_end` and `stability_score` summarize the complete observed window and
+therefore it is **forbidden as model input**. Leakage-safe training now reads
+`fr_ze2020_temporal_relation_signals.csv.gz`, which preserves one as-of-time snapshot per
+relation and decision year. The dashboard/interpretation role of this document is
+unchanged.
+
 **Por que agora:** o job HPC `7498752` (5 seeds, HERALD_19) confirmou, de forma robusta
 (não só num smoke de seed única), que nenhum dos 3 candidatos relacionais/neurais
 (`ridge_relational`, `mlp_relational`, `graph_mlp`) bate seu baseline em WMAPE — 0 de 5

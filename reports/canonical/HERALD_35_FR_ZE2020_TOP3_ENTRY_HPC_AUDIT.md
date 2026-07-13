@@ -1,6 +1,10 @@
 # HERALD 35 -- France ZE2020 Top-3 Entry HPC Audit
 
-**Status:** `HPC_AUDIT_READY_PROMISING_NO_MODEL_PROMOTION`.
+**Status:** `INVALID_FOR_CLAIMS` (HERALD_38).
+
+Although the job completed technically, the rolling split admitted three-year labels
+whose outcomes were not yet observable at the evaluation year. Its metrics and PASS
+gates are retained for audit history but must not be cited as scientific evidence.
 
 This document records the audited HPC result for the `HERALD_34` top-3 entry
 falsification batch.

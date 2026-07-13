@@ -112,6 +112,8 @@ def test_top3_entry_lift_hpc_audit_on_synthetic_run(tmp_path):
                 lift = 0.6
             if scenario == "sector_shuffle":
                 lift = 0.58
+            if scenario == "target_shuffle":
+                lift = 0.40
             _write_task_outputs(run_dir / scenario / f"seed_{seed}", scenario, seed, lift)
 
     report = audit_run(run_dir)
@@ -122,3 +124,5 @@ def test_top3_entry_lift_hpc_audit_on_synthetic_run(tmp_path):
     assert report["gates"]["G4_lift_beats_shuffled_lift_mlp"] is True
     assert report["gates"]["G5_temporal_and_sector_shuffle_degrade_lift_mlp"] is True
     assert report["gates"]["G6_output_separation"] is True
+    assert report["gates"]["G7_target_shuffle_degrades_lift_mlp"] is True
+    assert report["paired_comparisons"]["lift_vs_shuffled_lift"]["win_rate"] == 1.0

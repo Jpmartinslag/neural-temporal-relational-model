@@ -221,7 +221,11 @@ def run_one_config_classification(
     metric_rows = []
     for eval_year in eval_years:
         test = complete[complete["decision_year"] == eval_year].copy()
-        train = complete[complete["decision_year"] < eval_year].copy()
+        train = ranking.mature_training_rows(
+            complete,
+            eval_year=eval_year,
+            target_horizon=target_horizon,
+        )
         if test.empty or train["decision_year"].nunique() < 3:
             continue
         if train[label_col].nunique() < 2 or test[label_col].nunique() < 2:

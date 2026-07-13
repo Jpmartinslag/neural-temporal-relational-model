@@ -33,13 +33,14 @@ from src.data.france_ze2020.build_fr_ze2020_dynamic_graph_inputs import (
 )
 from src.modeles.france_ze2020.train_fr_ze2020_sector_ranking import (
     DEFAULT_K,
+    mature_training_rows,
     ranking_metrics,
 )
 
 DEFAULT_OUTPUT_DIR = ROOT / "data/processed/france_ze2020"
 DEFAULT_EVAL_YEARS_BY_HORIZON = {
     1: [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024],
-    3: [2018, 2019, 2020, 2021, 2022],
+    3: [2019, 2020, 2021, 2022],
 }
 DEFAULT_MAX_EPOCHS = 250
 SEED = 42
@@ -242,7 +243,11 @@ def run_dynamic_graph_ranker(
 
     for eval_year in eval_years:
         test = complete[complete["decision_year"] == eval_year].copy()
-        train = complete[complete["decision_year"] < eval_year].copy()
+        train = mature_training_rows(
+            complete,
+            eval_year=eval_year,
+            target_horizon=target_horizon,
+        )
         if test.empty or train["decision_year"].nunique() < min_train_years:
             continue
 
