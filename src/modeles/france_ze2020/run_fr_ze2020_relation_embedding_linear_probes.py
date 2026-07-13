@@ -41,7 +41,13 @@ from src.modeles.france_ze2020.train_fr_ze2020_dynamic_relation_learner import (
 CLAIM_STATUS = "relation_embedding_linear_probe_exploratory_not_recommendation"
 DEFAULT_EVAL_YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
 DEFAULT_SEEDS = [42, 43, 44, 45, 46]
-VIEW_NAMES = ["node_only", "real_graph", "random_target_graph", "past_snapshot_graph"]
+VIEW_NAMES = [
+    "node_only",
+    "real_graph",
+    "random_target_graph",
+    "random_endpoint_graph",
+    "past_snapshot_graph",
+]
 BASE_FEATURE_COLUMNS = [
     "sector_count_t",
     "sector_share_t",
@@ -98,6 +104,23 @@ def past_only_snapshot_placebo(embeddings: pd.DataFrame, seed: int) -> pd.DataFr
     return out
 
 
+def random_endpoint_placebo(edges: pd.DataFrame, seed: int) -> pd.DataFrame:
+    """Break node assignment while preserving year/type edge-value distributions."""
+    out = edges.copy()
+    rng = np.random.default_rng(seed)
+    for _, idx in out.groupby(["decision_year", "edge_type"], sort=False).groups.items():
+        idx_list = list(idx)
+        if len(idx_list) <= 1:
+            continue
+        out.loc[idx_list, "source_node_id"] = rng.permutation(
+            out.loc[idx_list, "source_node_id"].to_numpy()
+        )
+        out.loc[idx_list, "target_node_id"] = rng.permutation(
+            out.loc[idx_list, "target_node_id"].to_numpy()
+        )
+    return out[out["source_node_id"] != out["target_node_id"]].copy()
+
+
 def build_probe_views(
     nodes: pd.DataFrame,
     edges: pd.DataFrame,
@@ -113,11 +136,16 @@ def build_probe_views(
         seed=seed,
     )
     random_embeddings = build_dense_graph_signal_embeddings(nodes, random_edges)
+    endpoint_embeddings = build_dense_graph_signal_embeddings(
+        nodes,
+        random_endpoint_placebo(edges, seed=seed + 500),
+    )
     past_embeddings = past_only_snapshot_placebo(real_embeddings, seed=seed + 1000)
     return {
         "node_only": nodes.copy(),
         "real_graph": _merge_graph_embeddings(nodes, real_embeddings),
         "random_target_graph": _merge_graph_embeddings(nodes, random_embeddings),
+        "random_endpoint_graph": _merge_graph_embeddings(nodes, endpoint_embeddings),
         "past_snapshot_graph": _merge_graph_embeddings(nodes, past_embeddings),
     }
 

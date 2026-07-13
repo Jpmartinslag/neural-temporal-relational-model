@@ -52,6 +52,7 @@ Both probes use rolling-origin evaluation. Training rows always have
 | `node_only` | canonical node features, no graph aggregates |
 | `real_graph` | node features plus audited dynamic graph aggregates |
 | `random_target_graph` | identical edge weights/types with targets shuffled inside year and edge type |
+| `random_endpoint_graph` | identical edge values with both source and target assignments shuffled inside year and edge type |
 | `past_snapshot_graph` | each node-year graph snapshot replaced only by a snapshot sampled strictly from that node's past |
 
 The past-snapshot placebo never copies a current or future graph snapshot into an
@@ -63,11 +64,11 @@ No contrastive or semi-supervised model should be added unless the real graph:
 
 1. beats `node_only` on paired seed-year results;
 2. beats `random_target_graph`;
-3. beats `past_snapshot_graph`;
-4. shows the same direction on both probes;
-5. remains finite and stable across the five registered seeds.
+3. beats `random_endpoint_graph`;
+4. beats `past_snapshot_graph`;
+5. shows the same direction on both probes;
+6. remains finite and stable across the five registered seeds.
 
 Failure means that the current representation has not justified additional
 training complexity. Passing authorizes only a minimal auxiliary temporal loss
 inside the existing encoder, not a new architecture or a recommendation claim.
-
