@@ -56,6 +56,14 @@ SECTOR_COLUMNS = [
     "national_sector_share_lag_1",
     "national_sector_growth_lag_1",
 ]
+TARGET_COLUMNS = [
+    "future_growth_3y",
+    "sector_count_t_plus_3",
+    "sector_share_t_plus_3",
+    "future_rank_growth_3y_in_ze_year",
+    "future_top3_growth_3y_label",
+    "mask_future_growth_3y_available",
+]
 
 
 def _shuffle_columns(
@@ -93,9 +101,12 @@ def apply_top3_entry_falsification(panel: pd.DataFrame, scenario: str, seed: int
     if scenario == "sector_shuffle":
         return _shuffle_columns(panel, SECTOR_COLUMNS, seed=seed, group_cols=["ze2020", "decision_year"])
     if scenario == "target_shuffle":
+        target_columns = [column for column in TARGET_COLUMNS if column in panel.columns]
+        if not target_columns:
+            raise ValueError("No 3-year target columns available for target_shuffle")
         return _shuffle_columns(
             panel,
-            ["future_growth_3y", "sector_count_t_plus_3", "sector_share_t_plus_3"],
+            target_columns,
             seed=seed,
             group_cols=["ze2020", "decision_year"],
         )

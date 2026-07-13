@@ -6,6 +6,7 @@ from src.modeles.france_ze2020.run_fr_ze2020_top3_entry_falsifications import (
     CLAIM_STATUS,
     SCENARIOS,
     SECTOR_COLUMNS,
+    TARGET_COLUMNS,
     TEMPORAL_COLUMNS,
     apply_top3_entry_falsification,
     run_top3_entry_falsification_suite,
@@ -65,6 +66,17 @@ def test_target_shuffle_preserves_ze_year_future_growth_distribution():
     out = apply_top3_entry_falsification(sample, "target_shuffle", seed=42)
     assert sorted(out["future_growth_3y"].fillna(-999).round(12).tolist()) == sorted(
         sample["future_growth_3y"].fillna(-999).round(12).tolist()
+    )
+    present_target_columns = [column for column in TARGET_COLUMNS if column in sample.columns]
+    original_rows = sorted(
+        map(tuple, sample[present_target_columns].fillna(-999).round(12).to_numpy().tolist())
+    )
+    shuffled_rows = sorted(
+        map(tuple, out[present_target_columns].fillna(-999).round(12).to_numpy().tolist())
+    )
+    assert shuffled_rows == original_rows
+    assert not out["future_top3_growth_3y_label"].equals(
+        sample["future_top3_growth_3y_label"]
     )
     pd.testing.assert_series_equal(out["sector_growth_lag_1"], sample["sector_growth_lag_1"])
 
