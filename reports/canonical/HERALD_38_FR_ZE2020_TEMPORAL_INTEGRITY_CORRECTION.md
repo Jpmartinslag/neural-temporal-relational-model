@@ -117,3 +117,19 @@ short MLP run do not invalidate the execution check.
 This smoke validates runtime, schema, and temporal-cut integration only. Its ranking
 metrics are not scientific evidence and do not authorize model promotion or automatic
 recommendation.
+
+## 8. Full corrected falsification audit
+
+Jobs `7755806` (top-3) and `7755807` (relation-lift) completed 40/40 tasks with exit
+`0:0`. The corrected horizon-aware results do not support relation-layer promotion:
+formula relation features do not beat the no-relation MLP, and target-aligned lift does
+not beat no-relation, base-formula, or shuffled-lift controls under paired seed-year
+gates. Temporal shuffle also fails to degrade the candidates.
+
+The audit exposed one additional control bug: `target_shuffle` permuted
+`future_growth_3y` but left the precomputed `future_top3_growth_3y_label` attached to its
+original sector. The classifier therefore retained its effective label. The correction
+now permutes the complete future-target bundle together (future value, count/share,
+rank, top-3 label, and availability mask). Only the ten target-shuffle tasks are invalid
+and require rerun; the full-control, temporal-shuffle, and sector-shuffle tasks remain
+valid negative evidence.
