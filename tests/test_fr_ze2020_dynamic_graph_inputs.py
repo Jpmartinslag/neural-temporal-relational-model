@@ -116,7 +116,7 @@ def test_edges_are_finite_and_exploratory_not_causal():
         assert set(edges["claim_status"]) == {"dynamic_graph_edge_exploratory_not_causal"}
 
 
-def test_expanding_edges_are_causal_memory_snapshots():
+def test_expanding_edges_are_leakage_safe_memory_snapshots():
     instant_edges = pd.read_csv(EDGES_OUT_PATH)
     expanding_edges = pd.read_csv(EXPANDING_EDGES_OUT_PATH)
     assert len(expanding_edges) > len(instant_edges)

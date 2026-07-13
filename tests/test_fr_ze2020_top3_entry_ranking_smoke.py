@@ -12,6 +12,7 @@ from src.modeles.france_ze2020.run_fr_ze2020_top3_entry_ranking_smoke import (
 from src.modeles.france_ze2020.train_fr_ze2020_sector_ranking import (
     MODEL_FEATURE_COLUMNS,
     load_ranking_panel,
+    mature_training_rows,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -62,6 +63,13 @@ def test_shuffle_relation_columns_keeps_non_relation_columns():
         smoke.MODEL_FEATURE_COLUMNS = original_features
     assert sorted(shuffled["relation_signal_strength_mean_to_t"].tolist()) == [0.1, 0.2, 0.3]
     assert shuffled["sector_share_t"].tolist() == [0.4, 0.5, 0.6]
+
+
+def test_training_rows_require_mature_future_labels():
+    frame = pd.DataFrame({"decision_year": list(range(2012, 2020))})
+    train = mature_training_rows(frame, eval_year=2019, target_horizon=3)
+    assert train["decision_year"].max() == 2016
+    assert set(train["decision_year"]) == set(range(2012, 2017))
 
 
 def test_real_panel_top3_entry_smoke_if_available():

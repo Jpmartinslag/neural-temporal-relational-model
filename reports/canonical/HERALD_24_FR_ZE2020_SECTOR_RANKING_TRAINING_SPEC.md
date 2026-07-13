@@ -1,12 +1,17 @@
 # HERALD 24 — France ZE2020 Sector Ranking Training Spec
 
 **Created:** 2026-07-01.  
-**Status:** `FALSIFICATION_HPC_PREPARED`.  
+**Status:** `CORRECTED_PENDING_RERUN` (HERALD_38).
 **Scope:** first training/evaluation block for the reframed HERALD objective in
 `HERALD_23`: temporal-relational indicators and retrospective ZE×sector ranking.
 
 This document does not create an operational recommendation system. It defines an
 exploratory ranking task that can be trained and falsified.
+
+**Correction 2026-07-13:** training rows for a horizon `h` now satisfy
+`decision_year + h <= eval_year`. The ranking panel now uses the leakage-safe temporal
+relation snapshots, not the retrospective exploratory relation export. Results produced
+before this correction are historical only and cannot support claims.
 
 ---
 

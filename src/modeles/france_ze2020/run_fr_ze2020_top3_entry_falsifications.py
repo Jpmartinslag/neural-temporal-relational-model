@@ -71,8 +71,9 @@ def _shuffle_columns(
         idx_list = list(idx)
         if len(idx_list) <= 1:
             continue
-        for col in columns:
-            out.loc[idx_list, col] = rng.permutation(out.loc[idx_list, col].to_numpy())
+        permutation = rng.permutation(len(idx_list))
+        values = out.loc[idx_list, columns].to_numpy(copy=True)
+        out.loc[idx_list, columns] = values[permutation]
     return out
 
 
@@ -83,7 +84,12 @@ def apply_top3_entry_falsification(panel: pd.DataFrame, scenario: str, seed: int
     if scenario == "full_control":
         return panel.copy()
     if scenario == "temporal_shuffle":
-        return _shuffle_columns(panel, TEMPORAL_COLUMNS, seed=seed, group_cols=["decision_year"])
+        return _shuffle_columns(
+            panel,
+            TEMPORAL_COLUMNS,
+            seed=seed,
+            group_cols=["ze2020", "sector_code"],
+        )
     if scenario == "sector_shuffle":
         return _shuffle_columns(panel, SECTOR_COLUMNS, seed=seed, group_cols=["ze2020", "decision_year"])
     if scenario == "target_shuffle":

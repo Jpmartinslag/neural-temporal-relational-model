@@ -1,11 +1,16 @@
 # HERALD 25 — France ZE2020 Dynamic Graph Model Spec
 
 **Created:** 2026-07-01.  
-**Status:** `DYNAMIC_GRAPH_MODEL_SPEC_READY`.  
+**Status:** `DYNAMIC_GRAPH_INPUT_CORRECTED_PENDING_RERUN` (HERALD_38).
 **Scope:** construction specification for the next HERALD block: a dynamic
 ZE2020 x sector graph model. This document does not validate a new model, does not
 authorize claims of neural superiority, does not create an operational recommendation
 system, and does not reopen closed graph branches by itself.
+
+**Correction 2026-07-13:** the prior graph converted full-window retrospective relations
+into apparent annual memory. It is superseded by explicit annual snapshots whose edge
+strength, recurrence and stability use only information available through each decision
+year. Existing model results based on the prior edge bundle require rerun.
 
 ---
 

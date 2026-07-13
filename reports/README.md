@@ -135,22 +135,18 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     triage around HERALD_32: temporal and sector shuffles degrade performance, formula
     relation gives a small MLP lift, and target shuffle is documented as a weak gate. No
     model/recommendation/causal promotion.
-32. `canonical/HERALD_34_FR_ZE2020_TOP3_ENTRY_HPC_SPEC.md` — HPC falsification spec for
-    the top-3 entry objective: 4 scenarios x 5 seeds, output isolation, and descriptive
-    G1-G5 audit. Spec only until results are collected and audited.
-33. `canonical/HERALD_35_FR_ZE2020_TOP3_ENTRY_HPC_AUDIT.md` — audited HPC result for
-    HERALD_34: 20/20 tasks completed, all G1-G5 gates passed. Temporal and sector
-    shuffles degrade performance, and formula relation features add a small MLP signal.
-    No final model, no causal claim, no automatic recommendation.
-34. `canonical/HERALD_36_FR_ZE2020_TARGET_ALIGNED_RELATION_LIFT.md` — local diagnostic
-    after HERALD_35: rolling prior-year relation-lift features aligned with
-    `future_top3_entry_3y_label` add a small MLP signal above no-relation, base formula,
-    and shuffled-lift controls. Construction clue only; no model promotion, causal claim,
-    or automatic recommendation.
-35. `canonical/HERALD_37_FR_ZE2020_TOP3_ENTRY_LIFT_HPC_SPEC.md` — HPC falsification spec
-    for the HERALD_36 relation-lift hypothesis: 4 scenarios x 5 seeds, explicit G1-G6
-    descriptive gates, isolated outputs, and dry-run-safe submitter. Spec only until
-    results are collected and audited.
+32. `canonical/HERALD_34_FR_ZE2020_TOP3_ENTRY_HPC_SPEC.md` — superseded HPC spec; its
+    training contract predates the horizon-aware label-maturity correction in HERALD_38.
+33. `canonical/HERALD_35_FR_ZE2020_TOP3_ENTRY_HPC_AUDIT.md` — historical audit of job
+    7734742, now `INVALID_FOR_CLAIMS` because the run used immature 3-year labels.
+34. `canonical/HERALD_36_FR_ZE2020_TARGET_ALIGNED_RELATION_LIFT.md` — historical local
+    diagnostic, now `INVALID_FOR_CLAIMS`; its lift history also used immature labels.
+35. `canonical/HERALD_37_FR_ZE2020_TOP3_ENTRY_LIFT_HPC_SPEC.md` — superseded by the
+    corrected temporal contract and paired seed-year audit gates in HERALD_38.
+36. `canonical/HERALD_38_FR_ZE2020_TEMPORAL_INTEGRITY_CORRECTION.md` — correction audit:
+    enforces horizon-aware label maturity, separates retrospective interpretation from
+    as-of-time relation inputs, regenerates the ranking/dynamic-graph chain, and invalidates
+    all dependent local/HPC results pending a clean rerun.
 
 ## Control Documents
 

@@ -1,8 +1,12 @@
 # HERALD 36 -- France ZE2020 target-aligned relation lift diagnostic
 
-Status: LOCAL_DIAGNOSTIC_READY
+Status: INVALID_FOR_CLAIMS (HERALD_38)
 
 Date: 2026-07-08
+
+Correction 2026-07-13: `year < t` was insufficient for a three-year outcome. Lift
+features now use only rows satisfying `year + 3 <= t`. All numerical results below are
+historical and require rerun.
 
 ## 1. Purpose
 

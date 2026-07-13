@@ -1,6 +1,9 @@
 # HERALD 34 -- France ZE2020 Top-3 Entry HPC Spec
 
-**Status:** `HPC_SPEC_READY_NOT_YET_INTERPRETED`.
+**Status:** `SUPERSEDED_BY_HERALD_38`.
+
+The batch design used training labels before their three-year outcomes had matured.
+Keep this document as historical specification only; do not reuse it for a new run.
 
 This document defines the HPC batch for the `HERALD_33` top-3 entry
 falsification triage.

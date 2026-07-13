@@ -7,7 +7,7 @@ recommendation artifact.
 
 Reads only audited France ZE2020 inputs:
   data/processed/france_ze2020/fr_ze2020_sector_ranking_panel.csv
-  data/processed/france_ze2020/fr_ze2020_exploratory_relation_signals.csv
+  data/processed/france_ze2020/fr_ze2020_temporal_relation_signals.csv.gz
 
 Outputs:
   data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv
@@ -26,7 +26,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parents[3]
 OUT_DIR = ROOT / "data/processed/france_ze2020"
 RANKING_PANEL_PATH = OUT_DIR / "fr_ze2020_sector_ranking_panel.csv"
-RELATION_SIGNALS_PATH = OUT_DIR / "fr_ze2020_exploratory_relation_signals.csv"
+RELATION_SIGNALS_PATH = OUT_DIR / "fr_ze2020_temporal_relation_signals.csv.gz"
 NODES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_nodes.csv"
 EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges.csv"
 EXPANDING_EDGES_OUT_PATH = OUT_DIR / "fr_ze2020_dynamic_graph_edges_expanding.csv.gz"
@@ -92,7 +92,12 @@ def load_ranking_panel(path: Path = RANKING_PANEL_PATH) -> pd.DataFrame:
 
 
 def load_relation_signals(path: Path = RELATION_SIGNALS_PATH) -> pd.DataFrame:
-    return pd.read_csv(path, dtype={"source_id": str, "target_id": str, "sector_code": str})
+    signals = pd.read_csv(
+        path,
+        dtype={"source_node_id": str, "target_node_id": str, "sector_code": str},
+    )
+    signals["decision_year"] = signals["decision_year"].astype(int)
+    return signals
 
 
 def _node_id(ze2020: str, sector_code: str) -> str:
@@ -209,88 +214,37 @@ def build_dynamic_graph_edges(
         relation_signals = load_relation_signals()
 
     node_lookup = _valid_node_lookup(nodes)
-    sector_codes = sorted(nodes["sector_code"].dropna().unique())
     rows: list[dict[str, object]] = []
 
     for row in relation_signals.itertuples(index=False):
-        family = getattr(row, "relation_family")
-        decision_year = int(getattr(row, "year_end"))
+        family = str(getattr(row, "relation_family"))
+        decision_year = int(getattr(row, "decision_year"))
         strength = float(getattr(row, "signal_strength"))
         stability = float(getattr(row, "stability_score"))
         relation_id = str(getattr(row, "relation_id"))
         source_basis = str(getattr(row, "evidence_source"))
-
-        if family == "intra_ze_sector_interaction":
-            source_node_id = str(getattr(row, "source_id"))
-            target_node_id = str(getattr(row, "target_id"))
-            if (source_node_id, decision_year) in node_lookup and (target_node_id, decision_year) in node_lookup:
-                rows.append(
-                    _base_edge_row(
-                        source_node_id=source_node_id,
-                        target_node_id=target_node_id,
-                        decision_year=decision_year,
-                        edge_type="intra_ze_sector",
-                        edge_weight=strength,
-                        signal_strength=strength,
-                        stability_score=stability,
-                        source_basis=source_basis,
-                        relation_id=relation_id,
-                        source_relation_year_end=decision_year,
-                        edge_age=0,
-                        edge_memory_mode="instant",
-                    )
-                )
-
-        elif family == "ze_to_ze_same_sector_signal":
-            sector_code = str(getattr(row, "sector_code"))
-            source_node_id = _node_id(str(getattr(row, "source_id")), sector_code)
-            target_node_id = _node_id(str(getattr(row, "target_id")), sector_code)
-            if (source_node_id, decision_year) in node_lookup and (target_node_id, decision_year) in node_lookup:
-                rows.append(
-                    _base_edge_row(
-                        source_node_id=source_node_id,
-                        target_node_id=target_node_id,
-                        decision_year=decision_year,
-                        edge_type="cross_ze_same_sector",
-                        edge_weight=strength,
-                        signal_strength=strength,
-                        stability_score=stability,
-                        source_basis=source_basis,
-                        relation_id=relation_id,
-                        source_relation_year_end=decision_year,
-                        edge_age=0,
-                        edge_memory_mode="instant",
-                    )
-                )
-
-        elif family == "ze_to_ze_similarity":
-            for sector_code in sector_codes:
-                source_node_id = _node_id(str(getattr(row, "source_id")), sector_code)
-                target_node_id = _node_id(str(getattr(row, "target_id")), sector_code)
-                if (source_node_id, decision_year) not in node_lookup:
-                    continue
-                if (target_node_id, decision_year) not in node_lookup:
-                    continue
-                rows.append(
-                    _base_edge_row(
-                        source_node_id=source_node_id,
-                        target_node_id=target_node_id,
-                        decision_year=decision_year,
-                        edge_type="ze_similarity",
-                        edge_weight=strength,
-                        signal_strength=strength,
-                        stability_score=stability,
-                        source_basis=source_basis,
-                        relation_id=relation_id,
-                        source_relation_year_end=decision_year,
-                        edge_age=0,
-                        edge_memory_mode="instant",
-                    )
-                )
-
-        elif family == "ze_sector_specialization":
-            # Specialization is a node attribute candidate, not an edge.
+        source_node_id = str(getattr(row, "source_node_id"))
+        target_node_id = str(getattr(row, "target_node_id"))
+        if (source_node_id, decision_year) not in node_lookup:
             continue
+        if (target_node_id, decision_year) not in node_lookup:
+            continue
+        rows.append(
+            _base_edge_row(
+                source_node_id=source_node_id,
+                target_node_id=target_node_id,
+                decision_year=decision_year,
+                edge_type=family,
+                edge_weight=strength,
+                signal_strength=strength,
+                stability_score=stability,
+                source_basis=source_basis,
+                relation_id=relation_id,
+                source_relation_year_end=decision_year,
+                edge_age=0,
+                edge_memory_mode="instant",
+            )
+        )
 
     if not rows:
         columns = [
@@ -339,9 +293,10 @@ def build_dynamic_graph_edges_expanding(
     nodes: pd.DataFrame | None = None,
     relation_signals: pd.DataFrame | None = None,
 ) -> pd.DataFrame:
-    """Build causal edge-memory snapshots.
+    """Build leakage-safe edge-memory snapshots.
 
-    A relation observed with year_end=s can be used for every decision_year t >= s.
+    For each relation and decision year, only its latest snapshot at or before
+    that year is available. The edge weight is damped by stability and recency:
     The edge weight is damped by stability and recency:
 
         signal_strength * stability_score / (1 + t - s)
@@ -356,93 +311,43 @@ def build_dynamic_graph_edges_expanding(
         relation_signals = load_relation_signals()
 
     node_lookup = _valid_node_lookup(nodes)
-    sector_codes = sorted(nodes["sector_code"].dropna().unique())
     years = sorted(nodes["decision_year"].astype(int).unique())
     rows: list[dict[str, object]] = []
 
-    for row in relation_signals.itertuples(index=False):
-        family = getattr(row, "relation_family")
-        source_year = int(getattr(row, "year_end"))
-        strength = float(getattr(row, "signal_strength"))
-        stability = float(getattr(row, "stability_score"))
-        relation_id = str(getattr(row, "relation_id"))
-        source_basis = str(getattr(row, "evidence_source"))
-        decision_years = [year for year in years if year >= source_year]
-
-        for decision_year in decision_years:
-            edge_age = decision_year - source_year
-            edge_weight = _memory_weight(strength, stability, edge_age)
-
-            if family == "intra_ze_sector_interaction":
-                source_node_id = str(getattr(row, "source_id"))
-                target_node_id = str(getattr(row, "target_id"))
-                if (source_node_id, decision_year) in node_lookup and (target_node_id, decision_year) in node_lookup:
-                    rows.append(
-                        _base_edge_row(
-                            source_node_id=source_node_id,
-                            target_node_id=target_node_id,
-                            decision_year=decision_year,
-                            edge_type="intra_ze_sector",
-                            edge_weight=edge_weight,
-                            signal_strength=strength,
-                            stability_score=stability,
-                            source_basis=source_basis,
-                            relation_id=relation_id,
-                            source_relation_year_end=source_year,
-                            edge_age=edge_age,
-                            edge_memory_mode="expanding_stability_decay",
-                        )
-                    )
-
-            elif family == "ze_to_ze_same_sector_signal":
-                sector_code = str(getattr(row, "sector_code"))
-                source_node_id = _node_id(str(getattr(row, "source_id")), sector_code)
-                target_node_id = _node_id(str(getattr(row, "target_id")), sector_code)
-                if (source_node_id, decision_year) in node_lookup and (target_node_id, decision_year) in node_lookup:
-                    rows.append(
-                        _base_edge_row(
-                            source_node_id=source_node_id,
-                            target_node_id=target_node_id,
-                            decision_year=decision_year,
-                            edge_type="cross_ze_same_sector",
-                            edge_weight=edge_weight,
-                            signal_strength=strength,
-                            stability_score=stability,
-                            source_basis=source_basis,
-                            relation_id=relation_id,
-                            source_relation_year_end=source_year,
-                            edge_age=edge_age,
-                            edge_memory_mode="expanding_stability_decay",
-                        )
-                    )
-
-            elif family == "ze_to_ze_similarity":
-                for sector_code in sector_codes:
-                    source_node_id = _node_id(str(getattr(row, "source_id")), sector_code)
-                    target_node_id = _node_id(str(getattr(row, "target_id")), sector_code)
-                    if (source_node_id, decision_year) not in node_lookup:
-                        continue
-                    if (target_node_id, decision_year) not in node_lookup:
-                        continue
-                    rows.append(
-                        _base_edge_row(
-                            source_node_id=source_node_id,
-                            target_node_id=target_node_id,
-                            decision_year=decision_year,
-                            edge_type="ze_similarity",
-                            edge_weight=edge_weight,
-                            signal_strength=strength,
-                            stability_score=stability,
-                            source_basis=source_basis,
-                            relation_id=relation_id,
-                            source_relation_year_end=source_year,
-                            edge_age=edge_age,
-                            edge_memory_mode="expanding_stability_decay",
-                        )
-                    )
-
-            elif family == "ze_sector_specialization":
+    for relation_id, history in relation_signals.groupby("relation_id", sort=False):
+        history = history.sort_values("decision_year")
+        first_year = int(history["decision_year"].min())
+        for decision_year in (year for year in years if year >= first_year):
+            available = history[history["decision_year"] <= decision_year]
+            if available.empty:
                 continue
+            snapshot = available.iloc[-1]
+            source_year = int(snapshot["decision_year"])
+            source_node_id = str(snapshot["source_node_id"])
+            target_node_id = str(snapshot["target_node_id"])
+            if (source_node_id, decision_year) not in node_lookup:
+                continue
+            if (target_node_id, decision_year) not in node_lookup:
+                continue
+            strength = float(snapshot["signal_strength"])
+            stability = float(snapshot["stability_score"])
+            edge_age = decision_year - source_year
+            rows.append(
+                _base_edge_row(
+                    source_node_id=source_node_id,
+                    target_node_id=target_node_id,
+                    decision_year=decision_year,
+                    edge_type=str(snapshot["relation_family"]),
+                    edge_weight=_memory_weight(strength, stability, edge_age),
+                    signal_strength=strength,
+                    stability_score=stability,
+                    source_basis=str(snapshot["evidence_source"]),
+                    relation_id=str(relation_id),
+                    source_relation_year_end=source_year,
+                    edge_age=edge_age,
+                    edge_memory_mode="expanding_stability_decay",
+                )
+            )
 
     if not rows:
         columns = [

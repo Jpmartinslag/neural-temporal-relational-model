@@ -19,7 +19,7 @@ PANEL_PATH = REPO_ROOT / "data/processed/france_ze2020/fr_ze2020_sector_ranking_
 
 def _toy_lift_panel() -> pd.DataFrame:
     rows = []
-    for year in [2020, 2021, 2022]:
+    for year in [2017, 2018, 2019, 2020, 2021, 2022]:
         for sector, rank, rel_count, future_growth in [
             ("A", 1, 0, 0.1),
             ("B", 2, 0, 0.2),
@@ -71,22 +71,20 @@ def test_feature_configs_and_lift_columns_are_explicit():
     assert all(col.endswith(("_entry_lift_prior", "_entry_rate_prior", "_entry_rows_prior")) for col in cols)
 
 
-def test_relation_lifts_use_only_prior_decision_years():
+def test_relation_lifts_use_only_mature_prior_labels():
     panel = _toy_lift_panel()
     lifted = add_target_aligned_relation_lifts(panel, target_horizon=3)
-    first_year = lifted[lifted["decision_year"] == 2020]
-    second_year = lifted[lifted["decision_year"] == 2021]
+    first_year = lifted[lifted["decision_year"] == 2017]
     assert set(first_year["relation_count_bin_entry_lift_prior"]) == {1.0}
 
-    high_bin = second_year[second_year["relation_count_bin"] == 2]
-    low_bin = second_year[second_year["relation_count_bin"] == 0]
+    year_2020 = lifted[lifted["decision_year"] == 2020]
+    high_bin = year_2020[year_2020["relation_count_bin"] == 2]
+    low_bin = year_2020[year_2020["relation_count_bin"] == 0]
     assert set(high_bin["relation_count_bin_entry_rate_prior"]) == {1.0}
     assert set(low_bin["relation_count_bin_entry_rate_prior"]) == {0.0}
-    assert set(high_bin["relation_count_bin_entry_lift_prior"]) == {2.0}
-    assert set(low_bin["relation_count_bin_entry_lift_prior"]) == {0.25}
 
     mutated = panel.copy()
-    mutated.loc[mutated["decision_year"] == 2022, "future_growth_3y"] = [-10.0, -9.0, -8.0, -7.0]
+    mutated.loc[mutated["decision_year"] == 2019, "future_growth_3y"] = [-10.0, -9.0, -8.0, -7.0]
     lifted_mutated = add_target_aligned_relation_lifts(mutated, target_horizon=3)
     compare_cols = ["sector_code", "relation_count_bin_entry_lift_prior"]
     pd.testing.assert_frame_equal(

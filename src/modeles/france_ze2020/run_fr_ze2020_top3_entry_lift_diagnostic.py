@@ -35,6 +35,7 @@ from src.modeles.france_ze2020.train_fr_ze2020_sector_ranking import (  # noqa: 
     MODEL_FEATURE_COLUMNS,
     RANKING_PANEL_PATH,
     load_ranking_panel,
+    mature_training_rows,
     ranking_metrics,
 )
 
@@ -96,7 +97,8 @@ def add_target_aligned_relation_lifts(panel: pd.DataFrame, target_horizon: int =
         & np.isfinite(out[target_col].to_numpy(dtype=float))
     )
     for decision_year in sorted(int(y) for y in out["decision_year"].unique()):
-        hist = out[eligible & (out["decision_year"] < decision_year)].copy()
+        label_mature = out["decision_year"] + target_horizon <= decision_year
+        hist = out[eligible & label_mature].copy()
         apply_idx = out.index[out["decision_year"] == decision_year]
         if hist.empty:
             continue
@@ -173,7 +175,11 @@ def run_top3_entry_lift_diagnostic(
             complete = _complete_frame(frame, feature_columns, target_horizon)
             for eval_year in eval_years:
                 test = complete[complete["decision_year"] == eval_year].copy()
-                train = complete[complete["decision_year"] < eval_year].copy()
+                train = mature_training_rows(
+                    complete,
+                    eval_year=eval_year,
+                    target_horizon=target_horizon,
+                )
                 if test.empty or train["decision_year"].nunique() < 3:
                     continue
                 if train[label_col].nunique() < 2 or test[label_col].nunique() < 2:
