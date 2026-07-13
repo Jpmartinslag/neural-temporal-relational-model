@@ -149,8 +149,8 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     all dependent local/HPC results pending a clean rerun.
 37. `canonical/HERALD_39_FR_ZE2020_RELATION_EMBEDDING_LINEAR_PROBES.md` — minimal
     representation diagnostic using frozen linear probes over the existing dynamic graph:
-    temporal successor and next-year sector state against node-only, random-target, and
-    past-only snapshot controls. No new encoder or recommendation claim.
+    temporal successor and next-year sector state against node-only, randomized-endpoint,
+    and past-only snapshot controls. No new encoder or recommendation claim.
 
 ## Control Documents
 

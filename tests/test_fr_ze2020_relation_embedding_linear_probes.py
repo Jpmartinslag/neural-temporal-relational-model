@@ -9,6 +9,7 @@ from src.modeles.france_ze2020.run_fr_ze2020_relation_embedding_linear_probes im
     VIEW_NAMES,
     build_probe_views,
     past_only_snapshot_placebo,
+    random_endpoint_placebo,
     run_linear_probes,
 )
 from src.modeles.france_ze2020.train_fr_ze2020_dynamic_relation_encoder import (
@@ -90,6 +91,15 @@ def test_build_probe_views_returns_only_declared_controls():
     assert all(len(frame) == len(nodes) for frame in views.values())
     assert not any(col.startswith("relation_graph_") for col in views["node_only"])
     assert any(col.startswith("relation_graph_") for col in views["real_graph"])
+
+
+def test_random_endpoint_placebo_changes_both_endpoint_assignments():
+    _, edges = _sample()
+    shuffled = random_endpoint_placebo(edges, seed=42)
+    original = edges.loc[shuffled.index]
+    assert not shuffled["source_node_id"].equals(original["source_node_id"])
+    assert not shuffled["target_node_id"].equals(original["target_node_id"])
+    assert not (shuffled["source_node_id"] == shuffled["target_node_id"]).any()
 
 
 def test_linear_probe_smoke_produces_both_tasks_and_finite_primary_metrics():
