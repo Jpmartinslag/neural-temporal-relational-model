@@ -98,6 +98,22 @@ The focused ranking/lift/temporal-snapshot suite and the dynamic-graph integrati
 pass locally after regeneration. This validates the corrected data and code contracts; it
 does not recreate or validate any numerical model result.
 
-Run the corrected local smoke and falsifications first. A new HPC specification may be
-created only if local outputs are finite, temporally invariant under truncation, and the
-paired gates are pre-registered. Do not reinterpret jobs 7734742 or 7754322.
+Run the corrected falsifications next. A new full HPC specification may be created only
+if outputs are finite, temporally invariant under truncation, and the paired gates are
+pre-registered. Do not reinterpret jobs 7734742 or 7754322.
+
+## 7. Corrected remote smoke
+
+The owner requested that compute-heavy smoke execution use `meso` instead of the local
+workstation. Slurm job `7755797` (`smoke_temporal_fix_20260713_143010`) completed on
+2026-07-13 with exit `0:0` in 65 seconds.
+
+The isolated smoke used seed 42, evaluation years 2019 and 2022, and 12 MLP epochs. The
+remote audit confirmed finite outputs, 30,240 prediction rows, no recommendation/causal
+output columns, and horizon-aware training histories of 3 years for evaluation 2019 and
+6 years for evaluation 2022. The expected convergence warnings from the deliberately
+short MLP run do not invalidate the execution check.
+
+This smoke validates runtime, schema, and temporal-cut integration only. Its ranking
+metrics are not scientific evidence and do not authorize model promotion or automatic
+recommendation.
