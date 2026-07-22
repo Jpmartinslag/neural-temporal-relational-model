@@ -208,6 +208,7 @@ def evaluate_transfer_view(
     eval_years: list[int],
     shuffle_target: bool = False,
     claim_status: str = CLAIM_STATUS,
+    fit_score_fn=None,
 ) -> list[dict[str, object]]:
     """Evaluate one representation under the shared ZE-disjoint protocol."""
     candidates = eligible_transition_candidates(frame)
@@ -229,7 +230,8 @@ def evaluate_transfer_view(
                 raise AssertionError(f"ZE leakage in fold {fold}: {sorted(overlap)[:3]}")
             if train[TARGET_COLUMN].nunique() < 2 or test.empty:
                 continue
-            score = _fit_score(
+            scorer = fit_score_fn or _fit_score
+            score = scorer(
                 train,
                 test,
                 feature_columns,
