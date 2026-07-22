@@ -3226,3 +3226,38 @@ encoder. The failure is specific: graph inspection found 257,823
 `intra_ze_sector` edges. The next admissible diagnostic is edge-family isolation
 and scale normalization against the same target and controls, not a larger
 neural model.
+
+---
+
+## DEC-070 — ZE2020 Edge-Family Isolation and Balanced Blocks (2026-07-22)
+
+**Status:** `PRE_REGISTERED_NOT_RUN`.
+
+**Problem:** DEC-069 failed to separate real graph changes from randomized and
+sector-shuffled controls. The current graph contains three edge families with
+very different support. Edge-count imbalance is a candidate explanation, not a
+confirmed cause, because the linear probe already standardizes feature columns.
+
+**Hypothesis:** one sparse economic edge family may contain transferable sector
+transition signal that is hidden when generic and family-specific aggregates are
+mixed. Representing every family as a separate, equally parameterized feature
+block permits a fair test without changing the target, split, or classifier.
+
+**Minimal diagnostic:** reuse the DEC-069 target and ZE-disjoint rolling
+protocol. Build identical graph-aggregate/change blocks for
+`ze_similarity`, `cross_ze_same_sector`, and `intra_ze_sector`. Evaluate each
+family alone, the two sector-economic families together, and all three together.
+Every real variant receives a matched randomized-endpoint control. The balanced
+economic combination also receives a within-ZE-year sector shuffle. A
+standardized logistic regression remains the only model.
+
+**Pre-registered gate:** a family or balanced combination is informative only
+if it has positive mean `NDCG@3` lift over node-only and its own matched endpoint
+placebo, wins at least 60% of paired seed-year-fold comparisons against that
+placebo, and degrades under sector shuffle when the sector-economic combination
+is tested. All populations must remain identical and ZE overlap must remain zero.
+
+**Decision rule:** a pass authorizes carrying only the surviving family blocks
+into a small nonlinear temporal encoder. Failure means current edge families do
+not provide transferable signal under the audited transition task; it does not
+reject nonlinear territorial economics generally.
