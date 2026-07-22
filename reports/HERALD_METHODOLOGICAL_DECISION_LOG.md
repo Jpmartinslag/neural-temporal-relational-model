@@ -3408,3 +3408,10 @@ ex-ante assignment/lift builder is authorized as the next step. The present
 artifact is not yet a model input and does not authorize neural promotion,
 causal language, automatic recommendation, or use of the 2023 release for
 strict ex-ante decisions in 2024--2025. See HERALD_44.
+
+**Implementation addendum:** Meso job 7780912 generated 276,790 release-aware
+cross-ZE edge-year rows for 2016--2025. Years 2012--2015 remain unavailable;
+2016--2020 use only the 2012 snapshot and 2021--2025 use only the 2017
+snapshot. The 2023 snapshot is absent from the current strict input candidate.
+Five direct tests pass. This completes the authorized builder but does not
+change the model-input restriction before a matched-placebo gate.

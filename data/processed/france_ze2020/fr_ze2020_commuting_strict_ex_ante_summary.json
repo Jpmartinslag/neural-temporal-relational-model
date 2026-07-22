@@ -1,0 +1,91 @@
+{
+  "artifact": "fr_ze2020_commuting_strict_ex_ante_edges",
+  "status": "REGENERABLE_MODEL_INPUT_CANDIDATE",
+  "decision_year_min": 2012,
+  "decision_year_max": 2025,
+  "available_decision_years": [
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "unavailable_decision_years": [
+    2012,
+    2013,
+    2014,
+    2015
+  ],
+  "edge_count": 276790,
+  "source_zone_count": 280,
+  "target_zone_count": 280,
+  "snapshot_assignments": [
+    {
+      "decision_year": 2016,
+      "snapshot_observation_year": 2012,
+      "source_release_date": "2015-06-25",
+      "edge_count": 27675
+    },
+    {
+      "decision_year": 2017,
+      "snapshot_observation_year": 2012,
+      "source_release_date": "2015-06-25",
+      "edge_count": 27675
+    },
+    {
+      "decision_year": 2018,
+      "snapshot_observation_year": 2012,
+      "source_release_date": "2015-06-25",
+      "edge_count": 27675
+    },
+    {
+      "decision_year": 2019,
+      "snapshot_observation_year": 2012,
+      "source_release_date": "2015-06-25",
+      "edge_count": 27675
+    },
+    {
+      "decision_year": 2020,
+      "snapshot_observation_year": 2012,
+      "source_release_date": "2015-06-25",
+      "edge_count": 27675
+    },
+    {
+      "decision_year": 2021,
+      "snapshot_observation_year": 2017,
+      "source_release_date": "2020-12-09",
+      "edge_count": 27683
+    },
+    {
+      "decision_year": 2022,
+      "snapshot_observation_year": 2017,
+      "source_release_date": "2020-12-09",
+      "edge_count": 27683
+    },
+    {
+      "decision_year": 2023,
+      "snapshot_observation_year": 2017,
+      "source_release_date": "2020-12-09",
+      "edge_count": 27683
+    },
+    {
+      "decision_year": 2024,
+      "snapshot_observation_year": 2017,
+      "source_release_date": "2020-12-09",
+      "edge_count": 27683
+    },
+    {
+      "decision_year": 2025,
+      "snapshot_observation_year": 2017,
+      "source_release_date": "2020-12-09",
+      "edge_count": 27683
+    }
+  ],
+  "method": "Latest uniquely valid official commuting snapshot under release-aware strict ex-ante intervals; cross-ZE directed edges only.",
+  "forbidden_claim": "Not yet validated as a useful model relation; no causal, neural-gain, automatic-recommendation, or policy claim."
+}
