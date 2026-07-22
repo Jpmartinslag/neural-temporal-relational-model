@@ -3278,3 +3278,34 @@ Only the `ze_similarity` family survives as a transferable ranking candidate.
 The two sparse sector-economic families are not promoted. The result is a
 limited representation gate pass on within-ZE ranking, not validation of a
 dynamic GNN, general classification improvement, causality, or recommendation.
+
+---
+
+## DEC-071 — ZE2020 Similarity Nonlinear Transfer Probe (2026-07-22)
+
+**Status:** `PRE_REGISTERED_NOT_RUN`.
+
+**Problem:** DEC-070 authorized only the isolated `ze_similarity` block for a
+minimal nonlinear probe. It did not show that a nonlinear model is useful, nor
+that the result warrants a recurrent or graph-neural architecture.
+
+**Hypothesis:** nonlinear interactions between audited node history and changes
+in the ZE-similarity neighbourhood may improve held-out-ZE sector-transition
+ranking beyond both a linear ZE-similarity probe and a nonlinear node-only
+control.
+
+**Minimal diagnostic:** reuse the DEC-070 ZE-similarity block, target, years,
+five ZE-disjoint folds, and seeds. Compare the existing standardized logistic
+probe with one existing project MLP configuration: hidden layers `(32,16)`,
+ReLU, Adam, early stopping, and no new dependency. Include MLP node-only,
+MLP ZE-similarity, matched endpoint-randomized ZE-similarity, and shuffled
+training labels. No hyperparameter search is permitted.
+
+**Pre-registered gate:** MLP ZE-similarity must have positive mean `NDCG@3`
+lift over MLP node-only and logistic ZE-similarity, beat endpoint-randomized MLP
+in at least 60% of paired seed-year-fold comparisons, and degrade under target
+shuffle. Populations must be identical, metrics finite, and ZE overlap zero.
+
+**Decision rule:** a pass authorizes designing a small recurrent temporal
+encoder with the same isolated relation block. Failure retains ZE similarity as
+a linear exploratory indicator only and blocks added neural complexity.
