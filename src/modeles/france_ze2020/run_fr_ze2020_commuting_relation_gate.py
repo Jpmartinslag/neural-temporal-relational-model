@@ -68,6 +68,13 @@ VIEW_NAMES = [
     "trajectory_similarity_reference",
     "commuting_target_shuffled",
 ]
+DETERMINISTIC_CONTROL_VIEWS = {
+    "node_only",
+    "commuting_availability_only",
+    "commuting_uniform_weights",
+    "commuting_reversed_direction",
+    "trajectory_similarity_reference",
+}
 FORBIDDEN_INPUT_STEMS = (
     "dynamic_stgnn_feature_panel",
     "graph_adjacency_core_v0",
@@ -294,9 +301,8 @@ def _summary(metrics: pd.DataFrame) -> pd.DataFrame:
 
 
 def evaluate_gate(metrics: pd.DataFrame) -> dict[str, object]:
-    keys = ["seed", "eval_year", "ze_fold"]
-
     def compare(control: str) -> dict[str, float]:
+        keys = ["seed", "eval_year", "ze_fold"]
         real = metrics[metrics["view"] == "commuting_real"][
             keys + ["ndcg_at_3"]
         ].rename(columns={"ndcg_at_3": "real"})
@@ -304,6 +310,12 @@ def evaluate_gate(metrics: pd.DataFrame) -> dict[str, object]:
             columns={"ndcg_at_3": "control"}
         )
         paired = real.merge(other, on=keys, validate="one_to_one")
+        if control in DETERMINISTIC_CONTROL_VIEWS:
+            unique_keys = ["eval_year", "ze_fold"]
+            variation = paired.groupby(unique_keys)[["real", "control"]].nunique()
+            if (variation > 1).any().any():
+                raise ValueError(f"Deterministic view varies across seeds: {control}")
+            paired = paired.drop_duplicates(unique_keys)
         delta = paired["real"] - paired["control"]
         return {
             "mean_ndcg_lift": float(delta.mean()),

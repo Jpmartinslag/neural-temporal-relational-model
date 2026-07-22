@@ -6,7 +6,9 @@ import pandas as pd
 from src.modeles.france_ze2020.run_fr_ze2020_commuting_relation_gate import (
     AVAILABILITY_FEATURE,
     CLAIM_STATUS,
+    VIEW_NAMES,
     build_commuting_feature_frame,
+    evaluate_gate,
     make_edge_variant,
     validate_paired_populations,
 )
@@ -150,6 +152,32 @@ def test_population_validator_rejects_mismatched_view():
         assert "commuting_uniform_weights" in str(error)
     else:
         raise AssertionError("Mismatched evaluation population was accepted")
+
+
+def test_gate_deduplicates_deterministic_seed_repetitions():
+    rows = []
+    for seed in [42, 43]:
+        for view in VIEW_NAMES:
+            score = 0.6
+            if view == "commuting_real":
+                score = 0.7
+            elif view == "commuting_target_shuffled":
+                score = 0.4 + 0.01 * (seed - 42)
+            elif view == "commuting_endpoint_randomized":
+                score = 0.5 + 0.01 * (seed - 42)
+            rows.append(
+                {
+                    "view": view,
+                    "seed": seed,
+                    "eval_year": 2022,
+                    "ze_fold": 0,
+                    "ndcg_at_3": score,
+                }
+            )
+    gate = evaluate_gate(pd.DataFrame(rows))
+    assert gate["comparisons"]["commuting_uniform_weights"]["n_pairs"] == 1
+    assert gate["comparisons"]["commuting_endpoint_randomized"]["n_pairs"] == 2
+    assert gate["comparisons"]["commuting_target_shuffled"]["n_pairs"] == 2
 
 
 def test_gate_script_has_no_legacy_or_neural_model():
