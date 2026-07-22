@@ -3522,3 +3522,37 @@ is no longer an input to the canonical builder. This closes data provenance
 only; contemporaneous sector features remain forbidden as target-year model
 inputs, and no relation, neural, causal, or recommendation claim is authorized.
 See HERALD_47.
+
+---
+
+## DEC-077 -- ZE2020 context-conditioned sector-relation gate (2026-07-22)
+
+**Status:** `PRE_REGISTERED_NOT_RUN`.
+
+**Prior-work boundary:** Phase 7 already estimated country-level lagged sector
+precedence using the 280 France ZE2020 observations, and DEC-060 audited its
+weak France signal. Phase 8 LOTO measured territorial influence on robust
+country coefficients; it did not estimate local ZE coefficients. Re-running
+the pooled regression is forbidden as duplicate evidence.
+
+**Unresolved hypothesis:** a source-sector lag may carry different information
+for different ZE economic contexts. A shared nonlinear model may partially pool
+these interactions across ZEs and transfer them to held-out zones, while a
+single pooled linear coefficient cannot represent that heterogeneity.
+
+**Fixed diagnostic:** use only canonical A10 observations and lagged features.
+Build ordered source-sector/target-sector ZE-year samples. Compare matched
+target-history controls, pooled linear source-lag regression, and one small MLP
+with source lag plus lagged ZE composition. Evaluation is rolling-origin with
+ZE-disjoint folds. Include source-lag shuffle, ZE-context shuffle, and target
+shuffle. No hyperparameter search is authorized.
+
+**Gate:** the context-conditioned MLP must improve held-out mean MAE over both
+the matched no-source MLP and pooled linear relation model, beat source-shuffle
+in at least 60% of seed/year/fold comparisons, degrade under context and target
+shuffle, preserve identical populations, and use no target-year features.
+
+**Decision rule:** a pass authorizes only design of a small temporal relation
+encoder whose edge scores depend on ZE context. Failure closes this target and
+feature specification, not all sector relations. Neither outcome authorizes a
+dynamic-GNN, causal, or recommendation claim. See HERALD_48.

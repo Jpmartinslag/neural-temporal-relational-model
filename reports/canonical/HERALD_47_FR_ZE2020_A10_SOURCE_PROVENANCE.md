@@ -67,5 +67,7 @@ lagged sector-feature builder.
 
 This decision validates source provenance only. It does not validate sector
 precedence, nonlinear relations, a temporal graph encoder, causality, or
-recommendation. The next admissible experiment is a separately pre-registered
-ZE-level sector-precedence gate built from the canonical lagged panel.
+recommendation. Phase 7 already estimated pooled France precedence from ZE2020
+observations; it must not be rerun under a new name. The remaining gap is a
+separately pre-registered test of context-conditioned relation heterogeneity
+that transfers to held-out ZEs (HERALD_48/DEC-077).
