@@ -172,7 +172,8 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     the unverified legacy mobility matrix with reproducible directed commuting snapshots
     from official INSEE commune flows (2012/2017/2023), reconciled to 280 ZE2020 through
     official COG events. Observation-time and strict ex-ante availability are separate;
-    this is a relation source, not yet a model input or neural result.
+    the implemented strict assignment covers decision years 2016--2025 without using the
+    2023 release. This remains a model-input candidate, not a neural result.
 
 ## Control Documents
 

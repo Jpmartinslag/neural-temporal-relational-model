@@ -130,3 +130,23 @@ The next gate must compare strict ex-ante commuting edges against:
 
 Only a relation family that separates from its matched placebos may enter a new
 pre-prediction representation experiment.
+
+## 9. Strict ex-ante implementation
+
+`build_fr_ze2020_commuting_strict_ex_ante_edges.py` implements the authorized
+release-aware assignment without modifying the source snapshots.
+
+Meso job `7780912` completed in 25 seconds with exit `0:0` and empty stderr:
+
+- 276,790 directed cross-ZE edge-year rows;
+- 280/280 source and target ZEs;
+- 2012--2015 explicitly unavailable;
+- 2016--2020 assigned only to the 2012 snapshot;
+- 2021--2025 assigned only to the 2017 snapshot;
+- zero use of the 2023 snapshot in the current 2012--2025 decision window;
+- outgoing `edge_weight` sums to one for every source ZE and available year;
+- 5/5 direct strict-assignment tests pass.
+
+The resulting table is a `MODEL_INPUT_CANDIDATE`, not an authorized model
+input. Authorization still depends on the matched-placebo relation gate in
+section 8.

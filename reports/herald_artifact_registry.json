@@ -1411,6 +1411,44 @@
       "notes": "Small tracked control-plane artifact for the untracked regenerable edge table."
     },
     {
+      "id": "FR_ZE2020_COMMUTING_STRICT_EX_ANTE_EDGES",
+      "phase": "official functional-edge strict assignment (2026-07-22)",
+      "path": "data/processed/france_ze2020/fr_ze2020_commuting_strict_ex_ante_edges.csv.gz",
+      "type": "directed_relation_edge_years",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": 13672735,
+      "sha256_prefix": "bb3d1930828599173aea",
+      "origin_decision": "DEC-073 implementation -- see reports/canonical/HERALD_44_FR_ZE2020_OFFICIAL_COMMUTING_EDGE_PROVENANCE.md section 9",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_commuting_strict_ex_ante_edges.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_commuting_edges.csv.gz"
+      ],
+      "claim_authorized": "Release-aware model-input candidate with 276,790 directed cross-ZE edge-year rows for 2016-2025. Decision years 2016-2020 use only the 2012 snapshot; 2021-2025 use only 2017; 2012-2015 remain unavailable and 2023 is excluded from the current decision window.",
+      "claim_forbidden": "Treating this candidate as an authorized or useful model relation before matched-placebo validation; substituting observation-time availability; causal influence, validated neural gain, automatic recommendation, or policy action.",
+      "can_regenerate": true,
+      "notes": "Meso job 7780912 completed exit 0:0 in 25 seconds; 5/5 direct tests passed. Gzip is deterministic and intentionally untracked."
+    },
+    {
+      "id": "FR_ZE2020_COMMUTING_STRICT_EX_ANTE_SUMMARY",
+      "phase": "official functional-edge strict assignment (2026-07-22)",
+      "path": "data/processed/france_ze2020/fr_ze2020_commuting_strict_ex_ante_summary.json",
+      "type": "relation_assignment_provenance_summary",
+      "status": "ACTIVE",
+      "tracked_in_git": true,
+      "size_bytes": 2292,
+      "sha256_prefix": "93563b84861a6630df2e",
+      "origin_decision": "DEC-073 implementation -- see reports/canonical/HERALD_44_FR_ZE2020_OFFICIAL_COMMUTING_EDGE_PROVENANCE.md section 9",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_commuting_strict_ex_ante_edges.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_commuting_strict_ex_ante_edges.csv.gz"
+      ],
+      "claim_authorized": "Tracked assignment audit listing available/unavailable decision years, selected snapshots, release dates, edge counts, and territorial coverage.",
+      "claim_forbidden": "Treating this summary as a model result, neural validation, causal evidence, automatic recommendation, or proof of relation value.",
+      "can_regenerate": true,
+      "notes": "Small tracked control-plane artifact for the untracked strict ex-ante edge table."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
