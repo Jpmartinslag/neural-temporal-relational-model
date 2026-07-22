@@ -160,6 +160,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     blocks for each dynamic edge family under the same ZE-disjoint transition task. Job
     7780874 finds a limited pass for `ze_similarity` only; sparse sector-economic families
     do not pass and are not promoted.
+40. `canonical/HERALD_42_FR_ZE2020_SIMILARITY_NONLINEAR_TRANSFER_GATE.md` — fixed MLP gate
+    for the isolated ZE-similarity block. Job 7780890 fails: node-only MLP is strongest,
+    while adding ZE similarity degrades ranking and AP. Recurrent/neural graph complexity
+    remains blocked.
 
 ## Control Documents
 

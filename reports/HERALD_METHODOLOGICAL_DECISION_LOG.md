@@ -3283,7 +3283,7 @@ dynamic GNN, general classification improvement, causality, or recommendation.
 
 ## DEC-071 — ZE2020 Similarity Nonlinear Transfer Probe (2026-07-22)
 
-**Status:** `PRE_REGISTERED_NOT_RUN`.
+**Status:** `COMPLETE_GATE_FAIL`.
 
 **Problem:** DEC-070 authorized only the isolated `ze_similarity` block for a
 minimal nonlinear probe. It did not show that a nonlinear model is useful, nor
@@ -3309,3 +3309,19 @@ shuffle. Populations must be identical, metrics finite, and ZE overlap zero.
 **Decision rule:** a pass authorizes designing a small recurrent temporal
 encoder with the same isolated relation block. Failure retains ZE similarity as
 a linear exploratory indicator only and blocks added neural complexity.
+
+**Result (Meso job 7780890):** 450 finite metric rows, six views, five seeds,
+three evaluation years, and five ZE-disjoint folds. All views used identical
+populations and ZE overlap was zero. Mean `NDCG@3` was 0.61426 for MLP
+node-only, 0.60677 for logistic ZE-similarity, and 0.59570 for MLP
+ZE-similarity. The nonlinear relation view therefore lost 0.01856 to MLP
+node-only and 0.01107 to logistic ZE-similarity. It beat its endpoint-randomized
+MLP by 0.00702, but in only 56.0% of paired comparisons, below the registered
+60% gate. Target shuffle degraded strongly to 0.44392.
+
+**Final decision:** `NONLINEAR_ZE_SIMILARITY_GATE_FAIL`. Nonlinearity is useful
+for the node panel, but the current MLP does not integrate the ZE-similarity
+block successfully. ZE similarity remains authorized only as a small linear
+exploratory ranking indicator. Recurrent or graph-neural complexity is not
+authorized from this result, and no post-result hyperparameter search is
+performed.

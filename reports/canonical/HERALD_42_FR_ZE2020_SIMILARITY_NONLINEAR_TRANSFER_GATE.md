@@ -1,7 +1,7 @@
 # HERALD 42 -- France ZE2020 similarity nonlinear transfer gate
 
 **Date:** 2026-07-22  
-**Status:** `PRE_REGISTERED_NOT_RUN`  
+**Status:** `PROBE_RUN_COMPLETE_GATE_FAIL`  
 **Decision:** `DEC-071`
 
 ## 1. Question
@@ -56,3 +56,50 @@ epochs. There is no tuning or architecture search.
 A pass authorizes only the design of a small recurrent temporal encoder using
 the same relation block. It does not authorize causal, recommendation, or final
 dynamic-GNN claims.
+
+## 5. Execution audit
+
+Smoke job `7780889` completed first. Full Meso job `7780890` completed in 6
+minutes 51 seconds with exit `0:0` and empty stderr.
+
+- 5 seeds, evaluation years 2020--2022, and 5 ZE-disjoint folds;
+- 6 views, 450 metric rows, and 75 paired seed-year-fold keys;
+- identical train, test, and positive populations across all views;
+- zero ZE overlap and all metrics finite;
+- no hyperparameter search after observing results.
+
+## 6. Results
+
+| View | Mean NDCG@3 | Mean AP |
+|---|---:|---:|
+| `logit_node_only` | 0.60096 | 0.53709 |
+| `logit_ze_similarity` | 0.60677 | 0.53289 |
+| `mlp_node_only` | 0.61426 | 0.54633 |
+| `mlp_ze_similarity` | 0.59570 | 0.50063 |
+| `mlp_ze_similarity_endpoint_randomized` | 0.58868 | 0.49054 |
+| `mlp_ze_similarity_target_shuffled` | 0.44392 | 0.36485 |
+
+Paired `NDCG@3` findings for MLP ZE-similarity:
+
+- lift over MLP node-only: `-0.01856`;
+- lift over logistic ZE-similarity: `-0.01107`;
+- lift over endpoint-randomized MLP: `+0.00702`, with 56.0% paired wins;
+- lift over target-shuffled MLP: `+0.15178`, with 97.3% paired wins.
+
+The target is learnable and the endpoint assignment contains some information,
+but neither fact satisfies the gate: the relation MLP loses to both required
+non-placebo controls.
+
+## 7. Decision
+
+Decision: `NONLINEAR_ZE_SIMILARITY_GATE_FAIL`.
+
+The MLP node-only result shows that nonlinear interactions in the canonical node
+history can be useful. Adding the current ZE-similarity block makes both ranking
+and average precision worse. This is consistent with noisy or overly sparse
+relational inputs, but the experiment does not identify the mechanism.
+
+ZE similarity remains a linear exploratory ranking indicator. No recurrent
+temporal encoder, graph-neural architecture, causal claim, or recommendation
+layer is authorized by this result. Hyperparameter tuning after seeing the gate
+would invalidate the pre-registration and is therefore not performed.
