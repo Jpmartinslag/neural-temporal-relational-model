@@ -32,6 +32,7 @@ from src.modeles.france_ze2020.train_fr_ze2020_dynamic_relation_learner import (
     DEFAULT_EDGES_PATH,
     apply_relation_scenario,
     build_pairwise_relation_samples,
+    filter_test_pairs,
     load_edges,
     load_nodes,
     run_dynamic_relation_learner,
@@ -87,7 +88,9 @@ def _formula_metrics_for_scenario(
 
     rows: list[dict[str, object]] = []
     for eval_year in eval_years:
+        train = scored[scored["decision_year"] < eval_year].copy()
         test = scored[scored["decision_year"] == eval_year].copy()
+        test = filter_test_pairs(train, test, test_pair_mode="unseen_pair")
         if test.empty or test["relation_label"].nunique() < 2:
             continue
         for score_name in FORMULA_SCORE_COLUMNS:
@@ -135,9 +138,14 @@ def _compatibility_metrics_for_scenarios(
         pair_feature_mode="compatibility_only",
     )
     out = metrics[metrics["model"] == "relation_logit"].copy()
-    out = out.rename(columns={"model": "model_or_score", "n_test_rows": "n_rows"})
+    out = out.rename(
+        columns={
+            "model": "model_or_score",
+            "n_test_rows": "n_rows",
+            "n_test_positive": "n_positive",
+        }
+    )
     out["score_family"] = "local_learner"
-    out["n_positive"] = np.nan
     out["claim_status"] = CLAIM_STATUS
     return out[
         [

@@ -714,7 +714,7 @@ def _history_count_score(
     return score
 
 
-def _filter_test_pairs(
+def filter_test_pairs(
     train: pd.DataFrame,
     test: pd.DataFrame,
     test_pair_mode: str,
@@ -786,7 +786,7 @@ def run_dynamic_relation_learner(
         for eval_year in eval_years:
             train = samples[samples["decision_year"] < eval_year].copy()
             test = samples[samples["decision_year"] == eval_year].copy()
-            test = _filter_test_pairs(train, test, test_pair_mode=test_pair_mode)
+            test = filter_test_pairs(train, test, test_pair_mode=test_pair_mode)
             if test.empty or train["decision_year"].nunique() < min_train_years:
                 continue
             if train["relation_label"].nunique() < 2 or test["relation_label"].nunique() < 2:
@@ -844,6 +844,7 @@ def run_dynamic_relation_learner(
                         "k": int(k),
                         "n_train_rows": int(len(train)),
                         "n_test_rows": int(len(test)),
+                        "n_test_positive": int(labels.sum()),
                         "n_train_years": int(train["decision_year"].nunique()),
                         "n_features": int(len(feature_cols)),
                         "feature_family": feature_family,

@@ -13,6 +13,7 @@ from src.modeles.france_ze2020.train_fr_ze2020_dynamic_relation_learner import (
     TEST_PAIR_MODES,
     apply_relation_scenario,
     build_pairwise_relation_samples,
+    filter_test_pairs,
     load_edges,
     node_features_for_family,
     relation_feature_columns,
@@ -79,6 +80,32 @@ def test_relation_learner_scenarios_are_explicit():
         "difference_only",
         "compatibility_only",
         "pair_structure_only",
+    ]
+
+
+def test_filter_test_pairs_keeps_only_pairs_unseen_as_train_positives():
+    train = pd.DataFrame(
+        {
+            "source_node_id": ["a", "x"],
+            "target_node_id": ["b", "y"],
+            "edge_type": ["same_sector", "same_sector"],
+            "relation_label": [1, 0],
+        }
+    )
+    test = pd.DataFrame(
+        {
+            "source_node_id": ["a", "x", "c"],
+            "target_node_id": ["b", "y", "d"],
+            "edge_type": ["same_sector", "same_sector", "same_sector"],
+            "relation_label": [1, 0, 1],
+        }
+    )
+
+    filtered = filter_test_pairs(train, test, test_pair_mode="unseen_pair")
+
+    assert list(zip(filtered["source_node_id"], filtered["target_node_id"])) == [
+        ("x", "y"),
+        ("c", "d"),
     ]
 
 
