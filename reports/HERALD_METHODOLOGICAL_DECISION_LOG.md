@@ -3464,7 +3464,7 @@ no dynamic-graph, causal, or recommendation claim follows.
 
 ## DEC-075 -- ZE2020 matched commuting-topology gate (2026-07-22)
 
-**Status:** `PRE_REGISTERED_NOT_RUN`.
+**Status:** `CLOSED_GATE_FAILED_TOPOLOGY_SEMANTICS_NOT_ISOLATED`.
 
 **Problem:** DEC-074 found that uniform weights outperformed raw commuting
 intensity, but did not include a randomized-endpoint placebo with the same
@@ -3483,3 +3483,16 @@ pairs, preserve identical finite populations, and maintain zero ZE overlap.
 **Decision rule:** pass authorizes only a later weight-transform gate; failure
 closes this commuting-topology representation. No neural, causal, dynamic-GNN,
 or recommendation claim is authorized. See HERALD_46.
+
+**Execution result:** Meso job `7780944`, commit `3a239f9`, completed exit
+`0:0` in 2m22s with empty stderr. The fixed run produced 525 finite metric
+rows with zero ZE overlap and identical populations. Real uniform topology
+reached mean NDCG@3 0.635586, but matched uniform randomized endpoints reached
+0.643529 (real-minus-placebo -0.007943; 37.3% paired wins). Four of five
+seed-level mean deltas were negative.
+
+**Final decision:** the matched topology gate fails. The gain over node-only is
+consistent with generic neighbour aggregation but is not attributable to the
+official destination semantics. Weight transforms and neural integration are
+closed for this representation. Reopening requires a materially different
+economic representation and a new decision.
