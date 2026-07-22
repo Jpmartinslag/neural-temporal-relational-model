@@ -42,6 +42,7 @@ def _nodes() -> pd.DataFrame:
                 "sector_share_t": share,
                 "sector_rank_in_ze_year_t": 1.0,
                 "sector_growth_lag_1": 0.1,
+                "mask_sector_growth_lag_1_available": 1.0,
                 "dominant_sector_flag_t": 1.0,
             }
         )
@@ -49,13 +50,31 @@ def _nodes() -> pd.DataFrame:
 
 
 def test_real_commuting_aggregates_directed_neighbor_features():
-    frame, columns = build_commuting_feature_frame(_nodes(), _edges())
+    frame, columns = build_commuting_feature_frame(
+        _nodes(), _edges(), expected_zone_count=2
+    )
     first = frame.set_index("ze2020").loc["0001"]
     second = frame.set_index("ze2020").loc["0002"]
     assert first["commuting_out_neighbor__sector_share_t"] == 0.8
     assert second["commuting_out_neighbor__sector_share_t"] == 0.2
     assert first[AVAILABILITY_FEATURE] == 1
-    assert len(columns) == 16
+    assert len(columns) == 18
+
+
+def test_masked_neighbor_growth_is_not_treated_as_zero():
+    nodes = _nodes()
+    nodes.loc[nodes["ze2020"] == "0002", "sector_growth_lag_1"] = np.inf
+    nodes.loc[
+        nodes["ze2020"] == "0002", "mask_sector_growth_lag_1_available"
+    ] = 1.0
+    frame, _ = build_commuting_feature_frame(
+        nodes, _edges(), expected_zone_count=2
+    )
+    first = frame.set_index("ze2020").loc["0001"]
+    assert first["commuting_out_neighbor__sector_growth_lag_1"] == 0.0
+    assert (
+        first["commuting_out_neighbor__sector_growth_lag_1__available_share"] == 0.0
+    )
 
 
 def test_variants_are_cross_ze_and_row_normalized():

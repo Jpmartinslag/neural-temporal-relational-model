@@ -41,6 +41,11 @@ growth, and dominant-sector flag. The relation block also contains outgoing
 degree, maximum weight, weight entropy, incoming degree, incoming weight sum,
 and a separate availability mask.
 
+Lagged sector growth is aggregated only over finite, mask-observed neighbours.
+Its outgoing and incoming available-weight shares are retained as separate
+features; a missing or infinite growth is never interpreted as an observed
+zero.
+
 This occurs before prediction. It is not a residual correction.
 
 ## 4. Views
@@ -83,5 +88,11 @@ auditable relational objective.
 
 ## 7. Execution
 
-Pending. This section must record job ID, environment, row/population checks,
-metrics, paired gates, and final decision after the fixed run.
+Smoke job `7780919` stopped before model fitting on one infinite lagged-growth
+input and unavailable 2025 lagged growth. This exposed a missing-value handling
+bug in the new relation aggregator. The implementation was corrected to use
+the canonical mask plus a finite-value check and to emit neighbour-availability
+shares. No metric was observed and the pre-registered gate is unchanged.
+
+The fixed run remains pending. This section must record job ID, environment,
+row/population checks, metrics, paired gates, and final decision.
