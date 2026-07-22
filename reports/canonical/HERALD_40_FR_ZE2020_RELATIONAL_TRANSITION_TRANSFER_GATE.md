@@ -1,7 +1,7 @@
 # HERALD 40 -- France ZE2020 relational-transition transfer gate
 
 **Date:** 2026-07-22  
-**Status:** `PRE_REGISTERED_NOT_RUN`  
+**Status:** `PROBE_RUN_COMPLETE_GATE_FAIL`  
 **Decision:** `DEC-069`
 
 ## 1. Question
@@ -97,3 +97,66 @@ target, or protocol that did not transfer.
 This diagnostic is not a validated dynamic GNN, causal effect, policy
 recommendation, or automatic recommendation system. Allowed language is
 association, temporal precedence, transferable signal, and exploratory ranking.
+
+## 8. Execution and audit
+
+The pre-registered smoke job `7780695` completed first with one seed. The full
+Meso job `7780697` then completed in 5 minutes 54 seconds with exit `0:0` and
+empty stderr.
+
+Audit facts:
+
+- 5 seeds: 42--46;
+- evaluation years: 2020--2022;
+- 5 deterministic ZE-disjoint folds;
+- 525 metric rows and 75 paired seed-year-fold keys;
+- 224 train ZEs and 56 test ZEs per fold, with zero overlap;
+- identical train, test, and positive populations across all seven views;
+- all primary and secondary metrics finite.
+
+## 9. Results
+
+| View | Mean NDCG@3 | Mean AP |
+|---|---:|---:|
+| `node_only` | 0.60096 | 0.53709 |
+| `node_plus_degree_change` | 0.60497 | 0.53755 |
+| `real_relation_change` | 0.60595 | 0.53218 |
+| `random_endpoint_relation_change` | 0.60569 | 0.52860 |
+| `past_snapshot_relation_change` | 0.59505 | 0.51593 |
+| `sector_shuffled_relation_change` | 0.60618 | 0.53033 |
+| `target_shuffled_relation_change` | 0.46040 | 0.37009 |
+
+Paired `NDCG@3` findings for real relation change:
+
+- lift over node-only: `+0.00499`;
+- lift over degree change: `+0.00098`;
+- lift over randomized endpoints: `+0.00026`, with only 53.3% paired wins;
+- lift over past snapshot: `+0.01090`, with only 46.7% paired wins;
+- lift over sector shuffle: `-0.00023`, with only 18.7% paired wins;
+- lift over target shuffle: `+0.14555`, with 92.0% paired wins.
+
+The target-shuffle degradation shows that the external transition task is
+learnable. It does not rescue the relation hypothesis: real relation changes do
+not separate from endpoint-randomized or sector-shuffled controls.
+
+## 10. Decision and next diagnostic
+
+Decision: `RELATIONAL_TRANSITION_TRANSFER_GATE_FAIL`.
+
+This result rejects only the current graph-change representation under this
+target and protocol. It does not reject nonlinear economic relations generally.
+No nonlinear temporal encoder or semi-supervised objective is authorized from
+this gate.
+
+The expanding graph is highly imbalanced by edge family:
+
+| Edge family | Rows |
+|---|---:|
+| `ze_similarity` | 257,823 |
+| `cross_ze_same_sector` | 426 |
+| `intra_ze_sector` | 211 |
+
+The next admissible diagnostic is therefore to isolate each edge family and
+normalize family scales, then rerun the same ZE-disjoint transition gate. This
+tests whether the sparse economic relations are hidden by the dominant general
+ZE-similarity layer. It must precede any larger neural architecture.
