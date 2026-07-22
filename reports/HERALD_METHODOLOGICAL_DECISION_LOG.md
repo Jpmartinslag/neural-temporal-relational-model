@@ -3174,7 +3174,7 @@ corresponding update.
 
 ## DEC-069 — ZE2020 Relational-Transition Transfer Probe (2026-07-22)
 
-**Status:** `PRE_REGISTERED_NOT_RUN`.
+**Status:** `COMPLETE_GATE_FAIL`.
 
 **Problem:** HERALD_39 showed that current graph aggregates recognize temporal
 succession, but they did not improve next-year sector-share prediction over the
@@ -3207,3 +3207,22 @@ claims.
 does not reject nonlinear territorial relations generally. A pass authorizes a
 small nonlinear temporal encoder experiment; it does not validate a dynamic
 GNN, causality, or operational recommendation.
+
+**Result (Meso job 7780697):** 525 finite metric rows covering five seeds,
+three evaluation years, five ZE-disjoint folds, and seven views. Every paired
+comparison used the same train/test/positive population; training contained 224
+ZEs, testing contained 56, and ZE overlap was always zero. Mean `NDCG@3` was
+0.6010 for node-only, 0.6050 for node-plus-degree-change, and 0.6059 for real
+relation change. Real relation change exceeded degree by only 0.0010, was nearly
+tied with randomized endpoints (lift 0.0003), and lost to sector-shuffled
+relations (-0.0002 lift). Target shuffle degraded strongly to 0.4604, confirming
+that the task itself contains learnable signal, but not that current edge
+semantics transfer.
+
+**Final decision:** `RELATIONAL_TRANSITION_TRANSFER_GATE_FAIL`. The current
+relation-change representation is not authorized for a nonlinear temporal
+encoder. The failure is specific: graph inspection found 257,823
+`ze_similarity` edges versus only 426 `cross_ze_same_sector` and 211
+`intra_ze_sector` edges. The next admissible diagnostic is edge-family isolation
+and scale normalization against the same target and controls, not a larger
+neural model.

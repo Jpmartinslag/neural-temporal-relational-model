@@ -151,6 +151,11 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     representation diagnostic using frozen linear probes over the existing dynamic graph:
     temporal successor and next-year sector state against node-only, randomized-endpoint,
     and past-only snapshot controls. No new encoder or recommendation claim.
+38. `canonical/HERALD_40_FR_ZE2020_RELATIONAL_TRANSITION_TRANSFER_GATE.md` —
+    pre-registered ZE-disjoint probe of whether past relational-neighbourhood changes
+    transfer to an externally observed future top-3 sector entry. Job 7780697 fails the
+    gate: current relation changes do not separate from randomized or sector-shuffled
+    controls; the next diagnostic isolates and normalizes edge families.
 
 ## Control Documents
 
