@@ -3169,3 +3169,41 @@ referenced (`CODEX_MEMORY.md`, `HERALD_CURRENT_STATE.md`,
 `HERALD_ACTIVE_DOCUMENT_INDEX.md`, `herald_artifact_registry.json`,
 `HERALD_NAMING_CONVENTIONS.md`, `README.md`) — see those files for the
 corresponding update.
+
+---
+
+## DEC-069 — ZE2020 Relational-Transition Transfer Probe (2026-07-22)
+
+**Status:** `PRE_REGISTERED_NOT_RUN`.
+
+**Problem:** HERALD_39 showed that current graph aggregates recognize temporal
+succession, but they did not improve next-year sector-share prediction over the
+node-only panel. That result does not reject economic relations in general. It
+leaves unresolved whether changes in a node's past relational neighbourhood
+carry transferable information about an independently observed future sector
+transition.
+
+**Hypothesis:** for a ZE2020 x A10 node at decision year `t`, changes in graph
+aggregates built only from information available through `t` may help rank a
+future top-3 sector-growth entry at `t+3`, beyond node-only history and simple
+degree change. The effect must transfer to ZE2020 units excluded from model
+fitting.
+
+**Minimal diagnostic:** reuse the audited dynamic nodes, expanding edge memory,
+graph-aggregation helper, top-3-entry label, and horizon-aware maturity rule.
+Fit only a standardized logistic probe. Evaluate with ZE-disjoint folds and
+rolling decision years. Compare real relation change with node-only,
+node-plus-degree-change, randomized endpoints, a past-only graph snapshot,
+sector-shuffled relation change, and shuffled training labels.
+
+**Pre-registered gate:** the real relation-change view must have positive mean
+`NDCG@3` lift over both node-only and degree-change controls, beat each graph
+placebo in at least 60% of paired seed-year-fold comparisons, and degrade under
+both sector and target shuffles. All inputs and outputs must remain finite,
+time-respecting, ZE-disjoint, and free of causal or automatic-recommendation
+claims.
+
+**Decision rule:** failure rejects only this representation/target/protocol. It
+does not reject nonlinear territorial relations generally. A pass authorizes a
+small nonlinear temporal encoder experiment; it does not validate a dynamic
+GNN, causality, or operational recommendation.
