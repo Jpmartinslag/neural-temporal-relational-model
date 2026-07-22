@@ -65,9 +65,12 @@ Source and target sectors must differ.
 | `context_shuffled_mlp` | real source lag with ZE context assigned to another zone in the same year |
 | `target_shuffled_mlp` | false training labels; sanity control only |
 
-Use one existing small MLP configuration from the project. No architecture,
-depth, width, learning-rate, feature, or threshold search is permitted after
-seeing gate results.
+Use the existing `(32,16)` ReLU/Adam MLP configuration from DEC-071, with
+early stopping and at most 500 iterations. The 500-iteration ceiling was fixed
+after the technical smoke showed that 200 iterations could stop unconverged;
+this is a convergence correction, not a performance search. Every fit records
+its iteration count and convergence status. No architecture, depth, width,
+learning-rate, feature, or threshold search is permitted after the full run.
 
 ## 5. Evaluation
 
@@ -84,14 +87,19 @@ seeing gate results.
 
 All conditions are required:
 
-1. no non-finite metric, no duplicate key, and zero train/test ZE overlap;
+1. no non-finite metric, no duplicate key, zero train/test ZE overlap, and all
+   substantive model fits converged; target-shuffle convergence is recorded but
+   does not block integrity because random labels may contain no learnable
+   stopping signal;
 2. `context_conditioned_mlp` has lower mean MAE than `no_source_mlp`;
 3. it has lower mean MAE than `pooled_linear_relation`;
 4. it beats `source_shuffled_mlp` in at least 60% of paired
    seed/year/fold comparisons and has positive mean lift;
-5. context shuffle degrades it, showing that any source signal depends on ZE
-   context rather than source lag alone;
-6. target shuffle degrades strongly;
+5. context shuffle has positive mean MAE degradation and loses at least 60% of
+   paired seed/year/fold comparisons, showing that any source signal depends on
+   ZE context rather than source lag alone;
+6. target shuffle increases relative mean MAE by at least 5% and loses at least
+   80% of paired comparisons;
 7. every feature is reconstructable from information available by `t-1`.
 
 ## 7. Interpretation boundary
@@ -105,3 +113,19 @@ that French sector relations do not exist.
 
 No outcome establishes structural causality, validates a dynamic GNN, or
 authorizes automatic territorial recommendation.
+
+## 8. Implementation readiness
+
+The fixed runner and five-seed Slurm package are implemented in:
+
+```text
+src/modeles/france_ze2020/run_fr_ze2020_context_conditioned_sector_relation_gate.py
+hpc/france_ze2020_context_sector_relation/
+```
+
+Corrected technical smoke job `7781009` completed on Meso in 8m05s with exit
+`0:0`, empty stderr, finite metrics, zero ZE overlap, identical populations,
+and convergence for every view (127--279 iterations for the five MLP fits).
+The single 2024/fold-0/seed-42 cell beat the nonlinear no-source and shuffled
+controls but lost to the pooled linear control. This is a runtime and
+convergence check only; it is not the registered multi-year/fold/seed result.
