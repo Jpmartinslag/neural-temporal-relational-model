@@ -164,6 +164,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     for the isolated ZE-similarity block. Job 7780890 fails: node-only MLP is strongest,
     while adding ZE similarity degrades ranking and AP. Recurrent/neural graph complexity
     remains blocked.
+41. `canonical/HERALD_43_FR_ZE2020_RELATION_BOTTLENECK_FUSION_GATE.md` — pre-prediction
+    PCA bottleneck for ZE-similarity before the MLP head. Job 7780898 recovers the raw
+    concatenation loss but remains below node-only and near randomized endpoints; neural
+    fusion stays blocked pending better externally grounded edge semantics.
 
 ## Control Documents
 
