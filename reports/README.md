@@ -168,6 +168,11 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     PCA bottleneck for ZE-similarity before the MLP head. Job 7780898 recovers the raw
     concatenation loss but remains below node-only and near randomized endpoints; neural
     fusion stays blocked pending better externally grounded edge semantics.
+42. `canonical/HERALD_44_FR_ZE2020_OFFICIAL_COMMUTING_EDGE_PROVENANCE.md` — replaces
+    the unverified legacy mobility matrix with reproducible directed commuting snapshots
+    from official INSEE commune flows (2012/2017/2023), reconciled to 280 ZE2020 through
+    official COG events. Observation-time and strict ex-ante availability are separate;
+    this is a relation source, not yet a model input or neural result.
 
 ## Control Documents
 

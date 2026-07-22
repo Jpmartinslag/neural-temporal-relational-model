@@ -1370,6 +1370,47 @@
       "notes": "Tests: tests/test_fr_ze2020_top3_entry_lift_hpc.py plus HERALD_36/HERALD_33 tests. The submitter is dry-run unless --confirm-submit is passed."
     },
     {
+      "id": "FR_ZE2020_OFFICIAL_COMMUTING_EDGES",
+      "phase": "official functional-edge reconstruction (2026-07-22)",
+      "path": "data/processed/france_ze2020/fr_ze2020_commuting_edges.csv.gz",
+      "type": "directed_relation_edge_snapshots",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": 3932923,
+      "sha256_prefix": "ac9625e9243149e2eb8b",
+      "origin_decision": "DEC-073 -- see reports/canonical/HERALD_44_FR_ZE2020_OFFICIAL_COMMUTING_EDGE_PROVENANCE.md",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_commuting_edges.py",
+      "input_data": [
+        "official INSEE commune residence-to-workplace flow snapshots 2012/2017/2023 (URLs and SHA-256 pinned in generator)",
+        "official INSEE COG 2026 commune-event file",
+        "data/interim/mappings/commune_to_ze2020_2026.csv",
+        "data/processed/france_ze2020/fr_ze2020_clean_panel.csv"
+      ],
+      "claim_authorized": "Reproducible directed functional relation source with 86,568 ZE2020 edge-snapshot rows, 280/280 source and target zones per snapshot, raw commuter counts, three explicit origin-normalized weights, self-flow and low-flow flags, and separate observation-time versus strict ex-ante availability.",
+      "claim_forbidden": "Using this artifact as a current neural/model input before the separate strict-ex-ante assignment and placebo gate; using the 2023 release for strict ex-ante 2024-2025 decisions; treating commuters as trip frequency; causal influence, validated neural gain, automatic recommendation, or policy action.",
+      "can_regenerate": true,
+      "notes": "Raw source caches and this gzip edge table are intentionally untracked. Meso job 7780907 completed exit 0:0 in 33 seconds; 8/8 direct tests passed. The legacy graph_adjacency_mobility_v0.csv remains forbidden and is never read."
+    },
+    {
+      "id": "FR_ZE2020_OFFICIAL_COMMUTING_EDGE_SUMMARY",
+      "phase": "official functional-edge reconstruction (2026-07-22)",
+      "path": "data/processed/france_ze2020/fr_ze2020_commuting_edge_summary.json",
+      "type": "relation_source_provenance_summary",
+      "status": "ACTIVE",
+      "tracked_in_git": true,
+      "size_bytes": 3539,
+      "sha256_prefix": "7b44d5dc9c3a2ec284e0",
+      "origin_decision": "DEC-073 -- see reports/canonical/HERALD_44_FR_ZE2020_OFFICIAL_COMMUTING_EDGE_PROVENANCE.md",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_commuting_edges.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_commuting_edges.csv.gz"
+      ],
+      "claim_authorized": "Source URLs, checksums, release/geography dates, row counts, mapping coverage, in-scope coverage, edge counts, and official source cautions for all three commuting snapshots.",
+      "claim_forbidden": "Treating the summary as a model result, neural validation, causal evidence, automatic recommendation, or proof of predictive gain.",
+      "can_regenerate": true,
+      "notes": "Small tracked control-plane artifact for the untracked regenerable edge table."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",

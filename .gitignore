@@ -207,6 +207,7 @@ data/external/portugal/raw/
 data/external/belgium/raw/
 data/external/italy/raw/
 data/external/netherlands/raw/
+data/external/france/raw/
 data/external/eurostat_business_demography/raw/
 # Large raw SDMX-CSV downloads outside raw/ (190 MB combined; regenerable
 # from the Eurostat API, see DEC-038 / eurostat_jsonstat.py decoder).

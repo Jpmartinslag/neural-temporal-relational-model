@@ -3375,3 +3375,36 @@ transferable neural value from current ZE-similarity relations. Further neural
 fusion or recurrent tuning is blocked. The next admissible direction is to
 improve externally grounded edge semantics/provenance, particularly functional
 mobility or commuting relations, before another neural integration gate.
+
+---
+
+## DEC-073 — Official France ZE2020 Commuting-Edge Provenance (2026-07-22)
+
+**Status:** `RELATION_SOURCE_READY_NOT_MODEL_INPUT`.
+
+**Problem:** DEC-072 blocks further neural fusion of trajectory-similarity
+relations. The legacy France mobility matrix cannot replace those relations
+because its generator and exact source are absent.
+
+**Hypothesis:** official INSEE commune residence-to-workplace flows can provide
+a reproducible directed functional relation between ZE2020 territories, while
+keeping observation date and publication availability distinct.
+
+**Construction:** aggregate checksum-pinned INSEE flow snapshots for 2012,
+2017, and 2023 to the canonical 280 ZE2020 scope. Resolve historical commune
+codes using the official COG 2026 event file and collapse Paris/Lyon/Marseille
+arrondissements to parent communes. Preserve raw commuter counts, shares of all
+workers resident at the origin, in-scope shares, cross-ZE row-normalized shares,
+self-flow flags, low-flow cautions, release dates, and both temporal clocks.
+
+**Audit:** Meso job 7780907 produced 86,568 finite directed edge-snapshot rows,
+with all 280 source and target zones represented in every snapshot. Source-code
+resolution exceeds 99.96% in all snapshots. Eight direct tests pass. The old
+matrix correlates strongly with a temporary 2017 reconstruction but is not
+identical and remains forbidden.
+
+**Final decision:** `OFFICIAL_COMMUTING_RELATION_SOURCE_READY`. A strict
+ex-ante assignment/lift builder is authorized as the next step. The present
+artifact is not yet a model input and does not authorize neural promotion,
+causal language, automatic recommendation, or use of the 2023 release for
+strict ex-ante decisions in 2024--2025. See HERALD_44.
