@@ -1510,6 +1510,26 @@
       "notes": "Meso job 7780944, commit 3a239f9, exit 0:0, 2m22s, empty stderr. Outputs are gitignored and collected locally. Seven views, five seeds, three years, five ZE-disjoint folds; four focused direct tests passed."
     },
     {
+      "id": "FR_ZE2020_CONTEXT_CONDITIONED_SECTOR_RELATION_GATE_V1",
+      "phase": "ZE-context-conditioned lagged sector-relation diagnostic (2026-07-22)",
+      "path": "<output-dir>/fr_ze2020_context_conditioned_sector_relation_gate_{metrics,summary,gate}_v1.*",
+      "type": "regenerable_relation_gate_output",
+      "status": "REGENERABLE",
+      "tracked_in_git": false,
+      "size_bytes": null,
+      "sha256_prefix": null,
+      "origin_decision": "DEC-077 -- see reports/canonical/HERALD_48_FR_ZE2020_CONTEXT_CONDITIONED_SECTOR_RELATION_SPEC.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_context_conditioned_sector_relation_gate.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv",
+        "data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv"
+      ],
+      "claim_authorized": "Regenerable DEC-077 diagnostic comparing a shared nonlinear source-sector lag conditioned on lagged ZE composition with matched no-source, pooled-linear, source/context-shuffle, and target-shuffle controls under rolling-origin ZE-disjoint evaluation. Technical smoke 7781009 validates runtime, convergence, finite metrics, and population separation only.",
+      "claim_forbidden": "Treating the single-cell smoke as the registered result; claiming structural causality, automatic territorial recommendation, validated dynamic graph-neural architecture, or general sector-relation value before the full five-seed gate is audited.",
+      "can_regenerate": true,
+      "notes": "Five-seed package: hpc/france_ze2020_context_sector_relation/. Smoke 7781009 completed exit 0:0 in 8m05s with empty stderr; full result pending."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
