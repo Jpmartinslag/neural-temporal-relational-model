@@ -860,6 +860,12 @@ and auditability, not black-box superiority.
 
 Lift over formula audit:
 
+**Correction notice (2026-07-22):** the numerical lift in this subsection is historical
+and invalid for current claims. Formula scores used all test pairs, whereas the learner
+used only pairs unseen among training positives. The evaluator now aligns both sides on
+the same `unseen_pair` population and reports matching row and positive counts. A rerun
+on the HERALD_38 temporal edge bundle is pending; do not reuse the values below.
+
 ```text
 script: src/modeles/france_ze2020/audit_fr_ze2020_relation_lift_over_formulas.py
 scope: same dual-endpoint gate, unseen-pair, lag-1 node features, new_relation target

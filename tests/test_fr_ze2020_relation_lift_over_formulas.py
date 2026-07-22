@@ -72,6 +72,16 @@ def test_relation_lift_audit_retains_shuffle_control(relation_lift_metrics: pd.D
     assert full > shuffle
 
 
+def test_relation_lift_audit_compares_identical_test_populations(
+    relation_lift_metrics: pd.DataFrame,
+):
+    yearly = relation_lift_metrics[relation_lift_metrics["eval_year"].astype(str) != "mean"]
+    for _, group in yearly.groupby(["eval_year", "falsification_scenario"]):
+        assert group["n_rows"].nunique() == 1
+        assert group["n_positive"].notna().all()
+        assert group["n_positive"].nunique() == 1
+
+
 def test_relation_lift_audit_has_no_forbidden_claims_or_inputs():
     code = SCRIPT_PATH.read_text()
     forbidden = [

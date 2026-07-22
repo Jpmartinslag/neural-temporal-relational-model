@@ -1,6 +1,14 @@
 # HERALD 28 -- France ZE2020 Relation Objective HPC Spec
 
-**Status:** `HPC_FALSIFICATION_PASS_NOT_A_MODEL_CLAIM`.
+**Status:** `PENDING_REAUDIT_AFTER_TEMPORAL_AND_EVALUATION_CORRECTIONS`.
+
+**Correction notice (2026-07-22):** the 2026-07-07 PASS below is retained only as
+historical traceability. It used the pre-HERALD_38 edge bundle, and the formula baselines
+were evaluated on all test pairs while the learner used only `unseen_pair` rows. The
+reported lift therefore compared different populations and is not authorized as a
+current numerical claim. The evaluator now applies the same `unseen_pair` filter and
+reports the positive count for both sides. Corrected smoke job `7779295` is in progress;
+no replacement PASS is recorded yet.
 
 This document specifies the HPC falsification batch for the HERALD_27 relation
 objective. It does not validate a dynamic GNN, does not authorize causal claims,
@@ -94,9 +102,9 @@ recommendation validated
 causal mechanism discovered
 ```
 
-## 5. Result
+## 5. Historical result -- invalid for current claims
 
-HPC audit status:
+Historical HPC audit status before the HERALD_38 and 2026-07-22 corrections:
 
 ```text
 RELATION_OBJECTIVE_HPC_AUDIT_PASS
@@ -117,7 +125,7 @@ Main relation objective:
 | `dual_endpoint_matched_negatives` | 0.9545 | 0.8328 | +0.1217 |
 | `dual_endpoint_temporal_sector_shuffle` | 0.6503 | 0.5973 | +0.0530 |
 
-Reading:
+Historical reading, no longer authorized as current evidence:
 
 ```text
 The learned compatibility signal remains stronger than deterministic formulas

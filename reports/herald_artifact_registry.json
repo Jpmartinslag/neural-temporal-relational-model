@@ -1156,7 +1156,7 @@
       "phase": "relation lift over formulas audit (2026-07-07)",
       "path": "data/processed/france_ze2020/fr_ze2020_relation_lift_over_formulas_{metrics,run}_v1.*",
       "type": "model_audit_output",
-      "status": "REGENERABLE",
+      "status": "INVALID_FOR_CLAIMS",
       "tracked_in_git": false,
       "size_bytes": null,
       "sha256_prefix": null,
@@ -1166,10 +1166,10 @@
         "data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv",
         "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz"
       ],
-      "claim_authorized": "Local audit only: compares the sector_position_no_rank compatibility learner against deterministic formula scores (dominance_asymmetry_score, sector_share_product_score, anchor_peripheral_score) on the same dual-endpoint matched new_relation gate with lag-1 node features and unseen-pair evaluation. Mean over 2022-2025: in the real dual-endpoint gate, relation_logit AP ~0.955 versus best formula AP ~0.833, lift ~+0.122. Under matched temporal+sector shuffle, relation_logit AP ~0.650 versus best formula AP ~0.619, lift ~+0.031. This supports a next learned compatibility objective while keeping formulas as mandatory controls.",
-      "claim_forbidden": "Treating the lift as a validated dynamic GNN, HPC readiness, causal influence, automatic recommendation, or proof of final model quality. Ignoring that this is still a small local audit over constructed candidate edges, not an end-to-end territorial recommendation experiment.",
+      "claim_authorized": "Audit design only: compares the sector_position_no_rank compatibility learner against deterministic formula scores on a dual-endpoint matched new_relation gate with lag-1 node features. The 2026-07-07 numerical lift is historical and not authorized because formulas and learner used different test populations and the input edge bundle predates HERALD_38. The corrected evaluator aligns both sides on unseen_pair rows; replacement metrics are pending.",
+      "claim_forbidden": "Using the historical AP or lift values as current evidence; treating the lift as a validated dynamic graph model, HPC readiness, causal influence, automatic recommendation, or proof of final model quality.",
       "can_regenerate": true,
-      "notes": "Tests: tests/test_fr_ze2020_relation_lift_over_formulas.py. Local audit outputs were written to /tmp in the 2026-07-07 run, not tracked. No HPC job launched."
+      "notes": "Tests: tests/test_fr_ze2020_relation_lift_over_formulas.py. Evaluator population-alignment correction made 2026-07-22; corrected meso smoke job 7779295 pending."
     },
     {
       "id": "FR_ZE2020_RELATION_OBJECTIVE_HPC_SPEC_V1",
@@ -1187,10 +1187,10 @@
         "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_stateful_sector_only.csv.gz",
         "src/modeles/france_ze2020/audit_fr_ze2020_relation_lift_over_formulas.py"
       ],
-      "claim_authorized": "Executable HPC falsification package for HERALD_27 relation objective only. Run fr_ze2020_relation_objective_20260707_185547 (Slurm 7733592) completed 5/5 seeds and passed G1-G5: integrity, lift over best formula, degradation under matched temporal+sector shuffle, seed stability, and output separation. Main gate: relation_logit AP ~0.9545 versus best formula AP ~0.8328, lift ~+0.1217; matched shuffle AP drop ~0.3042.",
-      "claim_forbidden": "Treating this HPC package as a validated dynamic GNN, a trained model result, a causal economic mechanism, or an automatic recommendation system. Treating a future PASS as sufficient for policy recommendation without a separate retrospective recommendation/ranking validation.",
+      "claim_authorized": "Executable HPC falsification package for the HERALD_27 relation objective. The 2026-07-07 run is historical only: its input predates HERALD_38 and its lift evaluator compared formulas on all pairs with a learner on unseen pairs. A corrected rerun is required before any numerical gate claim.",
+      "claim_forbidden": "Claiming that the historical run passed a current relation-objective gate; treating this package as a validated dynamic graph model, a causal economic mechanism, or an automatic recommendation system.",
       "can_regenerate": true,
-      "notes": "Tests: tests/test_fr_ze2020_relation_objective_hpc_audit.py. Submit wrapper is dry-run unless --confirm-submit is passed. Raw gate report is local/ignored at reports/metrics/fr_ze2020_relation_objective_20260707_185547_gate_report.json."
+      "notes": "Tests: tests/test_fr_ze2020_relation_objective_hpc_audit.py. Corrected seed-42 smoke job 7779295 launched on meso on 2026-07-22; result pending."
     },
     {
       "id": "FR_ZE2020_DYNAMIC_RELATION_ENCODER_V1",
