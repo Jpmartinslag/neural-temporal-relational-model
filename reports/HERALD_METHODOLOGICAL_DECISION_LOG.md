@@ -3420,7 +3420,7 @@ change the model-input restriction before a matched-placebo gate.
 
 ## DEC-074 — ZE2020 Strict Commuting Relation Gate (2026-07-22)
 
-**Status:** `PRE_REGISTERED_NOT_RUN`.
+**Status:** `CLOSED_GATE_FAILED_RAW_WEIGHTING_REJECTED`.
 
 **Problem:** DEC-073 provides reproducible and release-aware commuting edges,
 but provenance alone does not show that their economic semantics transfer to a
@@ -3446,3 +3446,16 @@ must remain identical, finite, mature, and ZE-disjoint.
 temporal/commuting encoder. Failure blocks neural integration under this
 representation and target. Neither outcome authorizes causal or automatic
 recommendation claims. See HERALD_45.
+
+**Execution result:** Meso job `7780933`, commit `6da99d4`, completed exit
+`0:0` in 2m45s with empty stderr. The fixed run produced 600 finite metric
+rows with zero ZE overlap and identical paired populations. Weighted real
+commuting reached mean NDCG@3 0.615354 versus 0.600963 node-only and 0.608295
+randomized endpoints, but lost to the same topology with uniform weights
+(0.635586; real-minus-uniform -0.020231). It was also negative against
+node-only in 2020 and 2022, with the aggregate lift driven by 2021.
+
+**Final decision:** the pre-registered gate fails. Raw commuting intensity is
+not authorized for neural integration. Uniform topology remains only a
+candidate observation until tested against a matched uniform-endpoint placebo;
+no dynamic-graph, causal, or recommendation claim follows.

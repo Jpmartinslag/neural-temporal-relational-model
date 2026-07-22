@@ -1449,6 +1449,27 @@
       "notes": "Small tracked control-plane artifact for the untracked strict ex-ante edge table."
     },
     {
+      "id": "FR_ZE2020_COMMUTING_RELATION_GATE_RESULT_V1",
+      "phase": "strict ex-ante commuting relation falsification (2026-07-22)",
+      "path": "hpc_results/fr_ze2020_commuting_relation_gate_20260722_6da99d4/fr_ze2020_commuting_relation_gate_{metrics,summary,gate}_v1.*",
+      "type": "hpc_relation_gate_output",
+      "status": "FROZEN",
+      "tracked_in_git": false,
+      "size_bytes": 116973,
+      "sha256_prefix": "metrics=ef88c7e1969e269abb89;summary=0273c2a6d63e122908a;gate=cf27d97dd63c613d01c",
+      "origin_decision": "DEC-074 -- see reports/canonical/HERALD_45_FR_ZE2020_COMMUTING_RELATION_GATE.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_commuting_relation_gate.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv",
+        "data/processed/france_ze2020/fr_ze2020_commuting_strict_ex_ante_edges.csv.gz",
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_edges_expanding.csv.gz"
+      ],
+      "claim_authorized": "The fixed linear gate failed. Weighted real commuting exceeded node-only, availability-only, randomized endpoints, reversed direction, and trajectory similarity on aggregate, but lost to the same real topology with uniform weights and was not consistently positive by year. Raw commuting intensity is rejected for neural integration under this target and representation.",
+      "claim_forbidden": "Treating uniform topology as validated before a matched uniform-endpoint placebo; claiming a validated neural or dynamic graph model, causal influence, automatic recommendation, policy action, or general rejection of commuting relations.",
+      "can_regenerate": true,
+      "notes": "Meso job 7780933, commit 6da99d4, exit 0:0, 2m45s, empty stderr. Outputs are gitignored and collected locally. Deterministic controls count 15 independent year-fold pairs; stochastic endpoint and target placebos count 75 seed/year/fold pairs. Seven focused direct tests passed on Meso."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",
