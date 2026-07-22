@@ -1,7 +1,7 @@
 # HERALD 45 -- France ZE2020 commuting-relation gate
 
 **Date:** 2026-07-22  
-**Status:** `PRE_REGISTERED_NOT_RUN`  
+**Status:** `GATE_FAILED_RAW_WEIGHTING_REJECTED`  
 **Decision:** `DEC-074`
 
 ## 1. Question
@@ -98,5 +98,67 @@ bug in the new relation aggregator. The implementation was corrected to use
 the canonical mask plus a finite-value check and to emit neighbour-availability
 shares. No metric was observed and the pre-registered gate is unchanged.
 
-The fixed run remains pending. This section must record job ID, environment,
-row/population checks, metrics, paired gates, and final decision.
+The execution smoke was repeated after the correction. Job `7780923`
+completed exit `0:0` in 29 seconds with zero stderr. It was used only as an
+execution check; its one-seed/one-year metrics are not evidence.
+
+## 8. Fixed-run audit
+
+The final run used commit `6da99d4` on Meso job `7780933` and completed exit
+`0:0` in 2 minutes 45 seconds. Peak reported RSS was 482,912 KiB and stderr was
+empty.
+
+- 600 metric rows: 8 views x 5 seeds x 3 years x 5 ZE folds;
+- zero duplicate view/seed/year/fold keys;
+- zero non-finite metrics and zero train/test ZE overlap;
+- one claim status across every row;
+- identical train/test populations across paired views;
+- deterministic views were identical across seeds and contribute 15
+  independent year-fold pairs, not 75;
+- stochastic endpoint and target placebos contribute 75 paired evaluations.
+
+Checksums of the collected, gitignored outputs:
+
+| Output | SHA-256 |
+|---|---|
+| metrics | `ef88c7e1969e269abb8970c27ada5cb127a230ebe2cad8ffb039adeed29fb262` |
+| summary | `0273c2a6d63e122908a4032ae572571ebaddb3b9e964c1c50a70e190a2eab58d` |
+| gate | `cf27d97dd63c613d01c36de0689ca2ca8555bb4b37909aca39b3e56dcf195ea9` |
+
+## 9. Result
+
+| View | Mean NDCG@3 |
+|---|---:|
+| `node_only` | 0.600963 |
+| `commuting_availability_only` | 0.600211 |
+| `trajectory_similarity_reference` | 0.606771 |
+| `commuting_endpoint_randomized` | 0.608295 |
+| `commuting_reversed_direction` | 0.611046 |
+| `commuting_real` | 0.615354 |
+| `commuting_uniform_weights` | **0.635586** |
+| `commuting_target_shuffled` | 0.459723 |
+
+The weighted real relation had positive mean lift over node-only (+0.014391),
+availability-only (+0.015143), randomized endpoints (+0.007059; 62.7% paired
+wins), reversed direction (+0.004309), trajectory similarity (+0.008584), and
+shuffled targets (+0.155631). It failed the pre-registered uniform-weight
+condition: -0.020231 mean NDCG@3 and 26.7% wins over the same real topology with
+uniform weights.
+
+The apparent weighted-relation lift was not temporally uniform. Against
+node-only it was negative in 2020 (-0.007620), positive in 2021 (+0.054875),
+and negative in 2022 (-0.004082). The gate therefore fails independently of
+the uniform-weight result.
+
+## 10. Decision
+
+`commuting_real` does not pass DEC-074. Raw origin-normalized commuting
+intensity is rejected for neural integration under this target and
+representation.
+
+The uniform-topology result is a candidate observation, not a validated graph
+claim: this gate did not include a matched uniform-weight endpoint placebo.
+The next admissible test is therefore topology-only real versus topology-only
+randomized endpoints, followed by pre-registered weight transforms such as
+log, square-root, rank, or capped weights only if topology survives. No neural
+encoder, causal claim, or recommendation is authorized by this result.

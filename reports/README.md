@@ -174,10 +174,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     official COG events. Observation-time and strict ex-ante availability are separate;
     the implemented strict assignment covers decision years 2016--2025 without using the
     2023 release. This remains a model-input candidate, not a neural result.
-43. `canonical/HERALD_45_FR_ZE2020_COMMUTING_RELATION_GATE.md` — pre-registers a
-    release-aware linear transfer gate for official commuting relations against
-    availability-only, randomized-endpoint, uniform-weight, reversed-direction,
-    trajectory-similarity, and target-shuffle controls. No result yet.
+43. `canonical/HERALD_45_FR_ZE2020_COMMUTING_RELATION_GATE.md` — records the
+    release-aware linear transfer gate for official commuting relations. The
+    raw weighted relation failed because uniform weights were better; a matched
+    topology-only endpoint placebo is the remaining admissible diagnostic.
 
 ## Control Documents
 
