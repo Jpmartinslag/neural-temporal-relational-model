@@ -26,6 +26,10 @@ The target and protocol are unchanged from HERALD_40--43:
 - primary metric: `NDCG@3`;
 - identical candidate populations across paired views.
 
+Seeds vary stochastic placebos. Deterministic views are checked for exact
+agreement across seeds and counted once per year-fold in paired gate summaries;
+seed repetitions are not treated as independent evidence.
+
 ## 3. Relation representation
 
 For each ZE-sector node and decision year, the strict commuting matrix
