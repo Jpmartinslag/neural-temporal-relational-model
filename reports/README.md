@@ -178,9 +178,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     release-aware linear transfer gate for official commuting relations. The
     raw weighted relation failed because uniform weights were better; a matched
     topology-only endpoint placebo is the remaining admissible diagnostic.
-44. `canonical/HERALD_46_FR_ZE2020_COMMUTING_TOPOLOGY_GATE.md` — pre-registers
-    the matched topology-only test required by HERALD_45: real versus
-    randomized destinations under identical uniform outgoing weights.
+44. `canonical/HERALD_46_FR_ZE2020_COMMUTING_TOPOLOGY_GATE.md` — records the
+    matched topology-only falsification required by HERALD_45. Randomized
+    uniform destinations outperformed the real uniform topology, closing
+    weight transforms and neural integration for this representation.
 
 ## Control Documents
 

@@ -1470,6 +1470,26 @@
       "notes": "Meso job 7780933, commit 6da99d4, exit 0:0, 2m45s, empty stderr. Outputs are gitignored and collected locally. Deterministic controls count 15 independent year-fold pairs; stochastic endpoint and target placebos count 75 seed/year/fold pairs. Seven focused direct tests passed on Meso."
     },
     {
+      "id": "FR_ZE2020_COMMUTING_TOPOLOGY_GATE_RESULT_V1",
+      "phase": "matched commuting-topology falsification (2026-07-22)",
+      "path": "hpc_results/fr_ze2020_commuting_topology_gate_20260722_3a239f9/fr_ze2020_commuting_topology_gate_{metrics,summary,gate}_v1.*",
+      "type": "hpc_relation_gate_output",
+      "status": "FROZEN",
+      "tracked_in_git": false,
+      "size_bytes": 106136,
+      "sha256_prefix": "metrics=06b5a50a79e61204a534;summary=d2141d2ef9772ef7b8ec;gate=b1b5f1a791a2c261c447",
+      "origin_decision": "DEC-075 -- see reports/canonical/HERALD_46_FR_ZE2020_COMMUTING_TOPOLOGY_GATE.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_commuting_topology_gate.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_dynamic_graph_nodes.csv",
+        "data/processed/france_ze2020/fr_ze2020_commuting_strict_ex_ante_edges.csv.gz"
+      ],
+      "claim_authorized": "The matched topology gate failed. Real uniform topology exceeded node, availability, degree-only, reversed-direction, and shuffled-target controls, but matched uniform randomized endpoints achieved higher aggregate NDCG@3. The observed gain cannot be attributed to official destination semantics under this representation.",
+      "claim_forbidden": "Claiming validated commuting topology, useful transformed weights, a validated neural or dynamic graph model, causal influence, automatic recommendation, policy action, or general rejection of commuting data beyond this target and representation.",
+      "can_regenerate": true,
+      "notes": "Meso job 7780944, commit 3a239f9, exit 0:0, 2m22s, empty stderr. Outputs are gitignored and collected locally. Seven views, five seeds, three years, five ZE-disjoint folds; four focused direct tests passed."
+    },
+    {
       "id": "FR_ZE2020_GEOMETRY",
       "phase": "pre-existing (Observatory v0.3/v0.4), formally registered 2026-06-24",
       "path": "data/external/ze2020_geometry.geojson",

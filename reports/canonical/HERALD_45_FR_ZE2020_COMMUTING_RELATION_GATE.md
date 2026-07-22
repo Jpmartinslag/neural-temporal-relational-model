@@ -162,3 +162,7 @@ The next admissible test is therefore topology-only real versus topology-only
 randomized endpoints, followed by pre-registered weight transforms such as
 log, square-root, rank, or capped weights only if topology survives. No neural
 encoder, causal claim, or recommendation is authorized by this result.
+
+Follow-up DEC-075 / HERALD_46 completed that matched topology test and failed:
+randomized uniform endpoints outperformed the real uniform topology. Weight
+transforms and neural integration are therefore closed for this representation.
