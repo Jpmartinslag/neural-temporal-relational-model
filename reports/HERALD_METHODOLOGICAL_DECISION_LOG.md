@@ -3415,3 +3415,34 @@ cross-ZE edge-year rows for 2016--2025. Years 2012--2015 remain unavailable;
 snapshot. The 2023 snapshot is absent from the current strict input candidate.
 Five direct tests pass. This completes the authorized builder but does not
 change the model-input restriction before a matched-placebo gate.
+
+---
+
+## DEC-074 — ZE2020 Strict Commuting Relation Gate (2026-07-22)
+
+**Status:** `PRE_REGISTERED_NOT_RUN`.
+
+**Problem:** DEC-073 provides reproducible and release-aware commuting edges,
+but provenance alone does not show that their economic semantics transfer to a
+territorial-sector task.
+
+**Hypothesis:** weighted directed residence-to-workplace relations provide
+territorial-sector context beyond node history, availability timing, false
+destinations, unweighted topology, reversed direction, and trajectory
+similarity.
+
+**Fixed test:** reuse the HERALD_40--43 future top-3 sector-entry target,
+evaluation years 2020--2022, five ZE-disjoint folds, seeds 42--46, mature-label
+rule, logistic regression, and NDCG@3. Aggregate observed sector features
+through outgoing and incoming strict commuting matrices before prediction.
+
+**Pre-registered gate:** real commuting must have positive mean NDCG@3 lift
+over availability-only, uniform-weight, reversed-direction, and
+trajectory-similarity controls; it must beat randomized endpoints with positive
+mean lift and at least 60% paired wins; target shuffle must degrade. Populations
+must remain identical, finite, mature, and ZE-disjoint.
+
+**Decision rule:** pass authorizes only design of a small pre-prediction
+temporal/commuting encoder. Failure blocks neural integration under this
+representation and target. Neither outcome authorizes causal or automatic
+recommendation claims. See HERALD_45.
