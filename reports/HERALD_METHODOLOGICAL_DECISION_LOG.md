@@ -3496,3 +3496,29 @@ consistent with generic neighbour aggregation but is not attributable to the
 official destination semantics. Weight transforms and neural integration are
 closed for this representation. Reopening requires a materially different
 economic representation and a new decision.
+
+---
+
+## DEC-076 -- France ZE2020 A10 source-provenance closure (2026-07-22)
+
+**Status:** `SOURCE_PROVENANCE_CLOSED`.
+
+**Problem:** the canonical ZE2020 sector panel depended on a processed A10
+intermediate whose dedicated source builder was not part of the current
+canonical chain.
+
+**Fixed reconstruction:** stream the checksum-pinned official INSEE SIDE 2025
+ZIP directly, select annual ZE2020 establishment creations for all legal forms
+and the nine project A10 sectors, restrict to the canonical 280-zone scope, and
+require exact reconciliation against the clean panel for all 3,920 ZE-years.
+
+**Audit result:** final Meso job `7780962` rebuilt 35,280 rows with empty stderr. The
+result is byte-identical to the existing canonical panel. One sparse official
+cell (`5218/2016/JZ`) is completed as zero only because the other eight sectors
+equal the independent official total. Eighteen focused tests pass.
+
+**Final decision:** `FR_ZE2020_A10_SOURCE_READY`. The legacy processed A10 file
+is no longer an input to the canonical builder. This closes data provenance
+only; contemporaneous sector features remain forbidden as target-year model
+inputs, and no relation, neural, causal, or recommendation claim is authorized.
+See HERALD_47.

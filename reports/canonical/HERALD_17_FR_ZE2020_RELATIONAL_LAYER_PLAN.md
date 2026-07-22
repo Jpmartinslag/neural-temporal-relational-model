@@ -67,7 +67,7 @@ vocabulário já existente em `reports/HERALD_NAMING_CONVENTIONS.md` §6 e
 | 3 | `data/processed/graph_adjacency_core_v0.csv` | ZE→ZE, vizinhança geográfica binária | ZE2020, 280×280 | **Não** — script ausente da árvore atual (HERALD_16 §4.1) | `CANDIDATE_NEEDS_PROVENANCE` | Não como input confiável; sim como matéria-prima candidata | **Verificado nesta pass:** simétrica, diagonal zero, mesmo conjunto de 280 zonas e mesma ordenação `node_idx`/`node_id` do painel canônico atual (0 divergências em 280 linhas, comparado contra `fr_ze2020_model_ready_panel.csv`). Consistência estrutural alta, mas o método de construção (limiar de distância? contiguidade administrativa?) é desconhecido. |
 | 4 | `data/processed/graph_adjacency_mobility_v0.csv` | ZE→ZE, mobilidade ponderada (pré-COVID) | ZE2020, 280×280 | **Não** — idem | `CANDIDATE_NEEDS_PROVENANCE` | Não como input confiável; sim como matéria-prima candidata | Assimétrica (fluxo direcional), linhas somam 1.0 (normalizada). Mesma verificação estrutural do item 3 aplica. `reports/HERALD_INTELLIGENCE_LAYER_SPEC.md` descreve como "mobilité pré-COVID, peut sous-représenter télétravail". |
 | 5 | `data/processed/graph_node_index_core_v0.csv` | índice ZE2020 ↔ `node_idx` (não é relação em si) | ZE2020, 280 linhas | Não | `CANDIDATE_NEEDS_PROVENANCE` | Sim, como índice apenas | Ordenação idêntica ao `node_id` de `fr_ze2020_model_ready_panel.csv` (verificado nesta pass) — útil se as matrizes 3/4 forem revalidadas, mas não certifica os *valores* delas. |
-| 6 | `data/processed/side_creations_a10_ze2020_through_2025_v1.csv` | ZE × setor (A10), criações por ano | ZE2020 × 9 setores A10, 280×14×9 | Parcial — dado commitado junto com V4/V5 (`bc43a79`), sem builder dedicado na árvore | `CANDIDATE_NEEDS_PROVENANCE` | Sim, com cautela | **Novo achado desta pass:** a coluna `total` reconcilia exatamente (diff máx. absoluta = 0.0, 3920/3920 linhas) com `establishment_creations` do painel canônico `fr_ze2020_clean_panel.csv`. Conteúdo internamente consistente com a linhagem canônica atual, mesmo sem builder próprio na árvore. Candidato mais forte da Categoria C — ver §2.C. |
+| 6 | `data/processed/side_creations_a10_ze2020_through_2025_v1.csv` | ZE × setor (A10), criações por ano | ZE2020 × 9 setores A10, 280×14×9 | Gerador histórico localizado; substituído como input canônico pelo builder direto do ZIP oficial | `LEGACY_DERIVED_REFERENCE` | Não como input novo; usar `fr_ze2020_sector_panel.csv` | DEC-076/HERALD_47 fechou a proveniência: o builder canônico lê diretamente `DS_SIDE_CREA_ETAB_COM_2025_CSV.zip`, com SHA-256 e filtros dimensionais fixos, e reproduz o painel existente byte a byte. |
 | 7 | `data/processed/herald_observatory_v04_granular/granular_relation_edges.csv` | setor→setor (precedência temporal, lag-1) | país-agregado (FR/NL_COROP/PT_Municipal), **não desagregado por ZE** | Sim — `build_sector_precedence_graph.py` + `build_observatory_v04_granular_exports.py` | `SECTOR_RELATION_EVIDENCE` | Sim, por tier (DEC-066) | FR=9 arestas, mas só 1 `ROBUST_ORIGINAL` (RU→MN, ela própria `FR_COVID_SENSITIVE`, DEC-060); as outras 8 são `FINE_GRAIN_SUPPORTED`/`EXPLORATORY_FINE_GRAIN`. Relação agregada nacional, não ZE-específica. |
 | 8 | `data/processed/sector_precedence_results/` | setor→setor, bundle bruto Phase 7 | país-agregado | Sim — DEC-034, `SECTOR_PRECEDENCE_PROTOTYPE_READY` | `SECTOR_RELATION_EVIDENCE` | Sim (frozen) | Mesma ressalva do item 7: agregado, não por ZE. |
 | 9 | `data/processed/france_relation_audit/` | diagnóstico (não é dado relacional) | ZE2020 e NUTS3 comparados | Sim — `run_dec060_france_signal_audit.py` | `CLOSED_BRANCH_REFERENCE` | Sim, como referência metodológica | DEC-060: explica por que FR tem sinal setorial fraco — efeito de escala ecológica (zonas pequenas → \|β\| menor), não falha de método. Essencial para calibrar expectativas de qualquer relação setorial ZE-específica futura. |
@@ -143,14 +143,13 @@ HPC, e o próprio DEC-060 já recomenda cautela com o threshold atual nessa esca
 
 ### C. Relações ZE × setor (especialização/composição)
 
-**O que já existe:** item 6 (`side_creations_a10_ze2020_through_2025_v1.csv`) — o candidato mais
-promissor desta auditoria. Reconciliado nesta pass contra o painel canônico (diff 0.0).
+**O que já existe:** o painel canônico `fr_ze2020_sector_panel.csv`, agora construído
+diretamente do ZIP oficial INSEE SIDE e reconciliado com o painel limpo (DEC-076/HERALD_47).
+O item 6 permanece apenas como referência derivada histórica.
 
-**O que falta:** um painel canônico de setor por ZE construído com o **mesmo rigor** da
-linhagem `fr_ze2020_clean_panel.csv` → `fr_ze2020_model_ready_panel.csv` (código
-zero-padded, filtro explícito de 280 zonas, máscaras de disponibilidade, *sem* reusar o
-painel legado `dynamic_stgnn_feature_panel_v1.csv`). Hoje o item 6 não tem máscaras, não
-tem features de lag/growth, e não tem teste de regressão como os painéis canônicos têm.
+**O que falta:** nada de proveniência para a composição A10 observada. O uso em modelo
+continua exigindo a camada defasada `fr_ze2020_sector_relational_features.csv`; o painel
+observado contemporâneo não é causal-safe por si só.
 
 **Risco metodológico:** baixo — os valores já reconciliam exatamente com o painel
 canônico. O risco real é de *padrão*, não de *conteúdo*: construir o painel sem replicar a
@@ -411,7 +410,7 @@ antes de GNN (§0b).
 | Categoria | Recusado? | Motivo |
 |---|---|---|
 | B — sinal setorial agregado nacional | Recusado nesta pass | Não há, no painel canônico atual, nenhum sinal setorial nacional já validado *na granularidade de ano* que pudesse ser simplesmente "broadcast" sem reconstruir o pipeline de `granular_relation_edges.csv` por ano-base — escopo maior do que um MVP2 mínimo; fica para uma iteração futura do MVP2, não para esta pass |
-| C — composição/exposição setorial por ZE | **`BLOQUEADO/PENDING_PROVENANCE`** | `side_creations_a10_ze2020_through_2025_v1.csv` (HERALD_17 §1, item 6) não tem builder na árvore atual, apesar de seus valores reconciliarem exatamente com o painel canônico. Construir um painel setorial com o mesmo rigor de máscaras/causal-safety de HERALD_15 é trabalho novo de dados, não uma feature de modelo — fica para uma pass futura dedicada (ver `fr_ze2020_sector_panel.csv` em HERALD_17 §6) |
+| C — composição/exposição setorial por ZE | **Superado por DEC-076** | Esta foi a decisão histórica desta pass. A proveniência foi depois fechada por um builder direto do ZIP oficial; ver §13 e HERALD_47. |
 | A (alternativa) — contiguidade geográfica via `ze2020_geometry.geojson` | Recusado nesta pass | Construiria um SEGUNDO tipo de relação ZE→ZE (contiguidade espacial) além da similaridade de trajetória já implementada; nenhum builder existe ainda, e contiguidade geográfica já falhou 2 vezes neste projeto como insumo preditivo (DEC-008/009, DEC-031) — adicionar mais uma sem necessidade não está nas features "mínimas" pedidas |
 | `graph_adjacency_core_v0.csv` / `graph_adjacency_mobility_v0.csv` | **Recusado, por regra explícita desta etapa** | Gerador ausente da árvore atual (HERALD_16 §4.1); nunca usados como fonte confiável nesta pass, nem direta nem indiretamente — confirmado por teste (`test_builder_reads_only_model_ready_panel_as_base`) |
 
@@ -549,15 +548,11 @@ grafo. Sem essa camada, "ZE×setor" seria apenas uma frase no plano, não um dad
 | `total == soma dos 9 setores` | Diff máx. absoluta = 0.0 (3.920/3.920 linhas) |
 | Uso de valor futuro | N/A neste nível (painel bruto observado, sem features ainda — a auditoria de causalidade se aplica às etapas 2-3 abaixo) |
 
-**Documentado e mantido:** o arquivo não tem builder próprio encontrado na árvore
-atual (mesmo padrão de lacuna já documentado para `graph_adjacency_core_v0.csv`/
-`mobility_v0.csv`, HERALD_16 §4.1) — é `CANDIDATE_NEEDS_PROVENANCE`. Usado nesta
-pass apenas porque os checks acima passam, e **o builder novo
-(`build_fr_ze2020_sector_panel.py`) re-verifica a reconciliação com o painel
-canônico a cada execução e se recusa (`raise ValueError`) a escrever output se
-ela algum dia parar de bater** — o caveat é reforçado em código, não só em
-documentação. Não pode se tornar fonte definitiva sem auditoria de proveniência
-adicional (localizar ou reconstruir o gerador original).
+**Atualização DEC-076 (2026-07-22):** este caveat foi fechado. O builder
+`build_fr_ze2020_sector_panel.py` agora lê diretamente o ZIP oficial SIDE,
+verifica SHA-256, membro e dimensões, e se recusa a escrever se a soma A10 não
+reconciliar com o painel limpo. O intermediário `side_creations_a10_*` não é
+mais input do builder canônico.
 
 ### O que foi construído (Partes 2-5)
 
@@ -594,7 +589,7 @@ adicional (localizar ou reconstruir o gerador original).
 | Feature pedida | Decisão | Motivo |
 |---|---|---|
 | `services_share_lag_1` | **Não implementada** | A10 não tem um único código "serviços" — `JZ`/`MN`/`OQ`/`RU` são todos "services-like" mas economicamente heterogêneos (informação/comunicação, profissional/administrativo, administração pública/educação/saúde, artes/outros). Escolher um subconjunto arbitrário seria uma decisão de modelagem disfarçada de dado. A própria tarefa qualificou esta feature com "se possível" — exercido aqui o "não". |
-| Painel A10 como fonte definitiva | **Não promovido** | Permanece `CANDIDATE_NEEDS_PROVENANCE`; usado só como candidato derivado com caveat reforçado em código (ver auditoria acima) |
+| Painel A10 como fonte definitiva | **Promovido como dado observado por DEC-076** | A fonte é o ZIP oficial checksum-pinned; isso não promove features contemporâneas para uso causal nem valida relações. |
 
 ### Como evitamos vazamento temporal (camada setorial)
 
@@ -823,3 +818,15 @@ explicitamente smoke/experimentais. Próxima decisão pendente: se vale a pena
 iterar a especificação (outra definição de similaridade, mais features, mais
 épocas controladas) antes de considerar qualquer treino em escala — nenhuma
 DEC nova foi aberta para autorizar isso nesta pass.
+
+## 13. A10 official-source provenance closure (2026-07-22)
+
+DEC-076 supersedes the `CANDIDATE_NEEDS_PROVENANCE` limitation recorded during
+the June prototype. `build_fr_ze2020_sector_panel.py` now reads the official
+checksum-pinned SIDE ZIP directly and reproduces the existing 35,280-row panel
+byte for byte. The legacy processed A10 intermediate is no longer an input.
+
+This closes the data lineage, not the relation hypothesis. The observed panel
+remains contemporaneous; only its lagged derivative may be used as a model
+input. Formal ZE-level sector precedence remains an untested, separately gated
+hypothesis. Full evidence: HERALD_47.

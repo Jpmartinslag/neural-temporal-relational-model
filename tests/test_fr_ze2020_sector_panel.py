@@ -1,12 +1,5 @@
 """
-Consistency tests for the FR ZE2020 sector composition panel (MVP2 Category
-C, step 1). Generator: src/data/france_ze2020/build_fr_ze2020_sector_panel.py.
-
-Audited source (data/processed/side_creations_a10_ze2020_through_2025_v1.csv) has no
-generator script in the current tree -- CANDIDATE_NEEDS_PROVENANCE, used
-only because its values reconcile exactly with the canonical clean panel.
-See reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md, "MVP2
-Categoria C" section.
+Consistency tests for the official-source FR ZE2020 sector composition panel.
 """
 
 import ast
@@ -16,9 +9,12 @@ import pandas as pd
 import pytest
 
 from src.data.france_ze2020.build_fr_ze2020_sector_panel import (
-    A10_SOURCE_PATH,
     CLEAN_PANEL_PATH,
     OUT_PATH,
+    SIDE_DATA_MEMBER,
+    SIDE_ZIP_PATH,
+    SIDE_ZIP_SHA256,
+    SOURCE_FILTER,
     SECTOR_CODES,
     build_sector_panel,
     load_a10_source,
@@ -78,8 +74,29 @@ def test_a10_source_has_no_negative_or_missing_values(a10_raw):
     assert (a10_raw[SECTOR_CODES + ["a10_total"]] >= 0).all().all()
 
 
+def test_only_official_sparse_zero_is_completed_and_reconciled(a10_raw):
+    assert a10_raw.attrs["source_missing_sector_cells_completed_as_zero"] == 1
+    row = a10_raw[
+        (a10_raw["ze2020"] == "5218") & (a10_raw["year"] == 2016)
+    ].iloc[0]
+    assert row["JZ"] == 0
+
+
 def test_a10_source_has_no_duplicate_ze2020_year_rows(a10_raw):
     assert a10_raw.duplicated(subset=["ze2020", "year"]).sum() == 0
+
+
+def test_official_source_contract_is_explicit():
+    assert SIDE_ZIP_PATH.name == "DS_SIDE_CREA_ETAB_COM_2025_CSV.zip"
+    assert SIDE_DATA_MEMBER == "DS_SIDE_CREA_ETAB_COM_2025_data.csv"
+    assert len(SIDE_ZIP_SHA256) == 64
+    assert SOURCE_FILTER == {
+        "GEO_OBJECT": "ZE2020",
+        "LEGAL_FORM": "_T",
+        "SIDE_MEASURE": "UNIT_LOC_BURE",
+        "OBS_STATUS": "A",
+        "FREQ": "A",
+    }
 
 
 def test_a10_total_equals_sum_of_sector_columns(a10_raw):
