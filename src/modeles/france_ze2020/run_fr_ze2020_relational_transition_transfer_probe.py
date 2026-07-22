@@ -199,6 +199,75 @@ def _fit_score(
     return model.predict_proba(test[feature_columns])[:, 1]
 
 
+def evaluate_transfer_view(
+    frame: pd.DataFrame,
+    *,
+    view_name: str,
+    feature_columns: list[str],
+    seed: int,
+    eval_years: list[int],
+    shuffle_target: bool = False,
+    claim_status: str = CLAIM_STATUS,
+) -> list[dict[str, object]]:
+    """Evaluate one representation under the shared ZE-disjoint protocol."""
+    candidates = eligible_transition_candidates(frame)
+    finite = np.isfinite(candidates[feature_columns].to_numpy(dtype=float)).all(axis=1)
+    candidates = candidates[finite].copy()
+    rows: list[dict[str, object]] = []
+    for eval_year in eval_years:
+        for fold in range(N_FOLDS):
+            train = candidates[
+                (candidates["ze_fold"] != fold)
+                & (candidates["decision_year"] + TARGET_HORIZON <= eval_year)
+            ].copy()
+            test = candidates[
+                (candidates["ze_fold"] == fold)
+                & (candidates["decision_year"] == eval_year)
+            ].copy()
+            overlap = set(train["ze2020"]) & set(test["ze2020"])
+            if overlap:
+                raise AssertionError(f"ZE leakage in fold {fold}: {sorted(overlap)[:3]}")
+            if train[TARGET_COLUMN].nunique() < 2 or test.empty:
+                continue
+            score = _fit_score(
+                train,
+                test,
+                feature_columns,
+                seed=seed + eval_year * 10 + fold,
+                shuffle_target=shuffle_target,
+            )
+            scored = test.assign(score=score)
+            ranking = ranking_metrics(
+                scored,
+                model_name=view_name,
+                k=3,
+                target_col="future_growth_3y",
+                label_col=TARGET_COLUMN,
+            )
+            rows.append(
+                {
+                    "view": view_name,
+                    "seed": int(seed),
+                    "eval_year": int(eval_year),
+                    "ze_fold": int(fold),
+                    "ndcg_at_3": float(ranking["ndcg_at_k"]),
+                    "precision_at_3": float(ranking["precision_at_k"]),
+                    "hit_rate_at_3": float(ranking["hit_rate_at_k"]),
+                    "average_precision": float(
+                        average_precision_score(test[TARGET_COLUMN], score)
+                    ),
+                    "n_train": int(len(train)),
+                    "n_test": int(len(test)),
+                    "n_test_positive": int(test[TARGET_COLUMN].sum()),
+                    "n_train_ze": int(train["ze2020"].nunique()),
+                    "n_test_ze": int(test["ze2020"].nunique()),
+                    "ze_overlap_count": 0,
+                    "claim_status": claim_status,
+                }
+            )
+    return rows
+
+
 def run_transfer_probe(
     nodes: pd.DataFrame,
     edges: pd.DataFrame,
@@ -217,60 +286,16 @@ def run_transfer_probe(
         frames, feature_sets = _view_frames(nodes, edges, seed, real_embeddings)
         for view_name in VIEW_NAMES:
             features = feature_sets[view_name]
-            candidates = eligible_transition_candidates(frames[view_name])
-            finite = np.isfinite(candidates[features].to_numpy(dtype=float)).all(axis=1)
-            candidates = candidates[finite].copy()
-            for eval_year in eval_years:
-                for fold in range(N_FOLDS):
-                    train = candidates[
-                        (candidates["ze_fold"] != fold)
-                        & (candidates["decision_year"] + TARGET_HORIZON <= eval_year)
-                    ].copy()
-                    test = candidates[
-                        (candidates["ze_fold"] == fold)
-                        & (candidates["decision_year"] == eval_year)
-                    ].copy()
-                    overlap = set(train["ze2020"]) & set(test["ze2020"])
-                    if overlap:
-                        raise AssertionError(f"ZE leakage in fold {fold}: {sorted(overlap)[:3]}")
-                    if train[TARGET_COLUMN].nunique() < 2 or test.empty:
-                        continue
-                    score = _fit_score(
-                        train,
-                        test,
-                        features,
-                        seed=seed + eval_year * 10 + fold,
-                        shuffle_target=view_name == "target_shuffled_relation_change",
-                    )
-                    scored = test.assign(score=score)
-                    ranking = ranking_metrics(
-                        scored,
-                        model_name=view_name,
-                        k=3,
-                        target_col="future_growth_3y",
-                        label_col=TARGET_COLUMN,
-                    )
-                    rows.append(
-                        {
-                            "view": view_name,
-                            "seed": int(seed),
-                            "eval_year": int(eval_year),
-                            "ze_fold": int(fold),
-                            "ndcg_at_3": float(ranking["ndcg_at_k"]),
-                            "precision_at_3": float(ranking["precision_at_k"]),
-                            "hit_rate_at_3": float(ranking["hit_rate_at_k"]),
-                            "average_precision": float(
-                                average_precision_score(test[TARGET_COLUMN], score)
-                            ),
-                            "n_train": int(len(train)),
-                            "n_test": int(len(test)),
-                            "n_test_positive": int(test[TARGET_COLUMN].sum()),
-                            "n_train_ze": int(train["ze2020"].nunique()),
-                            "n_test_ze": int(test["ze2020"].nunique()),
-                            "ze_overlap_count": 0,
-                            "claim_status": CLAIM_STATUS,
-                        }
-                    )
+            rows.extend(
+                evaluate_transfer_view(
+                    frames[view_name],
+                    view_name=view_name,
+                    feature_columns=features,
+                    seed=seed,
+                    eval_years=eval_years,
+                    shuffle_target=view_name == "target_shuffled_relation_change",
+                )
+            )
 
     metrics = pd.DataFrame(rows).sort_values(
         ["view", "seed", "eval_year", "ze_fold"]
