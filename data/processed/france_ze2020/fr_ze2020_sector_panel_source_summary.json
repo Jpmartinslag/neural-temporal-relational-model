@@ -1,0 +1,45 @@
+{
+  "claim_status": "official_observed_sector_composition_not_causal_claim",
+  "max_total_reconciliation_abs_diff": 0.0,
+  "rows": 35280,
+  "sector_codes": [
+    "BE",
+    "FZ",
+    "GI",
+    "JZ",
+    "KZ",
+    "LZ",
+    "MN",
+    "OQ",
+    "RU"
+  ],
+  "source_filter": {
+    "FREQ": "A",
+    "GEO_OBJECT": "ZE2020",
+    "LEGAL_FORM": "_T",
+    "OBS_STATUS": "A",
+    "SIDE_MEASURE": "UNIT_LOC_BURE"
+  },
+  "source_member": "DS_SIDE_CREA_ETAB_COM_2025_data.csv",
+  "source_missing_sector_cells_completed_as_zero": 1,
+  "source_path": "data/raw/business_demography/side/DS_SIDE_CREA_ETAB_COM_2025_CSV.zip",
+  "source_sha256": "1c42a050d971932eaf9ad2d25292c9ab586d28d7ee171826586cfb53ace2ba14",
+  "years": [
+    2012,
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "zero_completion_validation": "accepted_only_after_exact_nine_sector_to_official_total_reconciliation",
+  "zones": 280
+}

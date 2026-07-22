@@ -827,7 +827,7 @@
         "data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv"
       ],
       "claim_authorized": "All PANEL_FR_ZE2020_MODEL_READY_CAUSAL columns unchanged, plus 5 Category-A relational columns (similar_ze_lag_1_mean, similar_ze_lag_1_weighted_mean, similar_ze_growth_1y_safe_mean, similar_ze_count, relational_feature_available) computed per evaluation year from a ZE-to-ZE Pearson correlation matrix over growth_1y_safe history restricted to strictly prior years (expanding window), top-5 positively-correlated neighbors, reading only each neighbor's own already-lagged lag_1/growth_1y_safe values -- never any zone's current-year observed_value. Relational features are unavailable (relational_feature_available=0, NaN means) for 2012-2016 (insufficient history) and available for 2017-2025 (verified: 280/280 zones each year). Does not use graph_adjacency_core_v0.csv / graph_adjacency_mobility_v0.csv (generator missing from tree, HERALD_16 section 4.1) or any sector-level feature (Category C handled separately in PANEL_FR_ZE2020_RELATIONAL_SECTOR_PROTOTYPE).",
-      "claim_forbidden": "Treating this as a trained-model result or performance claim (none exists yet -- see FR_ZE2020_RELATIONAL_BASELINE_PREDICTIONS_V1 below for the smoke comparison, itself not a headline claim). Adding sector composition/exposure features to this file directly; the sector layer lives in PANEL_FR_ZE2020_RELATIONAL_SECTOR_PROTOTYPE and its underlying side_creations_a10_ze2020_through_2025_v1.csv source still carries a provenance caveat. Citing similar_ze_* features as a validated economic relation -- they are a candidate engineering feature, not a tested association.",
+      "claim_forbidden": "Treating this as a trained-model result or performance claim (none exists yet -- see FR_ZE2020_RELATIONAL_BASELINE_PREDICTIONS_V1 below for the smoke comparison, itself not a headline claim). Adding sector composition/exposure features to this file directly; the sector layer lives in PANEL_FR_ZE2020_RELATIONAL_SECTOR_PROTOTYPE. Citing similar_ze_* features as a validated economic relation -- they are a candidate engineering feature, not a tested association.",
       "can_regenerate": true,
       "notes": "MVP2 (Category A only) of reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md. Does not modify fr_ze2020_model_ready_panel.csv (read-only input, checksum-verified unchanged by tests/test_fr_ze2020_relational_model_ready_panel.py). 13/13 tests pass, including a no-future-leakage check (truncating the input to years <= eval_year reproduces identical relational features at eval_year)."
     },
@@ -859,16 +859,36 @@
       "tracked_in_git": true,
       "size_bytes": 3103261,
       "sha256_prefix": "ff102c482c510cc961f6",
-      "origin_decision": "none yet (MVP2 Categoria C prototype step per reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md; not a modeling decision)",
+      "origin_decision": "DEC-076 -- official A10 source provenance closure; see reports/canonical/HERALD_47_FR_ZE2020_A10_SOURCE_PROVENANCE.md",
       "generator_script": "src/data/france_ze2020/build_fr_ze2020_sector_panel.py",
       "input_data": [
-        "data/processed/side_creations_a10_ze2020_through_2025_v1.csv",
+        "data/raw/business_demography/side/DS_SIDE_CREA_ETAB_COM_2025_CSV.zip",
         "data/processed/france_ze2020/fr_ze2020_clean_panel.csv"
       ],
-      "claim_authorized": "FR ZE2020 (280 zones), 2012-2025, long-format sector composition: sector_code/sector_label (9 A10 sectors: BE/FZ/GI/JZ/KZ/LZ/MN/OQ/RU), sector_establishment_creations, total_establishment_creations (anchored to the canonical clean panel's establishment_creations, NOT the A10 source's own total column, though both reconcile exactly), sector_share, sector_rank_in_ze_year, mask_sector_available. Audited and re-verified at every build: source side_creations_a10_ze2020_through_2025_v1.csv's total column reconciles EXACTLY with the canonical panel (max abs diff 0.0, 3920/3920 rows) -- the builder raises ValueError and refuses to write output if this ever stops holding. No missing values, no negative values, no duplicate (ze2020, year) rows in the source. This is an OBSERVED/SECTORAL panel, NOT model-ready: no lag, no growth, no causal masking yet.",
-      "claim_forbidden": "Treating side_creations_a10_ze2020_through_2025_v1.csv (the underlying source) as a definitive/canonical source -- it remains CANDIDATE_NEEDS_PROVENANCE (no generator script found in the current tree, same gap pattern as graph_adjacency_core_v0.csv/mobility_v0.csv, HERALD_16 section 4.1). Using sector_share without lagging it first in any model-input context (this file is contemporaneous, not causal-safe by itself -- see PANEL_FR_ZE2020_SECTOR_RELATIONAL_FEATURES below for the lagged version). Treating this as a trained-model result or performance claim (none exists).",
+      "claim_authorized": "FR ZE2020 (280 zones), 2012-2025, long-format observed sector composition built directly from the official INSEE SIDE ZIP pinned by SHA-256 1c42a050d971932eaf9ad2d25292c9ab586d28d7ee171826586cfb53ace2ba14. Fixed dimensions are GEO_OBJECT=ZE2020, LEGAL_FORM=_T, SIDE_MEASURE=UNIT_LOC_BURE, OBS_STATUS=A, FREQ=A and sectors BE/FZ/GI/JZ/KZ/LZ/MN/OQ/RU. The builder requires identical clean-panel coverage and exact nine-sector reconciliation for all 3920 ZE-year rows. One sparse official cell (5218/2016/JZ) is completed as zero only because the other eight sectors equal the independent official total. The rebuilt 35280-row CSV is byte-identical to the existing canonical panel (SHA-256 ff102c482c510cc961f6084a983bd00b567b72938194311b8d9440114268c933). This is an observed sector panel, not model-ready.",
+      "claim_forbidden": "Using contemporaneous sector_share or sector counts directly in a target-year model (see PANEL_FR_ZE2020_SECTOR_RELATIONAL_FEATURES for lagged inputs). Treating the sparse-zero completion as statistical imputation; it is an exact partition-identity completion. Treating this as a trained-model result, validated relation, causal result, or recommendation claim.",
       "can_regenerate": true,
-      "notes": "MVP2 Categoria C step 1 of reports/canonical/HERALD_17_FR_ZE2020_RELATIONAL_LAYER_PLAN.md section 11. 16/16 tests pass (tests/test_fr_ze2020_sector_panel.py), including a test that the builder raises on a deliberately corrupted reconciliation input."
+      "notes": "DEC-076/HERALD_47 closes the prior CANDIDATE_NEEDS_PROVENANCE caveat. 18/18 focused builder tests pass on Meso; final smoke job 7780962 completed exit 0:0. Source contract is recorded in PANEL_FR_ZE2020_SECTOR_SOURCE_SUMMARY."
+    },
+    {
+      "id": "PANEL_FR_ZE2020_SECTOR_SOURCE_SUMMARY",
+      "phase": "FR ZE2020 A10 provenance closure (2026-07-22)",
+      "path": "data/processed/france_ze2020/fr_ze2020_sector_panel_source_summary.json",
+      "type": "provenance_json",
+      "status": "ACTIVE",
+      "tracked_in_git": true,
+      "size_bytes": 974,
+      "sha256_prefix": "afd6131e2172cfae3d53",
+      "origin_decision": "DEC-076 -- see reports/canonical/HERALD_47_FR_ZE2020_A10_SOURCE_PROVENANCE.md",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_sector_panel.py",
+      "input_data": [
+        "data/raw/business_demography/side/DS_SIDE_CREA_ETAB_COM_2025_CSV.zip",
+        "data/processed/france_ze2020/fr_ze2020_clean_panel.csv"
+      ],
+      "claim_authorized": "Machine-readable source path, ZIP member, full SHA-256, fixed official dimensions, A10 vocabulary, 280-zone/2012-2025 coverage, row count, reconciliation result, and count/rule for sparse official zero completion.",
+      "claim_forbidden": "Treating provenance metadata as model evidence, causal evidence, a learned relation, or a recommendation result.",
+      "can_regenerate": true,
+      "notes": "Generated alongside the canonical sector panel; tracked because it is the compact reproducibility contract for DEC-076."
     },
     {
       "id": "PANEL_FR_ZE2020_SECTOR_RELATIONAL_FEATURES",

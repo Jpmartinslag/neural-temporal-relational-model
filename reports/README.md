@@ -182,6 +182,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     matched topology-only falsification required by HERALD_45. Randomized
     uniform destinations outperformed the real uniform topology, closing
     weight transforms and neural integration for this representation.
+45. `canonical/HERALD_47_FR_ZE2020_A10_SOURCE_PROVENANCE.md` — closes the
+    France ZE2020 A10 lineage gap by rebuilding the canonical sector panel
+    directly from checksum-pinned official INSEE SIDE data. The reconstructed
+    panel is byte-identical; this validates provenance, not a relation model.
 
 ## Control Documents
 
