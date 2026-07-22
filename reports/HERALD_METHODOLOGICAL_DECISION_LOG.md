@@ -3325,3 +3325,37 @@ block successfully. ZE similarity remains authorized only as a small linear
 exploratory ranking indicator. Recurrent or graph-neural complexity is not
 authorized from this result, and no post-result hyperparameter search is
 performed.
+
+---
+
+## DEC-072 — ZE2020 Pre-Prediction Relation Bottleneck Fusion (2026-07-22)
+
+**Status:** `PRE_REGISTERED_NOT_RUN`.
+
+**Problem:** DEC-071 showed that raw concatenation of ZE-similarity aggregates
+hurts the MLP, while node-only nonlinearity is useful. Reusing relations as a
+post-prediction residual correction would repeat the closed Phase 5 architecture
+and contradict HERALD_23. The next test must fuse representations before the
+ranking head.
+
+**Hypothesis:** the raw 13-column ZE-similarity block contains redundant/noisy
+dimensions. A training-only unsupervised bottleneck may preserve its dominant
+structure while preventing it from overwhelming the temporal node
+representation.
+
+**Minimal diagnostic:** keep the DEC-071 MLP and protocol fixed. Standardize the
+node block separately. Standardize the ZE-similarity block and apply PCA fitted
+only on training rows, retaining 90% of training variance. Concatenate the node
+representation and relation bottleneck before the MLP. Compare with node-only,
+raw-concatenation, endpoint-randomized bottleneck, and shuffled training labels.
+No component-count tuning or residual output correction is permitted.
+
+**Pre-registered gate:** bottleneck fusion must have positive mean `NDCG@3`
+lift over both node-only and raw-relation MLP, beat its endpoint-randomized
+control in at least 60% of paired seed-year-fold comparisons, and degrade under
+target shuffle. Populations must be identical, metrics finite, and ZE overlap
+zero.
+
+**Decision rule:** a pass authorizes a learned dual temporal/relation encoder
+before ranking. Failure blocks neural integration of the current ZE-similarity
+features and leaves them as linear exploratory indicators only.
