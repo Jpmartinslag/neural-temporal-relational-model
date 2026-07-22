@@ -156,6 +156,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     transfer to an externally observed future top-3 sector entry. Job 7780697 fails the
     gate: current relation changes do not separate from randomized or sector-shuffled
     controls; the next diagnostic isolates and normalizes edge families.
+39. `canonical/HERALD_41_FR_ZE2020_EDGE_FAMILY_ISOLATION_GATE.md` — isolates equal-schema
+    blocks for each dynamic edge family under the same ZE-disjoint transition task. Job
+    7780874 finds a limited pass for `ze_similarity` only; sparse sector-economic families
+    do not pass and are not promoted.
 
 ## Control Documents
 

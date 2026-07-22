@@ -3231,7 +3231,7 @@ neural model.
 
 ## DEC-070 — ZE2020 Edge-Family Isolation and Balanced Blocks (2026-07-22)
 
-**Status:** `PRE_REGISTERED_NOT_RUN`.
+**Status:** `COMPLETE_GATE_PASS_LIMITED`.
 
 **Problem:** DEC-069 failed to separate real graph changes from randomized and
 sector-shuffled controls. The current graph contains three edge families with
@@ -3261,3 +3261,20 @@ is tested. All populations must remain identical and ZE overlap must remain zero
 into a small nonlinear temporal encoder. Failure means current edge families do
 not provide transferable signal under the audited transition task; it does not
 reject nonlinear territorial economics generally.
+
+**Result (Meso job 7780874):** 900 finite metric rows, 12 views, five seeds,
+three evaluation years, and five ZE-disjoint folds. All views used identical
+train/test/positive populations and ZE overlap was zero. `ze_similarity_only`
+reached mean `NDCG@3=0.60677`, versus 0.60096 for node-only and 0.60231 for its
+matched endpoint-randomized control. Its endpoint-placebo lift was +0.00446 with
+62.7% paired wins. `all_families_balanced` also passed, but its result
+(`NDCG@3=0.60691`) was only +0.00013 above `ze_similarity_only`.
+`cross_ze_same_sector_only` remained below node-only, and
+`intra_ze_sector_only` was identical to node-only. Average precision also
+remained lower for ZE similarity (0.53289) than node-only (0.53709).
+
+**Final decision:** `ZE_SIMILARITY_BLOCK_AUTHORIZED_FOR_MINIMAL_NONLINEAR_PROBE`.
+Only the `ze_similarity` family survives as a transferable ranking candidate.
+The two sparse sector-economic families are not promoted. The result is a
+limited representation gate pass on within-ZE ranking, not validation of a
+dynamic GNN, general classification improvement, causality, or recommendation.
