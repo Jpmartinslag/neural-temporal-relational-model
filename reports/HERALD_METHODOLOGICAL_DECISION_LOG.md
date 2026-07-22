@@ -3330,7 +3330,7 @@ performed.
 
 ## DEC-072 — ZE2020 Pre-Prediction Relation Bottleneck Fusion (2026-07-22)
 
-**Status:** `PRE_REGISTERED_NOT_RUN`.
+**Status:** `COMPLETE_GATE_FAIL`.
 
 **Problem:** DEC-071 showed that raw concatenation of ZE-similarity aggregates
 hurts the MLP, while node-only nonlinearity is useful. Reusing relations as a
@@ -3359,3 +3359,19 @@ zero.
 **Decision rule:** a pass authorizes a learned dual temporal/relation encoder
 before ranking. Failure blocks neural integration of the current ZE-similarity
 features and leaves them as linear exploratory indicators only.
+
+**Result (Meso job 7780898):** 375 finite metric rows, five views, five seeds,
+three evaluation years, and five ZE-disjoint folds. Populations were identical
+and ZE overlap was zero. Bottleneck fusion reached mean `NDCG@3=0.61147`,
+recovering much of the raw-concatenation loss (0.59570), but remained below
+node-only MLP (0.61426). It exceeded the endpoint-randomized bottleneck by only
+0.00117 with 54.7% paired wins, below the registered 60% threshold. Target
+shuffle degraded to 0.45135. Average precision also remained below node-only
+(0.53240 versus 0.54633).
+
+**Final decision:** `RELATION_BOTTLENECK_FUSION_GATE_FAIL`. Pre-prediction
+compression is materially better than raw concatenation, but it does not prove
+transferable neural value from current ZE-similarity relations. Further neural
+fusion or recurrent tuning is blocked. The next admissible direction is to
+improve externally grounded edge semantics/provenance, particularly functional
+mobility or commuting relations, before another neural integration gate.
