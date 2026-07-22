@@ -3459,3 +3459,27 @@ node-only in 2020 and 2022, with the aggregate lift driven by 2021.
 not authorized for neural integration. Uniform topology remains only a
 candidate observation until tested against a matched uniform-endpoint placebo;
 no dynamic-graph, causal, or recommendation claim follows.
+
+---
+
+## DEC-075 -- ZE2020 matched commuting-topology gate (2026-07-22)
+
+**Status:** `PRE_REGISTERED_NOT_RUN`.
+
+**Problem:** DEC-074 found that uniform weights outperformed raw commuting
+intensity, but did not include a randomized-endpoint placebo with the same
+uniform representation. The apparent topology signal is therefore not yet
+isolated.
+
+**Fixed test:** retain the DEC-074 target, maturity rule, years, ZE-disjoint
+folds, seeds, linear estimator, and NDCG@3. Compare real uniform topology with
+matched uniform randomized endpoints, degree-only topology statistics,
+reversed uniform direction, node-only, availability-only, and shuffled labels.
+
+**Gate:** real uniform topology must beat every semantic control in mean
+NDCG@3, beat matched randomized endpoints in at least 60% of seed/year/fold
+pairs, preserve identical finite populations, and maintain zero ZE overlap.
+
+**Decision rule:** pass authorizes only a later weight-transform gate; failure
+closes this commuting-topology representation. No neural, causal, dynamic-GNN,
+or recommendation claim is authorized. See HERALD_46.
