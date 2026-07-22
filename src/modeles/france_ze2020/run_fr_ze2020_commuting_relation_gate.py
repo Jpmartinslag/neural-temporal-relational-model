@@ -47,6 +47,9 @@ AGGREGATED_NODE_FEATURES = [
     "sector_growth_lag_1",
     "dominant_sector_flag_t",
 ]
+AGGREGATED_NODE_MASKS = {
+    "sector_growth_lag_1": "mask_sector_growth_lag_1_available",
+}
 TOPOLOGY_FEATURES = [
     "commuting_out_degree",
     "commuting_out_weight_max",
@@ -159,12 +162,21 @@ def relation_feature_columns() -> list[str]:
                 f"commuting_in_neighbor__{feature}",
             ]
         )
+        if feature in AGGREGATED_NODE_MASKS:
+            columns.extend(
+                [
+                    f"commuting_out_neighbor__{feature}__available_share",
+                    f"commuting_in_neighbor__{feature}__available_share",
+                ]
+            )
     return columns
 
 
 def build_commuting_feature_frame(
     nodes: pd.DataFrame,
     edges: pd.DataFrame,
+    *,
+    expected_zone_count: int = 280,
 ) -> tuple[pd.DataFrame, list[str]]:
     frame = nodes.copy()
     frame["ze2020"] = frame["ze2020"].astype(str).str.zfill(4)
@@ -174,8 +186,11 @@ def build_commuting_feature_frame(
     for year, year_edges in edges.groupby("decision_year", sort=True):
         year_nodes = frame[frame["decision_year"] == int(year)]
         zones = sorted(year_nodes["ze2020"].unique())
-        if len(zones) != 280:
-            raise ValueError(f"Expected 280 zones in node year {year}, found {len(zones)}")
+        if len(zones) != expected_zone_count:
+            raise ValueError(
+                f"Expected {expected_zone_count} zones in node year {year}, "
+                f"found {len(zones)}"
+            )
         zone_index = {zone: position for position, zone in enumerate(zones)}
         weight = np.zeros((len(zones), len(zones)), dtype=float)
         for row in year_edges.itertuples(index=False):
@@ -207,23 +222,52 @@ def build_commuting_feature_frame(
                 .set_index("ze2020")
                 .loc[zones]
             )
-            values = ordered[AGGREGATED_NODE_FEATURES].to_numpy(float)
-            if not np.isfinite(values).all():
-                raise ValueError(f"Non-finite node input for {sector} in {year}")
             frame_indices = ordered["_frame_index"].to_numpy()
             frame.loc[frame_indices, AVAILABILITY_FEATURE] = 1.0
             frame.loc[frame_indices, TOPOLOGY_FEATURES] = np.column_stack(
                 [out_degree, out_max, entropy, in_degree, column_sum]
             )
-            outgoing = weight @ values
-            incoming = incoming_weight.T @ values
-            for position, feature in enumerate(AGGREGATED_NODE_FEATURES):
+            for feature in AGGREGATED_NODE_FEATURES:
+                values = ordered[feature].to_numpy(float)
+                available = np.isfinite(values)
+                mask_column = AGGREGATED_NODE_MASKS.get(feature)
+                if mask_column is not None:
+                    if mask_column not in ordered:
+                        raise ValueError(f"Missing availability mask: {mask_column}")
+                    mask = ordered[mask_column].to_numpy(float)
+                    available &= np.isfinite(mask) & (mask == 1.0)
+                elif not available.all():
+                    raise ValueError(f"Unmasked non-finite node input: {feature}")
+                safe_values = np.where(available, values, 0.0)
+                outgoing_available = weight @ available.astype(float)
+                incoming_available = incoming_weight.T @ available.astype(float)
+                outgoing = np.divide(
+                    weight @ safe_values,
+                    outgoing_available,
+                    out=np.zeros(len(zones), dtype=float),
+                    where=outgoing_available > 0,
+                )
+                incoming = np.divide(
+                    incoming_weight.T @ safe_values,
+                    incoming_available,
+                    out=np.zeros(len(zones), dtype=float),
+                    where=incoming_available > 0,
+                )
                 frame.loc[
                     frame_indices, f"commuting_out_neighbor__{feature}"
-                ] = outgoing[:, position]
+                ] = outgoing
                 frame.loc[
                     frame_indices, f"commuting_in_neighbor__{feature}"
-                ] = incoming[:, position]
+                ] = incoming
+                if mask_column is not None:
+                    frame.loc[
+                        frame_indices,
+                        f"commuting_out_neighbor__{feature}__available_share",
+                    ] = outgoing_available
+                    frame.loc[
+                        frame_indices,
+                        f"commuting_in_neighbor__{feature}__available_share",
+                    ] = incoming_available
 
     numeric = frame[relation_columns].to_numpy(float)
     if not np.isfinite(numeric).all():
