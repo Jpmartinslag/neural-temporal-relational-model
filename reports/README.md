@@ -186,6 +186,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     France ZE2020 A10 lineage gap by rebuilding the canonical sector panel
     directly from checksum-pinned official INSEE SIDE data. The reconstructed
     panel is byte-identical; this validates provenance, not a relation model.
+46. `canonical/HERALD_48_FR_ZE2020_CONTEXT_CONDITIONED_SECTOR_RELATION_SPEC.md`
+    — separates the already-completed pooled Phase 7 precedence study from the
+    remaining ZE-heterogeneity question and pre-registers a held-out-ZE,
+    linear-versus-nonlinear relation gate with matched shuffles.
 
 ## Control Documents
 
