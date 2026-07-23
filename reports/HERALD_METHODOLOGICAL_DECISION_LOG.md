@@ -3527,7 +3527,7 @@ See HERALD_47.
 
 ## DEC-077 -- ZE2020 context-conditioned sector-relation gate (2026-07-22)
 
-**Status:** `PRE_REGISTERED_NOT_RUN`.
+**Status:** `COMPLETE_GATE_FAIL_TARGET_FEATURE_SPECIFICATION_CLOSED`.
 
 **Prior-work boundary:** Phase 7 already estimated country-level lagged sector
 precedence using the 280 France ZE2020 observations, and DEC-060 audited its
@@ -3556,3 +3556,19 @@ shuffle, preserve identical populations, and use no target-year features.
 encoder whose edge scores depend on ZE context. Failure closes this target and
 feature specification, not all sector relations. Neither outcome authorizes a
 dynamic-GNN, causal, or recommendation claim. See HERALD_48.
+
+**Execution result:** Meso array `7781010` completed all five seeds with exit
+`0:0`, empty stderr, 1,050 finite metric rows, complete populations, zero
+train/test ZE overlap, and full convergence. The context-conditioned MLP
+improved mean MAE over the no-source MLP (0.274963 versus 0.296391), but lost
+strongly to the pooled linear relation control (0.177429) in 174/175 paired
+comparisons. Source shuffle degraded in only 53.7% of pairs and context shuffle
+in 49.1%, both below the registered 60% threshold. Target shuffle degraded mean
+MAE by 15.5% but lost only 66.3% of pairs, below the registered 80% threshold.
+
+**Final decision:** the gate fails. The current target-growth, source-lag, and
+lagged ZE-composition specification is closed, and no temporal relation encoder
+is authorized from DEC-077. This does not reject all sector relations; reopening
+requires a materially different economic representation and a new decision.
+No causal, dynamic-GNN, automatic recommendation, or policy claim follows. See
+HERALD_49.

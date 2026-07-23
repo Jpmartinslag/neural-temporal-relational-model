@@ -190,6 +190,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     — separates the already-completed pooled Phase 7 precedence study from the
     remaining ZE-heterogeneity question and pre-registers a held-out-ZE,
     linear-versus-nonlinear relation gate with matched shuffles.
+47. `canonical/HERALD_49_FR_ZE2020_CONTEXT_CONDITIONED_SECTOR_RELATION_RESULT.md`
+    — records the five-seed DEC-077 result. The context-conditioned MLP loses
+    strongly to the pooled linear control and does not degrade consistently
+    under source/context placebos, closing this target/feature specification.
 
 ## Control Documents
 
