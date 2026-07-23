@@ -1,7 +1,7 @@
 # HERALD 48 -- ZE2020 context-conditioned sector-relation specification
 
 **Date:** 2026-07-22  
-**Status:** `PRE_REGISTERED_NOT_RUN`  
+**Status:** `COMPLETE_SEE_HERALD_49`  
 **Decision:** `DEC-077`
 
 ## 1. What is already known

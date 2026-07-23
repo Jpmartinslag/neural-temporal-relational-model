@@ -194,6 +194,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     — records the five-seed DEC-077 result. The context-conditioned MLP loses
     strongly to the pooled linear control and does not degrade consistently
     under source/context placebos, closing this target/feature specification.
+48. `canonical/HERALD_50_FR_ZE2020_PRODUCT_SPACE_ENTRY_DENSITY_SPEC.md`
+    — pre-registers a leakage-safe, held-out-ZE test of whether product-space
+    density ranks next-year specialization entries beyond sector prevalence,
+    target RCA, and matched semantic placebos.
 
 ## Control Documents
 

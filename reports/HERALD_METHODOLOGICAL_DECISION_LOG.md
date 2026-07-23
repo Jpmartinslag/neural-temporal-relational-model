@@ -3572,3 +3572,37 @@ is authorized from DEC-077. This does not reject all sector relations; reopening
 requires a materially different economic representation and a new decision.
 No causal, dynamic-GNN, automatic recommendation, or policy claim follows. See
 HERALD_49.
+
+---
+
+## DEC-078 -- ZE2020 product-space entry-density gate (2026-07-23)
+
+**Status:** `PRE_REGISTERED_NOT_RUN`.
+
+**Prior-work boundary:** DEC-017/G1-L1 already rejected promotion of the France
+RCA co-specialization graph because temporal and configuration nulls reproduced
+its high stability. That graph-stability gate is not reopened. DEC-078 tests a
+different outcome: next-year entry into RCA specialization.
+
+**Support preflight:** the official canonical A10 panel provides 17,196
+non-specialized ZE-sector-year candidates and 2,611 next-year specialization
+entries over decision years 2012--2024. Every canonical ZE has at least one
+entry. No product-space score was evaluated before registration.
+
+**Fixed diagnostic:** within each decision year and ZE-disjoint fold, estimate
+Hidalgo-Hausmann sector proximity from training ZEs only. Rank non-specialized
+sectors in held-out ZEs by product-space density. Compare with target-sector
+prevalence, current target RCA, reassigned product-space identities,
+sector-shuffled held-out composition, target-shuffled labels, and random score.
+Use five folds, seeds 42--46, and NDCG@3 as the primary metric.
+
+**Gate:** real density must beat both marginal controls in aggregate and in at
+least 9/13 years, beat randomized product-space and sector-shuffled density in
+at least 60% of paired seed/year/fold comparisons, and degrade under target
+shuffle in at least 80%. Populations must be identical and train/test ZE overlap
+must be zero.
+
+**Decision rule:** a pass authorizes only a small representation layer using
+entry density. Failure closes this France ZE2020 entry-density representation,
+not all sector relations. Neither outcome authorizes a dynamic-GNN, causal,
+automatic recommendation, or policy claim. See HERALD_50.
