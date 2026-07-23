@@ -17,8 +17,8 @@
       "REGENERABLE",
       "ARCHIVED"
     ],
-    "last_updated": "2026-07-13",
-    "last_decision": "HERALD_38 temporal integrity correction (no new scientific claim or HPC authorization)"
+    "last_updated": "2026-07-23",
+    "last_decision": "DEC-077 / HERALD_49 context-conditioned sector-relation gate fail"
   },
   "artifacts": [
     {
@@ -1512,22 +1512,22 @@
     {
       "id": "FR_ZE2020_CONTEXT_CONDITIONED_SECTOR_RELATION_GATE_V1",
       "phase": "ZE-context-conditioned lagged sector-relation diagnostic (2026-07-22)",
-      "path": "<output-dir>/fr_ze2020_context_conditioned_sector_relation_gate_{metrics,summary,gate}_v1.*",
-      "type": "regenerable_relation_gate_output",
-      "status": "REGENERABLE",
+      "path": "hpc_results/fr_ze2020_context_sector_relation_20260722_220553/",
+      "type": "hpc_relation_gate_output",
+      "status": "FROZEN",
       "tracked_in_git": false,
-      "size_bytes": null,
-      "sha256_prefix": null,
-      "origin_decision": "DEC-077 -- see reports/canonical/HERALD_48_FR_ZE2020_CONTEXT_CONDITIONED_SECTOR_RELATION_SPEC.md",
+      "size_bytes": 206209,
+      "sha256_prefix": "audit=9c2390cd5be5257af6f4",
+      "origin_decision": "DEC-077 -- see reports/canonical/HERALD_48_FR_ZE2020_CONTEXT_CONDITIONED_SECTOR_RELATION_SPEC.md and HERALD_49_FR_ZE2020_CONTEXT_CONDITIONED_SECTOR_RELATION_RESULT.md",
       "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_context_conditioned_sector_relation_gate.py",
       "input_data": [
         "data/processed/france_ze2020/fr_ze2020_sector_panel.csv",
         "data/processed/france_ze2020/fr_ze2020_sector_relational_features.csv"
       ],
-      "claim_authorized": "Regenerable DEC-077 diagnostic comparing a shared nonlinear source-sector lag conditioned on lagged ZE composition with matched no-source, pooled-linear, source/context-shuffle, and target-shuffle controls under rolling-origin ZE-disjoint evaluation. Technical smoke 7781009 validates runtime, convergence, finite metrics, and population separation only.",
-      "claim_forbidden": "Treating the single-cell smoke as the registered result; claiming structural causality, automatic territorial recommendation, validated dynamic graph-neural architecture, or general sector-relation value before the full five-seed gate is audited.",
+      "claim_authorized": "The DEC-077 gate failed. The context-conditioned MLP improved over the matched no-source MLP on aggregate but lost strongly to pooled linear and did not show recurrent degradation under source/context shuffles. This closes only the tested target-growth and lagged-composition specification.",
+      "claim_forbidden": "Claiming structural causality, automatic territorial recommendation, validated dynamic graph-neural architecture, stable ZE-context interaction, or general rejection of all sector-relation hypotheses.",
       "can_regenerate": true,
-      "notes": "Five-seed package: hpc/france_ze2020_context_sector_relation/. Smoke 7781009 completed exit 0:0 in 8m05s with empty stderr; full result pending."
+      "notes": "Meso array 7781010, five seeds, seven years, five ZE-disjoint folds, 1,050 metric rows, all tasks exit 0:0 with empty stderr. Direct audit import bug corrected after execution; outputs were complete and unchanged. See HERALD_49."
     },
     {
       "id": "FR_ZE2020_GEOMETRY",

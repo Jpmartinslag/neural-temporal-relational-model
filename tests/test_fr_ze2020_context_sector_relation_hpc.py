@@ -59,6 +59,14 @@ def test_task_writes_seed_isolated_output() -> None:
     assert ":-500" in text
 
 
+def test_auditor_bootstraps_repository_root_for_direct_execution() -> None:
+    text = (
+        HPC_DIR / "audit_fr_ze2020_context_sector_relation_hpc.py"
+    ).read_text()
+    assert "Path(__file__).resolve().parents[2]" in text
+    assert "sys.path.insert(0, str(ROOT))" in text
+
+
 def test_hpc_auditor_aggregates_complete_seed_outputs() -> None:
     control_mae = {
         "no_source_mlp": 1.1,

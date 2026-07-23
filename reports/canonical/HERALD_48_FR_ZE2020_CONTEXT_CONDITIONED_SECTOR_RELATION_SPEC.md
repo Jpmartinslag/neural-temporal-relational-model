@@ -129,3 +129,10 @@ and convergence for every view (127--279 iterations for the five MLP fits).
 The single 2024/fold-0/seed-42 cell beat the nonlinear no-source and shuffled
 controls but lost to the pooled linear control. This is a runtime and
 convergence check only; it is not the registered multi-year/fold/seed result.
+
+## 9. Final result
+
+The complete five-seed gate is reported in HERALD_49. It failed the pooled
+linear, source-shuffle, context-shuffle, and target-shuffle recurrence
+conditions. DEC-077 therefore closes this target/feature specification without
+rejecting all possible sector-relation representations.
