@@ -3577,7 +3577,7 @@ HERALD_49.
 
 ## DEC-078 -- ZE2020 product-space entry-density gate (2026-07-23)
 
-**Status:** `PRE_REGISTERED_NOT_RUN`.
+**Status:** `COMPLETE_GATE_FAIL_ENTRY_DENSITY_REPRESENTATION_CLOSED`.
 
 **Prior-work boundary:** DEC-017/G1-L1 already rejected promotion of the France
 RCA co-specialization graph because temporal and configuration nulls reproduced
@@ -3606,3 +3606,20 @@ must be zero.
 entry density. Failure closes this France ZE2020 entry-density representation,
 not all sector relations. Neither outcome authorizes a dynamic-GNN, causal,
 automatic recommendation, or policy claim. See HERALD_50.
+
+**Execution result:** Meso job `7781384` completed in 4m23s with exit `0:0`,
+empty stderr, 2,275 finite metric rows, identical populations, and zero
+train/test ZE overlap. Each seed reproduced the registered 17,196 candidates
+and 2,611 next-year entries. Product-space density exceeded target prevalence
+by mean NDCG@3 `+0.006704`, but lost to current target RCA by `-0.009128`.
+It beat the randomized product space in 98.8% of registered pairs, the
+sector-shuffled density in 100%, and the target-shuffled labels in 81.5%, but
+exceeded both marginal controls in only 4/13 years rather than the required
+9/13.
+
+**Final decision:** the gate fails. The tested France ZE2020 product-space
+entry-density representation is closed and is not authorized for a relation or
+neural representation layer. The result shows non-random sector-composition
+structure, but no incremental entry-ranking value beyond current target RCA.
+It does not reject all sector relations. Reopening requires a materially
+different economic object and a new pre-registered decision. See HERALD_51.

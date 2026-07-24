@@ -198,6 +198,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     — pre-registers a leakage-safe, held-out-ZE test of whether product-space
     density ranks next-year specialization entries beyond sector prevalence,
     target RCA, and matched semantic placebos.
+49. `canonical/HERALD_51_FR_ZE2020_PRODUCT_SPACE_ENTRY_DENSITY_RESULT.md`
+    — records the DEC-078 gate failure: product-space density beats matched
+    random/semantic placebos but not current target RCA and exceeds both
+    marginal controls in only 4/13 years.
 
 ## Control Documents
 
