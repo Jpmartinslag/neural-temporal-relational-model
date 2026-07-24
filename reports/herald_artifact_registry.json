@@ -17,8 +17,8 @@
       "REGENERABLE",
       "ARCHIVED"
     ],
-    "last_updated": "2026-07-23",
-    "last_decision": "DEC-077 / HERALD_49 context-conditioned sector-relation gate fail"
+    "last_updated": "2026-07-24",
+    "last_decision": "DEC-078 / HERALD_51 product-space entry-density gate fail"
   },
   "artifacts": [
     {
@@ -1528,6 +1528,25 @@
       "claim_forbidden": "Claiming structural causality, automatic territorial recommendation, validated dynamic graph-neural architecture, stable ZE-context interaction, or general rejection of all sector-relation hypotheses.",
       "can_regenerate": true,
       "notes": "Meso array 7781010, five seeds, seven years, five ZE-disjoint folds, 1,050 metric rows, all tasks exit 0:0 with empty stderr. Direct audit import bug corrected after execution; outputs were complete and unchanged. See HERALD_49."
+    },
+    {
+      "id": "FR_ZE2020_PRODUCT_SPACE_ENTRY_DENSITY_GATE_V1",
+      "phase": "held-out-ZE product-space entry-density falsification (2026-07-24)",
+      "path": "hpc_results/fr_ze2020_product_space_entry_density_20260723_193332/fr_ze2020_product_space_entry_density_{metrics,summary,gate}_v1.*",
+      "type": "hpc_relation_gate_output",
+      "status": "FROZEN",
+      "tracked_in_git": false,
+      "size_bytes": 525971,
+      "sha256_prefix": "metrics=da9f5d4f25b5d8c19285;summary=ec79c04811c0de245c06;gate=38858fa28a5faa4f65b2",
+      "origin_decision": "DEC-078 -- see reports/canonical/HERALD_50_FR_ZE2020_PRODUCT_SPACE_ENTRY_DENSITY_SPEC.md and HERALD_51_FR_ZE2020_PRODUCT_SPACE_ENTRY_DENSITY_RESULT.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_product_space_entry_density_gate.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv"
+      ],
+      "claim_authorized": "The DEC-078 gate failed. Product-space density clearly exceeded randomized-sector, sector-shuffled, target-shuffled, and random controls, showing non-random sector-composition structure, but it lost to current target RCA and exceeded both marginal controls in only 4/13 years. This closes only the tested entry-density representation.",
+      "claim_forbidden": "Claiming incremental entry-ranking value beyond current RCA, validated product-space or neural representation, structural causality, automatic territorial recommendation, policy action, or general rejection of all sector relations.",
+      "can_regenerate": true,
+      "notes": "Meso job 7781384, exit 0:0, 4m23s, empty stderr, 2,275 finite metric rows, 17,196 candidates and 2,611 entries per seed, five ZE-disjoint folds, zero train/test ZE overlap. Outputs are gitignored and collected locally. See HERALD_51."
     },
     {
       "id": "FR_ZE2020_GEOMETRY",

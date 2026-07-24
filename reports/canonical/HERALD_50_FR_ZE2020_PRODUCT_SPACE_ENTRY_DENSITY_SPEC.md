@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-23  
 **Decision:** DEC-078  
-**Status:** `PRE_REGISTERED_NOT_RUN`
+**Status:** `COMPLETE_GATE_FAIL_SEE_HERALD_51`
 
 ## 1. Prior-work boundary
 
@@ -108,3 +108,10 @@ not prove that all sector relations are absent.
 
 Neither outcome validates a dynamic graph-neural model, structural causality,
 automatic territorial recommendation, or policy action.
+
+## 8. Post-execution pointer
+
+Meso job `7781384` executed this specification without changing its population,
+views, metrics, or thresholds. The registered gate failed. The frozen result
+and interpretation are recorded separately in
+`HERALD_51_FR_ZE2020_PRODUCT_SPACE_ENTRY_DENSITY_RESULT.md`.
