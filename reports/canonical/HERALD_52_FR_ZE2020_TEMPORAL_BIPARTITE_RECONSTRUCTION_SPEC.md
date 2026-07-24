@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-24  
 **Decision:** DEC-079  
-**Status:** `PRE_REGISTERED_NOT_RUN`
+**Status:** `COMPLETE_GATE_FAIL_SEE_HERALD_53`
 
 ## 1. Question and prior-work boundary
 
@@ -170,3 +170,11 @@ that the observed compositions are economically meaningless.
 
 Neither outcome validates a dynamic GNN, fills real missing data, proves
 causality, or authorizes automatic territorial recommendation or policy action.
+
+## 10. Post-execution pointer
+
+Meso array `7782372` executed the fixed configuration without changing the
+population, masks, views, hyperparameters, metrics, or thresholds. The gate
+failed because temporal persistence remained substantially stronger than the
+full MLP. The frozen result is recorded in
+`HERALD_53_FR_ZE2020_TEMPORAL_BIPARTITE_RECONSTRUCTION_RESULT.md`.

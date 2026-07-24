@@ -206,6 +206,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     — pre-registers a held-out-ZE masked-reconstruction test over directly
     observed ZE2020 x A10 sector compositions, with compositional, linear,
     temporal, information-ablation, and semantic-shuffle controls.
+51. `canonical/HERALD_53_FR_ZE2020_TEMPORAL_BIPARTITE_RECONSTRUCTION_RESULT.md`
+    — records the DEC-079 gate failure: the full nonlinear view beats Ridge,
+    information ablations, and semantic shuffles, but previous-year
+    compositional persistence remains decisively stronger.
 
 ## Control Documents
 
