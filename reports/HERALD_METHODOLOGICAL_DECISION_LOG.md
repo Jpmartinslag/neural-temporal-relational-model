@@ -3684,3 +3684,42 @@ justify a neural temporal bipartite layer because simple previous-year
 economic memory remains substantially stronger. No production imputation,
 dynamic-GNN, recommendation, causal, or policy claim is authorized. See
 HERALD_53.
+
+---
+
+## DEC-080 -- ZE2020 composition-transition ranking gate (2026-07-24)
+
+**Status:** `PRE_REGISTERED_NOT_RUN`.
+
+**Prior-work boundary:** DEC-080 does not reopen the three-year top-3 entry
+target of DEC-069, RCA entry-density of DEC-078, or masked level reconstruction
+of DEC-079. It tests a different observed object: the signed next-year change
+in each sector's share inside a ZE, ranked by absolute transition magnitude.
+No inferred relation edge is used.
+
+**Support preflight:** the canonical A10 panel provides 30,240 complete
+ZE-sector decision-year targets over 2013--2024. The fixed evaluation years
+2017--2024 contain 20,160 rows and exactly 6,720 observed top-3 absolute
+changes per seed. Only four target changes are exactly zero. No model metric
+was inspected before registration.
+
+**Fixed diagnostic:** use complete share vectors at `t` and `t-1`, their
+within-ZE delta vector, and target-sector identity to predict signed share
+change at `t+1`. Rank sectors inside each held-out ZE by absolute predicted
+change. Training uses only other ZEs and labels matured by the evaluation
+decision year.
+
+**Controls:** zero change, past signed delta, matched Ridge, target-history-only
+MLP, current-only MLP, sector shuffle, temporal shuffle, target shuffle, and
+random ranking. The DEC-079 Ridge/MLP hyperparameters are reused unchanged;
+no architecture search is allowed.
+
+**Gate:** full MLP must beat past delta and Ridge in aggregate and at least 60%
+of pairs, beat both information ablations, degrade under sector/temporal/target
+shuffles, improve top-3 sign accuracy, recur against all substantive controls
+in at least 6/8 years, preserve temporal/ZE integrity, and remain seed-stable.
+
+**Decision rule:** a pass authorizes only a small transition representation
+layer. Failure closes this continuous transition-ranking specification.
+Neither outcome validates a dynamic GNN, causality, automatic recommendation,
+or policy action. See HERALD_54.

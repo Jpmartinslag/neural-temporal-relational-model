@@ -210,6 +210,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     — records the DEC-079 gate failure: the full nonlinear view beats Ridge,
     information ablations, and semantic shuffles, but previous-year
     compositional persistence remains decisively stronger.
+52. `canonical/HERALD_54_FR_ZE2020_COMPOSITION_TRANSITION_RANKING_SPEC.md`
+    — pre-registers a held-out-ZE ranking test of next-year sector-share
+    transition magnitude and direction using observed temporal compositions,
+    with own-history, linear, ablation, and semantic-shuffle controls.
 
 ## Control Documents
 
