@@ -3623,3 +3623,43 @@ neural representation layer. The result shows non-random sector-composition
 structure, but no incremental entry-ranking value beyond current target RCA.
 It does not reject all sector relations. Reopening requires a materially
 different economic object and a new pre-registered decision. See HERALD_51.
+
+---
+
+## DEC-079 -- ZE2020 temporal bipartite masked-reconstruction gate (2026-07-24)
+
+**Status:** `PRE_REGISTERED_NOT_RUN`.
+
+**Prior-work boundary:** this decision does not reopen inferred-relation or
+graph-prediction branches closed by DEC-017, DEC-069--075, DEC-077, or
+DEC-078. It instead treats the observed ZE2020 x A10 sector-share composition
+as a weighted bipartite object and asks a self-supervised reconstruction
+question. No correlation-derived, commuting, similarity, product-space, or
+future-target edge is used.
+
+**Support preflight:** the canonical France sector panel contains 280 ZEs, nine
+A10 sectors, and complete annual compositions for 2012--2025: 35,280 unique
+ZE-year-sector rows and 3,920 ZE-year vectors, all summing to one. No
+reconstruction metric was inspected before registration.
+
+**Fixed diagnostic:** hide exactly three sectors per ZE-year, preserve the
+mask, and reconstruct only those cells from current visible ZE-sector edges,
+the lagged composition, and target-sector identity. Use five ZE-disjoint folds,
+seeds 42--46, rolling training through each evaluation year 2017--2025, and
+compositionally project every prediction to the hidden remaining mass.
+
+**Controls:** temporal persistence, training-sector mean closure, matched
+Ridge, history-only MLP, current-only MLP, sector-identity shuffle,
+lagged-profile temporal shuffle, and random closure. Model sizes and training
+settings are fixed in HERALD_52; no hyperparameter search is permitted.
+
+**Gate:** the full MLP must beat Ridge and both closure controls in aggregate,
+beat Ridge and both information ablations in at least 60% of paired
+seed/year/fold comparisons, degrade under both semantic shuffles, recur against
+Ridge and both ablations in at least 6/9 years, preserve all integrity checks,
+and remain stable across seeds.
+
+**Decision rule:** a pass authorizes only design of a small temporal bipartite
+representation layer. Failure closes this masked-reconstruction specification.
+Neither outcome validates a dynamic GNN, production imputation, causal claim,
+automatic recommendation, or policy action. See HERALD_52.

@@ -202,6 +202,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     — records the DEC-078 gate failure: product-space density beats matched
     random/semantic placebos but not current target RCA and exceeds both
     marginal controls in only 4/13 years.
+50. `canonical/HERALD_52_FR_ZE2020_TEMPORAL_BIPARTITE_RECONSTRUCTION_SPEC.md`
+    — pre-registers a held-out-ZE masked-reconstruction test over directly
+    observed ZE2020 x A10 sector compositions, with compositional, linear,
+    temporal, information-ablation, and semantic-shuffle controls.
 
 ## Control Documents
 
