@@ -105,6 +105,11 @@ training-only standard scaling, hidden layers `(64, 32)`, ReLU, Adam,
 validation fraction `0.15`, and 20 epochs without improvement. These settings
 are inherited unchanged from DEC-079 to prevent architecture tuning.
 
+Because signed share changes are numerically small, the regression target is
+standardized with the training-fold mean and standard deviation for both Ridge
+and MLP fits, then inverse-transformed before every metric. Test targets never
+enter this transformation.
+
 ## 6. Metrics
 
 Primary metric:

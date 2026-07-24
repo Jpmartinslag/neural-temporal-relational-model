@@ -3712,7 +3712,8 @@ decision year.
 **Controls:** zero change, past signed delta, matched Ridge, target-history-only
 MLP, current-only MLP, sector shuffle, temporal shuffle, target shuffle, and
 random ranking. The DEC-079 Ridge/MLP hyperparameters are reused unchanged;
-no architecture search is allowed.
+no architecture search is allowed. Signed targets are standardized using only
+the training-fold mean and deviation and inverse-transformed before metrics.
 
 **Gate:** full MLP must beat past delta and Ridge in aggregate and at least 60%
 of pairs, beat both information ablations, degrade under sector/temporal/target
