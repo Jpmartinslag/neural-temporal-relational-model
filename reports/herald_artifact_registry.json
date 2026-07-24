@@ -18,7 +18,7 @@
       "ARCHIVED"
     ],
     "last_updated": "2026-07-24",
-    "last_decision": "DEC-078 / HERALD_51 product-space entry-density gate fail"
+    "last_decision": "DEC-079 / HERALD_53 temporal bipartite reconstruction gate fail"
   },
   "artifacts": [
     {
@@ -1547,6 +1547,25 @@
       "claim_forbidden": "Claiming incremental entry-ranking value beyond current RCA, validated product-space or neural representation, structural causality, automatic territorial recommendation, policy action, or general rejection of all sector relations.",
       "can_regenerate": true,
       "notes": "Meso job 7781384, exit 0:0, 4m23s, empty stderr, 2,275 finite metric rows, 17,196 candidates and 2,611 entries per seed, five ZE-disjoint folds, zero train/test ZE overlap. Outputs are gitignored and collected locally. See HERALD_51."
+    },
+    {
+      "id": "FR_ZE2020_TEMPORAL_BIPARTITE_RECONSTRUCTION_GATE_V1",
+      "phase": "observed ZE-sector temporal masked-reconstruction falsification (2026-07-24)",
+      "path": "hpc_results/fr_ze2020_temporal_bipartite_full_20260724_150150/fr_ze2020_temporal_bipartite_reconstruction_{metrics,summary,gate}_v1.*",
+      "type": "hpc_representation_gate_output",
+      "status": "FROZEN",
+      "tracked_in_git": false,
+      "size_bytes": 505476,
+      "sha256_prefix": "metrics=6da6962b0378e9e62dc8;summary=7b64d90a8109a7deb169;gate=8789e442b7afb16df11c",
+      "origin_decision": "DEC-079 -- see reports/canonical/HERALD_52_FR_ZE2020_TEMPORAL_BIPARTITE_RECONSTRUCTION_SPEC.md and HERALD_53_FR_ZE2020_TEMPORAL_BIPARTITE_RECONSTRUCTION_RESULT.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_temporal_bipartite_reconstruction_gate.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv"
+      ],
+      "claim_authorized": "The DEC-079 gate failed. The full MLP uses joint current-composition and temporal information and beats matched Ridge, single-source ablations, and semantic shuffles, but temporal persistence is substantially stronger. This closes only the tested artificial masked-reconstruction specification.",
+      "claim_forbidden": "Claiming validated production imputation, a promoted temporal bipartite or dynamic graph-neural representation, improvement over temporal persistence, structural causality, automatic territorial recommendation, or policy action.",
+      "can_regenerate": true,
+      "notes": "Meso array 7782372, five seeds, nine years, five ZE-disjoint folds, 2,025 finite metric rows, 37,800 hidden cells per view, all tasks exit 0:0 with empty stderr. Six full-MLP fits reached 300 epochs; excluding them does not alter the persistence failure. Outputs are gitignored and collected locally. See HERALD_53."
     },
     {
       "id": "FR_ZE2020_GEOMETRY",

@@ -48,6 +48,15 @@ def test_projection_preserves_hidden_mass() -> None:
     assert scored["composition_error"].max() <= 1e-10
 
 
+def test_future_mutation_does_not_change_earlier_samples() -> None:
+    shares = _shares()
+    original = build_samples(shares, ["0000", "0001"], [2020], seed=42)
+    mutated = shares.copy()
+    mutated.loc[("0000", 2021), "GI"] += 10
+    changed = build_samples(mutated, ["0000", "0001"], [2020], seed=42)
+    pd.testing.assert_frame_equal(original, changed)
+
+
 def test_shuffles_preserve_rows_but_change_feature_blocks() -> None:
     samples = build_samples(_shares(), [f"{index:04d}" for index in range(10)], [2020], seed=42)
     sector = shuffle_current_sector_identity(samples, 42)

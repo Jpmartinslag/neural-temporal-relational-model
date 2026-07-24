@@ -3628,7 +3628,7 @@ different economic object and a new pre-registered decision. See HERALD_51.
 
 ## DEC-079 -- ZE2020 temporal bipartite masked-reconstruction gate (2026-07-24)
 
-**Status:** `PRE_REGISTERED_NOT_RUN`.
+**Status:** `COMPLETE_GATE_FAIL_MASKED_RECONSTRUCTION_SPECIFICATION_CLOSED`.
 
 **Prior-work boundary:** this decision does not reopen inferred-relation or
 graph-prediction branches closed by DEC-017, DEC-069--075, DEC-077, or
@@ -3663,3 +3663,24 @@ and remain stable across seeds.
 representation layer. Failure closes this masked-reconstruction specification.
 Neither outcome validates a dynamic GNN, production imputation, causal claim,
 automatic recommendation, or policy action. See HERALD_52.
+
+**Execution result:** Meso array `7782372` completed all five seeds with exit
+`0:0`, empty stderr, 2,025 finite metric rows, identical hidden targets,
+exactly three hidden sectors per ZE-year, compositional error at floating-point
+precision, and zero train/test ZE overlap. The full MLP beat matched Ridge in
+99.1% of comparisons, history-only in 100%, current-only in 92.4%,
+sector-shuffle in 94.2%, and temporal-shuffle in 100%. It also beat all three
+of Ridge/history-only/current-only in all nine evaluation years.
+
+**Decisive failure:** temporal persistence achieved masked MAE `0.009652`
+against `0.013498` for the full MLP and won 220/225 paired comparisons. The
+five MLP wins all occurred in 2022. Excluding six MLP fits that reached the
+300-epoch ceiling leaves the conclusion unchanged.
+
+**Final decision:** the gate fails and the tested masked-reconstruction
+specification is closed. The ablations support only a partial finding that the
+MLP uses joint current-composition and temporal information; they do not
+justify a neural temporal bipartite layer because simple previous-year
+economic memory remains substantially stronger. No production imputation,
+dynamic-GNN, recommendation, causal, or policy claim is authorized. See
+HERALD_53.
