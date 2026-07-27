@@ -99,6 +99,19 @@ DERIVED_GROWTH_FEATURE_FIRST_YEAR = 2014
 DERIVED_MIN_HISTORY_YEARS = 3
 
 COMMUTING_FAMILY = "commuting_strict_ex_ante"
+# The earliest official snapshot observes 2012 and was released 2015-06-25, so no
+# decision before 2016 could use it under the DEC-073 release-aware rule.  Every
+# year from 2016 onward MUST be present: absence there is truncation or
+# corruption, never a release fact, and must not be relabelled as one.
+COMMUTING_UNRELEASED_THROUGH_YEAR = 2015
+COMMUTING_FIRST_AVAILABLE_YEAR = 2016
+COMMUTING_EXPECTED_MODE = "strict_ex_ante_release_aware"
+COMMUTING_UNIQUE_PER_YEAR_COLUMNS = (
+    "observation_year",
+    "source_release_date",
+    "snapshot_age_years",
+    "availability_mode",
+)
 
 # Families specified in HERALD_20 section 2 as deliberately not populated.
 # Recording them keeps the mask honest about planned-but-absent structure
@@ -142,6 +155,71 @@ def _derived_expected_count(family: str, n_zones: int, n_sectors: int) -> int | 
     return None
 
 
+def validate_signal_input(signals: pd.DataFrame) -> None:
+    """Guard against family drift.
+
+    The builder iterates a fixed family tuple, so a family that appeared in the
+    input but not in that tuple would be silently dropped from the mask -- an
+    unclassified relation, which is the one thing this artifact must never
+    permit.  A family that disappeared from the input is equally a defect.
+    """
+    found = set(signals["relation_family"].unique())
+    expected = set(DERIVED_FAMILIES)
+    unknown = sorted(found - expected)
+    missing = sorted(expected - found)
+    assert not unknown, (
+        f"signal input carries families absent from DERIVED_FAMILIES: {unknown}; "
+        "add them to the builder rather than leaving them unclassified"
+    )
+    assert not missing, f"signal input is missing expected families: {missing}"
+
+
+def validate_commuting_input(commuting: pd.DataFrame) -> None:
+    """Distinguish an unreleased year from a truncated one.
+
+    Absence of rows is only a legitimate release fact through
+    ``COMMUTING_UNRELEASED_THROUGH_YEAR``.  From
+    ``COMMUTING_FIRST_AVAILABLE_YEAR`` onward, a missing year means the artifact
+    was truncated or corrupted, and labelling that ``source_not_released`` would
+    assert a falsehood about the source.  Fail instead.
+
+    Also require one coherent snapshot per decision year: ``first`` would
+    otherwise silently pick one value out of mixed metadata.
+    """
+    years = set(int(year) for year in commuting["decision_year"].unique())
+
+    required = set(range(COMMUTING_FIRST_AVAILABLE_YEAR, max(PANEL_YEARS) + 1))
+    truncated = sorted(required - years)
+    assert not truncated, (
+        f"commuting artifact is missing decision years {truncated}; from "
+        f"{COMMUTING_FIRST_AVAILABLE_YEAR} onward absence is truncation or corruption, "
+        "not a release fact, and must not be recorded as source_not_released"
+    )
+
+    unexpected = sorted(year for year in years if year <= COMMUTING_UNRELEASED_THROUGH_YEAR)
+    assert not unexpected, (
+        f"commuting artifact carries decision years {unexpected} at or before "
+        f"{COMMUTING_UNRELEASED_THROUGH_YEAR}, when no snapshot had been released"
+    )
+
+    assert (commuting["data_available"].astype(int) == 1).all(), (
+        "commuting artifact carries data_available != 1; this builder assumes every "
+        "present row is available"
+    )
+    assert (commuting["availability_mode"] == COMMUTING_EXPECTED_MODE).all(), (
+        f"commuting availability_mode is not uniformly {COMMUTING_EXPECTED_MODE!r}"
+    )
+
+    per_year = commuting.groupby("decision_year")[
+        list(COMMUTING_UNIQUE_PER_YEAR_COLUMNS)
+    ].nunique()
+    offenders = per_year[(per_year != 1).any(axis=1)]
+    assert offenders.empty, (
+        "commuting metadata is not unique per decision year, so a single snapshot "
+        f"cannot be attributed:\n{offenders}"
+    )
+
+
 def build_mask(
     signals_path: Path = SIGNALS_PATH,
     commuting_path: Path = COMMUTING_PATH,
@@ -150,6 +228,9 @@ def build_mask(
     signals = pd.read_csv(signals_path)
     commuting = pd.read_csv(commuting_path, dtype={"source_release_date": str})
     sector_panel = pd.read_csv(sector_panel_path, dtype={"ze2020": str})
+
+    validate_signal_input(signals)
+    validate_commuting_input(commuting)
 
     n_zones = sector_panel["ze2020"].nunique()
     n_sectors = sector_panel["sector_code"].nunique()
@@ -239,6 +320,15 @@ def build_mask(
                 }
             )
         else:
+            # validate_commuting_input has already proved that only years at or
+            # before COMMUTING_UNRELEASED_THROUGH_YEAR can be absent.  Re-assert
+            # here so the reason can never be attached to a truncated year even if
+            # this function is called directly.
+            assert year <= COMMUTING_UNRELEASED_THROUGH_YEAR, (
+                f"commuting year {year} is absent but after "
+                f"{COMMUTING_UNRELEASED_THROUGH_YEAR}: this is truncation, not a "
+                "release fact"
+            )
             rows.append(
                 {
                     "relation_family": COMMUTING_FAMILY,
