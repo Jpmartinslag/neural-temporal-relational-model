@@ -3850,3 +3850,40 @@ amendment's rationale recorded and the superseded text left in place.
 `reports/README.md`, `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md`.
 
 See HERALD_56.
+
+### DEC-081 -- Correction addendum (2026-07-27, same day, pre-push)
+
+The original entry above is preserved unaltered. An E1 audit found four defects; this
+addendum records the corrections. HERALD_56 was edited in place to match.
+
+1. **Claim/commit mismatch.** The entry and HERALD_56 stated that
+   `reports/HERALD_CURRENT_STATE.md` was corrected in this delivery, but commit
+   `f262882` did not contain that file: it still carried 18 uncommitted lines from a
+   separate session (the "Current objective framing" block), and staging it whole would
+   have committed unrelated work. The three DEC-081 hunks of that file were subsequently
+   staged in isolation and committed in the follow-up correction commit, with the
+   pre-existing block deliberately left unstaged in the worktree. Verified: the working
+   file is byte-identical to its pre-correction content, so nothing from the other
+   session was lost.
+
+2. **Over-generalization corrected.** The claim that every apparent relational positive
+   died at the first correctly matched placebo is too strong. Corrected reading: no
+   relational candidate has justified promotion to a robust predictive or neural product
+   layer under the complete sequence of matched controls, while limited analytical
+   signals and exploratory results do exist -- G1-L2 co-growth (DEC-019/020), Phase 7
+   precedence (DEC-034), the DEC-070 isolated `ze_similarity` block, the HERALD_39
+   temporal-successor probe, and the HERALD_27 local pair gate.
+
+3. **Attribution corrected for the edge-target circularity pattern.** DEC-069 supports
+   that reading through its sector shuffle (real change lost to sector-shuffled
+   relations, lift `-0.0002`) and its randomized-endpoint placebo (effectively tied,
+   `+0.0003`). **DEC-069 did not evaluate a temporal shuffle.** The finding that temporal
+   shuffle fails to degrade belongs only to the corrected top-3 and relation-lift runs
+   that actually evaluated it (HERALD_38 section 8, jobs `7755806` / `7755807`).
+
+4. **Interpretation no longer presented as mechanism.** Target degeneracy is a plausible
+   structural limitation consistent with the outcomes of DEC-078, DEC-079 and DEC-080. It
+   is not a demonstrated mechanism: no test has isolated compositional closure as the
+   cause, and doing so would require a target that is not closed by construction.
+
+None of Q1, Q2 or Q3 is altered by this addendum.
