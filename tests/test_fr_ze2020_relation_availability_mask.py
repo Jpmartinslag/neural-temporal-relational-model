@@ -21,7 +21,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src.data.france_ze2020.build_fr_ze2020_relation_availability_mask import (  # noqa: E402
+    COMMUTING_EXPECTED_MODE,
     COMMUTING_FAMILY,
+    COMMUTING_FIRST_AVAILABLE_YEAR,
+    COMMUTING_UNRELEASED_THROUGH_YEAR,
     DERIVED_FAMILIES,
     DERIVED_FIRST_YEAR,
     NOT_CONSTRUCTED_FAMILIES,
@@ -38,7 +41,9 @@ from src.data.france_ze2020.build_fr_ze2020_relation_availability_mask import ( 
     VALID_STATUSES,
     build_mask,
     sha256,
+    validate_commuting_input,
     validate_mask,
+    validate_signal_input,
 )
 
 MASK_PATH = ROOT / "data/processed/france_ze2020/fr_ze2020_relation_availability_mask.csv"
@@ -245,6 +250,162 @@ def test_written_artifact_matches_builder(written_mask: pd.DataFrame, mask: pd.D
         return out[OUTPUT_COLUMNS]
 
     pd.testing.assert_frame_equal(as_text(written_mask), as_text(mask))
+
+
+# --- mutation tests: the builder must not invent a reason ------------------
+
+
+@pytest.fixture(scope="module")
+def commuting_input() -> pd.DataFrame:
+    return pd.read_csv(COMMUTING_PATH, dtype={"source_release_date": str})
+
+
+@pytest.fixture(scope="module")
+def signals_input() -> pd.DataFrame:
+    return pd.read_csv(SIGNALS_PATH)
+
+
+def test_truncated_commuting_year_is_not_relabelled_as_unreleased(
+    commuting_input: pd.DataFrame, tmp_path: Path
+) -> None:
+    """A year lost to truncation must fail, not acquire a release excuse.
+
+    Without this guard the builder would state that the source had not been
+    published, which is a falsehood about INSEE rather than a missing row.
+    """
+    truncated = commuting_input[commuting_input["decision_year"] != 2025]
+    with pytest.raises(AssertionError, match="truncation or corruption"):
+        validate_commuting_input(truncated)
+
+    path = tmp_path / "truncated.csv.gz"
+    truncated.to_csv(path, index=False)
+    with pytest.raises(AssertionError, match="truncation or corruption"):
+        build_mask(commuting_path=path)
+
+
+def test_commuting_row_before_release_is_rejected(
+    commuting_input: pd.DataFrame,
+) -> None:
+    """A row dated before any snapshot existed contradicts the release rule."""
+    impossible = commuting_input.copy()
+    impossible.loc[impossible.index[0], "decision_year"] = COMMUTING_UNRELEASED_THROUGH_YEAR
+    with pytest.raises(AssertionError, match="no snapshot had been released"):
+        validate_commuting_input(impossible)
+
+
+def test_unknown_signal_family_fails_instead_of_being_dropped(
+    signals_input: pd.DataFrame, tmp_path: Path
+) -> None:
+    """A family the builder does not iterate would vanish from the mask."""
+    drifted = signals_input.copy()
+    drifted.loc[drifted.index[0], "relation_family"] = "brand_new_family"
+    with pytest.raises(AssertionError, match="absent from DERIVED_FAMILIES"):
+        validate_signal_input(drifted)
+
+    path = tmp_path / "drifted.csv.gz"
+    drifted.to_csv(path, index=False)
+    with pytest.raises(AssertionError, match="absent from DERIVED_FAMILIES"):
+        build_mask(signals_path=path)
+
+
+def test_missing_signal_family_fails(signals_input: pd.DataFrame) -> None:
+    reduced = signals_input[signals_input["relation_family"] != "intra_ze_sector"]
+    with pytest.raises(AssertionError, match="missing expected families"):
+        validate_signal_input(reduced)
+
+
+def test_mixed_commuting_metadata_in_one_year_fails(
+    commuting_input: pd.DataFrame, tmp_path: Path
+) -> None:
+    """`first` would silently pick one snapshot out of mixed metadata."""
+    mixed = commuting_input.copy()
+    target = mixed.index[mixed["decision_year"] == 2020][0]
+    mixed.loc[target, "observation_year"] = 2017
+    with pytest.raises(AssertionError, match="not unique per decision year"):
+        validate_commuting_input(mixed)
+
+    path = tmp_path / "mixed.csv.gz"
+    mixed.to_csv(path, index=False)
+    with pytest.raises(AssertionError, match="not unique per decision year"):
+        build_mask(commuting_path=path)
+
+
+def test_mixed_release_date_in_one_year_fails(commuting_input: pd.DataFrame) -> None:
+    mixed = commuting_input.copy()
+    target = mixed.index[mixed["decision_year"] == 2018][0]
+    mixed.loc[target, "source_release_date"] = "2099-01-01"
+    with pytest.raises(AssertionError, match="not unique per decision year"):
+        validate_commuting_input(mixed)
+
+
+def test_unavailable_commuting_row_is_rejected(commuting_input: pd.DataFrame) -> None:
+    flagged = commuting_input.copy()
+    flagged.loc[flagged.index[0], "data_available"] = 0
+    with pytest.raises(AssertionError, match="data_available"):
+        validate_commuting_input(flagged)
+
+
+def test_unexpected_availability_mode_is_rejected(commuting_input: pd.DataFrame) -> None:
+    altered = commuting_input.copy()
+    altered.loc[altered.index[0], "availability_mode"] = "something_else"
+    with pytest.raises(AssertionError, match="availability_mode"):
+        validate_commuting_input(altered)
+
+
+def test_real_commuting_input_satisfies_its_guards(commuting_input: pd.DataFrame) -> None:
+    validate_commuting_input(commuting_input)
+    years = sorted(int(year) for year in commuting_input["decision_year"].unique())
+    assert years == list(range(COMMUTING_FIRST_AVAILABLE_YEAR, max(PANEL_YEARS) + 1))
+    assert set(commuting_input["availability_mode"].unique()) == {COMMUTING_EXPECTED_MODE}
+
+
+# --- part A: the A10 observational mask (HERALD_57 section 1) --------------
+#
+# Part A needs no builder, but its properties are load-bearing for every later
+# stage: the sectoral persistence audit, the forecast-derived states, and the
+# dashboard all assume a complete A10 panel. A regression test fixes them so a
+# future rebuild cannot quietly introduce a gap.
+
+
+@pytest.fixture(scope="module")
+def sector_panel() -> pd.DataFrame:
+    return pd.read_csv(SECTOR_PANEL_PATH, dtype={"ze2020": str})
+
+
+def test_a10_panel_shape(sector_panel: pd.DataFrame) -> None:
+    assert len(sector_panel) == 35_280
+    assert sector_panel["ze2020"].nunique() == 280
+    assert sector_panel["sector_code"].nunique() == 9
+    years = sorted(int(year) for year in sector_panel["year"].unique())
+    assert years == list(PANEL_YEARS)
+    assert len(sector_panel) == 280 * len(PANEL_YEARS) * 9
+
+
+def test_a10_panel_has_no_missing_cell(sector_panel: pd.DataFrame) -> None:
+    """One row per zone-year-sector, with nothing absent and nothing duplicated."""
+    assert not sector_panel.duplicated(["ze2020", "year", "sector_code"]).any()
+    assert sector_panel["sector_establishment_creations"].notna().all()
+
+
+def test_a10_mask_is_integrally_available(sector_panel: pd.DataFrame) -> None:
+    assert (sector_panel["mask_sector_available"].astype(int) == 1).all()
+
+
+def test_a10_has_exactly_one_observed_zero(sector_panel: pd.DataFrame) -> None:
+    """The single zero is `5218 / 2016 / JZ`, reconciled against the independent
+    official total (DEC-076). A second zero would mean the panel changed and the
+    HERALD_57 part A statement would no longer hold."""
+    zeros = sector_panel[sector_panel["sector_establishment_creations"].astype(float) == 0]
+    assert len(zeros) == 1, zeros
+    row = zeros.iloc[0]
+    assert row["ze2020"] == "5218"
+    assert int(row["year"]) == 2016
+    assert row["sector_code"] == "JZ"
+
+
+def test_a10_positive_cell_count(sector_panel: pd.DataFrame) -> None:
+    positives = (sector_panel["sector_establishment_creations"].astype(float) > 0).sum()
+    assert positives == 35_279
 
 
 def test_summary_declares_no_model_input_claim() -> None:

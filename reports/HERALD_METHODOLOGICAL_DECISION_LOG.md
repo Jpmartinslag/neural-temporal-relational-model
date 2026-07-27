@@ -3988,3 +3988,48 @@ derivation rule requires the mask to be regenerated and this entry extended.
 `reports/herald_artifact_registry.json`, `reports/README.md`.
 
 See HERALD_57.
+
+### DEC-082 -- Correction addendum (2026-07-27, same day, pre-push)
+
+The original entry above is preserved unaltered. An E2 audit found four defects in the
+builder and its test coverage. None changes the artifact -- it is byte-identical before and
+after -- and none alters the schema, the status vocabulary, or the reasons.
+
+1. **A truncated commuting year received a false reason (high).** The builder classified
+   *any* commuting decision year without rows as `source_not_released`. That is true only
+   through 2015. Had the artifact been truncated or corrupted, the build would have passed
+   and the table would have asserted something false about the INSEE release rather than
+   reporting a missing row -- a fabricated provenance claim, which is worse than the
+   absent-row defect this artifact exists to remove. Fixed: `validate_commuting_input` now
+   requires complete coverage from `COMMUTING_FIRST_AVAILABLE_YEAR = 2016` through 2025 and
+   fails on any later absence; the unavailable branch re-asserts the year bound at the point
+   of emission so the reason cannot be attached to a truncated year even when `build_mask`
+   is called directly. A row dated at or before 2015 is also now rejected, since no snapshot
+   had been released then.
+
+2. **A new relation family would have been dropped silently (medium).** The builder counted
+   every family present in the input but iterated only the three known constants, so a
+   fourth family would have been absent from the mask without any error -- an unclassified
+   relation, the one outcome this artifact must never permit. Fixed:
+   `validate_signal_input` compares the input families against `DERIVED_FAMILIES` and fails
+   on drift in either direction, unknown or missing.
+
+3. **Commuting metadata could be internally inconsistent (medium).** Per-year metadata was
+   taken with `first`, which would silently attribute one snapshot, release date and age out
+   of mixed values. Fixed: exactly one distinct value is now required per decision year for
+   `observation_year`, `source_release_date`, `snapshot_age_years` and `availability_mode`,
+   with `data_available = 1` and the mode uniformly `strict_ex_ante_release_aware`.
+
+4. **Part A had no regression test (medium).** The 21 original tests covered only the
+   relational mask. The A10 properties are load-bearing for the sectoral persistence audit,
+   the forecast-derived states, and the dashboard, so five tests now fix the shape (35,280
+   rows, 280 zones, 9 sectors, 14 years, no duplicate zone-year-sector), the integral mask,
+   the positive count of 35,279, and the identity of the single zero `5218 / 2016 / JZ`.
+
+Each of the first three defects has a mutation test that constructs the exact defective
+input and confirms the failure fires, through both the validator and the full `build_mask`
+path. Test count rises from 21 to **35**, all passing.
+
+**Affected files (addendum):** `src/data/france_ze2020/build_fr_ze2020_relation_availability_mask.py`,
+`tests/test_fr_ze2020_relation_availability_mask.py`,
+`reports/canonical/HERALD_57_FR_ZE2020_AVAILABILITY_MASKS.md`.

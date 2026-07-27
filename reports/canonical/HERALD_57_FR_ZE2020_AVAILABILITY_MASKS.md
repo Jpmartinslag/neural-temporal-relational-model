@@ -41,6 +41,13 @@ inferred-but-reconciled observation rather than a gap. No further treatment is r
 almost entirely relational, not observational. Part A is documentation; part B is the
 artifact.
 
+Part A still carries a regression test, because these properties are load-bearing for
+every later stage -- the sectoral persistence audit, the forecast-derived states, and the
+dashboard all assume a complete A10 panel. Five tests fix the shape (35,280 rows, 280
+zones, 9 sectors, 14 years, no duplicate zone-year-sector), the integral mask, the positive
+count, and the identity of the single zero. A future rebuild cannot introduce a gap or a
+second zero without failing them.
+
 ## 2. Part B -- the relational availability mask
 
 ### 2.1 The defect it removes
@@ -194,6 +201,29 @@ artifact. The two sector families select over available pairs with no documented
 form, so their expectation is left **blank, meaning unknown**, rather than back-filled from
 the output they are supposed to check. Blank is never zero anywhere in this table.
 
+### 2.9 Input guards: the builder must not invent a reason
+
+The first implementation classified *any* commuting year without rows as
+`source_not_released`. That is only true through 2015. Had the artifact been truncated or
+corrupted, the build would have passed and the table would have asserted something false
+about INSEE rather than reporting a missing row -- a fabricated provenance claim, which is
+worse than the absent-row defect this artifact exists to fix. Three input guards now run
+before any row is emitted:
+
+| Guard | Rejects |
+|---|---|
+| `validate_commuting_input`: required-year coverage | a missing decision year from 2016 onward. Absence is a release fact only through 2015; later absence is truncation or corruption and fails |
+| `validate_commuting_input`: pre-release rows | a row dated at or before 2015, when no snapshot had been released |
+| `validate_commuting_input`: per-year uniqueness | mixed `observation_year`, `source_release_date`, `snapshot_age_years` or `availability_mode` inside one decision year, where `first` would otherwise silently attribute one snapshot; also any `data_available != 1` or any mode other than `strict_ex_ante_release_aware` |
+| `validate_signal_input`: family drift | a relation family present in the input but absent from the builder's iterated tuple, which would vanish from the mask unclassified; and a known family missing from the input |
+
+The unavailable branch additionally re-asserts the year bound at the point of emission, so
+the reason cannot be attached to a truncated year even if `build_mask` is called directly.
+
+Each guard has a mutation test that constructs the exact defective input and confirms the
+failure fires, through both the validator and the full `build_mask` path. Adding the guards
+did not change the artifact: it is byte-identical to the version produced before them.
+
 ## 3. E2 finding, recorded and deliberately not fixed here
 
 `data/processed/france_ze2020/fr_ze2020_dynamic_graph_splits.csv` assigns the split role
@@ -231,9 +261,16 @@ rather than annual snapshots. Both are recorded; neither is interpreted here.
 | Builder run | 84 rows, 6 families, 0 unclassified cells |
 | Determinism | identical SHA-256 across two independent output directories |
 | Canonical inputs unchanged | SHA-256 equal before and after, asserted in builder and re-tested |
-| Tests | 21 passed |
-| Fail-closed behaviour | silent emptiness, missing classification, and reason-less unavailability each raise |
+| Tests | 35 passed (`tests/test_fr_ze2020_relation_availability_mask.py`) |
+| Fail-closed on output | silent emptiness, missing classification, and reason-less unavailability each raise |
+| Fail-closed on input | truncated commuting year, pre-release row, mixed per-year metadata, and signal-family drift each raise, verified by mutation tests through both the validator and `build_mask` |
+| Part A regression | 5 tests fix the A10 shape, integral mask, positive count, and the identity of the single zero |
 | Numeric formatting | counts written as integers via nullable `Int64`; blank means unknown, never zero |
+
+The repository-wide `pytest tests` run reports 20 collection errors, all
+`ModuleNotFoundError: No module named 'torch'` in unrelated synthetic and graph-temporal
+modules. That is an environment gap, not an E2 result. Note that `python3` on this machine
+lacks pandas; the working interpreter is `python3.10`.
 
 ## 6. Cross-reference
 
