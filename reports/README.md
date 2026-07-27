@@ -214,6 +214,10 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     — pre-registers a held-out-ZE ranking test of next-year sector-share
     transition magnitude and direction using observed temporal compositions,
     with own-history, linear, ablation, and semantic-shuffle controls.
+53. `canonical/HERALD_55_FR_ZE2020_COMPOSITION_TRANSITION_RANKING_RESULT.md`
+    — records the DEC-080 gate failure: the joint MLP uses nonlinear temporal
+    and sector-identity information but loses to past delta and target-sector
+    history, so this transition-ranking specification is closed.
 
 ## Control Documents
 

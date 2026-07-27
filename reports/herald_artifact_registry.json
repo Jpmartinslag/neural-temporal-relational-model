@@ -17,8 +17,8 @@
       "REGENERABLE",
       "ARCHIVED"
     ],
-    "last_updated": "2026-07-24",
-    "last_decision": "DEC-079 / HERALD_53 temporal bipartite reconstruction gate fail"
+    "last_updated": "2026-07-27",
+    "last_decision": "DEC-080 / HERALD_55 composition-transition ranking gate fail"
   },
   "artifacts": [
     {
@@ -1566,6 +1566,25 @@
       "claim_forbidden": "Claiming validated production imputation, a promoted temporal bipartite or dynamic graph-neural representation, improvement over temporal persistence, structural causality, automatic territorial recommendation, or policy action.",
       "can_regenerate": true,
       "notes": "Meso array 7782372, five seeds, nine years, five ZE-disjoint folds, 2,025 finite metric rows, 37,800 hidden cells per view, all tasks exit 0:0 with empty stderr. Six full-MLP fits reached 300 epochs; excluding them does not alter the persistence failure. Outputs are gitignored and collected locally. See HERALD_53."
+    },
+    {
+      "id": "FR_ZE2020_COMPOSITION_TRANSITION_RANKING_GATE_V1",
+      "phase": "observed ZE-sector composition-transition ranking falsification (2026-07-27)",
+      "path": "hpc_results/fr_ze2020_transition_ranking_full_20260724_185913/fr_ze2020_composition_transition_ranking_{metrics,summary,gate}_v1.*",
+      "type": "hpc_representation_gate_output",
+      "status": "FROZEN",
+      "tracked_in_git": false,
+      "size_bytes": 575195,
+      "sha256_prefix": "metrics=fe3559881eb0fb67a6b;summary=e738c0d46ad7fef6951a;gate=8fee1ed524f6c356e2f7",
+      "origin_decision": "DEC-080 -- see reports/canonical/HERALD_54_FR_ZE2020_COMPOSITION_TRANSITION_RANKING_SPEC.md and HERALD_55_FR_ZE2020_COMPOSITION_TRANSITION_RANKING_RESULT.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_composition_transition_ranking_gate.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv"
+      ],
+      "claim_authorized": "The DEC-080 gate failed. The joint MLP is sensitive to temporal and sector-identity structure and beats matched Ridge in aggregate, but loses to past delta and target-sector history and does not recur against all controls by year. This closes only the tested continuous composition-transition ranking specification.",
+      "claim_forbidden": "Claiming robust incremental cross-sector-composition value, a promoted temporal bipartite or dynamic graph-neural representation, structural causality, automatic territorial recommendation, or policy action.",
+      "can_regenerate": true,
+      "notes": "Meso array 7782532, five seeds, eight years, five ZE-disjoint folds, ten views, 2,000 finite metric rows, all tasks exit 0:0 with empty stderr and 100% fitted-view convergence. Outputs are gitignored and collected locally. See HERALD_55."
     },
     {
       "id": "FR_ZE2020_GEOMETRY",

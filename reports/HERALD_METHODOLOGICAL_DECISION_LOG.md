@@ -3689,7 +3689,7 @@ HERALD_53.
 
 ## DEC-080 -- ZE2020 composition-transition ranking gate (2026-07-24)
 
-**Status:** `PRE_REGISTERED_NOT_RUN`.
+**Status:** `COMPLETE_GATE_FAIL_TRANSITION_RANKING_SPECIFICATION_CLOSED`.
 
 **Prior-work boundary:** DEC-080 does not reopen the three-year top-3 entry
 target of DEC-069, RCA entry-density of DEC-078, or masked level reconstruction
@@ -3724,3 +3724,25 @@ in at least 6/8 years, preserve temporal/ZE integrity, and remain seed-stable.
 layer. Failure closes this continuous transition-ranking specification.
 Neither outcome validates a dynamic GNN, causality, automatic recommendation,
 or policy action. See HERALD_54.
+
+**Execution:** Meso array `7782532` completed all five seeds with exit `0:0`
+and empty stderr. The audit contains 2,000 finite metric rows across eight
+years, five ZE-disjoint folds, ten views, and five seeds. Target identity,
+nine-sector completeness, label maturity, and zero ZE overlap all pass.
+
+**Result:** `mlp_joint` reaches NDCG@3 `0.623920`. It exceeds matched Ridge
+(`0.579403`) and degrades under sector and temporal shuffles, but loses to
+`past_delta` (`0.647044`) and target-history-only MLP (`0.635467`). Paired win
+rates are 32.0% against past delta, 55.0% against Ridge, and 43.5% against
+target history. It beats all substantive controls in 0/8 evaluation years.
+Seed CV is only 0.47%, so the failure is stable rather than an optimization
+accident.
+
+**Final decision:** the registered gate fails and this continuous
+transition-ranking specification is closed. The experiment supports only that
+time and sector identity contain non-random predictive information and that
+the MLP result is consistent with some nonlinear structure. It does not
+establish robust
+incremental value from joint cross-sector composition beyond direct sector
+history. No dynamic-GNN, causal, automatic-recommendation, or policy claim is
+authorized. See HERALD_55.
