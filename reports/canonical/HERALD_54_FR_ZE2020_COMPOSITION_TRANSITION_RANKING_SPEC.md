@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-24  
 **Decision:** DEC-080  
-**Status:** `PRE_REGISTERED_NOT_RUN`
+**Status:** `COMPLETE_GATE_FAIL_SEE_HERALD_55`
 
 ## 1. Question and prior-work boundary
 
