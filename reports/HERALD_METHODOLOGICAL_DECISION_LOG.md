@@ -3887,3 +3887,104 @@ addendum records the corrections. HERALD_56 was edited in place to match.
    cause, and doing so would require a target that is not closed by construction.
 
 None of Q1, Q2 or Q3 is altered by this addendum.
+
+---
+
+## DEC-082 -- France ZE2020 availability masks, observational and relational separated (2026-07-27)
+
+**Status:** `AVAILABILITY_MASKS_SEPARATED`.
+
+**Stage:** E2 of the sequence fixed by DEC-081.
+
+**Problem:** relational unavailability in this repository is expressed as an absent row,
+not as a flag. `fr_ze2020_temporal_relation_signals.csv.gz` has no rows before 2017 and
+`fr_ze2020_commuting_strict_ex_ante_edges.csv.gz` has none before 2016, while every
+commuting row present carries `data_available = 1`. A consumer joining on `decision_year`
+without counting rows cannot see either gap, and a year with zero edges becomes
+indistinguishable from a year whose relations are merely weak. DEC-065 is the precedent
+for the cost of that confusion.
+
+**Decision.** Two separate objects, because observational and relational availability are
+different questions:
+
+*Part A -- the A10 observational mask needs no construction.* Verified against
+`fr_ze2020_sector_panel.csv`: 35,280 rows (280 x 14 x 9), all 14 years present,
+`mask_sector_available = 0` in **0** cells, **1** observed zero, **35,279** positives. The
+single zero is `5218 / 2016 / JZ`, reconciled against the independent official total
+(DEC-076), so it is an inferred-but-reconciled observation rather than a gap. Part A is
+therefore documentation, not an artifact.
+
+*Part B -- a standalone relational availability mask.* New artifact
+`data/processed/france_ze2020/fr_ze2020_relation_availability_mask.csv` (84 cells: 6
+families x decision years 2012-2025) plus its summary, built by
+`src/data/france_ze2020/build_fr_ze2020_relation_availability_mask.py`. A standalone table
+was chosen over adding columns to existing artifacts because the alternative would modify
+`fr_ze2020_temporal_relation_signals.csv.gz`, an audited leakage-safe model input whose
+revalidation would reopen HERALD_38. Canonical inputs are opened read-only and their
+SHA-256 verified unchanged before and after each run, in the builder and again in a test.
+
+**Status vocabulary.** `observed` (relation observed at its own decision year),
+`carried_forward_from_snapshot`, `derived_available`, `unavailable`. A computed relation is
+never labelled `observed` -- enforced by builder and test. `observed` is currently unused
+by every family, which is itself a finding: commuting observes but always with a four to
+eight year lag, and the three signal families do not observe at all, they correlate causal
+lag features. The status is retained for a future directly observed source and its
+emptiness is asserted in the summary.
+
+**Unavailable reasons.** `source_not_released`, `insufficient_history`, `not_constructed`.
+
+**Contents.** `unavailable` 47, `derived_available` 27, `carried_forward_from_snapshot` 10;
+reasons `not_constructed` 28, `insufficient_history` 15, `source_not_released` 4. The two
+families documented in HERALD_20 section 2 as planned but never built
+(`sector_to_sector_comovement`, `temporal_precedence_signal`) are recorded as
+`not_constructed` for all 14 years rather than omitted.
+
+**Mechanisms proved, not asserted.** Commuting 2012-2015 is `source_not_released`: the
+earliest snapshot observes 2012 and was released `2015-06-25`, so no decision before 2016
+could use it under the DEC-073 release-aware rule. The three signal families are
+`insufficient_history` for 2012-2016 because `similarity_matrix_for_year` applies
+`corr(min_periods=3)` to history strictly earlier than the decision year over
+`growth_1y_safe`, whose first non-null year is **2014** (verified: `lag_1` 2013, `lag_2`
+and `growth_1y_safe` 2014, `growth_2y_safe` 2015); three non-null prior years therefore
+first exist at 2017. The sector families follow the same rule through
+`sector_growth_lag_1`, also first non-null at 2014. The derived 2017 matches the artifact's
+observed first year exactly, and a test asserts the provenance string names all three
+components of the mechanism.
+
+**Availability is not emptiness.** An `unavailable` cell means the relation does not exist
+by source or by construction. An available cell with `actual_edge_count = 0` would be
+silent emptiness, a different and worse condition: the builder fails closed on it and a
+test constructs that row to confirm the failure fires. `expected_edge_count` is populated
+only where a documented structural formula exists (`ze_similarity`: 280 x 5 x 9 = 12,600
+per available year, matching the artifact); elsewhere it is blank, meaning unknown. Blank
+is never zero anywhere in the table.
+
+**Finding recorded, deliberately not fixed.** `fr_ze2020_dynamic_graph_splits.csv` assigns
+`warmup_or_train` to decision years 2012 and 2013, for which no relational edge exists in
+any family. What is confirmed is only that the splits include years without edges; the
+impact is **not** established and requires auditing how each consumer of that file treats
+an edgeless year. That is a separate delivery and is not folded into DEC-082. Recorded for
+the same reason: within available years, `intra_ze_sector` carries 20 relations per year
+against 12,600 for each other family, a ratio of 630 to 1 -- a different quantity from the
+DEC-069 imbalance (257,823 / 426 / 211), which counted accumulated expanding-window memory
+rather than annual snapshots. Neither is interpreted here.
+
+**Validation.** 84 rows, 0 unclassified cells, determinism confirmed by identical SHA-256
+across two independent output directories, canonical inputs verified unchanged, 21 tests
+pass.
+
+**Limitations.** This is a provenance artifact. It carries
+`claim_status = availability_provenance_only_not_model_input`, evaluates no relation's
+predictive value, fixes no consumer, and authorizes no training run or HPC job.
+
+**Reopen condition:** a new relation family, a new source snapshot, or a change to a
+derivation rule requires the mask to be regenerated and this entry extended.
+
+**Affected files:** `reports/canonical/HERALD_57_FR_ZE2020_AVAILABILITY_MASKS.md` (new),
+`src/data/france_ze2020/build_fr_ze2020_relation_availability_mask.py` (new),
+`tests/test_fr_ze2020_relation_availability_mask.py` (new),
+`data/processed/france_ze2020/fr_ze2020_relation_availability_mask.csv` (new),
+`data/processed/france_ze2020/fr_ze2020_relation_availability_mask_summary.json` (new),
+`reports/herald_artifact_registry.json`, `reports/README.md`.
+
+See HERALD_57.

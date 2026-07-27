@@ -1629,6 +1629,48 @@
       "claim_forbidden": "Any causal claim, any recommendation/recommended_action/policy_action language (verified absent by test). Claiming the geometry covers Corsica/DOM (it does not, by design). Claiming the sector real-vs-predicted comparison is a validated result (it is the already-negative sector_graph_smoke output from HERALD_19, shown with its caveat, never hidden). Treating this as the project's final/public dashboard -- it is a separate MVP for the France ZE2020 track, the Observatory v0.5.1 candidate remains the multi-country presentation track.",
       "can_regenerate": true,
       "notes": "30/30 dashboard tests pass (tests/test_fr_ze2020_dashboard_mvp.py). No real browser/Playwright available in this environment (same limitation already documented for every Observatory dashboard) -- validated structurally (embedded JSON parses and is complete, DOM ids referenced by JS exist in the HTML, Plotly.newPlot targets exist as divs, onchange/onclick handlers reference defined functions, integrated iframe payload decodes and is renamed) instead of a screenshot. Manual visual confirmation in a real browser is recommended before presenting."
+    },
+    {
+      "id": "FR_ZE2020_RELATION_AVAILABILITY_MASK",
+      "phase": "relational availability mask (2026-07-27)",
+      "path": "data/processed/france_ze2020/fr_ze2020_relation_availability_mask.csv",
+      "type": "availability_provenance_table",
+      "status": "REGENERABLE",
+      "tracked_in_git": true,
+      "size_bytes": 17460,
+      "sha256_prefix": "de0f89311c8f4265e4cb",
+      "origin_decision": "DEC-082 relational availability mask -- see reports/canonical/HERALD_57_FR_ZE2020_AVAILABILITY_MASKS.md",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_relation_availability_mask.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_temporal_relation_signals.csv.gz",
+        "data/processed/france_ze2020/fr_ze2020_commuting_strict_ex_ante_edges.csv.gz",
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv"
+      ],
+      "claim_authorized": "Per relation family and decision year 2012-2025: whether a relation is available and, when it is not, why. 84 classified cells over 6 families. Makes explicit that commuting has no snapshot released before 2016 and that the three derived signal families cannot exist before 2017.",
+      "claim_forbidden": "Using this table as a model input or as evidence that any relation carries predictive value. Reading derived_available as observed. Reading an unavailable cell as a relation of zero strength.",
+      "can_regenerate": true,
+      "notes": "Standalone table; canonical inputs are read-only and verified unchanged by SHA-256 before and after each run. See tests/test_fr_ze2020_relation_availability_mask.py (21 tests)."
+    },
+    {
+      "id": "FR_ZE2020_RELATION_AVAILABILITY_MASK_SUMMARY",
+      "phase": "relational availability mask (2026-07-27)",
+      "path": "data/processed/france_ze2020/fr_ze2020_relation_availability_mask_summary.json",
+      "type": "availability_provenance_summary",
+      "status": "REGENERABLE",
+      "tracked_in_git": true,
+      "size_bytes": 1219,
+      "sha256_prefix": "0594abd553fa38ccc6a1",
+      "origin_decision": "DEC-082 relational availability mask -- see reports/canonical/HERALD_57_FR_ZE2020_AVAILABILITY_MASKS.md",
+      "generator_script": "src/data/france_ze2020/build_fr_ze2020_relation_availability_mask.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_temporal_relation_signals.csv.gz",
+        "data/processed/france_ze2020/fr_ze2020_commuting_strict_ex_ante_edges.csv.gz",
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv"
+      ],
+      "claim_authorized": "Status and reason counts, input checksums, and the read-only verification flag for the relational availability mask.",
+      "claim_forbidden": "Any predictive or causal reading.",
+      "can_regenerate": true,
+      "notes": "Regenerated together with the mask by the same builder."
     }
   ]
 }
