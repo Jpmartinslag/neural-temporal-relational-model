@@ -228,6 +228,15 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     model experiment (an exogenous sectoral structure independent of the
     enterprise-birth panel that survives a matched placebo). Also fixes the E1–E7
     delivery sequence and records the documentary sweep for inconsistent ranges.
+55. `canonical/HERALD_57_FR_ZE2020_AVAILABILITY_MASKS.md`
+    — separates, under DEC-082, the A10 observational mask (already complete:
+    35,280 cells, one reconciled observed zero, nothing to build) from a new
+    standalone relational availability mask that classifies all 84 family x
+    decision-year cells and states why a relation is absent — commuting has no
+    snapshot released before 2016, and the three derived signal families cannot
+    exist before 2017 because their growth feature starts in 2014 under a
+    three-year correlation minimum. Records, without fixing, that the dynamic
+    graph splits file assigns training roles to years holding no edges.
 
 ## Control Documents
 

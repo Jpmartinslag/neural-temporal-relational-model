@@ -1,0 +1,28 @@
+{
+  "artifact": "fr_ze2020_relation_availability_mask",
+  "claim_status": "availability_provenance_only_not_model_input",
+  "decision_year_max": 2025,
+  "decision_year_min": 2012,
+  "family_count": 6,
+  "input_sha256": {
+    "commuting": "bb3d1930828599173aea13f5a721544763285844a173b6094a434e4f40196545",
+    "sector_panel": "ff102c482c510cc961f6084a983bd00b567b72938194311b8d9440114268c933",
+    "signals": "d9d7917a7ffaa415c5c1fd0023691348a1ed225059f7757a8b91c185e4a3a40f"
+  },
+  "inputs_unchanged": true,
+  "notes": "Standalone availability mask. Canonical artifacts are read-only inputs and were verified unchanged by SHA-256 before and after the run. The 'observed' status is unused because no current relation family observes at its own decision year. See HERALD_57 and DEC-082.",
+  "observed_status_used": false,
+  "output_sha256": "de0f89311c8f4265e4cb46193f45f40937f698bf3dea32b3612a0e9997a1c36f",
+  "row_count": 84,
+  "status": "REGENERABLE_PROVENANCE_ARTIFACT",
+  "status_counts": {
+    "carried_forward_from_snapshot": 10,
+    "derived_available": 27,
+    "unavailable": 47
+  },
+  "unavailable_reason_counts": {
+    "insufficient_history": 15,
+    "not_constructed": 28,
+    "source_not_released": 4
+  }
+}
