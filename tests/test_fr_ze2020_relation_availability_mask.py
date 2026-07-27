@@ -39,7 +39,11 @@ from src.data.france_ze2020.build_fr_ze2020_relation_availability_mask import ( 
     STATUS_UNAVAILABLE,
     VALID_REASONS,
     VALID_STATUSES,
+    DERIVED_LAST_YEAR,
+    REQUIRED_COMMUTING_COLUMNS,
+    REQUIRED_SIGNAL_COLUMNS,
     build_mask,
+    require_columns,
     sha256,
     validate_commuting_input,
     validate_mask,
@@ -352,7 +356,165 @@ def test_unexpected_availability_mode_is_rejected(commuting_input: pd.DataFrame)
         validate_commuting_input(altered)
 
 
+def test_extra_commuting_year_fails(commuting_input: pd.DataFrame) -> None:
+    extra = commuting_input.copy()
+    extra.loc[extra.index[0], "decision_year"] = DERIVED_LAST_YEAR + 1
+    with pytest.raises(AssertionError, match="outside"):
+        validate_commuting_input(extra)
+
+
+def test_partially_null_commuting_metadata_fails(commuting_input: pd.DataFrame) -> None:
+    """A single NaN inside an otherwise uniform year must not pass as uniform."""
+    holed = commuting_input.copy()
+    target = holed.index[holed["decision_year"] == 2019][0]
+    holed.loc[target, "observation_year"] = None
+    with pytest.raises(AssertionError, match="null values"):
+        validate_commuting_input(holed)
+
+
+def test_blank_commuting_metadata_fails(commuting_input: pd.DataFrame) -> None:
+    blanked = commuting_input.copy()
+    target = blanked.index[blanked["decision_year"] == 2019][0]
+    blanked.loc[target, "source_release_date"] = "   "
+    with pytest.raises(AssertionError, match="empty or whitespace-only"):
+        validate_commuting_input(blanked)
+
+
+def test_wrong_snapshot_age_fails(commuting_input: pd.DataFrame) -> None:
+    """The recorded age must not contradict the recorded snapshot."""
+    wrong = commuting_input.copy()
+    wrong["snapshot_age_years"] = wrong["snapshot_age_years"] + 1
+    with pytest.raises(AssertionError, match="does not equal decision_year"):
+        validate_commuting_input(wrong)
+
+
+def test_release_after_decision_year_fails(commuting_input: pd.DataFrame) -> None:
+    """A snapshot released after the decision could not have been used ex ante."""
+    late = commuting_input.copy()
+    late["source_release_date"] = "2099-01-01"
+    with pytest.raises(AssertionError, match="at or after their own"):
+        validate_commuting_input(late)
+
+
+def test_duplicate_commuting_key_fails(commuting_input: pd.DataFrame) -> None:
+    duplicated = pd.concat([commuting_input, commuting_input.iloc[[0]]], ignore_index=True)
+    with pytest.raises(AssertionError, match="duplicate edge_id"):
+        validate_commuting_input(duplicated)
+
+
+def test_missing_commuting_column_fails(commuting_input: pd.DataFrame) -> None:
+    """A missing column must name itself, not surface as a KeyError."""
+    stripped = commuting_input.drop(columns=["snapshot_age_years"])
+    with pytest.raises(AssertionError, match="missing required columns"):
+        validate_commuting_input(stripped)
+
+
+def test_missing_signal_column_fails(signals_input: pd.DataFrame) -> None:
+    stripped = signals_input.drop(columns=["relation_family"])
+    with pytest.raises(AssertionError, match="missing required columns"):
+        validate_signal_input(stripped)
+
+
+def test_null_signal_key_field_fails(signals_input: pd.DataFrame) -> None:
+    holed = signals_input.copy()
+    holed.loc[holed.index[0], "source_node_id"] = None
+    with pytest.raises(AssertionError, match="null values"):
+        validate_signal_input(holed)
+
+
+def test_duplicate_signal_key_fails(signals_input: pd.DataFrame) -> None:
+    duplicated = pd.concat([signals_input, signals_input.iloc[[0]]], ignore_index=True)
+    with pytest.raises(AssertionError, match="duplicate relation_snapshot_id"):
+        validate_signal_input(duplicated)
+
+
+def test_early_derived_year_fails(signals_input: pd.DataFrame) -> None:
+    """2016 is impossible under the three-year correlation minimum."""
+    early = signals_input.copy()
+    early.loc[early.index[0], "decision_year"] = DERIVED_FIRST_YEAR - 1
+    with pytest.raises(AssertionError, match="before 2017"):
+        validate_signal_input(early)
+
+
+def test_late_derived_year_fails(signals_input: pd.DataFrame) -> None:
+    late = signals_input.copy()
+    late.loc[late.index[0], "decision_year"] = DERIVED_LAST_YEAR + 1
+    with pytest.raises(AssertionError, match="beyond the panel"):
+        validate_signal_input(late)
+
+
+def test_required_columns_helper_names_the_missing_column() -> None:
+    frame = pd.DataFrame({"a": [1]})
+    with pytest.raises(AssertionError, match=r"missing required columns: \['b'\]"):
+        require_columns(frame, ("a", "b"), "fixture")
+
+
+def test_unavailable_row_with_edges_fails_validation(mask: pd.DataFrame) -> None:
+    """A classification that contradicts its own count must not be emitted."""
+    broken = mask.copy()
+    target = broken.index[broken["availability_status"] == STATUS_UNAVAILABLE][0]
+    broken.loc[target, "actual_edge_count"] = 7
+    with pytest.raises(AssertionError, match="status contradicts the count"):
+        validate_mask(broken)
+
+
+def test_unavailable_row_with_snapshot_fields_fails(mask: pd.DataFrame) -> None:
+    broken = mask.copy()
+    target = broken.index[broken["availability_status"] == STATUS_UNAVAILABLE][0]
+    broken.loc[target, "source_snapshot_year"] = 2012
+    with pytest.raises(AssertionError, match="unavailable row carries"):
+        validate_mask(broken)
+
+
+def test_derived_row_with_snapshot_fields_fails(mask: pd.DataFrame) -> None:
+    broken = mask.copy()
+    target = broken.index[broken["availability_status"] == STATUS_DERIVED][0]
+    broken.loc[target, "source_snapshot_year"] = 2012
+    with pytest.raises(AssertionError, match="derived_available row carries"):
+        validate_mask(broken)
+
+
+def test_carried_forward_without_snapshot_fails(mask: pd.DataFrame) -> None:
+    broken = mask.copy()
+    target = broken.index[broken["availability_status"] == STATUS_CARRIED_FORWARD][0]
+    broken.loc[target, "source_release_date"] = ""
+    with pytest.raises(AssertionError, match="missing source_release_date"):
+        validate_mask(broken)
+
+
+def test_carried_forward_with_zero_age_fails(mask: pd.DataFrame) -> None:
+    """Age zero would mean observation at the decision year, a different status."""
+    broken = mask.copy()
+    target = broken.index[broken["availability_status"] == STATUS_CARRIED_FORWARD][0]
+    broken.loc[target, "snapshot_age_years"] = 0
+    with pytest.raises(AssertionError, match="age 0"):
+        validate_mask(broken)
+
+
+def test_negative_count_fails_validation(mask: pd.DataFrame) -> None:
+    broken = mask.copy()
+    broken.loc[broken.index[0], "actual_edge_count"] = -1
+    with pytest.raises(AssertionError, match="negative"):
+        validate_mask(broken)
+
+
+def test_real_signal_input_satisfies_its_guards(signals_input: pd.DataFrame) -> None:
+    validate_signal_input(signals_input)
+    for column in REQUIRED_SIGNAL_COLUMNS:
+        assert column in signals_input.columns
+    for family in DERIVED_FAMILIES:
+        years = sorted(
+            int(year)
+            for year in signals_input.loc[
+                signals_input["relation_family"] == family, "decision_year"
+            ].unique()
+        )
+        assert years == list(range(DERIVED_FIRST_YEAR, DERIVED_LAST_YEAR + 1)), family
+
+
 def test_real_commuting_input_satisfies_its_guards(commuting_input: pd.DataFrame) -> None:
+    for column in REQUIRED_COMMUTING_COLUMNS:
+        assert column in commuting_input.columns
     validate_commuting_input(commuting_input)
     years = sorted(int(year) for year in commuting_input["decision_year"].unique())
     assert years == list(range(COMMUTING_FIRST_AVAILABLE_YEAR, max(PANEL_YEARS) + 1))
@@ -406,6 +568,40 @@ def test_a10_has_exactly_one_observed_zero(sector_panel: pd.DataFrame) -> None:
 def test_a10_positive_cell_count(sector_panel: pd.DataFrame) -> None:
     positives = (sector_panel["sector_establishment_creations"].astype(float) > 0).sum()
     assert positives == 35_279
+
+
+def test_a10_is_the_complete_cartesian_set(sector_panel: pd.DataFrame) -> None:
+    """Every zone x year x sector combination must be present exactly once.
+
+    A row count alone would not catch a missing cell compensated by a duplicate
+    elsewhere.
+    """
+    from itertools import product
+
+    zones = sorted(sector_panel["ze2020"].unique())
+    sectors = sorted(sector_panel["sector_code"].unique())
+    expected = {
+        (zone, year, sector)
+        for zone, year, sector in product(zones, PANEL_YEARS, sectors)
+    }
+    actual = {
+        (row.ze2020, int(row.year), row.sector_code)
+        for row in sector_panel.itertuples(index=False)
+    }
+    assert actual == expected
+    assert len(actual) == len(sector_panel)
+
+
+def test_a10_has_no_negative_value(sector_panel: pd.DataFrame) -> None:
+    assert (sector_panel["sector_establishment_creations"].astype(float) >= 0).all()
+
+
+def test_a10_mask_vocabulary_is_binary(sector_panel: pd.DataFrame) -> None:
+    """The mask column must never carry a third state such as -1 or NaN."""
+    values = set(sector_panel["mask_sector_available"].astype(int).unique())
+    assert values <= {0, 1}
+    # In this artifact specifically, every cell is available.
+    assert values == {1}
 
 
 def test_summary_declares_no_model_input_claim() -> None:

@@ -120,6 +120,36 @@ NOT_CONSTRUCTED_FAMILIES = ("sector_to_sector_comovement", "temporal_precedence_
 
 ZE_TOP_K = 5
 
+DERIVED_LAST_YEAR = 2025
+SIGNAL_KEY_COLUMN = "relation_snapshot_id"
+COMMUTING_KEY_COLUMN = "edge_id"
+
+REQUIRED_SIGNAL_COLUMNS = (
+    "relation_snapshot_id",
+    "relation_id",
+    "source_node_id",
+    "target_node_id",
+    "decision_year",
+    "relation_family",
+)
+SIGNAL_NON_NULL_COLUMNS = (
+    "relation_id",
+    "source_node_id",
+    "target_node_id",
+    "decision_year",
+    "relation_family",
+)
+REQUIRED_COMMUTING_COLUMNS = (
+    "edge_id",
+    "decision_year",
+    "observation_year",
+    "source_release_date",
+    "snapshot_age_years",
+    "availability_mode",
+    "data_available",
+)
+REQUIRED_SECTOR_PANEL_COLUMNS = ("ze2020", "year", "sector_code")
+
 OUTPUT_COLUMNS = [
     "relation_family",
     "decision_year",
@@ -155,14 +185,32 @@ def _derived_expected_count(family: str, n_zones: int, n_sectors: int) -> int | 
     return None
 
 
-def validate_signal_input(signals: pd.DataFrame) -> None:
-    """Guard against family drift.
+def require_columns(frame: pd.DataFrame, required: tuple[str, ...], name: str) -> None:
+    """Fail with the missing column named, rather than a KeyError deep in the
+    build where the cause is no longer obvious."""
+    missing = [column for column in required if column not in frame.columns]
+    assert not missing, f"{name} is missing required columns: {missing}"
 
-    The builder iterates a fixed family tuple, so a family that appeared in the
-    input but not in that tuple would be silently dropped from the mask -- an
-    unclassified relation, which is the one thing this artifact must never
-    permit.  A family that disappeared from the input is equally a defect.
+
+def _assert_no_blank(frame: pd.DataFrame, columns: tuple[str, ...], name: str) -> None:
+    """NaN, None, empty string and whitespace-only all count as absent."""
+    for column in columns:
+        values = frame[column]
+        assert values.notna().all(), f"{name}: {column} contains null values"
+        blank = values.astype(str).str.strip() == ""
+        assert not blank.any(), f"{name}: {column} contains empty or whitespace-only values"
+
+
+def validate_signal_input(signals: pd.DataFrame) -> None:
+    """Close the derived-signal input.
+
+    The builder iterates a fixed family tuple over a fixed year range, so any
+    drift in either would be silently dropped from the mask -- an unclassified
+    relation, the one outcome this artifact must never permit.
     """
+    require_columns(signals, REQUIRED_SIGNAL_COLUMNS, "signal input")
+    _assert_no_blank(signals, SIGNAL_NON_NULL_COLUMNS, "signal input")
+
     found = set(signals["relation_family"].unique())
     expected = set(DERIVED_FAMILIES)
     unknown = sorted(found - expected)
@@ -172,6 +220,34 @@ def validate_signal_input(signals: pd.DataFrame) -> None:
         "add them to the builder rather than leaving them unclassified"
     )
     assert not missing, f"signal input is missing expected families: {missing}"
+
+    expected_years = list(range(DERIVED_FIRST_YEAR, DERIVED_LAST_YEAR + 1))
+    for family in sorted(expected):
+        years = sorted(
+            int(year)
+            for year in signals.loc[signals["relation_family"] == family, "decision_year"].unique()
+        )
+        early = [year for year in years if year < DERIVED_FIRST_YEAR]
+        late = [year for year in years if year > DERIVED_LAST_YEAR]
+        assert not early, (
+            f"{family} carries decision years {early} before {DERIVED_FIRST_YEAR}, which the "
+            "three-year correlation minimum makes impossible"
+        )
+        assert not late, (
+            f"{family} carries decision years {late} after {DERIVED_LAST_YEAR}, beyond the panel"
+        )
+        assert years == expected_years, (
+            f"{family} covers {years}, expected {expected_years}"
+        )
+        counts = signals[signals["relation_family"] == family].groupby("decision_year").size()
+        assert (counts > 0).all(), f"{family} has an empty decision year"
+
+    assert signals[SIGNAL_KEY_COLUMN].is_unique, (
+        f"signal input has duplicate {SIGNAL_KEY_COLUMN} values"
+    )
+    assert not signals.duplicated(["relation_id", "decision_year"]).any(), (
+        "signal input has duplicate (relation_id, decision_year) pairs"
+    )
 
 
 def validate_commuting_input(commuting: pd.DataFrame) -> None:
@@ -186,6 +262,8 @@ def validate_commuting_input(commuting: pd.DataFrame) -> None:
     Also require one coherent snapshot per decision year: ``first`` would
     otherwise silently pick one value out of mixed metadata.
     """
+    require_columns(commuting, REQUIRED_COMMUTING_COLUMNS, "commuting input")
+
     years = set(int(year) for year in commuting["decision_year"].unique())
 
     required = set(range(COMMUTING_FIRST_AVAILABLE_YEAR, max(PANEL_YEARS) + 1))
@@ -202,6 +280,12 @@ def validate_commuting_input(commuting: pd.DataFrame) -> None:
         f"{COMMUTING_UNRELEASED_THROUGH_YEAR}, when no snapshot had been released"
     )
 
+    extra = sorted(years - required)
+    assert not extra, (
+        f"commuting artifact carries decision years {extra} outside "
+        f"{COMMUTING_FIRST_AVAILABLE_YEAR}-{max(PANEL_YEARS)}"
+    )
+
     assert (commuting["data_available"].astype(int) == 1).all(), (
         "commuting artifact carries data_available != 1; this builder assumes every "
         "present row is available"
@@ -210,13 +294,35 @@ def validate_commuting_input(commuting: pd.DataFrame) -> None:
         f"commuting availability_mode is not uniformly {COMMUTING_EXPECTED_MODE!r}"
     )
 
+    _assert_no_blank(commuting, COMMUTING_UNIQUE_PER_YEAR_COLUMNS, "commuting input")
+
+    # dropna=False so a NaN counts as a distinct value instead of being ignored,
+    # which would let a partially-null year pass as uniform.
     per_year = commuting.groupby("decision_year")[
         list(COMMUTING_UNIQUE_PER_YEAR_COLUMNS)
-    ].nunique()
+    ].nunique(dropna=False)
     offenders = per_year[(per_year != 1).any(axis=1)]
     assert offenders.empty, (
         "commuting metadata is not unique per decision year, so a single snapshot "
         f"cannot be attributed:\n{offenders}"
+    )
+
+    derived_age = commuting["decision_year"].astype(int) - commuting["observation_year"].astype(int)
+    mismatched = commuting.loc[derived_age != commuting["snapshot_age_years"].astype(int)]
+    assert mismatched.empty, (
+        "snapshot_age_years does not equal decision_year - observation_year for "
+        f"{len(mismatched)} rows; the recorded age contradicts the recorded snapshot"
+    )
+
+    release_year = pd.to_datetime(commuting["source_release_date"], errors="raise").dt.year
+    not_yet_released = commuting.loc[release_year >= commuting["decision_year"].astype(int)]
+    assert not_yet_released.empty, (
+        f"{len(not_yet_released)} rows carry a source_release_date at or after their own "
+        "decision year, which would make the snapshot unavailable ex ante"
+    )
+
+    assert commuting[COMMUTING_KEY_COLUMN].is_unique, (
+        f"commuting input has duplicate {COMMUTING_KEY_COLUMN} values"
     )
 
 
@@ -229,6 +335,7 @@ def build_mask(
     commuting = pd.read_csv(commuting_path, dtype={"source_release_date": str})
     sector_panel = pd.read_csv(sector_panel_path, dtype={"ze2020": str})
 
+    require_columns(sector_panel, REQUIRED_SECTOR_PANEL_COLUMNS, "sector panel input")
     validate_signal_input(signals)
     validate_commuting_input(commuting)
 
@@ -406,6 +513,17 @@ def validate_mask(mask: pd.DataFrame) -> None:
         "available row carries an unavailable_reason"
     )
 
+    # Structural sanity of the counts comes before any semantic reading of them:
+    # a negative count must be reported as such, not reinterpreted as a status
+    # contradiction by a later check.
+    for column in ("expected_edge_count", "actual_edge_count"):
+        present = mask[column].notna()
+        values = mask.loc[present, column].astype("int64")
+        assert (values >= 0).all(), f"{column} carries a negative value"
+        assert pd.Series(values).map(lambda value: value == int(value)).all(), (
+            f"{column} carries a non-integral value"
+        )
+
     # An available family-year must actually contain edges.  Zero edges under an
     # available status would be silent emptiness, which is precisely the
     # confusion this mask exists to remove.
@@ -451,6 +569,33 @@ def validate_mask(mask: pd.DataFrame) -> None:
     assert (mask.loc[derived_rows, "availability_status"] != STATUS_OBSERVED).all(), (
         "a computed relation must never be labelled observed"
     )
+
+    # An unavailable cell must report no edges.  A non-zero count under an
+    # unavailable status would mean the classification contradicts the data.
+    assert (mask.loc[unavailable, "actual_edge_count"].fillna(0).astype(int) == 0).all(), (
+        "unavailable family-year reports edges: the status contradicts the count"
+    )
+
+    # Snapshot provenance belongs to carried-forward rows and to nothing else.
+    snapshot_columns = ["source_snapshot_year", "source_release_date", "snapshot_age_years"]
+    carried = mask["availability_status"] == STATUS_CARRIED_FORWARD
+    for column in snapshot_columns:
+        blank = mask[column].isna() | (mask[column].astype(str).str.strip() == "")
+        assert blank[unavailable].all(), (
+            f"unavailable row carries {column}; an absent relation has no snapshot"
+        )
+        assert blank[mask["availability_status"] == STATUS_DERIVED].all(), (
+            f"derived_available row carries {column}; a computed relation has no snapshot"
+        )
+        assert (~blank[carried]).all(), (
+            f"carried_forward_from_snapshot row is missing {column}"
+        )
+    if carried.any():
+        ages = mask.loc[carried, "snapshot_age_years"].astype(int)
+        assert (ages > 0).all(), (
+            "carried_forward_from_snapshot with age 0 would mean the relation was "
+            "observed at its own decision year, which is a different status"
+        )
 
 
 def main() -> int:
