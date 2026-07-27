@@ -53,7 +53,7 @@ in the main UI body (test-verified). New exports under
 unaffected. Playwright unavailable — validated structurally (JSON parse, DOM id/handler
 cross-reference) instead of screenshots.)
 **Previously updated 2026-06-17 (OBSERVATORY_V041_VISUAL_READY — PT continental municipality geometry obtained (278/278, DGT/CAOP via geoapi.pt, name-crosswalked, 1.18 MB simplified) and now renders as a real choropleth in `reports/dashboards/herald_observatory_v04_granular_dashboard.html` (10.0 MB). Sector→sector graph is now dynamic: timeline slider + play/pause + 3 modes (current/cumulative/recurring) + recurring/sign-change/exclusive markers + per-window edge history + relation×window heatmap. Map↔graph linking added (country sync, sector highlight, edge-click territory context). NL gemeente proxy re-verified absent from the relation graph; 121 blocked edges still isolated. 241/241 tests pass (41 new `test_observatory_v041_visual_upgrade.py` + 200 prior). OBSERVATORY_V04_DASHBOARD_READY (previous milestone) and GRANULAR_OBSERVATORY_V04_DATA_READY both superseded by this visual upgrade. DEC-066 COMPLETE — FINE_GRAIN_THRESHOLD_POLICY_READY. DEC-064: PT_MUNICIPAL_PHASE7_COMPLETE, 2 COVID-robust pairs. DEC-063: GRANULAR_FR_PT_NL_PREFLIGHT_READY.)
-**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-068), `reports/canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md`.
+**Source of truth:** `HERALD_PROJECT_CHARTER.md`, `HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-081), `reports/canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md`, `reports/canonical/HERALD_56_FR_ZE2020_PRODUCT_AND_EVIDENCE_CONTRACT.md` (product/evidence contract, DEC-081).
 
 ---
 
@@ -122,7 +122,11 @@ outline — none exists yet.
 **France ZE2020 minimal current baseline (2026-06-24, exploratory smoke):**
 `src/modeles/france_ze2020/train_fr_ze2020_baselines.py` is the first trainer that reads
 `data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv` (persistence + Ridge,
-lag-only features, eval years 2019-2024). This is unrelated to, and not comparable with,
+lag-only features, default eval years 2019-2025 per `DEFAULT_EVAL_YEARS` in the script;
+this file previously recorded 2019-2024, corrected 2026-07-27 under DEC-081). It produces
+ZE x year output only — the panel has no sector column, so it cannot generate sectoral
+states; see `reports/canonical/HERALD_56_FR_ZE2020_PRODUCT_AND_EVIDENCE_CONTRACT.md` §1.
+This is unrelated to, and not comparable with,
 the Q7 France result below — it reads a different (clean, causal) panel over a different
 year range and is explicitly `claim_status=exploratory_smoke`, not a headline result. Every
 other France training script (`train_herald_v3..v7`, `semi_v1/v2`, `regime_experiment`,
@@ -406,7 +410,8 @@ complete and tested; dashboard build is a separate, larger task not yet authoris
 ## Reference Documents
 
 - Direction and claims: `reports/HERALD_PROJECT_CHARTER.md`
-- All decisions: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-068)
+- All decisions: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-081)
+- Product/evidence contract: `reports/canonical/HERALD_56_FR_ZE2020_PRODUCT_AND_EVIDENCE_CONTRACT.md` (DEC-081)
 - Claims classification: `reports/canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md`
 - Gantt: `reports/canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md`
 - HPC registry: `hpc/hpc_phase_registry.json`

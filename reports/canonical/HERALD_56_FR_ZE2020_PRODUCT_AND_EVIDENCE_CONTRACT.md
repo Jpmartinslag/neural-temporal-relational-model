@@ -14,10 +14,12 @@ every work cycle:
 3. what single condition authorizes experimenting with a neural model again.
 
 It is a contract, not a result. It validates no model, produces no metric, authorizes no
-HPC job, and reopens no closed branch. It exists because the project has accumulated 80
-methodological decisions in which every apparent relational positive died at the first
-correctly matched placebo, and the recurring cost was re-testing equivalent hypotheses
-under new model names.
+HPC job, and reopens no closed branch. It exists because, across 80 methodological
+decisions, no relational candidate has justified promotion to a robust predictive or
+neural product layer under the complete sequence of matched controls, while limited
+analytical signals and exploratory results do exist (DEC-019/020, DEC-034, DEC-070,
+HERALD_39 successor probe, HERALD_27 local pair gate). The recurring cost was not the
+absence of signal but the re-testing of equivalent hypotheses under new model names.
 
 Scope: France ZE2020 x A10, 280 zones x 9 sectors x 2012-2025.
 
@@ -162,13 +164,22 @@ than a general impression.
    (lift `+0.0003`), DEC-075 (real below placebo).
 4. **Edge-target circularity, restricted to trajectory-similarity tests.** The
    `ze_similarity` edges are trajectory correlations computed from the same
-   enterprise-birth panel that defines the target. This helps explain why sector shuffle
-   and temporal shuffle failed to degrade in DEC-069 and in the corrected lift runs. It
-   does **not** explain DEC-080, which used no relational edge and whose sector and
-   temporal shuffles degraded as expected.
+   enterprise-birth panel that defines the target. Attribution, kept precise:
+   - **DEC-069** supports this reading through its sector shuffle and its
+     randomized-endpoint placebo -- real relation change lost to sector-shuffled
+     relations (lift `-0.0002`) and was effectively tied with randomized endpoints
+     (`+0.0003`). DEC-069 did not evaluate a temporal shuffle.
+   - **Temporal shuffle failing to degrade** is attributed only to the corrected top-3
+     and relation-lift runs that actually evaluated it (HERALD_38 section 8, jobs
+     `7755806` / `7755807`).
+   - It does **not** apply to DEC-080, which used no relational edge and whose sector and
+     temporal shuffles degraded as expected.
 5. **Target degeneracy, independent of any edge.** Shares sum to one, and within-ZE
-   ranking has only nine candidates. This explains DEC-078 (current target RCA wins),
-   DEC-079 (persistence wins) and DEC-080 (`past_delta` wins) without invoking pattern 4.
+   ranking has only nine candidates. This is a plausible structural limitation consistent
+   with the outcomes of DEC-078 (current target RCA wins), DEC-079 (persistence wins) and
+   DEC-080 (`past_delta` wins). It is an interpretation, not a demonstrated mechanism: no
+   test has isolated compositional closure as the cause, and doing so would require a
+   target that is not closed by construction.
 6. Nine A10 sectors and T = 14 years, giving 72 ordered sector pairs.
 7. No exogenous **sectoral structure** in the panel. Commuting and geography are exogenous
    and were already tested and closed (DEC-073/074/075, DEC-008/011).
