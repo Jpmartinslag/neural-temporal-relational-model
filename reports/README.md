@@ -218,6 +218,16 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     — records the DEC-080 gate failure: the joint MLP uses nonlinear temporal
     and sector-identity information but loses to past delta and target-sector
     history, so this transition-ranking specification is closed.
+54. `canonical/HERALD_56_FR_ZE2020_PRODUCT_AND_EVIDENCE_CONTRACT.md`
+    — freezes, under DEC-081, what the product's forecasting engine is (sectoral
+    persistence at ZE x sector, recorded as a candidate pending its own
+    rolling-origin audit; the ZE-total baseline stays macro dashboard context),
+    what the relational layer may claim (association and audited predictive
+    precedence; never generalized incremental predictive value, causality, or
+    automatic recommendation), and the single condition that authorizes another
+    model experiment (an exogenous sectoral structure independent of the
+    enterprise-birth panel that survives a matched placebo). Also fixes the E1–E7
+    delivery sequence and records the documentary sweep for inconsistent ranges.
 
 ## Control Documents
 

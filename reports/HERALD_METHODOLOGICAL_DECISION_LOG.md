@@ -3746,3 +3746,107 @@ establish robust
 incremental value from joint cross-sector composition beyond direct sector
 history. No dynamic-GNN, causal, automatic-recommendation, or policy claim is
 authorized. See HERALD_55.
+
+---
+
+## DEC-081 -- France ZE2020 product and evidence contract (2026-07-27)
+
+**Status:** `PRODUCT_AND_EVIDENCE_CONTRACT_FROZEN`.
+
+**Problem:** DEC-069 through DEC-080 closed eleven consecutive relational and
+representational specifications. The recurring cost was not any single failure but
+the repeated re-testing of equivalent hypotheses under new model names, because the
+project had never fixed in writing what its forecasting engine is, what the
+relational layer may claim, and what single condition would authorize another neural
+experiment. This decision fixes those three answers. It validates no model, produces
+no metric, authorizes no HPC job, and reopens no closed branch.
+
+**Q1 -- forecasting engine.** The intended primary engine is **sectoral persistence
+at ZE x sector granularity**, because the product objective is sectoral. It is
+recorded as a **CANDIDATE**, not a validated engine: no rolling-origin audit of it
+exists. It may not be described as validated or promoted until that audit is
+delivered. The existing ZE-total baseline
+(`src/modeles/france_ze2020/train_fr_ze2020_baselines.py`, persistence plus Ridge,
+lag-only features, `DEFAULT_EVAL_YEARS = 2019-2025`, still
+`claim_status=exploratory_smoke`) is retained as **macro dashboard context only**; its
+panel `fr_ze2020_model_ready_panel.csv` carries no sector column, so it cannot produce
+sectoral states. No neural model holds this role while Q3 is unsatisfied.
+
+The DEC-079 and DEC-080 baseline results are explicitly scoped: temporal persistence
+won masked reconstruction (MAE `0.009652` versus `0.013498`, 220/225 paired wins) and
+`past_delta` won transition ranking (NDCG@3 `0.647044` versus `0.623920`, seed CV
+`0.47%`). Each holds in its own task. Neither constitutes a validated product engine.
+
+**Q1 protocol constraint (normative).** Sectoral persistence is the deterministic
+identity `yhat(z,s,t) = y(z,s,t-1)`, with no fit step. Its audit must evaluate each
+observation exactly once under rolling origin; must not report seed dispersion, since
+the estimator is deterministic and seeds add no evidence; and must use ZE-disjoint
+folds only to organize paired comparisons against fitted competitors, never to
+duplicate persistence observations or multiply its metric rows. Fitted models such as
+Ridge use training data, folds and seeds normally.
+
+**Q2 -- permitted relational claims.** Association and co-movement (G1-L2,
+DEC-019/020), and **predictive precedence inside the scope in which it was measured**
+(Phase 7, DEC-034: country grain, 20 promoted edges, France holding one COVID-sensitive
+edge per DEC-060). Forbidden: **generalized incremental predictive value**, that is,
+asserting a relation improves prediction outside its measured scope; causality in any
+form; automatic recommendation; and describing the architecture as a validated dynamic
+GNN. The distinction is deliberate -- audited precedence is a citable finding, whereas
+generalized incremental predictive value is what failed under matched placebos.
+
+**Q3 -- reopen condition.** One condition authorizes another model experiment: an
+**exogenous sectoral structure, independent of the enterprise-birth panel**, that
+survives a matched placebo using the same representation as the real object, with at
+least 60% paired wins across seed/year/fold, degradation under target shuffle of the
+complete future-target bundle, identical populations, zero train/test ZE overlap, and
+a gate pre-registered before any metric is inspected. Commuting and geography do not
+qualify as new: they are exogenous but already tested and closed (DEC-073/074/075,
+DEC-008/011). The open candidate is exogenous **sectoral structure**.
+
+Passing that gate authorizes **only experimenting with a small temporal-relational
+encoder, which must then beat its own controls**. It does not authorize the final
+model, a dynamic-GNN claim, causal language, or automatic recommendation.
+
+Never a new hypothesis: more epochs, more seeds, another top-k, another horizon,
+another threshold, another normalization, swapping an MLP for a GNN on the same input
+and target, or retuning DEC-079/DEC-080.
+
+**Failure-pattern scoping correction.** Edge-target circularity, in which
+`ze_similarity` edges are trajectory correlations of the same enterprise-birth panel
+that defines the target, is restricted to the trajectory-similarity tests (DEC-069 and
+the corrected lift runs, where sector and temporal shuffles failed to degrade). It does
+**not** explain DEC-080, which used no relational edge and whose sector and temporal
+shuffles degraded correctly. DEC-078, DEC-079 and DEC-080 are explained instead by
+target degeneracy: shares sum to one and within-ZE ranking has nine candidates.
+
+**Documentary corrections made in this pass.** `HERALD_CURRENT_STATE.md` stated the
+baseline evaluation range as 2019-2024; the code default is 2019-2025, and the document
+is corrected. Stale `DEC-001 to DEC-068` decision-range pointers are updated in
+`HERALD_CURRENT_STATE.md`, `HERALD_ACTIVE_DOCUMENT_INDEX.md` and `canonical/HERALD_01`.
+A sweep over `reports/` and `reports/canonical/` found no other temporal-range
+inconsistency: the `2019-2024` strings in DEC-060/DEC-066 are Phase 7 estimation
+windows, HERALD_39's range reflects an unavailable 2025 successor snapshot, and
+`canonical/HERALD_11`'s `DEC-001 to DEC-011` is correctly scoped to Phase 4. Equivalent
+stale pointers remain in three untracked root reports and are noted for a future
+consolidation pass.
+
+**Delivery sequence fixed by this decision:** E1 this contract; E2 HERALD_57 separating
+the observational A10 mask from the relational availability mask; E3 HERALD_58 with the
+sectoral-persistence rolling-origin audit before any forecast-derived state; E4
+HERALD_59 auditing which HERALD_23 controls remain unexecuted rather than re-running
+DEC-069--080; E5 HERALD_60 graph-first dashboard with layers separated by grain and by
+evidence scale; E6 HERALD_61 Atlas/IAT provenance and mapping preflight with no metric;
+E7 a new DEC for the exogenous-structure gate, conditional on E6. Documentary audits
+produce no scripts and no tests. No stage authorizes an HPC job.
+
+**Limitations.** This is a governance decision. It establishes no empirical result, and
+its own Q1 designation is deliberately weaker than a validated baseline.
+
+**Reopen condition:** a new DEC entry may amend any of Q1, Q2 or Q3, but only with the
+amendment's rationale recorded and the superseded text left in place.
+
+**Affected files:** `reports/canonical/HERALD_56_FR_ZE2020_PRODUCT_AND_EVIDENCE_CONTRACT.md`
+(new), `reports/HERALD_CURRENT_STATE.md`, `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`,
+`reports/README.md`, `reports/canonical/HERALD_01_PROJECT_PHASES_AND_TRAJECTORY.md`.
+
+See HERALD_56.

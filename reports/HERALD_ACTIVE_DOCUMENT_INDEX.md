@@ -69,7 +69,7 @@ plus the 3 kept folders.
 | `reports/README.md` | `CANONICAL_READ_FIRST` | Directory entry note, points to `canonical/` |
 | `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md` | `CANONICAL_READ_FIRST` | This file |
 | `reports/HERALD_CURRENT_STATE.md` | `CANONICAL_READ_FIRST` | State per component, blockers, next step |
-| `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` | `CANONICAL_READ_FIRST` | All decisions DEC-001→DEC-068 — authoritative, never represented_by anything |
+| `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` | `CANONICAL_READ_FIRST` | All decisions DEC-001→DEC-081 — authoritative, never represented_by anything |
 | `reports/HERALD_PROJECT_CHARTER.md` | `CANONICAL_READ_FIRST` | Official direction, scope, permitted/forbidden claims — authoritative |
 | `reports/HERALD_NAMING_CONVENTIONS.md` | `CANONICAL_READ_FIRST` | Canonical label/status vocabulary, documented naming inconsistencies |
 | `reports/HERALD_REPORTS_CONSOLIDATION_MAP.md` | `CANONICAL_READ_FIRST` | Which canonical doc represents which report cluster |

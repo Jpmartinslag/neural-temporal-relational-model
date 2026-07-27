@@ -100,5 +100,5 @@ detailed Gantt.
 - Methods and architecture: `reports/canonical/HERALD_03_METHODS_AND_ARCHITECTURE.md`
 - Results, evidence, closed branches: `reports/canonical/HERALD_04_RESULTS_EVIDENCE_AND_CLOSED_BRANCHES.md`
 - Dashboard and article roadmap: `reports/canonical/HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md`
-- Full decision history: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-068)
+- Full decision history: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md` (DEC-001→DEC-081)
 - Per-file classification: `reports/HERALD_ACTIVE_DOCUMENT_INDEX.md`
