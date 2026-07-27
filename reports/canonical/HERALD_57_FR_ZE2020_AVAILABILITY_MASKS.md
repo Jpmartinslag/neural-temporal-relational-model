@@ -43,10 +43,18 @@ artifact.
 
 Part A still carries a regression test, because these properties are load-bearing for
 every later stage -- the sectoral persistence audit, the forecast-derived states, and the
-dashboard all assume a complete A10 panel. Five tests fix the shape (35,280 rows, 280
-zones, 9 sectors, 14 years, no duplicate zone-year-sector), the integral mask, the positive
-count, and the identity of the single zero. A future rebuild cannot introduce a gap or a
-second zero without failing them.
+dashboard all assume a complete A10 panel. Nine tests fix them:
+
+- the shape: 35,280 rows, 280 zones, 9 sectors, 14 years, no duplicate zone-year-sector;
+- the **complete cartesian set** 280 x 14 x 9, compared as a set of triples rather than a
+  row count, so a missing cell compensated by a duplicate elsewhere cannot pass;
+- no null and no negative `sector_establishment_creations`;
+- `mask_sector_available` restricted to the vocabulary `{0, 1}`, and in this artifact
+  uniformly 1;
+- the positive count of 35,279 and the identity of the single zero.
+
+A future rebuild cannot introduce a gap, a negative, a third mask state, or a second zero
+without failing them.
 
 ## 2. Part B -- the relational availability mask
 
@@ -210,19 +218,56 @@ about INSEE rather than reporting a missing row -- a fabricated provenance claim
 worse than the absent-row defect this artifact exists to fix. Three input guards now run
 before any row is emitted:
 
+**Schema, on all three inputs.** `require_columns` fails with the missing column named, so
+a schema change surfaces as an explicit error rather than a `KeyError` deep in the build
+where the cause is no longer legible.
+
+**Derived signal input** (`fr_ze2020_temporal_relation_signals.csv.gz`):
+
 | Guard | Rejects |
 |---|---|
-| `validate_commuting_input`: required-year coverage | a missing decision year from 2016 onward. Absence is a release fact only through 2015; later absence is truncation or corruption and fails |
-| `validate_commuting_input`: pre-release rows | a row dated at or before 2015, when no snapshot had been released |
-| `validate_commuting_input`: per-year uniqueness | mixed `observation_year`, `source_release_date`, `snapshot_age_years` or `availability_mode` inside one decision year, where `first` would otherwise silently attribute one snapshot; also any `data_available != 1` or any mode other than `strict_ex_ante_release_aware` |
-| `validate_signal_input`: family drift | a relation family present in the input but absent from the builder's iterated tuple, which would vanish from the mask unclassified; and a known family missing from the input |
+| required columns | a missing `relation_snapshot_id`, `relation_id`, `source_node_id`, `target_node_id`, `decision_year` or `relation_family` |
+| family set | a family absent from `DERIVED_FAMILIES`, which would vanish from the mask unclassified; and a known family missing from the input |
+| year range, per family | any year before 2017, impossible under the three-year correlation minimum; any year after 2025, beyond the panel; and any coverage other than exactly 2017-2025 |
+| null keys | NaN, empty or whitespace-only `relation_id`, `source_node_id`, `target_node_id`, `decision_year`, `relation_family` |
+| key uniqueness | a duplicate `relation_snapshot_id`, and a duplicate `(relation_id, decision_year)` pair |
+| non-empty years | a family-year present with zero rows |
+
+**Commuting input** (`fr_ze2020_commuting_strict_ex_ante_edges.csv.gz`):
+
+| Guard | Rejects |
+|---|---|
+| required columns | a missing `edge_id`, `decision_year`, `observation_year`, `source_release_date`, `snapshot_age_years`, `availability_mode` or `data_available` |
+| year coverage | a missing decision year from 2016 onward -- absence is a release fact only through 2015, later absence is truncation or corruption; a row at or before 2015, when no snapshot had been released; and any year outside 2016-2025 |
+| availability | any `data_available != 1`, any mode other than `strict_ex_ante_release_aware` |
+| metadata presence | NaN, empty or whitespace-only `observation_year`, `source_release_date`, `snapshot_age_years`, `availability_mode` |
+| per-year uniqueness | mixed metadata inside one decision year, where `first` would otherwise silently attribute one snapshot. Counted with `nunique(dropna=False)`, so a partially-null year cannot pass as uniform |
+| internal consistency | `snapshot_age_years != decision_year - observation_year`, where the recorded age would contradict the recorded snapshot |
+| ex-ante availability | a `source_release_date` at or after its own decision year, which would make the snapshot unusable ex ante |
+| key uniqueness | a duplicate `edge_id` |
+
+Verified against the real artifact: the two snapshot generations are observation 2012
+released `2015-06-25` (decision years 2016-2020) and observation 2017 released
+`2020-12-09` (decision years 2021-2025); ages run 4 to 8 and equal
+`decision_year - observation_year` in every row.
+
+**Produced mask**, beyond the classification checks already described:
+
+| Guard | Rejects |
+|---|---|
+| count sanity | a negative or non-integral count, checked before any semantic reading so a negative value is reported as such rather than reinterpreted as a status contradiction |
+| status against count | an `unavailable` row reporting edges; an available row reporting none |
+| snapshot provenance | an `unavailable` or `derived_available` row carrying a snapshot year, release date or age; a `carried_forward_from_snapshot` row missing any of them; and a carried-forward age of zero, which would mean observation at the decision year and is therefore a different status |
+| reason placement | a reason on an available row; a missing or invalid reason on an unavailable row |
+| cell integrity | fewer or more than 84 cells, a duplicate cell, or an unclassified one |
 
 The unavailable branch additionally re-asserts the year bound at the point of emission, so
 the reason cannot be attached to a truncated year even if `build_mask` is called directly.
 
-Each guard has a mutation test that constructs the exact defective input and confirms the
-failure fires, through both the validator and the full `build_mask` path. Adding the guards
-did not change the artifact: it is byte-identical to the version produced before them.
+Each guard has a mutation test that constructs the exact defective input or output and
+confirms the failure fires -- for the input guards, through both the validator and the full
+`build_mask` path with a rewritten `.csv.gz`. Adding every guard left the artifact
+byte-identical to the version produced before them.
 
 ## 3. E2 finding, recorded and deliberately not fixed here
 
@@ -261,16 +306,20 @@ rather than annual snapshots. Both are recorded; neither is interpreted here.
 | Builder run | 84 rows, 6 families, 0 unclassified cells |
 | Determinism | identical SHA-256 across two independent output directories |
 | Canonical inputs unchanged | SHA-256 equal before and after, asserted in builder and re-tested |
-| Tests | 35 passed (`tests/test_fr_ze2020_relation_availability_mask.py`) |
-| Fail-closed on output | silent emptiness, missing classification, and reason-less unavailability each raise |
-| Fail-closed on input | truncated commuting year, pre-release row, mixed per-year metadata, and signal-family drift each raise, verified by mutation tests through both the validator and `build_mask` |
-| Part A regression | 5 tests fix the A10 shape, integral mask, positive count, and the identity of the single zero |
+| Tests | 58 passed (`tests/test_fr_ze2020_relation_availability_mask.py`) |
+| Fail-closed on output | negative or non-integral counts, silent emptiness, an unavailable row reporting edges, misplaced snapshot provenance, a zero carried-forward age, missing classification, and reason-less unavailability each raise |
+| Fail-closed on input | missing schema column, family drift, out-of-range derived year, null or duplicate key, truncated or extra commuting year, pre-release row, blank or partially-null metadata, mixed per-year metadata, inconsistent snapshot age, and a release date at or after the decision year each raise -- verified by mutation tests through both the validator and `build_mask` |
+| Part A regression | 9 tests fix the A10 shape, the complete 280 x 14 x 9 cartesian set, absence of nulls and negatives, the binary mask vocabulary, the positive count, and the identity of the single zero |
 | Numeric formatting | counts written as integers via nullable `Int64`; blank means unknown, never zero |
 
-The repository-wide `pytest tests` run reports 20 collection errors, all
-`ModuleNotFoundError: No module named 'torch'` in unrelated synthetic and graph-temporal
-modules. That is an environment gap, not an E2 result. Note that `python3` on this machine
-lacks pandas; the working interpreter is `python3.10`.
+**Interpreter.** The focused tests were run with `/usr/bin/python3.10` (pandas 2.3.3). The
+default `python3` on this machine has no pandas, so a run under it fails for environment
+reasons rather than code reasons.
+
+**Repository-wide suite: not claimed to pass.** `pytest tests` reports 20 collection
+errors, every one `ModuleNotFoundError: No module named 'torch'` in unrelated synthetic and
+graph-temporal modules. Until torch is available in the environment, no statement about the
+full suite is made here.
 
 ## 6. Cross-reference
 

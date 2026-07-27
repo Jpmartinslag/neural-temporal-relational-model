@@ -4033,3 +4033,65 @@ path. Test count rises from 21 to **35**, all passing.
 **Affected files (addendum):** `src/data/france_ze2020/build_fr_ze2020_relation_availability_mask.py`,
 `tests/test_fr_ze2020_relation_availability_mask.py`,
 `reports/canonical/HERALD_57_FR_ZE2020_AVAILABILITY_MASKS.md`.
+
+### DEC-082 -- Second correction addendum (2026-07-27, same day, pre-push)
+
+The original entry and the first addendum are preserved unaltered. This addendum closes the
+remaining input and output surface identified by the E2 gate. The artifact remains
+byte-identical throughout; the schema, the status vocabulary and the reasons are unchanged.
+
+**Schema validation on all three inputs.** `require_columns` names the missing column
+explicitly instead of allowing a `KeyError` to surface later, where the cause is no longer
+legible.
+
+**Derived signal input closed.** Families must be exactly `ze_similarity`,
+`cross_ze_same_sector` and `intra_ze_sector`; each must cover exactly 2017-2025, with any
+year before 2017 or after 2025 rejected; `relation_id`, `source_node_id`, `target_node_id`,
+`decision_year` and `relation_family` must be non-null and non-blank; the artifact key
+`relation_snapshot_id` must be unique, as must `(relation_id, decision_year)`; and every
+present family-year must carry a positive count.
+
+**Commuting input closed.** Decision years must be exactly 2016-2025, with no missing year,
+no extra year, and no row at or before 2015; `data_available` must be 1 throughout and
+`availability_mode` uniformly `strict_ex_ante_release_aware`; the four metadata fields must
+be free of NaN, empty strings and whitespace; per-year uniqueness is checked with
+`nunique(dropna=False)` so a partially-null year cannot pass as uniform;
+`snapshot_age_years` must equal `decision_year - observation_year`; `source_release_date`
+must precede its own decision year; and `edge_id` must be unique. Verified against the real
+artifact: observation 2012 released `2015-06-25` serves decision years 2016-2020,
+observation 2017 released `2020-12-09` serves 2021-2025, ages run 4 to 8 and match the
+identity in every row.
+
+**Produced mask closed.** Count sanity -- non-negative and integral -- is now checked
+*before* any semantic reading, so a negative value is reported as negative rather than
+reinterpreted by a later status check; this ordering was itself a defect found while
+testing. An `unavailable` row must report zero edges and an available row must report more
+than zero. Snapshot provenance must be blank on `unavailable` and `derived_available` rows,
+must be fully populated on `carried_forward_from_snapshot` rows, and a carried-forward age
+of zero is rejected because it would mean observation at the decision year, which is a
+different status. Reasons remain confined to unavailable rows, and all 84 cells remain
+unique and classified.
+
+**Part A closed.** Beyond the five original tests: the complete cartesian set 280 x 14 x 9
+is compared as a set of triples rather than a row count, so a missing cell compensated by a
+duplicate cannot pass; `sector_establishment_creations` must carry no null and no negative;
+and `mask_sector_available` is restricted to the vocabulary `{0, 1}`, uniformly 1 in this
+artifact.
+
+**Mutation coverage.** Thirteen defective inputs and outputs are constructed and confirmed
+to fail: partially-null commuting metadata, blank metadata, a missing commuting year, an
+extra commuting year, an incorrect snapshot age, a release date after the decision year, an
+unknown derived family, a missing derived family, an early derived year (2016), a late
+derived year (2026), an unavailable row carrying edges, a missing required column, and a
+duplicate relation key. Input mutations are exercised through both the validator and the
+full `build_mask` path with a rewritten `.csv.gz`.
+
+**Test count: 35 to 58, all passing.** Focused runs use `/usr/bin/python3.10` with pandas
+2.3.3; the default `python3` on this machine has no pandas. **No claim is made about the
+repository-wide suite** while `torch` is absent: `pytest tests` reports 20 collection
+errors, all `ModuleNotFoundError: No module named 'torch'` in unrelated synthetic and
+graph-temporal modules.
+
+**Affected files (second addendum):** `src/data/france_ze2020/build_fr_ze2020_relation_availability_mask.py`,
+`tests/test_fr_ze2020_relation_availability_mask.py`,
+`reports/canonical/HERALD_57_FR_ZE2020_AVAILABILITY_MASKS.md`.
