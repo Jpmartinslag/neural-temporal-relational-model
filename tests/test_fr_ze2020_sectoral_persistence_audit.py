@@ -44,6 +44,8 @@ from src.modeles.france_ze2020.run_fr_ze2020_sectoral_persistence_audit import (
     load_panel,
     national_ratio,
     national_totals,
+    assert_metrics_finite,
+    check_target_mutation_invariance,
     predict_year,
     sector_veto,
     wmape,
@@ -133,20 +135,57 @@ def test_features_use_only_prior_years(panel: pd.DataFrame, featured: pd.DataFra
     assert (merged.loc[have_lag, "lag_1"] == merged.loc[have_lag, "prior_value"]).all()
 
 
-def test_prediction_year_is_absent_from_every_input(
-    featured: pd.DataFrame, totals: pd.DataFrame, folds: dict[str, int]
+def test_mutating_the_target_at_t_does_not_move_any_prediction(
+    panel: pd.DataFrame, featured: pd.DataFrame, totals: pd.DataFrame, folds: dict[str, int]
 ) -> None:
-    """Truncating the panel after t must not change the predictions for t."""
+    """The real causal proof.
+
+    Truncating at t-1 cannot be executed literally -- the year-t rows would
+    vanish and there would be nothing to predict. Instead every year after t is
+    removed AND the target at t is replaced, then year t is predicted again. Any
+    model that consulted y[t] must move; identical predictions prove none did.
+    """
     year = 2021
-    full = predict_year(featured, totals, year, folds)
-    truncated_panel = featured[featured["year"] <= year]
-    truncated_totals = national_totals(truncated_panel)
-    again = predict_year(truncated_panel, truncated_totals, year, folds)
-    pd.testing.assert_frame_equal(
-        full.sort_values(["ze2020", "sector_code"]).reset_index(drop=True),
-        again.sort_values(["ze2020", "sector_code"]).reset_index(drop=True),
-        check_dtype=False,
-    )
+    reference = predict_year(featured, totals, year, folds)
+
+    mutated = panel[panel["year"] <= year].copy()
+    rows = mutated["year"] == year
+    mutated.loc[rows, TARGET] = mutated.loc[rows, TARGET].to_numpy(dtype=float) * 7.0 + 1000.0
+    again = predict_year(build_features(mutated), national_totals(mutated), year, folds)
+
+    keys = ["ze2020", "sector_code"]
+    reference = reference.sort_values(keys).reset_index(drop=True)
+    again = again.sort_values(keys).reset_index(drop=True)
+
+    assert not np.allclose(
+        again["y_true"].to_numpy(dtype=float), reference["y_true"].to_numpy(dtype=float)
+    ), "the mutation did not change y_true, so the test proves nothing"
+    for model in MODELS:
+        np.testing.assert_allclose(
+            again[model].to_numpy(dtype=float),
+            reference[model].to_numpy(dtype=float),
+            rtol=0.0,
+            atol=0.0,
+        )
+
+
+def test_target_mutation_check_detects_a_leaking_model(
+    panel: pd.DataFrame, featured: pd.DataFrame, totals: pd.DataFrame, folds: dict[str, int]
+) -> None:
+    """The proof must fail on a reference that did read y[t]."""
+    year = 2021
+    leaking = predict_year(featured, totals, year, folds).copy()
+    leaking[PERSISTENCE] = leaking["y_true"]  # a model that peeks at its own target
+    with pytest.raises(AssertionError, match="reads its own evaluation-year target"):
+        check_target_mutation_invariance(panel, [year], folds, leaking)
+
+
+def test_target_mutation_check_passes_on_the_real_predictions(
+    panel: pd.DataFrame, featured: pd.DataFrame, totals: pd.DataFrame, folds: dict[str, int]
+) -> None:
+    year = 2020
+    reference = predict_year(featured, totals, year, folds)
+    check_target_mutation_invariance(panel, [year], folds, reference)
 
 
 # --- fold discipline ------------------------------------------------------
@@ -479,7 +518,7 @@ def test_manifest_records_environment_and_disclosures(manifest_path: Path) -> No
     assert manifest["integrity"]["rows"] == OFFICIAL_CELL_COUNT
     assert manifest["integrity"]["duplicated_cells"] == 0
     assert manifest["integrity"]["seeds_used"] == 0
-    assert manifest["integrity"]["truncation_invariance"] == "PASS"
+    assert manifest["integrity"]["target_mutation_invariance"] == "PASS"
     assert manifest["integrity"]["excluded_cell_count"] == 1
     assert "negative_predictions" in manifest["integrity"]
     for key in ("python", "pandas", "numpy", "scikit_learn"):
@@ -519,3 +558,70 @@ def test_runner_is_deterministic(tmp_path: Path) -> None:
             ).hexdigest()
         )
     assert hashes[0] == hashes[1]
+
+
+# --- blocking finite-metric guard ----------------------------------------
+
+
+def _finite_metrics() -> dict[str, object]:
+    return {
+        "overall": {PERSISTENCE: {"wmape": 0.1, "mae": 1.0}},
+        "wmape_by_year": {"2019": {PERSISTENCE: 0.1}},
+        "wmape_by_sector": {"GI": {PERSISTENCE: 0.1}},
+        "paired_cell_win_rate_vs_persistence": {"x": 0.5},
+    }
+
+
+def test_finite_metrics_pass_the_guard() -> None:
+    assert_metrics_finite(_finite_metrics())
+
+
+@pytest.mark.parametrize("bad", [float("nan"), float("inf"), float("-inf")])
+def test_non_finite_overall_metric_aborts(bad: float) -> None:
+    metrics = _finite_metrics()
+    metrics["overall"][PERSISTENCE]["wmape"] = bad
+    with pytest.raises(AssertionError, match="aborts rather than evaluating the gate"):
+        assert_metrics_finite(metrics)
+
+
+def test_non_finite_yearly_metric_aborts() -> None:
+    metrics = _finite_metrics()
+    metrics["wmape_by_year"]["2019"][PERSISTENCE] = float("nan")
+    with pytest.raises(AssertionError, match="wmape_by_year"):
+        assert_metrics_finite(metrics)
+
+
+def test_non_finite_sector_metric_aborts() -> None:
+    metrics = _finite_metrics()
+    metrics["wmape_by_sector"]["GI"][PERSISTENCE] = float("inf")
+    with pytest.raises(AssertionError, match="wmape_by_sector"):
+        assert_metrics_finite(metrics)
+
+
+def test_nan_metric_would_otherwise_read_as_a_lost_comparison() -> None:
+    """Why the guard exists: NaN comparisons return False, which the gate would
+    score as a defeat rather than as a broken metric."""
+    assert (float("nan") < 0.5) is False
+    assert (0.5 < float("nan")) is False
+
+
+# --- negative-prediction disclosure, per year and overall -----------------
+
+
+def test_manifest_reports_negatives_per_year_and_overall(manifest_path: Path) -> None:
+    if not manifest_path.exists():
+        pytest.skip("audit not executed yet")
+    import json
+
+    integrity = json.loads(manifest_path.read_text())["integrity"]
+    assert set(integrity["negative_predictions"]) == set(MODELS)
+    assert set(integrity["negative_prediction_share"]) == set(MODELS)
+    by_year = integrity["negative_predictions_by_year"]
+    years = [str(y) for y in range(OFFICIAL_FIRST_EVAL_YEAR, OFFICIAL_LAST_EVAL_YEAR + 1)]
+    assert sorted(by_year) == sorted(years)
+    for year in years:
+        for model in MODELS:
+            assert {"count", "share"} <= set(by_year[year][model])
+    # the per-year counts must reconcile with the total
+    for model in MODELS:
+        assert sum(by_year[y][model]["count"] for y in years) == integrity["negative_predictions"][model]

@@ -395,10 +395,19 @@ minimum of 6.
 | OQ | 0.096139 | 0.093734 | -2.50% |
 | RU | 0.115117 | 0.110525 | -3.99% |
 
-The skew warned about in section 7 is exactly what happened: Ridge's aggregate advantage is
-concentrated in large sectors (MN -24%, JZ -13%, BE -12%) while it degrades construction
-(FZ) and finance-insurance (KZ). Ridge also beats persistence in only **51.6%** of
-individual cells, close to a coin flip.
+The skew warned about in section 7 is exactly what happened, and the two readings must be
+kept apart:
+
+- **By absolute error reduction**, Ridge's advantage sits in **MN and GI**, which together
+  account for **87.8%** of the 78,788 units of absolute error it removes (MN 43,607;
+  GI 25,597). These are the two heaviest sectors by observed mass.
+- **By relative gain**, the largest improvements are **MN -24.32%, JZ -13.45%,
+  BE -12.35%** -- a different ordering, since GI improves only -9.30% relatively while
+  contributing the second-largest absolute reduction.
+
+Meanwhile Ridge degrades the two veto sectors, construction (FZ) and finance-insurance
+(KZ), by 8,333 and 4,937 units of absolute error. It also beats persistence in only
+**51.6%** of individual cells, close to a coin flip.
 
 `ridge_ar` is therefore **not rejected as a model**; it failed a stability and safety
 condition registered in advance. Revisiting it under a different, pre-registered stability
@@ -422,11 +431,11 @@ a finding about this baseline on this target, not a general statement about detr
 |---|---|
 | Rows | 17,639 = registered count, no duplicated ZE-sector-year |
 | Excluded cells | 1 (`5218 / JZ / 2019`), identical for all five models |
-| Truncation invariance | PASS -- rebuilding from a panel holding nothing after `t` reproduces the predictions for `t` |
+| Target-mutation invariance | PASS -- with every year after `t` removed **and the target at `t` itself replaced**, the predictions for `t` are unchanged for all five models. This replaces the registered "truncate at `t-1`" phrasing of section 9, which cannot be executed literally: the year-`t` rows would vanish and leave nothing to predict. The implemented check is strictly stronger, since it also mutates `y[t]` |
 | Seeds used | 0 |
 | Populations | all five models predict the same cells in every year and fold |
 | Determinism | two independent output directories, identical SHA-256 |
-| Negative predictions | `ridge_ar` 143 of 17,639 (0.81%); every other model 0 -- disclosure, not a gate |
+| Negative predictions | `ridge_ar` 143 of 17,639 (0.81%); every other model 0. Reported per year as well as overall: 2019 82, 2020 43, 2021 11, 2022 4, 2023 1, 2024 1, 2025 1 -- disclosure, not a gate |
 | Environment | python 3.10.12, pandas 2.3.3, numpy 1.26.4, scikit-learn 1.7.2 |
 
 ## 17. Persistence-only supplement -- `NOT_COMPARABLE`
@@ -439,11 +448,17 @@ compares nothing.
 
 ## 18. Two implementation corrections, disclosed
 
-**Population count, corrected before execution.** The pre-registration stated 17,638 cells
-and two exclusions inside the official window. That conflated "incomplete from 2015 onward"
-with "incomplete inside 2019-2025": `5218 / JZ / 2018` is earlier than the window. Corrected
-to **17,639** and one exclusion before any model was fitted (DEC-083 second correction
-addendum).
+**Population count, corrected before the audit ran.** The pre-registration stated 17,638
+cells and two exclusions inside the official window. That conflated "incomplete from 2015
+onward" with "incomplete inside 2019-2025": `5218 / JZ / 2018` is earlier than the window.
+It was corrected to **17,639** and one exclusion before any model was fitted.
+
+*Limitation of the temporal record.* That correction was committed **together with** the
+result rather than in a separate earlier commit, so **git does not independently prove it
+preceded the run**. The claim rests on the working sequence, not on the commit history. It
+is an arithmetic correction to a population count, independent of any metric and unable to
+favour any model, since all five predict the same cells -- but it should be read as a
+self-reported ordering, not as a guarantee established by the repository.
 
 **Supplement eligibility, corrected after execution.** The first run restricted the
 supplement to cells complete on all five features, truncating it to 2015-2025 although the

@@ -1717,8 +1717,8 @@
       "type": "audit_manifest",
       "status": "REGENERABLE",
       "tracked_in_git": true,
-      "size_bytes": 8961,
-      "sha256_prefix": "aca23de950d98ad4a5aa",
+      "size_bytes": 12393,
+      "sha256_prefix": "97991f58c06a89a59ea5",
       "origin_decision": "DEC-083 (pre-registration) / DEC-084 (result) -- see reports/canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md",
       "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_sectoral_persistence_audit.py",
       "input_data": [
@@ -1727,7 +1727,7 @@
       "claim_authorized": "Metrics, pre-registered gate evaluation, integrity checks and environment for the E3a audit. Verdict ENGINE_DESIGNATED, engine sectoral persistence, by clause 8.4.2 after ridge_ar failed the 6/7 year-stability rule and the per-sector safety veto.",
       "claim_forbidden": "Stating that persistence is more accurate than ridge_ar: ridge_ar has the lower aggregate WMAPE and was blocked by stability and safety conditions registered in advance, not by accuracy. Extending the designation beyond FR ZE2020 x A10, 2019-2025, or to any target other than annual establishment creations.",
       "can_regenerate": true,
-      "notes": "Records negative-prediction disclosure and library versions. Result entry DEC-084."
+      "notes": "Records negative-prediction disclosure per year and overall, the target-mutation invariance proof, and library versions. Result entry DEC-084 with its correction addendum."
     }
   ]
 }

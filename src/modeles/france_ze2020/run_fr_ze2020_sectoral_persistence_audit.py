@@ -434,23 +434,84 @@ def evaluate_gate(metrics: dict[str, object], n_eval_years: int) -> dict[str, ob
 # --------------------------------------------------------------------------
 
 
-def check_truncation_invariance(
+def check_target_mutation_invariance(
     panel: pd.DataFrame,
     eval_years: list[int],
     folds: dict[str, int],
     reference: pd.DataFrame,
 ) -> None:
-    """Rebuild from a panel holding nothing after t and confirm predictions for t
-    are unchanged.  A future year must not be able to alter an earlier one."""
+    """Prove that no model reads the target at its own evaluation year.
+
+    Truncating the panel at `t-1`, as the specification first phrased it, cannot
+    be executed literally: the year-`t` rows would vanish and there would be
+    nothing to predict.  The falsification implemented here is strictly
+    stronger.  For each evaluation year `t` the panel is rebuilt with
+
+      * every year after `t` removed, so no future information exists at all;
+      * the target **at `t` itself** replaced by an arbitrary value.
+
+    Features, national totals and folds are then recomputed from that mutated
+    panel and year `t` is predicted again.  Only the prediction columns are
+    compared -- `y_true` differs by construction.  If any model consulted the
+    target at `t`, its prediction must move; identical predictions prove it did
+    not.
+    """
     for year in eval_years:
-        truncated = panel[panel["year"] <= year]
-        featured = build_features(truncated)
-        totals = national_totals(truncated)
+        mutated = panel[panel["year"] <= year].copy()
+        target_rows = mutated["year"] == year
+        assert target_rows.any(), f"no rows to mutate at {year}"
+        mutated.loc[target_rows, TARGET] = (
+            mutated.loc[target_rows, TARGET].to_numpy(dtype=float) * 7.0 + 1000.0
+        )
+        featured = build_features(mutated)
+        totals = national_totals(mutated)
         again = predict_year(featured, totals, year, folds)
-        expected = reference[reference["year"] == year].reset_index(drop=True)
-        again = again.sort_values(["ze2020", "sector_code"]).reset_index(drop=True)
-        expected = expected.sort_values(["ze2020", "sector_code"]).reset_index(drop=True)
-        pd.testing.assert_frame_equal(again, expected, check_dtype=False)
+
+        keys = ["ze2020", "sector_code"]
+        expected = reference[reference["year"] == year].sort_values(keys).reset_index(drop=True)
+        again = again.sort_values(keys).reset_index(drop=True)
+        assert list(again[keys[0]]) == list(expected[keys[0]]), (
+            f"population changed under target mutation at {year}"
+        )
+        for model in MODELS:
+            np.testing.assert_allclose(
+                again[model].to_numpy(dtype=float),
+                expected[model].to_numpy(dtype=float),
+                rtol=0.0,
+                atol=0.0,
+                err_msg=(
+                    f"{model} changed at {year} when the target at {year} was mutated: "
+                    "it reads its own evaluation-year target"
+                ),
+            )
+
+
+def assert_metrics_finite(metrics: dict[str, object]) -> None:
+    """Blocking guard: a NaN or infinite metric invalidates the run.
+
+    Section 9 requires every reported metric to be finite or an explicitly
+    recorded NaN.  The gate must never be evaluated on a non-finite number,
+    because comparisons against NaN silently return False and would be read as
+    a lost comparison rather than a broken one.
+    """
+    def check(path: str, value: object) -> None:
+        assert isinstance(value, (int, float)), f"{path} is not numeric: {value!r}"
+        assert np.isfinite(float(value)), (
+            f"{path} is {value!r}; the audit aborts rather than evaluating the gate "
+            "on a non-finite metric"
+        )
+
+    for model, values in metrics["overall"].items():
+        for name, value in values.items():
+            check(f"overall.{model}.{name}", value)
+    for year, values in metrics["wmape_by_year"].items():
+        for model, value in values.items():
+            check(f"wmape_by_year.{year}.{model}", value)
+    for sector, values in metrics["wmape_by_sector"].items():
+        for model, value in values.items():
+            check(f"wmape_by_sector.{sector}.{model}", value)
+    for name, value in metrics.get("paired_cell_win_rate_vs_persistence", {}).items():
+        check(f"paired.{name}", value)
 
 
 def integrity_report(
@@ -465,8 +526,19 @@ def integrity_report(
         assert np.isfinite(predictions[model].to_numpy(dtype=float)).all(), (
             f"{model} produced a non-finite prediction"
         )
-    negative = {
-        model: int((predictions[model] < 0).sum()) for model in MODELS
+    negative = {model: int((predictions[model] < 0).sum()) for model in MODELS}
+    negative_share = {
+        model: float((predictions[model] < 0).mean()) for model in MODELS
+    }
+    negative_by_year = {
+        str(int(year)): {
+            model: {
+                "count": int((group[model] < 0).sum()),
+                "share": float((group[model] < 0).mean()),
+            }
+            for model in MODELS
+        }
+        for year, group in predictions.groupby("year")
     }
     return {
         "rows": int(len(predictions)),
@@ -476,7 +548,8 @@ def integrity_report(
         "distinct_zones": int(predictions["ze2020"].nunique()),
         "distinct_sectors": int(predictions["sector_code"].nunique()),
         "negative_predictions": negative,
-        "negative_prediction_share_ridge": float((predictions[RIDGE_AR] < 0).mean()),
+        "negative_prediction_share": negative_share,
+        "negative_predictions_by_year": negative_by_year,
         "folds": N_FOLDS,
         "seeds_used": 0,
     }
@@ -502,7 +575,10 @@ def main() -> int:
     parser.add_argument(
         "--skip-truncation-check",
         action="store_true",
-        help="diagnostic only; a real run must keep the check enabled",
+        help=(
+            "skips the target-mutation invariance proof; diagnostic only, a real "
+            "run must keep it enabled"
+        ),
     )
     args = parser.parse_args()
 
@@ -530,12 +606,13 @@ def main() -> int:
     integrity["excluded_cell_count"] = int(len(excluded))
 
     if not args.skip_truncation_check:
-        check_truncation_invariance(panel, official_years, folds, predictions)
-        integrity["truncation_invariance"] = "PASS"
+        check_target_mutation_invariance(panel, official_years, folds, predictions)
+        integrity["target_mutation_invariance"] = "PASS"
     else:
-        integrity["truncation_invariance"] = "SKIPPED"
+        integrity["target_mutation_invariance"] = "SKIPPED"
 
     metrics = metric_table(predictions, tuple(MODELS))
+    assert_metrics_finite(metrics)
     gate = evaluate_gate(metrics, len(official_years))
 
     # Persistence-only supplement.  NOT_COMPARABLE: no fitted model can be

@@ -4329,3 +4329,59 @@ France ZE2020 x A10.
 `reports/herald_artifact_registry.json`, `reports/README.md`.
 
 See HERALD_58 Part A -- Result.
+
+### DEC-084 -- Correction addendum (2026-07-28, pre-push)
+
+The original entry above is preserved unaltered. A result audit found five defects. **No
+model, population, metric, threshold or verdict changes**: the official predictions file is
+byte-identical before and after every correction below, and the verdict remains
+`ENGINE_DESIGNATED` with `persistence` as the engine.
+
+1. **The causality proof did not prove what it claimed (high).** The registered check reads
+   "re-running with the panel truncated at `t-1` reproduces the predictions for `t`", but
+   the implementation truncated at `<= t`, keeping the year-`t` target in the frame; the
+   test repeated the same error. The registered phrasing is in fact unexecutable as
+   literally written -- truncating at `t-1` removes the year-`t` rows and leaves nothing to
+   predict. Replaced by a **strictly stronger** falsification: every year after `t` is
+   removed **and the target at `t` itself is replaced** by an arbitrary value, features,
+   national totals and folds are recomputed, year `t` is predicted again, and only the
+   prediction columns are compared. All five models are unchanged, so none reads its own
+   evaluation-year target. The manifest key is now `target_mutation_invariance`, and a
+   mutation test confirms the check **fails** on a deliberately leaking reference.
+
+2. **Negative predictions were reported only in total (medium).** Section 5.1 requires per
+   year and overall. The manifest now carries both, plus shares: `ridge_ar` 2019 82,
+   2020 43, 2021 11, 2022 4, 2023 1, 2024 1, 2025 1, total 143 of 17,639 (0.81%); every
+   other model 0 in every year. A test reconciles the yearly counts against the total.
+
+3. **No blocking guard against non-finite metrics (medium).** Section 9 requires it, and it
+   was not implemented. `assert_metrics_finite` now runs before `evaluate_gate` over every
+   overall, yearly, sectoral and paired figure. It matters because a NaN comparison returns
+   False, so the gate would silently score a broken metric as a lost comparison rather than
+   aborting. Mutation tests cover NaN and both infinities at each level.
+
+4. **Sector attribution imprecise (medium).** The result text said Ridge's advantage was
+   concentrated in MN, JZ and BE. Those are the largest **relative** gains. By **absolute**
+   error reduction the concentration is **MN and GI**, together 87.8% of the 78,788 units
+   Ridge removes (MN 43,607; GI 25,597); GI improves only -9.30% relatively while
+   contributing the second-largest absolute reduction. Both readings are now stated
+   separately, with the two veto sectors quantified in absolute terms as well (FZ 8,333 and
+   KZ 4,937 units of added error).
+
+5. **Provenance of the population correction (disclosure).** The 17,638 to 17,639 fix was
+   committed **together with** the result rather than in a separate earlier commit, so git
+   does not independently prove it preceded the run. It is an arithmetic correction to a
+   population count, independent of any metric and unable to favour any model since all five
+   predict the same cells; but it must be described as a **self-reported ordering, not a
+   guarantee established by the repository**. Recorded as a limitation of the temporal
+   record in HERALD_58 section 18.
+
+Test count rises from 37 to **47**, all passing under `/usr/bin/python3.10` with pandas
+2.3.3, numpy 1.26.4, scikit-learn 1.7.2. No claim is made about the repository-wide suite
+while `torch` is absent.
+
+**Affected files (addendum):** `src/modeles/france_ze2020/run_fr_ze2020_sectoral_persistence_audit.py`,
+`tests/test_fr_ze2020_sectoral_persistence_audit.py`,
+`reports/canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md`,
+`data/processed/france_ze2020/fr_ze2020_sectoral_persistence_audit_v1.json`,
+`reports/herald_artifact_registry.json`.
