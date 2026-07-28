@@ -4582,3 +4582,30 @@ targets or introduce a new relational input.
 **E5 stays blocked** until the corrected E4 closes with the recomputation delivered.
 
 **Affected files (addendum):** `reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md`.
+
+### DEC-086 -- Second correction addendum (2026-07-28, still before any metric)
+
+Two structural assumptions in the section 10 pre-registration were verified on a **single**
+prediction file and are false across the corpus. Both are corrected **before any metric was
+computed**; the retraction and pre-registration commit still precedes the implementation.
+
+1. **Group shape.** Registered as "exactly 9 sectors and exactly 3 selected, 6,720 groups
+   per seed-scenario file", from `top3 / full_control / seed_42` alone. Verified across the
+   corpus: sectors per group vary **3 to 9** (9 dominant, 104,556 of 134,400 top3 groups),
+   selection is **`min(3, group size)`** -- always 3 in `top3`, 2 or 3 in `lift`. Crucially
+   the size is **identical across feature configs within a cell** (0 disagreements in
+   44,800), so the paired comparison still runs on identical populations. The shape check
+   now aborts on a group below 3, on a selection other than `min(3, size)`, or on any size
+   disagreement across configs. Recall@3 is unaffected, since its denominator is the
+   positives in the group rather than the group size.
+
+2. **Feature configs.** Registered as three configs. The `lift` task carries five, including
+   `base_plus_target_aligned_lifts`, `target_aligned_lift_features` and its own shuffled
+   control `shuffled_target_aligned_lifts`. Pairs are now registered per task.
+
+This is the same class of error as the retraction above: a partial sample asserted as a
+general fact. It is recorded rather than silently fixed, and the ordering remains provable
+from git.
+
+**Affected files:** `reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md`.
+
