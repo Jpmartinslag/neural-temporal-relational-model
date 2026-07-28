@@ -178,10 +178,15 @@ signal alone carries the sectoral series, which is cheap and worth knowing.
 Five ZE-disjoint folds, assigned deterministically by position in the sorted list of the 280
 zone codes (`index mod 5`). **No seed is involved anywhere in this audit.**
 
-For each evaluation year, every zone belongs to exactly one test fold; `ridge_ar` and the two
-means train on the remaining folds' zones with years `< t`. `persistence` and
-`national_scaled_persistence` produce the same value regardless of fold membership, so folds
-serve only to give every model an identical paired population.
+For each evaluation year, every zone belongs to exactly one test fold. Which models consult
+the folds follows from section 5 and not from a separate rule:
+
+> `ridge_ar` and `sector_mean` use the remaining training-fold ZEs. `ze_sector_mean`,
+> `persistence` and `national_scaled_persistence` use the test cell's causal history through
+> `t-1` and do not fit on folds.
+
+The three fold-independent objects produce the same value regardless of fold membership, so
+for them the folds serve only to give every model an identical paired population.
 
 **Each observation is evaluated exactly once.** The pooled metric covers each ZE-sector-year
 in the official window once, and the fold structure must never duplicate a row.
@@ -244,9 +249,16 @@ aggregate WMAPE **and** in at least **6 of the 7** evaluation years.
    6/7 years, **and** passes the per-sector safety veto of 8.5, it is designated the engine.
 2. Otherwise, if `persistence` qualifies under 8.3, sectoral persistence is promoted from
    CANDIDATE to the product's forecasting engine.
-3. If **neither candidate** beats both naive controls, the verdict is
-   **`NO_ENGINE_DESIGNATED`**: sectoral persistence remains a CANDIDATE and Part B does not
+3. **If neither clause 1 nor clause 2 designates an engine, the verdict is
+   `NO_ENGINE_DESIGNATED`**: sectoral persistence remains a CANDIDATE and Part B does not
    proceed until a new specification exists.
+
+Clause 3 is written as the exhaustive complement of clauses 1 and 2, not as a separate
+condition, so every combination of outcomes lands in exactly one verdict. An earlier
+phrasing made clause 3 conditional on neither candidate beating the controls, which left
+several reachable states with no verdict at all -- for instance `ridge_ar` beating both
+controls but not `persistence`, or beating `persistence` but failing the per-sector veto, or
+`persistence` failing the controls while `ridge_ar` passes them without beating it.
 
 ### 8.5 Per-sector safety veto
 
