@@ -4741,3 +4741,83 @@ closed and nothing is promoted.
 **Affected files:** `reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md`,
 `reports/README.md`, `tests/test_fr_ze2020_ranking_metric_coverage.py`.
 
+---
+
+## DEC-087 -- France ZE2020 graph-first dashboard, specification (2026-07-28)
+
+**Status:** `SPECIFICATION_ONLY_NO_CODE_WRITTEN`.
+
+**Stage:** E5 of the sequence fixed by DEC-081, registered before implementation. No
+builder, export, test or HTML exists. This entry establishes no empirical result.
+
+**Why a specification first.** The dashboard is the most visible artifact the project will
+produce and the easiest to over-claim from: a colour is read as a verdict long before a
+caption is read. What each visual element may assert is therefore fixed before any of it
+exists.
+
+**Governing principle, set by the project owner.** *The node shows what was observed; the
+panel reports the predicted level; the edge shows an audited association.* Observation and
+prediction never share a visual channel.
+
+**Node encoding, fixed.** Macro ZE-to-ZE: colour is the zone's recent **observed**
+trajectory, labelled descriptive; size is observed economic volume; edges are ZE-to-ZE
+relations subject to per-year availability. Micro ZE x sector: colour is the sector's recent
+observed trajectory; size is its current observed share in that zone; the side panel carries
+the last observed value and the persistence-predicted level.
+
+**Persistence never colours anything.** It repeats the last observed level and carries no
+direction; as a colour it would read as a prediction of growth or decline, which is exactly
+what DEC-085 refused. It is confined to a numeric field.
+
+**The trajectory colour must not become a state by another name.** It renders on a
+continuous diverging scale with **no bins and no category labels**, and the words growth,
+stagnation and decline appear nowhere in legend, tooltip or DOM. Binning the observed change
+would create a three-state vocabulary visually identical to the forecast-derived states
+DEC-085 refused, which a reader cannot be expected to distinguish from colour alone. Any
+future bins carry owner-reserved thresholds under HERALD_56 section 8 and a new decision.
+
+**Layer separation.** Each species of edge is its own layer with its own legend, grain
+statement and evidence scale; layers are never summed, averaged or drawn in one another's
+style. The ZE-to-ZE similarity layer has an evidence scale **of its own** -- DEC-066 tiers
+govern sector-to-sector relations and do not apply to it. The sector-to-sector layer is at
+**country** grain and says so; France holds one promoted edge (RU->MN, COVID-sensitive,
+DEC-060), so the layer is sparse and the page states that rather than padding it.
+**IAT / NAF / NACE structure is absent entirely until E6 passes.**
+
+**Availability governs rendering.** Every layer and year consults the DEC-082 mask before
+drawing. `derived_available` renders labelled as derived from causal lag features rather
+than observed; `carried_forward_from_snapshot` renders with its snapshot year and age;
+`unavailable` **does not render** and the page states the reason. A year with no relation
+must look different from a year with weak relations -- an unexplained empty canvas is the
+failure the mask exists to prevent. Concretely, no ZE-to-ZE layer before 2017 and no
+commuting layer before 2016.
+
+**Prohibited:** any predicted state in any channel or wording; causal language;
+recommendation; IAT/NAF/NACE until E6; NL gemeente proxy edges (DEC-065); the retrospective
+`fr_ze2020_exploratory_relation_signals.csv` as input, the leakage-safe temporal snapshots
+being the admissible source (HERALD_38); the France Q7 figure; any layer without its grain
+and evidence scale visible; any number not traceable to a delivered artifact.
+
+**Validation.** Playwright has never been available here, so the dashboard will be
+**structurally tested, not visually validated**, and the page states that limitation rather
+than implying otherwise.
+
+**Reserved for the project owner before implementation begins.** The definition of the
+"recent trajectory" window, since it governs the dominant visual channel; the ZE-to-ZE
+evidence scale, undefined today, the layer meanwhile rendering strength as continuous width
+with no qualitative label; and the side panel's third field, because the persistence
+forecast for the next year **equals the last observed value by construction**, so the panel
+would otherwise print the same number twice -- the alternative being the observed historical
+error of persistence for that cell, which is more informative and uses only delivered
+evidence, but is a product decision.
+
+**Limitations.** A specification. It validates nothing, promotes nothing, and authorizes no
+HPC job, no model and no relational input.
+
+**Reopen condition:** any change to node encoding, layer separation, availability handling
+or the prohibitions requires a new DEC before implementation.
+
+**Affected files:** `reports/canonical/HERALD_60_FR_ZE2020_GRAPH_FIRST_DASHBOARD_SPEC.md`
+(new), `reports/README.md`.
+
+See HERALD_60.

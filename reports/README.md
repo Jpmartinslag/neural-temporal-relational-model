@@ -286,6 +286,20 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     statistical equivalence is not claimed. The corrected target shuffle collapses both
     metrics; temporal shuffle raises recall while lowering growth. Nothing is
     promoted, the closed targets stay closed, and E5 is unblocked.
+58. `canonical/HERALD_60_FR_ZE2020_GRAPH_FIRST_DASHBOARD_SPEC.md`
+    — E5 specification, no code written (DEC-087). Fixes what each visual
+    element may assert before any of it exists: the node shows what was
+    observed, the panel reports the predicted level, the edge shows an audited
+    association. Node colour is the recent **observed** trajectory on a
+    continuous scale with no bins and no growth/stagnation/decline wording, so
+    it cannot become the forecast-derived state DEC-085 refused; persistence is
+    confined to a numeric field because it repeats the last level and carries no
+    direction. Each edge species is its own layer with its own grain and
+    evidence scale — ZE↔ZE has a scale of its own, DEC-066 tiers being
+    sector-to-sector only — and the DEC-082 availability mask decides whether a
+    layer renders at all, with unavailable years narrated rather than blank.
+    IAT/NAF/NACE absent until E6. Three product decisions are reserved for the
+    owner before implementation.
 
 ## Control Documents
 
