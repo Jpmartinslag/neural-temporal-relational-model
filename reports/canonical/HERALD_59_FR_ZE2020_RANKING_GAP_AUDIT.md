@@ -1,7 +1,7 @@
 # HERALD 59 -- France ZE2020 Retrospective Ranking Gap Audit
 
 **Date:** 2026-07-28
-**Status:** `RANKING_GAP_AUDIT_INCOMPLETE_CORRECTED` -- the original section 5 conclusion was
+**Status:** `RANKING_GAP_AUDIT_COMPLETE` -- delivered after retraction. The original section 5 conclusion was
 falsified by the repository's own artifacts. See section 5 and the DEC-086 correction
 addendum.
 **Stage:** E4 of the sequence fixed in HERALD_56 section 5.
@@ -194,21 +194,31 @@ file". That was verified on **one** file -- `top3 / full_control / seed_42` -- a
 across the corpus. Correcting a factual assumption before computing anything is legitimate;
 asserting it from a single sample was not. The verified structure is:
 
-| Property | Verified value |
-|---|---|
-| Sectors per group | **variable, 3 to 9**, with 9 dominant (104,556 of 134,400 top3 groups, 77.8%) |
-| Selected per group | **`min(3, group size)`** -- always 3 in the top3 task, 2 or 3 in the lift task |
-| Group size across feature configs | **identical within a cell**: 0 disagreements in 44,800 cells |
-| Groups | 134,400 (top3) and 224,000 (lift) across all scenarios and seeds |
+**Corrected twice, and the pattern is worth naming.** The first version claimed 9 sectors
+and 3 selected, from one `top3` file. The second claimed a lower bound of 3 sectors -- again
+from `top3` alone, while `lift` holds groups of 2. Three samples were generalized into
+general facts before the corpus was read. The bound is therefore **dropped**: what is
+registered is the pair of invariants that actually hold corpus-wide, and observed ranges are
+**reported as output**, never as registered constants.
 
-Variation comes from candidate availability and label maturity, not from the models: since
-the size agrees across feature configs, the paired comparison remains on identical
-populations, which is what section 10.7 requires.
+Registered invariants, verified across all 40 admissible files:
+
+| Invariant | Verified |
+|---|---|
+| `selected == min(3, group size)` | **holds in every group**, both tasks |
+| group size identical across feature configs within a cell | **0 disagreements of 89,600 cells** |
+
+Observed structure, reported rather than registered: sectors per group range 3-9 in `top3`
+and 2-9 in `lift`, with 9 dominant; groups number 134,400 (`top3`) and 224,000 (`lift`)
+across all scenarios and seeds. Variation comes from candidate availability and label
+maturity, not from the models. Because size agrees across feature configs, the paired
+comparison remains on identical populations, which is what section 10.7 requires.
 
 Consequences fixed here:
 
-- the shape check aborts on a group smaller than 3, on a selection different from
-  `min(3, size)`, or on any disagreement of size across feature configs within a cell;
+- the shape check aborts if `selected != min(3, size)` in any group, or on any disagreement
+  of size across feature configs within a cell; it registers **no lower bound on group
+  size**, since none is justified;
 - `mean_growth_selected` averages over the selected rows, however many were selected;
 - Recall@3 is unaffected: its denominator is the positives in the group, not the group size;
 - the precision figure is reported as `hits / selected` and is a **cross-check** against the
@@ -276,3 +286,98 @@ rate, and the count of groups entering each comparison. **No threshold and no ga
 
 A metrics recomputer with tests, its output table, and nothing else. No training, no HPC, no
 rerun, and no change to any existing verdict.
+
+---
+
+## 11. Recomputation result
+
+Executed under section 10, from stored predictions only. **40 files, 358,400 groups, zero
+models fitted, zero jobs launched.** Recall@3 is undefined in **7,984** groups, reported as
+such and excluded from every mean.
+
+### 11.1 The two metrics, top3 task, `full_control`
+
+| Model | Feature config | Recall@3 | Growth of selected | Attainable ceiling |
+|---|---|---:|---:|---:|
+| logit | `base_formula_features` | 0.6481 | 0.3832 | 0.6037 |
+| logit | `no_relation_features` | 0.6508 | 0.3837 | 0.6037 |
+| logit | `shuffled_relation_features` | 0.6508 | 0.3834 | 0.6037 |
+| MLP | `base_formula_features` | 0.6503 | 0.3824 | 0.6037 |
+| MLP | `no_relation_features` | 0.6476 | **0.3885** | 0.6037 |
+| MLP | `shuffled_relation_features` | **0.6539** | 0.3844 | 0.6037 |
+
+5,600 groups per row, 20 with undefined recall.
+
+**The economic reading, now available for the first time.** The selected three sectors grew
+on average **0.3824** against **0.6037** for the three that actually grew most -- the
+ranking captures about **63%** of the attainable growth. That is the number the previous
+metric set could not express, and it is reported here for the record; it is not a gate and
+it authorizes nothing.
+
+**Relation features add nothing on either new metric.** The spread across configs is 0.006
+on recall and 0.006 on growth. `no_relation_features` attains the **highest** growth of the
+three, and `shuffled_relation_features` the **highest** recall. Both new metrics therefore
+agree with the HERALD_38 section 8 conclusion rather than qualifying it.
+
+### 11.2 Paired comparison, MLP, `full_control`
+
+| Metric | Left | Right | left wins | ties | right wins |
+|---|---|---|---:|---:|---:|
+| Recall@3 | base_formula | no_relation | 0.1353 | 0.7405 | 0.1242 |
+| Recall@3 | base_formula | shuffled_relation | 0.0742 | 0.8443 | 0.0815 |
+| Recall@3 | no_relation | shuffled_relation | 0.1306 | 0.7224 | 0.1470 |
+| Growth | base_formula | no_relation | 0.2395 | 0.4971 | 0.2634 |
+| Growth | base_formula | shuffled_relation | 0.1386 | 0.7091 | 0.1523 |
+| Growth | no_relation | shuffled_relation | 0.2729 | 0.4636 | 0.2636 |
+
+**Ties dominate** -- 72% to 84% on recall -- and the win and loss shares are near-symmetric
+in every pair. The configs are not merely close on the mean; they are indistinguishable
+group by group. Reporting only a win share here would have been misleading, which is why the
+tie share is carried beside it.
+
+### 11.3 Scenario behaviour, MLP, `base_formula_features`
+
+| Scenario | Recall@3 | Growth of selected |
+|---|---:|---:|
+| `full_control` | 0.6503 | 0.3824 |
+| `temporal_shuffle` | **0.7563** | 0.3525 |
+| `sector_shuffle` | 0.5409 | 0.3004 |
+| `target_shuffle` (corrected rerun) | 0.4826 | 0.2668 |
+
+Three readings:
+
+1. **The corrected target shuffle collapses both metrics**, as it should. This independently
+   reproduces the HERALD_38 section 8 repair on two metrics that repair never used.
+2. **Sector shuffle degrades**, consistent with the record.
+3. **Temporal shuffle does not degrade -- it improves recall**, from 0.6503 to 0.7563. This
+   corroborates, on new metrics, the HERALD_38 section 8 finding that "temporal shuffle
+   still does not degrade performance". It is a warning about the target's temporal
+   structure, already recorded there, not a new result.
+
+### 11.4 What this does not do
+
+It promotes nothing, reopens nothing and changes no verdict. DEC-069, DEC-078 and DEC-080
+remain closed; the relation layer still fails against no-relation, base-formula and shuffled
+controls. Two entries of the HERALD_23 section 5 metric checklist are now filled, and the
+four unauthorized controls of section 7 remain unauthorized.
+
+### 11.5 Artifacts
+
+| Item | Path |
+|---|---|
+| Summary | `data/processed/france_ze2020/fr_ze2020_ranking_metric_coverage_summary_v1.csv` |
+| Paired | `data/processed/france_ze2020/fr_ze2020_ranking_metric_coverage_paired_v1.csv` |
+| Manifest | `data/processed/france_ze2020/fr_ze2020_ranking_metric_coverage_v1.json` |
+| Recomputer | `src/modeles/france_ze2020/recompute_fr_ze2020_ranking_metrics.py` |
+| Tests | `tests/test_fr_ze2020_ranking_metric_coverage.py` (23 passing) |
+
+Verification: determinism confirmed across two independent output directories; the
+recomputer imports no estimator, asserted by test; forbidden and superseded sources abort,
+each with its own mutation test; and the zero-positive rule is covered by five tests,
+including one that fails if an undefined recall is ever imputed as 0 or 1.
+
+## 12. E4 status
+
+**`RANKING_GAP_AUDIT_COMPLETE`.** The coverage map stands, its false central finding is
+retracted and recorded, the two recomputable metrics are delivered, and the four remaining
+gaps stay unauthorized. **E5 is unblocked.**

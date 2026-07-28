@@ -1728,6 +1728,72 @@
       "claim_forbidden": "Stating that persistence is more accurate than ridge_ar: ridge_ar has the lower aggregate WMAPE and was blocked by stability and safety conditions registered in advance, not by accuracy. Extending the designation beyond FR ZE2020 x A10, 2019-2025, or to any target other than annual establishment creations.",
       "can_regenerate": true,
       "notes": "Records negative-prediction disclosure per year and overall, the target-mutation invariance proof, and library versions. Result entry DEC-084 with its correction addendum."
+    },
+    {
+      "id": "FR_ZE2020_RANKING_METRIC_COVERAGE_SUMMARY",
+      "phase": "ranking metric coverage completion (2026-07-28)",
+      "path": "data/processed/france_ze2020/fr_ze2020_ranking_metric_coverage_summary_v1.csv",
+      "type": "metric_coverage_completion",
+      "status": "REGENERABLE",
+      "tracked_in_git": true,
+      "size_bytes": 9884,
+      "sha256_prefix": "a0d4b36fe2f47795a390",
+      "origin_decision": "DEC-086 correction and result addenda -- see reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md sections 10-11",
+      "generator_script": "src/modeles/france_ze2020/recompute_fr_ze2020_ranking_metrics.py",
+      "input_data": [
+        "hpc_results/fr_ze2020_top3_entry_temporal_fix_top3_20260713_143828/",
+        "hpc_results/fr_ze2020_top3_entry_lift_temporal_fix_lift_20260713_143828/",
+        "hpc_results/fr_ze2020_top3_entry_temporal_fix_target_top3_20260713_145326/",
+        "hpc_results/fr_ze2020_top3_entry_lift_temporal_fix_target_lift_20260713_145326/"
+      ],
+      "claim_authorized": "Recall@3 and average future growth of the selected top-3, recomputed from stored predictions across 358,400 groups with no model fitted. Completes two entries of the HERALD_23 section 5 metric checklist.",
+      "claim_forbidden": "Any promotion or reopening. DEC-069, DEC-078 and DEC-080 remain closed and the relation layer still fails against no-relation, base-formula and shuffled controls. Reading a recall mean without its undefined-group count.",
+      "can_regenerate": true,
+      "notes": "Recall is undefined in 7,984 groups and excluded from every mean, never imputed. See tests/test_fr_ze2020_ranking_metric_coverage.py (23 tests)."
+    },
+    {
+      "id": "FR_ZE2020_RANKING_METRIC_COVERAGE_PAIRED",
+      "phase": "ranking metric coverage completion (2026-07-28)",
+      "path": "data/processed/france_ze2020/fr_ze2020_ranking_metric_coverage_paired_v1.csv",
+      "type": "metric_coverage_completion",
+      "status": "REGENERABLE",
+      "tracked_in_git": true,
+      "size_bytes": 24424,
+      "sha256_prefix": "40f73b49628f5c7cca32",
+      "origin_decision": "DEC-086 correction and result addenda -- see reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md sections 10-11",
+      "generator_script": "src/modeles/france_ze2020/recompute_fr_ze2020_ranking_metrics.py",
+      "input_data": [
+        "hpc_results/fr_ze2020_top3_entry_temporal_fix_top3_20260713_143828/",
+        "hpc_results/fr_ze2020_top3_entry_lift_temporal_fix_lift_20260713_143828/",
+        "hpc_results/fr_ze2020_top3_entry_temporal_fix_target_top3_20260713_145326/",
+        "hpc_results/fr_ze2020_top3_entry_lift_temporal_fix_target_lift_20260713_145326/"
+      ],
+      "claim_authorized": "Paired feature-config comparison within territory, year, model, seed and scenario, reporting means, win shares, tie shares and group counts.",
+      "claim_forbidden": "Reading a win share without its tie share: ties dominate at 72-84% on recall, so a win share alone reads as a defeat rather than as a tie.",
+      "can_regenerate": true,
+      "notes": "Descriptive completion; no threshold and no gate."
+    },
+    {
+      "id": "FR_ZE2020_RANKING_METRIC_COVERAGE_MANIFEST",
+      "phase": "ranking metric coverage completion (2026-07-28)",
+      "path": "data/processed/france_ze2020/fr_ze2020_ranking_metric_coverage_v1.json",
+      "type": "metric_coverage_manifest",
+      "status": "REGENERABLE",
+      "tracked_in_git": true,
+      "size_bytes": 7445,
+      "sha256_prefix": "ace453e609389a2b2f8b",
+      "origin_decision": "DEC-086 correction and result addenda -- see reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md sections 10-11",
+      "generator_script": "src/modeles/france_ze2020/recompute_fr_ze2020_ranking_metrics.py",
+      "input_data": [
+        "hpc_results/fr_ze2020_top3_entry_temporal_fix_top3_20260713_143828/",
+        "hpc_results/fr_ze2020_top3_entry_lift_temporal_fix_lift_20260713_143828/",
+        "hpc_results/fr_ze2020_top3_entry_temporal_fix_target_top3_20260713_145326/",
+        "hpc_results/fr_ze2020_top3_entry_lift_temporal_fix_target_lift_20260713_145326/"
+      ],
+      "claim_authorized": "Source file list, group counts, undefined-recall count and rule, and environment.",
+      "claim_forbidden": "Any promotion reading.",
+      "can_regenerate": true,
+      "notes": "Records models_fitted=0 and jobs_launched=0."
     }
   ]
 }
