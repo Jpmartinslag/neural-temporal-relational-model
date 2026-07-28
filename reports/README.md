@@ -279,9 +279,11 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     model fitted. Recall@3 is undefined in 7,984 groups and excluded from every
     mean; the selected three sectors grew 0.3824 on average against 0.6037 for
     the three that actually grew most, about 63% of what was attainable.
-    Relation features add nothing on either metric — spread 0.006 across
-    configurations, ties dominant at 72–84% — so both new metrics agree with the
-    HERALD_38 §8 conclusion. The corrected target shuffle collapses both
+    No consistent incremental advantage of relation-bearing configurations is
+    observed in these descriptive recomputed metrics (spread 0.006 across
+    configurations, ties dominant at 72–84%); the differences are small in this
+    stored output, but no equivalence margin or test was pre-registered, so
+    statistical equivalence is not claimed. The corrected target shuffle collapses both
     metrics; temporal shuffle raises recall while lowering growth. Nothing is
     promoted, the closed targets stay closed, and E5 is unblocked.
 

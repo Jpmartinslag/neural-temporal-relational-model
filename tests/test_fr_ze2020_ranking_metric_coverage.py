@@ -29,7 +29,10 @@ from src.modeles.france_ze2020.recompute_fr_ze2020_ranking_metrics import (  # n
     TASK_PAIRS,
     TOP_K,
     EXPECTED_FILE_COUNT,
+    TASK_FEATURE_CONFIGS,
     assert_corpus_complete,
+    load_predictions,
+    validate_prediction_file,
     assert_populations_identical,
     assert_sources_admissible,
     collect_prediction_files,
@@ -95,7 +98,7 @@ def test_undefined_recall_is_excluded_from_the_mean_and_counted() -> None:
 
 
 def test_recall_differs_from_precision_when_positives_vary() -> None:
-    """If the two coincided, the metric would add nothing to the record."""
+    """If the two coincided, the new metric would duplicate the published one."""
     out = group_metrics(_synthetic([1, 2, 3]))
     defined = out[~out["recall_undefined"]]
     assert not np.allclose(
@@ -268,11 +271,19 @@ def test_summary_reports_undefined_counts_beside_every_recall() -> None:
     assert np.isfinite(summary["mean_recall_at_3"].to_numpy(dtype=float)).all()
 
 
-def test_recomputer_is_deterministic(tmp_path: Path) -> None:
+OUTPUT_NAMES = (
+    "fr_ze2020_ranking_metric_coverage_summary_v1.csv",
+    "fr_ze2020_ranking_metric_coverage_paired_v1.csv",
+    "fr_ze2020_ranking_metric_coverage_v1.json",
+)
+
+
+def test_recomputer_is_deterministic_across_all_outputs(tmp_path: Path) -> None:
+    """Two independent runs, all three outputs, and the canonical artifacts."""
     import hashlib
 
     script = ROOT / "src/modeles/france_ze2020/recompute_fr_ze2020_ranking_metrics.py"
-    hashes = []
+    digests = []
     for name in ("a", "b"):
         out = tmp_path / name
         result = subprocess.run(
@@ -282,12 +293,23 @@ def test_recomputer_is_deterministic(tmp_path: Path) -> None:
             cwd=ROOT,
         )
         assert result.returncode == 0, result.stderr
-        hashes.append(
-            hashlib.sha256(
-                (out / "fr_ze2020_ranking_metric_coverage_summary_v1.csv").read_bytes()
-            ).hexdigest()
+        digests.append(
+            {
+                filename: hashlib.sha256((out / filename).read_bytes()).hexdigest()
+                for filename in OUTPUT_NAMES
+            }
         )
-    assert hashes[0] == hashes[1]
+    assert digests[0] == digests[1], "two runs disagree"
+
+    canonical_dir = ROOT / "data/processed/france_ze2020"
+    for filename in OUTPUT_NAMES:
+        canonical = canonical_dir / filename
+        if not canonical.exists():
+            pytest.skip("canonical artifact absent")
+        expected = hashlib.sha256(canonical.read_bytes()).hexdigest()
+        assert digests[0][filename] == expected, (
+            f"{filename} differs from the committed artifact"
+        )
 
 
 # --- corpus completeness (item 5) -----------------------------------------
@@ -319,29 +341,38 @@ def test_same_groups_different_sizes_abort() -> None:
 # --- the manifest records what it read (item 6) ---------------------------
 
 
-def test_manifest_records_input_hashes() -> None:
+def test_manifest_hashes_match_the_files_on_disk() -> None:
+    """Recompute every input digest rather than counting hex strings."""
     if not MANIFEST_PATH.exists():
         pytest.skip("recomputation not executed yet")
+    import hashlib
     import json
 
     manifest = json.loads(MANIFEST_PATH.read_text())
     hashes = manifest["source_sha256"]
     assert len(hashes) == EXPECTED_FILE_COUNT
     assert set(hashes) == set(manifest["source_files"])
-    assert all(len(v) == 64 for v in hashes.values())
+    for relative, recorded in hashes.items():
+        actual = hashlib.sha256((ROOT / relative).read_bytes()).hexdigest()
+        assert actual == recorded, f"{relative}: manifest hash does not match the file"
 
 
-# --- "indistinguishable" is a checkable claim (item 7) --------------------
+# --- post-result textual-consistency guards ------------------------------
+#
+# These pin two numbers so the descriptive wording in HERALD_59 cannot outlive
+# the figures it describes.  They are NOT equivalence tests: no margin was
+# pre-registered, no equivalence procedure was specified, and passing them
+# supports no inference that the configurations perform equally.
 
 MAX_CONFIG_SPREAD = 0.01
 MIN_RECALL_TIE_SHARE = 0.70
 
 
-def test_configs_are_indistinguishable_in_the_defined_sense() -> None:
-    """Pins the claim made in HERALD_59 section 11.2.
+def test_reported_config_spread_matches_descriptive_record() -> None:
+    """Pins the spread reported in HERALD_59 section 11.2.
 
-    If a regeneration moves these numbers, this test fails and the wording in
-    the report must change with it, rather than outliving its evidence.
+    Post-result guard on the text only. It does not test equivalence and must
+    never be cited as evidence that the configurations perform equally.
     """
     if not SUMMARY_PATH.exists():
         pytest.skip("recomputation not executed yet")
@@ -353,7 +384,7 @@ def test_configs_are_indistinguishable_in_the_defined_sense() -> None:
         assert spread <= MAX_CONFIG_SPREAD, f"{metric} spread {spread:.4f} is no longer small"
 
 
-def test_recall_pairs_are_tie_dominated() -> None:
+def test_reported_recall_pairs_are_tie_dominated() -> None:
     paired_path = ROOT / "data/processed/france_ze2020/fr_ze2020_ranking_metric_coverage_paired_v1.csv"
     if not paired_path.exists():
         pytest.skip("recomputation not executed yet")
@@ -380,3 +411,196 @@ def test_temporal_shuffle_moves_the_two_metrics_in_opposite_directions() -> None
     ].set_index("scenario")
     assert sel.loc["temporal_shuffle", "mean_recall_at_3"] > sel.loc["full_control", "mean_recall_at_3"]
     assert sel.loc["temporal_shuffle", "mean_growth_selected"] < sel.loc["full_control", "mean_growth_selected"]
+
+
+# --- per-file schema mutations (item 2/3) ---------------------------------
+#
+# Every case below is exercised through the real validation path, and several
+# through the real loader, so a guard that exists only in a constant cannot
+# pass these.
+
+
+@pytest.fixture(scope="module")
+def real_file() -> tuple[pd.DataFrame, dict]:
+    """One genuine prediction file plus the context its directory asserts."""
+    files = collect_prediction_files()
+    row = files.iloc[0]
+    path = Path(row["path"])
+    frame = pd.read_csv(path, dtype={"ze2020": str})
+    context = {
+        "task": row["task"],
+        "scenario": row["scenario"],
+        "seed": int(path.parent.name.split("_")[-1]),
+        "path": path,
+    }
+    return frame, context
+
+
+def _validate(frame: pd.DataFrame, context: dict) -> None:
+    validate_prediction_file(
+        frame, context["task"], context["scenario"], context["seed"], context["path"]
+    )
+
+
+def test_real_file_passes_the_closed_schema(real_file) -> None:
+    frame, context = real_file
+    _validate(frame, context)
+
+
+def test_missing_required_column_aborts(real_file) -> None:
+    frame, context = real_file
+    with pytest.raises(AssertionError, match="missing required columns"):
+        _validate(frame.drop(columns=["target_horizon_years"]), context)
+
+
+def test_null_in_essential_column_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken.loc[broken.index[0], "sector_code"] = None
+    with pytest.raises(AssertionError, match="nulls in sector_code"):
+        _validate(broken, context)
+
+
+def test_internal_seed_mismatch_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken["seed"] = 999
+    with pytest.raises(AssertionError, match="internal seed"):
+        _validate(broken, context)
+
+
+def test_internal_scenario_mismatch_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken["falsification_scenario"] = "not_the_directory_scenario"
+    with pytest.raises(AssertionError, match="internal scenario"):
+        _validate(broken, context)
+
+
+def test_wrong_horizon_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken["target_horizon_years"] = 1
+    with pytest.raises(AssertionError, match="horizon"):
+        _validate(broken, context)
+
+
+def test_decision_year_outside_the_window_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken.loc[broken.index[0], "decision_year"] = 2018
+    with pytest.raises(AssertionError, match="decision years outside"):
+        _validate(broken, context)
+
+
+def test_unknown_model_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken.loc[broken.index[0], "model"] = "some_other_model"
+    with pytest.raises(AssertionError, match="unknown model"):
+        _validate(broken, context)
+
+
+def test_missing_feature_config_aborts(real_file) -> None:
+    frame, context = real_file
+    dropped = sorted(TASK_FEATURE_CONFIGS[context["task"]])[0]
+    broken = frame[frame["feature_config"] != dropped]
+    with pytest.raises(AssertionError, match="feature configs"):
+        _validate(broken, context)
+
+
+def test_unknown_feature_config_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken.loc[broken.index[0], "feature_config"] = "invented_config"
+    with pytest.raises(AssertionError, match="feature configs"):
+        _validate(broken, context)
+
+
+def test_non_binary_label_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken.loc[broken.index[0], "target_top3_label"] = 2
+    with pytest.raises(AssertionError, match="not binary"):
+        _validate(broken, context)
+
+
+def test_non_finite_growth_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken.loc[broken.index[0], "target_growth"] = np.inf
+    with pytest.raises(AssertionError, match="non-finite"):
+        _validate(broken, context)
+
+
+def test_non_finite_rank_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken.loc[broken.index[0], "rank_predicted"] = np.nan
+    with pytest.raises(AssertionError, match="nulls in rank_predicted|non-finite"):
+        _validate(broken, context)
+
+
+def test_non_integral_rank_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken.loc[broken.index[0], "rank_predicted"] = 1.5
+    with pytest.raises(AssertionError, match="not integral"):
+        _validate(broken, context)
+
+
+def test_duplicate_key_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = pd.concat([frame, frame.iloc[[0]]], ignore_index=True)
+    with pytest.raises(AssertionError, match="duplicated"):
+        _validate(broken, context)
+
+
+def test_duplicate_rank_within_a_group_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    keys = ["ze2020", "decision_year", "model", "feature_config"]
+    first = broken.groupby(keys, sort=False).head(2).index[:2]
+    broken.loc[first[1], "rank_predicted"] = broken.loc[first[0], "rank_predicted"]
+    with pytest.raises(AssertionError, match=r"not 1\.\."):
+        _validate(broken, context)
+
+
+def test_non_contiguous_ranks_abort(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken["rank_predicted"] = broken["rank_predicted"] + 1
+    with pytest.raises(AssertionError, match=r"not 1\.\."):
+        _validate(broken, context)
+
+
+def test_empty_claim_status_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken["claim_status"] = "   "
+    with pytest.raises(AssertionError, match="claim_status is empty"):
+        _validate(broken, context)
+
+
+def test_non_uniform_claim_status_aborts(real_file) -> None:
+    frame, context = real_file
+    broken = frame.copy()
+    broken.loc[broken.index[0], "claim_status"] = "something_else"
+    with pytest.raises(AssertionError, match="claim_status is not uniform"):
+        _validate(broken, context)
+
+
+def test_loader_runs_the_schema_validation(tmp_path: Path, real_file) -> None:
+    """The guard must fire through load_predictions, not only when called directly."""
+    frame, context = real_file
+    broken = frame.copy()
+    broken["target_horizon_years"] = 1
+    seed_dir = tmp_path / f"seed_{context['seed']}"
+    seed_dir.mkdir(parents=True)
+    path = seed_dir / "fr_ze2020_top3_entry_falsification_predictions_v1.csv"
+    broken.to_csv(path, index=False)
+    files = pd.DataFrame(
+        [{"task": context["task"], "scenario": context["scenario"], "path": path}]
+    )
+    with pytest.raises(AssertionError, match="horizon"):
+        load_predictions(files)
