@@ -525,6 +525,25 @@ def test_non_binary_label_aborts(real_file) -> None:
         _validate(broken, context)
 
 
+def test_fractional_label_aborts(real_file) -> None:
+    """int() would have truncated 0.5 to 0 and accepted it as a valid label."""
+    frame, context = real_file
+    broken = frame.copy()
+    broken["target_top3_label"] = broken["target_top3_label"].astype(float)
+    broken.loc[broken.index[0], "target_top3_label"] = 0.5
+    with pytest.raises(AssertionError, match="not binary"):
+        _validate(broken, context)
+
+
+def test_fractional_decision_year_aborts(real_file) -> None:
+    """int() would have truncated 2019.5 to 2019 and accepted it as in range."""
+    frame, context = real_file
+    broken = frame.copy()
+    broken["decision_year"] = broken["decision_year"].astype(float) + 0.5
+    with pytest.raises(AssertionError, match="not integral"):
+        _validate(broken, context)
+
+
 def test_non_finite_growth_aborts(real_file) -> None:
     frame, context = real_file
     broken = frame.copy()
