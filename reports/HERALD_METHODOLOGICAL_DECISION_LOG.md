@@ -4821,3 +4821,67 @@ or the prohibitions requires a new DEC before implementation.
 (new), `reports/README.md`.
 
 See HERALD_60.
+
+### DEC-087 -- First correction addendum (2026-07-28, still before any code)
+
+The original entry is preserved unaltered. A specification audit found four defects and the
+project owner fixed the three reserved product decisions. **No code exists yet**, so all of
+it lands before implementation.
+
+**1. Structural-only validation was accepted as a permanent contract (high).** It is not
+sufficient. The dashboard is a visual artifact: a chart that renders empty, a legend
+overlapping its plot, or a slider that moves nothing all pass every DOM assertion ever
+written. Playwright being unavailable was an expedient and must not harden into a standard.
+Section 7 now requires that a browser run be **attempted**, covering desktop and mobile
+viewports, non-empty map and graph, absence of overlap, readable legends, a year slider that
+actually moves the layers including showing an `unavailable` year's reason, and interaction.
+**Only two end states are admissible:** `DASHBOARD_VISUALLY_VALIDATED`, or
+**`PENDING_VISUAL_VALIDATION`** when no browser was available, in which case the dashboard is
+a candidate and every citation says so. There is no third state. DEC-068 is the precedent for
+what blurring this costs.
+
+**2. Commuting was cited but never defined as a layer (medium).** The specification said no
+commuting layer renders before 2016 while section 4 defined no such layer. Added: **ZE-to-ZE
+functional mobility, grain ZE x snapshot, evidence `carried_forward_from_snapshot`, with the
+observation year and snapshot age visible on every edge** rather than only in a legend --
+an edge drawn in 2025 from a 2017 observation is eight years stale and that must be visible
+where the edge is. Commuting and trajectory similarity are **never merged, overlaid or
+identically encoded**: one is an observed worker flow, the other a correlation computed from
+the same births panel the page already displays.
+
+**3. The historical error needed a causal formula (medium).** Specified in section 8.3.
+
+**4. Documentary (low).** The header said DEC-087 "will register" the specification; it is
+registered by DEC-087. The forbidden vocabulary now covers **French**, since the interface is
+French: `croissance`, `stagnation`, `déclin`, `recul`, `cause`, `influence`, `entraîne`,
+`provoque`, `devrait`, `recommande`. `croissance` beside a coloured node is a predicted state
+to a reader whatever the caption says.
+
+**Decision 1 -- recent trajectory.** One-year observed change on a log scale,
+`tau(z,s,t) = log(1 + y(z,s,t)) - log(1 + y(z,s,t-1))`: it moves with the slider, stays
+finite when the previous value is zero, creates no categories, and dampens the visual
+dominance of the largest territories. Legend verbatim: "Variation observée sur un an,
+échelle logarithmique." The first panel year has no predecessor and renders `indisponible`
+-- **a zero is never invented**, and an absent value is never drawn as the neutral midpoint,
+which would read as "no change".
+
+**Decision 2 -- ZE-to-ZE evidence.** No strong/medium/weak levels, since nothing in the
+record defines them for a trajectory-similarity edge. A **single status
+`EXPLORATORY_DERIVED`**, an identical dashed stroke for every edge so that style carries no
+ranking, width as the numeric magnitude of `signal_strength`, opacity as the numeric
+recurrence of `stability_score`, and both exact values in the tooltip. Neither channel means
+causality, validation or quality. Commuting keeps its own scale and never uses this one.
+
+**Decision 3 -- side panel.** Three fields: `Dernière observation`; `Prévision par
+persistance`, the same number, **with the reason it repeats stated in the panel** rather than
+the field omitted; and `Erreur absolue moyenne historique`, the MAE of persistence for that
+ZE-sector, defined causally against the selected year `t` as the mean absolute error over
+forecasts already realized at or before `t`. **No year after the slider position is ever
+read**, `n` is displayed beside the value, `n < 2` shows `historique insuffisant`, and the
+MAE is **never converted into high/medium/low confidence** -- that would be the three-state
+vocabulary section 3.4 forbids.
+
+**No reservation now blocks implementation.**
+
+**Affected files:** `reports/canonical/HERALD_60_FR_ZE2020_GRAPH_FIRST_DASHBOARD_SPEC.md`,
+`reports/README.md`.

@@ -3,7 +3,8 @@
 **Date:** 2026-07-28
 **Status:** `SPECIFICATION_ONLY_NO_CODE_WRITTEN`
 **Stage:** E5 of the sequence fixed in HERALD_56 section 5.
-**Decision entry:** DEC-087 will register this specification before implementation.
+**Decision entry:** registered by DEC-087, with the corrections of this revision recorded
+in its first correction addendum.
 
 ## 0. Scope
 
@@ -75,7 +76,7 @@ expected to hold the distinction from a colour alone. **If discrete bins are eve
 their thresholds are reserved for the project owner under HERALD_56 section 8 and require a
 new decision.**
 
-The window used for "recent" is fixed in section 8.1 and is stated on the page.
+The window used for "recent" is fixed in section 8.1 and its legend is stated on the page.
 
 ## 4. Layer separation, and the evidence scale of each
 
@@ -85,9 +86,19 @@ summed, averaged, overlaid or drawn in one another's style.
 
 | Layer | Grain | Source | Evidence scale |
 |---|---|---|---|
-| ZE to ZE, trajectory similarity | ZE x year | `ze_similarity` family | **its own**, to be defined in section 8.2. **DEC-066 tiers do not apply** -- they govern sector-to-sector relations |
+| ZE to ZE, trajectory similarity | ZE x year | `ze_similarity` family | `EXPLORATORY_DERIVED`, single status -- see section 8.2. **DEC-066 tiers do not apply** -- they govern sector-to-sector relations |
+| **ZE to ZE, functional mobility (commuting)** | **ZE x snapshot** | `fr_ze2020_commuting_strict_ex_ante_edges.csv.gz` | `carried_forward_from_snapshot`, **with the observation year and the snapshot age visible on every edge** |
 | sector to sector, observed precedence | **country**, not ZE | Phase 7 promoted edges | DEC-066 tiers, with the grain stated on the layer |
 | sector to sector, structural NAF/NACE | nomenclature | **absent until E6 passes** | not applicable |
+
+**Commuting and trajectory similarity are never merged, never overlaid and never share an
+encoding.** They are different objects: one is an observed flow of workers carried forward
+from a snapshot four to eight years old, the other is a correlation computed from the same
+births panel that the rest of the page displays. A reader who cannot tell them apart would
+be reading an official statistic and a derived correlation as one thing. The commuting layer
+carries its snapshot year and age on the edge itself, not only in a legend, because an edge
+drawn in 2025 from a 2017 observation is eight years stale and that must be visible where
+the edge is.
 
 France holds **one** promoted sector-to-sector edge (RU->MN, COVID-sensitive, DEC-060). The
 layer will look sparse. That is the evidence, and the page states it rather than padding it.
@@ -113,7 +124,12 @@ before 2016.
 ## 6. Prohibitions
 
 - No predicted state, in any channel, in any wording.
-- No causal language, and no "influence", "drives", "causes", "leads to".
+- No causal language. The interface is French, so the prohibition is enforced in **both
+  languages**: English `influence`, `drives`, `causes`, `leads to`, `should`, `recommend`;
+  French **`croissance`, `stagnation`, `déclin`, `recul`, `cause`, `influence`, `entraîne`,
+  `provoque`, `devrait`, `recommande`**. The state words are forbidden in French for the
+  same reason as in English -- `croissance` beside a coloured node is a predicted state to a
+  reader, whatever the caption says.
 - No recommendation, no "should", no ranked action list.
 - No IAT, NAF or NACE structure until E6 passes.
 - No NL gemeente proxy edges (DEC-065).
@@ -125,36 +141,116 @@ before 2016.
 
 ## 7. Validation
 
-Playwright has never been available in this environment, and prior dashboards were validated
-structurally. The same applies, and the limitation is stated on the page rather than
-implied: the dashboard is **structurally tested, not visually validated**.
+Structural testing alone is **not sufficient**, and this specification does not accept it as
+a permanent contract. The dashboard is a visual artifact: a chart that renders empty, a
+legend that overlaps its plot, or a slider that moves nothing all pass every DOM assertion
+ever written. Previous dashboards in this project were validated structurally because no
+browser was available, and that expedient must not harden into a standard.
+
+### 7.1 Structural layer, necessary but not sufficient
 
 | Check | Requirement |
 |---|---|
-| Forbidden vocabulary | the rendered DOM contains no predicted-state, causal or recommendation wording |
+| Forbidden vocabulary | the rendered DOM contains no predicted-state, causal or recommendation wording, **in English or French** (section 6) |
 | Availability | no layer renders for a year the mask marks `unavailable`; every such year carries its reason |
 | Layer isolation | each layer's edges appear only in their own layer, verified by parsing the embedded data |
 | Grain labels | every layer states its grain; the country-grain layer says so explicitly |
+| Snapshot age | every commuting edge carries its observation year and age |
 | Persistence confinement | the persistence value appears in panel or tooltip text only, never in a colour or class attribute |
 | Provenance | every embedded figure traces to a delivered artifact, by checksum |
 | Determinism | two builds produce byte-identical output |
 
-## 8. Reserved for the project owner, before implementation
+### 7.2 Visual layer, required before the dashboard may be called complete
 
-1. **The "recent trajectory" window.** One year against the previous, or a multi-year slope.
-   This changes what the dominant visual channel means and is not a technical detail.
-2. **The ZE-to-ZE evidence scale.** DEC-066 does not apply to this layer, and nothing yet
-   defines what "strong" means for a trajectory-similarity edge. Until it is defined, the
-   layer renders edge strength as a continuous width with no qualitative label.
-3. **The side panel's third field.** The persistence-predicted level for the next year
-   **equals the last observed value by construction**, so showing both would print the same
-   number twice. Options: show it anyway with that stated; or replace it with the observed
-   historical error of persistence for that ZE-sector, available from
-   `fr_ze2020_sectoral_persistence_predictions_v1.csv`, which tells the reader how reliable
-   "next year resembles this year" has been in that specific cell. The second is more
-   informative and uses only delivered evidence, but it is a product decision.
+A real browser run must be **attempted** -- Playwright or an equivalent -- and must cover:
 
-No implementation begins until these three are answered.
+| Check | Why |
+|---|---|
+| Desktop **and** mobile viewports | a legend that fits at 1920px may cover the graph at 390px |
+| Map and graph render **non-empty** | the commonest silent failure, and invisible to the DOM |
+| No overlapping elements | legends over plots, tooltips clipped at the viewport edge |
+| Legends present and readable | an unreadable evidence scale is the same as none, and this page depends on its scales |
+| Year slider moves the layers | including that an `unavailable` year shows its reason rather than a blank canvas |
+| Interaction | node selection opens the panel; layer toggles isolate rather than overlay |
+
+### 7.3 The only two admissible end states
+
+| State | Meaning |
+|---|---|
+| `DASHBOARD_VISUALLY_VALIDATED` | 7.1 and 7.2 both executed and passed, on both viewports |
+| **`PENDING_VISUAL_VALIDATION`** | 7.1 passed and no browser was available. The dashboard is a **candidate**, and the page and every citation say so |
+
+**There is no third state.** A structurally tested dashboard is never described as validated,
+finished, or ready, in this document, in the decision log, in the page itself or in any
+report that cites it. The v0.5.1 precedent is explicit about the cost of blurring this
+(DEC-068): passing structural tests was mistaken for being accepted, and the correction had
+to be written afterwards.
+
+## 8. The three product decisions, now fixed
+
+Answered by the project owner. No further reservation blocks implementation.
+
+### 8.1 Recent trajectory: one-year observed change, log scale
+
+```text
+tau(z, s, t) = log(1 + y(z, s, t)) - log(1 + y(z, s, t - 1))
+```
+
+Chosen because it moves with the year slider, stays finite when the previous value is zero,
+creates no categories, and dampens the visual dominance of the largest territories. The
+macro graph applies the same form to the zone total.
+
+- Legend, verbatim: **"Variation observée sur un an, échelle logarithmique."**
+- The first year of the panel has no predecessor: the node renders **`indisponible`**. **A
+  zero is never invented**, and an absent value is never drawn as the neutral midpoint of the
+  scale, which would read as "no change".
+- Continuous diverging scale, no bins, no category labels (section 3.4).
+
+### 8.2 ZE-to-ZE evidence: one status, numeric channels only
+
+No strong / medium / weak levels are created, because nothing in the record defines them for
+a trajectory-similarity edge.
+
+| Element | Rule |
+|---|---|
+| Evidence status | **`EXPLORATORY_DERIVED`**, a single status for every edge in the layer |
+| Line style | **identical dashed stroke** for all edges -- style carries no ranking |
+| Width | magnitude of `signal_strength`, numerically |
+| Opacity | recurrence of `stability_score`, numerically |
+| Tooltip | the exact values of both |
+
+**Neither width nor opacity means causality, validation or quality.** They are the two
+numbers the artifact carries, shown as themselves. The commuting layer keeps its own scale
+(section 4) and never uses this one.
+
+### 8.3 Side panel: three fields, with a causal error
+
+| Field | Content |
+|---|---|
+| **Dernière observation** | last observed value |
+| **Prévision par persistance** | the same value, **with the reason it repeats stated in the panel** |
+| **Erreur absolue moyenne historique** | MAE of persistence for that ZE-sector |
+
+The second field prints the same number as the first by construction. That is not a defect
+to hide: the panel says why, which is more honest than omitting a field the engine genuinely
+produces.
+
+The third field is defined **causally with respect to the selected year `t`**:
+
+```text
+MAE(z, s, t) = (1 / n) * sum over tau <= t of | y(z, s, tau) - yhat(z, s, tau) |
+```
+
+- only forecasts **already realized at or before `t`** enter the sum;
+- **no year after the slider position is ever read** -- moving the slider back must lower the
+  number of years, never keep them;
+- **`n`, the number of evaluated years, is displayed** beside the value;
+- if `n < 2`, the field shows **`historique insuffisant`** instead of a figure;
+- the MAE is **never converted into high / medium / low confidence**. A confidence label is a
+  three-state vocabulary, and section 3.4 forbids exactly that.
+
+This field is the only place on the page where the reliability of "next year resembles this
+year" is visible in the specific cell the reader is looking at.
 
 ## 9. Cross-reference
 
