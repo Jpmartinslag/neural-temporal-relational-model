@@ -275,7 +275,15 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     running any model. E4 is reclassified INCOMPLETE, the recomputation is
     pre-registered in §10, and the four remaining gaps (no-sector,
     geography-only, leave-one-year-out, bootstrap edges) stay unauthorized under
-    Q3. The recomputation completes a checklist and cannot promote anything.
+    Q3. **Delivered (DEC-086 result addendum):** 40 files, 358,400 groups, no
+    model fitted. Recall@3 is undefined in 7,984 groups and excluded from every
+    mean; the selected three sectors grew 0.3824 on average against 0.6037 for
+    the three that actually grew most, about 63% of what was attainable.
+    Relation features add nothing on either metric — spread 0.006 across
+    configurations, ties dominant at 72–84% — so both new metrics agree with the
+    HERALD_38 §8 conclusion. The corrected target shuffle collapses both
+    metrics; temporal shuffle raises recall while lowering growth. Nothing is
+    promoted, the closed targets stay closed, and E5 is unblocked.
 
 ## Control Documents
 

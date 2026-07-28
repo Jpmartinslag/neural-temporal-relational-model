@@ -87,6 +87,11 @@ TASK_PAIRS = {
     ),
 }
 
+# 2 tasks x 4 scenarios x 5 seeds.  Registered so a partial corpus aborts
+# instead of silently shrinking the population.
+EXPECTED_SEEDS = (42, 43, 44, 45, 46)
+EXPECTED_FILE_COUNT = 40
+
 CLAIM_STATUS = "ranking_metric_coverage_completion_not_promotion_evidence"
 
 
@@ -114,7 +119,34 @@ def collect_prediction_files(hpc_results: Path = HPC_RESULTS) -> pd.DataFrame:
     frame = pd.DataFrame(rows)
     assert not frame.empty, "no admissible prediction file found"
     assert_sources_admissible(frame)
+    assert_corpus_complete(frame)
     return frame
+
+
+def assert_corpus_complete(frame: pd.DataFrame) -> None:
+    """Refuse a partial corpus.
+
+    A partially synced ``hpc_results/`` would otherwise yield a smaller and
+    silently different population, and every mean below would be computed over
+    it without complaint.
+    """
+    expected = {
+        (task, scenario, seed)
+        for task in MAIN_RUNS
+        for scenario in MAIN_SCENARIOS + (TARGET_SCENARIO,)
+        for seed in EXPECTED_SEEDS
+    }
+    found = {
+        (row.task, row.scenario, int(Path(row.path).parent.name.split("_")[-1]))
+        for row in frame.itertuples(index=False)
+    }
+    missing = sorted(expected - found)
+    extra = sorted(found - expected)
+    assert not missing, f"prediction corpus is incomplete; missing {missing}"
+    assert not extra, f"prediction corpus holds unexpected members: {extra}"
+    assert len(frame) == EXPECTED_FILE_COUNT, (
+        f"expected {EXPECTED_FILE_COUNT} prediction files, found {len(frame)}"
+    )
 
 
 def assert_sources_admissible(frame: pd.DataFrame) -> None:
@@ -252,10 +284,13 @@ def assert_populations_identical(groups: pd.DataFrame) -> None:
     """Feature configs must cover the same groups, and the same sizes, within a cell."""
     keys = ["task", "scenario", "model", "seed"]
     for key, block in groups.groupby(keys, sort=True):
+        # Compare the groups AND their sizes: two configs could cover the same
+        # territory-years with different candidate counts and still look aligned.
         universes = {
-            config: set(
-                map(tuple, part[["ze2020", "decision_year"]].to_numpy())
-            )
+            config: {
+                (row.ze2020, int(row.decision_year), int(row.group_size))
+                for row in part.itertuples(index=False)
+            }
             for config, part in block.groupby("feature_config")
         }
         reference = None
@@ -263,7 +298,8 @@ def assert_populations_identical(groups: pd.DataFrame) -> None:
             if reference is None:
                 reference = universe
             assert universe == reference, (
-                f"feature config {config} covers a different group population at {key}"
+                f"feature config {config} covers a different group population or "
+                f"different group sizes at {key}"
             )
 
 
@@ -309,6 +345,9 @@ def main() -> int:
         "jobs_launched": 0,
         "source_files": [str(p.relative_to(ROOT)) for p in files["path"]],
         "source_file_count": int(len(files)),
+        "source_sha256": {
+            str(p.relative_to(ROOT)): sha256(p) for p in files["path"]
+        },
         "groups": int(len(groups)),
         "recall_undefined_groups": int(groups["recall_undefined"].sum()),
         "recall_undefined_rule": (

@@ -275,7 +275,7 @@ rate, and the count of groups entering each comparison. **No threshold and no ga
 
 | Check | Requirement |
 |---|---|
-| Group shape | exactly 9 sectors and exactly 3 selected per group, else abort |
+| Group shape | `selected == min(3, group size)` in every group, and group size identical across feature configs within a cell, else abort. **No bound on group size is registered** -- the two bounds tried earlier were sampled from one task |
 | Population identity | the three feature configs cover identical `(ze2020, decision_year)` groups within a model and seed |
 | Source discipline | no file from an `INVALID_FOR_CLAIMS` directory, and no `target_shuffle` from the main directories, is read |
 | Finiteness | every reported figure finite, or an explicitly counted `NaN` from the zero-positive rule |
@@ -331,9 +331,15 @@ agree with the HERALD_38 section 8 conclusion rather than qualifying it.
 | Growth | no_relation | shuffled_relation | 0.2729 | 0.4636 | 0.2636 |
 
 **Ties dominate** -- 72% to 84% on recall -- and the win and loss shares are near-symmetric
-in every pair. The configs are not merely close on the mean; they are indistinguishable
-group by group. Reporting only a win share here would have been misleading, which is why the
+in every pair. Reporting only a win share here would have been misleading, which is why the
 tie share is carried beside it.
+
+"Indistinguishable" is used in a defined sense, pinned by test rather than by impression:
+across the six model-config combinations of `top3 / full_control`, the **spread between the
+best and worst configuration is at most 0.01 on both metrics**, and the **tie share is at
+least 0.70 on every recall pair**. `tests/test_fr_ze2020_ranking_metric_coverage.py`
+asserts both against the produced artifacts, so if a regeneration ever moves them, the
+wording here fails with the test instead of silently outliving its evidence.
 
 ### 11.3 Scenario behaviour, MLP, `base_formula_features`
 
@@ -349,10 +355,15 @@ Three readings:
 1. **The corrected target shuffle collapses both metrics**, as it should. This independently
    reproduces the HERALD_38 section 8 repair on two metrics that repair never used.
 2. **Sector shuffle degrades**, consistent with the record.
-3. **Temporal shuffle does not degrade -- it improves recall**, from 0.6503 to 0.7563. This
-   corroborates, on new metrics, the HERALD_38 section 8 finding that "temporal shuffle
-   still does not degrade performance". It is a warning about the target's temporal
-   structure, already recorded there, not a new result.
+3. **Temporal shuffle behaves inconsistently across the two metrics, and the earlier
+   wording here was wrong.** Recall **rises** from 0.6503 to 0.7563, while growth of the
+   selected **falls** from 0.3824 to 0.3525. Saying it "does not degrade" was an
+   over-reading taken from the recall column alone. The precise statement is: destroying
+   temporal order does not degrade the ranking's ability to pick labelled positives -- it
+   improves it -- while it does reduce the realized growth of the picks. The first half
+   corroborates the HERALD_38 section 8 finding on the metric that finding used; the second
+   half is new and points the other way. Neither is a result about relations; both are
+   warnings about the target's temporal structure.
 
 ### 11.4 What this does not do
 

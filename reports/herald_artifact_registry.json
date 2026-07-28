@@ -1780,8 +1780,8 @@
       "type": "metric_coverage_manifest",
       "status": "REGENERABLE",
       "tracked_in_git": true,
-      "size_bytes": 7445,
-      "sha256_prefix": "ace453e609389a2b2f8b",
+      "size_bytes": 16500,
+      "sha256_prefix": "cc2585048936d7372582",
       "origin_decision": "DEC-086 correction and result addenda -- see reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md sections 10-11",
       "generator_script": "src/modeles/france_ze2020/recompute_fr_ze2020_ranking_metrics.py",
       "input_data": [
@@ -1790,7 +1790,7 @@
         "hpc_results/fr_ze2020_top3_entry_temporal_fix_target_top3_20260713_145326/",
         "hpc_results/fr_ze2020_top3_entry_lift_temporal_fix_target_lift_20260713_145326/"
       ],
-      "claim_authorized": "Source file list, group counts, undefined-recall count and rule, and environment.",
+      "claim_authorized": "Source file list with the SHA-256 of every input, group counts, undefined-recall count and rule, and environment.",
       "claim_forbidden": "Any promotion reading.",
       "can_regenerate": true,
       "notes": "Records models_fitted=0 and jobs_launched=0."
