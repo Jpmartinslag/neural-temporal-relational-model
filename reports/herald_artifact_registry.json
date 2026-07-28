@@ -1671,6 +1671,63 @@
       "claim_forbidden": "Any predictive or causal reading.",
       "can_regenerate": true,
       "notes": "Regenerated together with the mask by the same builder."
+    },
+    {
+      "id": "FR_ZE2020_SECTORAL_PERSISTENCE_PREDICTIONS",
+      "phase": "sectoral persistence audit (2026-07-28)",
+      "path": "data/processed/france_ze2020/fr_ze2020_sectoral_persistence_predictions_v1.csv",
+      "type": "audit_predictions",
+      "status": "REGENERABLE",
+      "tracked_in_git": true,
+      "size_bytes": 1670115,
+      "sha256_prefix": "bd83728dfb58f6f87c0a",
+      "origin_decision": "DEC-083 (pre-registration) / DEC-084 (result) -- see reports/canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_sectoral_persistence_audit.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv"
+      ],
+      "claim_authorized": "Per-cell predictions of five models over the official 2019-2025 window, 17,639 rows, one row per ZE-sector-year, identical population for every model.",
+      "claim_forbidden": "Reading these as a validated forecast product, or ranking them against the persistence-only supplement, whose window no fitted model can be evaluated over.",
+      "can_regenerate": true,
+      "notes": "Rolling-origin, ZE-disjoint folds, zero seeds, truncation invariance verified. See tests/test_fr_ze2020_sectoral_persistence_audit.py (37 tests)."
+    },
+    {
+      "id": "FR_ZE2020_SECTORAL_PERSISTENCE_SUPPLEMENT",
+      "phase": "sectoral persistence audit (2026-07-28)",
+      "path": "data/processed/france_ze2020/fr_ze2020_sectoral_persistence_supplement_v1.csv",
+      "type": "audit_supplement_not_comparable",
+      "status": "REGENERABLE",
+      "tracked_in_git": true,
+      "size_bytes": 858344,
+      "sha256_prefix": "64ee24103433cf155c1a",
+      "origin_decision": "DEC-083 (pre-registration) / DEC-084 (result) -- see reports/canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_sectoral_persistence_audit.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv"
+      ],
+      "claim_authorized": "Persistence alone over 2013-2025, 32,760 rows. Descriptive of persistence across the full panel.",
+      "claim_forbidden": "Any comparison with the official window or with any fitted model. This window is NOT_COMPARABLE by construction.",
+      "can_regenerate": true,
+      "notes": "Eligibility requires lag_1 and the target only, since persistence consumes nothing else. Enters no gate."
+    },
+    {
+      "id": "FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_MANIFEST",
+      "phase": "sectoral persistence audit (2026-07-28)",
+      "path": "data/processed/france_ze2020/fr_ze2020_sectoral_persistence_audit_v1.json",
+      "type": "audit_manifest",
+      "status": "REGENERABLE",
+      "tracked_in_git": true,
+      "size_bytes": 8961,
+      "sha256_prefix": "aca23de950d98ad4a5aa",
+      "origin_decision": "DEC-083 (pre-registration) / DEC-084 (result) -- see reports/canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md",
+      "generator_script": "src/modeles/france_ze2020/run_fr_ze2020_sectoral_persistence_audit.py",
+      "input_data": [
+        "data/processed/france_ze2020/fr_ze2020_sector_panel.csv"
+      ],
+      "claim_authorized": "Metrics, pre-registered gate evaluation, integrity checks and environment for the E3a audit. Verdict ENGINE_DESIGNATED, engine sectoral persistence, by clause 8.4.2 after ridge_ar failed the 6/7 year-stability rule and the per-sector safety veto.",
+      "claim_forbidden": "Stating that persistence is more accurate than ridge_ar: ridge_ar has the lower aggregate WMAPE and was blocked by stability and safety conditions registered in advance, not by accuracy. Extending the designation beyond FR ZE2020 x A10, 2019-2025, or to any target other than annual establishment creations.",
+      "can_regenerate": true,
+      "notes": "Records negative-prediction disclosure and library versions. Result entry DEC-084."
     }
   ]
 }
