@@ -4658,3 +4658,51 @@ ordering is provable from git.
 `tests/test_fr_ze2020_ranking_metric_coverage.py`,
 `data/processed/france_ze2020/fr_ze2020_ranking_metric_coverage_*`,
 `reports/herald_artifact_registry.json`.
+
+### DEC-086 -- Third correction addendum (2026-07-28, post-result)
+
+A reaudit of the delivered E4 found eight defects. The artifacts are unchanged in substance
+-- summary, paired and manifest tables carry the same figures -- but several statements
+about them were wrong, and several guards were weaker than described.
+
+1. **`temporal_shuffle` was described as "does not degrade".** That was read from the recall
+   column alone. Recall rises 0.6503 to 0.7563 **while growth of the selected falls 0.3824
+   to 0.3525**. The corrected statement: destroying temporal order does not degrade the
+   ability to pick labelled positives, and does reduce the realized growth of the picks. The
+   first half corroborates HERALD_38 section 8 on the metric that finding used; the second
+   half points the other way and is new.
+
+2. **HERALD_59 section 10.7 still demanded "exactly 9 sectors and exactly 3 selected".** It
+   contradicted the amended section 10.3. Replaced by the two registered invariants, with no
+   bound on group size.
+
+3. **The second addendum above still said the shape check "aborts on a group below 3".** It
+   does not, and must not: `lift` holds groups of 2. Superseded by this entry.
+
+4. **`assert_populations_identical` compared only the set of groups, not their sizes.** Two
+   configurations could have covered the same territory-years with different candidate
+   counts and passed. It now compares sizes cell by cell.
+
+5. **The runner accepted any non-empty set of prediction files.** A partially synced
+   `hpc_results/` would have produced a smaller, silently different corpus. It now requires
+   the full expected set and names what is missing.
+
+6. **The manifest recorded no input hashes.** It listed source paths only, so a changed
+   input could not be detected. It now records the SHA-256 of every source file.
+
+7. **"Indistinguishable" rested on impression.** It is now defined -- spread at most 0.01
+   across configurations on both metrics, tie share at least 0.70 on every recall pair --
+   and asserted against the artifacts by test, so the wording fails with the test if a
+   regeneration moves the numbers.
+
+8. **The README entry stopped at the retraction** and never recorded the delivered
+   conclusion. Completed.
+
+**No figure changes and no verdict changes.** DEC-069, DEC-078 and DEC-080 remain closed,
+relations still add nothing on either new metric, and E5 remains unblocked.
+
+**Affected files:** `reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md`,
+`src/modeles/france_ze2020/recompute_fr_ze2020_ranking_metrics.py`,
+`tests/test_fr_ze2020_ranking_metric_coverage.py`,
+`data/processed/france_ze2020/fr_ze2020_ranking_metric_coverage_v1.json`,
+`reports/README.md`.

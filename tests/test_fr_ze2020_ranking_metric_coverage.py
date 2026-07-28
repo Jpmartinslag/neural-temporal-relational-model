@@ -28,6 +28,8 @@ from src.modeles.france_ze2020.recompute_fr_ze2020_ranking_metrics import (  # n
     TARGET_SHUFFLE_RERUNS,
     TASK_PAIRS,
     TOP_K,
+    EXPECTED_FILE_COUNT,
+    assert_corpus_complete,
     assert_populations_identical,
     assert_sources_admissible,
     collect_prediction_files,
@@ -286,3 +288,95 @@ def test_recomputer_is_deterministic(tmp_path: Path) -> None:
             ).hexdigest()
         )
     assert hashes[0] == hashes[1]
+
+
+# --- corpus completeness (item 5) -----------------------------------------
+
+
+def test_partial_corpus_aborts() -> None:
+    """A partially synced hpc_results would shrink the population in silence."""
+    files = collect_prediction_files()
+    with pytest.raises(AssertionError, match="incomplete"):
+        assert_corpus_complete(files.iloc[1:])
+
+
+def test_expected_file_count_is_two_tasks_four_scenarios_five_seeds() -> None:
+    assert EXPECTED_FILE_COUNT == 2 * 4 * 5
+
+
+# --- population identity now includes size (item 4) -----------------------
+
+
+def test_same_groups_different_sizes_abort() -> None:
+    """Two configs may cover the same territory-years with different candidate
+    counts; comparing only the group set would let that pass."""
+    a = _synthetic([3], n_sectors=9, config="base_formula_features")
+    b = _synthetic([3], n_sectors=8, config="no_relation_features")
+    with pytest.raises(AssertionError, match="different group sizes"):
+        assert_populations_identical(group_metrics(pd.concat([a, b], ignore_index=True)))
+
+
+# --- the manifest records what it read (item 6) ---------------------------
+
+
+def test_manifest_records_input_hashes() -> None:
+    if not MANIFEST_PATH.exists():
+        pytest.skip("recomputation not executed yet")
+    import json
+
+    manifest = json.loads(MANIFEST_PATH.read_text())
+    hashes = manifest["source_sha256"]
+    assert len(hashes) == EXPECTED_FILE_COUNT
+    assert set(hashes) == set(manifest["source_files"])
+    assert all(len(v) == 64 for v in hashes.values())
+
+
+# --- "indistinguishable" is a checkable claim (item 7) --------------------
+
+MAX_CONFIG_SPREAD = 0.01
+MIN_RECALL_TIE_SHARE = 0.70
+
+
+def test_configs_are_indistinguishable_in_the_defined_sense() -> None:
+    """Pins the claim made in HERALD_59 section 11.2.
+
+    If a regeneration moves these numbers, this test fails and the wording in
+    the report must change with it, rather than outliving its evidence.
+    """
+    if not SUMMARY_PATH.exists():
+        pytest.skip("recomputation not executed yet")
+    summary = pd.read_csv(SUMMARY_PATH)
+    block = summary[(summary.task == "top3") & (summary.scenario == "full_control")]
+    assert len(block) == 6
+    for metric in ("mean_recall_at_3", "mean_growth_selected"):
+        spread = float(block[metric].max() - block[metric].min())
+        assert spread <= MAX_CONFIG_SPREAD, f"{metric} spread {spread:.4f} is no longer small"
+
+
+def test_recall_pairs_are_tie_dominated() -> None:
+    paired_path = ROOT / "data/processed/france_ze2020/fr_ze2020_ranking_metric_coverage_paired_v1.csv"
+    if not paired_path.exists():
+        pytest.skip("recomputation not executed yet")
+    paired = pd.read_csv(paired_path)
+    block = paired[
+        (paired.task == "top3")
+        & (paired.scenario == "full_control")
+        & (paired.metric == "recall_at_3")
+    ]
+    assert not block.empty
+    assert (block["ties_share"] >= MIN_RECALL_TIE_SHARE).all()
+
+
+def test_temporal_shuffle_moves_the_two_metrics_in_opposite_directions() -> None:
+    """The corrected reading: recall rises, growth falls. The earlier text said
+    only that it did not degrade, which was the recall column alone."""
+    if not SUMMARY_PATH.exists():
+        pytest.skip("recomputation not executed yet")
+    summary = pd.read_csv(SUMMARY_PATH)
+    sel = summary[
+        (summary.task == "top3")
+        & (summary.model == "mlp_entry_classifier")
+        & (summary.feature_config == "base_formula_features")
+    ].set_index("scenario")
+    assert sel.loc["temporal_shuffle", "mean_recall_at_3"] > sel.loc["full_control", "mean_recall_at_3"]
+    assert sel.loc["temporal_shuffle", "mean_growth_selected"] < sel.loc["full_control", "mean_growth_selected"]
