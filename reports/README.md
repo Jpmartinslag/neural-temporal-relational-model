@@ -298,8 +298,18 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     evidence scale — ZE↔ZE has a scale of its own, DEC-066 tiers being
     sector-to-sector only — and the DEC-082 availability mask decides whether a
     layer renders at all, with unavailable years narrated rather than blank.
-    IAT/NAF/NACE absent until E6. Three product decisions are reserved for the
-    owner before implementation.
+    IAT/NAF/NACE absent until E6. Corrected before any code (DEC-087 addendum):
+    commuting becomes its own layer at ZE×snapshot grain with the observation
+    year and snapshot age on every edge; the forbidden vocabulary covers French
+    as well as English; and structural testing is no longer accepted as
+    sufficient — a browser run must be attempted on desktop and mobile, and the
+    only admissible end states are visually validated or
+    `PENDING_VISUAL_VALIDATION`, never "validated" on DOM assertions alone. The
+    three product decisions are now fixed: one-year log change for the
+    trajectory colour with `indisponible` where there is no predecessor, a
+    single `EXPLORATORY_DERIVED` status with strength and stability as numeric
+    width and opacity, and a side panel whose historical MAE reads no year after
+    the slider and never becomes a confidence label.
 
 ## Control Documents
 
