@@ -4095,3 +4095,118 @@ graph-temporal modules.
 **Affected files (second addendum):** `src/data/france_ze2020/build_fr_ze2020_relation_availability_mask.py`,
 `tests/test_fr_ze2020_relation_availability_mask.py`,
 `reports/canonical/HERALD_57_FR_ZE2020_AVAILABILITY_MASKS.md`.
+
+---
+
+## DEC-083 -- France ZE2020 sectoral persistence audit, pre-registered specification (2026-07-28)
+
+**Status:** `PRE_REGISTERED_SPECIFICATION_NOT_YET_EXECUTED`.
+
+**Stage:** E3a of the sequence fixed by DEC-081. This entry registers the protocol
+**before** execution, as HERALD_56 section 5 requires of any stage carrying a
+methodological decision. The outcome will be recorded in **DEC-084**, which will reference
+this frozen text. The temporal proof of pre-registration is the commit introducing this
+entry, not any date written inside a document.
+
+**At the time of this entry no model has been fitted and no error metric has been
+computed.** The cell counts below are population structure, established only to fix the
+evaluation window by rule rather than by outcome.
+
+**Question.** Under causal rolling-origin evaluation on the canonical ZE2020 x A10 panel,
+does any candidate predictor of next-year sectoral establishment creations beat the naive
+controls, and which one wins? The audit informs exactly one decision: whether sectoral
+persistence can be promoted from CANDIDATE to the Q1 engine, the designation withheld in
+DEC-081 for lack of such an audit.
+
+**Target.** `sector_establishment_creations`, absolute counts. `sector_share` is excluded:
+closed composition is a plausible structural limitation consistent with DEC-078, DEC-079 and
+DEC-080, **not a demonstrated mechanism** (the wording fixed by the DEC-081 correction
+addendum), so a persistence win on shares would be uninterpretable rather than informative.
+The target measures an **annual flow of newly created establishments** -- not stock growth,
+not employment, not output, not survival -- and every downstream sentence must respect that
+reading.
+
+**Windows, derived from the training rules and not from any metric.** Feature completeness
+begins in 2015 (`lag_3` and `growth_2y_safe` need three prior years); the Ridge rule of four
+complete prior training years first holds in **2019**. Official comparison window:
+**2019-2025, 17,638 cells** (7 x 2,520 minus 2). Persistence-only supplement: 2013-2025,
+labelled `NOT_COMPARABLE` and **never placed in the same ranking table**, since no fitted
+model can be evaluated over it.
+
+**Completeness by `isfinite`, not `notna`.** The single observed zero `5218 / 2016 / JZ`
+makes a growth denominator infinite rather than missing, excluding exactly two cells --
+`5218 / JZ / 2018` and `5218 / JZ / 2019` -- identically for every model, counted and never
+silent.
+
+**Models.** `persistence` (deterministic identity), `ridge_ar` (fitted),
+`sector_mean` and `ze_sector_mean` (controls), `national_scaled_persistence` (baseline).
+
+The two controls are **causally different objects and do not share one rule**: `sector_mean`
+is cross-sectional and therefore restricted to training-fold ZEs with years `< t`, while
+`ze_sector_mean` is own-history and uses the **test cell's own** series over years `< t`,
+the same causal window `persistence` uses. Restricting the own-history control to training
+ZEs would make it uncomputable for the cells it scores. The single invariant both serve is
+that **no model reads the target at year `t`**; the earlier phrasing "training set only" was
+too coarse for that and is superseded here.
+
+`ridge_ar` is fixed as `Pipeline(StandardScaler(), Ridge(alpha=1.0, fit_intercept=True))`
+over `lag_1..3`, `growth_1y_safe`, `growth_2y_safe`, with the scaler fitted on training rows
+only, non-finite rows removed rather than imputed, and **no clipping or rounding** of
+predictions, repeating the existing ZE-total baseline convention. The count and share of
+negative predictions is reported as disclosure, and the scikit-learn version is recorded in
+the manifest.
+
+`national_scaled_persistence` uses `r(s,t) = national_total(s,t-1) / national_total(s,t-2)`,
+reading nothing after `t-1`. **The division fails closed:** a denominator that is zero,
+negative, missing or non-finite **aborts the audit**, and may never yield an infinity, an
+imputation, or a silent exclusion.
+
+**Folds and repetition.** Five ZE-disjoint folds assigned deterministically by position in
+the sorted zone list. Each observation is evaluated exactly once. **No seed anywhere**, for
+any deterministic model including Ridge, which on fixed data with fixed alpha is
+deterministic; seed repetition would inflate apparent sample size without adding
+information.
+
+**Metrics.** WMAPE is primary and **the gate reads it alone**. MAE and the mandatory
+decompositions by sector and by year are diagnostic; the target is extremely skewed (median
+cell 121, maximum 73,956), so an aggregate figure could hide failure across most of the
+panel. Reading the gate off a secondary metric or a favourable slice after seeing WMAPE is
+metric shopping and is prohibited.
+
+**Gate.** "Beats" means **strictly lower WMAPE**; a tie is not a win. Eligible for
+designation: `persistence` and `ridge_ar` only. `sector_mean`, `ze_sector_mean` and
+`national_scaled_persistence` are **never eligible**, by registration rather than by
+outcome -- if the national baseline were to outperform both candidates, that is a finding to
+report and a reason for a new specification, not a promotion under this one.
+
+A candidate qualifies only by beating **both** controls on aggregate WMAPE and in at least
+6 of 7 years. `ridge_ar` is designated if it also beats `persistence` on both counts and
+passes the per-sector safety veto
+`relative_regression(s) = (W_c(s) - W_p(s)) / W_p(s) > 0.10 for any s`; if `W_p(s) = 0` the
+veto fires when `W_c(s) > 0`, and a `NaN` reference aborts the audit. Otherwise
+`persistence` is promoted if it qualifies. If neither candidate beats both controls, the
+verdict is **`NO_ENGINE_DESIGNATED`** and Part B does not proceed.
+
+The per-sector clause is a **safety veto, never a promotional metric**: it can only block a
+promotion already granted on aggregate WMAPE, never create one, which is what keeps it
+consistent with the rule that decompositions do not promote.
+
+**Blocking integrity checks.** Causality, truncation invariance, identical populations,
+coverage, once-only row count of 17,638, fold disjointness, finiteness, the national
+denominator, scaler discipline, absence of imputation, determinism, and recorded library
+versions. Any failure invalidates the run rather than being reported as a model result.
+
+**Limitations.** This entry establishes no empirical result. A promotion would designate the
+Q1 engine and unblock HERALD_58 Part B, whose thresholds remain reserved for the project
+owner; it authorizes nothing else -- no relational input, no neural encoder, no HPC job, no
+causal or recommendation claim. Q3 of the contract remains the only route to another model
+experiment.
+
+**Reopen condition:** any change to target, window, model set, folds, metric or gate
+requires a new DEC entry before execution; a change made after metrics are seen invalidates
+the pre-registration.
+
+**Affected files:** `reports/canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md`,
+`reports/README.md`.
+
+See HERALD_58.
