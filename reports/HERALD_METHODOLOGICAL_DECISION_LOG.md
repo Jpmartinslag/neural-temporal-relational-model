@@ -4706,3 +4706,38 @@ relations still add nothing on either new metric, and E5 remains unblocked.
 `tests/test_fr_ze2020_ranking_metric_coverage.py`,
 `data/processed/france_ze2020/fr_ze2020_ranking_metric_coverage_v1.json`,
 `reports/README.md`.
+
+### DEC-086 -- Fourth correction addendum (2026-07-28, scientific claim)
+
+The previous addenda are preserved unaltered. This one corrects the **scientific claim**
+they carried. No metric, prediction, count or artifact changes.
+
+**Superseded wording.** The result addendum above states "Relation features add nothing on
+either new metric" and "the configs are indistinguishable, not merely close on the mean",
+and the limitations paragraph repeats "relations still add nothing on either new metric".
+**All three are superseded by this addendum.** They assert an absence of effect and an
+equivalence that the recomputation did not and could not establish.
+
+**Correct interpretation, replacing them:**
+
+> No consistent incremental advantage of relation-bearing configurations is observed in
+> these descriptive recomputed metrics. The differences are small in this stored output, but
+> no equivalence margin or equivalence test was pre-registered. Statistical equivalence is
+> therefore not claimed.
+
+**On the 0.01 and 0.70 thresholds.** They were introduced **after** the results, to stop the
+report's descriptive wording from outliving the figures it described. They are **post-result
+textual-consistency guards, not an equivalence test**: no margin was pre-registered, no
+equivalence procedure was specified, and passing them supports no inference that the
+configurations perform equally. The tests that carry them are renamed accordingly, and their
+documentation states the limitation explicitly.
+
+**What remains true and unchanged.** The observed figures: spread 0.006 across
+configurations on both metrics, ties dominant at 72-84% on recall,
+`no_relation_features` highest on growth and `shuffled_relation_features` highest on recall.
+Neither new metric contradicts the HERALD_38 section 8 conclusion. The closed targets stay
+closed and nothing is promoted.
+
+**Affected files:** `reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md`,
+`reports/README.md`, `tests/test_fr_ze2020_ranking_metric_coverage.py`.
+

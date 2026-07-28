@@ -276,7 +276,7 @@ rate, and the count of groups entering each comparison. **No threshold and no ga
 | Check | Requirement |
 |---|---|
 | Group shape | `selected == min(3, group size)` in every group, and group size identical across feature configs within a cell, else abort. **No bound on group size is registered** -- the two bounds tried earlier were sampled from one task |
-| Population identity | the three feature configs cover identical `(ze2020, decision_year)` groups within a model and seed |
+| Population identity | all feature configs registered for the corresponding task cover identical `(ze2020, decision_year)` groups, **and identical group sizes**, within a model and seed |
 | Source discipline | no file from an `INVALID_FOR_CLAIMS` directory, and no `target_shuffle` from the main directories, is read |
 | Finiteness | every reported figure finite, or an explicitly counted `NaN` from the zero-positive rule |
 | No model | the recomputer imports no estimator and fits nothing |
@@ -314,10 +314,10 @@ ranking captures about **63%** of the attainable growth. That is the number the 
 metric set could not express, and it is reported here for the record; it is not a gate and
 it authorizes nothing.
 
-**Relation features add nothing on either new metric.** The spread across configs is 0.006
-on recall and 0.006 on growth. `no_relation_features` attains the **highest** growth of the
-three, and `shuffled_relation_features` the **highest** recall. Both new metrics therefore
-agree with the HERALD_38 section 8 conclusion rather than qualifying it.
+**No consistent incremental advantage of relation-bearing configurations is observed in these descriptive recomputed metrics. The differences are small in this stored output, but no equivalence margin or equivalence test was pre-registered. Statistical equivalence is therefore not claimed.** The spread across configs is 0.006 on recall and 0.006 on growth;
+`no_relation_features` attains the highest growth of the three, and
+`shuffled_relation_features` the highest recall. Neither new metric contradicts the
+HERALD_38 section 8 conclusion, and neither establishes equivalence between configurations.
 
 ### 11.2 Paired comparison, MLP, `full_control`
 
@@ -334,12 +334,14 @@ agree with the HERALD_38 section 8 conclusion rather than qualifying it.
 in every pair. Reporting only a win share here would have been misleading, which is why the
 tie share is carried beside it.
 
-"Indistinguishable" is used in a defined sense, pinned by test rather than by impression:
-across the six model-config combinations of `top3 / full_control`, the **spread between the
-best and worst configuration is at most 0.01 on both metrics**, and the **tie share is at
-least 0.70 on every recall pair**. `tests/test_fr_ze2020_ranking_metric_coverage.py`
-asserts both against the produced artifacts, so if a regeneration ever moves them, the
-wording here fails with the test instead of silently outliving its evidence.
+**No equivalence is claimed.** No consistent incremental advantage of relation-bearing configurations is observed in these descriptive recomputed metrics. The differences are small in this stored output, but no equivalence margin or equivalence test was pre-registered. Statistical equivalence is therefore not claimed.
+
+Two numbers are pinned by test so that the descriptive wording above cannot outlive the
+figures it describes: across the six model-config combinations of `top3 / full_control` the
+spread between the best and worst configuration is at most 0.01 on both metrics, and the tie
+share is at least 0.70 on every recall pair. These are **post-result consistency guards on
+the text, not equivalence tests**: no margin was pre-registered, and passing them supports no
+inference that the configurations perform equally.
 
 ### 11.3 Scenario behaviour, MLP, `base_formula_features`
 

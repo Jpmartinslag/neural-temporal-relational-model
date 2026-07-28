@@ -1747,7 +1747,7 @@
         "hpc_results/fr_ze2020_top3_entry_lift_temporal_fix_target_lift_20260713_145326/"
       ],
       "claim_authorized": "Recall@3 and average future growth of the selected top-3, recomputed from stored predictions across 358,400 groups with no model fitted. Completes two entries of the HERALD_23 section 5 metric checklist.",
-      "claim_forbidden": "Any promotion or reopening. DEC-069, DEC-078 and DEC-080 remain closed and the relation layer still fails against no-relation, base-formula and shuffled controls. Reading a recall mean without its undefined-group count.",
+      "claim_forbidden": "Any promotion or reopening, and any claim of statistical equivalence between feature configurations: no equivalence margin or test was pre-registered. DEC-069, DEC-078 and DEC-080 remain closed and the relation layer still fails against no-relation, base-formula and shuffled controls. Reading a recall mean without its undefined-group count.",
       "can_regenerate": true,
       "notes": "Recall is undefined in 7,984 groups and excluded from every mean, never imputed. See tests/test_fr_ze2020_ranking_metric_coverage.py (23 tests)."
     },

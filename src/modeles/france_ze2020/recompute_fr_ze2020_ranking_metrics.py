@@ -92,6 +92,44 @@ TASK_PAIRS = {
 EXPECTED_SEEDS = (42, 43, 44, 45, 46)
 EXPECTED_FILE_COUNT = 40
 
+# Per-file schema, closed.  A stored prediction table is the only evidence this
+# module has; if it is malformed the metrics below are meaningless, so every
+# assumption is checked at the door rather than inferred later.
+REQUIRED_COLUMNS = (
+    "ze2020",
+    "sector_code",
+    "decision_year",
+    "target_growth",
+    "target_top3_label",
+    "target_horizon_years",
+    "model",
+    "rank_predicted",
+    "feature_config",
+    "seed",
+    "claim_status",
+    "falsification_scenario",
+)
+ESSENTIAL_NON_NULL = REQUIRED_COLUMNS
+EXPECTED_HORIZON = 3
+EXPECTED_DECISION_YEARS = (2019, 2020, 2021, 2022)
+EXPECTED_MODELS = ("logit_entry_classifier", "mlp_entry_classifier")
+EXPECTED_LABELS = (0, 1)
+TASK_FEATURE_CONFIGS = {
+    "top3": (
+        "base_formula_features",
+        "no_relation_features",
+        "shuffled_relation_features",
+    ),
+    "lift": (
+        "base_formula_features",
+        "no_relation_features",
+        "base_plus_target_aligned_lifts",
+        "target_aligned_lift_features",
+        "shuffled_target_aligned_lifts",
+    ),
+}
+FILE_GROUP_KEYS = ["ze2020", "decision_year", "model", "feature_config"]
+
 CLAIM_STATUS = "ranking_metric_coverage_completion_not_promotion_evidence"
 
 
@@ -162,10 +200,83 @@ def assert_sources_admissible(frame: pd.DataFrame) -> None:
             )
 
 
+def validate_prediction_file(
+    part: pd.DataFrame, task: str, scenario: str, seed: int, path: Path
+) -> None:
+    """Close the schema of one stored prediction file.
+
+    Runs immediately after the read and **before** `task` and `scenario` are
+    attached, so the file is judged on what it contains rather than on what the
+    directory tree asserts about it.  Every check below is a way the metrics
+    downstream could be silently wrong.
+    """
+    where = f"{path}"
+
+    missing = [c for c in REQUIRED_COLUMNS if c not in part.columns]
+    assert not missing, f"{where}: missing required columns {missing}"
+
+    for column in ESSENTIAL_NON_NULL:
+        assert part[column].notna().all(), f"{where}: nulls in {column}"
+
+    # The directory tree and the file contents must agree; either could be wrong.
+    file_seeds = set(part["seed"].unique())
+    assert file_seeds == {seed}, f"{where}: internal seed {file_seeds} != directory seed {seed}"
+    file_scenarios = set(part["falsification_scenario"].unique())
+    assert file_scenarios == {scenario}, (
+        f"{where}: internal scenario {file_scenarios} != directory scenario {scenario!r}"
+    )
+
+    horizons = set(part["target_horizon_years"].unique())
+    assert horizons == {EXPECTED_HORIZON}, f"{where}: horizon {horizons} != {EXPECTED_HORIZON}"
+
+    years = set(int(y) for y in part["decision_year"].unique())
+    unexpected = sorted(years - set(EXPECTED_DECISION_YEARS))
+    assert not unexpected, f"{where}: decision years outside 2019-2022: {unexpected}"
+
+    models = set(part["model"].unique())
+    assert models <= set(EXPECTED_MODELS), f"{where}: unknown model {sorted(models - set(EXPECTED_MODELS))}"
+
+    labels = set(int(v) for v in part["target_top3_label"].unique())
+    assert labels <= set(EXPECTED_LABELS), f"{where}: target_top3_label not binary: {sorted(labels)}"
+
+    for column in ("target_growth", "rank_predicted"):
+        values = part[column].to_numpy(dtype=float)
+        assert np.isfinite(values).all(), f"{where}: {column} carries a non-finite value"
+
+    ranks = part["rank_predicted"].to_numpy(dtype=float)
+    assert np.all(ranks == np.floor(ranks)), f"{where}: rank_predicted is not integral"
+    assert (ranks >= 1).all(), f"{where}: rank_predicted is not a positive integer"
+
+    expected_configs = set(TASK_FEATURE_CONFIGS[task])
+    found_configs = set(part["feature_config"].unique())
+    assert found_configs == expected_configs, (
+        f"{where}: feature configs {sorted(found_configs)} != expected {sorted(expected_configs)} "
+        f"for task {task}"
+    )
+
+    statuses = set(part["claim_status"].dropna().unique())
+    assert len(statuses) == 1, f"{where}: claim_status is not uniform: {sorted(statuses)}"
+    assert str(next(iter(statuses))).strip(), f"{where}: claim_status is empty"
+
+    duplicated = part.duplicated(FILE_GROUP_KEYS + ["sector_code", "seed"]).sum()
+    assert duplicated == 0, f"{where}: {duplicated} duplicated ZE-year-model-config-sector rows"
+
+    # Ranks must be a permutation of 1..n inside each group: a duplicate or a gap
+    # would make "top 3" ambiguous.
+    for key, block in part.groupby(FILE_GROUP_KEYS, sort=False):
+        observed = sorted(int(r) for r in block["rank_predicted"])
+        assert observed == list(range(1, len(block) + 1)), (
+            f"{where}: ranks in group {key} are {observed}, not 1..{len(block)}"
+        )
+
+
 def load_predictions(frame: pd.DataFrame) -> pd.DataFrame:
     parts = []
     for row in frame.itertuples(index=False):
-        part = pd.read_csv(row.path, dtype={"ze2020": str})
+        path = Path(row.path)
+        seed = int(path.parent.name.split("_")[-1])
+        part = pd.read_csv(path, dtype={"ze2020": str})
+        validate_prediction_file(part, row.task, row.scenario, seed, path)
         part["task"] = row.task
         part["scenario"] = row.scenario
         parts.append(part)
