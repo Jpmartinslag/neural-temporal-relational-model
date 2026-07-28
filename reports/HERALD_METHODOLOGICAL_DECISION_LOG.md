@@ -4446,3 +4446,79 @@ forecast-derived state may be displayed, exported, or described anywhere in the 
 (Part B appended), `reports/HERALD_CURRENT_STATE.md`, `reports/README.md`.
 
 See HERALD_58 Part B.
+
+---
+
+## DEC-086 -- France ZE2020 retrospective ranking gap audit (2026-07-28)
+
+**Status:** `RANKING_GAP_AUDIT_COMPLETE_NO_EXECUTION_AUTHORIZED`.
+
+**Stage:** E4 of the sequence fixed by DEC-081. Documentary audit: no model, no gate, no
+metric, no code, no HPC job.
+
+**Question.** Of the metrics and controls HERALD_23 sections 5-6 require of a retrospective
+ZE x sector ranking validation, which were already executed by DEC-069 to DEC-080 and
+HERALD_38 section 8, and what genuinely remains? The purpose is to avoid re-running a
+battery that is already covered.
+
+**Method.** Coverage was read from the metric keys each gate runner emits, from the control
+views named in the DEC records, and from what the executed runs left on disk -- not from
+memory. A metric or control counts as covered only when an executed run reported it; being
+implemented in a script that never ran under a valid specification is recorded separately.
+
+**Covered.** NDCG@3, Precision@3 and Hit Rate@3 are emitted by the transfer-probe,
+edge-family isolation, commuting, product-space and composition-transition gates, plus
+average precision in four of the five. The random-graph, temporal-shuffle, sector-shuffle
+and no-graph controls are covered repeatedly across several targets. Baselines covered
+include random ranking, largest past growth (`past_delta`, which won DEC-080), simple
+specialization share (current RCA, which won DEC-078), and persistence.
+
+**Not covered.** Recall@K -- required by HERALD_23 and HERALD_17, with **zero occurrences of
+`recall` anywhere in `src/modeles/france_ze2020/`**. Average future growth of top-K versus
+baseline top-K -- implemented only in `train_fr_ze2020_sector_ranking.py`, whose numbers are
+`INVALID_FOR_CLAIMS` per HERALD_38 section 5, and absent from all three corrected
+falsification runners. The `no_sector` ablation -- defined only in the HERALD_24 line, which
+remains `CORRECTED_PENDING_RERUN`. Geography-only baseline at ZE2020 grain -- never run;
+geography was closed at Italy NUTS3 (DEC-008/011) and commuting is functional mobility, a
+different object. Leave-one-year-out -- zero occurrences; rolling-origin is a different
+test. Bootstrap edges at ZE2020 grain -- zero occurrences; Phase 7 bootstrapped a different
+object at country grain.
+
+The second metric gap is the economically meaningful one: every covered metric scores
+whether the ranking put the right sectors on top, and none reports how much the recommended
+sectors actually grew relative to a baseline's picks.
+
+**Decisive finding.** The executed gates persisted **aggregated metric rows and summaries
+only; no per-cell predictions were stored anywhere**. Verified against the runners and
+against the `hpc_results/` directories of the executed runs. Consequently the two missing
+metrics **cannot be added by recomputation** -- obtaining them requires **re-executing a
+closed specification**. The missing controls are placed worse still: `no_sector` sits in a
+line pending rerun, geography-only would introduce a new relational input, and
+leave-one-year-out and bootstrap edges would apply new falsifications to targets that
+DEC-069, DEC-078 and DEC-080 closed.
+
+**Decision.** **E4 executes nothing.** Under DEC-081, re-running a closed gate or applying
+new controls to a closed target is not authorized by this stage; Q3 is the only route, and
+Q3 requires an exogenous sectoral structure surviving a matched placebo, which E6 has not
+yet preflighted. This is not a deferral for convenience -- it is what the contract already
+decided, made visible by the storage finding.
+
+**Recorded for later.** The six gaps are kept as a checklist in HERALD_59 section 7, to be
+drawn on if and when E6/E7 produce an authorized experiment, rather than reinvented then.
+None is authorized now.
+
+**Limitations.** This audit establishes coverage, not quality. It does not revisit any gate
+verdict, does not claim the covered controls were sufficient, and does not assert that
+closing the six gaps would change any conclusion.
+
+**Consequence for the sequence.** E5, the graph-first dashboard, is unblocked and is the
+next stage with work in it. It depends on E2, DEC-084 and DEC-085, all delivered, and on
+nothing in this entry.
+
+**Reopen condition:** a new specification under Q3 / E7 may adopt any of the six recorded
+gaps, with its own pre-registration.
+
+**Affected files:** `reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md` (new),
+`reports/README.md`.
+
+See HERALD_59.
