@@ -269,9 +269,13 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     growth of top-K, the no-sector ablation, a geography-only baseline,
     leave-one-year-out and bootstrap edges are not. Decisive finding: the
     executed gates stored aggregated metrics only, never per-cell predictions,
-    so the missing metrics cannot be recomputed and would require re-executing
-    closed specifications. **E4 therefore executes nothing** (DEC-086); the gaps
-    are recorded as a checklist for any experiment later authorized under Q3.
+    but that conclusion was **falsified by the repository's own artifacts**: the
+    corrected HERALD_38 §8 runs do store per-cell predictions, so Recall@3 and
+    the average future growth of the selected top-3 are recomputable without
+    running any model. E4 is reclassified INCOMPLETE, the recomputation is
+    pre-registered in §10, and the four remaining gaps (no-sector,
+    geography-only, leave-one-year-out, bootstrap edges) stay unauthorized under
+    Q3. The recomputation completes a checklist and cannot promote anything.
 
 ## Control Documents
 

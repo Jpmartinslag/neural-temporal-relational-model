@@ -4522,3 +4522,63 @@ gaps, with its own pre-registration.
 `reports/README.md`.
 
 See HERALD_59.
+
+### DEC-086 -- Correction addendum (2026-07-28, before any recomputation)
+
+The original entry above is preserved unaltered. **Its decisive finding was false, and E4 is
+reclassified `INCOMPLETE`.**
+
+**What was wrong.** The entry asserted that the executed gates "persisted aggregated metric
+rows and summaries only; no per-cell predictions were stored anywhere", and concluded that
+the two missing metrics could not be recomputed without re-executing a closed specification.
+The falsifying evidence was already in the repository: the corrected HERALD_38 section 8
+runs store per-cell predictions, in
+`fr_ze2020_top3_entry_falsification_predictions_v1.csv` and
+`fr_ze2020_top3_entry_lift_falsification_predictions_v1.csv`, carrying `target_growth`,
+`target_top3_label`, `score` and `rank_predicted`.
+
+**How the error was made.** Three gate runners and the `hpc_results/` directories of the
+DEC-069 to DEC-080 gates were inspected, and the absence found there was generalized into a
+universal claim. The corrected HERALD_38 directories were never opened. A partial search was
+reported as an exhaustive one -- the same failure mode this project's audits exist to catch.
+
+**Corrected inventory, three classes.** Runs with per-cell predictions: the two corrected
+main directories (20 prediction files each) plus the two corrected target-shuffle reruns
+(5 each). Aggregated-only: commuting relation and topology gates, context sector relation,
+product-space entry density, relation-embedding probes, temporal bipartite, transition
+ranking. `INVALID_FOR_CLAIMS`: the pre-HERALD_38 ranking runs, and the `target_shuffle`
+scenario **inside** the two corrected main directories, superseded by the reruns. The smoke
+run holds predictions but is not scientific evidence (HERALD_38 section 7).
+
+**Also corrected:** the entry said "three missing controls" while listing four.
+
+**Consequence.** Two of the six gaps -- Recall@3 and average future growth of the selected
+top-3 -- **are recomputable from stored predictions, without running any model**. The
+recomputation is pre-registered in HERALD_59 section 10, and this addendum is committed
+**before** the implementation, so the ordering is provable from git rather than
+self-reported -- addressing the provenance weakness recorded against DEC-084.
+
+**Frozen for the recomputation.** Group key `(ze2020, decision_year, model, feature_config)`;
+9 sectors and 3 selected per group; 6,720 groups per seed-scenario file. **Recall@3 is
+undefined when a group holds no positive**: reported `NaN`, excluded from means, with the
+count of such groups reported beside every Recall figure, never imputed. Population
+structure inspected only to fix that rule: 24 of 6,720 groups have no positive; **no metric
+was computed**. Average growth is the mean `target_growth` of the 3 selected, with the mean
+over the 3 highest as an attainable-ceiling reference. Paired comparison of
+`base_formula_features`, `no_relation_features` and `shuffled_relation_features` within
+`(ze2020, decision_year, model, seed, scenario)`, reporting means, paired win rates and
+group counts.
+
+**What the recomputation may not become.** It completes a metric checklist. It **cannot
+promote anything**: DEC-069, DEC-078 and DEC-080 closed their targets, and the HERALD_38
+section 8 conclusion that the relation layer fails against no-relation, base-formula and
+shuffled controls stands regardless of these two numbers. A favourable figure is a coverage
+completion, not evidence for promotion. Q3 remains the only route to a model experiment.
+
+**Unchanged.** The four remaining gaps -- `no_sector`, geography-only, leave-one-year-out,
+bootstrap edges -- **remain unauthorized**, since they would apply new controls to closed
+targets or introduce a new relational input.
+
+**E5 stays blocked** until the corrected E4 closes with the recomputation delivered.
+
+**Affected files (addendum):** `reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md`.

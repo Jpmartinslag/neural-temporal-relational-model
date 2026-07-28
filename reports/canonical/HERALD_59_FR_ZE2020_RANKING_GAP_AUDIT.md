@@ -1,7 +1,9 @@
 # HERALD 59 -- France ZE2020 Retrospective Ranking Gap Audit
 
 **Date:** 2026-07-28
-**Status:** `RANKING_GAP_AUDIT_COMPLETE_NO_EXECUTION_AUTHORIZED`
+**Status:** `RANKING_GAP_AUDIT_INCOMPLETE_CORRECTED` -- the original section 5 conclusion was
+falsified by the repository's own artifacts. See section 5 and the DEC-086 correction
+addendum.
 **Stage:** E4 of the sequence fixed in HERALD_56 section 5.
 **Decision entry:** DEC-086.
 
@@ -73,31 +75,40 @@ sectors actually grew** relative to a baseline's picks.
 | sector-only baseline | partially covered -- target-history-only MLP in DEC-080 |
 | geography-only relation | **not covered** (see section 3) |
 
-## 5. The finding that decides what E4 can execute
+## 5. The original decisive finding was wrong
 
-**The executed gates persisted aggregated metric rows and summaries only. No per-cell
-predictions were stored anywhere.**
+**Superseded.** This section originally asserted that "the executed gates persisted
+aggregated metric rows and summaries only. No per-cell predictions were stored anywhere",
+and concluded that the missing metrics could not be recomputed. **That is false**, and the
+falsifying evidence was already in the repository.
 
-Verified: every gate runner writes `*_metrics_v1.csv`, `*_summary_v1.csv` and a gate JSON,
-and the `hpc_results/` directories for the executed runs contain exactly those files. There
-is no prediction table to recompute from.
+The error was a partial search generalized into a universal claim: three gate runners and
+the `hpc_results/` directories of the DEC-069 to DEC-080 gates were inspected, and the
+absence found there was asserted of everything. The corrected HERALD_38 section 8 runs were
+never looked at, and they do store per-cell predictions.
 
-The consequence is decisive and was not obvious before this audit:
+### 5.1 Corrected inventory, by run
 
-> The two missing metrics -- Recall@K and average future growth of top-K -- **cannot be
-> added by recomputation**. Obtaining them requires **re-executing a closed specification**.
+| Class | Runs | Consequence |
+|---|---|---|
+| **Corrected outputs with per-cell predictions** | `fr_ze2020_top3_entry_temporal_fix_top3_20260713_143828` (20 prediction files); `fr_ze2020_top3_entry_lift_temporal_fix_lift_20260713_143828` (20); plus the corrected target-shuffle reruns `..._target_top3_20260713_145326` (5) and `..._target_lift_20260713_145326` (5) | **metrics can be recomputed without running any model** |
+| **Aggregated outputs only** | commuting relation gate; commuting topology gate; context sector relation; product-space entry density; relation-embedding probes; temporal bipartite; transition ranking | metrics there would require re-executing a closed specification |
+| **`INVALID_FOR_CLAIMS`** | the pre-HERALD_38 ranking runs (`fr_ze2020_sector_ranking_20260701_183849`, `fr_ze2020_sector_ranking_falsifications_20260701_185923`, `fr_ze2020_dynamic_graph_ranker_20260702_091544`, `fr_ze2020_top3_entry_20260708_174219`) and the `target_shuffle` scenario **inside** the two corrected main directories, superseded by the reruns above (HERALD_38 section 8) | must not be used for any metric, old or new |
 
-And the three missing controls are worse placed still. `no_sector` belongs to a line that is
-`CORRECTED_PENDING_RERUN`; `geography-only` would introduce a new relational input at
-ZE2020 grain; `leave-one-year-out` and `bootstrap edges` would be new falsifications applied
-to targets that DEC-069, DEC-078 and DEC-080 **closed**.
+The smoke run `fr_ze2020_top3_entry_smoke_temporal_fix_20260713_143010` also holds
+predictions but is explicitly not scientific evidence (HERALD_38 section 7) and is excluded.
 
-Under HERALD_56, re-running a closed gate, or applying new controls to a closed target, is
-not authorized by this stage. DEC-081 Q3 is the only route, and Q3 requires an exogenous
-sectoral structure surviving a matched placebo -- which E6 has not yet even preflighted.
+### 5.2 What this changes
 
-**Therefore E4 executes nothing.** That is not a deferral for convenience; it is what the
-contract already decided, made visible by the storage finding.
+Two of the six gaps are **recomputable from stored predictions**: Recall@3 and the average
+future growth of the selected top-3. Both are recomputed under the pre-registration in
+section 10 below.
+
+The other four -- the `no_sector` ablation, a geography-only baseline, leave-one-year-out
+and bootstrap edges -- are unchanged and **remain unauthorized**: they would apply new
+controls to closed targets, or introduce a new relational input, both of which DEC-081 Q3
+governs. (The original text said "three missing controls" while listing four; corrected
+here.)
 
 ## 6. What must not be re-run
 
@@ -128,14 +139,12 @@ Kept as a checklist, not as a work plan. None is authorized now.
 
 ## 8. Consequence for the sequence
 
-E4 closes with a coverage map and no execution. E5, the graph-first dashboard, is unblocked
-and is the next stage with work in it: it depends on E2 (availability mask, delivered),
-DEC-084 (the level engine, delivered) and DEC-085 (no forecast-derived states, delivered),
-and on nothing in this document.
+E4 does **not** close with the original "no execution" verdict. It closes only after the two
+recomputable metrics are produced under section 10. **E5 remains blocked until then.**
 
-The gaps above become relevant only if E6 and E7 produce an authorized experiment, at which
-point the metric and control set of a new specification should be drawn from section 7
-rather than reinvented.
+The four unauthorized gaps become relevant only if E6 and E7 produce an authorized
+experiment, at which point a new specification should draw its metric and control set from
+section 7 rather than reinvent it.
 
 ## 9. Cross-reference
 
@@ -144,3 +153,98 @@ rather than reinvented.
 - Invalidated ranking numbers and the corrected falsifications: `reports/canonical/HERALD_38_FR_ZE2020_TEMPORAL_INTEGRITY_CORRECTION.md` sections 5 and 8.
 - Closed ranking targets: DEC-069, DEC-078, DEC-079, DEC-080.
 - Engine designation and the absence of forecast-derived states: DEC-084, DEC-085.
+
+---
+
+## 10. Pre-registered recomputation of the two recoverable metrics
+
+**Written before either metric was computed.** Registered as the DEC-086 correction
+addendum, in a commit that precedes the implementation commit, so the ordering is provable
+from git rather than self-reported.
+
+### 10.1 Scope, and what it may not become
+
+This is a **recomputation from stored predictions**. It fits no model, reruns no gate,
+launches no HPC job and touches no closed specification's execution.
+
+**It cannot promote anything.** DEC-069, DEC-078 and DEC-080 closed their targets, and the
+HERALD_38 section 8 conclusion -- that the relation layer fails against no-relation,
+base-formula and shuffled controls -- stands regardless of what these two metrics show.
+Completing a metric checklist is not a new gate, and a favourable number here would be a
+**coverage completion, not evidence for promotion**. Any reading beyond that requires Q3.
+
+### 10.2 Source, frozen
+
+| Scenario | Directory |
+|---|---|
+| `full_control`, `sector_shuffle`, `temporal_shuffle` | `hpc_results/fr_ze2020_top3_entry_temporal_fix_top3_20260713_143828/` and `..._lift_temporal_fix_lift_20260713_143828/` |
+| `target_shuffle` | **only** `..._temporal_fix_target_top3_20260713_145326/` and `..._temporal_fix_target_lift_20260713_145326/` |
+
+The `target_shuffle` subdirectories **inside** the two main run directories are
+`INVALID_FOR_CLAIMS` (HERALD_38 section 8: the shuffle left the precomputed top-3 label
+attached to its original sector) and are excluded. The smoke run is excluded.
+
+### 10.3 Grouping and selection, frozen
+
+Group key: `(ze2020, decision_year, model, feature_config)`. Verified population structure:
+each group holds exactly **9 sectors**, exactly **3** are selected by `rank_predicted <= 3`,
+and one seed-scenario file yields **6,720 groups**. Models are `logit_entry_classifier` and
+`mlp_entry_classifier`; feature configs are `base_formula_features`, `no_relation_features`
+and `shuffled_relation_features`; decision years are 2019-2022 at horizon 3.
+
+### 10.4 Recall@3, with the zero-positive rule fixed in advance
+
+```text
+Recall@3(group) = (positives among the 3 selected) / (positives in the group)
+```
+
+The denominator varies: **positives per group range from 0 to 3**, so Recall@3 is not a
+rescaling of Precision@3 and the two genuinely differ.
+
+**Zero-positive rule.** When a group contains no positive at all the denominator is zero and
+Recall@3 is **undefined**. It is reported as `NaN`, **excluded from every mean**, and the
+**count of such groups is reported alongside every Recall figure**. It is never imputed as
+0, never as 1, and never silently dropped. Population structure, inspected only to fix this
+rule: **24 of 6,720 groups** in the inspected file have no positive. No metric was computed.
+
+### 10.5 Average future growth of the selected top-3
+
+```text
+mean_growth_selected(group)  = mean of target_growth over the 3 selected rows
+mean_growth_actual_top3(group) = mean of target_growth over the 3 highest target_growth rows
+```
+
+`target_growth` is finite in every row of the inspected file. The second quantity is the
+attainable ceiling and is reported as a reference, never as a competitor.
+
+This is the metric that says **how much the recommended sectors actually grew**, rather than
+whether they were ordered correctly.
+
+### 10.6 Paired comparison, frozen
+
+Within `(ze2020, decision_year, model, seed, scenario)`, compare the three feature configs
+pairwise:
+
+- `base_formula_features` versus `no_relation_features`;
+- `base_formula_features` versus `shuffled_relation_features`;
+- `no_relation_features` versus `shuffled_relation_features`.
+
+Report, per scenario and per model: the mean of each metric, the paired win rate, and the
+count of groups entering each comparison. **No threshold and no gate**: these are descriptive
+completions of the HERALD_23 section 5 metric set.
+
+### 10.7 Blocking integrity checks
+
+| Check | Requirement |
+|---|---|
+| Group shape | exactly 9 sectors and exactly 3 selected per group, else abort |
+| Population identity | the three feature configs cover identical `(ze2020, decision_year)` groups within a model and seed |
+| Source discipline | no file from an `INVALID_FOR_CLAIMS` directory, and no `target_shuffle` from the main directories, is read |
+| Finiteness | every reported figure finite, or an explicitly counted `NaN` from the zero-positive rule |
+| No model | the recomputer imports no estimator and fits nothing |
+| Determinism | two runs produce byte-identical output |
+
+### 10.8 What is delivered
+
+A metrics recomputer with tests, its output table, and nothing else. No training, no HPC, no
+rerun, and no change to any existing verdict.
