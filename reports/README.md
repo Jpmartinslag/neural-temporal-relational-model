@@ -309,7 +309,17 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     trajectory colour with `indisponible` where there is no predecessor, a
     single `EXPLORATORY_DERIVED` status with strength and stability as numeric
     width and opacity, and a side panel whose historical MAE reads no year after
-    the slider and never becomes a confidence label.
+    the slider and never becomes a confidence label. A second addendum closes
+    five implementation blockers: the map is specified (280/280 canonical ZEs,
+    26 out-of-scope geometry features excluded and counted, same colour scale as
+    the graph, no edges, no prediction); edge density is bounded (all nodes
+    shown, edges only for the selected ZE, a visible `X relations affichées sur
+    Y disponibles`, no silent sampling); per-edge snapshot metadata moves to
+    tooltip, selected edge and layer header rather than permanent labels that
+    would collide; the macro volume is pre-registered against a **9.0×**
+    inflation, since the total column repeats across the nine sector rows; and
+    the persistence panel names its horizon `t+1`, reads only the DEC-084
+    artifact over 2019…t, and never the NOT_COMPARABLE supplement.
 
 ## Control Documents
 
