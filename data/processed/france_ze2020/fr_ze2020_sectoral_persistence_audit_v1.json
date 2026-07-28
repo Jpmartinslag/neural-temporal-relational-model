@@ -1,0 +1,287 @@
+{
+  "artifact": "fr_ze2020_sectoral_persistence_audit",
+  "claim_status": "sectoral_persistence_audit_engine_designation_only",
+  "decision": "DEC-083 (pre-registration); DEC-084 records this result",
+  "environment": {
+    "numpy": "1.26.4",
+    "pandas": "2.3.3",
+    "python": "3.10.12",
+    "scikit_learn": "1.7.2"
+  },
+  "gate": {
+    "clause_1_ridge_designated": false,
+    "clause_2_persistence_designated": true,
+    "eligible_for_engine": [
+      "persistence",
+      "ridge_ar"
+    ],
+    "engine": "persistence",
+    "n_eval_years": 7,
+    "naive_control_gate": {
+      "persistence": {
+        "qualifies": true,
+        "sector_mean": {
+          "beats_aggregate": true,
+          "passes": true,
+          "yearly_wins": 7,
+          "yearly_wins_required": 6
+        },
+        "ze_sector_mean": {
+          "beats_aggregate": true,
+          "passes": true,
+          "yearly_wins": 7,
+          "yearly_wins_required": 6
+        }
+      },
+      "ridge_ar": {
+        "qualifies": true,
+        "sector_mean": {
+          "beats_aggregate": true,
+          "passes": true,
+          "yearly_wins": 7,
+          "yearly_wins_required": 6
+        },
+        "ze_sector_mean": {
+          "beats_aggregate": true,
+          "passes": true,
+          "yearly_wins": 7,
+          "yearly_wins_required": 6
+        }
+      }
+    },
+    "never_eligible": [
+      "sector_mean",
+      "ze_sector_mean",
+      "national_scaled_persistence"
+    ],
+    "ridge_sector_safety_veto": {
+      "offending_sectors": {
+        "FZ": 0.1328413752197018,
+        "KZ": 0.1350597788036197
+      },
+      "vetoed": true
+    },
+    "ridge_vs_persistence": {
+      "beats_aggregate": true,
+      "yearly_wins": 4,
+      "yearly_wins_required": 6
+    },
+    "verdict": "ENGINE_DESIGNATED"
+  },
+  "input_sha256": "ff102c482c510cc961f6084a983bd00b567b72938194311b8d9440114268c933",
+  "integrity": {
+    "distinct_sectors": 9,
+    "distinct_zones": 280,
+    "duplicated_cells": 0,
+    "eval_years": [
+      2019,
+      2020,
+      2021,
+      2022,
+      2023,
+      2024,
+      2025
+    ],
+    "excluded_cell_count": 1,
+    "excluded_cells": [
+      {
+        "sector_code": "JZ",
+        "year": 2019,
+        "ze2020": "5218"
+      }
+    ],
+    "folds": 5,
+    "negative_prediction_share_ridge": 0.00810703554623278,
+    "negative_predictions": {
+      "national_scaled_persistence": 0,
+      "persistence": 0,
+      "ridge_ar": 143,
+      "sector_mean": 0,
+      "ze_sector_mean": 0
+    },
+    "registered_rows": 17639,
+    "rows": 17639,
+    "seeds_used": 0,
+    "truncation_invariance": "PASS"
+  },
+  "metrics": {
+    "overall": {
+      "national_scaled_persistence": {
+        "mae": 58.25958260949409,
+        "wmape": 0.1340600297473176
+      },
+      "persistence": {
+        "mae": 50.61018198310562,
+        "wmape": 0.11645813784231665
+      },
+      "ridge_ar": {
+        "mae": 46.14347681103648,
+        "wmape": 0.10617988658442824
+      },
+      "sector_mean": {
+        "mae": 360.0995218483025,
+        "wmape": 0.8286182366694694
+      },
+      "ze_sector_mean": {
+        "mae": 136.5586725930368,
+        "wmape": 0.3142325929930944
+      }
+    },
+    "paired_cell_win_rate_vs_persistence": {
+      "national_scaled_persistence_beats_persistence_cell_share": 0.47270253415726515,
+      "ridge_ar_beats_persistence_cell_share": 0.515902262032995,
+      "sector_mean_beats_persistence_cell_share": 0.09819150745507114,
+      "ze_sector_mean_beats_persistence_cell_share": 0.18918306026418732
+    },
+    "wmape_by_sector": {
+      "BE": {
+        "national_scaled_persistence": 0.1663905674356569,
+        "persistence": 0.14732071018612883,
+        "ridge_ar": 0.129126256119879,
+        "sector_mean": 0.5638013336330359,
+        "ze_sector_mean": 0.4170423213418832
+      },
+      "FZ": {
+        "national_scaled_persistence": 0.11869376435741041,
+        "persistence": 0.0990423709411291,
+        "ridge_ar": 0.11219929570196852,
+        "sector_mean": 0.8352498422902213,
+        "ze_sector_mean": 0.14340070148070652
+      },
+      "GI": {
+        "national_scaled_persistence": 0.13743206897045213,
+        "persistence": 0.1239539228260042,
+        "ridge_ar": 0.11242310874887979,
+        "sector_mean": 0.8392843179130017,
+        "ze_sector_mean": 0.2850630023695797
+      },
+      "JZ": {
+        "national_scaled_persistence": 0.11557015133801084,
+        "persistence": 0.12844579518533217,
+        "ridge_ar": 0.11117586575913113,
+        "sector_mean": 0.9812508560705094,
+        "ze_sector_mean": 0.4089890258127993
+      },
+      "KZ": {
+        "national_scaled_persistence": 0.19383782315783182,
+        "persistence": 0.15407246303508507,
+        "ridge_ar": 0.17488145581233253,
+        "sector_mean": 0.8645967009416227,
+        "ze_sector_mean": 0.29779560900109936
+      },
+      "LZ": {
+        "national_scaled_persistence": 0.1913002479275298,
+        "persistence": 0.15761229072139976,
+        "ridge_ar": 0.15345808288869436,
+        "sector_mean": 0.7656085814133291,
+        "ze_sector_mean": 0.388828078263061
+      },
+      "MN": {
+        "national_scaled_persistence": 0.10636416914270953,
+        "persistence": 0.09899859592514619,
+        "ridge_ar": 0.07492173364700723,
+        "sector_mean": 0.8735114498543497,
+        "ze_sector_mean": 0.37422912993066487
+      },
+      "OQ": {
+        "national_scaled_persistence": 0.13101629880080312,
+        "persistence": 0.09613928128939045,
+        "ridge_ar": 0.09373386255194648,
+        "sector_mean": 0.8790259287098946,
+        "ze_sector_mean": 0.22790191350691727
+      },
+      "RU": {
+        "national_scaled_persistence": 0.15192463421092492,
+        "persistence": 0.11511713976951604,
+        "ridge_ar": 0.11052511771729369,
+        "sector_mean": 0.739370509678983,
+        "ze_sector_mean": 0.33772021230449506
+      }
+    },
+    "wmape_by_year": {
+      "2019": {
+        "national_scaled_persistence": 0.08805345953415716,
+        "persistence": 0.1408622306552704,
+        "ridge_ar": 0.09621899622798875,
+        "sector_mean": 0.8528611105349175,
+        "ze_sector_mean": 0.2862615569922445
+      },
+      "2020": {
+        "national_scaled_persistence": 0.15910294735916114,
+        "persistence": 0.10100712930713596,
+        "ridge_ar": 0.1338463617016246,
+        "sector_mean": 0.8533035680862615,
+        "ze_sector_mean": 0.27780756670346785
+      },
+      "2021": {
+        "national_scaled_persistence": 0.16418995876127482,
+        "persistence": 0.15664974692670902,
+        "ridge_ar": 0.10472969174978207,
+        "sector_mean": 0.8104135352140062,
+        "ze_sector_mean": 0.35201481837531545
+      },
+      "2022": {
+        "national_scaled_persistence": 0.1796374036929416,
+        "persistence": 0.15462915308514896,
+        "ridge_ar": 0.17079341863934527,
+        "sector_mean": 0.8204629425928138,
+        "ze_sector_mean": 0.3245143713901755
+      },
+      "2023": {
+        "national_scaled_persistence": 0.1738585387578736,
+        "persistence": 0.08518742973819353,
+        "ridge_ar": 0.11097569918907192,
+        "sector_mean": 0.8343505835865925,
+        "ze_sector_mean": 0.28674582847352836
+      },
+      "2024": {
+        "national_scaled_persistence": 0.10431804115816264,
+        "persistence": 0.0975031367732934,
+        "ridge_ar": 0.062838832234048,
+        "sector_mean": 0.8214740889895328,
+        "ze_sector_mean": 0.32234748990232004
+      },
+      "2025": {
+        "national_scaled_persistence": 0.0756299900949283,
+        "persistence": 0.0868306117317489,
+        "ridge_ar": 0.07387000011595357,
+        "sector_mean": 0.8175233599972324,
+        "ze_sector_mean": 0.33584810730451425
+      }
+    }
+  },
+  "models": [
+    "persistence",
+    "ridge_ar",
+    "sector_mean",
+    "ze_sector_mean",
+    "national_scaled_persistence"
+  ],
+  "official_window": "2019-2025",
+  "persistence_only_supplement": {
+    "comparability": "NOT_COMPARABLE",
+    "mae": 40.211721611721615,
+    "note": "Persistence over the full panel window. No fitted model can be evaluated here, so these numbers must never appear in the same ranking table as the official 2019-2025 comparison.",
+    "rows": 32760,
+    "window": "2013-2025",
+    "wmape": 0.11311445215950995,
+    "wmape_by_year": {
+      "2013": 0.09409025122158488,
+      "2014": 0.08749907511364038,
+      "2015": 0.09731038006963534,
+      "2016": 0.11154521435792641,
+      "2017": 0.1066987171276411,
+      "2018": 0.1343666098678957,
+      "2019": 0.14086442935435273,
+      "2020": 0.10100712930713596,
+      "2021": 0.15664974692670902,
+      "2022": 0.15462915308514896,
+      "2023": 0.08518742973819353,
+      "2024": 0.0975031367732934,
+      "2025": 0.0868306117317489
+    }
+  },
+  "specification": "reports/canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md",
+  "target": "sector_establishment_creations",
+  "target_meaning": "annual flow of newly created establishments; not stock growth, employment, output or survival"
+}

@@ -74,10 +74,21 @@ denominator makes a growth feature `+/-inf` rather than `NaN`. The precedent is 
 `_completeness_mask` note in `train_fr_ze2020_sector_graph_prototype.py`, where exactly this
 defect was found before.
 
-Consequence, established as population structure and frozen here: within the official
-window, **two cells are incomplete** -- `5218 / JZ / 2018` and `5218 / JZ / 2019`, both
-downstream of that zero. They are excluded **identically for every model**, and the exclusion
-count must be reported, never silent.
+Consequence, established as population structure and frozen here. Two cells are incomplete
+from 2015 onward, both downstream of that zero: `5218 / JZ / 2018` and `5218 / JZ / 2019`.
+Of these, **only `5218 / JZ / 2019` falls inside the official evaluation window**; 2018 is
+before it.
+
+- `5218 / JZ / 2019` is **excluded from evaluation, identically for every model**.
+- `5218 / JZ / 2018` is never evaluated because 2018 is not an evaluation year, but it is
+  still **dropped from `ridge_ar` training rows** for every later evaluation year, under the
+  same `isfinite` rule.
+
+The exclusion count must be reported, never silent.
+
+*Corrected before execution.* An earlier draft of this section stated two exclusions inside
+the official window and a population of 17,638. That conflated "incomplete from 2015 onward"
+with "incomplete inside 2019-2025". See the DEC-083 second correction addendum.
 
 ## 4. Evaluation windows
 
@@ -88,7 +99,7 @@ years). The Ridge rule requires four complete prior training years, which first 
 
 | Window | Years | Cells | Role |
 |---|---|---|---|
-| **Official comparison** | 2019-2025 (7) | 7 x 2,520 - 2 = **17,638** | the only window in which models are ranked against each other |
+| **Official comparison** | 2019-2025 (7) | 7 x 2,520 - 1 = **17,639** | the only window in which models are ranked against each other |
 | **Persistence-only supplement** | 2013-2025 (13) | -- | additional, reported separately |
 
 **Hard rule.** The two windows must never appear in the same ranking table. The supplement is
@@ -291,8 +302,8 @@ No outcome is anticipated here. All three verdicts in 8.4 are valid results of t
 | Causality | every prediction for year `t` uses only observations at `t-1` or earlier |
 | Truncation invariance | re-running with the panel truncated at `t-1` reproduces the predictions for `t` bit for bit |
 | Identical populations | all five models predict exactly the same set of cells in every year and fold |
-| Coverage | every eligible cell in the official window receives a prediction from every model; the 2 excluded cells are excluded from all five and counted |
-| Once-only | the pooled metric row count equals 17,638, with no duplicated ZE-sector-year |
+| Coverage | every eligible cell in the official window receives a prediction from every model; the single excluded cell (`5218 / JZ / 2019`) is excluded from all five and counted |
+| Once-only | the pooled metric row count equals 17,639, with no duplicated ZE-sector-year |
 | Fold disjointness | train and test zone sets never intersect for the fitted models |
 | Finiteness | every reported metric is finite, or explicitly `NaN` with its cause recorded |
 | National denominator | `national_total(s, t-2)` finite and strictly positive, and `r(s,t)` finite, for every sector and evaluation year -- otherwise abort (section 5.2) |
@@ -328,3 +339,128 @@ only to fix the evaluation window by rule rather than by outcome, as DEC-081 req
 - A10 source provenance: DEC-076, `HERALD_47`.
 - ZE-total baseline conventions: `src/modeles/france_ze2020/train_fr_ze2020_baselines.py`.
 - Closed-composition failure pattern: DEC-078, DEC-079, DEC-080.
+
+---
+
+# Part A -- Result
+
+**Written after execution. Sections 0-12 above are the pre-registered text and were not
+edited to fit this outcome.** Decision entry: **DEC-084**.
+
+**Verdict: `ENGINE_DESIGNATED`. Engine: `persistence`, by clause 8.4.2.**
+
+## 13. Official comparison, 2019-2025, 17,639 cells
+
+| Model | WMAPE | MAE | Role |
+|---|---:|---:|---|
+| `ridge_ar` | **0.106180** | 46.143 | candidate |
+| `persistence` | **0.116458** | 50.610 | candidate, **designated** |
+| `national_scaled_persistence` | 0.134060 | 58.260 | baseline, never eligible |
+| `ze_sector_mean` | 0.314233 | 136.559 | control |
+| `sector_mean` | 0.828618 | 360.100 | control |
+
+## 14. Why the better aggregate did not win
+
+This is the outcome the pre-registration was built for, and it must not be reported as
+"persistence is more accurate than Ridge".
+
+`ridge_ar` has the **lower aggregate WMAPE**. It nevertheless fails clause 8.4.1 on **two
+independent grounds**:
+
+**Year stability.** It beats `persistence` in only **4 of 7** years, against the registered
+minimum of 6.
+
+| Year | `persistence` | `ridge_ar` | winner |
+|---|---:|---:|---|
+| 2019 | 0.140862 | 0.096219 | ridge |
+| 2020 | 0.101007 | 0.133846 | persistence |
+| 2021 | 0.156650 | 0.104730 | ridge |
+| 2022 | 0.154629 | 0.170793 | persistence |
+| 2023 | 0.085187 | 0.110976 | persistence |
+| 2024 | 0.097503 | 0.062839 | ridge |
+| 2025 | 0.086831 | 0.073870 | ridge |
+
+**Per-sector safety veto.** It regresses against `persistence` by more than the registered
+10% in two A10 sectors.
+
+| Sector | `persistence` | `ridge_ar` | relative regression |
+|---|---:|---:|---:|
+| BE | 0.147321 | 0.129126 | -12.35% |
+| **FZ** | 0.099042 | 0.112199 | **+13.28%  veto** |
+| GI | 0.123954 | 0.112423 | -9.30% |
+| JZ | 0.128446 | 0.111176 | -13.45% |
+| **KZ** | 0.154072 | 0.174881 | **+13.51%  veto** |
+| LZ | 0.157612 | 0.153458 | -2.64% |
+| MN | 0.098999 | 0.074922 | -24.32% |
+| OQ | 0.096139 | 0.093734 | -2.50% |
+| RU | 0.115117 | 0.110525 | -3.99% |
+
+The skew warned about in section 7 is exactly what happened: Ridge's aggregate advantage is
+concentrated in large sectors (MN -24%, JZ -13%, BE -12%) while it degrades construction
+(FZ) and finance-insurance (KZ). Ridge also beats persistence in only **51.6%** of
+individual cells, close to a coin flip.
+
+`ridge_ar` is therefore **not rejected as a model**; it failed a stability and safety
+condition registered in advance. Revisiting it under a different, pre-registered stability
+criterion would require a new DEC -- changing the criterion now, having seen these numbers,
+is precisely what the pre-registration exists to prevent.
+
+## 15. Controls and the national baseline
+
+Both candidates beat both naive controls on aggregate **and in 7/7 years**, so the
+naive-control gate is not the binding constraint anywhere.
+
+`national_scaled_persistence` (0.134060) is **worse than plain `persistence`** (0.116458)
+and beats it in only 47.3% of cells. Scaling each territory-sector by its national sector
+ratio *degrades* the forecast. This is a direct, if narrow, corroboration of the note in
+HERALD_56 section 4.8: national-trend information does not carry the sectoral series. It is
+a finding about this baseline on this target, not a general statement about detrending.
+
+## 16. Integrity
+
+| Check | Result |
+|---|---|
+| Rows | 17,639 = registered count, no duplicated ZE-sector-year |
+| Excluded cells | 1 (`5218 / JZ / 2019`), identical for all five models |
+| Truncation invariance | PASS -- rebuilding from a panel holding nothing after `t` reproduces the predictions for `t` |
+| Seeds used | 0 |
+| Populations | all five models predict the same cells in every year and fold |
+| Determinism | two independent output directories, identical SHA-256 |
+| Negative predictions | `ridge_ar` 143 of 17,639 (0.81%); every other model 0 -- disclosure, not a gate |
+| Environment | python 3.10.12, pandas 2.3.3, numpy 1.26.4, scikit-learn 1.7.2 |
+
+## 17. Persistence-only supplement -- `NOT_COMPARABLE`
+
+`persistence` over 2013-2025, 32,760 cells: WMAPE **0.113114**.
+
+No fitted model can be evaluated over this window, so this figure **must never be placed in
+the same ranking table** as section 13. It describes persistence across the full panel; it
+compares nothing.
+
+## 18. Two implementation corrections, disclosed
+
+**Population count, corrected before execution.** The pre-registration stated 17,638 cells
+and two exclusions inside the official window. That conflated "incomplete from 2015 onward"
+with "incomplete inside 2019-2025": `5218 / JZ / 2018` is earlier than the window. Corrected
+to **17,639** and one exclusion before any model was fitted (DEC-083 second correction
+addendum).
+
+**Supplement eligibility, corrected after execution.** The first run restricted the
+supplement to cells complete on all five features, truncating it to 2015-2025 although the
+registration fixed 2013-2025. `persistence` consumes `lag_1` alone, so eligibility there now
+requires `lag_1` and the target only, and the supplement covers the registered 32,760 cells.
+**The official window, its population and the verdict are untouched**: the official
+predictions file is byte-identical before and after the fix, and the supplement is
+`NOT_COMPARABLE` and enters no gate.
+
+## 19. What this authorizes
+
+Sectoral persistence at ZE x sector is promoted from **CANDIDATE** to the product's
+forecasting engine, for the target and window audited here. HERALD_58 Part B
+(forecast-derived states) is unblocked; its thresholds remain reserved for the project
+owner.
+
+Nothing else. No relational input, no neural encoder, no HPC job, no causal or
+recommendation claim. Q3 of the contract remains the only route to another model
+experiment. The engine forecasts an **annual flow of newly created establishments** -- not
+stock growth, employment, output or survival.

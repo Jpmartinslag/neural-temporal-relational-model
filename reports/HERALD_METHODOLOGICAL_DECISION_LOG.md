@@ -4246,3 +4246,86 @@ Nothing else changes: target, windows, models, folds, metrics, eligibility, the 
 "beats", the per-sector veto formula and the blocking integrity checks are unaltered.
 
 **Affected files (addendum):** `reports/canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md`.
+
+---
+
+## DEC-084 -- France ZE2020 sectoral persistence audit, result (2026-07-28)
+
+**Status:** `ENGINE_DESIGNATED`. **Engine: sectoral persistence at ZE x sector.**
+
+**Stage:** E3a of the sequence fixed by DEC-081, executed under the specification
+pre-registered in DEC-083 and frozen in HERALD_58 sections 0-12. Those sections were not
+edited to fit this outcome.
+
+**Result on the official window (2019-2025, 17,639 cells).** WMAPE: `ridge_ar` 0.106180,
+`persistence` 0.116458, `national_scaled_persistence` 0.134060, `ze_sector_mean` 0.314233,
+`sector_mean` 0.828618.
+
+**The better aggregate did not win, and this must not be reported as "persistence is more
+accurate than Ridge".** `ridge_ar` has the lower aggregate WMAPE but fails clause 8.4.1 on
+two independent registered grounds. It beats `persistence` in only **4 of 7** years against
+the required 6 (persistence wins 2020, 2022, 2023). And it trips the per-sector safety veto
+in two A10 sectors: FZ +13.28% and KZ +13.51% relative regression, past the 10% threshold.
+Its aggregate advantage is concentrated in large sectors -- MN -24.32%, JZ -13.45%,
+BE -12.35% -- which is exactly the masking the section 7 skew warning anticipated; it also
+beats persistence in only 51.6% of individual cells. `ridge_ar` is **not rejected as a
+model**; it failed a stability and safety condition set in advance. Revisiting it under a
+different stability criterion requires a new DEC, because changing the criterion after
+seeing these numbers is what the pre-registration exists to prevent.
+
+Clause 8.4.1 therefore fails, clause 8.4.2 applies, and `persistence` is designated.
+
+**Controls and the national baseline.** Both candidates beat both naive controls on
+aggregate and in 7/7 years, so the naive-control gate binds nowhere.
+`national_scaled_persistence` is **worse than plain persistence** (0.134060 versus 0.116458)
+and beats it in only 47.3% of cells: scaling each territory-sector by its national sector
+ratio degrades the forecast. That corroborates, narrowly, the note in HERALD_56 section 4.8
+that national-trend information does not carry the sectoral series. It is a finding about
+this baseline on this target, not a general statement about detrending.
+
+**Integrity.** 17,639 rows with no duplicated ZE-sector-year; one excluded cell
+(`5218 / JZ / 2019`), identical for all five models; truncation invariance PASS; zero seeds;
+identical populations across models; determinism confirmed by identical SHA-256 across two
+independent output directories. Disclosure: `ridge_ar` emitted 143 negative predictions
+(0.81% of cells), every other model none. Environment: python 3.10.12, pandas 2.3.3,
+numpy 1.26.4, scikit-learn 1.7.2.
+
+**Persistence-only supplement, `NOT_COMPARABLE`.** Persistence over 2013-2025, 32,760 cells,
+WMAPE 0.113114. No fitted model can be evaluated there, so this figure never shares a
+ranking table with the official window.
+
+**Two implementation corrections, disclosed.** The registered population was 17,638 with two
+in-window exclusions; that conflated "incomplete from 2015 onward" with "incomplete inside
+2019-2025", since `5218 / JZ / 2018` precedes the window. Corrected to 17,639 and one
+exclusion **before any model was fitted** (DEC-083 second correction addendum). Separately,
+the first run restricted the supplement to cells complete on all five features, truncating
+it to 2015-2025 although DEC-083 fixed 2013-2025; persistence consumes `lag_1` alone, so
+supplement eligibility now requires `lag_1` and the target only. **The official window, its
+population and the verdict are untouched** -- the official predictions file is byte-identical
+before and after that fix, and the supplement enters no gate.
+
+**Limitations.** The designation holds for the audited target, granularity and window: an
+annual flow of newly created establishments at ZE2020 x A10 over 2019-2025. It is not a
+claim that persistence is the best possible predictor, nor that Ridge is inferior in
+accuracy, nor that the engine transfers to another country, granularity or target.
+
+**What this authorizes.** Sectoral persistence is promoted from CANDIDATE to the product's
+forecasting engine, which unblocks HERALD_58 Part B (forecast-derived states); the state
+thresholds remain reserved for the project owner. Nothing else: no relational input, no
+neural encoder, no HPC job, no causal or recommendation claim. Q3 of the contract remains
+the only route to another model experiment.
+
+**Reopen condition:** a new DEC is required to revisit `ridge_ar` under a different
+stability criterion, to change the window or target, or to extend the designation beyond
+France ZE2020 x A10.
+
+**Affected files:** `reports/canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md`
+(Part A result appended; the pre-registered sections unchanged),
+`src/modeles/france_ze2020/run_fr_ze2020_sectoral_persistence_audit.py`,
+`tests/test_fr_ze2020_sectoral_persistence_audit.py`,
+`data/processed/france_ze2020/fr_ze2020_sectoral_persistence_predictions_v1.csv`,
+`data/processed/france_ze2020/fr_ze2020_sectoral_persistence_supplement_v1.csv`,
+`data/processed/france_ze2020/fr_ze2020_sectoral_persistence_audit_v1.json`,
+`reports/herald_artifact_registry.json`, `reports/README.md`.
+
+See HERALD_58 Part A -- Result.

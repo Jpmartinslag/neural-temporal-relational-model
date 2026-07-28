@@ -249,8 +249,13 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     a separate non-comparable table, forbids seed repetition for deterministic
     models including Ridge, and pre-registers a gate that reads WMAPE alone and
     admits `NO_ENGINE_DESIGNATED` as an outcome. Registered as DEC-083 before
-    execution; DEC-084 will record the result. Written before any model was
-    fitted and before any error metric was computed.
+    execution. **Part A result appended after execution (DEC-084):
+    `ENGINE_DESIGNATED`, engine = sectoral persistence.** `ridge_ar` had the
+    lower aggregate WMAPE (0.1062 vs 0.1165) but was blocked by two conditions
+    registered in advance — it beat persistence in only 4 of 7 years against the
+    required 6, and regressed past the 10% per-sector veto in FZ and KZ — so the
+    result must never be read as persistence being more accurate than Ridge. The
+    national-trend baseline was worse than plain persistence.
 
 ## Control Documents
 
