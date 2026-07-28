@@ -261,6 +261,17 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     STAGNATION under any threshold. No thresholds were chosen and no
     distribution was inspected; a direction estimator would be a new model
     experiment, reachable only via DEC-081 Q3.
+57. `canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md`
+    — E4 coverage map of the HERALD_23 §5-§6 ranking metrics and controls
+    against what DEC-069→080 and HERALD_38 §8 actually executed. NDCG@3,
+    Precision@3, Hit Rate@3 and the random-graph, temporal-shuffle,
+    sector-shuffle and no-graph controls are covered; Recall@K, average future
+    growth of top-K, the no-sector ablation, a geography-only baseline,
+    leave-one-year-out and bootstrap edges are not. Decisive finding: the
+    executed gates stored aggregated metrics only, never per-cell predictions,
+    so the missing metrics cannot be recomputed and would require re-executing
+    closed specifications. **E4 therefore executes nothing** (DEC-086); the gaps
+    are recorded as a checklist for any experiment later authorized under Q3.
 
 ## Control Documents
 
