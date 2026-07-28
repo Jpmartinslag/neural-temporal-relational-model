@@ -4210,3 +4210,39 @@ the pre-registration.
 `reports/README.md`.
 
 See HERALD_58.
+
+### DEC-083 -- Correction addendum (2026-07-28, before execution)
+
+The original entry above is preserved unaltered. A specification audit found two internal
+contradictions, each of which would have left the runner without a single implementable
+rule. Both are corrected **before any model is fitted**; no metric has been computed, and
+the pre-registration therefore stands.
+
+1. **The fold section contradicted the corrected control rule.** It stated that `ridge_ar`
+   and *both* means train on the remaining folds' zones, which reinstated exactly the defect
+   the first addendum removed: `ze_sector_mean` is an own-history control and would be
+   uncomputable if restricted to training zones. Which models consult the folds now follows
+   from the model section rather than from a second, divergent rule:
+
+   > `ridge_ar` and `sector_mean` use the remaining training-fold ZEs. `ze_sector_mean`,
+   > `persistence` and `national_scaled_persistence` use the test cell's causal history
+   > through `t-1` and do not fit on folds.
+
+2. **The gate was not exhaustive.** Clause 3 declared `NO_ENGINE_DESIGNATED` only when
+   neither candidate beat the naive controls, leaving reachable states with no verdict --
+   for instance `ridge_ar` beating both controls but not `persistence`; beating
+   `persistence` but failing the per-sector safety veto; or `persistence` failing the
+   controls while `ridge_ar` passes them without beating it. In each of those the audit must
+   designate no engine, yet the registered condition was false. Clause 3 is replaced by its
+   exhaustive complement:
+
+   > If neither clause 1 nor clause 2 designates an engine, the verdict is
+   > `NO_ENGINE_DESIGNATED`.
+
+   This supersedes the corresponding sentence in the original entry above, which carried the
+   same non-exhaustive phrasing.
+
+Nothing else changes: target, windows, models, folds, metrics, eligibility, the definition of
+"beats", the per-sector veto formula and the blocking integrity checks are unaltered.
+
+**Affected files (addendum):** `reports/canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md`.
