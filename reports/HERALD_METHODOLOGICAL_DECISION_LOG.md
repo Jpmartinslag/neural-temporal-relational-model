@@ -4385,3 +4385,64 @@ while `torch` is absent.
 `reports/canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md`,
 `data/processed/france_ze2020/fr_ze2020_sectoral_persistence_audit_v1.json`,
 `reports/herald_artifact_registry.json`.
+
+---
+
+## DEC-085 -- France ZE2020 forecast-derived states: none, and why (2026-07-28)
+
+**Status:** `NO_FORECAST_DERIVED_STATE_LAYER`.
+
+**Stage:** E3b of the sequence fixed by DEC-081, unblocked by the DEC-084 engine
+designation. It closes with a reasoned negative result. No model was fitted, no threshold
+was chosen, no distribution was inspected, and no HPC job was run.
+
+**Problem.** Part B was to turn the designated engine's forecast into GROWTH / STAGNATION /
+DECLINE states. The engine designated in DEC-084 is the deterministic identity
+`yhat(z,s,t) = y(z,s,t-1)`, so the change it predicts against the last observation is
+**identically zero for every cell and every year**. A state layer derived from that quantity
+labels everything `STAGNATION` under any threshold: zero is zero for a band of one percent
+or of thirty. The thresholds were never the hard decision -- there is no quantity for them
+to classify. The same holds for the multi-year horizon the product envisages, since
+persistence extrapolates flat indefinitely and cannot support a claim that a sector rises or
+falls in any future year.
+
+This is arithmetic, not a re-judgement of the engine, and it does not reopen DEC-084: that
+gate concerned accuracy of the predicted **level**, which persistence won under the
+registered rule.
+
+**Alternative considered and rejected.** A direction estimator distinct from the level
+engine would yield genuinely predictive states. It was rejected as **contract-violating**:
+it is a new model experiment, and DEC-081 Q3 is the only route to one. DEC-084 authorized
+transforming the engine's forecast into states, not fitting something new once that
+transformation proved empty. Adopting it now would have inverted the contract in the same
+week it was consolidated.
+
+**Decision.**
+
+1. No forecast-derived state layer exists and none is claimed. The gap recorded in
+   `HERALD_CURRENT_STATE.md` -- "no validated forecast-derived state" -- is **closed with
+   this negative result**, not left as a pending task.
+2. The sectoral **level** forecast stands: persistence at ZE x sector, per DEC-084.
+3. Historical states remain available as **observed trajectory only** and must be labelled
+   explicitly descriptive wherever they appear. The product may say a sector grew; it may
+   not say a sector will grow.
+4. No thresholds were chosen and no distribution was inspected. HERALD_56 section 8 reserves
+   the thresholds for the project owner and requires them to be fixed before the
+   distribution is seen; with no non-degenerate quantity to threshold, neither step applies.
+
+**Limitations.** This is a negative result about one specific construction: states derived
+from the designated engine's own forecast. It is not evidence that territorial-sector
+direction is unpredictable in general, and it is not a claim about any estimator that has
+not been tested.
+
+**Reopen condition.** Part B may return as a direction task in its own right, but only
+inside an experiment authorized under Q3 / E7, and only with its own pre-registration: an
+`always_stagnation` baseline, placebo controls, and a gate of its own. Until then no
+forecast-derived state may be displayed, exported, or described anywhere in the product.
+
+**Next stage:** E4, the retrospective ranking gap audit (HERALD_59).
+
+**Affected files:** `reports/canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md`
+(Part B appended), `reports/HERALD_CURRENT_STATE.md`, `reports/README.md`.
+
+See HERALD_58 Part B.

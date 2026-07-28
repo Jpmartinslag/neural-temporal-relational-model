@@ -479,3 +479,72 @@ Nothing else. No relational input, no neural encoder, no HPC job, no causal or
 recommendation claim. Q3 of the contract remains the only route to another model
 experiment. The engine forecasts an **annual flow of newly created establishments** -- not
 stock growth, employment, output or survival.
+
+---
+
+# Part B -- Outcome: no forecast-derived state layer
+
+**Status:** `NO_FORECAST_DERIVED_STATE_LAYER`. Decision entry: **DEC-085**.
+
+Part A designated `persistence` as the engine and unblocked Part B, whose purpose was to
+turn the engine's forecast into GROWTH / STAGNATION / DECLINE states. That transformation is
+**degenerate**, and Part B therefore closes with a reasoned negative result rather than a
+threshold table.
+
+## 20. Why the transformation is degenerate
+
+The designated engine is the deterministic identity
+
+```text
+yhat(z,s,t) = y(z,s,t-1)
+```
+
+so the change it predicts, measured against the last observation, is **identically zero for
+every cell and every year**:
+
+```text
+yhat(z,s,t) - y(z,s,t-1) = 0
+```
+
+A state layer derived from that quantity labels every ZE-sector-year `STAGNATION`, whatever
+threshold is chosen. Zero is zero for a band of one percent or of thirty. **The thresholds
+are not the hard decision; there is no quantity for them to classify.**
+
+The same follows for the multi-year horizon the product envisages: persistence extrapolates
+flat indefinitely, so it cannot support a claim that a sector rises or falls in any future
+year.
+
+This is arithmetic, not a judgement about the engine. It does not reopen Part A: that gate
+concerned forecast accuracy of the level, which persistence won under the registered rule.
+
+## 21. Why the alternative was not taken
+
+A direction estimator distinct from the level engine would produce genuinely predictive
+states. It was considered and **rejected as contract-violating**: it is a new model
+experiment, and section 19 above states that Q3 of HERALD_56 is the only route to another
+model experiment. Part A authorized transforming the engine's forecast into states -- not
+fitting something new when that transformation turned out to be empty.
+
+Choosing it now would have inverted the contract in the same week it was consolidated.
+
+## 22. What is recorded instead
+
+1. **No forecast-derived state layer exists**, and none is claimed. The gap noted in
+   `HERALD_CURRENT_STATE.md` is closed with this negative result rather than left open as a
+   pending task.
+2. **The sectoral level forecast stands**: persistence at ZE x sector, designated in Part A,
+   remains the product's engine for predicting the level of annual establishment creations.
+3. **Historical states remain available as observed trajectory only**, and must be labelled
+   explicitly descriptive wherever they appear. A tile may say that a sector grew; it may
+   not say that a sector will grow.
+4. **No thresholds were chosen and no distribution was inspected.** HERALD_56 section 8
+   reserves the thresholds for the project owner and requires them to be fixed before the
+   distribution is seen; since there is no non-degenerate quantity to threshold, neither
+   step was taken.
+
+## 23. Condition for reopening
+
+Part B may return as a **direction task in its own right**, but only inside an experiment
+authorized under Q3 / E7, and only with its own pre-registration: an
+`always_stagnation` baseline, placebo controls, and a gate of its own. Until then, no
+forecast-derived state may be displayed, exported, or described anywhere in the product.

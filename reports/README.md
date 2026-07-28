@@ -255,7 +255,12 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     registered in advance — it beat persistence in only 4 of 7 years against the
     required 6, and regressed past the 10% per-sector veto in FZ and KZ — so the
     result must never be read as persistence being more accurate than Ridge. The
-    national-trend baseline was worse than plain persistence.
+    national-trend baseline was worse than plain persistence. **Part B closes as
+    `NO_FORECAST_DERIVED_STATE_LAYER` (DEC-085):** persistence predicts zero
+    change by construction, so states derived from it would label every cell
+    STAGNATION under any threshold. No thresholds were chosen and no
+    distribution was inspected; a direction estimator would be a new model
+    experiment, reachable only via DEC-081 Q3.
 
 ## Control Documents
 
