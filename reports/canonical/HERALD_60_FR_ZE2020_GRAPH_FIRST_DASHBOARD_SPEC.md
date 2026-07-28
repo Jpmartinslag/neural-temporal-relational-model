@@ -119,7 +119,7 @@ not tell a thinned graph from a sparse one.
 | Initial view | **all nodes**, no territory hidden |
 | Edges | drawn **only for the selected ZE** |
 | Counter | every layer shows **`X relations affichées sur Y disponibles`** |
-| Sampling | **none, ever silently**. If a cap is ever needed it is stated in the counter and in the legend |
+| Sampling | **none**. **E5 applies no cap of any kind**; any future cap requires a new DEC and must appear in the counter and the legend |
 | Layers | **toggled, never overlaid** |
 
 Hiding a territory would misrepresent coverage; hiding edges until a zone is selected only
@@ -134,9 +134,9 @@ summed, averaged, overlaid or drawn in one another's style.
 
 | Layer | Grain | Source | Evidence scale |
 |---|---|---|---|
-| ZE to ZE, trajectory similarity | ZE x year | `ze_similarity` family | `EXPLORATORY_DERIVED`, single status -- see section 8.2. **DEC-066 tiers do not apply** -- they govern sector-to-sector relations |
+| ZE to ZE, trajectory similarity | **stored at ZE-sector x year, rendered at ZE x year after deduplication** -- see 4.1 | `ze_similarity` family | `EXPLORATORY_DERIVED`, single status -- see section 8.2. **DEC-066 tiers do not apply** -- they govern sector-to-sector relations |
 | **ZE to ZE, functional mobility (commuting)** | **ZE x snapshot** | `fr_ze2020_commuting_strict_ex_ante_edges.csv.gz` | `carried_forward_from_snapshot`; snapshot year and age **attached to every edge**, surfaced as described below |
-| sector to sector, observed precedence | **country**, not ZE | Phase 7 promoted edges | DEC-066 tiers, with the grain stated on the layer |
+| sector to sector, observed precedence | **country**, not ZE -- a **separate national view**, see below | Phase 7 **records** (not "promoted edges": 5 of 9 are exploratory) | DEC-066 tiers, with the grain stated on the layer |
 | sector to sector, structural NAF/NACE | nomenclature | **absent until E6 passes** | not applicable |
 
 **Commuting and trajectory similarity are never merged, never overlaid and never share an
@@ -154,23 +154,97 @@ carries its snapshot year and age as **data on every edge**, surfaced three ways
 contradict the no-overlap requirement of section 7.2. The metadata is attached to all edges
 and shown where a reader is actually looking.
 
-**The country layer names its file and its grain.** Its source is exactly
-`data/processed/herald_observatory_v04_granular/granular_relation_edges.csv`, filtered to
-France, and the layer header states the path and the grain.
+**The national layer is a separate retrospective view, outside the ZE2020 mask.**
 
-France holds **9 rows** in that file, across the three DEC-066 tiers: **1
-`ROBUST_ORIGINAL`** (RU->MN, COVID-sensitive, DEC-060), **3 `FINE_GRAIN_SUPPORTED`** and
-**5 `EXPLORATORY_FINE_GRAIN`**. All nine render, each in its own tier styling, and the
-counter of section 3.6 reports them by tier. Drawing only the robust edge would discard
-eight documented rows; drawing all nine without tier distinction would present exploratory
-evidence as robust. Neither is acceptable.
+Section 5 requires every layer to consult the availability mask before rendering. The
+national Phase 7 relations **cannot** satisfy that: the mask marks
+`sector_to_sector_comovement` and `temporal_precedence_signal` as `unavailable /
+not_constructed` in **all fourteen years**. Subordinating this layer to the mask would
+therefore hide it permanently; subordinating it to the year slider would be worse, since its
+windows are not the slider's years.
 
-The layer will still look sparse, and the page states that rather than padding it.
+| Property | Fixed |
+|---|---|
+| Placement | its **own national view**, not a layer of the ZE2020 graph |
+| Mask | **outside** the ZE2020 availability mask, which governs ZE-grain relations only |
+| Slider | **not subordinate to the year slider**; the view carries its own window labels |
+| Source | exactly `data/processed/herald_observatory_v04_granular/granular_relation_edges.csv`, filtered to France, with path and grain in the header |
+| Caveat | the windows are **retrospective estimation windows and do not represent ex-ante availability**, stated in the view |
 
-**RU->MN is never presented as a relation measured in the selected ZE.** It was estimated by
-pooling all 280 zones at country grain; attaching it to a zone the reader has clicked would
-turn a national estimate into a local finding. When a zone is selected, the country layer
-either stays visibly national or is hidden -- it never inherits the selection.
+**They are not called "promoted edges".** Verified content: **9 French rows**, of which
+**1** is `ROBUST_ORIGINAL`, **3** `FINE_GRAIN_SUPPORTED` and **5** `EXPLORATORY_FINE_GRAIN`.
+Five are exploratory, so "promoted" would overstate the majority of the layer. The neutral
+term used throughout is **records**.
+
+**Nine records, four directed pairs.** The nine rows are four ordered sector pairs repeated
+across different estimation windows:
+
+| Pair | Records | Windows |
+|---|---|---|
+| RU -> MN | 2 | 2020-2025 (`ROBUST_ORIGINAL`), 2019-2024 (`FINE_GRAIN_SUPPORTED`) |
+| MN -> BE | 3 | 2020-2025 and 2018-2023 (`FINE_GRAIN_SUPPORTED`), 2019-2024 (exploratory) |
+| OQ -> MN | 3 | 2018-2023, 2019-2024, 2020-2025 (all exploratory) |
+| KZ -> FZ | 1 | 2020-2025 (exploratory) |
+
+Drawn as nine straight lines they would coincide in four places, hiding both tier and window.
+Therefore:
+
+- **curved multi-edges with a deterministic offset** per record;
+- each line keeps its **own window, beta, q_fdr, tier and provenance**, visible on selection;
+- **never collapse to the highest tier, and never average across windows** -- a pair present
+  in three windows at three strengths is three findings, not one.
+
+**RU->MN is never presented as a relation measured in the selected ZE.** It was pooled across
+all 280 zones at country grain, so the national view never inherits a ZE selection.
+
+### 4.1 ZE-to-ZE similarity is stored nine times per pair
+
+The artifact carries **ZE-sector** nodes, so each ZE-to-ZE relation appears **once per
+sector**. Verified for decision year 2020: **12,600 rows = 1,400 distinct ZE pairs x 9
+replicas**, and across the nine replicas `signal_strength`, `stability_score` and
+`relation_direction` are **identical**.
+
+| Rule | Fixed |
+|---|---|
+| Rendering | **one edge per ZE pair** |
+| Precondition | **exactly nine replicas** per pair, else the build **aborts** |
+| Value agreement | direction, `signal_strength`, `stability_score`, evidence source and status **identical** across the nine, else the build **aborts** |
+| Counter | the macro layer reports **1,400 available**, never 12,600 |
+
+**This is deduplication of identical replicas, not aggregation.** Nothing is averaged,
+summed or selected: the nine rows carry one value, and one edge carries it. Recording the
+distinction matters because an aggregation would be a modelling choice, and this is not one.
+
+### 4.2 Micro layer -- sector to sector inside one ZE
+
+The micro graph defines nine sector nodes but had no edges. Added:
+
+| Property | Fixed |
+|---|---|
+| Grain | **ZE x sector pair x year** |
+| Source | `fr_ze2020_temporal_relation_signals.csv.gz`, family `intra_ze_sector` -- leakage-safe (HERALD_38) |
+| Availability | **2017-2025 only**, per the DEC-082 mask |
+| Direction | undirected, as stored |
+| Evidence status | **`EXPLORATORY_DERIVED`**, single status |
+| Style | dashed, width `abs(signal_strength)`, **signed value in the tooltip** |
+
+**Two absences that must never look alike.** The family emits **20 relations per year across
+the whole panel**, so in 2020 only **20 of 280 zones** carry one at all. Therefore:
+
+- *layer unavailable* -- the year is before 2017: the page states `insufficient_history`;
+- *layer available, no relation for this ZE* -- the normal case for 260 zones: the page says
+  so explicitly, in the counter and in words.
+
+Conflating them would let a reader read "no measured relation here" as "relations not
+computed yet", or the reverse.
+
+### 4.3 `cross_ze_same_sector` is out of scope for E5, by decision
+
+The family exists in the artifact (12,600 rows per year, same nine-replica structure as
+`ze_similarity` but keyed by sector). It is **deliberately not rendered in E5**, and this is
+recorded rather than left to silence: it would need its own layer, its own grain statement
+and its own counter, and E5 already carries four layers. **Its exclusion is a scope decision,
+not an oversight, and adding it later requires a new DEC.**
 
 ## 5. Availability governs rendering
 
@@ -227,6 +301,14 @@ browser was available, and that expedient must not harden into a standard.
 | Snapshot age | every commuting edge carries its observation year and age |
 | Persistence confinement | the persistence value appears in panel or tooltip text only, never in a colour or class attribute |
 | Provenance | every embedded figure traces to a delivered artifact, by checksum |
+| **Geographic coverage** | **280 canonical ZEs included and 26 out-of-scope features excluded**, both counted |
+| **Macro volume reconciliation** | one distinct `total_establishment_creations` per ZE-year, equal to the sum of its nine sectors; the repeated column never summed |
+| **Similarity deduplication** | exactly **nine identical replicas collapse to one edge per ZE pair**; a differing replica aborts |
+| **National view temporality** | the national records are **outside the ZE2020 mask and independent of the year slider**, and their windows are labelled retrospective |
+| **Micro layer present** | the `intra_ze_sector` layer renders, and **"no relation for this ZE" is visibly distinct from "layer unavailable"** |
+| **National record counts** | **9 records, 4 distinct directed pairs, tiers 1 / 3 / 5**, each record keeping its own window |
+| **MAE source** | the historical error reads **only** the DEC-084 artifact; the `NOT_COMPARABLE` supplement is never opened |
+| **Counters reconcile** | every `X relations affichées sur Y disponibles` matches the underlying data, with `Y` = 1,400 for the macro similarity layer |
 | Determinism | two builds produce byte-identical output |
 
 ### 7.2 Visual layer, required before the dashboard may be called complete
@@ -338,4 +420,5 @@ year" is visible in the specific cell the reader is looking at.
 - Engine and the absence of forecast states: `reports/canonical/HERALD_58_...`, DEC-084, DEC-085.
 - Ranking coverage: `reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md`, DEC-086.
 - Leakage-safe relation input: `reports/canonical/HERALD_38_FR_ZE2020_TEMPORAL_INTEGRITY_CORRECTION.md`.
-- Sector-to-sector tiers and their scope: DEC-066; France's single edge: DEC-060.
+- Sector-to-sector tiers and their scope: DEC-066; **one robust record among nine French
+  records** across four directed pairs: DEC-060, DEC-066.
