@@ -229,15 +229,28 @@ def validate_prediction_file(
     horizons = set(part["target_horizon_years"].unique())
     assert horizons == {EXPECTED_HORIZON}, f"{where}: horizon {horizons} != {EXPECTED_HORIZON}"
 
-    years = set(int(y) for y in part["decision_year"].unique())
+    # Check the domain BEFORE casting: int() truncates, so 2019.5 would pass as
+    # 2019 and a label of 0.5 as 0.  The cast must be the last step, never the
+    # first.
+    year_values = part["decision_year"].to_numpy(dtype=float)
+    assert np.isfinite(year_values).all(), f"{where}: decision_year carries a non-finite value"
+    assert np.equal(year_values, np.floor(year_values)).all(), (
+        f"{where}: decision_year is not integral"
+    )
+    years = set(year_values.astype(int))
     unexpected = sorted(years - set(EXPECTED_DECISION_YEARS))
     assert not unexpected, f"{where}: decision years outside 2019-2022: {unexpected}"
 
     models = set(part["model"].unique())
     assert models <= set(EXPECTED_MODELS), f"{where}: unknown model {sorted(models - set(EXPECTED_MODELS))}"
 
-    labels = set(int(v) for v in part["target_top3_label"].unique())
-    assert labels <= set(EXPECTED_LABELS), f"{where}: target_top3_label not binary: {sorted(labels)}"
+    label_values = part["target_top3_label"].to_numpy(dtype=float)
+    assert np.isfinite(label_values).all(), (
+        f"{where}: target_top3_label carries a non-finite value"
+    )
+    assert np.isin(label_values, EXPECTED_LABELS).all(), (
+        f"{where}: target_top3_label not binary"
+    )
 
     for column in ("target_growth", "rank_predicted"):
         values = part[column].to_numpy(dtype=float)
