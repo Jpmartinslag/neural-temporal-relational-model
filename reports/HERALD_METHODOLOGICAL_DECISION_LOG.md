@@ -4945,3 +4945,60 @@ selected the country layer stays visibly national or hides, never inheriting the
 
 **Affected files:** `reports/canonical/HERALD_60_FR_ZE2020_GRAPH_FIRST_DASHBOARD_SPEC.md`,
 `reports/README.md`.
+
+### DEC-087 -- Third correction addendum (2026-07-28, still before any code)
+
+The original entry and the first two addenda are preserved unaltered. A third audit found
+four defects, all of granularity or relational availability, all verified against the
+artifacts. **No code exists yet.**
+
+**1. The national layer contradicted the availability mask (high).** Section 5 requires every
+layer to consult the mask, but the mask marks `sector_to_sector_comovement` and
+`temporal_precedence_signal` `unavailable / not_constructed` in **all fourteen years**.
+Subordinating the layer to the mask would hide it permanently; subordinating it to the year
+slider would be worse, since its windows are not the slider's years. Fixed: the Phase 7
+relations become a **separate national retrospective view**, **outside** the ZE2020 mask,
+which governs ZE-grain relations only, and **not subordinate to the slider**, carrying its
+own window labels and an explicit caveat that those windows are **retrospective estimation
+windows and do not represent ex-ante availability**. They are no longer called "promoted
+edges" -- **5 of the 9 are exploratory** -- and the neutral term **records** is used.
+
+**2. `ze_similarity` was declared at the wrong grain (high).** The specification said ZE x
+year; the artifact stores **ZE-sector** nodes, so each pair appears once per sector. Verified
+at decision year 2020: **12,600 rows = 1,400 distinct ZE pairs x 9 replicas**, with
+`signal_strength`, `stability_score` and `relation_direction` **identical** across the nine.
+Fixed: render **one edge per ZE pair**, requiring **exactly nine replicas** and identical
+values across them, **aborting** on any divergence; the macro counter reports **1,400
+available, never 12,600**. Recorded explicitly as **deduplication of identical replicas, not
+aggregation** -- nothing is averaged, summed or selected, since an aggregation would be a
+modelling choice and this is not one.
+
+**3. The micro graph had nodes but no edges (high).** Fixed by adding the `intra_ze_sector`
+layer: grain **ZE x sector pair x year**, leakage-safe source
+`fr_ze2020_temporal_relation_signals.csv.gz`, availability **2017-2025** per DEC-082, single
+status `EXPLORATORY_DERIVED`, dashed stroke, width `abs(signal_strength)`, signed value in
+the tooltip. Critically, the family emits **20 relations per year across the whole panel**,
+so in 2020 only **20 of 280 zones** carry one: the page must distinguish **"layer
+unavailable"** from **"layer available, no relation emitted for this ZE"**, since conflating
+them would let a reader take "no measured relation here" for "not computed yet", or the
+reverse. **`cross_ze_same_sector` is excluded from E5 by written decision**, not by silence;
+adding it later requires a new DEC.
+
+**4. Nine national records represent only four pairs (medium).** Verified: RU->MN twice,
+MN->BE three times, OQ->MN three times, KZ->FZ once, across estimation windows 2018-2023,
+2019-2024 and 2020-2025. Nine straight lines would coincide in four places and hide both tier
+and window. Fixed: **curved multi-edges with a deterministic offset**, each keeping its own
+window, beta, q_fdr, tier and provenance; **never collapsed to the highest tier and never
+averaged across windows** -- a pair present in three windows at three strengths is three
+findings, not one. A test requires **9 records, 4 distinct directed pairs and the 1 / 3 / 5
+tier distribution**.
+
+**Final guards added to section 7.1:** geographic coverage 280 included and 26 excluded;
+macro volume reconciliation; the nine-to-one similarity deduplication; the national view's
+independence from mask and slider; the micro layer's presence and its zero-versus-unavailable
+distinction; the national record and pair counts; the MAE reading only the official artifact;
+and every visible counter reconciling with the data. **E5 applies no cap of any kind** --
+the earlier "if a cap is ever needed" is replaced, and any future cap requires a new DEC.
+
+**Affected files:** `reports/canonical/HERALD_60_FR_ZE2020_GRAPH_FIRST_DASHBOARD_SPEC.md`,
+`reports/README.md`.

@@ -319,7 +319,18 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     would collide; the macro volume is pre-registered against a **9.0×**
     inflation, since the total column repeats across the nine sector rows; and
     the persistence panel names its horizon `t+1`, reads only the DEC-084
-    artifact over 2019…t, and never the NOT_COMPARABLE supplement.
+    artifact over 2019…t, and never the NOT_COMPARABLE supplement. A third
+    addendum fixes four granularity defects: the national Phase 7 records move
+    to their own retrospective view outside the ZE2020 mask, which marks them
+    unavailable in all fourteen years, and stop being called promoted since 5 of
+    9 are exploratory; ZE↔ZE similarity is stored nine times per pair
+    (12,600 = 1,400 × 9 identical replicas) and is deduplicated to one edge with
+    the counter reporting 1,400; the micro graph gains its `intra_ze_sector`
+    layer, which emits only 20 relations a year so "no relation for this zone"
+    must look different from "layer unavailable"; and the nine national records
+    are four directed pairs across windows, drawn as curved multi-edges that are
+    never collapsed to the highest tier. `cross_ze_same_sector` is excluded from
+    E5 by written decision, and E5 applies no cap.
 
 ## Control Documents
 
