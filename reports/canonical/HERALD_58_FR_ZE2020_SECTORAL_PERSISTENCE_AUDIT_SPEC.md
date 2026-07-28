@@ -1,9 +1,13 @@
 # HERALD 58 -- France ZE2020 Sectoral Persistence Audit (Part A specification)
 
-**Date:** 2026-07-27
+**Date:** 2026-07-28
 **Status:** `PRE_REGISTERED_SPECIFICATION_NOT_YET_EXECUTED`
 **Stage:** E3a of the sequence fixed in HERALD_56 section 5.
-**Decision entry:** DEC-083 will record the outcome and reference this frozen specification.
+**Decision entries:** **DEC-083** registers this specification *before* execution, as
+HERALD_56 section 5 requires of any stage carrying a methodological decision. **DEC-084**
+will record the outcome and reference this frozen text. The temporal proof of
+pre-registration is the commit that introduces DEC-083 and this file, not the date written
+here.
 
 ## 0. Scope
 
@@ -31,12 +35,20 @@ causal, or recommendation claim.
 `sector_establishment_creations` -- **absolute counts** -- from
 `data/processed/france_ze2020/fr_ze2020_sector_panel.csv`, at ZE2020 x A10 x year.
 
-`sector_share` is explicitly **not** the target. Shares sum to one within a ZE-year, so a
-closed composition mechanically favours persistence; a win there would be an arithmetic
-artifact, not evidence of an engine. This is failure pattern 5 in HERALD_56 section 4, and it
-is the pattern that decided DEC-078, DEC-079 and DEC-080.
+`sector_share` is explicitly **not** the target. Shares sum to one within a ZE-year. Closed
+composition is a **plausible structural limitation consistent with DEC-078, DEC-079 and
+DEC-080, not a demonstrated mechanism** -- the wording fixed by the DEC-081 correction
+addendum, and repeated here so this specification cannot reintroduce a stronger claim than
+the contract allows. Because no test has isolated compositional closure as a cause, a
+persistence win on shares would be uninterpretable rather than informative, which is reason
+enough to exclude it as a target.
 
-Counts are also the quantity the product speaks about: a sector growing in a territory.
+**What the target measures, stated precisely.** `sector_establishment_creations` is the
+count of **establishments created in a sector, a zone and a year**: an annual flow of new
+establishments. It is **not** growth of the establishment stock, not employment, not
+output, and not firm survival. A rise in this series means more establishments were created
+that year, nothing more. Every sentence produced by this audit and by anything downstream of
+it must respect that reading.
 
 ## 3. Panel, derived features, and completeness
 
@@ -92,21 +104,74 @@ baseline is a consequence of applying the same rule, not a choice.
 | Name | Nature | Rule |
 |---|---|---|
 | `persistence` | deterministic identity, no fit | `yhat(z,s,t) = y(z,s,t-1)` |
-| `ridge_ar` | fitted | Ridge(alpha=1.0) on standardized `lag_1..3`, `growth_1y_safe`, `growth_2y_safe`; trained on training-fold ZEs with `year < t` only |
-| `sector_mean` | naive control, estimated on training set | mean of the sector's counts over training-fold ZEs and years `< t` |
-| `ze_sector_mean` | naive control, estimated on training set | mean of the cell's own series over years `< t` |
-| `national_scaled_persistence` | deterministic baseline | `y(z,s,t-1) x r(s,t)`, where `r(s,t)` is the national growth of sector `s` between `t-2` and `t-1` |
+| `ridge_ar` | fitted | see section 5.1 |
+| `sector_mean` | cross-sectional control, estimated on training ZEs | mean of the sector's counts over **training-fold ZEs** and years `< t` |
+| `ze_sector_mean` | own-history control, causal | mean of the **test cell's own** series over years `< t` |
+| `national_scaled_persistence` | deterministic baseline | `y(z,s,t-1) x r(s,t)`, see section 5.2 |
 
-**Estimation discipline, frozen:**
+**Estimation discipline, frozen. The two controls are causally different objects and must
+not share one rule:**
 
-- Both means are computed **exclusively on the training set** -- training-fold ZEs, years
-  strictly `< t`. A mean that saw the test fold or the target year is disqualifying.
-- The national trend `r(s,t)` uses **only data through `t-1`**: it is the ratio of national
-  sector totals at `t-1` and `t-2`. It never reads year `t`.
-- `national_scaled_persistence` is a **baseline, not a model**. It exists because HERALD_56
-  section 4.8 records that national-trend information was already available as a feature and
-  did not suffice; testing it directly as a baseline is cheap and settles whether the
-  national signal alone carries the sectoral series.
+- `sector_mean` is **cross-sectional**: it borrows information from other zones, so it is
+  computed exclusively on **training-fold ZEs** with years strictly `< t`. Reading the test
+  fold would be leakage across zones.
+- `ze_sector_mean` is **own-history**: by definition it is the mean of the test cell's own
+  past. Restricting it to training ZEs would make it uncomputable for the cells it is meant
+  to score. It therefore uses the **test cell's own series, years strictly `< t`**, exactly
+  the causal window `persistence` uses -- persistence takes the last value of that window,
+  `ze_sector_mean` takes its mean. Neither ever reads year `t`.
+- **Neither control, and no model, may read the target at year `t`.** That is the single
+  invariant both rules serve; "training set only" was too coarse a phrasing for it and is
+  replaced by the two rules above.
+
+### 5.1 `ridge_ar`, fully specified
+
+```text
+sklearn.pipeline.Pipeline([
+    ("scaler", sklearn.preprocessing.StandardScaler()),
+    ("ridge",  sklearn.linear_model.Ridge(alpha=1.0)),
+])
+```
+
+- Features: `lag_1`, `lag_2`, `lag_3`, `growth_1y_safe`, `growth_2y_safe`, in that order.
+- `StandardScaler` is fitted **on the training rows only** and applied unchanged to the test
+  rows. Fitting it on the pooled data would leak test distribution into training.
+- `Ridge(alpha=1.0)`, `fit_intercept=True` (the scikit-learn default, stated rather than
+  assumed), `solver` left at its default `auto`, no `positive` constraint, no sample weights.
+- Training rows are those of the training-fold ZEs with `year < t` **that are feature- and
+  target-complete under the `isfinite` rule of section 3**. Non-finite rows are removed from
+  training and are already outside the comparable population.
+- **No imputation.** A cell with a non-finite feature is excluded identically for every
+  model, never filled.
+- **No clipping and no rounding** of Ridge predictions. This repeats the convention of the
+  existing ZE-total baseline; introducing a floor at zero here would be a silent
+  post-registration modelling choice.
+- Because counts are non-negative but unconstrained regression is not, the **number and
+  share of negative Ridge predictions must be reported** in the run manifest, per year and
+  overall. This is a diagnostic disclosure, not a gate.
+- The **scikit-learn version** is recorded in the run manifest, so a future rerun that
+  produces different numbers can be attributed to the library rather than to the data.
+
+### 5.2 `national_scaled_persistence`, and its fail-closed division
+
+```text
+r(s,t) = national_total(s, t-1) / national_total(s, t-2)
+yhat(z,s,t) = y(z,s,t-1) x r(s,t)
+```
+
+`national_total(s, y)` sums the sector's counts over **all 280 zones** at year `y`. It uses
+**only data through `t-1`** and never reads year `t`.
+
+**The division must fail closed.** Before use, `national_total(s, t-2)` is required to be
+**finite and strictly positive**, and `r(s,t)` is required to be finite. A zero, negative,
+missing or non-finite denominator **aborts the audit with an explicit error**. It must never
+produce an infinity, never be imputed, never be silently dropped, and never cause a cell to
+disappear from one model's population but not another's.
+
+`national_scaled_persistence` is a **baseline, never a candidate engine** (section 8). It
+exists because HERALD_56 section 4.8 records that national-trend information was already
+available as a feature and did not suffice; testing it directly settles whether the national
+signal alone carries the sectoral series, which is cheap and worth knowing.
 
 ## 6. Folds, repetition, and the once-only rule
 
@@ -147,27 +212,65 @@ dropped.
 
 ## 8. Pre-registered gate
 
-Let `A` and `B` be aggregate WMAPE on the official window and yearly WMAPE per evaluation
-year.
+### 8.1 Eligibility
 
-**Naive-control gate.** A model qualifies only if it beats **both** `sector_mean` and
-`ze_sector_mean` on aggregate WMAPE **and** in at least **6 of the 7** evaluation years.
+| Object | Role | Can be designated engine? |
+|---|---|---|
+| `persistence` | candidate | **yes** |
+| `ridge_ar` | candidate | **yes** |
+| `sector_mean` | control | **never** |
+| `ze_sector_mean` | control | **never** |
+| `national_scaled_persistence` | baseline | **never** |
 
-**Promotion.**
+`national_scaled_persistence` is excluded from designation by registration, not by outcome.
+It is a diagnostic about the national signal; promoting a product engine that multiplies
+every territory by one national ratio per sector would assert a uniformity this audit does
+not test. If it were to outperform both candidates, that is a **finding to report and a
+reason to write a new specification**, not a promotion under this one.
 
-1. If a fitted model qualifies **and** beats `persistence` on aggregate WMAPE, in at least
-   6/7 years, **and** does not regress against `persistence` by more than **10% relative
-   WMAPE in any single A10 sector**, it is designated the engine.
-2. Otherwise, if `persistence` qualifies under the naive-control gate, sectoral persistence is
-   promoted from CANDIDATE to the product's forecasting engine.
-3. If **no** model beats both naive controls under the rule above, the verdict is
-   **`NO_ENGINE_DESIGNATED`**: sectoral persistence remains a CANDIDATE, and Part B does not
+### 8.2 Definition of "beats"
+
+**"Beats" means strictly lower WMAPE.** Equality is not a win, at the aggregate level and in
+every yearly comparison. Ties count against the challenger.
+
+### 8.3 Naive-control gate
+
+A candidate qualifies only if it beats **both** `sector_mean` and `ze_sector_mean` on
+aggregate WMAPE **and** in at least **6 of the 7** evaluation years.
+
+### 8.4 Promotion
+
+1. If `ridge_ar` qualifies under 8.3, beats `persistence` on aggregate WMAPE and in at least
+   6/7 years, **and** passes the per-sector safety veto of 8.5, it is designated the engine.
+2. Otherwise, if `persistence` qualifies under 8.3, sectoral persistence is promoted from
+   CANDIDATE to the product's forecasting engine.
+3. If **neither candidate** beats both naive controls, the verdict is
+   **`NO_ENGINE_DESIGNATED`**: sectoral persistence remains a CANDIDATE and Part B does not
    proceed until a new specification exists.
 
-The per-sector regression clause exists so a fitted model cannot be promoted on the strength
-of the largest sectors while degrading the rest.
+### 8.5 Per-sector safety veto
 
-No outcome is anticipated here. Any of the three is a valid result of this audit.
+For each A10 sector `s`, with `W_c(s)` the candidate's sectoral WMAPE and `W_p(s)`
+persistence's:
+
+```text
+relative_regression(s) = (W_c(s) - W_p(s)) / W_p(s)
+veto if   relative_regression(s) > 0.10   for any s
+```
+
+Degenerate reference: if `W_p(s) = 0` the ratio is undefined, and the veto fires when
+`W_c(s) > 0`; if both are `0` there is no regression. If `W_p(s)` is `NaN` because the
+sectoral denominator is zero, the audit aborts rather than proceeding with an
+uninterpretable veto.
+
+**This clause is a safety veto, never a promotional metric.** It can only *block* a
+promotion that clause 8.4 already granted on aggregate WMAPE; it can never create one, and a
+favourable sector can never lift a candidate that failed 8.3 or 8.4. That is what keeps it
+consistent with section 7: decompositions do not promote. It exists so a fitted model cannot
+be promoted on the strength of the largest sectors while degrading the rest -- which the
+skew described in section 7 makes a live risk, not a hypothetical one.
+
+No outcome is anticipated here. All three verdicts in 8.4 are valid results of this audit.
 
 ## 9. Integrity checks, all blocking
 
@@ -180,9 +283,16 @@ No outcome is anticipated here. Any of the three is a valid result of this audit
 | Once-only | the pooled metric row count equals 17,638, with no duplicated ZE-sector-year |
 | Fold disjointness | train and test zone sets never intersect for the fitted models |
 | Finiteness | every reported metric is finite, or explicitly `NaN` with its cause recorded |
+| National denominator | `national_total(s, t-2)` finite and strictly positive, and `r(s,t)` finite, for every sector and evaluation year -- otherwise abort (section 5.2) |
+| Scaler discipline | `StandardScaler` fitted on training rows only, never on pooled data |
+| No imputation | no cell excluded by the `isfinite` rule is filled for any model |
 | Determinism | two independent runs produce byte-identical outputs |
+| Environment | scikit-learn and pandas versions recorded in the run manifest |
 
 A failure of any integrity check invalidates the run; it is not reported as a model result.
+
+Reported alongside, as disclosure rather than gate: the count and share of negative
+`ridge_ar` predictions, per year and overall.
 
 ## 10. What the outcome authorizes
 

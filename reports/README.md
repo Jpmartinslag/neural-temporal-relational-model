@@ -240,14 +240,17 @@ the science/structure base; `13`-`14` are housekeeping against that base.
 56. `canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md`
     — pre-registered protocol for the rolling-origin audit that decides whether
     sectoral persistence at ZE x sector can be promoted from candidate to the
-    product's forecasting engine. Fixes the target as absolute counts (never
-    shares, whose closed composition would favour persistence mechanically),
+    product's forecasting engine. Fixes the target as absolute counts and
+    excludes shares, whose closed composition is a plausible structural
+    limitation consistent with DEC-078/079/080 rather than a demonstrated
+    mechanism, making a persistence win there uninterpretable;
     derives the official 2019–2025 comparison window from the training rules
     rather than from any metric, keeps the 2013–2025 persistence-only figure in
     a separate non-comparable table, forbids seed repetition for deterministic
     models including Ridge, and pre-registers a gate that reads WMAPE alone and
-    admits `NO_ENGINE_DESIGNATED` as an outcome. Written before any model was
-    fitted.
+    admits `NO_ENGINE_DESIGNATED` as an outcome. Registered as DEC-083 before
+    execution; DEC-084 will record the result. Written before any model was
+    fitted and before any error metric was computed.
 
 ## Control Documents
 
