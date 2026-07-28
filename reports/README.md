@@ -237,6 +237,17 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     exist before 2017 because their growth feature starts in 2014 under a
     three-year correlation minimum. Records, without fixing, that the dynamic
     graph splits file assigns training roles to years holding no edges.
+56. `canonical/HERALD_58_FR_ZE2020_SECTORAL_PERSISTENCE_AUDIT_SPEC.md`
+    — pre-registered protocol for the rolling-origin audit that decides whether
+    sectoral persistence at ZE x sector can be promoted from candidate to the
+    product's forecasting engine. Fixes the target as absolute counts (never
+    shares, whose closed composition would favour persistence mechanically),
+    derives the official 2019–2025 comparison window from the training rules
+    rather than from any metric, keeps the 2013–2025 persistence-only figure in
+    a separate non-comparable table, forbids seed repetition for deterministic
+    models including Ridge, and pre-registers a gate that reads WMAPE alone and
+    admits `NO_ENGINE_DESIGNATED` as an outcome. Written before any model was
+    fitted.
 
 ## Control Documents
 
