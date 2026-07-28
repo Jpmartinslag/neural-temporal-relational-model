@@ -5002,3 +5002,41 @@ the earlier "if a cap is ever needed" is replaced, and any future cap requires a
 
 **Affected files:** `reports/canonical/HERALD_60_FR_ZE2020_GRAPH_FIRST_DASHBOARD_SPEC.md`,
 `reports/README.md`.
+
+### DEC-087 -- Fourth correction addendum (2026-07-28, still before any code)
+
+The original entry and the first three addenda are preserved unaltered. Two objective points
+remain from the audit, both fixed. **No code exists yet.**
+
+**1. A false factual claim about `cross_ze_same_sector`.** The third addendum's section
+described it as having "the same nine-replica structure as `ze_similarity`". That is wrong,
+and verification shows the two families are not comparable at all. At decision year 2020 both
+hold 12,600 rows, but `ze_similarity` covers **1,400 pairs with exactly 9 rows each and zero
+pairs whose sectors differ in strength**, while `cross_ze_same_sector` covers **11,675
+distinct ZE pairs with 1 to 4 rows each and 881 pairs whose sectors differ in strength**.
+
+Corrected wording, now in the specification:
+
+> `cross_ze_same_sector` contains sector-specific ZE-sector relations. Unlike
+> `ze_similarity`, its sector rows are not interchangeable replicas and must never be
+> deduplicated across sectors.
+
+Applying the section 4.1 deduplication to it would collapse 12,600 sector-specific relations
+onto 11,675 pairs and destroy genuine variation in 881 of them. The 4.1 rule is scoped to
+`ze_similarity` alone, and the comparison table is recorded so no later pass generalizes it.
+The family stays **excluded from E5**, and the DEC that admits it must carry its own
+deduplication rule, or the explicit decision that none applies.
+
+**2. "Edges of the selected ZE" was ambiguous for directed families.** `ze_similarity` and
+commuting are directed, so the phrase decided nothing. Fixed: **all incident edges render**,
+`source == selected_ZE` **or** `target == selected_ZE`; the **stored direction is preserved
+and drawn with an arrow**, incidence deciding visibility and never orientation; the tooltip
+names origin and destination explicitly so an arrow is never the only cue; **reciprocal pairs
+render as two edges on separate deterministic curves**, never merged; non-incident edges are
+never drawn; and the counter counts **directed records**, so a reciprocal pair counts as two.
+Merging two directions into one line would turn an asymmetric commuting flow into a symmetric
+one, which is a different economic statement about the territory. Section 7.1 gains a guard
+for incidence, direction preservation and reciprocal-pair separation.
+
+**Affected files:** `reports/canonical/HERALD_60_FR_ZE2020_GRAPH_FIRST_DASHBOARD_SPEC.md`,
+`reports/README.md`.

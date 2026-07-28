@@ -117,7 +117,7 @@ not tell a thinned graph from a sparse one.
 | Rule | Fixed |
 |---|---|
 | Initial view | **all nodes**, no territory hidden |
-| Edges | drawn **only for the selected ZE** |
+| Edges | drawn **only for the selected ZE**, on the incidence rule of 3.6.1 |
 | Counter | every layer shows **`X relations affichées sur Y disponibles`** |
 | Sampling | **none**. **E5 applies no cap of any kind**; any future cap requires a new DEC and must appear in the counter and the legend |
 | Layers | **toggled, never overlaid** |
@@ -125,6 +125,25 @@ not tell a thinned graph from a sparse one.
 Hiding a territory would misrepresent coverage; hiding edges until a zone is selected only
 defers detail. The distinction is deliberate: nodes are the population, edges are the
 detail.
+
+#### 3.6.1 What "edges of the selected ZE" means
+
+`ze_similarity` and commuting are **directed**, so "the edges of a zone" is ambiguous until
+fixed. It is fixed here:
+
+| Rule | Fixed |
+|---|---|
+| Selection | **all incident edges**: `source == selected_ZE` **OR** `target == selected_ZE` |
+| Direction | the **stored direction is preserved and drawn with an arrow** -- incidence decides visibility, never orientation |
+| Tooltip | names **origin and destination explicitly**, so an arrow is never the only cue |
+| Reciprocal pairs | where both directions exist they are **two edges on separate deterministic curves**, never merged into one line |
+| Non-incident edges | **never drawn** |
+| Counter | counts **directed records**, so a reciprocal pair counts as **two**, never collapsed into one relation |
+
+Merging two directions into one line would turn an asymmetric commuting flow into a symmetric
+one, which is a different economic statement about the territory.
+
+Section 7.1 tests incidence, direction preservation and reciprocal-pair separation.
 
 ## 4. Layer separation, and the evidence scale of each
 
@@ -240,11 +259,30 @@ computed yet", or the reverse.
 
 ### 4.3 `cross_ze_same_sector` is out of scope for E5, by decision
 
-The family exists in the artifact (12,600 rows per year, same nine-replica structure as
-`ze_similarity` but keyed by sector). It is **deliberately not rendered in E5**, and this is
-recorded rather than left to silence: it would need its own layer, its own grain statement
-and its own counter, and E5 already carries four layers. **Its exclusion is a scope decision,
-not an oversight, and adding it later requires a new DEC.**
+**`cross_ze_same_sector` contains sector-specific ZE-sector relations. Unlike
+`ze_similarity`, its sector rows are not interchangeable replicas and must never be
+deduplicated across sectors.**
+
+An earlier revision of this section claimed it had "the same nine-replica structure as
+`ze_similarity`". That was false, and verification shows the two families are not comparable
+at all:
+
+| Decision year 2020 | `ze_similarity` | `cross_ze_same_sector` |
+|---|---:|---:|
+| Rows | 12,600 | 12,600 |
+| Distinct ZE pairs | **1,400** | **11,675** |
+| Rows per pair | exactly 9 | **1 to 4** |
+| Pairs whose sectors differ in strength | **0** | **881** |
+
+Deduplicating this family the way section 4.1 deduplicates `ze_similarity` would collapse
+12,600 sector-specific relations onto 11,675 pairs and destroy genuine variation in 881 of
+them. The rule of 4.1 applies to `ze_similarity` **only**, and this table is recorded so no
+future pass generalizes it.
+
+The family is **deliberately not rendered in E5**, and that exclusion is written rather than
+left to silence: it would need its own layer, its own grain statement and its own counter,
+and E5 already carries four layers. **Adding it later requires a new DEC**, and that DEC must
+carry its own deduplication rule -- or the explicit decision that none applies.
 
 ## 5. Availability governs rendering
 
@@ -308,7 +346,8 @@ browser was available, and that expedient must not harden into a standard.
 | **Micro layer present** | the `intra_ze_sector` layer renders, and **"no relation for this ZE" is visibly distinct from "layer unavailable"** |
 | **National record counts** | **9 records, 4 distinct directed pairs, tiers 1 / 3 / 5**, each record keeping its own window |
 | **MAE source** | the historical error reads **only** the DEC-084 artifact; the `NOT_COMPARABLE` supplement is never opened |
-| **Counters reconcile** | every `X relations affichées sur Y disponibles` matches the underlying data, with `Y` = 1,400 for the macro similarity layer |
+| **Counters reconcile** | every `X relations affichées sur Y disponibles` matches the underlying data, with `Y` = 1,400 for the macro similarity layer, counted as **directed records** |
+| **Edge incidence** | only edges with `source == selected_ZE` or `target == selected_ZE` render; **stored direction is preserved**; a reciprocal pair renders as **two separate curves** and counts as two |
 | Determinism | two builds produce byte-identical output |
 
 ### 7.2 Visual layer, required before the dashboard may be called complete

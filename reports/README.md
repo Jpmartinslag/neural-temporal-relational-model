@@ -330,7 +330,13 @@ the science/structure base; `13`-`14` are housekeeping against that base.
     must look different from "layer unavailable"; and the nine national records
     are four directed pairs across windows, drawn as curved multi-edges that are
     never collapsed to the highest tier. `cross_ze_same_sector` is excluded from
-    E5 by written decision, and E5 applies no cap.
+    E5 by written decision, and E5 applies no cap. A fourth addendum retracts a
+    false claim that that family shared the nine-replica structure — it holds
+    11,675 pairs with 1–4 sector-specific rows each and 881 pairs whose sectors
+    differ, so it must never be deduplicated across sectors — and fixes what
+    "edges of the selected zone" means for directed families: all incident
+    edges, stored direction preserved with an arrow, reciprocal pairs as two
+    separate curves counted as two.
 
 ## Control Documents
 
