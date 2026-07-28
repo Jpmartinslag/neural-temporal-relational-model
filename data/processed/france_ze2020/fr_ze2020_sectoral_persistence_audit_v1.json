@@ -91,7 +91,13 @@
       }
     ],
     "folds": 5,
-    "negative_prediction_share_ridge": 0.00810703554623278,
+    "negative_prediction_share": {
+      "national_scaled_persistence": 0.0,
+      "persistence": 0.0,
+      "ridge_ar": 0.00810703554623278,
+      "sector_mean": 0.0,
+      "ze_sector_mean": 0.0
+    },
     "negative_predictions": {
       "national_scaled_persistence": 0,
       "persistence": 0,
@@ -99,10 +105,166 @@
       "sector_mean": 0,
       "ze_sector_mean": 0
     },
+    "negative_predictions_by_year": {
+      "2019": {
+        "national_scaled_persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ridge_ar": {
+          "count": 82,
+          "share": 0.03255260023818976
+        },
+        "sector_mean": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ze_sector_mean": {
+          "count": 0,
+          "share": 0.0
+        }
+      },
+      "2020": {
+        "national_scaled_persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ridge_ar": {
+          "count": 43,
+          "share": 0.017063492063492062
+        },
+        "sector_mean": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ze_sector_mean": {
+          "count": 0,
+          "share": 0.0
+        }
+      },
+      "2021": {
+        "national_scaled_persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ridge_ar": {
+          "count": 11,
+          "share": 0.004365079365079365
+        },
+        "sector_mean": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ze_sector_mean": {
+          "count": 0,
+          "share": 0.0
+        }
+      },
+      "2022": {
+        "national_scaled_persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ridge_ar": {
+          "count": 4,
+          "share": 0.0015873015873015873
+        },
+        "sector_mean": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ze_sector_mean": {
+          "count": 0,
+          "share": 0.0
+        }
+      },
+      "2023": {
+        "national_scaled_persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ridge_ar": {
+          "count": 1,
+          "share": 0.0003968253968253968
+        },
+        "sector_mean": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ze_sector_mean": {
+          "count": 0,
+          "share": 0.0
+        }
+      },
+      "2024": {
+        "national_scaled_persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ridge_ar": {
+          "count": 1,
+          "share": 0.0003968253968253968
+        },
+        "sector_mean": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ze_sector_mean": {
+          "count": 0,
+          "share": 0.0
+        }
+      },
+      "2025": {
+        "national_scaled_persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "persistence": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ridge_ar": {
+          "count": 1,
+          "share": 0.0003968253968253968
+        },
+        "sector_mean": {
+          "count": 0,
+          "share": 0.0
+        },
+        "ze_sector_mean": {
+          "count": 0,
+          "share": 0.0
+        }
+      }
+    },
     "registered_rows": 17639,
     "rows": 17639,
     "seeds_used": 0,
-    "truncation_invariance": "PASS"
+    "target_mutation_invariance": "PASS"
   },
   "metrics": {
     "overall": {
