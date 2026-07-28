@@ -186,11 +186,33 @@ attached to its original sector) and are excluded. The smoke run is excluded.
 
 ### 10.3 Grouping and selection, frozen
 
-Group key: `(ze2020, decision_year, model, feature_config)`. Verified population structure:
-each group holds exactly **9 sectors**, exactly **3** are selected by `rank_predicted <= 3`,
-and one seed-scenario file yields **6,720 groups**. Models are `logit_entry_classifier` and
-`mlp_entry_classifier`; feature configs are `base_formula_features`, `no_relation_features`
-and `shuffled_relation_features`; decision years are 2019-2022 at horizon 3.
+Group key: `(task, scenario, seed, ze2020, decision_year, model, feature_config)`.
+
+**Amended before any metric was computed.** The first version of this section registered
+"exactly 9 sectors and exactly 3 selected per group, and 6,720 groups per seed-scenario
+file". That was verified on **one** file -- `top3 / full_control / seed_42` -- and is false
+across the corpus. Correcting a factual assumption before computing anything is legitimate;
+asserting it from a single sample was not. The verified structure is:
+
+| Property | Verified value |
+|---|---|
+| Sectors per group | **variable, 3 to 9**, with 9 dominant (104,556 of 134,400 top3 groups, 77.8%) |
+| Selected per group | **`min(3, group size)`** -- always 3 in the top3 task, 2 or 3 in the lift task |
+| Group size across feature configs | **identical within a cell**: 0 disagreements in 44,800 cells |
+| Groups | 134,400 (top3) and 224,000 (lift) across all scenarios and seeds |
+
+Variation comes from candidate availability and label maturity, not from the models: since
+the size agrees across feature configs, the paired comparison remains on identical
+populations, which is what section 10.7 requires.
+
+Consequences fixed here:
+
+- the shape check aborts on a group smaller than 3, on a selection different from
+  `min(3, size)`, or on any disagreement of size across feature configs within a cell;
+- `mean_growth_selected` averages over the selected rows, however many were selected;
+- Recall@3 is unaffected: its denominator is the positives in the group, not the group size;
+- the precision figure is reported as `hits / selected` and is a **cross-check** against the
+  already-published Precision@3, not one of the two registered metrics.
 
 ### 10.4 Recall@3, with the zero-positive rule fixed in advance
 
@@ -222,16 +244,22 @@ whether they were ordered correctly.
 
 ### 10.6 Paired comparison, frozen
 
-Within `(ze2020, decision_year, model, seed, scenario)`, compare the three feature configs
-pairwise:
+Paired within `(ze2020, decision_year, model, seed, scenario)`, separately per task, over
+the feature configs each task actually carries -- a second single-sample assumption
+corrected here before computing:
 
-- `base_formula_features` versus `no_relation_features`;
-- `base_formula_features` versus `shuffled_relation_features`;
-- `no_relation_features` versus `shuffled_relation_features`.
+| Task | Feature configs present |
+|---|---|
+| `top3` | `base_formula_features`, `no_relation_features`, `shuffled_relation_features` |
+| `lift` | `base_formula_features`, `no_relation_features`, `base_plus_target_aligned_lifts`, `target_aligned_lift_features`, `shuffled_target_aligned_lifts` |
 
-Report, per scenario and per model: the mean of each metric, the paired win rate, and the
-count of groups entering each comparison. **No threshold and no gate**: these are descriptive
-completions of the HERALD_23 section 5 metric set.
+Registered pairs, per task: **every relation-bearing config against `no_relation_features`,
+and every relation-bearing config against its own shuffled control.** For `top3` that is
+`base_formula` vs `no_relation`, `base_formula` vs `shuffled_relation`, and `no_relation` vs
+`shuffled_relation`. For `lift` the shuffled control is `shuffled_target_aligned_lifts`.
+
+Report, per task, scenario and model: the mean of each metric, the paired win rate, the tie
+rate, and the count of groups entering each comparison. **No threshold and no gate.**
 
 ### 10.7 Blocking integrity checks
 
