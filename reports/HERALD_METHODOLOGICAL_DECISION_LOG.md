@@ -4885,3 +4885,63 @@ vocabulary section 3.4 forbids.
 
 **Affected files:** `reports/canonical/HERALD_60_FR_ZE2020_GRAPH_FIRST_DASHBOARD_SPEC.md`,
 `reports/README.md`.
+
+### DEC-087 -- Second correction addendum (2026-07-28, still before any code)
+
+The original entry and the first addendum are preserved unaltered. A second specification
+audit found five implementation blockers. **No code exists yet.** The science is unchanged;
+these are contract defects that would have produced a misleading page.
+
+**1. The map was required by the validation section but never specified.** Fixed: source
+`data/external/ze2020_geometry.geojson`; **280/280 canonical ZEs covered, verified by join at
+build time**, a shorter join aborting. The file holds **306** features, so the **26 outside
+the canonical scope are explicitly excluded and counted**, never silently dropped. Colour is
+the **same** macro observed change on the same scale as the graph nodes, so map and graph
+cannot disagree. Click selects a zone, synchronised with the graph. The map is **secondary
+context**: no edges on it, and no prediction ever colours it.
+
+**2. Edge density was unbounded.** Up to **12,600** derived relations and **27,683**
+commuting edges exist per year; drawing them at once produces an unreadable mat that no
+visual check could pass, and thinning them silently is worse, since a reader cannot
+distinguish a sampled graph from a sparse one. Fixed: initial view shows **all nodes with no
+territory hidden**, edges are drawn **only for the selected ZE**, every layer displays
+**`X relations affichées sur Y disponibles`**, **no silent sampling ever**, and layers are
+**toggled rather than overlaid**. Hiding a territory would misrepresent coverage; hiding
+edges until selection only defers detail.
+
+**3. Per-edge metadata as permanent text would have contradicted the no-overlap
+requirement.** The first addendum demanded the snapshot year and age "visible on every edge";
+with thousands of edges that is thousands of colliding labels. Fixed: the metadata is
+**attached to every edge as data** and surfaced in the **tooltip**, as **persistent text on
+the selected edge**, and in the **layer header** for the current view -- **never as permanent
+text over every line**.
+
+**4. The macro volume could have been inflated ninefold.** `total_establishment_creations` is
+stored **repeated across the nine sector rows of each ZE-year**; summing the column directly
+gives 110,358,018 against a correct 12,262,002, exactly **9.0x**. Pre-registered: exactly one
+distinct value per ZE-year is required and a build finding more **aborts**; that single value
+is used; it is checked equal to the sum of the nine sector values, which holds in every
+ZE-year of the current panel; and **the repeated column is never summed**. This is a
+silent-error class -- a ninefold volume looks plausible and would change every node size.
+
+**5. The persistence horizon and its history were ambiguous.** Fixed: with the slider on
+`t`, the forecast is **for `t+1`** and the label reads
+**`Prévision pour [t+1] par persistance`**, the horizon written in rather than implied. The
+historical MAE reads **only** the official DEC-084 artifact over realized years **2019 to
+`t`**; the **`NOT_COMPARABLE` supplement is never read here**, since it spans 2013-2025 on a
+different population and would quietly widen the history behind a number the reader believes
+comes from the audited window. Fewer than two realized forecasts shows
+`historique insuffisant`, which is the normal state at `t = 2019`.
+
+**Country layer, named and bounded.** Its source is exactly
+`data/processed/herald_observatory_v04_granular/granular_relation_edges.csv`, filtered to
+France, with path and grain in the layer header. Verified content: **9 French rows across
+the three DEC-066 tiers** -- 1 `ROBUST_ORIGINAL` (RU->MN), 3 `FINE_GRAIN_SUPPORTED`, 5
+`EXPLORATORY_FINE_GRAIN`. All nine render in their own tier styling: drawing only the robust
+edge would discard eight documented rows, and drawing all nine undifferentiated would present
+exploratory evidence as robust. **RU->MN is never presented as a relation measured in the
+selected ZE** -- it was pooled across all 280 zones at country grain, so when a zone is
+selected the country layer stays visibly national or hides, never inheriting the selection.
+
+**Affected files:** `reports/canonical/HERALD_60_FR_ZE2020_GRAPH_FIRST_DASHBOARD_SPEC.md`,
+`reports/README.md`.

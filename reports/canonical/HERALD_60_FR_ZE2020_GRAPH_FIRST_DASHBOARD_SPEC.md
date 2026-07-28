@@ -46,8 +46,22 @@ Three consequences, each of which is a prohibition somewhere later in this docum
 | Channel | Meaning | Source |
 |---|---|---|
 | **Colour** | recent **observed** trajectory of the zone, labelled descriptive | `fr_ze2020_sector_panel.csv`, observed totals |
-| **Size** | observed economic volume of the zone | same |
+| **Size** | observed economic volume of the zone, **see the summation rule below** | same |
 | Edges | ZE-to-ZE relations, subject to per-year availability | `fr_ze2020_temporal_relation_signals.csv.gz` |
+
+**Summation rule, pre-registered.** `total_establishment_creations` is stored **repeated
+across the nine sector rows of each ZE-year**. Summing the column directly inflates every
+volume by exactly **9.0x** -- verified: the naive column sum is 110,358,018 against a correct
+12,262,002.
+
+- exactly **one distinct value per ZE-year** is required, and a build that finds more aborts;
+- that single value is the one used;
+- it is checked equal to the **sum of the nine sector values**, which holds in every ZE-year
+  of the current panel;
+- **the repeated column is never summed.**
+
+This is a silent-error class, not a rounding concern: a nine-fold volume would look
+plausible and change every node size on the macro graph.
 
 ### 3.2 Micro graph -- sectors inside one ZE
 
@@ -78,6 +92,40 @@ new decision.**
 
 The window used for "recent" is fixed in section 8.1 and its legend is stated on the page.
 
+## 3.5 The map, as secondary context
+
+Section 7 requires the map to be validated, so it must be specified.
+
+| Property | Fixed |
+|---|---|
+| Source | `data/external/ze2020_geometry.geojson` |
+| Coverage | **280/280 canonical ZEs**, verified by join at build time; a build that covers fewer aborts |
+| Out-of-scope geometry | the file holds **306** features; the **26** outside the canonical 280 are **explicitly excluded and counted**, never silently dropped |
+| Colour | the **same** macro observed change `tau(z, t)` as the macro graph nodes, on the same scale |
+| Interaction | clicking a zone selects it, synchronised with the graph |
+| Role | **secondary context**: no edges are drawn on the map, and no prediction ever colours it |
+
+The map and the macro graph must never disagree: one scale, one quantity, one legend.
+
+## 3.6 Edge density, bounded
+
+The corpus is far too large to draw at once: up to **12,600** derived relations and
+**27,683** commuting edges per year. Rendering everything would produce an unreadable mat
+that no visual check could pass, and silently sampling it would be worse -- the reader could
+not tell a thinned graph from a sparse one.
+
+| Rule | Fixed |
+|---|---|
+| Initial view | **all nodes**, no territory hidden |
+| Edges | drawn **only for the selected ZE** |
+| Counter | every layer shows **`X relations affichées sur Y disponibles`** |
+| Sampling | **none, ever silently**. If a cap is ever needed it is stated in the counter and in the legend |
+| Layers | **toggled, never overlaid** |
+
+Hiding a territory would misrepresent coverage; hiding edges until a zone is selected only
+defers detail. The distinction is deliberate: nodes are the population, edges are the
+detail.
+
 ## 4. Layer separation, and the evidence scale of each
 
 **Hard rule, carried from HERALD_56 section 5:** each species of edge is a separate layer,
@@ -87,7 +135,7 @@ summed, averaged, overlaid or drawn in one another's style.
 | Layer | Grain | Source | Evidence scale |
 |---|---|---|---|
 | ZE to ZE, trajectory similarity | ZE x year | `ze_similarity` family | `EXPLORATORY_DERIVED`, single status -- see section 8.2. **DEC-066 tiers do not apply** -- they govern sector-to-sector relations |
-| **ZE to ZE, functional mobility (commuting)** | **ZE x snapshot** | `fr_ze2020_commuting_strict_ex_ante_edges.csv.gz` | `carried_forward_from_snapshot`, **with the observation year and the snapshot age visible on every edge** |
+| **ZE to ZE, functional mobility (commuting)** | **ZE x snapshot** | `fr_ze2020_commuting_strict_ex_ante_edges.csv.gz` | `carried_forward_from_snapshot`; snapshot year and age **attached to every edge**, surfaced as described below |
 | sector to sector, observed precedence | **country**, not ZE | Phase 7 promoted edges | DEC-066 tiers, with the grain stated on the layer |
 | sector to sector, structural NAF/NACE | nomenclature | **absent until E6 passes** | not applicable |
 
@@ -95,13 +143,34 @@ summed, averaged, overlaid or drawn in one another's style.
 encoding.** They are different objects: one is an observed flow of workers carried forward
 from a snapshot four to eight years old, the other is a correlation computed from the same
 births panel that the rest of the page displays. A reader who cannot tell them apart would
-be reading an official statistic and a derived correlation as one thing. The commuting layer
-carries its snapshot year and age on the edge itself, not only in a legend, because an edge
-drawn in 2025 from a 2017 observation is eight years stale and that must be visible where
-the edge is.
+be reading an official statistic and a derived correlation as one thing. The commuting layer therefore
+carries its snapshot year and age as **data on every edge**, surfaced three ways:
 
-France holds **one** promoted sector-to-sector edge (RU->MN, COVID-sensitive, DEC-060). The
-layer will look sparse. That is the evidence, and the page states it rather than padding it.
+- in the **tooltip** of any edge;
+- as **persistent text on the selected edge**;
+- in the **layer header**, which states the snapshot year and age governing the current view.
+
+**Never as permanent text over every line.** Thousands of labels would collide, which would
+contradict the no-overlap requirement of section 7.2. The metadata is attached to all edges
+and shown where a reader is actually looking.
+
+**The country layer names its file and its grain.** Its source is exactly
+`data/processed/herald_observatory_v04_granular/granular_relation_edges.csv`, filtered to
+France, and the layer header states the path and the grain.
+
+France holds **9 rows** in that file, across the three DEC-066 tiers: **1
+`ROBUST_ORIGINAL`** (RU->MN, COVID-sensitive, DEC-060), **3 `FINE_GRAIN_SUPPORTED`** and
+**5 `EXPLORATORY_FINE_GRAIN`**. All nine render, each in its own tier styling, and the
+counter of section 3.6 reports them by tier. Drawing only the robust edge would discard
+eight documented rows; drawing all nine without tier distinction would present exploratory
+evidence as robust. Neither is acceptable.
+
+The layer will still look sparse, and the page states that rather than padding it.
+
+**RU->MN is never presented as a relation measured in the selected ZE.** It was estimated by
+pooling all 280 zones at country grain; attaching it to a zone the reader has clicked would
+turn a national estimate into a local finding. When a zone is selected, the country layer
+either stays visibly national or is hidden -- it never inherits the selection.
 
 ## 5. Availability governs rendering
 
@@ -225,11 +294,13 @@ numbers the artifact carries, shown as themselves. The commuting layer keeps its
 
 ### 8.3 Side panel: three fields, with a causal error
 
+With the slider on year `t`, the forecast shown is **for `t+1`**, and the label says so.
+
 | Field | Content |
 |---|---|
-| **Dernière observation** | last observed value |
-| **Prévision par persistance** | the same value, **with the reason it repeats stated in the panel** |
-| **Erreur absolue moyenne historique** | MAE of persistence for that ZE-sector |
+| **Dernière observation** | last observed value, year `t` |
+| **`Prévision pour [t+1] par persistance`** | the same value, **with the reason it repeats stated in the panel**. The horizon is written into the label, never left implicit |
+| **Erreur absolue moyenne historique** | MAE of persistence for that ZE-sector, over realized years only |
 
 The second field prints the same number as the first by construction. That is not a defect
 to hide: the panel says why, which is more honest than omitting a field the engine genuinely
@@ -241,11 +312,19 @@ The third field is defined **causally with respect to the selected year `t`**:
 MAE(z, s, t) = (1 / n) * sum over tau <= t of | y(z, s, tau) - yhat(z, s, tau) |
 ```
 
+- the **only** admissible source is the official DEC-084 artifact,
+  `fr_ze2020_sectoral_persistence_predictions_v1.csv`, over its realized years **2019 to
+  `t`**;
+- the **`NOT_COMPARABLE` persistence-only supplement is never read here**, silently or
+  otherwise. It covers 2013-2025 on a different population and would quietly widen the
+  history behind a number the reader believes comes from the audited window;
 - only forecasts **already realized at or before `t`** enter the sum;
 - **no year after the slider position is ever read** -- moving the slider back must lower the
   number of years, never keep them;
-- **`n`, the number of evaluated years, is displayed** beside the value;
-- if `n < 2`, the field shows **`historique insuffisant`** instead of a figure;
+- **`n`, the number of realized forecasts, is displayed** beside the value;
+- if fewer than **two** realized forecasts exist at `t`, the field shows
+  **`historique insuffisant`** instead of a figure. With the window starting at 2019, this is
+  the normal state for `t = 2019`;
 - the MAE is **never converted into high / medium / low confidence**. A confidence label is a
   three-state vocabulary, and section 3.4 forbids exactly that.
 
