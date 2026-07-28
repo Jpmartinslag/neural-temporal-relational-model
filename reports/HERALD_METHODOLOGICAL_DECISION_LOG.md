@@ -4609,3 +4609,52 @@ from git.
 
 **Affected files:** `reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md`.
 
+### DEC-086 -- Result addendum (2026-07-28)
+
+The recomputation pre-registered in HERALD_59 section 10 is executed. **E4 is
+`RANKING_GAP_AUDIT_COMPLETE`.** 40 prediction files, 358,400 groups, **zero models fitted,
+zero jobs launched**. Recall@3 undefined in 7,984 groups, reported and excluded from every
+mean, never imputed.
+
+**The two metrics, top3 / `full_control`.** Recall@3 ranges 0.6476-0.6539 across the six
+model-config combinations; growth of the selected three ranges 0.3824-0.3885 against an
+attainable ceiling of 0.6037. The ranking therefore captures about **63% of the attainable
+growth** -- the economic number the previous metric set could not express, reported for the
+record and authorizing nothing.
+
+**Relation features add nothing on either new metric.** The spread across configs is 0.006
+on both. `no_relation_features` attains the highest growth and `shuffled_relation_features`
+the highest recall. Paired group by group, **ties dominate at 72-84% on recall** with
+near-symmetric win and loss shares: the configs are indistinguishable, not merely close on
+the mean. The tie share is reported beside every win share, because a win share alone would
+have read as a defeat rather than as a tie.
+
+**Scenario behaviour reproduces the record on metrics it never used.** The corrected target
+shuffle collapses recall 0.6503 to 0.4826 and growth 0.3824 to 0.2668, independently
+confirming the HERALD_38 section 8 repair. Sector shuffle degrades. **Temporal shuffle does
+not degrade -- recall rises to 0.7563**, corroborating the HERALD_38 section 8 finding that
+temporal shuffle fails to degrade this target. That is a recorded warning about the target's
+temporal structure, not a new result.
+
+**Nothing is promoted.** DEC-069, DEC-078 and DEC-080 remain closed and the relation layer
+still fails against no-relation, base-formula and shuffled controls. Two entries of the
+HERALD_23 section 5 checklist are filled; the four unauthorized controls remain
+unauthorized; **E5 is unblocked**.
+
+**Delivered.** `recompute_fr_ze2020_ranking_metrics.py`, its summary, paired and manifest
+outputs, and `tests/test_fr_ze2020_ranking_metric_coverage.py` (23 passing, determinism
+included). The recomputer imports no estimator, asserted by test; forbidden and superseded
+sources abort with their own mutation tests; the zero-positive rule is covered by five
+tests, one of which fails if an undefined recall is ever imputed.
+
+**Process note.** Three structural assumptions in this stage were sampled from one file and
+asserted as general facts: no per-cell predictions exist, groups hold exactly 9 sectors, and
+group size is at least 3. All three were false and all three are recorded rather than
+quietly fixed. The pre-registration commits precede the implementation commit, so the
+ordering is provable from git.
+
+**Affected files:** `reports/canonical/HERALD_59_FR_ZE2020_RANKING_GAP_AUDIT.md`,
+`src/modeles/france_ze2020/recompute_fr_ze2020_ranking_metrics.py`,
+`tests/test_fr_ze2020_ranking_metric_coverage.py`,
+`data/processed/france_ze2020/fr_ze2020_ranking_metric_coverage_*`,
+`reports/herald_artifact_registry.json`.
