@@ -62,3 +62,80 @@ model on this data, so that run is treated as **misconfigured, not informative**
 re-run here with the defaults checked.
 
 Reporting rule of `HERALD_62` B7 applies.
+
+---
+
+## 5. Results (DEC-101)
+
+`src/modeles/france_ze2020/run_fr_ze2020_state_classification.py`, 7 rolling origins
+2019-2025, macro-F1.
+
+### 5.1 The ordering inverts once the target is the state
+
+| model | macro-F1 | accuracy |
+|---|---|---|
+| **mlp + relational** | **0.348** | 0.528 |
+| mlp | 0.330 | 0.529 |
+| gbm + relational | 0.323 | 0.547 |
+| gbm | 0.319 | 0.543 |
+| logreg + relational | 0.307 | 0.567 |
+| logreg | 0.306 | 0.564 |
+| sector previous-year mode | 0.262 | -- |
+| **persistence** | **0.112** | -- |
+
+Two reversals against everything measured under WMAPE:
+
+- **Nonlinear models now win.** The linear model is last of the three real learners. Under
+  count regression Ridge beat every neural arm; under state classification it is beaten by
+  both the MLP and the gradient booster.
+- **Persistence collapses to 0.112.** It answers "stagnates" for every cell, which minimises
+  absolute error and is near-useless for macro-F1. The metric no longer rewards inaction.
+
+The S2 concern is settled in passing: a correctly configured `HistGradientBoostingClassifier`
+lands at 0.319, in the same range as the other learners, confirming that DEC-088's 0.364
+WMAPE figure was a misconfiguration and not evidence about gradient boosting.
+
+### 5.2 S1 -- PASSED, 4 of 5 seeds
+
+Same architecture, same folds, same years; only the relational feature block differs.
+
+| seed | mlp+rel | mlp | years won | delta |
+|---|---|---|---|---|
+| 0 | 0.348 | 0.330 | 5/7 | +0.018 |
+| 1 | 0.348 | 0.322 | 6/7 | +0.026 |
+| 2 | 0.333 | 0.318 | 5/7 | +0.016 |
+| 3 | 0.338 | 0.334 | **3/7** | +0.004 |
+| 4 | 0.335 | 0.332 | 5/7 | +0.004 |
+
+**The delta is positive in 5/5 seeds** and the 5-of-7 gate passes in 4/5. Direction is
+consistent; magnitude is not.
+
+This is the first attributable relational gain in the project. Every earlier comparison
+changed architecture and feature set together, so no gain could be assigned to the relations.
+
+The gain also scales with the model's capacity to combine features nonlinearly -- logreg
++0.001, gbm +0.004, mlp +0.018 -- which is what the mechanism predicts: a linear model cannot
+represent "my analogues grew" interacted with "my sector is falling".
+
+### 5.3 The absolute level is weak, and this must be stated first
+
+| | macro-F1 |
+|---|---|
+| mlp + relational, mean over seeds | 0.340 |
+| mlp, mean over seeds | 0.327 |
+| **stratified random** | **0.307** |
+
+The complete model sits **+0.033 above random guessing**. Of that margin the relational block
+accounts for **+0.013, roughly 40%** -- but the margin itself is small. This is a detectable
+weak signal, not a usable classifier, and nothing here supports deploying it as a
+recommendation engine.
+
+### 5.4 Open: is 0.34 near the ceiling?
+
+With small cells, whether a zone-sector crosses +-5% may be largely counting fluctuation
+rather than economics. If a large share of labels flips under Poisson resampling, the
+attainable maximum is far below 1.0 and 0.34 may be close to it. R3 already showed this class
+of statistic can be entirely noise (DEC-096 10.2).
+
+Section 6 measures it. Until then, no claim is made about whether the model is weak or the
+problem is capped.
