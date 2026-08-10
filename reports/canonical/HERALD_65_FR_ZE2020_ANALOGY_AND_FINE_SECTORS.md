@@ -167,3 +167,60 @@ Consequence: **the analogy layer needs no FLORES dependency**, which also remove
 
 Outstanding: section 4, employment influence at A38 on FLORES 2017-2024 -- the one test of
 inter-sector influence run on a variable that can express it. Not yet executed.
+
+### 6.5 Employment influence at A88 -- first run invalid, second run FAILED
+
+**First run was not a negative result, it was a broken test.** On the raw A88 employment
+panel the shuffled-year placebo produced **more** survivors than the real data in all six
+years (3,487 against 826). A null that beats the signal four to one is diagnostic of an
+invalid statistic, not of an absent effect, and reported values such as `r = -0.618,
+p = 3.8e-36` are implausible for this data.
+
+Diagnosis, measured:
+
+| employment per cell (ZE x sector x year) | |
+|---|---|
+| zeros | 18.1% |
+| below 10 | 25.7% |
+| below 50 | 40.0% |
+| median / p99 | 105 / 16,157 |
+
+With 88 sectors in small zones most cells hold a handful of jobs, `log1p` growth is dominated
+by discrete jumps, and Fisher's z assumes a normality that does not hold. Both arms were
+driven by outliers and the placebo happened to generate more extreme ones.
+
+**Corrected run:** sectors restricted to those with median employment >= 50 (54 of 89), and
+rank-transformed growth instead of raw `log1p`. The null then behaves -- 1 placebo survivor
+against 10 real.
+
+| year | real | placebo |
+|---|---|---|
+| 2019 | 4 | 0 |
+| 2020 | 3 | 0 |
+| 2021 | 3 | 1 |
+| 2022 | 0 | 0 |
+| 2023 | 0 | 0 |
+| 2024 | 0 | 0 |
+
+**3/6 years, R1 needed 5. Failed.** Every survivor sits in 2019-2021, the COVID window, and
+nothing survives in 2022-2024. Common-shock co-movement is the parsimonious reading. The
+strongest pair reverses as before: `64 -> 84` at +0.396 in 2019, `84 -> 64` at -0.347 in 2020.
+
+### 6.6 What the three attempts jointly establish
+
+Inter-sector influence was pursued along every axis available and none rescued it:
+
+| hypothesis | test | outcome |
+|---|---|---|
+| sectors too coarse | A88, 54 usable sectors | failed, 3/6 |
+| wrong variable | FLORES employment, not creations | failed, same run |
+| drowned by micro-entrepreneurs | legal-form split with a thinning control | refuted (DEC-096 10.4) |
+| too few observations per edge | pooling 280 zones per sector pair | worked, and still no signal |
+
+**One sector pulling a different sector is not detectable in French territorial data at any
+granularity, variable or subpopulation we can reach.** That is a stronger and more useful
+statement than a single null, because it says where not to look.
+
+What survives is narrower and real: **same-sector diffusion across commuting-linked zones**
+(DEC-096) and **same-sector analogy between territories** (A1). Both are about a sector
+spreading or repeating across space, not about sectors interacting with each other.
