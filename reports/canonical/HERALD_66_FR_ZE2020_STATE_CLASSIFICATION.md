@@ -167,3 +167,54 @@ Observed class balance: grows 56.9%, declines 22.6%, stagnates 20.6%.
 attributable, positive in 5/5 seeds, and passes its gate in 4/5. What cannot be claimed is
 that the approach is near the limit of what the data allows. There is roughly 0.31 of macro-F1
 between the current model and the ceiling, and nothing in this project has yet reached into it.
+
+## 7. Balanced classes and richer features (DEC-103) -- and a correction to DEC-101
+
+Two changes: class-balanced sample weights, and eight further causal features -- zone total
+momentum, **national sector momentum**, the cell's two previous states, acceleration, and
+**the cell's excess growth over its own national sector**.
+
+| arm | macro-F1 |
+|---|---|
+| **gbm, balanced, rich features** | **0.372** |
+| gbm + relational | 0.368 |
+| mlp + relational | 0.351 |
+| mlp | 0.347 |
+| *DEC-101 best (mlp+rel, poor features)* | *0.340* |
+| stratified random | 0.307 |
+| noise ceiling | 0.655 |
+
+Share of the random-to-ceiling gap captured rises from **9% to 19%**. Only the GBM received
+sample weights -- `MLPClassifier` does not accept them in scikit-learn -- and the GBM is now
+ahead, which is consistent with the imbalance diagnosis (56.9% of cells grow).
+
+### 7.1 The relational gain does not survive a stronger baseline
+
+| model | delta from the relational block | years won |
+|---|---|---|
+| mlp | +0.004 | 3, 3, 5 |
+| gbm | **-0.004** | 2, 2, 2 |
+
+Against DEC-101's feature set the relational block was worth +0.018 and passed S1 in 4/5
+seeds. Against this one it is worth nothing.
+
+**DEC-101 5.2 is corrected, not retracted.** The gain was real against that baseline; it does
+not survive the addition of national sector momentum. The parsimonious explanation is
+redundancy: analogous zones grew largely because their shared sector grew nationally, so
+"what similar zones did" was an indirect route to information the model now receives directly.
+
+This is the control a reviewer would ask for -- *did you condition on the national sector
+trend?* -- and before this section the answer was no.
+
+The analogy layer keeps its descriptive standing under DEC-099 A1, which compared it against
+the sector mean on a different question (does analogy inform, not does it improve a model).
+What is withdrawn is the claim that it improves forecasting once the model knows its own
+sector's national trend.
+
+### 7.2 Known gap in this section
+
+Eight features were added in one step, so the +0.032 cannot be attributed among them. In
+particular it is unknown whether the work is done by **national sector momentum** -- an
+aggregate the cell belongs to, not a relation -- or by **excess over the national sector**,
+which is territorially specific and would be a substantive signal. Section 8 ablates the
+feature groups to separate them.
