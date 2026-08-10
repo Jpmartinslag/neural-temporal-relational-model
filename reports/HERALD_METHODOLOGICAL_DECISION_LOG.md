@@ -5040,3 +5040,230 @@ for incidence, direction preservation and reciprocal-pair separation.
 
 **Affected files:** `reports/canonical/HERALD_60_FR_ZE2020_GRAPH_FIRST_DASHBOARD_SPEC.md`,
 `reports/README.md`.
+
+## DEC-088 -- France growth-feature leak, confirmed and measured (2026-08-10)
+
+**Status:** `LEAK_CONFIRMED_FRANCE_NEURAL_LINE_INVALID_FOR_CLAIMS`.
+
+`growth_1y = (y[t] - y[t-1]) / y[t-1]` is defined using the target year, and `side_lag_1` is
+also a column, so `y[t] = side_lag_1 x (1 + growth_1y)` reconstructs the target exactly
+(3080/3080 legacy rows, 3640/3640 strict, max error 2.9e-11). `prepare_herald_strict_exante_inputs.py`
+subsets columns without recomputation, so the strict ex-ante battery carried the leak.
+
+Exploitation is model-class dependent and was measured, not inferred: Ridge 0.0323 -> 0.0339
+(indifferent, because the reconstruction is a product a linear model cannot represent),
+V7 `graph_only` 0.0198 -> 0.0623 (3.1x worse), V7 no-fills 0.0220 -> 0.0956 (4.3x). The
+ordering inverts: under causal features Ridge beats V7 by 1.8x.
+
+The 2026-05-07 target-shuffle audit could not detect this class: shuffling `y[t]` without
+recomputing derived features leaves the features encoding the original target, which is why
+Ridge also degraded 36.8x there.
+
+**Affected files:** `reports/canonical/HERALD_62_FR_ZE2020_LEAK_FINDING_AND_LEARNED_GRAPH_SPEC.md`.
+
+## DEC-089 -- Learned-graph experiment, pre-registered (2026-08-10)
+
+**Status:** `PRE_REGISTERED`. Variants, seven rolling origins, gate, learning-slope test,
+graph-correspondence test and the reporting rule fixed before execution. Reopening justified
+by DEC-088 invalidating the evidence base, not by preference.
+
+**Affected files:** `HERALD_62` Part B.
+
+## DEC-090 -- Corrected France neural line: forecast, slope and blending all fail (2026-08-10)
+
+**Status:** `EXECUTED`. Causal panel, 7 rolling origins, 5 seeds, Slurm 7834211/7834221.
+
+`graph_only` 0.0972 against Ridge 0.0727 and persistence 0.0746; 1/7 years against Ridge.
+The learning slope survives a difficulty control (-0.0106/yr) but is **identical** to a
+refitted linear model (-0.0105/yr), so it reflects accumulating data, not the graph. In
+ex-ante convex blends the neural weight is driven to 0.00 in 2023, 2024 and 2025 by a
+procedure with no access to the test year.
+
+**Affected files:** `HERALD_62` Part C, C1-C3.
+
+## DEC-091 -- The learned graph is the prior, and the smoothness penalty is not the cause (2026-08-10)
+
+**Status:** `DYNAMISM_ABLATION_FAILED_PENALTY_NOT_BINDING`. Slurm 7834544.
+
+`[geo, mobility]` priors explain the learned adjacency at R^2 = 0.9641; adjacency correlation
+2019->2025 is 0.9994. Removing the temporal smoothness penalty raises movement only to 1.29%
+against 34.9% in observed relations, so the penalty was not the binding constraint -- prior
+dominance in `topk_sparse_softmax(raw + prior_logits)` is. Weakening the prior frees the graph
+further but the five seeds then disagree (r = 0.695), which was pre-registered as noise.
+
+Retracts the earlier claim that V7's deviation is dynamic: `adj_delta_by_year` is an
+unnormalised norm against an adjacency of norm 9.64.
+
+**Affected files:** `HERALD_62` C4, C4b, C6.
+
+## DEC-092 -- The learned graph carries no measurable learned content (2026-08-10)
+
+**Status:** `NO_MEASURABLE_LEARNED_GRAPH_CONTENT`.
+
+Rebuilding the adjacency with the learned term set to zero reproduces the trained graph at
+r = 0.9994, and the "learned deviation" correlates with the prior-only deviation at 0.9882.
+**Retracts C4's positive finding**: seed agreement (r = 0.983) was absence of variation in the
+input, not evidence of learning. The -0.34 correspondence with official commuting is a softmax
+artifact, reproduced at -0.3376 with no training at all.
+
+Positive by-product: the unverified `graph_adjacency_mobility_v0.csv` correlates with audited
+official commuting at **+0.9914**, empirically addressing the HERALD_09 provenance concern.
+
+**Affected files:** `HERALD_62` C7.
+
+## DEC-093 -- Sector-affinity graph, pre-registered (2026-08-10)
+
+**Status:** `PRE_REGISTERED`. `A[(i,s)->(j,q)] = C_t[i,j] x S_t[s,q]` with `C_t` fixed official
+commuting and `S_t` learned per year: 1,134 parameters against 35,280 observations, replacing
+78,120 against 3,900. Five gates fixed before code.
+
+**Affected files:** `reports/canonical/HERALD_63_FR_ZE2020_SECTOR_GRAPH_SPEC.md` 1-8.
+
+## DEC-094 -- Sector-affinity graph rejected (2026-08-10)
+
+**Status:** `SECTOR_GRAPH_REJECTED_MAIN_DOES_NOT_BEAT_PLACEBO`. Slurm 7836288.
+
+All five gates fail. `main` 0.1360 does not beat `placebo_sector` 0.1239 or `no_graph` 0.1214;
+`S_t` replaced by the uniform matrix costs 0.43%; `S_t` moves but the seeds agree at only
+0.704. An earlier status string read `PLACEBO_BEATS_MAIN`, which overstated overlapping seed
+distributions and is corrected in 10a.
+
+Two data defects recorded: division by the DEC-082 observed zero produced 4e9 growth values
+and diverged a fold at WMAPE 53.8; and a first placebo design would have scrambled each cell's
+own history. A grid run before the first fix is discarded in full.
+
+**Affected files:** `HERALD_63` 9, 10, 10a, 10b.
+
+## DEC-095 -- Relational definitions: node, edge, weight, null (2026-08-10)
+
+**Status:** `PRE_REGISTERED`. One atomic node, `ZE x sector`. Only flow and temporal
+precedence admitted as edges; co-movement candidate; similarity and specialization demoted to
+node attributes. Precedence estimated at sector-pair level pooled over 280 zones. Family names
+reconciled between catalogue and mask. Gates R1-R4 fixed.
+
+**Affected files:** `reports/canonical/HERALD_64_FR_ZE2020_RELATION_DEFINITIONS.md` 1-9.
+
+## DEC-096 -- Relational estimates, and the 34.9% drift figure retracted (2026-08-10)
+
+**Status:** `EXECUTED`. Deterministic estimator, no seed.
+
+`precedence_intra` and `precedence_cross` admitted (6/7 against the shuffled-years placebo,
+9 and 18 BH edges at q = 0.10). `comovement` excluded as window-fragile.
+
+**R3 FAILED and retracts HERALD_62 C4b.** Observed inter-ZE movement is 34.86% against a
+Poisson noise floor of 40.73%: pure counting noise produces more movement than the data, so
+the figure is 116.8% accounted for by sampling variation. The claim that the data moves while
+the model's graph does not is withdrawn.
+
+Unregistered but reported: cross-year sign consistency is 0.71 against ~0.66 expected by
+chance, and one admitted pair reverses outright. Most edges are year-specific. The only
+persistent structure is same-sector diffusion across commuting-linked zones (`BE->BE` over four
+years, 0.19 to 0.38).
+
+Legal-form hypothesis refuted: companies-only fails every gate, but so does a random 27%
+thinning at matched volume, so the loss is power and not composition.
+
+**Affected files:** `HERALD_64` 10.
+
+## DEC-097 -- Availability mask regenerated under canonical names (2026-08-10)
+
+**Status:** `EXECUTED`. Mask v2 renames every family to HERALD_64 section 6, which DEC-082
+required before any layer can render. Two status values added rather than forcing the old
+vocabulary: `node_attribute_not_an_edge` and `failed_placebo_gate`. The build asserts the
+family set matches the specification exactly.
+
+**Affected files:** `HERALD_64` 10.6, `fr_ze2020_relation_availability_mask_v2.csv`.
+
+## DEC-098 -- Analogy and fine-sector fingerprint, pre-registered (2026-08-10)
+
+**Status:** `PRE_REGISTERED`. Reverses the DEC-095 demotion of similarity: that decision
+applied an interaction criterion to a product whose mechanism is analogy, and analogy requires
+no interaction between the two territories. Gates A1 (beat the national sector mean) and A2
+(the fingerprint must beat plain A10) fixed before code.
+
+CLAP is not chained to FLORES: INSEE states the two are not comparable over time.
+
+**Affected files:** `reports/canonical/HERALD_65_FR_ZE2020_ANALOGY_AND_FINE_SECTORS.md` 1-5.
+
+## DEC-099 -- Same-sector analogy admitted; A88 fingerprint dropped (2026-08-10)
+
+**Status:** `EXECUTED`. A1 passes 6/8 years, 0.3761 against the national sector mean's 0.3407.
+The same-sector constraint is what makes it work: unrestricted analogy loses to the sector mean
+in 8/9 years because only 13-18% of its neighbours share the sector. A2 fails, 3/8 years, so
+the fingerprint is dropped and the analogy layer carries no FLORES dependency.
+
+Inter-sector influence on FLORES A88 employment: the first run was **invalid**, not negative --
+the placebo produced 3,487 survivors against 826 real, diagnosing a broken statistic
+(18% of cells hold zero employees, 40% under 50). Corrected with a median-50 floor and rank
+transformation, the null behaves and R1 fails at 3/6, every survivor falling in 2019-2021.
+
+**Affected files:** `HERALD_65` 6.
+
+## DEC-100 -- State classification target, pre-registered (2026-08-10)
+
+**Status:** `PRE_REGISTERED`. The target moves from count regression to three states at
++-0.05 on log1p growth, scored by macro-F1. WMAPE rewards predicting no change, which is why
+persistence won it; under macro-F1 persistence is degenerate by construction. Thresholds,
+metric and gates fixed before code. DEC-088's HistGB figure flagged as misconfigured.
+
+**Affected files:** `reports/canonical/HERALD_66_FR_ZE2020_STATE_CLASSIFICATION.md` 1-4.
+
+## DEC-101 -- The model ordering inverts under state classification (2026-08-10)
+
+**Status:** `EXECUTED`. Nonlinear models now beat linear: mlp 0.330, gbm 0.319, logreg 0.306.
+Persistence collapses to 0.112. S1 passes in 4/5 seeds with a positive delta in 5/5:
+mlp+relational 0.340 against mlp 0.327, same architecture and folds. First attributable
+relational gain in the project; it scales with nonlinear capacity (+0.001, +0.004, +0.018).
+
+Stated up front: stratified random scores 0.307, so the full margin is +0.033.
+**Later corrected by DEC-103.**
+
+**Affected files:** `HERALD_66` 5.
+
+## DEC-102 -- Noise ceiling for the state labels (2026-08-10)
+
+**Status:** `EXECUTED`. Poisson resampling flips 27.5% of labels, but a rate-knowing oracle
+still reaches macro-F1 0.655. The model at 0.340 captures about 9% of the random-to-ceiling
+gap. **The problem is not capped; the model is weak** -- the less convenient of the two
+possible answers.
+
+**Affected files:** `HERALD_66` 6.
+
+## DEC-103 -- Balanced classes lift the result; the relational gain does not survive (2026-08-10)
+
+**Status:** `EXECUTED`. macro-F1 rises 0.340 -> 0.372, from 9% to 19% of the gap.
+
+**Corrects DEC-101 5.2.** Against this stronger baseline the relational block is worth +0.004
+(mlp) and -0.004 (gbm). The gain was real against the weaker feature set and does not survive
+adding national sector momentum -- the control a reviewer would ask for, and one this project
+had not applied. Redundancy is the parsimonious reading.
+
+**Affected files:** `HERALD_66` 7.
+
+## DEC-104 -- The lift was class balancing, not the features (2026-08-10)
+
+**Status:** `EXECUTED`. The cell's own history alone scores 0.3886, beating the full five-group
+model at 0.3727; three of five groups improve the model by being removed. National sector
+momentum alone scores 0.2638, **below** the 0.307 random baseline, because it assigns one value
+to all 280 zones of a sector.
+
+**Corrects DEC-103's attribution**: the added features are net harmful.
+
+**Affected files:** `HERALD_66` 8.
+
+## DEC-105 -- Depth, tuning, per-sector, and threshold sensitivity (2026-08-10)
+
+**Status:** `EXECUTED`. Two lags beat three to five; per-sector models lose to pooled by
+0.0117. Standing result: GBM, balanced, 2 lags, untuned, macro-F1 0.3942, 25% of the gap.
+
+Two defects recorded rather than hidden. **Hyperparameters were selected on the reported
+evaluation years**, so 0.3963 is contaminated and the defensible number is the untuned 0.3942.
+**Threshold sensitivity spans 0.3794 to 0.4404** across +-3%, +-5%, +-10% and terciles; that
+0.061 range is three times the largest modelling effect in the file. The +-5% band was
+pre-registered before any code existed and is not the flattering choice. The 0.655 ceiling
+applies only at +-5%.
+
+Protocol noise measured at 0.012 from a single training year, which bounds how any delta under
+0.02 anywhere in DEC-100 to DEC-105 should be read.
+
+**Affected files:** `HERALD_66` 9.
