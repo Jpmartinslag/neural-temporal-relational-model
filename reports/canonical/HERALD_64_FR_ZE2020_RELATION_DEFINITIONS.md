@@ -188,3 +188,106 @@ measuring, not by asserting.
   in `HERALD_62` C7a.
 - Association versus causality: `HERALD_56`, DEC-081 Q2.
 - Dashboard that will render the surviving layers: `HERALD_60`, DEC-087.
+
+---
+
+## 10. Results (DEC-096)
+
+Deterministic estimator, `src/data/france_ze2020/estimate_fr_ze2020_relations.py`.
+Window 2018-2024 unless stated, so every panel below is compared on the same years.
+
+### 10.1 Gates R1, R2, R4
+
+| family | R1 (real beats shuffled-years) | BH edges | R2 stable | verdict |
+|---|---|---|---|---|
+| `precedence_intra` | **6/7 PASS** | 9 | 9/9 | admitted |
+| `precedence_cross` | **6/7 PASS** | 18 | 18/18 | admitted |
+| `comovement` | 4/7 FAIL | 16 | 16/16 | **excluded** |
+
+On the 2019-2025 window `precedence_intra` reaches 7/7 with the placebo producing **zero**
+survivors in every year. `comovement` passes on 2019-2025 (5/7) and fails on 2018-2024 (4/7);
+it is **window-fragile and therefore excluded**, consistent with its "candidate only" status
+in section 3.1.
+
+### 10.2 R3 -- FAILED, and it kills the C4b drift figure
+
+`HERALD_62` C4b reported inter-ZE relations moving 34.9% over 2019-2025. R3 required the
+noise floor before that number could be used.
+
+| | movement |
+|---|---|
+| observed | 34.86% |
+| Poisson noise floor, 200 resamples | **40.73%** (95% band 35.37-46.55%) |
+| excess over floor | **-5.87 pp** |
+
+Pure counting noise produces **more** movement than the data. The observed figure is 116.8%
+accounted for by sampling variation.
+
+**Retraction.** The 34.9% figure was presented to the project owner as the strongest surviving
+finding of the forecasting audit. It is withdrawn in full. No claim about the magnitude of
+inter-ZE relational change is supported by this statistic. `HERALD_62` C4b and C7's summary
+are superseded on this point; the qualitative statement that the model's graph is static while
+the data is not is **no longer supported** either, because the observed movement is
+indistinguishable from noise.
+
+### 10.3 Cross-year consistency -- not a registered gate, reported anyway
+
+Sign consistency of each sector pair across the 7 years:
+
+| family | median consistency | share >= 6/7 |
+|---|---|---|
+| `precedence_intra` | 0.71 | 21% |
+| `precedence_cross` | 0.71 | 21% |
+
+A random sign sequence of length 7 gives roughly 0.66, so this is close to chance. One
+surviving pair reverses outright (`BE->MN`: +0.21 in 2023, -0.21 in 2024). **Most admitted
+edges are year-specific associations, not persistent structure.** R2 tests stability across
+zone halves within a year and cannot detect this; the omission is recorded here rather than
+patched retroactively into R2.
+
+The exception, and the only persistent structure found:
+
+| pair | years | weights |
+|---|---|---|
+| `BE -> BE` (cross-zone) | 4 | +0.19, +0.24, +0.24, +0.38 |
+| `GI -> GI` (cross-zone) | 2 | +0.19, +0.19 |
+| `LZ -> LZ` (cross-zone) | 2 | +0.22, +0.19 |
+
+Same-sector diffusion across commuting-linked zones, consistently signed and strengthening.
+This is a narrower claim than sector-to-sector affinity: it is one sector spreading between
+territories, not one sector pulling another.
+
+### 10.4 Legal-form hypothesis -- tested and refuted
+
+Hypothesis: the signal is drowned by individual entrepreneurs (67-72% of all creations), so
+restricting to companies (SARL 54 + SAS 57) should sharpen it. `LEGAL_FORM` is available at
+`ZE2020 x A10 x 2012-2024` in `DS_SIDE_CREA_ETAB_COM_2024`, already in the tree.
+
+| panel | 2024 volume | `intra` | `cross` | `comovement` |
+|---|---|---|---|---|
+| total | 1,264,511 | 6/7 PASS, 9 | 6/7 PASS, 18 | 4/7, 16 |
+| individuals only (`10`) | 869,496 | 3/7, 6 | 6/7 PASS, 16 | 6/7, 24 |
+| **random 27% thinning** | 324,651 | 4/7, 6 | 3/7, 5 | 2/7, 4 |
+| **companies only (`54+57`)** | 321,347 | **0/7, 0** | 3/7, 7 | 1/7, 2 |
+
+The thinning control is the decisive row: a **random** 27% of everything fails the same gates
+as companies at matched volume. **The degradation is a power effect, not a composition
+effect**, and the hypothesis is refuted. Filtering out individual entrepreneurs does not
+reveal a cleaner signal; it removes counts.
+
+Volume is the binding constraint on this estimator. Recorded so the option is closed rather
+than left open.
+
+### 10.5 State of the relational layer
+
+Admitted: `precedence_intra` (9 edges) and `precedence_cross` (18 edges), placebo-surviving,
+within-year stable, BH-controlled at q = 0.10.
+
+Bounded by: near-chance cross-year sign consistency, so the persistent component is only
+same-sector spatial diffusion; effect sizes of r = 0.19-0.38, i.e. 4-14% of variance; and
+`comovement` excluded for window fragility.
+
+Withdrawn: the 34.9% drift figure (10.2).
+
+Still outstanding: regeneration of the availability mask under the canonical names of
+section 6, which DEC-082 requires before any layer renders.
