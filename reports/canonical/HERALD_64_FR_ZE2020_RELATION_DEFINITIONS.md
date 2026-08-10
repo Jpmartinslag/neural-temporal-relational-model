@@ -1,10 +1,10 @@
 # HERALD 64 -- What a node is, what an edge is, and what a relation must survive
 
 **Date:** 2026-08-10
-**Status:** `PRE_REGISTERED_DEFINITIONS_AND_PROTOCOL_NOT_YET_EXECUTED` (DEC-095)
-
-Written before any estimation code exists. This file defines the objects; it reports no
-measurement.
+**Sections 1-9 status:** `PRE_REGISTERED` (DEC-095) -- written before any estimation code
+existed; they define the objects and report no measurement.
+**Section 10 status:** `EXECUTED` (DEC-096) -- R1/R2/R4 admit two families, **R3 fails and
+retracts the 34.9% drift figure**.
 
 ---
 
@@ -72,8 +72,9 @@ between them -- they may never have exchanged anything. It becomes a **node attr
 ("this node resembles those"), retaining the information while removing the false implication
 carried by drawing a line between them.
 
-Consequence: the edge catalogue drops from 6,215 to roughly 450. The similarity rows are
-**reclassified, not deleted**, and the decision is reversible.
+Consequence: 6,049 of the 6,215 catalogue rows (97.3%) become node attributes and **166**
+remain as candidate edges. The similarity rows are **reclassified, not deleted**, and the
+decision is reversible.
 
 ### 3.2 Weight, unit, and null
 
@@ -291,3 +292,28 @@ Withdrawn: the 34.9% drift figure (10.2).
 
 Still outstanding: regeneration of the availability mask under the canonical names of
 section 6, which DEC-082 requires before any layer renders.
+
+### 10.6 Availability mask regenerated (DEC-097)
+
+`fr_ze2020_relation_availability_mask_v2.csv`, built by
+`src/data/france_ze2020/rebuild_fr_ze2020_relation_mask_v2.py`. Every family name now matches
+section 6, which is what DEC-082 needs to be enforceable.
+
+| family | status | years |
+|---|---|---|
+| `flow` | carried forward from snapshot | 10 (4 unavailable, pre-2016) |
+| `precedence_intra` | derived available | 7 (7 outside the window) |
+| `precedence_cross` | derived available | 7 (7 outside the window) |
+| `comovement` | unavailable, `failed_placebo_gate` | 14 |
+| `similarity` | `node_attribute_not_an_edge` | 14 |
+| `specialization` | `node_attribute_not_an_edge` | 14 |
+
+Two new status values were needed and are recorded rather than forced into the old
+vocabulary: `node_attribute_not_an_edge` for the reclassified families, and
+`failed_placebo_gate` for `comovement`. The build asserts the family set equals section 6
+exactly and fails otherwise.
+
+Per-cell estimates: `data/processed/france_ze2020/fr_ze2020_relation_estimates_v1.csv`
+(1,575 rows, all families and years, with `weight`, `p_value`, `n_zones`, `bh_rejected` and
+`sign_stability`). Rows that did not survive BH are kept, so the catalogue shows what was
+tested and rejected, not only what passed.

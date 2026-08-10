@@ -1,0 +1,85 @@
+relation_family,decision_year,availability_status,unavailable_reason,source_snapshot_year,source_release_date,snapshot_age_years,expected_edge_count,actual_edge_count,provenance
+flow,2012,unavailable,source_not_released,,,,,0,no official commuting snapshot had been released by this decision year; the earliest snapshot (observation 2012) was released 2015-06-25 (DEC-073)
+flow,2013,unavailable,source_not_released,,,,,0,no official commuting snapshot had been released by this decision year; the earliest snapshot (observation 2012) was released 2015-06-25 (DEC-073)
+flow,2014,unavailable,source_not_released,,,,,0,no official commuting snapshot had been released by this decision year; the earliest snapshot (observation 2012) was released 2015-06-25 (DEC-073)
+flow,2015,unavailable,source_not_released,,,,,0,no official commuting snapshot had been released by this decision year; the earliest snapshot (observation 2012) was released 2015-06-25 (DEC-073)
+flow,2016,carried_forward_from_snapshot,,2012,2015-06-25,4,,27675,fr_ze2020_commuting_strict_ex_ante_edges.csv.gz via build_fr_ze2020_commuting_strict_ex_ante_edges.py; official INSEE flow snapshot carried forward under a release-aware rule (DEC-073)
+flow,2017,carried_forward_from_snapshot,,2012,2015-06-25,5,,27675,fr_ze2020_commuting_strict_ex_ante_edges.csv.gz via build_fr_ze2020_commuting_strict_ex_ante_edges.py; official INSEE flow snapshot carried forward under a release-aware rule (DEC-073)
+flow,2018,carried_forward_from_snapshot,,2012,2015-06-25,6,,27675,fr_ze2020_commuting_strict_ex_ante_edges.csv.gz via build_fr_ze2020_commuting_strict_ex_ante_edges.py; official INSEE flow snapshot carried forward under a release-aware rule (DEC-073)
+flow,2019,carried_forward_from_snapshot,,2012,2015-06-25,7,,27675,fr_ze2020_commuting_strict_ex_ante_edges.csv.gz via build_fr_ze2020_commuting_strict_ex_ante_edges.py; official INSEE flow snapshot carried forward under a release-aware rule (DEC-073)
+flow,2020,carried_forward_from_snapshot,,2012,2015-06-25,8,,27675,fr_ze2020_commuting_strict_ex_ante_edges.csv.gz via build_fr_ze2020_commuting_strict_ex_ante_edges.py; official INSEE flow snapshot carried forward under a release-aware rule (DEC-073)
+flow,2021,carried_forward_from_snapshot,,2017,2020-12-09,4,,27683,fr_ze2020_commuting_strict_ex_ante_edges.csv.gz via build_fr_ze2020_commuting_strict_ex_ante_edges.py; official INSEE flow snapshot carried forward under a release-aware rule (DEC-073)
+flow,2022,carried_forward_from_snapshot,,2017,2020-12-09,5,,27683,fr_ze2020_commuting_strict_ex_ante_edges.csv.gz via build_fr_ze2020_commuting_strict_ex_ante_edges.py; official INSEE flow snapshot carried forward under a release-aware rule (DEC-073)
+flow,2023,carried_forward_from_snapshot,,2017,2020-12-09,6,,27683,fr_ze2020_commuting_strict_ex_ante_edges.csv.gz via build_fr_ze2020_commuting_strict_ex_ante_edges.py; official INSEE flow snapshot carried forward under a release-aware rule (DEC-073)
+flow,2024,carried_forward_from_snapshot,,2017,2020-12-09,7,,27683,fr_ze2020_commuting_strict_ex_ante_edges.csv.gz via build_fr_ze2020_commuting_strict_ex_ante_edges.py; official INSEE flow snapshot carried forward under a release-aware rule (DEC-073)
+flow,2025,carried_forward_from_snapshot,,2017,2020-12-09,8,,27683,fr_ze2020_commuting_strict_ex_ante_edges.csv.gz via build_fr_ze2020_commuting_strict_ex_ante_edges.py; official INSEE flow snapshot carried forward under a release-aware rule (DEC-073)
+similarity,2012,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2013,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2014,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2015,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2016,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2017,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2018,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2019,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2020,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2021,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2022,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2023,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2024,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+similarity,2025,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2012,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2013,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2014,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2015,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2016,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2017,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2018,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2019,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2020,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2021,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2022,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2023,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2024,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+specialization,2025,node_attribute_not_an_edge,reclassified_by_HERALD_64_section_3.1,,,,,,resemblance asserts no interaction; retained as a node attribute (HERALD_64 3.1)
+precedence_intra,2012,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_intra,2013,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_intra,2014,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_intra,2015,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_intra,2016,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_intra,2017,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_intra,2018,derived_available,,2018,,0,81,0,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_intra,2019,derived_available,,2019,,0,81,2,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_intra,2020,derived_available,,2020,,0,81,1,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_intra,2021,derived_available,,2021,,0,81,1,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_intra,2022,derived_available,,2022,,0,81,3,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_intra,2023,derived_available,,2023,,0,81,1,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_intra,2024,derived_available,,2024,,0,81,1,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_intra,2025,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_cross,2012,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_cross,2013,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_cross,2014,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_cross,2015,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_cross,2016,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_cross,2017,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+precedence_cross,2018,derived_available,,2018,,0,81,1,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_cross,2019,derived_available,,2019,,0,81,3,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_cross,2020,derived_available,,2020,,0,81,2,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_cross,2021,derived_available,,2021,,0,81,3,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_cross,2022,derived_available,,2022,,0,81,5,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_cross,2023,derived_available,,2023,,0,81,2,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_cross,2024,derived_available,,2024,,0,81,2,"estimate_fr_ze2020_relations.py, BH q=0.10, placebo-surviving (DEC-096)"
+precedence_cross,2025,unavailable,insufficient_history,,,,81,0,"outside the estimated window; needs t-1, t and t+1 growth (HERALD_64 section 4)"
+comovement,2012,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2013,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2014,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2015,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2016,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2017,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2018,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2019,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2020,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2021,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2022,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2023,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2024,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
+comovement,2025,unavailable,failed_placebo_gate,,,,81,0,"window-fragile: R1 5/7 on 2019-2025, 4/7 on 2018-2024; excluded by DEC-096 10.1"
