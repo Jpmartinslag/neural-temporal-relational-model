@@ -139,3 +139,31 @@ of statistic can be entirely noise (DEC-096 10.2).
 
 Section 6 measures it. Until then, no claim is made about whether the model is weak or the
 problem is capped.
+
+## 6. The noise ceiling (DEC-102)
+
+`src/modeles/france_ze2020/measure_fr_ze2020_state_noise_ceiling.py`. Each cell is
+Poisson-resampled at its observed mean, labels are rebuilt, and an oracle that knows the true
+rate is scored against the noisy realisation. 40 replicates, 17,640 evaluated cells each.
+
+| | |
+|---|---|
+| labels that flip on counting noise alone | **27.5%** (sd 0.32) |
+| macro-F1 of a rate-knowing oracle | **0.655** (sd 0.004) |
+| mlp + relational | 0.340 |
+| stratified random | 0.307 |
+| **share of the random-to-ceiling gap captured** | **9%** |
+
+**The problem is not capped; the model is weak.** Labels do carry real noise -- more than a
+quarter flip under resampling -- but the attainable maximum is 0.655, not something near 0.35.
+The model captures roughly a tenth of the available signal.
+
+This is the less convenient of the two possible answers and it is the one the data gives.
+Section 5.4 is resolved against the model.
+
+Observed class balance: grows 56.9%, declines 22.6%, stagnates 20.6%.
+
+**Consequence for how this is written up.** The relational gain of section 5.2 stands -- it is
+attributable, positive in 5/5 seeds, and passes its gate in 4/5. What cannot be claimed is
+that the approach is near the limit of what the data allows. There is roughly 0.31 of macro-F1
+between the current model and the ceiling, and nothing in this project has yet reached into it.
