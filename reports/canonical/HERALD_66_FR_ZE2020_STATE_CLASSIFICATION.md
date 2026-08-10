@@ -218,3 +218,46 @@ particular it is unknown whether the work is done by **national sector momentum*
 aggregate the cell belongs to, not a relation -- or by **excess over the national sector**,
 which is territorially specific and would be a substantive signal. Section 8 ablates the
 feature groups to separate them.
+
+## 8. Feature-group ablation (DEC-104) -- the lift was class balancing, not the features
+
+GBM, class-balanced, 2 seeds, same folds. Section 7.2 recorded that eight features entered at
+once and could not be attributed; this separates them.
+
+| group alone | macro-F1 | | group removed | macro-F1 | change |
+|---|---|---|---|---|---|
+| **`own_lags`** | **0.3886** | | without `own_lags` | 0.3629 | **-0.0099** |
+| `excess` | 0.3814 | | without `excess` | 0.3655 | **-0.0072** |
+| `own_states` | 0.3540 | | without `own_states` | 0.3765 | **+0.0038** |
+| `zone_total` | 0.3050 | | without `zone_total` | 0.3758 | **+0.0031** |
+| `national_sec` | **0.2638** | | without `national_sec` | 0.3740 | **+0.0012** |
+| *all groups* | *0.3727* | | | | |
+
+Two results:
+
+**The cell's own history, alone, beats the full model** -- 0.3886 against 0.3727. Every
+addition made it worse, and three of the five groups improve the model by being removed.
+
+**National sector momentum alone scores 0.2638, below the 0.307 random baseline.** It assigns
+the same value to all 280 zones of a sector, so it cannot discriminate within a sector-year.
+
+### 8.1 Correction to DEC-103
+
+Section 7 attributed the 0.340 -> 0.372 lift to "class-balanced weights **and** eight further
+causal features". **The features were not responsible.** The lift came from class balancing
+alone, and the added features are net harmful.
+
+This also settles the question left open in 7.2 in the direction opposite to the interesting
+one: the work is not done by `excess`, the territorially specific quantity, in the sense that
+`excess` is largely a transformation of the cell's own growth. `national_sec`, the aggregate,
+actively hurts.
+
+### 8.2 Standing configuration
+
+**GBM, class-balanced, `own_lags` only: macro-F1 0.3886**, against 0.307 random and a 0.655
+ceiling -- **23% of the available gap**, up from 9% at DEC-101.
+
+The picture has simplified rather than enriched. What predicts a zone-sector's next state is
+its own trajectory. Not the surrounding zone, not the sector nationally, not analogous
+territories. Every relational and contextual block tested has been either neutral or harmful
+once the cell's own history is present.
