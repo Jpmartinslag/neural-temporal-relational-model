@@ -261,3 +261,68 @@ The picture has simplified rather than enriched. What predicts a zone-sector's n
 its own trajectory. Not the surrounding zone, not the sector nationally, not analogous
 territories. Every relational and contextual block tested has been either neutral or harmful
 once the cell's own history is present.
+
+## 9. Depth, hyperparameters, per-sector, threshold sensitivity (DEC-105)
+
+Training window start held fixed across all lag depths, so a comparison of depth is not also a
+comparison of training size. That control was added after the first run showed the same
+configuration scoring 0.3886 and 0.3767 depending only on whether one extra training year
+(2016) was included -- see 9.4.
+
+**History depth: shallower is better.**
+
+| lags | macro-F1 |
+|---|---|
+| **2** | **0.3942** |
+| 3 | 0.3880 |
+| 4 | 0.3878 |
+| 5 | 0.3829 |
+
+**Per-sector models: worse.** Pooled 0.3958 against per-sector 0.3841, delta -0.0117. Nine
+separate models lose more to reduced sample size than they gain from specialisation.
+
+### 9.1 Hyperparameter selection is contaminated
+
+Sixteen configurations were scored, and the best (`max_iter=600, lr=0.1, depth=6,
+min_samples_leaf=20`, 0.3963) was chosen **on the same evaluation years that are reported**.
+That is selection on the test set, and the reported figure is inflated by an amount this
+protocol cannot measure.
+
+**The defensible number is the untuned 2-lag configuration: 0.3942.** No nested selection
+year was held out; it should have been. Recorded as a defect of this section, not corrected
+retroactively.
+
+### 9.2 Threshold sensitivity -- the largest effect measured today
+
+| state boundary | macro-F1 |
+|---|---|
+| +-3% | 0.3794 |
+| **+-5% (pre-registered)** | **0.3963** |
+| +-10% | 0.4130 |
+| terciles | 0.4404 |
+
+The definitional choice moves the score by **0.061**, which is roughly three times the largest
+modelling effect examined in this file (the DEC-101 relational gain of +0.018, itself later
+reduced to +0.004).
+
+Two consequences:
+
+- **The +-5% band was fixed in section 2 before any code existed, and it is not the flattering
+  choice.** Terciles score 0.044 higher. The pre-registration is what makes the headline number
+  credible rather than selected.
+- **The 0.655 ceiling of DEC-102 was computed at +-5% only.** Comparing the tercile figure
+  against it is invalid; each boundary has its own ceiling, and the tercile variant scores
+  higher partly because it balances the classes by construction, not because it predicts
+  better.
+
+### 9.3 Standing result
+
+**GBM, class-balanced, 2 lags plus level and share, untuned: macro-F1 0.3942**, against 0.307
+stratified random and a 0.655 ceiling at the same boundary -- **25% of the available gap**.
+
+### 9.4 Protocol noise
+
+The same configuration scored 0.3886 and 0.3767 across two runs differing only by one training
+year. **A spread of 0.012 from a single protocol choice** is the same order as most of the
+effects discussed in sections 5 to 8. Any delta below roughly 0.02 in this file should be read
+against that spread rather than as an established difference.
