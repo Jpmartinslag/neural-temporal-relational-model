@@ -5442,3 +5442,93 @@ The signal is real and stable; the model contributes 0.006 of it.
 three-state target at this grain is dominated by mean reversion, that the apparatus adds
 0.003 over a negated lag, and that a no-economics null beats the real panel. The honest
 standing statement is that the task, not the model, was mis-specified.
+
+## DEC-112 -- Third audit: the G-C placebo was broken, and the aggregate hid a real per-sector signal (2026-08-11)
+
+**Status:** `RETRACTIONS_AND_ONE_POSITIVE`. The audit reproduced the harness exactly
+(mean reversion 0.3910, base 0.3949, as-coded placebo 0.3995) before changing anything.
+
+**D1 -- the placebo was contaminated, and G-C measured nothing.**
+`build_fr_ze2020_graph_and_beta_predictor.py:119` computes `wgt = take_along_axis(C, idx, 1)`
+for **both** arms. The placebo randomises the neighbour indices and then weights them by their
+**true** trajectory correlation; line 121 clips negatives to ~0, so low-affinity random draws
+are zeroed and the mass collapses onto whichever genuine analogues fell in the draw. Neighbour
+identity is destroyed in selection and restored in weighting.
+
+| | real | placebo |
+|---|---|---|
+| effective neighbours `1/sum(w^2)` of 50 | 49.2 | **23.7-31.1** |
+| max weight (uniform = 0.020) | 0.024 | **0.069** |
+| within-sector corr with the real feature | -- | **+0.93** |
+| same, weights stripped | -- | **-0.00** |
+
+**The diagnostic that should have been a harness assertion: a valid placebo cannot beat the
+no-relational base. This one did** -- 0.3995 against 0.3949, a lift as large as the real
+block's own. Valid placebos sit on the base (0.3935-0.3981).
+
+**D2 -- the distance weighting added in HERALD_68 section 2 was inert and harmful.** Effective
+K is 49.2 of 50, so the weights are numerically uniform on the real arm. Unweighted top-50
+scores **0.4048** against the weighted 0.3991: the correction made in response to DEC-107.5
+**cost 0.0057** and manufactured D1.
+
+**D3 -- the fifth relational feature is an arm identifier.** `:141` returns `wgt[:,0]`, the
+weight of whichever neighbour `argpartition` placed first. Within-sector sd 0.003-0.009 on the
+real arm against 0.020-0.023 on the placebo arm, so it tells the model which arm it is in.
+Removing it: 0.3983 -> 0.4013.
+
+**Corrected G-C**, averaged over four independent placebo draws rather than the single draw the
+report used:
+
+| comparison | delta | CI95 | years |
+|---|---|---|---|
+| as-coded rel - as-coded placebo (reported) | -0.0004 | [-0.0135, +0.0114] | 4/7 |
+| as-coded rel - valid placebo | +0.0026 | [-0.0144, +0.0176] | 4/7 |
+| **unweighted top-50 - valid placebo** | **+0.0083** | [-0.0025, +0.0212] | 5/7 |
+
+**HERALD_68 7.3 is withdrawn.** The DEC-109 E7 lead does not collapse to +0.0006; it
+replicates at roughly half its magnitude. `rel_unif` reproduces DEC-109's 0.4048 to four
+decimals, confirming that audit used the unweighted encoding. The conclusion "not established"
+survives; the evidence offered for it does not.
+
+**D4 -- G-B carries no information and is withdrawn.** The lookahead in `synthetic_panel()`
+`:76` is real but cuts the other way: a causal trend fit makes the null *easier* (0.5163 against
+0.4523). Every variant fails the gate, **including one with positive growth autocorrelation
+(+0.111), i.e. no mean reversion at all.** A gate that fails under a DGP with the opposite sign
+of the mechanism it claims to detect is not measuring that mechanism. On the closest-matched
+null the model's lift over its own baseline is +0.0017 against the real panel's +0.0039.
+
+**HERALD_68 7.4 bullet 2 is withdrawn**: real lag-1 autocorrelation is -0.367 against the
+as-coded null's -0.388, so "reality contains less noise reversion" is refuted.
+
+**D5 -- G-D overclaims.** Only `analogy` was exported; `flow` and `diffusion` appear nowhere in
+the code despite being pre-registered in section 3. `range(0, len(idx), 7)` aliases with
+NZ = 280 = 7 x 40, so the same **40 of 280 source zones** are sampled in every sector and year:
+25,200 of 882,000 edges, 2.9%, over 7 of the 14 pre-registered years. **The indexing I flagged
+as suspect is correct** -- `cat()` and `traj` are both sector-major, so `n % NZ` and `sec_of[n]`
+recover the right pair; verified on the artifact (0 self-loops, 0 cross-sector, 0 duplicates,
+2,800 edges per sector).
+
+**The block does reach the model; the reason it adds little is redundancy.** Permutation
+importance `rel_pdecl` +0.0061 and `rel_pgrow` +0.0054, against `g1` +0.0631. Within-sector
+correlation of `rel_wmean` with own `g1` is **0.78-0.82**: neighbours are selected for
+trajectory similarity, so the block is a smoothed copy of a lag the model already holds.
+K is not the problem -- rel minus valid placebo is +0.0045 at K=50, +0.0071 at K=10, +0.0025 at
+K=5, +0.0037 at K=3, with no trend.
+
+**The aggregate hid a real signal.** Task B per sector, model minus mean reversion, bootstrap
+over origins:
+
+| sector | delta | CI95 | origins won |
+|---|---|---|---|
+| JZ information and communication | **+0.0662** | [+0.0284, +0.0925] | 6/7 |
+| KZ finance and insurance | **+0.0577** | [+0.0254, +0.0913] | 6/7 |
+| OQ public administration, education, health | **+0.0380** | [+0.0190, +0.0565] | **7/7** |
+| BE industry | **-0.0533** | [-0.0846, -0.0237] | **0/7** |
+
+Three sectors pass with intervals excluding zero; one fails decisively. **The reported +0.0041
+is cancellation, not absence.** Two extreme sign-test outcomes among nine sectors has expected
+count 0.14 under a global null. This is the strongest surviving result in the project and it
+was averaged away.
+
+**G-A survives unchanged.** +0.0039 [-0.0184, +0.0297], reproduced exactly. The correct
+qualification is that it is sector-heterogeneous, not uniformly zero.
