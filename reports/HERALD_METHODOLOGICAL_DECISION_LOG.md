@@ -5350,3 +5350,95 @@ project's requirement.**
 Consequence for architecture: a static graph is not a simplified Y, it is inadequate to the
 requirement. Dynamics must be low-dimensional and regularised -- a free matrix per year over
 14 years learns noise, which DEC-091 arm D measured directly (seed correlation 0.695).
+
+## DEC-109 -- Second independent audit: the state-classification line does not establish a working model (2026-08-11)
+
+**Status:** `MAJOR_FINDINGS_ACCEPTED`. A second adversarial audit reproduced the standing
+figure exactly (0.3942, start=6, seed=0) before changing anything, so its harness is
+comparable. Two findings are fatal to the positive reading of DEC-100..DEC-106.
+
+**E1 -- the mean-reversion null was never run, and it is the whole result.**
+`corr(g[t-1], g[t]) = -0.32`. Negating last year's growth and rank-matching it to the training
+class prior scores **macro-F1 0.3910 with no model at all**, against the standing 0.3942.
+
+**The entire modelling apparatus of DEC-101..DEC-105 is worth +0.0032.** HERALD_66 tested
+always-stagnates (0.112), sector previous mode (0.262), own previous state (0.2625) and
+always-grows (0.2366). It never tested anti-persistence, which was the obvious null given the
+measured negative autocorrelation.
+
+**E2 -- a synthetic panel containing no economics scores higher than the real panel.**
+Per-cell quadratic trend in `log1p` redrawn as Poisson / negative-binomial, i.e. no sectors,
+no relations, no shocks:
+
+| panel | strat-random | GBM | `-g[t-1]` |
+|---|---|---|---|
+| real | 0.3336 | **0.3942** | 0.3910 |
+| synthetic phi=1.0 | 0.3340 | 0.4462 | 0.4214 |
+| synthetic phi=2.5 | 0.3320 | **0.4624** | 0.4485 |
+| synthetic phi=4.0 | 0.3336 | 0.4702 | 0.4571 |
+
+The phi=2.5 synthetic has the same class balance and the same random floor as the real data, so
+this is not a macro-F1 artifact. **The real panel is harder than a world with no economics in
+it.** What the classifier captures above chance is noise reversion, and reality contains less
+of it because real shocks partly persist.
+
+Every "share of the available gap" statement in DEC-102..DEC-106 is measured against the wrong
+null and is withdrawn. The correct control was a matched synthetic no-signal panel, not a
+stratified coin.
+
+**E3 -- the random floor was drawn from the previous year's prior** (0.3046) rather than the
+current year's marginal (0.3336), at `run_fr_ze2020_state_classification.py:64-66`. The lower
+floor sits in both numerator and denominator of the gap statistic and flatters the model.
+
+**E4 -- the Poisson ceiling was too pessimistic, and here I was wrong in the other direction.**
+The estimator itself is sound (a proper Bayes oracle gives 0.643 against my 0.656), but the
+counts are overdispersed: Pearson phi of 1.71 to 4.41 depending on the reference, with lag-1
+autocorrelation of detrended residuals of only 0.087, i.e. the excess variance is
+unforecastable. The realistic ceiling is **0.50-0.58, not 0.655**. Moot given E2.
+
+**E5 -- DEC-104's "three of five groups help by being removed" is withdrawn outright.**
+At 6 seeds the three effects are +0.0002 to +0.0035, an order of magnitude below the 0.012
+protocol spread. And `own_lags > full` rests on **one fold**: per-year deltas are -0.079,
++0.021, +0.028, -0.016, **+0.144**, +0.027, +0.003. Removing 2023 leaves +0.0009. Seed variance
+is not the problem (sd 0.002); fold variance is.
+
+**E6 -- the pooled 0.3942 averages folds trained on a single year.** Per-year: 0.377, 0.380,
+0.381, 0.327, 0.393, 0.441, 0.460. The last three folds mean **0.4312**. Both figures should be
+reported, not either.
+
+**E7 -- the relational block was never tested on the standing configuration, and when tested
+it separates from its placebo.** DEC-101 tested it against a poor baseline and DEC-103 against
+a baseline DEC-104 then showed was degraded. On the standing base, 8 seeds, matched placebos:
+
+| block | macro-F1 | delta | years won |
+|---|---|---|---|
+| none | 0.3951 | -- | -- |
+| top-50 same-sector, distance-weighted | **0.4048** | +0.0097 | 5/7 |
+| matched random-neighbour placebo | 0.3872 | -0.0079 | 3/7 |
+
+Real minus placebo **+0.0176**, paired t across origins p=0.42 -- not established, but
+**HERALD_66 8.2's "every relational and contextual block tested has been either neutral or
+harmful" is false as written.** It is the only live relational lead in the file and it was
+written up as dead.
+
+**Suspicions tested and cleared, where I was right.** `nan_to_num` is a no-op (0 NaN and 0 inf
+across 294,840 entries). Row masks are symmetric between arms (2520 rows both arms, all seven
+years), so the S1 comparison was on identical populations. Macro-F1 is not penalising a
+calibrated model -- unweighted OVR-AUC 0.604 with log-loss 1.0715 against a prior-only 1.0040,
+and an oracle reweighting tuned on the test year itself reaches only 0.4037. Ordinal (0.3819)
+and regression-then-rank-match (0.3839) both lose to 0.3942, so discretisation is not where the
+performance went.
+
+**Claims that survive.** The V7 gate failure (DEC-090), the learned graph being the prior
+(DEC-091, DEC-092), the 9x9 placebo design and its failure (DEC-094), and inter-sector
+influence being undetectable (DEC-096, DEC-099) -- the last confirmed independently by a less
+constrained test giving +0.0028 over its own placebo.
+
+**The one live finding.** Within-sector cross-zone ranking: Spearman **0.379**, and >= 0.31 in
+every one of the seven years. But `-g[t-1]` alone reaches 0.3733 against the model's 0.3789.
+The signal is real and stable; the model contributes 0.006 of it.
+
+**Consequence.** DEC-100..DEC-106 do not establish a working classifier. They establish that a
+three-state target at this grain is dominated by mean reversion, that the apparatus adds
+0.003 over a negated lag, and that a no-economics null beats the real panel. The honest
+standing statement is that the task, not the model, was mis-specified.
