@@ -5267,3 +5267,86 @@ Protocol noise measured at 0.012 from a single training year, which bounds how a
 0.02 anywhere in DEC-100 to DEC-105 should be read.
 
 **Affected files:** `HERALD_66` 9.
+
+## DEC-107 -- Independent audit: scope corrections to DEC-090..106 (2026-08-11)
+
+**Status:** `CORRECTIONS_ACCEPTED`. An independent audit reviewed DEC-088..106 and the code.
+Its findings are accepted where listed; the affected claims are narrowed here rather than in
+place, so the original wording and the correction both remain visible.
+
+**1. "Ceiling" is not a ceiling.** `measure_fr_ze2020_state_noise_ceiling.py` resamples each
+observed count as if it were the true Poisson rate. That measures label reliability under a
+plug-in Poisson model; it does not identify an attainable maximum. It ignores overdispersion,
+temporal dependence, common shocks and uncertainty about the latent rate, and it treats the
+already-noisy observed label as truth. If `Var(Y) > E(Y)` the 27.5% flip rate is understated
+and 0.655 is overstated.
+
+**The figure is redesignated a *Poisson reference*, not a ceiling.** Every "% of the gap
+captured" statement in DEC-102, DEC-103, DEC-104, DEC-105 and DEC-106 inherits this and is
+descriptive only.
+
+**2. DEC-104 violates the rule stated in DEC-105.** `own_lags` 0.3886 against the full set
+0.3727 is a delta of 0.0159, below the 0.02 threshold DEC-105 itself set from measured
+protocol noise of 0.012. **The claim that context features are harmful is withdrawn to
+"not demonstrated to help".** Additionally `own_lags` is a misnomer: the group contains three
+growth lags, `log1p` level and sector share.
+
+**3. Seeds are the wrong uncertainty.** GBM seeds are near-deterministic replications; the
+seven evaluation years are the relevant units and their folds overlap heavily. Every delta in
+DEC-101..106 needs paired-by-year reporting and a block bootstrap over years. Seed spread
+understates temporal uncertainty.
+
+**4. `nan_to_num` is a latent hazard but did not cause DEC-104.** Audited directly: the panel
+has 3,640 rows, no empty fields and one real zero, and the windows start late enough for all
+lags to be defined. The earlier suspicion is withdrawn. The pattern should still be replaced
+with train-fitted imputation plus missingness indicators.
+
+**5. The relational negatives are narrower than stated.** The kNN block reduced ten analogues
+to means, standard deviations and shares, discarding neighbour identity, individual affinity
+weight, direction, territorial heterogeneity and commuting topology. DEC-103 and DEC-104
+support only: *this kNN summary adds nothing to a GBM once own history is present.* They do
+not support *relations do not help*.
+
+**6. The 9x9 factorisation forbids what it tested for.** `A[(i,s),(j,q)] = C[i,j] * S_t[s,q]`
+imposes one sector-affinity matrix on every zone and every flow, so heterogeneous local
+relations are impossible by construction. DEC-094 stands **for that factorisation**: the
+learned matrix was decorative (uniform substitution costs 0.432%). It is not evidence against
+sector-level relations generally.
+
+**7. DEC-106 overstates "derived from the data".** The 1.96, the Poisson assumption, annual
+independence and the `+1` in the denominator are analyst choices. An exact Skellam or a
+hierarchical negative-binomial would be preferable for small counts. Greater stability
+(18.3% vs 27.5%) is not greater utility, and 73.7% "stagnates" is close to degenerate.
+
+## DEC-108 -- Two framing errors, corrected on the project owner's objection (2026-08-11)
+
+**Status:** `SCOPE_CORRECTED`. Both are errors of generalisation in my own write-ups, not of
+measurement.
+
+**1. Forecasting is instrumental, and was reported as if it were the goal.** The project's
+purpose is a relational and recommendation layer; count forecasting exists to fill unobserved
+years so relations can be estimated over time. Comparing a relational model to Ridge on WMAPE
+and concluding *the relational line fails* conflates two tasks. Ridge produces no relational
+structure at all, so it cannot be the architectural competitor.
+
+Correct statement: **for point reconstruction of counts, the tested relational model had
+higher error than Ridge (0.0972 vs 0.0727) and persistence (0.0746). That result governs which
+estimator should fill a missing year. It neither establishes nor refutes the relational
+layer's value, because Ridge does not perform that function.** The relational contribution must
+be judged against a nonlinear twin without the graph, and against degree- and
+weight-preserving placebos, with Ridge as an external forecasting reference only.
+
+**2. "The graph is static" was written where "the implementation did not capture dynamics"
+is what was measured.** DEC-091 established that a temporal smoothness penalty was applied and
+that prior dominance in the softmax, not the penalty, was binding. A model penalised for
+changing its graph, which then reproduces the prior at r = 0.9994, has demonstrated a failure
+of identification. It has demonstrated nothing about whether territorial economic relations
+change.
+
+Correct statement: **the tested implementation could not identify relational dynamics. The
+economic hypothesis that micro and macro relations are dynamic is untested, and remains the
+project's requirement.**
+
+Consequence for architecture: a static graph is not a simplified Y, it is inadequate to the
+requirement. Dynamics must be low-dimensional and regularised -- a free matrix per year over
+14 years learns noise, which DEC-091 arm D measured directly (seed correlation 0.695).
