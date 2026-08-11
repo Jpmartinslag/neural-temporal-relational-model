@@ -5532,3 +5532,74 @@ was averaged away.
 
 **G-A survives unchanged.** +0.0039 [-0.0184, +0.0297], reproduced exactly. The correct
 qualification is that it is sector-heterogeneous, not uniformly zero.
+
+## DEC-113 -- Fourth audit corroborates DEC-112 and inverts G-B; DEC-111 marked AUDIT_FAILED (2026-08-11)
+
+**Status:** `DEC-111_AUDIT_FAILED_REQUIRES_CORRECTION`. A second independent audit, run without
+sight of the first, reaches the same verdict on G-B, G-C and G-D and adds four findings.
+
+**The synthetic null inverts under causal generation.** `synthetic_panel():64` fits a quadratic
+per cell over all 14 years, i.e. 7,560 trend parameters fitted with knowledge of the evaluation
+targets. Refitted causally on years <= t-1, five panels per condition:
+
+| null | fit over 14 years | causal fit to t-1 |
+|---|---|---|
+| Poisson phi=1 | 0.4466 | **0.3962** |
+| NB phi=2.5 | 0.4613 | **0.3788** |
+| real panel | 0.3949 | 0.3949 |
+
+The causal Poisson null sits +0.0013 from the real panel and the overdispersed one sits
+**below** it. **"A panel containing no economics scores higher than the real one" does not
+survive correction**, corroborating DEC-112 D4 by a different route. G-B still cannot be
+declared PASS: the causal synthetic is miscalibrated (grows 75.1% and 70.2% against the real
+56.9%), so it must be rebuilt with dispersion and balance calibrated on training years only.
+
+**The placebo is worse than DEC-112 recorded.** In 2025 it samples with replacement, yields
+45.9 unique neighbours of 50, and **426 of 2,520 rows contain the node itself as its own
+analogue**. Effective neighbours 31.2 against the real arm's 49.1; weight CV 0.853 against
+0.092.
+
+**K = 50 dilutes the real graph.** With effective K of 49.1 the real encoder is averaging
+roughly a fifth of the sector, which is why the block correlates 0.78-0.82 with the model's own
+lag. With a fully corrected placebo (self excluded, no replacement, real weight vector
+preserved, only territorial identity permuted) the sensitivity is: K=5 +0.0031, **K=10 +0.0094
+[+0.0025, +0.0163], 5/7 years**, K=20 -0.0013, K=50 +0.0026. Across five corrected placebo
+draws the mean is +0.0054 and four of five intervals include zero. **A K=10 lead exists and is
+not yet robust to the placebo draw.**
+
+**`block_bootstrap_ci` is not a block bootstrap.** `:164` resamples individual years iid, which
+preserves neither temporal dependence nor the heavy overlap between folds. The name is wrong.
+Since the G-A and G-C intervals already include zero this does not rescue them, but the
+exploratory K=10 and top-k intervals must be treated with the same caution.
+
+**The strongest surviving signal is at the top of the territorial ranking, not in the mean.**
+Post-hoc, K=10, one seed:
+
+| comparison | delta | CI95 | origins |
+|---|---|---|---|
+| relational - mean reversion, Precision@10 | **+0.0413** | [+0.0222, +0.0635] | **7/7** |
+| relational - base, Precision@10 | **+0.0317** | [+0.0175, +0.0476] | **7/7** |
+| relational - mean reversion, NDCG@10 | +0.0269 | [+0.0066, +0.0519] | 5/7 |
+
+**This is the first configuration in which the relational block beats its own no-relational
+base consistently.** It is post-hoc and single-seed and must be pre-registered before it counts.
+Mean Spearman does not answer "which zones will be at the top of this sector"; Precision@10
+does, and it is the product question.
+
+**G-D fails on four counts beyond DEC-112 D5.** Only `analogy` of three pre-registered families;
+40 of 280 source zones per sector; ten arbitrary elements of an unordered top-50, carrying on
+average only **0.231 of each node's weight**; and the loader casts `0051` to `51`, so the
+artifact **does not join to the official commuting IDs**. The 17,640 nodes are 2,520 repeated
+across seven years. The indexing flagged as suspect is confirmed correct.
+
+**Framing, agreed with the project owner and consistent with both audits.** The predictor
+converges on what a linear or mean-reversion rule achieves. That is not the argument against
+the graph: **a linear model produces no relational structure at all**, so it cannot be the
+architectural competitor. The relational layer's standing rests on its own validation --
+`diffusion` passing R1/R2 and `analogy` passing A1, both against placebos and both independent
+of forecast gain -- and now on Precision@10, where relations do improve a prediction task, and
+that task is the product question. What may **not** be claimed is that the graph is valuable
+merely because the linear model cannot produce one.
+
+**DEC-111's G-B, G-C and G-D lines are void.** G-A survives as inconclusive and
+sector-heterogeneous.
