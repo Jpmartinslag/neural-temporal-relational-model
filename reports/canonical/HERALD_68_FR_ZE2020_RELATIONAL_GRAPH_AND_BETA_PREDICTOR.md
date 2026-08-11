@@ -84,3 +84,68 @@ result. A relational layer that only exists inside a model is not a deliverable.
 still delivered under G-D**, and the predictor is reported as a measurement protocol with a
 null result rather than withdrawn. The doctoral argument rests on the protocol and the
 delimited architecture, not on this model working.
+
+---
+
+## 7. Results (DEC-111)
+
+Slurm 7859484, 16 CPUs, 20 seeds, 7 rolling origins. The mean-reversion baseline reproduces
+DEC-109 E1 exactly at **0.3910**, confirming the harness is comparable and confirming that the
+weaker previous-year-prior form used in a first draft (0.3713) would have flattered the model
+by 0.02.
+
+### 7.1 Per-year
+
+| year | meanRev F1 | base F1 | rel F1 | placebo F1 | meanRev rho | base rho | rel rho | placebo rho |
+|---|---|---|---|---|---|---|---|---|
+| 2019 | 0.4040 | 0.3771 | 0.4217 | 0.4170 | 0.3936 | 0.3713 | 0.3705 | 0.3715 |
+| 2020 | 0.3841 | 0.3802 | 0.3683 | 0.3516 | 0.3712 | 0.3117 | 0.3285 | 0.3246 |
+| 2021 | 0.3864 | 0.3811 | 0.3809 | 0.3719 | 0.3964 | 0.4096 | 0.3797 | 0.3608 |
+| 2022 | 0.3664 | 0.3278 | 0.3557 | 0.3325 | 0.3446 | 0.3614 | 0.3529 | 0.3488 |
+| 2023 | 0.3322 | 0.3944 | 0.3504 | 0.3826 | 0.3439 | 0.3822 | 0.3411 | 0.3610 |
+| 2024 | 0.4443 | 0.4460 | 0.4528 | 0.4598 | 0.3494 | 0.3591 | 0.3595 | 0.3706 |
+| 2025 | 0.4196 | 0.4577 | 0.4704 | 0.4808 | 0.4139 | 0.4462 | 0.4435 | 0.4524 |
+| **mean** | **0.3910** | **0.3949** | 0.4000 | 0.3995 | **0.3733** | **0.3774** | 0.3680 | 0.3700 |
+
+Stratified random on the current-year marginal: **0.3343**.
+
+### 7.2 Gates, paired by year with a block bootstrap over the origins
+
+| gate | delta | CI95 | verdict |
+|---|---|---|---|
+| G-A model - meanRev (F1) | +0.0039 | [-0.0184, +0.0297] | inconclusive |
+| G-A model - meanRev (rho) | +0.0041 | [-0.0208, +0.0250] | inconclusive |
+| G-C relational - placebo (F1) | **+0.0006** | [-0.0128, +0.0127] | inconclusive |
+| G-C relational - placebo (rho) | -0.0020 | [-0.0103, +0.0068] | inconclusive |
+| relational - base (F1) | +0.0051 | [-0.0149, +0.0242] | inconclusive |
+
+**No interval excludes zero.** The predictor has no demonstrated advantage over negating last
+year's growth, on either task.
+
+**G-B fails again at 20 seeds**: the no-economics synthetic panel scores 0.4523 (phi=1.0) and
+0.4509 (phi=2.5) against the real panel's 0.3949.
+
+**G-D delivers**: 17,640 nodes and 25,200 analogy edges exported with `decision_year` per row.
+
+### 7.3 The one live lead did not replicate
+
+DEC-109 E7 measured the relational block at **+0.0176** over a matched placebo on a related
+configuration, at p=0.42. Under the pre-registered design here -- 20 seeds, distance-weighted
+top-50, matched random-neighbour placebo, paired by year -- it is **+0.0006**.
+
+This does not contradict the audit, which reported the result as not established. It confirms
+that it was not established. The only live relational lead in the project does not survive its
+own pre-registered test.
+
+### 7.4 Standing statement
+
+The predictor is reported as a **measurement protocol with a null result**, per section 6,
+fixed before execution. What it establishes:
+
+- a three-state target at this grain is dominated by mean reversion, and the modelling
+  apparatus adds nothing detectable to a negated lag;
+- a panel containing no economics scores higher than the real one, so what is learnable here
+  is noise reversion, of which reality contains less;
+- the relational block does not separate from a matched placebo.
+
+The graph artifact stands independently under G-D and is the deliverable.
