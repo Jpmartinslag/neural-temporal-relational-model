@@ -5603,3 +5603,114 @@ merely because the linear model cannot produce one.
 
 **DEC-111's G-B, G-C and G-D lines are void.** G-A survives as inconclusive and
 sector-heterogeneous.
+
+## DEC-114 -- Corrected relational gate, pre-registered (2026-08-11)
+
+**Status:** `PRE_REGISTERED_SUPERSEDED_BY_DEC-115`. Replaces the three gates DEC-112 and
+DEC-113 found invalid, leaving G-A alone. Eleven defects corrected by name: placebo weights
+become a permutation of the real weight row rather than being recomputed from the true
+affinity matrix, sampling without replacement, self excluded, 50 draws instead of one, K swept,
+unweighted encoding primary, circular block bootstrap, causal synthetic trend, lift comparison
+instead of absolute scores, and a graph export that joins to official IDs. Adds the harness
+assertion that a placebo may not beat the no-relational base.
+
+Primary metric moved to Precision@10 and NDCG@10, promoting DEC-113's post-hoc +0.0317 over
+7/7 origins to a pre-registered test. Amended by DEC-115 before execution: K=10 had been
+selected because it scored best.
+
+**Affected files:** `reports/canonical/HERALD_69_FR_ZE2020_CORRECTED_RELATIONAL_GATE.md`.
+
+## DEC-115 -- Parameter provenance: what has a source and what I invented (2026-08-11)
+
+**Status:** `AUDIT_OF_OWN_CHOICES`. Raised by the project owner asking on what basis the values
+were set. For most of them the basis was my judgement.
+
+**Corrects my own framing.** V7's `hidden-dim` 64, `lr` 1e-3, graph depth 2 and Adam match
+EconoGNN and MTGNN exactly. Describing them in DEC-090 and DEC-109 as unjustified leak-era
+defaults was wrong. What was never done is a causal-panel search, which is a claim about
+search, not provenance.
+
+**Three literature values differ from mine and it mattered.** MTGNN uses `subgraph_size` 20 on
+207 nodes, k/N = 9.7%, scaling to **k ~ 28** for 280 zones; V7 used 10 (2.7x too sparse) and
+HERALD_68 used 50 (1.8x too dense), and K=10 was about to be pre-registered as primary purely
+because it scored best. EconoGNN uses **5** temporal windows; I used 4. The Eurostat-OECD
+high-growth threshold is 20% original and **10%** in the EU Implementing Regulation; I used
++-5% and wrote that it was chosen for being round -- and +-10% measures 0.4130 against my
++-5% at 0.3963, so the arbitrary choice was suppressing the result by 0.0167.
+
+**Eight parameters still have no source**, of which the worst is the 0.90 seed-correlation
+threshold for "dynamic": it was derived from arm A's own 0.9967, so every dynamism verdict
+resting on it is circular and void.
+
+**Affected files:** `reports/canonical/HERALD_70_PARAMETER_PROVENANCE.md`.
+
+## DEC-116 -- Architecture: a graph built, used and mutated (2026-08-11)
+
+**Status:** `PRE_REGISTERED_ARCHITECTURE`. Six stages, of which the sixth is the point: the
+model emits that year's graph with edge births and deaths, not only a prediction.
+
+`A_t = softmax_topk(C_prior + U diag(z_t) V^T, k)`. The prior is official commuting and is never
+learned; mutation comes from `r` latent regimes moving, so edges enter and leave as the top-k
+cut falls elsewhere. Zone x zone with sectors as message channels, deliberately not the
+`C[i,j] x S[s,q]` factorisation DEC-094 rejected. No temporal smoothness penalty, because
+DEC-091 showed that term froze the previous graph at 0.9994.
+
+Parameter budget declared: `r = 4` gives 2,296 parameters against ~17,640 node-year
+observations, chosen as the largest rank keeping at least 5 observations per parameter.
+
+Dynamism criterion bounded externally on both sides -- above the noise floor, below the
+temporal placebo -- replacing the circular 0.90 threshold.
+
+**Affected files:** `reports/canonical/HERALD_71_ARCHITECTURE.md`.
+
+## DEC-117 -- Fifth audit: the HERALD_72 implementation must not be run (2026-08-11)
+
+**Status:** `IMPLEMENTATION_BLOCKED_BEFORE_EXECUTION`. Audited before any compute was spent,
+which is the one thing this sequence got right. Findings accepted in full.
+
+**Two fatal defects.**
+
+*Target leakage.* `herald72_dynamic_graph.py:278` trains on `tgt = S[t0+1:t_end+1]`, whose last
+element is the state of the evaluation year itself, and then exports that model as the result
+for that year. The year to be predicted participates in the loss. This is not forecasting.
+The project already lost a whole line to a leak (DEC-088) and cannot have another.
+
+*Dropout active during export.* `main()` never calls `model.eval()`, and `torch.no_grad()` does
+not disable dropout. Two consecutive exports of the same model on the same input gave Jaccard
+**0.447-0.496**, i.e. roughly 5,300-6,000 directed membership changes per timestep. **The
+exported graph would have been dominated by dropout noise, not by economics.**
+
+**The implementation is not the pre-registered architecture.** DEC-116 specifies persistent
+`U`, `V` and an explicit annual `z_t` at rank 4. The code implements `Q(h_t) K(h_t)^T` at rank
+16, with no persistent factors and no `z_t`, so a birth or death cannot be attributed to a
+pattern as the specification requires. Parameter counts reproduced: Q+K+gamma 2,081, full model
+36,133. The 2,081 lands near the pre-registered 2,296 by coincidence, not by design.
+
+**The weak-edge intent is not implemented at all.** `shrink()`, `classify_edges()` and
+`edge_events()` are dead code -- defined, never called. Top-k zeroes everything outside the cut
+before any reliability assessment exists, so a weak-but-real edge at rank 29 dies before it can
+be classified. The declared purpose was to prune noise, not weak edges; the code prunes weak
+edges.
+
+**`dynamism_report()` is also dead code**, the temporal placebo is never constructed, the noise
+floor is never estimated, and the six promised tests do not exist. The criterion is
+non-circular on paper and absent in execution.
+
+**Further defects.** The GRU updates hidden state for absent nodes before the mask is applied,
+so absent nodes accumulate phantom state and relay messages (measured norms 2.669 and 1.818
+after the two message layers). The diagonal is not masked before top-k, producing 27-36
+self-loops per timestep although the loaded commuting excludes them. `head_mag` is never
+trained because no loss uses magnitude. Predictions are computed and discarded.
+
+**Where I was wrong to suspect myself.** The `shrink()` precedence concern is unfounded; Python
+parses the expression as intended. The defect is that the function is never called.
+
+**On the prior-scale fix, partially right.** With real 2025 commuting the standardised prior has
+per-row median sd 0.952 against the learned term's 0.387 at initialisation, i.e. 2.46x rather
+than the previous ~13-wide domination, rising to 1.369 for the learned term after 10 epochs.
+The fix is real and not cosmetic, but the source comment claiming the two are "comparable by
+construction" is false -- the prior's extremes reach 25.7 and `gamma` barely moved (1.001).
+
+**Also recorded: the same registration failure repeated.** DEC-114, DEC-115 and DEC-116 existed
+only inside their canonical files and were absent from this log, exactly the lapse corrected
+earlier today for DEC-088..DEC-105. They are inscribed above.
