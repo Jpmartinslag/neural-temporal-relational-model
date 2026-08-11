@@ -5791,3 +5791,72 @@ HERALD_74's target alignment. Writing the specification is not the failing step;
 the code executes it is. No further implementation should be committed without a unit test that
 asserts, on synthetic data with a known answer, that the target cannot be reconstructed from
 the features.
+
+## DEC-119 -- Seventh audit: the pre-registered architecture cannot forecast (2026-08-11)
+
+**Status:** `ARCHITECTURE_DEFECT_NOT_IMPLEMENTATION_DEFECT`. Ten guards pass and the audit
+confirms nine mechanical corrections are real. Three blocks remain, and the second is not a
+bug.
+
+**1. The declared validation years are trained on.** `_fit` sets `n_loss = len(x) - 1`, which
+excludes only the scored step. `assemble_fold` declares `val_target_years` as the two years
+before the scored one, and both are inside the loss. There is no early stopping, no selection
+and no validation metric. The guard at `test_scored_year_never_in_loss` inspects metadata only
+and never checks which positions the loss actually consumes, which is why it passed.
+
+Consequence for the arithmetic: the honest ratio is 27,720 labels over 2,297 parameters
+(12.07), not the 9.87 reported, and the "11 of 14 rows of z trained" figure holds **only
+because validation is absorbed into training**. Removing validation from the loss returns it
+to nine.
+
+**2. `z` for the scored year is never learned, and this is a property of the design.**
+Steps are 1..12, the loss covers 1..11, and the scored step uses `z[12]`, which stays at its
+initial 0.05. All four factors are therefore activated at an arbitrary constant when the model
+produces the only prediction that counts. Verified: `z[0]`, `z[12]` and `z[13]` are unchanged
+after training; `z[1..11]` move.
+
+**A free per-year `z_t` is retrospective by construction.** It has no mechanism for producing
+a regime for an unseen year. DEC-116 pre-registered `A_t = topk(C + U diag(z_t) V^T)` with
+`z_t` as a free parameter, and that specification is internally inconsistent with forecasting:
+the architecture can describe how relations moved in years it saw, and cannot state how they
+will move next year.
+
+The consequence is sharper still: the architecture **cannot simultaneously** hold out
+validation years and learn a free `z` for them. Reserving a year removes its regime from
+training, which leaves it at the initialisation constant.
+
+For the design to forecast, `z_t` must be **inferred** from the year's own features or history
+-- an encoder `z_t = f(x_{<=t})` -- or carried by a learned temporal dynamic such as
+`z_t = g(z_{t-1})`. Either turns `z` from a free parameter into a prediction and makes an
+unseen year reachable. This is a change to `HERALD_71` section 3, not to its implementation.
+
+**3. Two guards give false assurance.**
+
+*The absence guard is built to pass.* `test_absence_is_not_evidence` gives every present edge
+weight exactly 0.5, so the standard deviation over present edges is zero, every standardised
+logit collapses to zero, and absent edges inherit zero as well. With heterogeneous present
+weights the audit measured the prior at absent edges at **-2.2108**, and **0 of 1,470 absent
+edges were classified `noise`** -- 156 `strong_real` and 1,314 `weak_real`. The guard would
+not catch a regression to the DEC-118 defect on realistic data. It also passes `prior + noise`
+to a function whose contract is to receive the learned deviation alone.
+
+*The placebo guard is a single-seed inequality.* Over 20 independent synthetic panels the
+audit measured placebo minus base at mean **+0.01075**, range -0.109 to +0.095, with the
+placebo winning **12 of 20** and exceeding the 0.01 tolerance in 9. The claim "a valid placebo
+cannot beat the base" is false in a finite sample; what must not happen is a systematic,
+replicable advantage. The guard must become a paired multi-panel distribution with an
+interval, not one realisation.
+
+**4. Still helpers with no caller.** `fold_year_assignment`, `negative_binomial_floor`,
+`classify_edges` and `shrink` are exercised only by tests. `_fit` accepts `z_rows` but nothing
+connects it. `negative_binomial_floor` takes an unused `prior` argument and fixes `phi=2.5`
+and `reps=8`.
+
+**5. Genuinely fixed, confirmed by reading and execution.** Feature-to-target alignment;
+magnitude on `t+1`; `model.eval()` with an all-output comparison; the presence mask over state
+and messages; no self-loops; explicit `U`, `V`, `z`; non-zero `z` giving immediate gradient to
+`U` and `V`; the expanded window; and prior standardisation over observed edges only.
+
+**Recorded.** "Ten guards pass" overstated the position. A passing test and a test that
+measures the intended construct are different things, and two of these ten were the second
+without being the first.
