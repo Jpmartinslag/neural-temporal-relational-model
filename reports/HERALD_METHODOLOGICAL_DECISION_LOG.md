@@ -5954,3 +5954,57 @@ observed. `Y_t` having been the previous step's target is not leakage, because a
 same lapse occurred for DEC-088..105 and for DEC-114..116, was recorded both times, and
 recurred. It is a process defect, not forgetfulness: **a canonical file that declares a DEC
 number must not be committed without the corresponding log entry in the same commit.**
+
+## DEC-122 -- Second amendment: the seven DEC-121 defects closed (2026-08-11)
+
+**Status:** `PRE_REGISTERED_AMENDMENT`. Amends `HERALD_76` sections 2-7. Written and committed
+together with its canonical file, which is the rule adopted in section 9 after the third
+registration failure.
+
+**Task declared.** Rolling one-step-ahead forecasting, recomputed after each year is observed.
+Reading `Y_t` to predict `Y_{t+1}` is causal under that task. It does not extend to recursive
+multi-year forecasting, where `Y_t` is no longer observed after the first horizon.
+
+**`masked_pool` defined** as a masked mean over nodes at the current step, the GRU supplying
+temporal memory. Sum pooling would confound the regime with the count of present nodes;
+pooling again over time would double the history and tie the regime's scale to fold length.
+
+**Recurrent feedback decided.** Primary: `h_pregraph` never receives messages. The variant in
+which `message_{t-1}` feeds `h_pregraph_t` has no algebraic circularity but is an
+autoregressive graph system that can amplify its own error, and is admitted only as a declared
+sensitivity.
+
+**The temporal placebo is withdrawn and rebuilt.** `z_t = f(x_<=sigma(t))` cannot exist: where
+`sigma(t) > t` it reads the future, and a bijection with `sigma(t) <= t` everywhere is only the
+identity. Replaced by P1, permuting causally computed `z` vectors for retrospective analysis
+only, and P2, a pre-declared circular shift reported explicitly as a non-causal upper bound.
+Dynamism stays bounded above the noise floor and below P1.
+
+**Evaluation starts at 2021.** Rank 4 gives 3.02 and 4.03 observations per relational parameter
+in 2019 and 2020, below the minimum HERALD_71 set. Two origins are dropped rather than lowering
+the rank for them or abandoning the rule. Five origins remain and the loss is reported.
+
+**Both parameter counts are reported.** Relational path 2,501 at 9.07 observations each; full
+model ~36,553 at 0.62. The single figure was selective accounting: it describes the adjacency's
+explicit capacity and is not a proof of identifiability for a jointly trained encoder and GRU.
+
+**Refit reversed.** HERALD_76 fixed no-refit; the primary is now train, select the epoch on
+validation, freeze, reinitialise, refit on train+validation, score once. The scored year is
+untouched so its independence holds; what is surrendered is a validation estimate of the
+refitted model. No-refit becomes the sensitivity. The policy applies identically to every
+placebo, resample and control arm.
+
+**Eight guards rebuilt, each against the mutant that defeated it.** Prefix-passing for g2 so
+the future is structurally unreachable; loss-and-gradient comparison before any optimiser step
+for g4, removing both the reliance on a flag the audited code implements and the CUDA
+false-positive risk; an integration spy for g6; runtime call-counting spies for g7, extended to
+the temporal placebo, relational placebo, leave-one-year-out, precedence and seed stability;
+production-path argument capture for g8 absence; structural validity plus a paired multi-panel
+interval for g8 placebo; and real parameter counting by name prefix for the budget. Only g3
+survives unchanged.
+
+**Twenty-two items remain undefined** and are listed in section 8 so a fourth mechanically
+correct implementation on an incomplete definition is not possible. None may be chosen during
+coding.
+
+**Affected files:** `reports/canonical/HERALD_77_ARCHITECTURE_AMENDMENT_II.md`.
