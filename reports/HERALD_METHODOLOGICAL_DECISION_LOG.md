@@ -5714,3 +5714,80 @@ construction" is false -- the prior's extremes reach 25.7 and `gamma` barely mov
 **Also recorded: the same registration failure repeated.** DEC-114, DEC-115 and DEC-116 existed
 only inside their canonical files and were absent from this log, exactly the lapse corrected
 earlier today for DEC-088..DEC-105. They are inscribed above.
+
+## DEC-118 -- Sixth audit: HERALD_74 stays blocked; fixing a leak introduced a worse one (2026-08-11)
+
+**Status:** `IMPLEMENTATION_BLOCKED_SECOND_TIME`. Audited before execution again. Four of ten
+fixes are real; the file must not run.
+
+**The forecasting leak was not closed, it was replaced.** `herald74_dynamic_graph.py:268`
+sets `tgt = S[idx]` on the same indices as the features. Feature 0 is `growth(Y)[idx]`, and
+`states()` defines `S` by thresholding exactly that array. The model is asked to predict a
+threshold of its own first input, and `mag_t = growth(Y)[idx]` regresses on that input
+literally. Audit reproduction: **12,600/12,600 targets reconstructed from feature 0**;
+agreement with the true next-year target is **33.80%**.
+
+This is the same class as DEC-088 and it was introduced *while fixing* the DEC-117 leak. The
+comment at lines 266-267 states the correct alignment while the code below does something
+else -- the exact failure DEC-117 recorded for HERALD_72, repeated in the file written to
+correct it. There is also no scoring of `t_end` at all, despite the docstring.
+
+Correct form: inputs `t0..t_end-1`, targets `S[t0+1..t_end]`, loss on all but the last pair,
+score the last pair once. Magnitude target must be `growth[i+1]`.
+
+**The reliability layer declares every edge real.** With three seeds, `classify_edges`
+returned `strong_real` 8,698 and `weak_real` 69,422 against **`noise` 0** -- all 78,120
+off-diagonal edges. Cause at `:210`: standardising the prior gives absent edges a constant
+~-0.127, and `abs()` converts that evidence of *absence* into signal; with tiny between-seed
+variance the ratio explodes. **5,852 edges with zero observed commuting were classified
+`strong_real`.** The dense path is genuinely dense, which was the fix, but it does not prune
+noise -- it converts the entire space into opportunity. `shrink()` is still never called.
+
+**The temporal placebo does not test the stated hypothesis.** `:258` permutes the data and
+`t_abs` together, so every observation stays married to its true `z_t`. It perturbs GRU
+ordering only. Measured at 300 epochs the placebo produces **more** mutation than the trained
+model (309, 237, 139, 90 births against 157, 124, 78, 39) with a nearly identical `||z||`
+(2.055 against 2.091). The comparison at `:337` is also unfair: it contrasts 2020-2022 in the
+placebo against 2020-2024 in the observed arm.
+
+**Cold start is severe though not fatal.** With `z = 0`, `U` and `V` receive exactly zero
+gradient at initialisation; only `z` can move, through 0.01-scale random factors. Deviation
+row-sd is 1.59e-7 at 30 epochs and 0.0756 at 300, against a `gamma`-scaled prior of ~8.27 in
+median range -- **the prior remains 8-21x larger**. Correlation with a prior-only graph after
+300 epochs is **0.9885**, better than the old 0.9994 but still prior-dominated.
+
+**The dynamism floor compares incompatible units.** Observed movement is `1 - corr(A_1, A_T)`,
+dimensionless (1.74e-6 measured); the floor passed in is `median(noise_sd)` in logit units
+(9.96e-4). Beyond the unit mismatch, between-seed variance is model instability, not sampling
+noise. Three of the six pre-registered tests -- relational placebo, leave-one-year-out,
+out-of-sample precedence -- do not exist.
+
+**Identifiability argument does not hold for this fit.** Graph path is 2,297 parameters
+including `gamma`, matching the spec's 2,296 arithmetic. But each fold uses five years, so with
+correct alignment only four transitions can enter the loss: 10,080 labels over 2,296 parameters
+is **4.39 per parameter, below the pre-registered minimum of 5**, and nine of the 14 rows of
+`z` go untrained in every fold. Factor permutation, sign and scale are also unidentified across
+seeds, so "the same pattern `z`" cannot be claimed to explain a mutation in two seeds.
+
+**FIX 9 is false.** The NPZ writes no logits, no predicted magnitude, no targets or metrics,
+no raw `U diag(z) V^T` (`dense` is `gamma*prior + raw`), no `z_t` values, no event identities
+and no year labels. Events are counts between first and last step of seed 0 only.
+
+**What is genuinely fixed.** The presence mask is correct: encoder input, carried hidden state
+and every message layer are masked, an absent node cannot relay, and a reappearing node is
+clean. The diagonal is masked and zero self-loops appear in every probe. `model.eval()` does
+fix export determinism (max adjacency difference 0.0). The architecture is structurally the
+pre-registered `U diag(z_t) V^T`.
+
+**Partial.** The determinism assertion compares only adjacencies, which do not pass through
+dropout; forced into `train()` mode the logits differ by 0.4217 and magnitudes by 0.2751 while
+the assertion still passes. It also does not set deterministic algorithms or guard `topk` ties
+across platforms. Rank is swept; epochs are not, despite the docstring claiming otherwise, and
+eleven further constants remain unsourced.
+
+**Recorded as a pattern, not an incident.** Three implementations in a row have carried correct
+intent in comments and incorrect behaviour in code: HERALD_72's four dead functions, and now
+HERALD_74's target alignment. Writing the specification is not the failing step; verifying that
+the code executes it is. No further implementation should be committed without a unit test that
+asserts, on synthetic data with a known answer, that the target cannot be reconstructed from
+the features.
