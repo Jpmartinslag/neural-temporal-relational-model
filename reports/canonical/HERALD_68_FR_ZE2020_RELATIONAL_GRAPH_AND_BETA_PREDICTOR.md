@@ -127,7 +127,12 @@ year's growth, on either task.
 
 **G-D delivers**: 17,640 nodes and 25,200 analogy edges exported with `decision_year` per row.
 
-### 7.3 The one live lead did not replicate
+### 7.3 The one live lead did not replicate -- **WITHDRAWN, see DEC-112**
+
+> This section is void. The placebo it relies on was contaminated: it randomised neighbour
+> selection but weighted the random neighbours by their true affinity. Corrected, the lead
+> replicates at +0.0083. The text below is kept only so the error remains visible.
+
 
 DEC-109 E7 measured the relational block at **+0.0176** over a matched placebo on a related
 configuration, at p=0.42. Under the pre-registered design here -- 20 seeds, distance-weighted
@@ -144,8 +149,10 @@ fixed before execution. What it establishes:
 
 - a three-state target at this grain is dominated by mean reversion, and the modelling
   apparatus adds nothing detectable to a negated lag;
-- a panel containing no economics scores higher than the real one, so what is learnable here
-  is noise reversion, of which reality contains less;
+- ~~a panel containing no economics scores higher than the real one~~ **WITHDRAWN (DEC-112)**:
+  the G-B gate fails under every synthetic variant including one with *positive* growth
+  autocorrelation, so it does not measure noise reversion. Real lag-1 autocorrelation is -0.367
+  against the null's -0.388, refuting "reality contains less";
 - the relational block does not separate from a matched placebo.
 
 The graph artifact stands independently under G-D and is the deliverable.
