@@ -5860,3 +5860,97 @@ and messages; no self-loops; explicit `U`, `V`, `z`; non-zero `z` giving immedia
 **Recorded.** "Ten guards pass" overstated the position. A passing test and a test that
 measures the intended construct are different things, and two of these ten were the second
 without being the first.
+
+## DEC-120 -- Amendment: the annual regime becomes inferred, not stored (2026-08-11)
+
+**Status:** `PRE_REGISTERED_AMENDMENT_SUPERSEDED_IN_PART_BY_DEC-121`. Amends `HERALD_71`
+section 3 without editing it. Blocks `herald75_dynamic_graph.py` for scientific execution
+while its mechanical corrections stand.
+
+A free per-year `z_t` is rejected: DEC-119 measured that the scored year's row never receives
+gradient, so the model fires all factors at an arbitrary constant exactly when it makes the
+prediction that counts. The network still emits a prediction but cannot infer the
+**year-specific graph** for an unseen year, so the failure lands precisely on the central
+claim. The design also cannot hold out validation years and learn a free `z` for them.
+
+Replaced by `c_t = masked_pool(h_pregraph_<=t)`, `z_t = tanh(W c_t + b)`,
+`A_t = topk_softmax(gamma C_t + U diag(z_t) V^T, k)`, with `U`, `V` persistent at rank 4 and
+the encoder shared across years. Relational path 2,501 parameters, 9.07 observations each at
+eval 2025, and no longer growing with the number of years.
+
+**Affected files:** `reports/canonical/HERALD_76_ARCHITECTURE_AMENDMENT.md`.
+
+## DEC-121 -- Eighth audit: mutation testing shows the guards do not falsify (2026-08-11)
+
+**Status:** `SPEC_AND_GUARDS_REQUIRE_CORRECTION_BEFORE_IMPLEMENTATION`. The audit built
+deliberately defective implementations and ran them against each guard. The architectural
+direction is confirmed correct; the guards mostly are not.
+
+**Mutation results.** Of the ten test functions, only `g3` is strong against the exact defect
+it targets. Passing mutants found:
+
+| guard | mutant that passed | consequence |
+|---|---|---|
+| g1 | free table transposed to `[rank, n_years]`, or registered as a buffer | the rejected architecture returns under another shape |
+| g2 | encoder reading one step ahead | the test perturbs `Y[-1]` while calling `eval_index=12`, so a one-year lookahead is invisible |
+| g4 | `corrupt_heldout` implemented as a no-op | the guard trusts the audited code to corrupt its own held-out targets |
+| g5 | encoder returning a constant different from the initialisation | only survives because `g3` catches it separately |
+| g6 | `run_fold` ignoring the plan entirely | the guard inspects `fold_plan`, not execution |
+| g7 | the four control names written in a docstring | `fn in src` is satisfied by a comment |
+| g8 absence | the old `abs(mean)/noise_sd` classifier | the test never passes `C`, only a small synthetic `raw`, while the real defect was the driver passing `prior + raw` |
+| g8 placebo | a placebo identical to the base | delta zero, interval contains zero, passes |
+| budget | a driver returning 2,501 while the model holds more | the test trusts the reported number |
+
+`g4` additionally risks a **false positive**: `np.allclose` at ~1e-5 against accumulated CUDA
+non-determinism would fail a correct implementation.
+
+**Four defects in the specification itself.**
+
+*The temporal placebo can read the future, and cannot be constructed as written.* `HERALD_76`
+section 6 defines it as `z_t = f(x_<=sigma(t))`. Where `sigma(t) > t` the placebo receives
+future history, violating the information set and making the control artificially strong. And
+a bijection satisfying `sigma(t) <= t` for every `t` is only the identity, so the construction
+as written is impossible. The placebo must be declared an explicitly retrospective control
+with its comparability argued, or replaced -- candidates are permuting causally computed `z_t`
+vectors for retrospective analysis only, block shuffling inside training with a causal encoder
+at evaluation, or pre-declared circular shifts treated as a deliberate non-causal upper bound.
+
+*`masked_pool` is ambiguous.* It does not say whether the pool runs over nodes at step `t` or
+also over `h_1..h_t`. Fixed here as a masked **mean over nodes at the current step**, the GRU
+supplying temporal memory: sum pooling would confound the regime with the number of present
+nodes, and pooling again over time would double the history and make the scale depend on fold
+length.
+
+*Recurrent feedback is undecided.* If `h_pregraph_t` receives messages from `t-1`, there is no
+algebraic circularity because the dependence is lagged, but the object becomes an
+autoregressive graph system that can amplify its own errors. Primary: `h_pregraph` never
+receives prior messages. Sensitivity: the feedback arm, declared separately.
+
+*The budget rule is violated by two of its own folds.* At rank 4 the observations per
+relational parameter are 3.02 in 2019 and 4.03 in 2020, below the minimum of 5 that HERALD_71
+set. Evaluation must start at 2021, or the rank must fall for the early folds, or the rule must
+be abandoned explicitly.
+
+**Selective accounting.** The relational path is 2,501 parameters, but the full model with the
+HERALD_75 backbone is roughly 36,553, giving 0.62 observations per parameter. Counting 2,501
+is defensible as a description of the adjacency's explicit capacity; it is not a proof of
+identifiability for a model whose encoder and GRU are trained jointly and produce `c_t`. Both
+figures must be reported.
+
+**Refit.** The audit recommends the opposite of what HERALD_76 section 4 fixed: train, select
+the epoch on validation, freeze, reinitialise, refit on train+validation for the frozen number
+of epochs, and score once. The test year stays untouched, so the evaluation remains valid;
+what is lost is a validation estimate of the refitted model, not the independence of the score.
+With fourteen years this is the better use of data. **Refit becomes primary, no-refit becomes
+the sensitivity** -- reversing the earlier decision, and pre-specified for every placebo and
+resample.
+
+**Causality of including step `t` is confirmed correct**, on one condition that must be
+declared: the task is rolling one-step-ahead forecasting, recomputed after each year is
+observed. `Y_t` having been the previous step's target is not leakage, because at decision time
+`t` it is observed. It is **not** automatically causal for recursive multi-year forecasting.
+
+**Registration failure, third occurrence.** DEC-120 existed only in its canonical file. The
+same lapse occurred for DEC-088..105 and for DEC-114..116, was recorded both times, and
+recurred. It is a process defect, not forgetfulness: **a canonical file that declares a DEC
+number must not be committed without the corresponding log entry in the same commit.**
