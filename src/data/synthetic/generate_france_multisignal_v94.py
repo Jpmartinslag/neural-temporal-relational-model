@@ -89,6 +89,23 @@ class NonlinearConfig:
     commuting_k: int = 40
     propagation_k: int = 28
     relational_scale: float = 1.0
+    common_scale: float = 1.0
+    # Give the volumes, each signal's observation draws and the missing-block mask their own
+    # independent random streams, derived from the seed rather than taken in sequence from
+    # one generator.
+    #
+    # It has to be optional because it changes the panel a seed produces, and HERALD 94's
+    # results were generated without it and stay exactly reproducible at the default.
+    #
+    # It has to exist because the shared stream is not actually shared. `rng.poisson` at
+    # these rates uses rejection sampling, so it consumes a *variable* number of uniforms
+    # depending on its mean. Change the latent path -- which is exactly what changing the
+    # relational scale does -- and the generator falls out of step: the missing-block masks
+    # differ, and every signal drawn after the first negative-binomial one receives a
+    # different stream entirely. Two scales would then differ by more than the relation, and
+    # their difference would not be the relational effect. A paired design cannot rest on
+    # that, so the ladder sets this.
+    paired_streams: bool = False
     low_information_share: float = 0.25
     missing_block_rate: float = 0.02
 
@@ -99,10 +116,25 @@ class NonlinearConfig:
             raise ValueError("at least twenty zones are needed for a usable placebo")
 
 
-def scenario_loadings(scenario: str, scale: float) -> dict[str, dict[str, Any]]:
+def scenario_loadings(scenario: str, scale: float,
+                      common_scale: float = 1.0) -> dict[str, dict[str, Any]]:
+    """Per-signal loadings. ``scale`` multiplies the *relational* term and nothing else.
+
+    It multiplied ``gamma`` as well until HERALD 95 reviewed it. ``gamma`` is the loading on
+    the common state, which is not relational at all, so varying ``scale`` moved two
+    components at once: at ``scale = 0`` the world lost its common state along with its
+    relation, and the intended control -- everything identical but the relation switched off
+    -- did not exist. Every earlier stage ran at ``scale = 1.0`` where the two are
+    indistinguishable, so nothing already reported changes; the separation only matters to a
+    design that varies the parameter, which is what this one does.
+
+    ``common_scale`` exists so the common state can be held fixed explicitly rather than by
+    accident, and defaults to leaving it exactly where every earlier stage put it.
+    """
     if scenario not in SCENARIOS:
         raise ValueError(f"unknown scenario {scenario!r}; known: {sorted(SCENARIOS)}")
-    base = {name: {"loading": spec["loading"] * scale, "gamma": spec["gamma"] * scale,
+    base = {name: {"loading": spec["loading"] * scale,
+                   "gamma": spec["gamma"] * common_scale,
                    "noise_group": name, "component": COMPONENT_OF[name]}
             for name, spec in SIGNAL_SPEC.items()}
     # Outside `N4` every signal measures the same component, so the disjoint split is a
@@ -256,24 +288,31 @@ def generate_nonlinear(config: NonlinearConfig = NonlinearConfig()) -> dict[str,
     # Drawn even where it is unused, so that the random stream advances identically in every
     # scenario at a given seed.
     private = _private_graph(prior, n_periods, config.propagation_k, rng)
-    loadings = scenario_loadings(config.scenario, config.relational_scale)
+    loadings = scenario_loadings(config.scenario, config.relational_scale,
+                                 config.common_scale)
     simulated = _simulate(config, truth["propagation"], loadings, years_axis, rng)
 
-    volume = rng.lognormal(0.0, VOLUME_LOG_SD, size=n)
+    volume_rng = (np.random.default_rng([config.seed, 2_000]) if config.paired_streams
+                  else rng)
+    volume = volume_rng.lognormal(0.0, VOLUME_LOG_SD, size=n)
     volume = volume / np.median(volume)
     low_cut = np.quantile(volume, config.low_information_share)
     low_information = volume <= low_cut
 
     signals: dict[str, Any] = {}
-    for name, spec in SIGNAL_SPEC.items():
+    for index, (name, spec) in enumerate(SIGNAL_SPEC.items()):
+        observation_rng = (np.random.default_rng([config.seed, 3_000 + index])
+                           if config.paired_streams else rng)
+        mask_rng = (np.random.default_rng([config.seed, 1_000 + index])
+                    if config.paired_streams else rng)
         values = _observe(name, simulated["latent"][name], volume, years_axis,
-                          quarters_axis, config, rng)
+                          quarters_axis, config, observation_rng)
         start, end = spec["window"]
         in_window = (years_axis >= start) & (years_axis <= end)
         if spec["freq"] == "A":
             in_window = in_window & (quarters_axis == 4)
         mask = np.broadcast_to(in_window[:, None], values.shape).copy()
-        mask &= ~(rng.uniform(size=values.shape) < config.missing_block_rate)
+        mask &= ~(mask_rng.uniform(size=values.shape) < config.missing_block_rate)
         signals[name] = {
             "values": np.where(mask, values, np.nan),
             "availability_mask": mask.astype(np.int8),
@@ -284,6 +323,15 @@ def generate_nonlinear(config: NonlinearConfig = NonlinearConfig()) -> dict[str,
 
     diagnostics = {
         "scenario": config.scenario, "link": simulated["link"],
+        "relational_scale": config.relational_scale, "common_scale": config.common_scale,
+        # What fraction of latent cells sits exactly on the +/-0.60 clip. The clip is part of
+        # the model of a bounded growth rate and is not removed, but at large relational
+        # scales it saturates and the scenario stops being "the same world with more
+        # mechanism". Reported so that a scale can be read as what it is rather than as what
+        # it was asked for.
+        "clipped_share": {
+            name: float(np.mean(np.abs(np.abs(simulated["latent"][name]) - 0.60) < 1e-9))
+            for name in SIGNAL_SPEC},
         "loadings": {name: dict(entry) for name, entry in loadings.items()},
         "relational_rms": {name: float(np.sqrt(np.mean(simulated["relational"][name][1:] ** 2)))
                            for name in SIGNAL_SPEC},
