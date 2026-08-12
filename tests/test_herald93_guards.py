@@ -376,8 +376,34 @@ def test_h22_the_summariser_reports_failures():
         "no criterion was reported as failing")
     assert set(verdict["checks"]) >= {
         "edge_f1_at_least_0_50", "dense_correlation_at_least_0_30",
-        "false_edge_rate_in_s0_at_most_0_10", "auprc_above_prevalence",
+        "no_structure_found_in_s0", "auprc_above_prevalence",
         "relational_gradient_is_non_zero"}
+
+
+def test_h23_the_relational_scorer_still_learns_after_training():
+    """The gradient must survive training, not merely exist at initialisation.
+
+    Guard h13 checks that top-k does not block the gradient in a fresh model. It passed
+    while the grid ran, and the grid still measured a scorer gradient of exactly 0.0 after
+    thirty epochs beside 7.86 for the head consuming its output: the edge logits had drifted
+    until the squashing function saturated, and the graph froze while the rest of the model
+    went on training against it. A frozen graph and a graph that found nothing are
+    indistinguishable in a metric table, so the distinction has to be guarded here.
+    """
+    data = dataset()
+    model = herald_model(data, width=16)
+    view = view_of(data, 90)
+    # Saturation is a drift phenomenon: it needs enough steps to develop. Six epochs on
+    # this fixture did not reproduce it and the mutant survived, which made the guard look
+    # sufficient while the grid was demonstrating that it was not.
+    trained = bench.train_neural("herald", model, view, 70, epochs=25, seed=0)
+    assert trained["loss_history"][-1] < trained["loss_history"][0], "the model did not train"
+    norms = bench.component_gradient_norms(model, view, bench.last_released_origin(view))
+    ratio = norms["scorer"] / max(norms["relational_head"], 1e-12)
+    assert norms["scorer"] > 1e-6 and ratio > 1e-4, (
+        f"the scorer is frozen after training: gradient {norms['scorer']:.3e} "
+        f"against {norms['relational_head']:.3e} for the head that consumes it "
+        f"(ratio {ratio:.3e})")
 
 
 def _main() -> int:

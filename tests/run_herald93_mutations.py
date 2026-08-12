@@ -293,7 +293,36 @@ def m_summariser_drops_failed_checks():
         "    return {\n        \"checks\": checks,")
 
 
+def m_scorer_saturates_during_training():
+    """Restore exactly the code that froze the graph in the first grid.
+
+    Two things together caused it and either alone is survivable: the pair features were
+    unnormalised, so their scale grew with training, and each edge was squashed
+    independently, so nothing bounded the logits. Reinstating both reproduces the defect
+    rather than approximating it by scaling a number.
+    """
+    import torch
+    undo_norm = swap(bench.SharedRelationalScorer, "forward", None)
+
+    def scorer_forward(self, state, pairs, prior):
+        source, target = state[pairs[0]], state[pairs[1]]
+        features = torch.cat([source, target, source * target, prior.unsqueeze(-1)], -1)
+        return self.net(features).squeeze(-1)          # the LayerNorm is bypassed
+
+    bench.SharedRelationalScorer.forward = scorer_forward
+    undo_softmax = swap(bench, "scatter_softmax",
+                        lambda values, index, n_groups: torch.sigmoid(values))
+
+    def undo():
+        undo_norm()
+        undo_softmax()
+    return undo
+
+
 CASES = [
+    ("scorer_saturates_during_training",
+     g.test_h23_the_relational_scorer_still_learns_after_training,
+     m_scorer_saturates_during_training),
     ("future_period_reaches_view", g.test_h1_no_future_period_reaches_a_view,
      m_future_period_reaches_the_view),
     ("release_dates_ignored", g.test_h2_release_dates_gate_the_inputs,

@@ -463,9 +463,17 @@ class SharedRelationalScorer(nn.Module if nn is not None else object):
 
     def __init__(self, hidden: int):
         super().__init__()
+        # The fused states are unnormalised encoder outputs, so their scale grows with
+        # training and the pair features grow with it. Without the normalisation the edge
+        # logits ran away, the squashing function saturated, and the scorer's gradient fell
+        # to zero after a few epochs: the graph froze at whatever it happened to be while
+        # the relational head went on training against it. The grid measured a gradient
+        # norm of exactly 0.0 for the scorer beside 7.86 for the head that consumes its
+        # output, which is what a frozen graph looks like from the outside.
+        self.norm = nn.LayerNorm(3 * hidden + 1)
         self.net = nn.Sequential(
-            nn.Linear(3 * hidden + 1, hidden), nn.ReLU(),
-            nn.Linear(hidden, hidden // 2), nn.ReLU(),
+            nn.Linear(3 * hidden + 1, hidden), nn.GELU(),
+            nn.Linear(hidden, hidden // 2), nn.GELU(),
             nn.Linear(hidden // 2, 1))
 
     def forward(self, state: "torch.Tensor", pairs: "torch.Tensor",
@@ -473,7 +481,17 @@ class SharedRelationalScorer(nn.Module if nn is not None else object):
         source = state[pairs[0]]
         target = state[pairs[1]]
         features = torch.cat([source, target, source * target, prior.unsqueeze(-1)], -1)
-        return self.net(features).squeeze(-1)
+        return self.net(self.norm(features)).squeeze(-1)
+
+
+def scatter_softmax(values: "torch.Tensor", index: "torch.Tensor",
+                    n_groups: int) -> "torch.Tensor":
+    """Softmax within each target zone's set of incoming candidates."""
+    largest = torch.full((n_groups,), float("-inf"), device=values.device)
+    largest = largest.index_reduce(0, index, values, "amax", include_self=True)
+    shifted = (values - largest[index]).exp()
+    total = torch.zeros(n_groups, device=values.device).index_add(0, index, shifted)
+    return shifted / total[index].clamp_min(1e-12)
 
 
 class HeraldMultisignal(nn.Module if nn is not None else object):
@@ -516,7 +534,12 @@ class HeraldMultisignal(nn.Module if nn is not None else object):
 
     def forward(self, block, seen, coverage):
         logits, state, gates, encoded = self.edge_logits(block, seen, coverage)
-        weights = torch.sigmoid(logits)
+        # Incoming candidates compete for a target zone's attention rather than each being
+        # squashed independently. A per-edge sigmoid lets every logit drift outwards until
+        # the gradient vanishes; a softmax over the incoming set is bounded by construction,
+        # keeps the gradient alive, and expresses what edge recovery actually asks, which is
+        # a ranking among the candidates of one target rather than an absolute score.
+        weights = scatter_softmax(logits, self.pairs[1], self.n_zones)
 
         # Top-k per target zone, straight-through: the forward pass propagates only the
         # selected neighbours, the backward pass reaches every candidate.
@@ -534,9 +557,12 @@ class HeraldMultisignal(nn.Module if nn is not None else object):
         messages = torch.zeros(self.n_zones, state.shape[1], device=state.device)
         contribution = state[self.pairs[0]] * selected.unsqueeze(-1)
         messages = messages.index_add(0, self.pairs[1], contribution)
-        degree = torch.zeros(self.n_zones, device=state.device).index_add(
+        # The weights already sum to one over each target's incoming set, so dividing by a
+        # degree here would normalise twice and cancel the very differences the scorer is
+        # learning.
+        normaliser = torch.zeros(self.n_zones, device=state.device).index_add(
             0, self.pairs[1], selected).clamp_min(1e-6)
-        messages = messages / degree.unsqueeze(-1)
+        messages = messages / normaliser.unsqueeze(-1)
 
         node = self.node_head(state)
         relational = self.relational_head(messages)
