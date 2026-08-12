@@ -183,16 +183,28 @@ def pooled_driver(frames: dict[str, dict[str, np.ndarray]], period_row: int,
 
 
 def _design_block(frame, index, graph, graph_by_period, driver):
+    """Build one fold's design. The pooled channel is **added**, never substituted.
+
+    The first version replaced the signal's own driver with the pooled one, which asks a
+    different and unfair question: for a signal whose own history already estimates the
+    state well, swapping in an average that includes weakly-loaded signals can only make it
+    worse, and every scenario duly showed pooling *hurting*. The hypothesis is that
+    combining **adds** information, so the pooled neighbour term enters as an extra column
+    beside the signal's own and the fit decides how much weight it deserves.
+    """
     ok = frame["usable"][index]
     own = np.nan_to_num(frame["growth"][index - 1]) if index else np.zeros(ok.shape)
     block = [np.ones(ok.sum()), own[ok], np.full(ok.sum(), own[ok].mean())]
     if graph is not None or graph_by_period is not None:
         matrix = (graph if graph is not None
                   else graph_by_period[frame["period_rows"][index]])
-        if driver is None:
-            driver = standardised_driver(frame, index)
-        neighbour = (matrix @ driver) if driver is not None else np.zeros(ok.shape)
-        block.append(neighbour[ok])
+        own_driver = standardised_driver(frame, index)
+        own_neighbour = ((matrix @ own_driver) if own_driver is not None
+                         else np.zeros(ok.shape))
+        block.append(own_neighbour[ok])
+        if driver is not None:
+            pooled_neighbour = matrix @ driver
+            block.append(pooled_neighbour[ok])
     return np.column_stack(block), ok
 
 
