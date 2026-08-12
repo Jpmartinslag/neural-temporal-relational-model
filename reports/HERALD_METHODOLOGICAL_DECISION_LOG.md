@@ -6008,3 +6008,519 @@ correct implementation on an incomplete definition is not possible. None may be 
 coding.
 
 **Affected files:** `reports/canonical/HERALD_77_ARCHITECTURE_AMENDMENT_II.md`.
+
+## DEC-123 -- France-shaped multi-source known-truth benchmark (2026-08-11)
+
+**Status:** `PRE_REGISTERED_GENERATOR_READY_MODEL_NOT_RUN`.
+
+The next relational experiment is restricted to the current 280 France ZE2020 zones. It
+does not reopen a free-graph search on the observed panel. A new known-truth benchmark first
+tests whether a candidate can recover dated relations under the actual information pattern:
+28 synthetic years (1998--2025), nine SIDE A10 sectors, long Urssaf and unemployment
+channels, shorter SIDE stock and FLORES channels, source-specific release lags, genuine
+zeros distinct from missing values, block missingness, overdispersed counts, the 2020--2021
+common shock and explicit Urssaf measurement breaks.
+
+Four paired scenarios are fixed before training: `null`, `stable`, `dynamic` and
+`dynamic_sparse`. The generator exports commuting prior, dense truth, edge identities and
+dated births/deaths only to the evaluator. `model_inputs()` exposes only observations whose
+synthetic release year is no later than the decision year. Prediction metrics are auxiliary:
+null specificity, added-edge recovery, dated-event recovery and robustness to missingness
+are independently eliminatory.
+
+Mechanical validation completed locally before any model run: **9/9 guards pass and 9/9
+deliberate mutants are killed**. The full default generator produces 112 dated events in
+each dynamic scenario and exactly zero deviation/events in both non-dynamic controls. No
+scientific model fit or HPC job is authorised by this entry; the next permitted action is a
+one-seed smoke on `meso` after a candidate model and its own guards are specified.
+
+**Affected files:** `reports/canonical/HERALD_86_FRANCE_MULTISOURCE_SYNTHETIC_SPEC.md`,
+`src/data/synthetic/generate_france_multisource_synthetic.py`,
+`tests/test_herald86_multisource_guards.py`, and
+`tests/run_herald86_mutations.py`.
+
+## DEC-124 -- Flow-conditioned support replaces arbitrary synthetic edges (2026-08-11)
+
+**Status:** `PRE_REGISTERED_MODEL_AND_GUARDS_READY_EXTERNAL_AUDIT_REQUIRED`.
+
+Before any model fit, DEC-123's arbitrary injected births/deaths were rejected as a positive
+control: an edge identity unrelated to any observable pair feature would reproduce the
+non-identifiability already measured in HERALD 85. The dynamic truth is therefore narrowed
+to a shared, observable-feature-conditioned reweighting of official commuting support. The
+dense layer preserves every observed flow; only membership in the propagation top-k changes.
+Five pre-declared regimes produce 3,422 dated top-k events in the default seed, concentrated
+in 2012, 2017, 2020, 2021 and 2022. The earlier DEC-123 statement of 112 events is superseded.
+
+The candidate is HERALD 87: a shared edge scorer with no zone embedding, pair table or
+off-commuting edge. A frozen causal local baseline is followed by a graph-only residual
+objective, so no trainable node path can carry the prediction. Its permitted claim is
+strictly “when and how strongly an observed commuting relation matters”; it cannot claim
+discovery of arbitrary territorial connections.
+
+Self-audit found and corrected three pre-run defects: the final local baseline was not
+refitted on train+validation; missing source growth was numerically zero without its source
+mask in message passing; and a metric named dense correlation compared top-k matrices.
+After correction, **9/9 HERALD 86 guards and 9/9 HERALD 86 mutants pass locally**. HERALD
+87 now has a tenth guard ensuring static prior edges receive no recovery credit. A redundant
+control was also removed: a constant scorer and the static-prior arm are mathematically
+identical after row normalisation. Re-execution in the `herald-v5` environment on `meso`
+gave **10/10 HERALD 87 guards passing and 10/10 deliberate mutants killed**. This authorises
+external code/specification audit only, not a scientific smoke.
+
+The shared no-pytest runner also had an implicit-import defect: it referenced
+`importlib.util` without importing the submodule. Neural guards happened to mask this because
+PyTorch loaded it transitively; NumPy-only guards failed before collection. The runner now
+imports `importlib.util` explicitly, after which all 9/9 HERALD 86 guards passed on `meso`.
+
+External pre-smoke audit then found four additional defects. The direct HPC driver lacked an
+explicit repository-root insertion and could fail importing `src`; Slurm log paths depended
+on a directory created only after Slurm opens the files; the added-edge mutant overwrote a
+metric rather than removing the prior-edge subtraction; and event F1 used an untyped
+symmetric difference, allowing a predicted birth to match a true death. The driver and
+Slurm paths are corrected, the mechanism-level mutant now omits `-prior_edges`, and events
+are represented as `(source, destination, birth|death)`. Guard and mutation totals must be
+re-run before smoke authorisation. Re-execution under `herald-v5` on `meso` gave **11/11
+guards passing and 11/11 mechanism-level mutants killed**. Direct invocation of the HPC
+driver with `--help` and `bash -n` of the Slurm script also pass. This authorises a focused
+external re-audit of these four corrections, not submission of the smoke itself.
+
+The focused external re-audit returned `APPROVE_SMOKE`: all four corrections and the new
+typed-event guard/mutant pair were verified by reading and execution. Its scope authorises
+one synthetic, one-seed mechanical smoke only. The Slurm script is fail-closed: it now runs
+the HERALD 87 guards and mutation suite under `herald-v5` before invoking the driver, so a
+regression prevents training and JSON export automatically.
+
+The successful smoke authorises the pre-declared scientific array, not an inference from its
+single-seed scores. The array has five model seeds (`42–46`) and five rolling score origins
+(`2021–2025`). Each origin uses every target through `τ-3` for training, the two preceding
+targets for validation, the fixed epoch sweep `25,50,100,200`, then a reinitialised
+train+validation refit. Per-seed gate values are the mean across its five origins; H86 gates
+then count the five seeds. The array evaluates `dynamic` main/static/permuted, plus
+`dynamic_sparse` main and `null` main, and keeps every fold-level result for audit.
+
+The completed known-truth array failed edge and dated-event recovery while passing null,
+seed-stability and sparse-robustness gates. Before changing the loss or graph mechanism, one
+OFAT capacity sensitivity is registered: hidden width `32,64,128`, with embedding 8,
+dropout 0.2, lr 1e-3, top-k 28, data, seeds, origins and epoch selection fixed. Width 64 is
+the HERALD 70 literature-anchored value; width 128 is sensitivity only. The 0.60 aspiration
+is reported without replacing the original 0.50 edge and 0.30 event gates.
+
+**Affected files:** `reports/canonical/HERALD_87_FLOW_CONDITIONED_RELATION_MODEL.md`,
+`src/modeles/france_ze2020/herald87_flow_conditioned.py`,
+`tests/test_herald87_flow_guards.py`, and `tests/run_herald87_mutations.py`.
+
+## DEC-125 -- HERALD 88: the benchmark was calibrated, and still carries no observable signal (2026-08-11)
+
+**Status:** `CALIBRATED_BENCHMARK_STILL_UNIDENTIFIABLE`. The protocol stopped at its own
+step 2. No neural arm was written, no representability run, no factorial, no sbatch.
+
+**Why HERALD 88 exists.** The HERALD 87 array failed edge (0.256-0.284) and dated-event
+recovery (0.028-0.033). Diagnosis found the cause upstream of the model: the relational
+term was 0.12% of the latent growth variance and 0.00126% of the observable variance, the
+true graph did not beat a permuted prior, three of the five scoring origins (2023, 2024,
+2025) contain **zero** true events because the generator's regime is constant from 2022,
+and `event_f1` scored 0 for those correctly static years. The hard top-k also gives
+**exactly** zero gradient to excluded edges, because the propagation renormalisation
+cancels the row denominator.
+
+**Calibration, derived not chosen.** `relation_strength` is replaced by a coefficient
+solved from generator internals alone: a frozen-noise probe brackets, then bisects, the
+coefficient whose *realised* latent ratio `RMS(relational increment)/RMS(non-relational
+increment)` equals 0.25. The open-loop closed form overshoots to 4.36 because the
+relational term feeds back through the autoregression, which is why the solve is on the
+realised quantity. Result: latent ratio **0.25004** in 15 steps, `0.24996` sparse, exactly
+`0.0` in the null, reproducible from the seed, and unreachable from `model_inputs`.
+
+**Observable oracle, and the stop.** With the graph now carrying a quarter of the latent
+increment, the true graph still does not beat a permuted prior on the observed target:
+aggregate gain **-0.0054%**, favourable in **3/5** origins, against a gate of +10% and 4/5.
+The latent positive control on the same folds gains **+3.65%**, so the graph is real and
+the loss form is right; what destroys it is the measurement layer. The observable ratio is
+**0.0258** against a latent 0.25, a tenfold attenuation, and the log-count difference
+shares the count `c_t` between consecutive steps with opposite signs, which imposes a
+spurious `corr(g,y) = -0.4975` where the truth is `+0.399`.
+
+**Event scoring superseded.** A dated event is now `(year, source, target, birth|death)`,
+aggregated as a micro-F1 over the union of origins. Years whose truth holds no event no
+longer score zero; they report `false_event_count` and `false_event_rate`. The HERALD 87
+numbers are not rewritten: they are marked `SUPERSEDED` and read with the note that three
+of their five origins were structurally empty.
+
+**Guards.** 16 guards and 14 mutants, NumPy only, all passing and all killed. Three guards
+initially survived their own mutants -- a name bound at import time, a hand-written event
+set that bypassed `typed_events`, and an oracle guard that only compared arms -- and were
+rewritten until each measures the defect it names.
+
+**What is not authorised.** Raising capacity: 32->64->128 bought +0.028 edge F1, **-0.003**
+event F1 and **+0.038** null false positives. Width 256 stays blocked. Nothing here touches
+the real French panel.
+
+**Affected files:** `reports/canonical/HERALD_88_CALIBRATED_KNOWN_TRUTH_AND_FACTORIAL.md`,
+`src/data/synthetic/generate_france_multisource_synthetic_v88.py`,
+`src/modeles/france_ze2020/herald88_factorial_diagnostic.py`,
+`tests/test_herald88_guards.py`, `tests/run_herald88_mutations.py`,
+`hpc/herald88/run_oracle.py`.
+
+## DEC-126 -- HERALD 89: the instrument was rebuilt, and exposure is the binding constraint (2026-08-11)
+
+**Status:** `NO_GRID_FACTOR_MEETS_THE_ORACLE_GATE`. The protocol stopped at its calibration
+step. No final oracle on the evaluation seeds, no representability run, no factorial, no
+sbatch.
+
+**Traceability first.** `DEC-123` existed twice: the HERALD 86 benchmark entry and the
+HERALD 88 entry appended on top of it. The HERALD 88 entry is renumbered `DEC-125`; the
+HERALD 86 entry keeps `DEC-123`, and `DEC-124` is untouched. `DEC-043` and `DEC-044` also
+repeat, but as `ADDENDUM` headings that predate this work and are left alone.
+
+**What changed.** The truth did not move: same commuting prior, same regimes, same shared
+relational formula, same calibrated latent ratio of 0.25. The instrument did. The target is
+now the future count under a Negative-Binomial likelihood, `log mu_{t+1} = log(exposure_t)
++ a_s + b_s g_t + d_s national_t + beta_s (A_t @ centred(g_t))`, so `c_t` appears once as an
+offset instead of twice with opposite signs. Coefficients and dispersion are fitted on the
+training years of each origin and the held-out year is scored once. The HERALD 88
+log-difference regression is retained as a negative control.
+
+Exposure is multiplied the way exposure is actually gained: `NB(M*mu, M*phi)`, whose
+coefficient of variation falls as `1/sqrt(M)` while per-unit overdispersion is preserved.
+No noise term was removed and no scenario was retuned after a score.
+
+**Calibration, seeds 8801-8820, twenty seeds per grid point.** Median gain of `A_true`
+against `A_permuted`: `-0.10%` at M=1, `+0.01%` at 2, `+0.10%` at 4, `+0.73%` at 8,
+`+0.89%` at 16. **0 of 20 seeds reach 10% at any grid point.** The gate is not lowered and
+the grid is not extended after being seen, so the protocol stops.
+
+**Two findings the numbers force.** First, the instrument change is real but is not the
+lever: at M=16 the log-difference control reaches `+1.71%` against the Negative Binomial's
+`+1.25%` on the same seeds, so both formulations respond to exposure and neither is limited
+by the target definition once exposure rises. The `-0.4975` artefact was genuine and is
+gone; it was not the binding constraint. Second, the gain scales roughly with M, so meeting
+a 10% gate on this truth would need an exposure factor near two orders of magnitude -- far
+outside the declared grid and far outside French cell volumes, whose median observed count
+is about 82 with a lower quartile near 48.
+
+**Stratified ceiling, ten calibration seeds, M=1.** `identifiable` `-0.069%`,
+`france_realistic` `-0.045%`, `low_information` `+0.018%`; no level separates the true graph
+from a deranged one. The correct reading of the French-realistic and low-volume levels is
+therefore *insufficient information*, which is what those levels exist to establish.
+
+**Guards.** 16 guards and 16 mutants, NumPy only, all passing and all killed, covering
+future counts in the design, latent quantities, dispersion fitted on the scored year, seed
+discipline, multiplier selection, the old regression as primary, identity permutation,
+coefficients fitted on the scored year, untyped events, stasis scored zero, static commuting
+credited as learned, absence turned into zero, a low-information panel that is secretly
+rich, a de-noised realistic panel, a bypassed gate, and a one-year target shift.
+
+**Not authorised.** No neural arm, no width change, no real French panel, no Corsica.
+
+**Affected files:** `reports/canonical/HERALD_89_MEASUREMENT_AWARE_KNOWN_TRUTH.md`,
+`src/data/synthetic/generate_france_multisource_synthetic_v89.py`,
+`src/modeles/france_ze2020/herald89_measurement_oracle.py`,
+`tests/test_herald89_guards.py`, `tests/run_herald89_mutations.py`,
+`hpc/herald89/run_calibration.py`.
+
+## DEC-127 -- HERALD 90 stage 1: only one French signal carries direction-stable relational information (2026-08-11)
+
+**Status:** `SINGLE_SIGNAL_ONLY_MULTISIGNAL_ORACLE_NOT_AUTHORISED`. Stage 1 ran; stages 2
+to 4 were not written and not submitted. This step succeeds the HERALD 89 `STOP` and does
+not reinterpret it as success.
+
+**Traceability.** `DEC-123` had been duplicated by the HERALD 88 entry; that entry is now
+`DEC-125` and HERALD 89 holds `DEC-126`, so `DEC-127` is the first free number.
+`DEC-043`/`DEC-044` repeat as pre-existing `ADDENDUM` headings and are untouched.
+
+**Why this step exists.** HERALD 89 established that annual establishment creations alone
+cannot identify territorial relations: the observable oracle could not separate the true
+commuting graph from a derangement at any exposure on the declared grid. The hypothesis
+tested here is that dense labour signals -- headcount, payroll, employer establishments,
+unemployment -- might carry the information that creations lack.
+
+**Signal audit, 280 ZE, from the multisource panel.** Coverage is complete for all five
+signals, with no gaps and no zeros. Median volume per zone: Urssaf headcount 28,076;
+payroll EUR 165.6m; employer establishments 3,222; unemployment rate 8.0%; SIDE creations
+1,323. The mass argument holds -- headcount carries 340 times the volume of a per-sector
+creation cell.
+
+**Tournament, five paired arms, only the neighbour term changing.** The local baseline
+already contains the national mean, so no placebo can win by supplying aggregate
+information the baseline lacks; the Urssaf 2021/2023 and COVID breaks enter as nuisance
+regressors. Direction gate declared as advantage in at least four of five seeds.
+
+| signal | seeds favourable | fold share | vs derangement | vs degree-matched random |
+|---|---:|---:|---:|---:|
+| Urssaf employer establishments | **5/5** | 60% | **+1.71%** | **+1.95%** |
+| Urssaf private headcount | 3/5 | 50% | -0.09% | -0.04% |
+| Urssaf gross payroll | 2/5 | 45% | -0.05% | -0.26% |
+| Insee localised unemployment | 0/5 | 25% | -3.01% | -2.46% |
+| SIDE establishment creations | 2/5 | 52% | +17.35% | +16.95% |
+
+**Two readings that matter.** First, the mass hypothesis is refuted in the direction it was
+posed: headcount and payroll carry the most volume and the least relational information.
+They are near-unit-root, so the local baseline explains almost everything and leaves no
+residual for neighbours to explain. Volume without residual variance does not buy
+identification. Unemployment is consistently *negative*, which is coherent with its being
+measured at place of residence, where commuting-linked zones already share workers.
+
+Second, the creations aggregate of `+17.35%` is **not** evidence. Broken down by scored
+year the median gain is `+43.7%` in 2021 and `+17.7%` in 2022, then negative in 2023, 2024
+and 2025; only two of five seeds favour commuting. It is the COVID rebound, the same
+pattern DEC-099 found when every surviving A88 pair fell inside 2019-2021.
+
+**Authorisation.** `authorises_multisignal_oracle = False`: the multisignal hypothesis
+needs at least two informative signals and exactly one qualifies.
+`authorises_single_signal_followup = True`.
+
+**Guards.** 13 guards and 13 mutants, NumPy only, all passing and all killed. Two mutants
+initially survived -- an absence guard that was vacuous because the French panel has no
+gaps, and an authorisation guard that asserted arithmetic instead of calling the rule --
+and both were rewritten: the first now injects a hole, the second calls
+`authorise_multisignal_oracle`, which is the mechanism a mutant can attack.
+
+**Honesty about order.** Stage 1 was executed before the specification document existed,
+because it is a seconds-long NumPy probe whose result decides whether the later stages get
+written. Stage 1 is therefore exploratory and is labelled as such; stages 2 to 4 are
+pre-registered in `HERALD_90`. Where the seed-level and fold-level aggregations disagree --
+employer establishments is 5/5 by seed and 60% by fold -- both are reported.
+
+**Affected files:** `reports/canonical/HERALD_90_MULTISIGNAL_RELATION_IDENTIFICATION.md`,
+`src/modeles/france_ze2020/herald90_signal_audit.py`,
+`hpc/herald90/run_stage1_tournament.py`, `tests/test_herald90_guards.py`,
+`tests/run_herald90_mutations.py`.
+
+## DEC-128 -- HERALD 91: the corrected tournament reverses HERALD 90's two verdicts (2026-08-11)
+
+**Status:** `HERALD_90_MARKED_EXPLORATORY_AUDIT_BLOCKED; CORRECTED_TOURNAMENT_RUN; FACTORIAL_NOT_YET_SUBMITTED`.
+
+**HERALD 90 is reclassified, not deleted**, as
+`EXPLORATORY_CANDIDATE_FOUND_BUT_MULTISIGNAL_STOP_INVALIDATED_BY_AUDIT`. Its numbers stand
+as published; what is withdrawn is the inference drawn from them.
+
+**Vintage policy, decided by measurement.** The panel carries exactly one release date per
+source for its entire history: Urssaf quarterly 2026-06-19 for 1998-2026, Urssaf annual
+2025-09-17 for 1998-2024, unemployment 2026-06-19 for 2003-2026, SIDE creations 2026-04-14
+for 2012-2025. No historical vintage is recoverable, so no as-of join is possible. This
+line is therefore `RETROSPECTIVE_FINAL_VINTAGE_ANALYSIS`: alignment is causal by observation
+period, the values are final revised ones, revision risk is unquantified, and no prospective
+ex-ante claim may be made from it.
+
+**Six defects fixed, and the arithmetic moved.** Per-signal likelihoods replaced a single
+OLS on log levels: Negative Binomial for counts, Gamma for payroll, Gaussian on the logit
+scale for the rate, each reported relative to its own null. Breaks became source-specific
+(Urssaf 2021/2023 on Urssaf only, Insee 2018 on unemployment only, COVID common and
+separate). `B4_national_only` became a genuinely different model -- in HERALD 90 it shared
+B0's columns and the comparison was empty; it now scores 4 to 3,391 times the null. Placebo
+draws became a null distribution of forty graphs with a p-value, instead of five "seeds"
+that changed nothing but the placebo. Every eligible origin is scored, not the last five or
+eight. The training window became frequency-aware: a single twelve-period window had
+silently dropped both SIDE signals, whose entire histories are fourteen and eleven years.
+
+One numerical defect was found and fixed inside this module before any result was read: a
+free coefficient on the lagged log level made the IRLS ill-conditioned and scored the local
+baseline at 1,739 times its own null. The lagged level is now an offset, which makes the
+model a growth model and is stable.
+
+**Corrected results, 280 ZE, forty placebo draws per signal.**
+
+| signal | family | origins | B0/null | gain vs local | gain vs permuted | p(perm) | p(random) | origins won | verdict |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---|
+| SIDE establishment creations | NB | 5 | 3.649 | +7.45% | +8.73% | **0.000** | **0.000** | 4/5 | **RELATION_INFORMATIVE** |
+| Urssaf employer establishments | NB | 18 | 0.751 | +0.66% | +0.87% | **0.025** | **0.000** | 10/18 | not informative |
+| SIDE active stock | NB | 2 | 3.245 | +1.00% | +2.15% | 0.075 | 0.025 | 2/2 | not informative |
+| Urssaf private headcount | NB | 98 | 1.152 | +0.81% | +0.17% | 0.375 | 0.400 | 71/98 | not informative |
+| Urssaf gross payroll | Gamma | 98 | 0.858 | -0.01% | -0.02% | 0.775 | 0.900 | 41/98 | not informative |
+| Insee unemployment rate | logit-Gaussian | 80 | 1.318 | -0.14% | -0.13% | 1.000 | 1.000 | 38/80 | not informative |
+
+**Both HERALD 90 verdicts reverse.** Employer establishments, its candidate, is significant
+against both nulls but wins only 10 of 18 origins and fails the consistency check. Creations,
+which HERALD 90 rejected, is the only signal passing every check -- but on **five origins**,
+and the HERALD 90 year-by-year breakdown put that gain at +43.7% in 2021 and +17.7% in 2022
+against negative values in 2023-2025. A pass resting on five temporal units inside the COVID
+rebound is not evidence of a stable relation, and is recorded as such.
+
+**Complementarity is no longer blocked by triage.** The HERALD 90 rule requiring two
+individually informative signals before testing any combination is removed: it tests the
+opposite of the complementarity hypothesis, since signals may fail alone and work jointly
+through suppression, differing lags or joint noise reduction. Authorisation to test
+combinations now depends on data availability, guards, valid controls and budget.
+
+**Affected files:** `src/modeles/france_ze2020/herald91_corrected_tournament.py`,
+`hpc_results/herald91/corrected_tournament.json`,
+`reports/canonical/HERALD_91_CORRECTED_TOURNAMENT_AND_FACTORIAL.md`.
+
+## DEC-129 -- Amendment to DEC-128: corrected p-values, family-wise control, and a null-model gate (2026-08-11)
+
+**Status:** `TOURNAMENT_INFERENCE_CORRECTED`. Amends the inference of DEC-128 without
+rewriting its numbers. No neural arm has been written or submitted.
+
+**Three corrections, all raising the bar.**
+
+*Empirical p-values.* With forty placebo draws the smallest attainable value is
+`1/(B+1) = 0.02439`, not zero. Every p-value is now `(exceedances + 1)/(draws + 1)`, and the
+floor is exported alongside it. DEC-128 reported `p = 0.000` twice; those readings are
+withdrawn as an artefact of dividing by B instead of B+1.
+
+*Family-wise control across signals.* Six signals were each tested against their own null and
+the smallest p reported, which inflates the family-wise error. The placebo draws share their
+seed sequence across signals, so draw `b` is the same relabelling everywhere and a joint maxT
+null can be built by maximising the per-draw statistic across signals. The correction is
+severe and it matters: Urssaf employer establishments moves from `p = 0.0488` to
+`p_maxT = 0.5854`.
+
+*A null-model gate.* A signal cannot be called relation-informative while its relational arm
+is still worse than a persistence-only null. `relational_arm_beats_the_null_model`
+(`B1/null < 1`) is now the first check. SIDE creations sit at `B1/null = 3.378`; beating
+their own baseline by nine per cent is beating a model that should not have been used.
+
+**Reclassification, from the corrected run.**
+
+| signal | origins | B1/null | p(perm) | p(maxT) | consistency | COVID gain share | verdict |
+|---|---:|---:|---:|---:|---:|---:|---|
+| Urssaf employer establishments | 18 | **0.746** | 0.0488 | 0.5854 | 10/18 | 31% | **WEAK_CANDIDATE** |
+| SIDE establishment creations | 5 | 3.378 | 0.0244 | 0.0244 | 4/5 | 29% | **COVID_SENSITIVE_EXPLORATORY** |
+| Urssaf private headcount | 98 | 1.143 | 0.3902 | 0.9268 | 71/98 | 91% | COVID_SENSITIVE_EXPLORATORY |
+| Insee unemployment rate | 80 | 1.320 | 1.0000 | 1.0000 | 38/80 | 69% | COVID_SENSITIVE_EXPLORATORY |
+| Urssaf gross payroll | 98 | 0.858 | 0.7805 | 1.0000 | 41/98 | 47% | NOT_INFORMATIVE |
+| SIDE active stock | 2 | 3.213 | 0.0976 | 0.1220 | 2/2 | 0% | BASELINE_WORSE_THAN_NULL |
+
+**COVID sensitivity is measured, by two routes.** By concentration, when most of the
+advantage sits inside 2020-2022; or by design, when there are too few scored origins to
+separate the window at all. Creations reach the second: five origins, 2021-2025, with no
+pre-COVID origin anywhere in the panel. No arrangement of those five years isolates the
+rebound, whatever the measured concentration is -- which here is 29%, below the
+concentration threshold, so the attribution rests on the window structure and is labelled
+as such rather than asserted.
+
+**No signal is RELATION_INFORMATIVE.** The strongest is a weak candidate with a valid
+baseline that wins ten of eighteen origins and does not survive family-wise correction.
+
+**Consequence for the generator.** It is not calibrated to a winner. The joint distribution
+of all signals is reproduced, with employer establishments as the long-series anchor,
+creations as an auxiliary and COVID stress, and relational strength controlled by the
+synthetic truth and its observable oracles rather than by any French result. France remains
+`RETROSPECTIVE_FINAL_VINTAGE_ANALYSIS`, clearly labelled, and this round does not attempt to
+recover historical vintages.
+
+**Affected files:** `src/modeles/france_ze2020/herald91_corrected_tournament.py`,
+`hpc_results/herald91/corrected_tournament.json`, `reports/canonical/HERALD_91_CORRECTED_TOURNAMENT_AND_FACTORIAL.md`.
+
+## DEC-130 -- HERALD 91 inference hardening before the multisignal generator (2026-08-12)
+
+**Status:** `CODE_CORRECTED_TOURNAMENT_RERUN_REQUIRED`. No generator, neural model or Slurm
+job is authorised by this entry. DEC-128/129 remain historical results but their signal
+classifications are `SUPERSEDED_PENDING_RERUN`.
+
+Three pre-generator defects were corrected. First, the Negative-Binomial IRLS had used the
+Poisson weight `mu` and estimated a separate dispersion after fitting each arm. It now uses
+`mu/(1+mu/phi)`: one graph-free `phi` is estimated from training-only persistence for each
+rolling origin and frozen across B0, B1, B4 and all placebo graphs. Second, maxT no longer
+gives every placebo a bespoke leave-one-out median. Observed and permuted deviances use the
+same standardised improvement statistic, and the joint null is the per-draw maximum across
+signals sharing the territorial relabelling. Forty draws are exploratory only; confirmatory
+use requires at least 199. Third, width promotion no longer forces the top three arms.
+Promotion to 32/128 requires an absolute dense-correlation gate, edge-F1 gate, or validated
+complementarity; if all fail, none is promoted.
+
+Six focused guards pass and six mechanism-matched mutants are killed. A two-placebo local
+integration probe completes for employer establishments. These checks validate mechanics,
+not the French tournament result. The next authorised action is to rerun the corrected
+tournament, then build the joint generator only if its observable-oracle gates permit it.
+
+**Affected files:** `src/modeles/france_ze2020/herald91_corrected_tournament.py`,
+`reports/canonical/HERALD_91_CORRECTED_TOURNAMENT_AND_FACTORIAL.md`,
+`tests/test_herald91_inference_guards.py`,
+`tests/run_herald91_inference_mutations.py`.
+
+## DEC-131 -- HERALD 91 is the final broad experiment before report handoff (2026-08-12)
+
+**Status:** `REPORT_HANDOFF_CONDITIONED_ON_HERALD91_AUDIT`. HERALD 91 remains pending: the
+corrected tournament must be rerun after DEC-130, and generator, neural and French stages
+remain conditional on their predeclared gates. This decision does not authorise a new
+experiment, a Slurm submission or an interpretation of results not yet obtained.
+
+HERALD 91 is designated as the last broad experimental investigation in this line. Once its
+authorised chain ends and receives an independent artefact audit, positive, median and
+negative outcomes are all sufficient for the report if the mechanics and controls are
+valid. Failure of a scientific gate does not trigger another open search over architectures,
+widths, ranks, epochs, signals or hyperparameters. A further run is admissible only when the
+audit demonstrates a mechanical defect that directly invalidates HERALD 91, and must repeat
+the same hypothesis with the smallest correction possible.
+
+The next phase is therefore evidence freeze and communication: consolidate the audited
+tables and figures, write the final report, state limitations and prepare the presentation.
+French claims remain restricted to association, temporal precedence and predictive impact;
+causal or confirmed edge-discovery language requires identification that the current real
+panel does not provide.
+
+**Affected files:** `reports/canonical/HERALD_91_CORRECTED_TOURNAMENT_AND_FACTORIAL.md`,
+`reports/canonical/HERALD_92_EXPERIMENTAL_CLOSURE_AND_REPORT_HANDOFF.md`.
+
+## DEC-132 -- HERALD 91 tournament v2: the corrected weighting removes the candidate (2026-08-12)
+
+**Status:** `NO_MECHANICAL_CANDIDATE; NO_CONFIRMATORY_RERUN_AUTHORISED; NO_GENERATOR_AUTHORISED`.
+Exploratory probe, forty placebo draws, floor `1/41 = 0.02439`. Nothing here is
+confirmatory. DEC-128 and DEC-129 are not rewritten; their classifications were already
+`SUPERSEDED_PENDING_RERUN` under DEC-130 and this entry supplies the rerun.
+
+**Guards first.** The six focused DEC-130 guards pass and their six mechanism-matched
+mutants die. Ten new integration guards were added, because a unit test can pass while the
+caller quietly hands each arm its own noise scale, and ten matched mutants die. Two real
+defects surfaced while writing them.
+
+*`fit_score` re-estimated silently.* Called on a Negative-Binomial design without an
+explicit dispersion it fell back to a local estimate. The fallback is graph-free but
+**design**-specific: `B4_national_only` carries a different offset, so a forgetful caller
+would have scored it under a different noise scale from the arm it is compared against.
+Negative-Binomial scoring now raises unless a frozen dispersion is passed, with an explicit
+`allow_local_dispersion` opt-out that nothing in `run_signal` uses. No existing behaviour
+changed: `run_signal` already passed the value everywhere.
+
+*One integration guard was insufficient.* It perturbed only the scored period, while a
+widening bug takes `max(train) + 1`, which sits between the window and the scored year. The
+guard now perturbs **every** period outside the training window and the mutant dies.
+
+**The rerun, and what moved.** Numerically sound: dispersions finite and positive, none at
+the ceiling, one dispersion per fold shared across arms, deviances finite, B4 still distinct
+from B0. Cost 394 s for six signals at forty draws.
+
+| signal | B1/null (129 -> v2) | p(perm) (129 -> v2) | consistency (129 -> v2) | verdict (129 -> v2) |
+|---|---|---|---|---|
+| Urssaf employer establishments | 0.746 -> 0.702 | **0.0488 -> 0.6341** | **10/18 -> 7/18** | **WEAK_CANDIDATE -> NOT_INFORMATIVE** |
+| Urssaf private headcount | **1.143 -> 0.886** | **0.3902 -> 0.0244** | 71/98 -> 63/98 | COVID_SENSITIVE_EXPLORATORY -> NOT_INFORMATIVE |
+| SIDE establishment creations | 3.378 -> 4.070 | 0.0244 -> 0.0244 | 4/5 -> 3/5 | COVID_SENSITIVE_EXPLORATORY (unchanged) |
+| Urssaf gross payroll | 0.858 (unchanged) | 0.7805 (unchanged) | 41/98 | NOT_INFORMATIVE (unchanged) |
+| Insee unemployment rate | 1.320 (unchanged) | 1.0000 (unchanged) | 38/80 | COVID_SENSITIVE_EXPLORATORY (unchanged) |
+| SIDE active stock | 3.213 -> 6.355 | 0.0976 -> 1.0000 | 2/2 -> 1/2 | BASELINE_WORSE_THAN_NULL (unchanged) |
+
+The two Negative-Binomial signals moved; the Gamma and Gaussian ones did not, which is what
+a weighting correction confined to the NB family should do and is itself a check that the
+change landed where it was aimed.
+
+**The candidate is gone.** Employer establishments, the DEC-129 weak candidate, falls from
+`p = 0.0488` to `p = 0.6341` and from ten of eighteen origins to seven. Under the Poisson
+weight the highest-volume zones carried leverage proportional to their mean; under
+`mu/(1+mu/phi)` that leverage is bounded and the advantage disappears. The earlier candidacy
+was a property of the weighting, not of the territory.
+
+**One near-miss, and why it is not a candidate.** Private headcount now has a usable
+baseline (`B1/null = 0.886`) and reaches the permutation floor (`p = 0.0244`,
+`p_maxT = 0.0244`), but it fails against the degree-matched control (`p = 0.0732`) while
+gaining only `+0.151%` over the local baseline. Beating a relabelling while not beating a
+graph with the same degrees and weights says the advantage is about *having neighbours of
+that connectivity*, not about *which* neighbours. That is not a territorial relation.
+
+**Decision.** `mechanical_candidates = []`, so `authorises_confirmatory_rerun = False`: no
+199-draw run is licensed, because 199 draws of a null cannot create a candidate that forty
+draws found absent. No signal is `RELATION_INFORMATIVE`.
+
+This does **not** close complementarity. Signals may fail alone and carry joint information,
+and the DEC-130 removal of the two-winner triage rule stands. What it does close is any
+route in which a single French signal is claimed as relation-informative on this
+specification.
+
+France remains `RETROSPECTIVE_FINAL_VINTAGE_ANALYSIS`. No ex-ante and no causal language is
+licensed by any number above.
+
+**Affected files:** `hpc/herald91/run_tournament_v2.py`,
+`hpc_results/herald91/corrected_tournament_v2.json`,
+`tests/test_herald91_integration_guards.py`,
+`tests/run_herald91_integration_mutations.py`,
+`src/modeles/france_ze2020/herald91_corrected_tournament.py`.
