@@ -6884,3 +6884,69 @@ first thing to change.
 `reports/canonical/HERALD_93_MODEL_EVALUATION_AND_COMPARISON.md`. Results in
 `hpc_results/herald93/tasks_v2`, the frozen-scorer grid preserved in
 `hpc_results/herald93/tasks_frozen_scorer`, summary in `benchmark_summary_v2.json`.
+
+## DEC-139
+
+**Date:** 2026-08-12
+**Subject:** HERALD 94 opens an exploratory stage on temporal representation and composite
+signals. The specification is written before any result, and the stage is split into two
+layers for reasons the previous stage established.
+
+**Why two layers.** HERALD 93 left two facts that make a single-layer design unreadable.
+One-step log-growth in this panel is near measurement noise -- no method beat persistence,
+the best skill being `+0.0001` -- so a relational experiment on that target measures the
+ceiling of the target rather than of the method. And HERALD's edge ranking was
+indistinguishable between `S0_NULL` and `S1_SHARED` (AUPRC 0.7228 against 0.7254) because
+`prior_ij` was a scorer input while the truth was drawn inside the prior. Layer 1 therefore
+tests the composite as an instrument with no graph at all: if a composite carries no
+information about a zone's own future, it cannot carry information about that zone's
+relations. Layer 2 runs only if Layer 1 passes, and projects the prior out of the scorer so
+that echoing the support is worth nothing.
+
+**Why the current generator cannot answer the question.** `generate_france_multisignal_v92`
+propagates `lambda * (A_t @ centred(z_t))`, linear in the latent state. A non-linear
+territorial relation does not exist anywhere in that benchmark, so no method could have
+found one and a negative result there would have been a property of the generator.
+`generate_france_multisignal_v94` reuses v92's territory, marginals, masks, breaks and
+observation models unchanged and replaces only the link: rectified propagation, a
+regime-gated loading, and a propagated product of two components measured by disjoint signal
+subsets.
+
+**A structural fact recorded before the results, because it decides how a gain may be
+read.** Of the six declared composites, `C1`, `C2`, `C3` and `C5` are linear functions of
+columns already present in the feature table, so a regularised linear model spanning that
+table contains them exactly and they cannot improve it. Only `C4` and `C6` are products. Any
+gain over the linear arm must therefore come from a product or from an interaction the
+non-linear arm found on its own; the question "is it non-linear" is settled by construction
+rather than by interpretation. A guard asserts the null part of this claim.
+
+**Why a one-hidden-layer tanh network is the non-linear arm.** It nests the linear arm
+exactly -- identity activation reduces it to a linear map -- so the comparison is a
+nested-model one in which any surplus is curvature and any deficit is optimisation. Its
+marginal effects are analytic, `d f / d x_j = sum_h a_h sigma'(u_h) w_hj`. Its interactions
+are analytic and second-order exact, `d2 f / d x_j d x_k = sum_h a_h sigma''(u_h) w_hj
+w_hk`, so "which components create the gain" is answered from the fitted parameters rather
+than by an attribution heuristic. Kernel ridge was rejected on cost -- the kernel is `10^9`
+entries at the grid size -- and because it yields no per-feature marginal effect. Gradient
+boosting was rejected because its response surface is piecewise constant, so the requested
+marginal effects would be artefacts of the split points. Width 8, one layer, fixed in
+advance; this is not an architecture search.
+
+**The decisive control.** One factor of each product is permuted across zones within period.
+This preserves every marginal distribution, every cross-sectional moment and every period
+effect, and destroys only the alignment between the two factors. A gain that survives it was
+never an interaction.
+
+**What is forbidden and enforced.** Absence never becomes zero: a missing feature is imputed
+with the cross-sectional median at that period and carries an availability channel, because
+zero is a legitimate growth rate and using it for "missing" would make a stagnant zone
+indistinguishable from an unpublished one. SIDE creations are never divided by active stock:
+the universes do not coincide and the resulting rate would be an artefact of the mismatch.
+Commuting is not a discovery feature and is not a scorer input; it enters only afterwards as
+an external comparison.
+
+**Status.** Specification only. No feature has been computed, no arm fitted, no scenario
+generated. Gate thresholds, seeds, folds and origins are fixed in the specification before
+submission.
+
+**Affected files:** `reports/canonical/HERALD_94_COMPOSITE_SIGNAL_SPECIFICATION.md`.
