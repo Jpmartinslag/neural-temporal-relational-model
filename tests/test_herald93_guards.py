@@ -25,7 +25,7 @@ driver_spec = importlib.util.spec_from_file_location(
 driver = importlib.util.module_from_spec(driver_spec)
 driver_spec.loader.exec_module(driver)
 
-SMALL = dict(n_zones=40)
+SMALL = dict(n_zones=140)
 _cache: dict = {}
 
 
@@ -38,7 +38,7 @@ def dataset(scenario: str = "S1_SHARED", seed: int = 9401) -> dict:
 
 
 def support_of(data) -> np.ndarray:
-    return bench.candidate_support(data["truth"]["prior"], k=12)
+    return bench.candidate_support(data["truth"]["prior"], k=40)
 
 
 def view_of(data, decision: int) -> bench.PanelView:
@@ -177,8 +177,9 @@ def test_h11_events_are_typed_and_dated():
     data = dataset()
     support = support_of(data)
     propagation = np.asarray(data["truth"]["propagation"])
+    changed = (propagation[1:] != 0) != (propagation[:-1] != 0)
     origins = [period for period in range(1, propagation.shape[0])
-               if ((propagation[period] != 0) != (propagation[period - 1] != 0)).any()]
+               if (changed[period - 1] & support).any()]
     assert origins, "the benchmark truth never moves; typed events cannot be tested"
     # A score that moves in the *wrong* direction must be punished, not rewarded: births
     # and deaths are read off opposite ends of the change.
@@ -195,32 +196,34 @@ def test_h11_events_are_typed_and_dated():
 
 
 def test_h12_the_relational_arm_has_no_node_only_path():
-    """A zone's own state must not reach it through the relational arm.
+    """A zone's own state must not reach it except through messages from other zones.
 
-    Otherwise the relational head can reproduce the node head and an ablation of the graph
-    measures nothing at all.
+    Tested by removing every edge. With no neighbour to hear from, the relational term can
+    only be the head's bias, identical for every zone. If it still varies from zone to
+    zone, something other than a message is feeding it, and an ablation of the graph would
+    then measure nothing at all.
+
+    An earlier version perturbed one zone's history and asserted its own relational output
+    was unmoved. That was vacuous: at the real support size every zone has incoming edges,
+    so the assertion never ran, and it was also wrong in principle, because the edge weight
+    legitimately depends on both endpoints.
     """
     import torch
     data = dataset()
-    model = herald_model(data)
+    support = support_of(data)
+    empty = np.zeros((2, 0), dtype=int)
+    prior = np.zeros(0)
+    model = bench.HeraldMultisignal(len(data["signals"]), 16, empty, prior,
+                                    support.shape[0], top_k=4)
     view = view_of(data, 90)
-    block, seen = view.window(88)
-    block_t = torch.as_tensor(block, dtype=torch.float32)
+    block, seen = view.window(bench.last_released_origin(view))
     seen_t = torch.as_tensor(seen, dtype=torch.float32)
-    output = model(block_t, seen_t, seen_t.mean(1))
-    relational = output["relational"]
-    # Perturb one zone's history and check its own relational output is unmoved.
-    pairs = model.pairs.numpy()
-    isolated = [zone for zone in range(view.n_zones) if zone not in pairs[1]]
-    zone = isolated[0] if isolated else int(np.argmin(np.bincount(pairs[1],
-                                                                 minlength=view.n_zones)))
-    perturbed = block_t.clone()
-    perturbed[:, :, zone] += 5.0
-    other = model(perturbed, seen_t, seen_t.mean(1))["relational"]
-    incoming = int((pairs[1] == zone).sum())
-    if incoming == 0:
-        assert torch.allclose(relational[zone], other[zone], atol=1e-5), (
-            "a zone with no incoming edge still moved its own relational term")
+    output = model(torch.as_tensor(block, dtype=torch.float32), seen_t, seen_t.mean(1))
+    relational = output["relational"].detach().numpy()
+    spread = float(relational.std(axis=0).max())
+    assert spread < 1e-6, (
+        f"with no edges the relational term still varies across zones by {spread:.3e}; "
+        "a node-only path is feeding it")
 
 
 def test_h13_top_k_does_not_block_the_gradient():
@@ -229,12 +232,14 @@ def test_h13_top_k_does_not_block_the_gradient():
     data = dataset()
     model = herald_model(data)
     view = view_of(data, 90)
-    block, seen = view.window(88)
+    origin = bench.last_released_origin(view)
+    block, seen = view.window(origin)
     block_t = torch.as_tensor(block, dtype=torch.float32)
     seen_t = torch.as_tensor(seen, dtype=torch.float32)
     output = model(block_t, seen_t, seen_t.mean(1))
-    target = torch.as_tensor(view.filled[:, 88, :].T, dtype=torch.float32)
-    mask = torch.as_tensor(view.observed[:, 88, :].T, dtype=torch.float32)
+    target = torch.as_tensor(view.filled[:, origin, :].T, dtype=torch.float32)
+    mask = torch.as_tensor(view.observed[:, origin, :].T, dtype=torch.float32)
+    assert mask.sum() > 0, "the probe period carries no released observation"
     loss = bench.masked_gaussian_nll(output["prediction"], target, mask, model.log_scale)
     grad = torch.autograd.grad(loss, output["edge_weight"], retain_graph=True)[0]
     reached = float((grad.abs() > 0).float().mean())
@@ -246,7 +251,7 @@ def test_h14_every_signal_receives_gradient():
     data = dataset()
     model = herald_model(data)
     view = view_of(data, 90)
-    norms = bench.component_gradient_norms(model, view, 88)
+    norms = bench.component_gradient_norms(model, view, bench.last_released_origin(view))
     per_signal = norms["per_signal"]
     assert all(value > 0 for value in per_signal), (
         f"a signal encoder received no gradient: {per_signal}")
@@ -260,7 +265,7 @@ def test_h15_no_signal_is_dropped_by_the_fusion():
     data = dataset()
     model = herald_model(data)
     view = view_of(data, 90)
-    block, seen = view.window(88)
+    block, seen = view.window(bench.last_released_origin(view))
     seen_t = torch.as_tensor(seen, dtype=torch.float32)
     output = model(torch.as_tensor(block, dtype=torch.float32), seen_t, seen_t.mean(1))
     gates = output["gates"].detach().numpy()
@@ -301,7 +306,7 @@ def test_h18_nri_stays_inside_the_support():
     pairs = np.array(np.nonzero(support))
     nri = bench.NRILite(len(data["signals"]), 16, pairs, support.shape[0])
     view = view_of(data, 90)
-    matrix = bench.edge_matrix_from(nri, view, 88)
+    matrix = bench.edge_matrix_from(nri, view, bench.last_released_origin(view))
     assert not matrix[~support].any(), "NRI produced a score outside the support"
 
 

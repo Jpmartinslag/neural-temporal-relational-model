@@ -115,12 +115,18 @@ def m_view_reads_the_latent_path():
 
 
 def m_grid_uses_calibration_seeds():
-    return patch_file(
-        "hpc/herald93/run_model_benchmark.py",
-        "def task_grid(methods=METHODS, scenarios=SCENARIOS, seeds=FINAL_SEEDS,",
-        "def task_grid(methods=METHODS, scenarios=SCENARIOS,\n"
-        "              seeds=__import__('src.data.synthetic."
-        "generate_france_multisignal_v92', fromlist=['x']).CALIBRATION_SEEDS,")
+    """The grid quietly evaluates on the seeds the generator was calibrated on.
+
+    Swapped in memory rather than in the file: the driver module is imported when the
+    guards load, so rewriting its source afterwards changes nothing and the mutant would
+    survive for a reason that has nothing to do with the guard.
+    """
+    original = driver.task_grid
+
+    def bad(methods=driver.METHODS, scenarios=driver.SCENARIOS,
+            seeds=gen.CALIBRATION_SEEDS, widths=driver.WIDTHS):
+        return original(methods, scenarios, seeds, widths)
+    return swap(driver, "task_grid", bad)
 
 
 def m_absence_becomes_a_zero():
@@ -177,11 +183,13 @@ def m_events_lose_their_type():
 
 
 def m_relational_arm_gets_a_node_path():
+    """The relational head is fed the zone's own state alongside its messages."""
     original = bench.HeraldMultisignal.forward
 
     def bad(self, block, seen, coverage):
         output = original(self, block, seen, coverage)
         output["relational"] = output["relational"] + self.node_head(output["state"])
+        output["prediction"] = output["node"] + output["relational"]
         return output
     return swap(bench.HeraldMultisignal, "forward", bad)
 
@@ -273,9 +281,8 @@ def m_one_arm_gets_a_richer_likelihood():
 
 
 def m_width_256_accepted():
-    return patch_file(
-        "src/modeles/france_ze2020/herald93_benchmark.py",
-        "FORBIDDEN_WIDTH = 256", "FORBIDDEN_WIDTH = 4096")
+    """The width ceiling is raised. Swapped in memory for the same reason as the grid."""
+    return swap(bench, "FORBIDDEN_WIDTH", 4096)
 
 
 def m_summariser_drops_failed_checks():

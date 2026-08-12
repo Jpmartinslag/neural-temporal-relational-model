@@ -36,7 +36,10 @@ SCENARIOS = ("S0_NULL", "S1_SHARED")
 METHODS = ("persistence", "sparse_var", "mtgnn", "nri", "herald")
 WIDTHS = (64,)
 N_SCORE = 12
-EPOCHS = 12
+# Thirty epochs for every neural arm, chosen before the grid ran and identical across
+# arms. The smoke used two, which is enough to prove the mechanics and far too few to judge
+# a model: HERALD forecast worse than persistence there, as an untrained network should.
+EPOCHS = 30
 
 
 def atomic_json(payload: dict, path: Path) -> None:
@@ -91,7 +94,13 @@ def run_task(method: str, scenario: str, seed: int, width: int, n_zones: int,
         static_scores = fitted["edge_scores"]
     elif method in bench.NEURAL_METHODS:
         import torch
+        # One thread, fixed seed. The relational arms accumulate messages with index_add,
+        # whose summation order over CPU threads is not fixed, and the smoke caught the
+        # consequence: the same run twice gave different forecasts for NRI and for HERALD.
+        # A benchmark that cannot reproduce itself cannot separate a method from noise.
+        torch.set_num_threads(1)
         torch.manual_seed(seed)
+        torch.use_deterministic_algorithms(True, warn_only=True)
         pairs = np.array(np.nonzero(support))
         prior = np.asarray(dataset["truth"]["prior"], float)[support]
         if method == "herald":
@@ -119,7 +128,7 @@ def run_task(method: str, scenario: str, seed: int, width: int, n_zones: int,
         if method == "persistence":
             prediction = previous
         elif method == "sparse_var":
-            prediction = bench.predict_sparse_var(view, origin)
+            prediction = bench.predict_sparse_var(view, origin, fitted)
             scores_by_period[origin] = static_scores
         else:
             prediction = bench.forecast_with(model, view, origin)
@@ -158,7 +167,8 @@ def run_task(method: str, scenario: str, seed: int, width: int, n_zones: int,
 
     gradients = {}
     if model is not None:
-        gradients = bench.component_gradient_norms(model, train_view, first_score - 2)
+        gradients = bench.component_gradient_norms(
+            model, train_view, bench.last_released_origin(train_view))
 
     peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0
     return {

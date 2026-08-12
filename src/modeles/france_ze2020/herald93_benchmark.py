@@ -56,6 +56,14 @@ DEFAULT_HIDDEN = 64
 FORBIDDEN_WIDTH = 256
 CONTEXT = 8               # periods of history the encoders see
 TOP_K_PROPAGATION = 8     # neighbours kept for message passing, per target
+# Log-growth sits around 0.03 to 0.05 while the mask channel is 0 or 1, so the observation
+# channel entered the convolution an order of magnitude smaller than the flag beside it. For
+# the two signals whose mask is nearly constant the input was therefore nearly constant, the
+# rectifier saturated at initialisation and their encoders received exactly no gradient:
+# the smoke reported headcount and unemployment as dead while the two sparsely published
+# signals trained normally. The scale is a declared constant rather than an estimate, so it
+# introduces no dependence on the data and cannot leak a future period.
+GROWTH_SCALE = 20.0
 
 
 # ── The observable view ──────────────────────────────────────────────────────
@@ -94,13 +102,27 @@ class PanelView:
     def window(self, end: int, length: int = CONTEXT) -> tuple[np.ndarray, np.ndarray]:
         """History strictly before ``end``: channels [signals, length, zones]."""
         start = max(0, end - length)
-        block = self.filled[:, start:end, :]
+        block = self.filled[:, start:end, :] * GROWTH_SCALE
         seen = self.observed[:, start:end, :]
         if block.shape[1] < length:
             pad = length - block.shape[1]
             block = np.concatenate([np.zeros((self.n_signals, pad, self.n_zones)), block], 1)
             seen = np.concatenate([np.zeros((self.n_signals, pad, self.n_zones), bool), seen], 1)
         return block, seen
+
+
+def last_released_origin(view: "PanelView") -> int:
+    """The most recent period for which every arm actually has a target.
+
+    Signals are published with a one-year lag, so the four periods closest to a decision
+    date carry no released observation at all. A probe or a training step aimed at one of
+    them computes a loss over an empty mask, which is not a weak gradient but no gradient,
+    and reads in a diagnostic exactly like a dead component.
+    """
+    for period in range(view.n_periods - 1, CONTEXT, -1):
+        if view.observed[:, period, :].any():
+            return period
+    raise ValueError("no released period in this view")
 
 
 def candidate_support(prior: np.ndarray, k: int = 40) -> np.ndarray:
@@ -242,9 +264,17 @@ def typed_event_metrics(scores_by_period: dict[int, np.ndarray], truth: dict[str
         budget = keep if keep > 0 else max(moved, 1)
         predicted_birth = np.zeros_like(flat, bool)
         predicted_death = np.zeros_like(flat, bool)
-        if flat.size:
-            predicted_birth[np.argsort(-flat)[:budget]] = True
-            predicted_death[np.argsort(flat)[:budget]] = True
+        # A birth is claimed only where the score actually rose, a death only where it
+        # actually fell. Taking the top of the ranking unconditionally meant that a method
+        # whose score never moves still emitted a full budget of events, drawn from the
+        # arbitrary order of a tie: a frozen prior scored an event F1 of 0.062 without
+        # predicting anything at all.
+        rose = np.flatnonzero(flat > 0)
+        fell = np.flatnonzero(flat < 0)
+        if rose.size:
+            predicted_birth[rose[np.argsort(-flat[rose])[:budget]]] = True
+        if fell.size:
+            predicted_death[fell[np.argsort(flat[fell])[:budget]]] = True
         birth_matrix = np.zeros_like(now); birth_matrix[inside] = predicted_birth
         death_matrix = np.zeros_like(now); death_matrix[inside] = predicted_death
 
@@ -310,6 +340,7 @@ def fit_sparse_var(view: PanelView, train_end: int, penalty: float = 0.01) -> di
     started = time.time()
     n_zones = view.n_zones
     scores = np.zeros((n_zones, n_zones))
+    coefficients: dict[tuple[int, int], dict] = {}
     parameters = 0
     for target_zone in range(n_zones):
         neighbours = np.flatnonzero(view.support[target_zone])
@@ -326,22 +357,39 @@ def fit_sparse_var(view: PanelView, train_end: int, penalty: float = 0.01) -> di
             own = view.filled[:, rows - 1, target_zone].T          # all signals, own zone
             neighbour = view.filled[signal][np.ix_(rows - 1, neighbours)]
             design = np.column_stack([own, neighbour])
-            design = design - design.mean(0)
+            design_centre = design.mean(0)
+            design = design - design_centre
             spread = design.std(0)
             design = design / np.where(spread > 1e-9, spread, 1.0)
             beta = lasso_coordinate_descent(design, target - target.mean(), penalty)
             parameters += beta.size
             scores[target_zone, neighbours] += np.abs(beta[view.n_signals:])
+            coefficients[(target_zone, signal)] = {
+                "beta": beta, "neighbours": neighbours, "centre": design_centre,
+                "spread": spread, "intercept": float(target.mean())}
     return {"edge_scores": scores, "parameters": int(parameters),
+            "coefficients": coefficients,
             "seconds": round(time.time() - started, 2), "epochs": 0}
 
 
-def predict_sparse_var(view: PanelView, origin: int) -> np.ndarray:
-    """Persistence-plus-neighbour-mean: the classical arm's forecast, kept deliberately
-    simple so that its cost is honest and its forecast is not silently a different model
-    from the one that produced its edge scores."""
-    previous = view.filled[:, origin - 1, :]
-    return previous
+def predict_sparse_var(view: PanelView, origin: int, fitted: dict) -> np.ndarray:
+    """The forecast produced by the coefficients that produced the edge scores.
+
+    Deliberately the *same* model: reporting a persistence forecast beside a Lasso graph
+    would let the classical arm be judged on one object and credited for another, and would
+    make its forecast indistinguishable from the persistence floor by construction.
+    """
+    coefficients = fitted["coefficients"]
+    prediction = np.zeros((view.n_signals, view.n_zones))
+    for (zone, signal), entry in coefficients.items():
+        neighbours = entry["neighbours"]
+        own = view.filled[:, origin - 1, zone]
+        neighbour = view.filled[signal][origin - 1, neighbours]
+        row = np.concatenate([own, neighbour])
+        row = (row - entry["centre"]) / np.where(entry["spread"] > 1e-9,
+                                                 entry["spread"], 1.0)
+        prediction[signal, zone] = entry["intercept"] + float(row @ entry["beta"])
+    return prediction
 
 
 # ── Neural arms ──────────────────────────────────────────────────────────────
@@ -366,9 +414,9 @@ class TemporalEncoder(nn.Module if nn is not None else object):
         self.per_signal = nn.ModuleList([
             nn.Sequential(
                 nn.Conv1d(2, hidden, kernel_size=3, dilation=1, padding=0),
-                nn.ReLU(),
+                nn.GELU(),
                 nn.Conv1d(hidden, hidden, kernel_size=3, dilation=2, padding=0),
-                nn.ReLU(),
+                nn.GELU(),
             ) for _ in range(n_signals)])
         self.hidden = hidden
 
@@ -663,6 +711,7 @@ def component_gradient_norms(model, view: PanelView, origin: int) -> dict[str, f
                 total += float(parameter.grad.norm()) ** 2
         norms[label] = math.sqrt(total)
     # Per-signal encoder gradient: a signal ignored by the fusion shows up as a zero here.
+    norms["coverage"] = [float(value) for value in coverage.mean(-1).detach().numpy()]
     if hasattr(model, "encoder") and hasattr(model.encoder, "per_signal"):
         per_signal = []
         for branch in model.encoder.per_signal:
