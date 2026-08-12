@@ -6676,3 +6676,57 @@ of 7864671 are kept in `tasks_v2` as the record of the defect.
 `src/modeles/france_ze2020/herald92_multisignal_oracle.py`,
 `hpc/herald92/run_oracle_array.sbatch`, `tests/test_herald92_guards.py`,
 `tests/run_herald92_mutations.py`.
+
+## DEC-136
+
+**Date:** 2026-08-12
+**Subject:** The HERALD 92 oracle fails its redundancy check a second time. The check, not
+the result, is what was wrong — and it is too late to change it.
+
+**The correction of DEC-135 was right and irrelevant.** Removing the `gamma`/`loading` copy
+made `S4_REDUNDANT` share `S1_SHARED`'s amplitude exactly, as intended: relational share
+0.81000 against 0.81000, common share 0.95994 against 0.96021. It changed the paired pooling
+gain from +0.978% to +1.001%. The confound was real and is now gone; it was not the cause of
+the failure.
+
+**The real pattern was visible in both arrays and I misread it.** `S4` is not the outlier.
+Every scenario at full amplitude gains between +0.705% and +1.001% from pooling. `S3_
+COMPLEMENTARY` gains +0.332%, and it is the only scenario whose relational amplitude is
+scaled down, by 0.35, which guard `g6` explicitly requires: its relational share is 0.28350
+against 0.81000. Per unit of relational amplitude the two scenarios are indistinguishable:
+
+    S4  1.001% / 0.81000 = 1.236
+    S3  0.332% / 0.28350 = 1.171
+
+The check `redundant_scenario_gains_less_than_complementary` compares absolute gains between
+a world with the full mechanism and a world with 0.35 of it, and allows a factor of 1.5. It
+cannot be satisfied by any amount of redundancy control, because it is not measuring
+redundancy. It is measuring amplitude. This is a pre-registration defect that was
+discoverable before either array was submitted, by reading the check against `g6`, and it
+was not discovered.
+
+**The gate stays as written and the neural stage is not authorised.** The rule declared
+before the arrays ran was that thresholds would not move after the results were seen. A
+defect in a check is not a licence to rewrite it at the moment it blocks a result I wanted;
+that is the same act as relaxing a threshold, performed with a better excuse. Three of the
+eight checks now rest on a comparison I know to be malformed, and a gate I have repaired
+twice under pressure from its own failures is no longer evidence of anything.
+
+**What the arrays do establish, and it is not nothing.** With the design corrected, the null
+stays flat (paired -0.020%, one seed of twenty above its own ceiling), the shared scenario is
+identifiable in twenty of twenty seeds, complementary pooling beats the own driver in
+seventeen of twenty with a paired gain clearing the null envelope, and a duplicated channel
+does not reproduce the gain (+0.117% against +0.332%). Complementarity is not refuted. It is
+untested, because the experiment built to test it against redundancy could not tell the two
+apart.
+
+**Recommendation, for the researcher to decide and not for me to enact.** Re-specify the
+redundancy contrast on a scale-free statistic — gain per unit of relational share, or an
+`S4` held at `S3`'s amplitude — pre-register it in writing before any run, and record
+plainly that it was re-specified after two failures. The rerun then means something. Editing
+the check in place would not.
+
+**Affected files:** `hpc/herald92/summarize_oracle.py` (unchanged, deliberately),
+`src/data/synthetic/generate_france_multisignal_v92.py`,
+`tests/test_herald92_guards.py`. Results in `hpc_results/herald92/tasks_v3`, summary in
+`hpc_results/herald92/oracle_summary_v3.json`.
