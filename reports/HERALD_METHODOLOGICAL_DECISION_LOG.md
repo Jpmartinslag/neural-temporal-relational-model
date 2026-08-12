@@ -6730,3 +6730,67 @@ the check in place would not.
 `src/data/synthetic/generate_france_multisignal_v92.py`,
 `tests/test_herald92_guards.py`. Results in `hpc_results/herald92/tasks_v3`, summary in
 `hpc_results/herald92/oracle_summary_v3.json`.
+
+## DEC-137
+
+**Date:** 2026-08-12
+**Subject:** The matched contrast resolves complementarity. Verdict
+`COMPLEMENTARITY_NOT_SUPPORTED`. The model evaluation proceeds on `S0` and `S1`.
+
+**The contrast that DEC-136 said was needed was built and run.** Array 7864941, sixty
+tasks, three scenarios, twenty seeds never used before (9501-9520), 280 zones. Task zero
+validated the array before any arithmetic: eleven guards, eleven mutants killed, and the
+equality audit at the real zone count.
+
+**The pair is matched, and the audit says so at 280 zones over all twenty seeds.**
+`S3F_COMPLEMENTARY` and `S4F_REDUNDANT` agree exactly on every gamma, loading and graph
+assignment, on relational RMS, relational share, common share and noise RMS, on graph
+density, support and low-information count, and on the latent state itself, which is the
+same draw rather than a similar one. Making that true required the simulator to draw every
+random array in a scenario-independent order: allocating noise per group meant the
+five-group and one-group scenarios consumed different amounts of the stream and inhabited
+different worlds at the same seed. Median, coefficient of variation and autocorrelation are
+matched in distribution with no systematic paired shift, which is all that is achievable for
+statistics the mechanism must move.
+
+**The single knob is whether the five measurement errors are independent or shared.**
+Verified behaviourally, not only declaratively: inverting the recursion and excluding cells
+at the +/-0.60 clip, the median pairwise correlation of the residuals is above 0.98 in
+`S4F` and below 0.30 in `S3F`.
+
+**The result.**
+
+    S0_NULL     paired  -0.0024%     (envelope q97.5 = +0.0857%)
+    S3F         paired  +0.8634%     own +8.9805% -> pooled +9.8569%
+    S4F         paired  +1.0145%
+    S3F - S4F   median  -0.0736%     positive in 8 of 20 seeds
+    duplicate channel in S3F        -0.0072%
+
+Three of the eight criteria fail: `complementary_beats_redundant_seed_by_seed`,
+`paired_difference_median_clears_the_null` and `redundant_shows_no_false_complementarity`.
+The verdict survives dropping any single seed; no seed is carrying it.
+
+**What this means, stated precisely.** Pooling does improve on the best single driver, in
+nineteen seeds of twenty, and the null stays flat, so the improvement is real and is not a
+capacity artefact of adding a column. But it is *not* produced by averaging independent
+measurement error: making the five errors identical does not remove it, and if anything
+increases it. The gain comes from the common state that every signal loads on, which is
+present whether the errors are shared or not. Complementarity in the sense this project
+declared and pre-registered -- signals individually too weak, jointly strong, because their
+errors cancel -- is not supported by this benchmark.
+
+**The claim is dropped and is not repaired again.** DEC-136 allowed one mechanical repair
+and it was spent on the matched construction. A third round of scenario surgery would be
+searching for a design that produces the answer, which is the failure mode this log exists
+to prevent.
+
+**What this does not close.** It closes the complementarity hypothesis, nothing else. `S1`
+was identifiable by the oracle in twenty seeds of twenty and is a solvable minimum
+benchmark; `S0` is the false-positive floor. The HERALD model is evaluated on both, against
+a classical method, a predictive graph network and a relational one, exactly as planned.
+
+**Affected files:** `src/data/synthetic/generate_france_multisignal_v92.py`,
+`src/data/synthetic/audit_fair_pair_v92.py`, `hpc/herald92/run_fair_contrast_array.py`,
+`hpc/herald92/summarize_fair_contrast.py`, `tests/test_herald92_fair_guards.py`,
+`tests/run_herald92_fair_mutations.py`. Results in `hpc_results/herald92/tasks_fair`,
+verdict in `hpc_results/herald92/fair_contrast_verdict.json`.
