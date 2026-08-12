@@ -7110,3 +7110,72 @@ with its summary beside it. Nothing is rewritten.
 `src/data/synthetic/generate_france_multisignal_v94.py`,
 `tests/test_herald94_guards.py`. Jobs 7865228, 7865232, 7865233 on meso, environment
 `herald-v5`.
+
+## DEC-142
+
+**Date:** 2026-08-12
+**Subject:** HERALD 94 Layer 1 closes. No composite is informative; Layer 2 is not
+authorised; France is not touched. One pre-registered answer reversed under the correction,
+and the reversal is the stage's most important methodological lesson.
+
+**What ran.** Job 7865263, the repeat grid on seeds 9801-9805: six scenarios, five seeds,
+280 zones, twelve rolling origins, thirty tasks, all COMPLETED, median 1041 seconds. Commit
+`9aba983`. Twenty-five guards, twenty-four mutants killed, two identical runs agreeing
+exactly.
+
+**The verdict.** `layer2_authorised = False`. No composite cleared the gate in any scenario
+containing a mechanism, and the null scenario stayed clean, so the decision is a genuine
+failure of the hypothesis rather than a contaminated benchmark.
+
+**What reversed.** On the first grid the full feature table appeared to *lose* to a single
+feature under a linear model, by between 0.02 and 0.10 in every scenario. Under the
+one-standard-error rule it wins by between 0.11 and 0.24. The first answer was an artefact of
+an under-regularised linear arm, which had been selecting penalties between 1 and 100 where
+the corrected rule selects 1e3 and 1e4. Two consequences are worth stating plainly. The
+temporal representation is the one thing in this stage that clearly works, and the first grid
+would have reported the opposite. And a poorly regularised linear arm flatters every
+comparison made against it, so the network's apparent advantage on the first grid was partly
+its opponent's handicap.
+
+**What did not reverse, on either grid or either smoke seed.** The network's gain in
+`N0_NULL`, which carries no relational loading, is at least as large as in the scenarios
+built to reward it: +0.0345 against +0.0043 in `N1_LINEAR` and +0.0309 in `N4_INTERACTION`.
+And the gain survives the destruction of its own interaction -- 0.993 of it in `N0_NULL` and
+0.501 in `N4_INTERACTION`, against a declared ceiling of 0.30, having exceeded 1.0 on the
+first grid. Neither depends on how well any individual fit converged.
+
+**The interaction ranking, which is exact rather than an attribution heuristic.** For one
+hidden layer the mixed partial is closed form. Ranked over the evaluation rows of
+`N4_INTERACTION`, the strongest pairs are between publication-availability channels at a
+magnitude of 1e-4. No pair of economic features appears near the top. The network did not
+find an economic interaction; it found almost none at all.
+
+**The named composites.** The arm carrying `C4` and `C6`, the two products provably outside
+the linear span, has a *negative* median effect in all six scenarios, between -0.003 and
+-0.008. The four composites that are linear in existing columns move the linear arm by -0.008
+to -0.016, inside the 0.05 tolerance declared for the imputation gap. The pre-registered
+structural claim held in both directions.
+
+**Ablation.** Removing a signal costs the same whether or not a territorial mechanism exists.
+If the model were reconstructing a relation, removing a signal that measures the propagated
+component would cost more where the propagation is real. It does not.
+
+**Scope of the negative result.** It says the six declared composites carry nothing and that
+a network free to form any smooth interaction among the underlying features finds nothing of
+consequence, on a synthetic panel imitating French marginals at horizon one in log-growth.
+HERALD 93 already established that this target is close to measurement noise here. A
+relational signal at longer horizons, or in levels with an explicit trend model, is untested
+and remains open.
+
+**France.** Not applied, and no learned structure from this stage may be presented as an
+association, a precedence or a territorial pattern. The stage licenses one narrow
+non-relational statement, as a hypothesis for the real panel and not as a result: a causal
+temporal representation predicts a zone's own next-year growth materially better than any
+single feature of it. That concerns a zone's own trajectory and says nothing about its
+neighbours.
+
+**No third grid.** The repetition permitted by the protocol has been used.
+
+**Affected files:** `reports/canonical/HERALD_94_COMPOSITE_SIGNAL_RESULTS.md`. Results at
+`hpc_results/herald94/tasks` with `layer1_summary.json`; the retired first grid preserved
+unmodified at `hpc_results/herald94/tasks_mean_rule_retired_seeds`.
