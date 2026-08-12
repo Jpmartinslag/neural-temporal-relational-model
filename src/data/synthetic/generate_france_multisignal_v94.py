@@ -61,8 +61,14 @@ COMPONENT_OF = {"headcount": "u", "payroll": "u",
 
 # Seeds for this stage, disjoint from every seed the earlier stages used.
 SMOKE_SEEDS = (9601, 9602)
-FINAL_SEEDS = (9701, 9702, 9703, 9704, 9705)
+# 9701-9705 ran the first grid and are retired. Their out-of-sample errors were read while
+# diagnosing why several fits diverged, so they can no longer judge the correction that
+# diagnosis produced: a seed whose evaluation error has been seen is a calibration seed,
+# whatever it was originally called. They stay declared so that no later stage reuses them.
+RETIRED_SEEDS = (9701, 9702, 9703, 9704, 9705)
+FINAL_SEEDS = (9801, 9802, 9803, 9804, 9805)
 assert not set(SMOKE_SEEDS) & set(FINAL_SEEDS)
+assert not set(RETIRED_SEEDS) & set(FINAL_SEEDS)
 
 # The regime gate of `N3`. A zone whose own latent state is rising absorbs its neighbours'
 # movement; a zone that is contracting largely does not. Declared here, not tuned: the two
@@ -142,6 +148,24 @@ def _propagate(link: str, matrix: np.ndarray, state_u: np.ndarray,
     raise ValueError(f"unknown link {link!r}")
 
 
+def _regime_gate(state: np.ndarray) -> np.ndarray:
+    """`N3`'s gate: the receiving zone's own state decides how much reaches it.
+
+    Derived from ``u``, which every signal in that scenario measures, so the mechanism is
+    discoverable in principle from observables and is not a hidden variable.
+
+    Normalised to unit root-mean-square, and that normalisation is the whole point. Without
+    it the gate's own RMS, ``sqrt((1.7^2 + 0.3^2)/2) = 1.22``, would raise the relational
+    share from 1.00 to 1.20, and `N3` would be a *stronger* world as well as a differently
+    shaped one. Comparing scenarios that differ in amplitude as well as in mechanism is the
+    exact defect that made the previous stage's S3/S4 gate unreadable.
+    """
+    rising = state[:-1] >= 0.0
+    gate = np.where(rising, REGIME_GATE_RISING, REGIME_GATE_FALLING)
+    gate = np.concatenate([np.ones((1, state.shape[1])), gate])
+    return gate / max(float(np.sqrt(np.mean(gate[1:] ** 2))), 1e-12)
+
+
 def _simulate(config: NonlinearConfig, propagation: np.ndarray,
               loadings: dict[str, dict[str, Any]], years: np.ndarray,
               rng: np.random.Generator) -> dict[str, Any]:
@@ -189,18 +213,8 @@ def _simulate(config: NonlinearConfig, propagation: np.ndarray,
     # `N3`'s gate: the receiving zone's own state decides how much reaches it. Derived from
     # `u`, which every signal in that scenario measures, so the mechanism is discoverable in
     # principle from observables and is not a hidden variable.
-    if link == "regime_gated":
-        rising = components["u"][:-1] >= 0.0
-        gate = np.where(rising, REGIME_GATE_RISING, REGIME_GATE_FALLING)
-        gate = np.concatenate([np.ones((1, n)), gate])
-        # Normalised to unit root-mean-square, so `N3` carries exactly `N1`'s relational
-        # amplitude and differs from it only in *where* the transfer lands. Without this the
-        # gate's own RMS, sqrt((1.7^2 + 0.3^2)/2) = 1.22, would raise the relational share
-        # from 1.00 to 1.20 and the scenario would be a stronger world as well as a
-        # differently shaped one -- the exact defect that made v92's S3/S4 gate unreadable.
-        gate = gate / max(float(np.sqrt(np.mean(gate[1:] ** 2))), 1e-12)
-    else:
-        gate = np.ones((n_periods, n))
+    gate = (_regime_gate(components["u"]) if link == "regime_gated"
+            else np.ones((n_periods, n)))
 
     latent = {name: np.zeros((n_periods, n)) for name in names}
     relational = {name: np.zeros((n_periods, n)) for name in names}

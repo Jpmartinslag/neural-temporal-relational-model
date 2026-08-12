@@ -7034,3 +7034,79 @@ regularisation rather than re-selecting it, so it changes one thing and not two.
 `tests/test_herald94_guards.py`, `tests/run_herald94_mutations.py`,
 `reports/canonical/HERALD_94_COMPOSITE_SIGNAL_SPECIFICATION.md`. Commits `29d91e9`,
 `d94c97c`, `b5cd6dc`, `3263bf3`. Validation job 7865228 on meso, environment `herald-v5`.
+
+## DEC-141
+
+**Date:** 2026-08-12
+**Subject:** HERALD 94 Layer 1, first grid. No composite clears the gate. Two findings are
+robust and decisive; a third is a defect in the selection procedure, which retires seeds
+9701-9705 and buys the one repetition the protocol allows.
+
+**What ran.** Job 7865228, validation: twenty-five guards, twenty-four mutants killed, the
+smoke on all six scenarios, and two identical runs agreeing exactly on every arm. Job
+7865232, a fairness recheck: the ridge penalty selected 10 and 100 against a grid running to
+1e5, so the linear arm was not cut short and its loss to a single feature on one smoke seed
+is a property of the model rather than of the grid. Job 7865233, the grid: six scenarios by
+five seeds, 280 zones, twelve rolling origins, thirty tasks, all COMPLETED. Commit `eeb3581`.
+
+**Two robust findings, independent of the defect below.**
+
+*The non-linear gain is not relational.* `N0_NULL` carries no relational loading at all, and
+the network's median gain over the linear arm there is +0.1255 -- larger than in `N1_LINEAR`
+(+0.0740) and in `N4_INTERACTION` (+0.0357), the two scenarios built to reward exactly this
+kind of model. The pre-registered check `no_gain_in_null_scenario` fails in every scenario
+containing a mechanism. Whatever curvature the network finds, it is present when there is no
+territorial relation to find, so it is not evidence of one.
+
+*The gain is not an interaction.* Under the decisive control -- one factor of each declared
+product permuted across zones within period, preserving every marginal, every cross-sectional
+moment and every period effect, destroying only the alignment -- the gain does not fall. It
+*rises*: the surviving share is 2.03 in `N0_NULL`, 2.75 in `N1_LINEAR` and 4.81 in
+`N4_INTERACTION`. Destroying the alignment between the unemployment block and the rest makes
+the network better. The natural reading is that those columns were contributing noise and
+shuffling them acted as regularisation. A gain that improves when its supposed mechanism is
+destroyed was never that mechanism.
+
+*And the named composites carry nothing.* `ridge_composite` sits within 0.0008 of
+`ridge_linear` in all six scenarios, including `C4` and `C6`, the two products that provably
+lie outside the linear span. The pre-declared economic interactions are not where anything
+lives.
+
+**The defect.** Several fits diverged. Every catastrophic one selected the weakest weight
+decay on offer and shows the signature unambiguously: `N1_LINEAR` seed 9704 reached an
+in-sample MSE of 0.00221 and an out-of-sample MSE of 0.01594, a gain of -6.87; `N2_NONLINEAR`
+seed 9702, 0.00075 in-sample against 0.00650 out. Every well-behaved fit selected 1e-3 or
+1e-2. The expanding-window folds improved on the single tail but did not cure it: the folds
+span different economic eras, their losses differ by more than the gap between neighbouring
+candidates, and the *mean* fold loss is then dominated by whichever era is easiest.
+
+**The correction, and why it cannot be judged on these seeds.** Both arms now select by the
+one-standard-error rule: among candidates whose mean fold loss lies within one standard error
+of the best, take the most regularised. That is the classical remedy for exactly this
+situation and it biases towards more regularisation, which is the safe direction when the
+evaluation window is a later era than the training window -- as it always is in a forecasting
+design. It was adopted on that reasoning, not by trying rules against the grid.
+
+But the diagnosis above required reading the out-of-sample errors of seeds 9701-9705. A seed
+whose evaluation error has been seen is a calibration seed, whatever it was originally
+called, and it can no longer judge the correction that its own diagnosis produced. Those five
+are therefore retired and declared as `RETIRED_SEEDS` so that no later stage reuses them, and
+the repeat runs on 9801-9805, which have never been generated. A guard enforces the
+disjointness against the smoke seeds, the retired seeds and every earlier stage.
+
+This is the single repetition the protocol permits. If the verdict does not change, it
+stands; there will not be a third grid.
+
+**What the repetition can and cannot change.** It can change the instability, the seed
+counts and the origin counts. It cannot plausibly change the two robust findings, because
+neither depends on how well any individual fit converged: the null scenario gains at least as
+much as the mechanism scenarios in both smoke seeds and in the grid, and a gain that grows
+when its interaction is destroyed does not become an interaction under a different penalty.
+
+**Preserved.** The first grid stays at `hpc_results/herald94/tasks_mean_rule_retired_seeds`
+with its summary beside it. Nothing is rewritten.
+
+**Affected files:** `src/modeles/france_ze2020/herald94_composite.py`,
+`src/data/synthetic/generate_france_multisignal_v94.py`,
+`tests/test_herald94_guards.py`. Jobs 7865228, 7865232, 7865233 on meso, environment
+`herald-v5`.

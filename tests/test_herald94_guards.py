@@ -475,10 +475,11 @@ def g23_the_model_never_receives_the_truth() -> None:
 def g24_seeds_are_disjoint_from_the_earlier_stages() -> None:
     from src.data.synthetic.generate_france_multisignal_v92 import (
         CALIBRATION_SEEDS, FAIR_SEEDS, FINAL_SEEDS as V92_FINAL)
-    earlier = set(CALIBRATION_SEEDS) | set(FAIR_SEEDS) | set(V92_FINAL)
-    assert not (set(gen.FINAL_SEEDS) & earlier), "a final seed was reused from an earlier stage"
-    assert not (set(gen.SMOKE_SEEDS) & set(gen.FINAL_SEEDS)), \
-        "the smoke seeds are not disjoint from the final ones"
+    earlier = (set(CALIBRATION_SEEDS) | set(FAIR_SEEDS) | set(V92_FINAL)
+               | set(gen.SMOKE_SEEDS) | set(gen.RETIRED_SEEDS))
+    assert not (set(gen.FINAL_SEEDS) & earlier), \
+        "a final seed was reused from an earlier stage, the smoke, or the retired grid"
+    assert len(set(gen.FINAL_SEEDS)) == len(gen.FINAL_SEEDS)
 
 
 def g25_the_target_is_not_a_feature() -> None:

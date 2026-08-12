@@ -145,16 +145,37 @@ def choose_alpha(x: np.ndarray, y: np.ndarray, periods: np.ndarray | None = None
     folds = expanding_folds(periods) if periods is not None else []
     if not folds:
         return 1.0
-    best, best_loss = 1.0, float("inf")
+    scores = []
     for alpha in RIDGE_ALPHAS:
-        losses = []
-        for train, check in folds:
-            fitted = fit_ridge(x[train], y[train], alpha)
-            losses.append(np.mean((predict_ridge(x[check], fitted) - y[check]) ** 2))
-        loss = float(np.mean(losses))
-        if loss < best_loss:
-            best, best_loss = alpha, loss
-    return best
+        losses = [float(np.mean((predict_ridge(x[check], fit_ridge(x[train], y[train], alpha))
+                                 - y[check]) ** 2))
+                  for train, check in folds]
+        scores.append(losses)
+    return float(RIDGE_ALPHAS[one_standard_error_rule(scores)])
+
+
+def one_standard_error_rule(fold_losses: list[list[float]]) -> int:
+    """Index of the most regularised candidate within one standard error of the best.
+
+    Candidates must be ordered from weakest to strongest regularisation.
+
+    Choosing the outright minimum of the mean fold loss is the obvious rule and it is not
+    the right one here. The folds cover different economic eras, their losses differ by more
+    than the gap between neighbouring candidates, and the mean is then dominated by whichever
+    era happens to be easiest. The classical remedy is to treat every candidate whose loss
+    lies within one standard error of the best as indistinguishable from it, and among those
+    to take the most regularised -- which is the safe direction when the evaluation window is
+    a later era than the training window, as it always is in a forecasting design.
+
+    Adopted on that reasoning, and on the pilot behaviour of the smoke seeds. It is not
+    tuned to the final grid: doing so would be calibrating on the final seeds.
+    """
+    means = np.array([np.mean(losses) for losses in fold_losses])
+    best = int(np.argmin(means))
+    spread = np.std(fold_losses[best], ddof=1) / max(np.sqrt(len(fold_losses[best])), 1.0)
+    threshold = means[best] + spread
+    eligible = np.nonzero(means <= threshold)[0]
+    return int(eligible.max()) if len(eligible) else best
 
 
 def predict_ridge(x: np.ndarray, fitted: dict[str, np.ndarray]) -> np.ndarray:
@@ -260,8 +281,7 @@ def fit_mlp_selected(x: np.ndarray, y: np.ndarray, hidden: int, seed: int,
     folds = expanding_folds(periods) if periods is not None else []
     if not folds:
         return fit_mlp(x, y, hidden, seed, epochs=epochs)
-    best_decay, best_epochs, best_loss = MLP_WEIGHT_DECAYS[0], epochs, float("inf")
-    trace = []
+    trace, per_decay, stops_per_decay = [], [], []
     for decay in MLP_WEIGHT_DECAYS:
         losses, stops = [], []
         for train, check in folds:
@@ -269,11 +289,14 @@ def fit_mlp_selected(x: np.ndarray, y: np.ndarray, hidden: int, seed: int,
                                 weight_decay=decay, monitor=(x[check], y[check]))
             losses.append(candidate["best_holdout_mse"])
             stops.append(candidate["best_epoch"])
-        loss = float(np.mean(losses))
-        trace.append({"weight_decay": decay, "fold_mse": losses, "mean_mse": loss,
-                      "stop_epochs": stops})
-        if loss < best_loss:
-            best_decay, best_epochs, best_loss = decay, int(np.median(stops)), loss
+        per_decay.append(losses)
+        stops_per_decay.append(stops)
+        trace.append({"weight_decay": decay, "fold_mse": losses,
+                      "mean_mse": float(np.mean(losses)), "stop_epochs": stops})
+    chosen = one_standard_error_rule(per_decay)
+    best_decay = MLP_WEIGHT_DECAYS[chosen]
+    best_epochs = int(np.median(stops_per_decay[chosen]))
+    best_loss = float(np.mean(per_decay[chosen]))
     # Refit on the whole training window at the selected decay and epoch count. The folds
     # have served their purpose, and withholding history from the final fit would penalise
     # the arm for the selection it was required to make.
