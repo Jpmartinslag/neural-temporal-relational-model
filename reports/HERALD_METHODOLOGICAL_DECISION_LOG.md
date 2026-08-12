@@ -6636,3 +6636,43 @@ calibrate on them.
 **Affected files:** `src/data/synthetic/generate_france_multisignal_v92.py`,
 `src/modeles/france_ze2020/herald92_multisignal_oracle.py`, `hpc/herald92/`,
 `tests/test_herald92_guards.py`, `tests/run_herald92_mutations.py`.
+
+## DEC-135
+
+**Date:** 2026-08-12
+**Subject:** Two mechanical defects found by the HERALD 92 oracle arrays, and why the gate
+was not moved.
+
+**Array 7864548 — the pooled driver replaced the own driver.** `_design_block` substituted
+the pooled neighbour term for each signal's own neighbour term instead of adding it. That
+asks a different and unfair question: for a signal whose own history already estimates the
+latent state well, swapping it for an average that includes weaker signals can only hurt.
+The array duly reported pooling as harmful in every scenario, with paired gains of -0.32%
+to -0.87%. The pooled channel is now an additional column and the fit decides its weight.
+The hypothesis under test is that combining *adds* information, so the design must let it
+add.
+
+**Array 7864671 — the redundancy scenario strengthened its signal.** With the design fixed,
+seven of the eight checks passed. `redundant_scenario_gains_less_than_complementary` failed:
+`S4_REDUNDANT` gained +0.978% from pooling against `S3_COMPLEMENTARY`'s +0.319%, where the
+threshold allows at most 1.5x. The cause was in the generator, not in the result. Besides
+sharing headcount's noise group, `S4` copied headcount's `gamma` and `loading` onto payroll,
+raising payroll's mechanism by about 14% and making `S4` a strictly stronger world than
+`S1`. The scenario's own docstring claims the noise group is the only knob; the code
+contradicted it. Only the noise group is shared now.
+
+**The gate was not touched.** No threshold, no check, no scenario weighting was changed
+after the results were seen. What changed is a generator defect that made one scenario
+incomparable to another by construction, and the correction was pinned by guard `g20` and
+by mutant `redundant_also_strengthens_payroll`, which reinstates the defect and must be
+killed. The distinction matters: correcting a confound is legitimate, relaxing a threshold
+that a corrected experiment still fails is not. If the rerun fails this check again, the
+complementarity claim does not survive and no network is trained on it.
+
+**Status:** array 7864792 running, writing to `hpc_results/herald92/tasks_v3`. The results
+of 7864671 are kept in `tasks_v2` as the record of the defect.
+
+**Affected files:** `src/data/synthetic/generate_france_multisignal_v92.py`,
+`src/modeles/france_ze2020/herald92_multisignal_oracle.py`,
+`hpc/herald92/run_oracle_array.sbatch`, `tests/test_herald92_guards.py`,
+`tests/run_herald92_mutations.py`.
