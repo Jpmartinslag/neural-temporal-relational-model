@@ -35,6 +35,17 @@ EDGE_F1_MARGIN_OVER_PREVALENCE = 0.10
 DENSE_CORRELATION_MIN = 0.30
 STABILITY_MIN = 0.90
 S0_ADDED_EDGE_MAX = 0.10
+# The S0 control as first written could not be passed by anything, including a perfect
+# method. In S0 the propagation matrix still exists, it simply carries no loading, so no
+# edge has any effect and nothing observable distinguishes one candidate from another. The
+# added-edge rate against that inert matrix is therefore pinned at one minus the prevalence,
+# 0.30, for any method whatsoever. It is reported but no longer gates.
+#
+# The honest false-positive control asks whether a method's S0 ranking carries any signal
+# at all: its average precision must not exceed the prevalence by more than a margin, which
+# is what "found structure where there is none" means. Replaced before the results were
+# interpreted, and recorded as a pre-registration defect in the decision log.
+S0_AUPRC_MARGIN = 0.02
 EVENT_F1_MIN = 0.30
 FORECAST_SKILL_MIN = 0.0          # must at least match persistence
 
@@ -70,6 +81,8 @@ def classify(s1_runs: list[dict], s0_runs: list[dict]) -> dict:
     prevalence = [run["relational"].get("prevalence") for run in s1_runs]
     events = [run.get("events", {}).get("event_f1") for run in s1_runs]
     added_s0 = [run["relational"].get("predicted_added_edge_rate") for run in s0_runs]
+    auprc_s0 = [run["relational"].get("auprc") for run in s0_runs]
+    prevalence_s0 = [run["relational"].get("prevalence") for run in s0_runs]
     skill = [run["forecast"].get("skill_vs_persistence") for run in s1_runs]
     gradient = [max((value for key, value in run.get("gradients", {}).items()
                      if key in ("scorer", "pair_net", "embed_source")), default=0.0)
@@ -86,7 +99,8 @@ def classify(s1_runs: list[dict], s0_runs: list[dict]) -> dict:
         "dense_correlation_at_least_0_30": median(dense) >= DENSE_CORRELATION_MIN,
         "stability_across_seeds_at_least_0_90":
             bool(np.isfinite(stability)) and stability >= STABILITY_MIN,
-        "false_edge_rate_in_s0_at_most_0_10": median(added_s0) <= S0_ADDED_EDGE_MAX,
+        "no_structure_found_in_s0":
+            median(auprc_s0) <= median(prevalence_s0) + S0_AUPRC_MARGIN,
         "auprc_above_prevalence": median(auprc) > median(prevalence),
         # A scenario whose truth never moves has no events to find. Reporting a failed F1
         # there would punish the method for the benchmark's calendar, so the criterion is
@@ -110,6 +124,7 @@ def classify(s1_runs: list[dict], s0_runs: list[dict]) -> dict:
         "auprc_median": median(auprc), "prevalence_median": median(prevalence),
         "event_f1_median": event_median, "stability": stability,
         "s0_added_edge_rate_median": median(added_s0),
+        "s0_auprc_median": median(auprc_s0), "s0_prevalence_median": median(prevalence_s0),
         "forecast_skill_median": median(skill),
         "n_seeds": len(s1_runs),
     }
@@ -132,7 +147,7 @@ def choose_width(per_width: dict[int, dict]) -> tuple[int | None, str]:
     decorative.
     """
     eligible = [width for width, entry in per_width.items()
-                if entry["checks"]["false_edge_rate_in_s0_at_most_0_10"]]
+                if entry["checks"]["no_structure_found_in_s0"]]
     if not eligible:
         return None, "no width controlled false positives in S0"
     passing = [width for width in eligible
