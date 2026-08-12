@@ -180,6 +180,87 @@ def _propagate(link: str, matrix: np.ndarray, state_u: np.ndarray,
     raise ValueError(f"unknown link {link!r}")
 
 
+def _draw_observation(family: str, mean: np.ndarray, dispersion: float | None,
+                      key: int, seed: int) -> np.ndarray:
+    """Draw the published value for every cell, with the randomness pinned **per cell**.
+
+    This is the property the ladder rests on and it does not come for free. Separating the
+    generators per signal stops one signal's draws from disturbing the next, but inside a
+    signal ``rng.poisson`` uses rejection sampling at these rates and consumes a variable
+    number of uniforms depending on its mean. Change the mean of one cell -- which is exactly
+    what changing the relational scale does -- and every later cell of that same signal gets
+    different noise. The difference between two scales would then be the relational effect
+    plus a fresh draw of measurement error, and the measured signal-to-noise ratio would be
+    inflated by an amount nobody could bound.
+
+    Two devices remove it:
+
+    * the Gamma deviate is drawn as ``standard_gamma(dispersion)`` and *then* scaled by
+      ``mean / dispersion``. The consumption of ``standard_gamma`` depends on the shape,
+      which is a constant of the signal, and not on the mean. So the deviate is identical
+      across scales and vectorises;
+    * the Poisson layer gets its own generator per ``(signal, period, zone)``, keyed from the
+      seed. Its variable consumption then cannot reach any other cell, because no other cell
+      shares its stream. It costs 0.66 s per negative-binomial signal, which is nothing
+      beside the alternative of not being able to trust the measurement.
+
+    The marginal distributions are unchanged: this is the same Gamma-Poisson mixture drawn in
+    a different order.
+    """
+    if family == "negative_binomial":
+        shape = float(dispersion)
+        deviate = np.random.default_rng([seed, 4_000 + key]).standard_gamma(
+            shape, size=mean.shape)
+        rate = deviate * (mean / shape)
+        out = np.empty(mean.shape)
+        for period in range(mean.shape[0]):
+            for zone in range(mean.shape[1]):
+                out[period, zone] = np.random.default_rng(
+                    [seed, 5_000 + key, period, zone]).poisson(rate[period, zone])
+        return out
+    if family == "gamma":
+        shape = float(dispersion)
+        deviate = np.random.default_rng([seed, 4_000 + key]).standard_gamma(
+            shape, size=mean.shape)
+        return deviate * (mean / shape)
+    raise ValueError(f"no paired draw for family {family!r}")
+
+
+def _observe_paired(name: str, path: np.ndarray, volume: np.ndarray, years: np.ndarray,
+                    quarters: np.ndarray, config: "NonlinearConfig",
+                    key: int) -> np.ndarray:
+    """`_observe` with the randomness pinned per cell. The deterministic part is identical.
+
+    The level is built exactly as v92 builds it, including the drift normalisation. That
+    normalisation is deliberately left alone: it is part of the observation model, and
+    removing it to make the scale pass through linearly would be changing the generator to
+    suit the experiment. Its effect is measured instead.
+    """
+    spec = SIGNAL_SPEC[name]
+    drift = np.cumsum(path, axis=0)
+    drift = drift / max(float(np.std(drift)), 1e-12)
+    level = (np.log(spec["median"])
+             + LEVEL_VOLUME_SD * np.log(np.maximum(volume, 1e-6))[None, :]
+             + LEVEL_DRIFT_SD * drift)
+    if spec["freq"] == "Q":
+        level = level + 0.03 * np.sin(2 * np.pi * (quarters[:, None] - 1) / 4.0)
+    for year in BREAKS[name]:
+        level = level + 0.02 * (years[:, None] >= year)
+    for year in COVID_YEARS:
+        level = level + (-0.05 if year == 2020 else 0.04) * (years[:, None] == year)
+
+    if spec["family"] in ("negative_binomial", "gamma"):
+        ceiling = 20.0 if spec["family"] == "negative_binomial" else 30.0
+        mean = np.exp(np.clip(level, 0.0, ceiling))
+        return _draw_observation(spec["family"], mean, spec["dispersion"], key, config.seed)
+    centre = np.log(spec["median"] / (100.0 - spec["median"]))
+    zone_offset = 0.030 * np.log(np.maximum(volume, 1e-6))[None, :]
+    logit = centre - zone_offset + 0.9 * path
+    jitter = np.random.default_rng([config.seed, 6_000 + key]).normal(
+        0.0, 0.20, size=logit.shape)
+    return np.clip(100.0 / (1.0 + np.exp(-logit)) + jitter, 1.0, 30.0)
+
+
 def _regime_gate(state: np.ndarray) -> np.ndarray:
     """`N3`'s gate: the receiving zone's own state decides how much reaches it.
 
@@ -301,12 +382,13 @@ def generate_nonlinear(config: NonlinearConfig = NonlinearConfig()) -> dict[str,
 
     signals: dict[str, Any] = {}
     for index, (name, spec) in enumerate(SIGNAL_SPEC.items()):
-        observation_rng = (np.random.default_rng([config.seed, 3_000 + index])
-                           if config.paired_streams else rng)
         mask_rng = (np.random.default_rng([config.seed, 1_000 + index])
                     if config.paired_streams else rng)
-        values = _observe(name, simulated["latent"][name], volume, years_axis,
-                          quarters_axis, config, observation_rng)
+        values = (_observe_paired(name, simulated["latent"][name], volume, years_axis,
+                                  quarters_axis, config, index)
+                  if config.paired_streams
+                  else _observe(name, simulated["latent"][name], volume, years_axis,
+                                quarters_axis, config, rng))
         start, end = spec["window"]
         in_window = (years_axis >= start) & (years_axis <= end)
         if spec["freq"] == "A":

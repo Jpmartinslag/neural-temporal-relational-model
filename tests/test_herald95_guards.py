@@ -90,6 +90,80 @@ def k3_worlds_at_different_scales_are_paired() -> None:
                 f"{name}: masks differ between scale {scale} and the baseline"
 
 
+def k3b_observation_noise_is_pinned_cell_by_cell() -> None:
+    """Perturb one cell's mean; exactly one cell of the published series may move.
+
+    This is the property the ladder rests on, and separating the generators per signal does
+    not deliver it. Inside a signal, `rng.poisson` at these rates uses rejection sampling and
+    consumes a variable number of uniforms depending on its mean, so changing one cell's mean
+    -- which is what changing the relational scale does -- reshuffles the noise of every later
+    cell of the same signal. The difference between two scales would then be the relational
+    effect *plus* a fresh draw of measurement error, and the measured signal-to-noise ratio
+    would be inflated by an unbounded amount.
+
+    Tested on the draw itself rather than on the whole pipeline, because the level is built
+    from a cumulative sum normalised by its own standard deviation: a single perturbed cell
+    legitimately moves the deterministic part everywhere, which would mask the very thing
+    being checked. What must be pinned is the randomness, and that is what this isolates.
+    """
+    shape = (40, 25)
+    for family, dispersion in (("negative_binomial", 7591.0), ("gamma", 40.0)):
+        mean = np.full(shape, 28000.0 if family == "negative_binomial" else 1.0e8)
+        plain = gen._draw_observation(family, mean, dispersion, key=3, seed=SEED)
+        again = gen._draw_observation(family, mean, dispersion, key=3, seed=SEED)
+        assert np.array_equal(plain, again), f"{family}: the draw is not reproducible"
+
+        nudged = mean.copy()
+        nudged[5, 7] *= 1.5
+        moved = gen._draw_observation(family, nudged, dispersion, key=3, seed=SEED)
+        differing = np.nonzero(~np.isclose(plain, moved, rtol=0.0, atol=0.0))
+        coordinates = set(zip(differing[0].tolist(), differing[1].tolist()))
+        assert coordinates <= {(5, 7)}, \
+            (f"{family}: perturbing one cell moved {len(coordinates)} cells; "
+             "the noise is not pinned per cell")
+        assert plain[5, 7] != moved[5, 7], \
+            f"{family}: the perturbed cell did not respond at all"
+
+
+def k3c_pairing_materially_lowers_the_measured_signal_to_noise() -> None:
+    """The end-to-end consequence of the pinning, quantified.
+
+    With the streams shared, the difference between two scales carries the relational effect
+    *plus* a fresh draw of measurement error, so the measured ratio is inflated -- worst at
+    the small scales, which are exactly where a sensitivity threshold is decided. Measured on
+    this seed the inflation is 94 % at half scale and 34 % at unit scale.
+
+    An earlier version of this guard tried to recover the Gamma deviate from the ratio of two
+    scales and demanded it be constant. That premise was wrong: the deviate cancels in the
+    ratio, and what remains is the deterministic difference in level, which is large because
+    the drift is a cumulative sum over 112 periods. The guard now compares the two generator
+    modes directly, which is the quantity that actually matters.
+    """
+    scale = 0.5
+    # A wider panel than the other guards use. The contrast is a ratio of two noisy
+    # quantities, and at sixty zones it measured 1.14 against 1.94 at a hundred and twenty:
+    # the guard would then be reading its own sampling error. The threshold below was fixed
+    # at the larger size and the size is pinned here so it stays meaningful.
+    wide = 120
+    measured = {}
+    for paired in (True, False):
+        worlds = {
+            value: gen.generate_nonlinear(gen.NonlinearConfig(
+                n_zones=wide, seed=SEED, scenario=SCENARIO,
+                relational_scale=value, paired_streams=paired))
+            for value in (0.0, scale)}
+        measured[paired] = ladder.paired_observable_effect(
+            worlds[scale], worlds[0.0], "headcount")["snr"]
+    assert measured[True] > 0.0, "the paired measurement found no relational effect at all"
+    inflation = measured[False] / max(measured[True], 1e-12)
+    assert inflation > 1.3, \
+        (f"sharing the streams inflated the ratio by only {inflation:.2f}x; the pinning "
+         "should be making a large difference at this scale, so check that the unpaired "
+         "path is really unpaired")
+    assert measured[True] < measured[False], \
+        "the paired measurement is not the conservative one"
+
+
 def k4_the_observable_effect_is_measured_not_assumed() -> None:
     """The paired difference is non-zero where a mechanism exists and exactly nil at zero."""
     baseline = dataset(0.0)
@@ -191,6 +265,11 @@ def k10_scales_and_seeds_are_declared_and_disjoint() -> None:
     assert 0.0 in ladder.SCALES and 1.0 in ladder.SCALES, \
         "the ladder needs its baseline and its reference scale"
     assert "N0_NULL" in ladder.LADDER_SCENARIOS, "the flat control is missing"
+    # The saturating scale is declared as a stress test and kept out of the interpretive
+    # range, so that a later reader cannot take a threshold from a world whose clip is
+    # engaged on a sixth of its cells.
+    assert 4.0 in ladder.STRESS_SCALES and 4.0 not in ladder.INTERPRETIVE_SCALES
+    assert set(ladder.INTERPRETIVE_SCALES) | set(ladder.STRESS_SCALES) == set(ladder.SCALES)
 
 
 GUARDS = [value for key, value in sorted(globals().items()) if key.startswith("k")
@@ -199,8 +278,13 @@ GUARDS = [value for key, value in sorted(globals().items()) if key.startswith("k
 
 def main() -> int:
     failures = []
-    for guard in sorted(GUARDS, key=lambda function: int(
-            "".join(character for character in function.__name__.split("_")[0][1:]))):
+    def order(function):
+        label = function.__name__.split("_")[0][1:]
+        digits = "".join(character for character in label if character.isdigit())
+        suffix = "".join(character for character in label if not character.isdigit())
+        return (int(digits or 0), suffix)
+
+    for guard in sorted(GUARDS, key=order):
         try:
             guard()
             print(f"PASS  {guard.__name__}")

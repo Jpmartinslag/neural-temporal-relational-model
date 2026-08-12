@@ -46,6 +46,14 @@ from src.modeles.france_ze2020.herald94_temporal_features import (
 
 # Declared before execution. The scales the ladder walks, and the seeds it walks them on.
 SCALES = (0.0, 0.5, 1.0, 2.0, 4.0)
+# The primary interpretive range. At scale four the latent clip saturates about sixteen per
+# cent of headcount cells, so that world is not "the same one with more mechanism" and a
+# reading taken there would confound the mechanism with the saturation. It is run and
+# reported as a stress test -- it still answers "does anything respond to the scale at all"
+# -- but no threshold, no sensitivity estimate and no conclusion is read off it.
+INTERPRETIVE_SCALES = (0.0, 0.5, 1.0, 2.0)
+STRESS_SCALES = (4.0,)
+assert set(INTERPRETIVE_SCALES) | set(STRESS_SCALES) == set(SCALES)
 LADDER_SCENARIOS = ("N0_NULL", "N2_NONLINEAR", "N3_REGIME", "N4_INTERACTION")
 SMOKE_SEEDS = (9891, 9892)
 FINAL_SEEDS = (9901, 9902, 9903)
