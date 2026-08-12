@@ -91,12 +91,24 @@ below are the interesting ones and the regime one-hot alone is not.
 
 Eleven features per signal, five signals: 55 columns.
 
-**Absence never becomes zero.** A feature that cannot be computed — window not yet open,
-release not yet elapsed, insufficient history, a masked block — is imputed with the
-**cross-sectional median of that feature at that period among zones where it is observed**,
-and is accompanied by a binary availability channel that the model receives. Zero is a
-legitimate value of a growth rate; using it to mean "missing" would make a stagnant zone
-indistinguishable from an unpublished one. Methodological breaks (2021–2023 for the
+**Absence never becomes zero.** Zero is a legitimate value of a growth rate; using it to
+mean "missing" would make a stagnant zone indistinguishable from an unpublished one, and
+every arm here is linear or near-linear in its inputs, so the two would receive the same
+response. Missingness is resolved in three declared steps, in order:
+
+1. **carried forward within the zone**, from the last period at which the feature could be
+   computed. Mixed frequency requires this rather than merely permitting it: the annual
+   signals live at Q4 of a quarterly grid, so at Q1 the most recent employer establishment
+   count is the one published at the previous Q4, and it is genuinely the best information
+   available at that date. The availability channel is 1 only where the value is **fresh**,
+   so a carried reading is distinguishable from a current one;
+2. **cross-sectional median at that period**, for cells with no history to carry — the head
+   of a series, before its observation window opens;
+3. only a feature absent in **every** zone at that period becomes zero, and there its
+   availability channel is zero too, which is what marks it absent.
+
+Composites are formed **before** imputation, so that a product of two carried values is
+flagged as such by its factors' channels rather than presented as fresh. Methodological breaks (2021–2023 for the
 employment signals, 2018 for unemployment) and the COVID years are carried as calendar
 indicators, exogenous and identical across zones, so that no method can read them as a
 territorial event.
@@ -126,6 +138,17 @@ all beyond the linear arm, it must come from `C4`, `C6`, or an interaction the n
 arm found on its own. This is checked, not assumed: a guard asserts that adding `C1`, `C2`,
 `C3`, `C5` to the ridge changes its out-of-sample loss by less than a declared tolerance.
 
+**One qualification, found while building the guard and recorded before any result.** The
+containment is exact only in cells where nothing was imputed. Composites are formed before
+the missingness rules run, so in a carried or median-filled cell the composite and the
+difference of the two imputed columns are two different numbers. Measured over all cells the
+residual is about one per cent of the composite's own spread; restricted to zones where every
+base column is fresh it is below `1e-6`, which is the claim in its exact form. The guard
+therefore tests exactness on fully observed zones, and the tolerance on the linear-composite
+arm's effect is set at 0.05 to cover the imputation gap. That gap is not an effect, and the
+distinction matters: without it a one per cent artefact of the ridge penalty could have been
+read as the named composites carrying information.
+
 ## 4. The arms
 
 The target is the next-period year-over-year log-growth of the primary signal, evaluated
@@ -143,6 +166,24 @@ masks:
 `best_single` is selected inside the training window and then frozen. Selecting it on the
 evaluation origins would give the floor an advantage no other arm has and would make a
 failure to beat it uninterpretable.
+
+**Regularisation is selected identically for every arm**, on expanding-window folds inside
+the training window: the training periods are cut into five contiguous blocks, and each fold
+fits on the blocks before a block and validates on that block. The ridge penalty and the
+network's weight decay and stopping epoch are all chosen this way, on the same folds, by the
+same rule. Nothing is ever selected on the evaluation origins.
+
+A single contiguous tail was the first design, and it was wrong in a way worth recording,
+because it would have decided the study's headline result inside the fitting procedure. The
+training window ends on 2020–2022 — COVID and the methodological breaks — so a lone tail fold
+asks which penalty best fits an atypical era. On the pilot it ranked the network's five
+weight decays in exactly the reverse of their true out-of-sample order, choosing the one that
+overfitted hardest and turning a network that beat the ridge by 22 % into one that lost to it
+by 26 %. Ridge barely noticed, its error being flat across its penalty grid; the network was
+destroyed by it. The fix is structural — several blocks, spread across the window, asking the
+question the evaluation actually poses — and it was verified on a smoke seed, never on a
+final one. Every calibration decision in this stage was taken on seeds 9601–9602; the final
+seeds 9701–9705 were not looked at before the grid ran.
 
 ### Why an MLP, and not a kernel
 

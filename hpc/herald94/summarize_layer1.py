@@ -77,7 +77,12 @@ def origins_won(report: dict, candidate: str, reference: str) -> tuple[int, int]
 def assess(candidate: str, runs: list[dict], null_runs: list[dict]) -> dict:
     over_single = [run["arms"][candidate]["gain_over_best_single"] for run in runs]
     over_linear = [run["arms"][candidate]["gain_over_ridge_linear"] for run in runs]
-    duplicated = [run["arms"]["duplicated"]["gain_over_best_single"] for run in runs]
+    # Against the *linear* arm, not against the floor. `duplicated` is the whole feature
+    # table with one column repeated, so it inherits every bit of the linear arm's advantage
+    # over `best_single` and a check against the floor would fail for a reason that has
+    # nothing to do with duplication. What must be nil is the effect of the repetition
+    # itself, which is exactly its distance from `ridge_linear`.
+    duplicated = [run["arms"]["duplicated"]["gain_over_ridge_linear"] for run in runs]
     linear_composites = [run["arms"]["ridge_linear_composites_only"]["gain_over_ridge_linear"]
                          for run in runs]
     in_sample_only = [
