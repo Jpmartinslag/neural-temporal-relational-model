@@ -6524,3 +6524,50 @@ licensed by any number above.
 `tests/test_herald91_integration_guards.py`,
 `tests/run_herald91_integration_mutations.py`,
 `src/modeles/france_ze2020/herald91_corrected_tournament.py`.
+
+## DEC-133 -- HERALD 91 v2 reproduced on meso: verdicts hold, two p-values do not (2026-08-12)
+
+**Status:** `TOURNAMENT_V2_REPRODUCED; NO_CANDIDATE; NO_FURTHER_STAGE_AUTHORISED`.
+Slurm `7864487`, partition `normal`, one node, four CPUs, `COMPLETED 0:0`, elapsed 08:34,
+465 s of tournament, empty stderr. All thirty-two checks reran inside the job before any
+tournament arithmetic: 6 focused guards, 6 focused mutants, 10 integration guards, 10
+integration mutants.
+
+**The conclusion reproduces exactly.** Six verdicts identical to the local run,
+`numerically_sound = True`, `mechanical_candidates = []`,
+`authorises_confirmatory_rerun = False` on both machines.
+
+**Two numbers do not, and that is the finding.** Local numpy 1.26.4 against meso numpy
+2.2.6, same seeds, same data:
+
+| signal | B1 deviance, relative difference | p(perm) local -> meso | verdict |
+|---|---:|---|---|
+| Urssaf gross payroll | 3.2e-14 | 0.7805 -> 0.7805 | unchanged |
+| Insee unemployment rate | 1.1e-15 | 1.0000 -> 1.0000 | unchanged |
+| SIDE active stock | 7.0e-11 | 1.0000 -> 1.0000 | unchanged |
+| SIDE creations | 3.0e-12 | 0.0244 -> 0.0244 | unchanged |
+| Urssaf private headcount | **1.1e-04** | 0.0244 -> 0.0244 | unchanged |
+| Urssaf employer establishments | **7.2e-04** | **0.6341 -> 0.9024** | unchanged |
+
+The two Negative-Binomial signals with the largest designs -- 98 and 18 origins over 280
+zones, the most IRLS iterations -- diverge at the fourth decimal, which is ordinary BLAS
+accumulation. Everything else is bit-stable.
+
+Employer establishments moves eleven placebo draws across the threshold on that difference,
+because its margin is smaller than the difference itself: the true graph sits at `-0.017%`
+against the median placebo locally and `-0.117%` on meso. Both say the same thing -- the
+observed commuting graph is *worse* than a typical relabelling -- but the gap is inside the
+numerical noise floor of the fit.
+
+**Consequence, stated rather than hidden.** For employer establishments and private
+headcount the p-value is not reportable to two decimal places on this specification. The
+sign and the verdict are stable; the digits are not. Any future report must quote those two
+signals as "within numerical noise of the placebo distribution" rather than as a p-value.
+This strengthens the negative reading: the earlier DEC-129 candidacy rested on a margin that
+does not survive a change of linear-algebra library, let alone a change of decade.
+
+**No stage is authorised.** No confirmatory 199-draw run, no generator, no neural model, no
+factorial. The reproduction was the last authorised action of the corrected tournament.
+
+**Affected files:** `hpc_results/herald91/corrected_tournament_v2_meso_7864487.json`,
+`hpc_results/herald91/slurm-7864487.out`, `hpc/herald91/run_tournament_v2.sbatch`.
