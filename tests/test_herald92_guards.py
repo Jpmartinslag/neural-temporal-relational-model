@@ -249,6 +249,23 @@ def test_g18_determinism():
     assert first["joint"]["pooling_weights"] == second["joint"]["pooling_weights"]
 
 
+def test_g20_redundancy_changes_the_noise_and_nothing_else():
+    """S4 must differ from S1 by one knob only.
+
+    The first version of the scenario also copied headcount's ``gamma`` and ``loading``
+    onto payroll. That is not redundancy: it raises payroll's mechanism, so S4 became a
+    strictly stronger world than S1 and its pooling gain exceeded the complementary
+    scenario's for a reason that had nothing to do with redundancy.
+    """
+    shared = gen.scenario_loadings("S1_SHARED", 1.0)
+    redundant = gen.scenario_loadings("S4_REDUNDANT", 1.0)
+    for name in shared:
+        for key in ("gamma", "loading", "graph"):
+            assert shared[name][key] == redundant[name][key], (
+                f"S4 altered {name}.{key}; redundancy may only touch the noise group")
+    assert redundant["payroll"]["noise_group"] == redundant["headcount"]["noise_group"]
+
+
 def _main() -> int:
     names = sorted((name for name in globals() if name.startswith("test_")),
                    key=lambda n: int(n.split("_")[1][1:]))

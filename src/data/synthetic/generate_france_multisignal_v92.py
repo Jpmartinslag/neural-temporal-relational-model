@@ -221,10 +221,11 @@ def scenario_loadings(scenario: str, scale: float) -> dict[str, dict[str, Any]]:
             entry["gamma"] *= 0.35
             entry["loading"] *= 0.35
     elif scenario == "S4_REDUNDANT":
-        # Payroll becomes a second view of headcount, noise included: pooling the two
-        # cannot average anything away, so the second channel adds nothing.
-        base["payroll"]["gamma"] = base["headcount"]["gamma"]
-        base["payroll"]["loading"] = base["headcount"]["loading"]
+        # Payroll shares headcount's measurement noise, so pooling the two cannot average
+        # anything away. Sharing the noise group is the *only* edit: an earlier version
+        # also copied headcount's gamma and loading onto payroll, which raised payroll's
+        # mechanism by ~14% and made S4 a strictly stronger world than S1 rather than the
+        # single-knob contrast this scenario is supposed to be.
         base["payroll"]["noise_group"] = "headcount"
     elif scenario == "S5_CONFLICTING":
         # Signs flip on both loadings together, so each signal still carries the full

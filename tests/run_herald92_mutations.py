@@ -200,7 +200,24 @@ def m_nondeterministic_weights():
     return swap(h92, "pooling_weights", bad)
 
 
+def m_redundant_also_strengthens_payroll():
+    """The defect the v2 array actually carried: S4 becomes a stronger world, not a
+    redundant one."""
+    original = gen.scenario_loadings
+
+    def bad(scenario, scale):
+        loadings = original(scenario, scale)
+        if scenario == "S4_REDUNDANT":
+            loadings["payroll"]["gamma"] = loadings["headcount"]["gamma"]
+            loadings["payroll"]["loading"] = loadings["headcount"]["loading"]
+        return loadings
+    return swap(gen, "scenario_loadings", bad)
+
+
 CASES = [
+    ("redundant_also_strengthens_payroll",
+     g.test_g20_redundancy_changes_the_noise_and_nothing_else,
+     m_redundant_also_strengthens_payroll),
     ("latent_leaks_to_model", g.test_g1_latent_state_never_reaches_the_model,
      m_latent_leaks_to_model),
     ("oracle_reads_latent", g.test_g19_oracle_frames_equal_the_published_observations,
