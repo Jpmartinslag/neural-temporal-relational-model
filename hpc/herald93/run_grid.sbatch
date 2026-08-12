@@ -20,5 +20,5 @@ export CUBLAS_WORKSPACE_CONFIG=:4096:8
 # The core grid: five methods, two scenarios, the five final seeds, width 64.
 python3 hpc/herald93/run_model_benchmark.py \
   --task-id "${SLURM_ARRAY_TASK_ID}" \
-  --out-dir hpc_results/herald93/tasks \
+  --out-dir hpc_results/herald93/tasks_v2 \
   --n-zones 280 --n-score 12 --epochs 30 --widths 64
