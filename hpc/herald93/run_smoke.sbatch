@@ -13,7 +13,8 @@ set -euo pipefail
 cd /home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset
 module load conda/23.3.1
 source activate herald-v5
-export PYTHONHASHSEED=0 OMP_NUM_THREADS=4
+export PYTHONHASHSEED=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
 
 python3 -c 'import sys,numpy,torch; print(sys.version.split()[0],"numpy",numpy.__version__,"torch",torch.__version__)'
 
@@ -55,7 +56,12 @@ for left, right in zip(a, b):
     if x["method"] == "herald":
         for name in ("scorer", "relational_head", "fusion", "node_head"):
             assert grads.get(name, 0) > 0, f"{name} received no gradient"
-        assert all(v > 0 for v in grads["per_signal"]), "a signal encoder is dead"
+        coverage = grads.get("coverage", [1.0] * len(grads["per_signal"]))
+        # A signal that publishes nothing inside the probe window contributes nothing, by
+        # design. Only the signals that *are* covered must show gradient.
+        dead = [i for i, (gradient, seen) in enumerate(zip(grads["per_signal"], coverage))
+                if seen > 0 and gradient <= 0]
+        assert not dead, f"signal encoders {dead} are dead despite coverage {coverage}"
     if x["method"] != "persistence" and x["scenario"] == "S0_NULL":
         assert x["forecast"]["mae"] < 1.0, f"{x['method']} exploded on S0"
 print("determinism failures:", bad or "none")

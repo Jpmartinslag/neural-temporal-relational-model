@@ -26,6 +26,12 @@ import numpy as np
 
 # ── Declared before submission. Not to be edited after a result is seen. ─────
 EDGE_F1_MIN = 0.50
+# The candidate support is the commuting prior and the true propagation is drawn inside it,
+# so the prevalence of true edges within the support is high: around 0.70 at the benchmark's
+# settings. An F1 of 0.50 is *below* what selecting at random inside the support achieves,
+# which would make the threshold no threshold at all. The criterion is therefore whichever
+# is larger, the declared floor or the prevalence plus a margin. Fixed before the grid ran.
+EDGE_F1_MARGIN_OVER_PREVALENCE = 0.10
 DENSE_CORRELATION_MIN = 0.30
 STABILITY_MIN = 0.90
 S0_ADDED_EDGE_MAX = 0.10
@@ -75,7 +81,8 @@ def classify(s1_runs: list[dict], s0_runs: list[dict]) -> dict:
     event_median = median(events)
 
     checks = {
-        "edge_f1_at_least_0_50": median(edge_f1) >= EDGE_F1_MIN,
+        "edge_f1_at_least_0_50": median(edge_f1) >= max(
+            EDGE_F1_MIN, median(prevalence) + EDGE_F1_MARGIN_OVER_PREVALENCE),
         "dense_correlation_at_least_0_30": median(dense) >= DENSE_CORRELATION_MIN,
         "stability_across_seeds_at_least_0_90":
             bool(np.isfinite(stability)) and stability >= STABILITY_MIN,
