@@ -6571,3 +6571,68 @@ factorial. The reproduction was the last authorised action of the corrected tour
 
 **Affected files:** `hpc_results/herald91/corrected_tournament_v2_meso_7864487.json`,
 `hpc_results/herald91/slurm-7864487.out`, `hpc/herald91/run_tournament_v2.sbatch`.
+
+## DEC-134 -- HERALD 92: a generator that can be wrong, and the oracle that will judge it (2026-08-12)
+
+**Status:** `ORACLE_ARRAY_SUBMITTED; NEURAL_STAGE_NOT_AUTHORISED`. Slurm array `7864548`,
+120 tasks, commit `abd25f1`. No network exists and none may be written until the gate in
+`summarize_oracle.py` returns `authorises_neural_synthetic = True`.
+
+**Why HERALD 91 did not close the question.** The corrected tournament tested signals one
+at a time. The hypothesis this project actually raised -- that individually weak signals may
+identify a relation jointly -- was never measured, and HERALD 91 itself removed the rule
+that had blocked it. Reading the individual result as a closure would have been the same
+error the audit chain keeps finding.
+
+**The formulation, declared before the code.**
+
+```
+z[t+1]     = rho * z[t] + shock[t+1]
+eta_s[t+1] = ar_s * eta_s[t] + macro_s + gamma_s * z[t]
+             + lambda_s * (A[t] @ centred(z[t])) + noise_s[t+1]
+x_s[t+1]   = observation_model_s(eta_s[t+1])
+```
+
+`gamma_s` is the load-bearing term. The first generator drove propagation from a state no
+signal measured, so pooling signals estimated nothing and the combination could never beat
+its parts: the task was impossible by construction rather than hard, and its numbers were
+correctly discarded rather than reported. With a contemporaneous loading, pooling S signals
+estimates `z` with noise divided by roughly `sqrt(S)`, and complementarity becomes a
+property that can fail.
+
+**Three generator defects found by measurement, not by inspection.** Driving propagation
+from the mean of the signals made `S5_CONFLICTING` lose its relational term instead of
+opposing signals, and inflated the relational share to 9.6 times the noise. The
+unemployment rate was integrated as a random walk and reached a median of 25% against a
+French 8%. Accumulated drift gave a coefficient of variation of 9.0 against 3.1. Marginals
+now sit within 8% on medians, 0.62-1.02 times target on dispersion, and 0.21 on
+autocorrelation; the residuals are exported rather than chased.
+
+**Two oracle defects, both mine.** The joint arm summed per-signal deviances, which averages
+winners with losers and calls the dilution a joint result; it now asks the paired question
+-- for the same target signal, does a neighbour term built on the pooled state estimate beat
+one built on that signal's own history. And pooling weights were estimated on rows where
+every signal is observed, which for quarterly and annual sources is a handful of fourth
+quarters; below three such rows the code fell back to uniform weights, silently erasing the
+signs it existed to recover. Weights are now estimated pairwise against an anchor.
+
+**Scenario behaviour, 120 zones, calibration seed 9301.** `S0_NULL` gains nothing from
+pooling; `S1_SHARED` improves from +13.0% to +14.7%; `S3_COMPLEMENTARY`, the decisive case,
+improves from +6.2% to +8.5%; `S5_CONFLICTING` has its opposite loadings recovered by the
+estimator (-0.66 against +0.67) rather than cancelled by it.
+
+**Guards.** 19 guards, 17 mechanism-matched mutants, all passing and all killed, run again
+inside the array's first task before any oracle arithmetic. Two guards were insufficient on
+first construction: one tested an implementation detail that a better implementation
+removed, and one accepted an identity permutation as a valid placebo because it checked only
+that the weights were preserved.
+
+**The gate.** The null envelope is estimated from `S0_NULL` across the twenty calibration
+seeds and taken on the *best-of-five* statistic, so the selection bias is inside the
+threshold rather than beside it. Eight checks must pass together; a single failure blocks
+the factorial. Final seeds `9401-9405` are untouched and a guard kills any attempt to
+calibrate on them.
+
+**Affected files:** `src/data/synthetic/generate_france_multisignal_v92.py`,
+`src/modeles/france_ze2020/herald92_multisignal_oracle.py`, `hpc/herald92/`,
+`tests/test_herald92_guards.py`, `tests/run_herald92_mutations.py`.
