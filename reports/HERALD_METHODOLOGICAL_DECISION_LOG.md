@@ -6950,3 +6950,87 @@ generated. Gate thresholds, seeds, folds and origins are fixed in the specificat
 submission.
 
 **Affected files:** `reports/canonical/HERALD_94_COMPOSITE_SIGNAL_SPECIFICATION.md`.
+
+## DEC-140
+
+**Date:** 2026-08-12
+**Subject:** HERALD 94 Layer 1 built and audited. Five defects found before any scientific
+run, four of them by guards and mutants and one by exercising the summariser on synthetic
+payloads. Validation submitted as job 7865228.
+
+**A generator branch that silently confounded two scenarios.** In `scenario_loadings` the
+reset of the component assignment sat inside the scenario chain as an `elif`, so it never
+fired for `N0_NULL` or `N5_REDUNDANT`: both kept `N4`'s disjoint split, and each would have
+differed from `N1` in two ways at once -- its own declared mechanism and which latent
+component each signal measures. A matched design exists to exclude exactly that. Guard `g20`
+caught it; the reset now runs before the branches and outside the chain.
+
+**Three guards that passed for the wrong reason.**
+
+The causality guard compared a feature at period `t` built from a view truncated at `t`
+against one truncated at `t + 12` and required them to match. They should not match. The
+panel carries a release lag, so at decision date `t` the observation of period `t` has not
+been published and at `t + 12` it has; a feature at a given period is a function of the
+vintage, and pinning it across vintages pins the wrong quantity. It failed by 1.43 and the
+premise, not the code, was wrong. The guard now perturbs every observation after the
+decision date and requires the row read at that date not to move -- and it acts on the
+untruncated panel, because passing through the released view first masks the future before
+the feature functions ever see it, and the mutant that reads the whole series survived until
+that line changed.
+
+The span guard had 38 fully observed zones against 61 regressors. Least squares therefore
+reproduced *any* column exactly, and the guard passed whatever it was given, including a
+composite mutated into a product. The panel was widened to two hundred zones.
+
+The regime-gate mutant raised `REGIME_GATE_RISING` from 1.7 to 3.0 and changed nothing,
+because the gate is normalised to unit root-mean-square and the normalisation divides the
+constant straight back out. The mutant removed no mechanism and the guard was right to stay
+quiet; the mechanism is the normalisation, and the mutant now removes that.
+
+**A quantitative qualification to the pre-registered structural claim, recorded before any
+result.** Composites are formed before the missingness rules run, deliberately, so that a
+product of two carried values is flagged by its factors' availability channels rather than
+presented as fresh. A consequence is that the four composites that are linear functions of
+existing columns lie in the linear span *exactly* only where nothing was imputed; measured
+over all cells the residual is about one per cent of the composite's own spread, and a mere
+difference leaves 0.0024. That is the size of the imputation gap, not of an effect, and
+without measuring it a one per cent artefact of the ridge penalty could have been read as
+the named composites carrying information. The tolerance on the linear-composite arm is set
+at 0.05 to cover it.
+
+**A selection procedure that would have decided the headline result inside the fitting.** The
+network's weight decay was first chosen on a single contiguous tail of the training window.
+That tail is 2020-2022 -- COVID and the methodological breaks -- so it asks which penalty
+best fits an atypical era. On the pilot it ranked the five weight decays in exactly the
+reverse of their true out-of-sample order:
+
+    weight decay   tail-fold MSE     true out-of-sample MSE
+    1e-4           0.002704 (best)   0.003285
+    1e-2           0.004038          0.002064
+    1e-1           0.004600 (worst)  0.002033 (best)
+
+Ridge barely noticed, its error being flat across its penalty grid; the network was
+destroyed by it, a 22 per cent win over ridge becoming a 26 per cent loss. Both arms now
+select on expanding-window folds inside the training window, five contiguous blocks, each
+fold fitting on the blocks before a block and validating on that block, the same folds and
+the same rule for both. The fix is structural and was verified on smoke seed 9602. Every
+calibration decision in this stage was taken on seeds 9601-9602; the final seeds 9701-9705
+have not been looked at.
+
+**A control measured against the wrong reference.** Exercising the summariser on synthetic
+payloads before submission showed the duplicated-channel check failing on a planted signal
+that should have passed. The duplicated arm is the whole feature table with one column
+repeated, so it inherits the linear arm's advantage over the single-feature floor and
+against that floor always appears to gain. What must be nil is the effect of the repetition,
+which is its distance from the linear arm.
+
+**Audit status.** Twenty-five guards pass; twenty-four mutants, one per mechanism and none a
+constant-returning stub, are all killed. The ablation now inherits the main fit's
+regularisation rather than re-selecting it, so it changes one thing and not two.
+
+**Affected files:** `src/data/synthetic/generate_france_multisignal_v94.py`,
+`src/modeles/france_ze2020/herald94_temporal_features.py`,
+`src/modeles/france_ze2020/herald94_composite.py`, `hpc/herald94/`,
+`tests/test_herald94_guards.py`, `tests/run_herald94_mutations.py`,
+`reports/canonical/HERALD_94_COMPOSITE_SIGNAL_SPECIFICATION.md`. Commits `29d91e9`,
+`d94c97c`, `b5cd6dc`, `3263bf3`. Validation job 7865228 on meso, environment `herald-v5`.
