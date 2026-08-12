@@ -6794,3 +6794,93 @@ a classical method, a predictive graph network and a relational one, exactly as 
 `hpc/herald92/summarize_fair_contrast.py`, `tests/test_herald92_fair_guards.py`,
 `tests/run_herald92_fair_mutations.py`. Results in `hpc_results/herald92/tasks_fair`,
 verdict in `hpc_results/herald92/fair_contrast_verdict.json`.
+
+## DEC-138
+
+**Date:** 2026-08-12
+**Subject:** The four-method benchmark. No method recovers the graph, no method beats
+persistence, and the S0 control explains why the proposal appeared to. France:
+`CASE_C_DO_NOT_APPLY_RELATIONS`.
+
+**What ran.** Arrays 7865142 and 7865143, seventy tasks: five methods on `S0_NULL` and
+`S1_SHARED`, the five final seeds 9401-9405, 280 zones, twelve rolling origins, thirty
+epochs, plus HERALD at widths 32 and 128. Validation job 7865093: twenty-three guards,
+twenty-two mutants killed, determinism exact across two identical runs, all arms distinct.
+Width 256 is refused by the model constructor, not merely omitted.
+
+**The classical method.** Graphical Granger by Lasso, not PCMCI+: `tigramite` is absent from
+the cluster environment, and adding an unaudited dependency to obtain a second classical arm
+is worse than running one that can be read end to end. Recorded before the results.
+
+**Two mechanical defects, both found in the first grid's diagnostics rather than in its
+metrics, both corrected before interpretation, and the grid rerun once.**
+
+The HERALD scorer's gradient norm was exactly 0.0 after thirty epochs while the head
+consuming its output measured 7.86. The pair features were unnormalised, so their scale grew
+with training, and every edge was squashed independently, so nothing bounded the logits: the
+graph froze at whatever it happened to be while the rest of the model went on training
+against it. A frozen graph and a graph that found nothing are indistinguishable in a metric
+table. Guard `h13` checked the gradient in a *fresh* model and passed throughout; guard `h23`
+now trains first, for twenty-five epochs, because six did not reproduce the drift and the
+mutant survived. After the correction HERALD's dense correlation rose from 0.022 to 0.112,
+so the defect was real and material.
+
+The `S0` false-positive criterion could not be passed by anything. In `S0` the propagation
+matrix still exists and simply carries no loading, so nothing observable distinguishes one
+candidate from another and the added-edge rate against that inert matrix is pinned at one
+minus the prevalence, 0.30, for every method including a perfect one. It is still reported.
+The criterion is now whether a method's `S0` ranking carries any signal at all, its average
+precision against the prevalence. This was replaced because it was unsatisfiable by
+construction, not because it failed, and the distinction is the whole of the justification.
+
+**The result.**
+
+    method        skill   edge F1   dense   AUPRC S1   AUPRC S0   params    sec
+    persistence  +0.0000     -        -         -          -           0    1.4
+    granger      +0.0001   0.702   +0.003    0.6983     0.7009    50 400    5.5
+    herald@32    -0.0087   0.715   +0.116    0.7257     0.7216    24 596    348
+    herald@64    -0.0170   0.715   +0.112    0.7228     0.7254    94 228    323
+    herald@128   -0.0046   0.717   +0.116    0.7294     0.7269   368 660   1367
+    mtgnn@64     -0.1977   0.705   +0.043    0.7147     0.7079    90 506    110
+    nri@64       -0.0494   0.701   -0.005    0.7005     0.7027    89 228    326
+
+    prevalence of true edges inside the candidate support: 0.700
+
+**No method beats persistence, and no method recovers the graph.** The required edge F1 is
+0.80, the prevalence plus a margin, because 0.70 is what random selection achieves inside
+this support; the best observed is 0.717. The required dense correlation is 0.30; the best
+observed is 0.116.
+
+**The finding that matters is the S0 control.** HERALD scores the same in the scenario with
+a relational mechanism and in the scenario without one: AUPRC 0.7228 against 0.7254 at width
+64, dense correlation 0.112 against 0.116. `S0` has zero relational loading and contains
+nothing to find. A method that scores identically there has not recovered a relation; it has
+reproduced something it was handed. Here that is the commuting prior, which the scorer
+receives as a pair feature and which the true graph is itself drawn from, so ranking edges by
+prior weight lifts the average precision above the prevalence in both scenarios equally. The
+apparent advantage of the proposal over NRI and Granger is an echo of the prior, not a
+discovery, and it is visible only because the benchmark contained a scenario with no
+mechanism.
+
+**Frugality does not favour the proposal.** The classical arm uses two orders of magnitude
+less time than any neural one and forecasts at least as well as all of them.
+
+**Width.** No width is promoted. The selection rule requires control of false positives in
+`S0` first and no width achieved it; choosing the best of the failures is not permitted.
+
+**France.** `CASE_C_DO_NOT_APPLY_RELATIONS`. Relations are not applied to the French panel,
+no learned edge is visualised or interpreted as an economic finding, and no territorial
+recommendation is issued on this basis. The deliverable is the synthetic comparison, the
+failure analysis, the frugality accounting and the stated limits, in
+`reports/canonical/HERALD_93_MODEL_EVALUATION_AND_COMPARISON.md`.
+
+**The most useful limitation, for whoever continues.** The scorer is allowed to see the
+prior, and the benchmark draws its truth from that prior. Projecting the prior out and
+requiring the residual to carry the ranking would make echoing it worth nothing, and is the
+first thing to change.
+
+**Affected files:** `src/modeles/france_ze2020/herald93_benchmark.py`, `hpc/herald93/`,
+`tests/test_herald93_guards.py`, `tests/run_herald93_mutations.py`,
+`reports/canonical/HERALD_93_MODEL_EVALUATION_AND_COMPARISON.md`. Results in
+`hpc_results/herald93/tasks_v2`, the frozen-scorer grid preserved in
+`hpc_results/herald93/tasks_frozen_scorer`, summary in `benchmark_summary_v2.json`.
