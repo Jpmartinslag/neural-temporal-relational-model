@@ -49,9 +49,25 @@ import numpy as np
 SCENARIOS = ("S0_NULL", "S1_SHARED", "S2_PARTIAL_SHARED", "S3_COMPLEMENTARY",
              "S4_REDUNDANT", "S5_CONFLICTING")
 
+# The matched pair. ``S3_COMPLEMENTARY`` and ``S4_REDUNDANT`` above are not comparable to
+# each other: S3 scales every gamma and loading by 0.35, so its relational share is 0.284
+# against S4's 0.810 and the two differ in amplitude as well as in mechanism. Arrays
+# 7864671 and 7864792 failed the redundancy check for that reason and for no other, and per
+# unit of relational amplitude the two scenarios were indistinguishable (1.171 against
+# 1.236). They stay exactly as they are, as the record of that development.
+#
+# The fair pair below differs in **one** quantity: whether the signals' measurement noises
+# are independent or shared. Gammas, loadings, graph, support, amplitude, noise variance,
+# marginals, masks, frequencies, breaks and seasonality are identical by construction, so
+# the only thing pooling can exploit in S3F and cannot exploit in S4F is the averaging of
+# independent measurement error. That is the definition of complementarity being tested.
+FAIR_SCENARIOS = ("S0_NULL", "S3F_COMPLEMENTARY", "S4F_REDUNDANT")
+
 CALIBRATION_SEEDS = tuple(range(9301, 9321))
+FAIR_SEEDS = tuple(range(9501, 9521))
 FINAL_SEEDS = (9401, 9402, 9403, 9404, 9405)
 assert not set(CALIBRATION_SEEDS) & set(FINAL_SEEDS)
+assert not set(FAIR_SEEDS) & (set(CALIBRATION_SEEDS) | set(FINAL_SEEDS))
 
 # Measured on the French panel by `herald91_corrected_tournament`. `loading` is the
 # scenario-independent share of the shared relational term this signal carries; the
@@ -118,8 +134,9 @@ class MultisignalConfig:
     missing_block_rate: float = 0.02
 
     def __post_init__(self) -> None:
-        if self.scenario not in SCENARIOS:
-            raise ValueError(f"scenario must be one of {SCENARIOS}")
+        if self.scenario not in set(SCENARIOS) | set(FAIR_SCENARIOS):
+            raise ValueError(
+                f"scenario must be one of {tuple(SCENARIOS) + tuple(FAIR_SCENARIOS)}")
         if self.n_zones < 20:
             raise ValueError("at least twenty zones are needed for a usable placebo")
 
@@ -202,6 +219,12 @@ def scenario_loadings(scenario: str, scale: float) -> dict[str, dict[str, Any]]:
     which the redundant scenario denies complementarity, and it is deliberately the same
     knob the complementary scenario uses in the opposite direction.
     """
+    known = set(SCENARIOS) | set(FAIR_SCENARIOS)
+    if scenario not in known:
+        # Without this the function fell through and silently returned S1's loadings, so a
+        # typo in a scenario name would have produced a plausible dataset under the wrong
+        # label.
+        raise ValueError(f"unknown scenario {scenario!r}; known: {sorted(known)}")
     base = {name: {"loading": spec["loading"] * scale,
                    "gamma": spec["gamma"] * scale,
                    "graph": "shared", "noise_group": name}
@@ -227,6 +250,18 @@ def scenario_loadings(scenario: str, scale: float) -> dict[str, dict[str, Any]]:
         # mechanism by ~14% and made S4 a strictly stronger world than S1 rather than the
         # single-knob contrast this scenario is supposed to be.
         base["payroll"]["noise_group"] = "headcount"
+    elif scenario == "S3F_COMPLEMENTARY":
+        # Every signal keeps its own measurement noise. Pooling five independent views of
+        # the same state divides that noise by sqrt(5); nothing else in the construction
+        # rewards a combination. Loadings are untouched, so this is S1's amplitude exactly.
+        pass
+    elif scenario == "S4F_REDUNDANT":
+        # One measurement noise for all five signals. Every signal carries exactly the same
+        # gamma, loading and noise variance as in S3F, so the relational strength, the
+        # relational share and the marginals are unchanged; what changes is that averaging
+        # the five views cannot cancel anything, because they carry the *same* error.
+        for entry in base.values():
+            entry["noise_group"] = "common"
     elif scenario == "S5_CONFLICTING":
         # Signs flip on both loadings together, so each signal still carries the full
         # mechanism and only naive unsigned pooling cancels. Flipping one loading alone
@@ -263,13 +298,25 @@ def _simulate(config: MultisignalConfig, graphs: dict[str, np.ndarray],
     """
     n_periods, n = len(years), config.n_zones
     names = list(SIGNAL_SPEC)
-    groups = sorted({entry["noise_group"] for entry in loadings.values()})
-    noise = {group: rng.normal(0.0, 1.0, size=(n_periods, n)) for group in groups}
+
+    # Every random array below has a shape that does not depend on the scenario, and they
+    # are drawn in a fixed order. This matters for the matched pair: if the noise draws were
+    # allocated per *group*, S3F (five groups) and S4F (one group) would consume different
+    # amounts of the stream and end up with different latent states at the same seed, so a
+    # paired seed-by-seed comparison would silently compare two different worlds. Drawing a
+    # full per-signal block and letting the group structure only decide *which row a signal
+    # reads* keeps the state, the macro path and headcount's own noise identical across
+    # every scenario at a given seed.
     macro = {name: rng.normal(0.0, 0.010, size=n_periods) for name in names}
+    shock = rng.normal(0.0, 1.0, size=(n_periods, n))
+    per_signal_noise = rng.normal(0.0, 1.0, size=(len(names), n_periods, n))
+    first_of_group: dict[str, int] = {}
+    for index, name in enumerate(names):
+        first_of_group.setdefault(loadings[name]["noise_group"], index)
+    noise = {group: per_signal_noise[index] for group, index in first_of_group.items()}
 
     # Latent territorial state. Never exported to the model, never a regressor.
     state = np.zeros((n_periods, n))
-    shock = rng.normal(0.0, 1.0, size=(n_periods, n))
     state[0] = shock[0]
     for t in range(n_periods - 1):
         state[t + 1] = STATE_PERSISTENCE * state[t] + shock[t + 1]
