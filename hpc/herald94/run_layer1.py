@@ -119,8 +119,14 @@ def fit_and_score(name: str, train: dict, test: dict, seed: int,
         prediction = arms.predict_ridge(test_x, fitted)
         parameters = int(train_x.shape[1] + 1)
         state = {"alpha": alpha, **fitted}
+    # The same fairness test as the penalty grid, applied to the network's budget: if the
+    # selected stopping epoch is the largest on offer, the fit was cut short and the
+    # comparison would be about the budget rather than about the model. The smoke ran at a
+    # ceiling of 300 and hit it, which is why the grid runs at the full budget.
     configuration = ({"weight_decay": fitted["selection"]["weight_decay"],
-                      "epochs": fitted["selection"]["epochs"]}
+                      "epochs": fitted["selection"]["epochs"],
+                      "epochs_at_budget_ceiling":
+                          fitted["selection"]["epochs"] >= epochs}
                      if name == "mlp_nonlinear" and "selection" in fitted
                      else {"alpha": state.get("alpha"),
                            "alpha_at_grid_boundary":
