@@ -23,11 +23,11 @@ if [ "${SLURM_ARRAY_TASK_ID}" -eq 0 ]; then
   python3 -c 'import sys, numpy; print(sys.version.split()[0], "numpy", numpy.__version__)'
   python3 tests/test_herald92_guards.py
   python3 tests/run_herald92_mutations.py
-  touch hpc_results/herald92/VALIDATED_${SLURM_ARRAY_JOB_ID}
+  touch hpc_results/herald92/VALIDATED_v3_${SLURM_ARRAY_JOB_ID}
 fi
 
 python3 hpc/herald92/run_oracle_array.py \
   --task-id "${SLURM_ARRAY_TASK_ID}" \
-  --out-dir hpc_results/herald92/tasks \
+  --out-dir hpc_results/herald92/tasks_v3 \
   --n-zones 280 \
   --n-score 12
