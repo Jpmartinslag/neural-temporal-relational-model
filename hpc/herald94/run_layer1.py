@@ -119,11 +119,18 @@ def fit_and_score(name: str, train: dict, test: dict, seed: int,
         prediction = arms.predict_ridge(test_x, fitted)
         parameters = int(train_x.shape[1] + 1)
         state = {"alpha": alpha, **fitted}
+    configuration = ({"weight_decay": fitted["selection"]["weight_decay"],
+                      "epochs": fitted["selection"]["epochs"]}
+                     if name == "mlp_nonlinear" and "selection" in fitted
+                     else {"alpha": state.get("alpha"),
+                           "alpha_at_grid_boundary":
+                               state.get("alpha") == max(arms.RIDGE_ALPHAS)})
     return {
         "arm": name,
         "out_of_sample": arms.loss_of(prediction, test["y"]),
         "in_sample": arms.loss_of(in_sample, train["y"]),
         "parameters": parameters, "seconds": round(time.time() - started, 2),
+        "configuration": configuration,
         "prediction": prediction, "state": state, "scaler": scaler,
     }
 
@@ -292,6 +299,7 @@ def run_task(scenario: str, seed: int, n_zones: int, epochs: int, n_score: int) 
         summary[name] = {
             "out_of_sample": result["out_of_sample"], "in_sample": result["in_sample"],
             "parameters": result["parameters"], "seconds": result["seconds"],
+            "configuration": result["configuration"],
             "gain_over_best_single": arms.gain_over(reference,
                                                     result["out_of_sample"]["mse"]),
             "gain_over_ridge_linear": arms.gain_over(linear_mse,

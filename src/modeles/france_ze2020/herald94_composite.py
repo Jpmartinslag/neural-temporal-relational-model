@@ -47,7 +47,12 @@ WEIGHT_DECAY = 1e-4
 MONITOR_EVERY = 25
 # Expanding-window folds inside the training window, used identically by both arms.
 N_BLOCKS = 5
-RIDGE_ALPHAS = (1e-3, 1e-2, 1e-1, 1.0, 10.0, 100.0)
+# Extended to 1e5 before the grid ran. A penalty grid must not stop at the point where the
+# arm would still like to go further: if the selection lands on the largest value on offer,
+# the arm was cut short and the comparison would be about the grid rather than about the
+# model. The smoke showed the linear arm losing to a single feature, so the possibility had
+# to be excluded rather than assumed away. Whether the boundary is reached is reported.
+RIDGE_ALPHAS = (1e-3, 1e-2, 1e-1, 1.0, 10.0, 100.0, 1e3, 1e4, 1e5)
 # Chosen on the same temporal holdout, by the same rule, as the ridge penalty above.
 MLP_WEIGHT_DECAYS = (1e-4, 1e-3, 1e-2, 1e-1, 1.0)
 ARMS = ("best_single", "ridge_linear", "ridge_composite", "mlp_nonlinear", "duplicated")
