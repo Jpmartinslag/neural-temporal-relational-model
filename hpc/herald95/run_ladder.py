@@ -135,6 +135,31 @@ def edge_recovery(dataset: dict, seed: int, n_zones: int, origins: list[int],
     metrics = bench.relational_metrics(scores, dataset["truth"], support, last, keep=0)
     metrics["cost_seconds"] = trained["seconds"]
     metrics["support_size"] = int(support.sum())
+
+    # The scores themselves, not only what the metrics make of them. The smoke showed the
+    # dense correlation agreeing to seven decimal places between a world with no relational
+    # mechanism and one with four times the nominal amount, which is either a scorer that
+    # ignores the mechanism or a metric that ignores the scorer. The metric was checked and
+    # responds correctly, so these three numbers say directly what the scorer is tracking:
+    # if it correlates with the prior and not with the truth, at every scale, it is echoing
+    # the support rather than recovering anything.
+    inside = support.copy()
+    np.fill_diagonal(inside, False)
+    flat = scores[inside]
+    prior_flat = np.asarray(dataset["truth"]["prior"], float)[inside]
+    truth_flat = np.asarray(dataset["truth"]["propagation"][last], float)[inside]
+
+    def correlate(left, right):
+        if left.std() < 1e-15 or right.std() < 1e-15:
+            return float("nan")
+        return float(np.corrcoef(left, right)[0, 1])
+
+    metrics["score_diagnostics"] = {
+        "mean": float(flat.mean()), "std": float(flat.std()),
+        "correlation_with_prior": correlate(flat, prior_flat),
+        "correlation_with_true_propagation": correlate(flat, truth_flat),
+        "checksum": float(flat.sum()),
+    }
     return metrics
 
 
@@ -256,9 +281,13 @@ def main() -> int:
               f"vs_linear={entry['gain_over_ridge_linear']:+.4f}")
     if "auprc" in report["edge_recovery"]:
         edges = report["edge_recovery"]
-        print(f"  edges auprc={edges['auprc']:.4f} prevalence={edges['prevalence']:.4f} "
-              f"f1={edges.get('edge_f1', float('nan')):.4f} "
-              f"dense={edges.get('dense_correlation', float('nan')):.4f}")
+        diagnostics = edges.get("score_diagnostics", {})
+        print(f"  edges auprc={edges['auprc']:.6f} prevalence={edges['prevalence']:.4f} "
+              f"f1={edges.get('edge_f1', float('nan')):.6f} "
+              f"dense={edges.get('dense_correlation', float('nan')):.8f}")
+        print(f"  score  r_prior={diagnostics.get('correlation_with_prior', float('nan')):.4f} "
+              f"r_truth={diagnostics.get('correlation_with_true_propagation', float('nan')):.4f} "
+              f"std={diagnostics.get('std', float('nan')):.6g}")
     return 0
 
 
