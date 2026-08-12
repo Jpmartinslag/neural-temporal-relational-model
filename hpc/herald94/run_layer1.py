@@ -194,19 +194,30 @@ def _index_of(columns: tuple[str, ...], label: str, width: int) -> int | None:
 
 
 def ablate(train: dict, test: dict, columns: tuple[str, ...], signals: tuple[str, ...],
-           seed: int, epochs: int, reference: float) -> dict[str, float]:
-    """Refit the non-linear arm with one signal's columns removed at a time."""
+           seed: int, selection: dict, reference: float) -> dict[str, float]:
+    """Refit the non-linear arm with one signal's columns removed at a time.
+
+    The regularisation is *inherited* from the main fit rather than re-selected. An ablation
+    must change one thing -- which signal is present -- and re-running the selection would
+    change the penalty and the stopping epoch as well, so a difference could no longer be
+    attributed to the removed signal. It is also what makes the ablation affordable: the
+    selection sweep is twenty fits, and five re-selections dominated the task's cost.
+    """
     out = {}
     width = len(columns)
+    decay = selection.get("weight_decay", arms.WEIGHT_DECAY)
+    stop = max(int(selection.get("epochs", arms.EPOCHS)), arms.MONITOR_EVERY)
     for signal in signals:
         keep = [index for index, name in enumerate(columns)
                 if not name.startswith(f"{signal}.")]
         keep_full = keep + [width + index for index in keep]
-        reduced_train = {"x": train["x"][:, keep_full], "y": train["y"],
-                         "keys": train["keys"]}
-        reduced_test = {"x": test["x"][:, keep_full], "y": test["y"]}
-        result = fit_and_score("mlp_nonlinear", reduced_train, reduced_test, seed, epochs)
-        out[signal] = arms.gain_over(reference, result["out_of_sample"]["mse"])
+        scaler = arms.standardise(train["x"][:, keep_full])
+        fitted = arms.fit_mlp(arms.apply_scaler(train["x"][:, keep_full], scaler),
+                              train["y"], HIDDEN, seed, epochs=stop, weight_decay=decay)
+        prediction = arms.predict_mlp(
+            arms.apply_scaler(test["x"][:, keep_full], scaler), fitted)
+        out[signal] = arms.gain_over(
+            reference, arms.loss_of(prediction, test["y"])["mse"])
     return out
 
 
@@ -325,7 +336,8 @@ def run_task(scenario: str, seed: int, n_zones: int, epochs: int, n_score: int) 
     base_columns = tuple(main["columns"][index] for index in main["training"]["base_index"])
     explanation = explain(main["results"]["mlp_nonlinear"]["state"], test_x, base_columns)
     ablation = ablate(main["train_base"], main["test_base"], base_columns,
-                      main["training"]["signals"], seed, epochs,
+                      main["training"]["signals"], seed,
+                      main["results"]["mlp_nonlinear"]["state"].get("selection", {}),
                       main["results"]["mlp_nonlinear"]["out_of_sample"]["mse"])
 
     peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0
