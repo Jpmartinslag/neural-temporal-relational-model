@@ -1,0 +1,92 @@
+{
+ "category": "SYNTHETIC_KNOWN_TRUTH",
+ "figures": {
+  "R01": {
+   "medians": [
+    0.23492734356735445,
+    0.24472167359638164,
+    0.21467302474287875,
+    0.21766869011350087,
+    0.23982635507009042,
+    0.10599096400301822
+   ],
+   "scenarios": [
+    "N0_NULL",
+    "N1_LINEAR",
+    "N2_NONLINEAR",
+    "N3_REGIME",
+    "N4_INTERACTION",
+    "N5_REDUNDANT"
+   ]
+  },
+  "R02": {
+   "skill": {
+    "Granger (Lasso)": 0.00012526397397871758,
+    "HERALD @128": -0.004639480761239767,
+    "HERALD @32": -0.008729408774548642,
+    "HERALD @64": -0.017025655394532935,
+    "MTGNN @64": -0.19774912609225015,
+    "NRI @64": -0.0494457181020882,
+    "Persistance": 0.0
+   }
+  },
+  "R03": {
+   "herald93_prevalence": 0.7,
+   "herald96_prevalence": {
+    "all_pairs": 0.0189873417721519,
+    "commuting_only": 0.011935844834017158,
+    "similarity_only": 0.06125,
+    "typed_union": 0.022065877838183562
+   },
+   "rule": "the two panels are never merged into one ranking"
+  },
+  "R04": {
+   "interpretive_scales": [
+    0.0,
+    0.5,
+    1.0,
+    2.0
+   ],
+   "scales": [
+    0.0,
+    0.5,
+    1.0,
+    2.0,
+    4.0
+   ],
+   "stress_scale": 4.0
+  },
+  "R05": {
+   "parameters": {
+    "Granger (Lasso)": 50400,
+    "HERALD @128": 368660,
+    "HERALD @32": 24596,
+    "HERALD @64": 94228,
+    "MTGNN @64": 90506,
+    "NRI @64": 89228,
+    "Persistance": 0
+   },
+   "seconds": {
+    "Granger (Lasso)": 5.5,
+    "HERALD @128": 1366.9,
+    "HERALD @32": 348.3,
+    "HERALD @64": 322.9,
+    "MTGNN @64": 110.3,
+    "NRI @64": 325.8,
+    "Persistance": 1.4
+   }
+  },
+  "R06": {
+   "steps": [
+    "HERALD 91",
+    "HERALD 93",
+    "HERALD 94",
+    "HERALD 95",
+    "HERALD 96",
+    "HERALD 97"
+   ]
+  }
+ },
+ "kind": "herald_visual_evidence_provenance",
+ "rule": "four experiments, four protocols, never merged into one ranking"
+}

@@ -1,0 +1,27 @@
+{
+ "category": "diagram",
+ "figures": {
+  "A01": {
+   "steps": [
+    "Donn\u00e9es \u00e9conomiques",
+    "Pr\u00e9paration et disponibilit\u00e9",
+    "Repr\u00e9sentation temporelle",
+    "Relations candidates",
+    "Mod\u00e8les classiques et neuronaux",
+    "Validation synth\u00e9tique",
+    "Analyse fran\u00e7aise exploratoire",
+    "Appui territorial futur"
+   ]
+  },
+  "A02": {
+   "guards": "baseline checksum identical before and after relational training in all 120 tasks",
+   "status": "implemented and executed in HERALD 96"
+  },
+  "A03": {
+   "rule": "never displayed without the banner",
+   "status": "NOT IMPLEMENTED, NOT VALIDATED"
+  }
+ },
+ "kind": "herald_visual_evidence_provenance",
+ "rule": "A03 is a proposal and is marked as such in the title, a banner, a stamp, hatched boxes and its caption"
+}

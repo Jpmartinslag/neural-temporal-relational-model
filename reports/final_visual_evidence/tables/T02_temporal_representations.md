@@ -1,0 +1,16 @@
+# T02 — The temporal representation of a zone's own trajectory
+
+A declaration, not a measurement: this is the feature table specified in `HERALD_94_COMPOSITE_SIGNAL_SPECIFICATION.md` before any result was seen. Eleven columns plus the availability channel, for each of five signals — 120 columns. Every one is computed from data released on or before the decision date.
+
+| représentation | définition | causalité | ce qu'elle décrit | utilisée |
+|---|---|---|---|---|
+| niveau | log(valeur) | causal, t seulement | état courant de la zone | oui |
+| croissance | log(v_t) − log(v_{t−4}) | causal | variation sur un an | oui |
+| accélération | croissance_t − croissance_{t−4} | causal | la variation change-t-elle de rythme | oui |
+| tendance | pente OLS sur 12 périodes jusqu'à t | causal, fenêtre fermée en t | direction de moyen terme | oui |
+| momentum | moyenne des croissances sur 8 périodes | causal | persistance récente | oui |
+| volatilité | écart-type des croissances sur 8 périodes | causal | régularité de la trajectoire | oui |
+| régime | quatre indicatrices : expansion, décélération, contraction, reprise | causal, dérivé de croissance et accélération | état qualitatif | oui |
+| composante nationale | moyenne transversale de la croissance à t | causal | ce que toutes les zones subissent ensemble | oui |
+| croissance relative | croissance − composante nationale | causal | la part propre à la zone | oui |
+| masque de disponibilité | 1 si publié à la date de décision, sinon 0 | par construction | l'absence est un canal, jamais un zéro | oui |

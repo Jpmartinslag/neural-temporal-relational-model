@@ -1,0 +1,67 @@
+{
+ "category": "REAL_FRANCE and EXPLORATORY",
+ "figures": {
+  "F01": {
+   "geometry": "data/external/ze2020_geometry.geojson",
+   "zones": 280
+  },
+  "F02": {
+   "edges_drawn": 840,
+   "edges_total": 27675,
+   "rule": "top-3 destinations per zone",
+   "vintage": 2012
+  },
+  "F03": {
+   "definition": "D\u00e9finition : corr\u00e9lation des croissances annuelles standardis\u00e9es des effectifs salari\u00e9s priv\u00e9s, 1999\u20132019, cinq voisins les plus proches par zone. Support candidat construit, pas une relation d\u00e9couverte : rien ici n'a \u00e9t\u00e9 appris par un mod\u00e8le et aucune ar\u00eate ne porte de sens \u00e9conomique \u00e9tabli.",
+   "distance_threshold_km": 414.8756148982495,
+   "far_pairs_drawn": 71,
+   "pairs": 1400,
+   "pairs_drawn_left": 180,
+   "sample_seed": 20260813,
+   "zoom_pairs": 300,
+   "zoom_zones": 60
+  },
+  "F04": {
+   "definition": "D\u00e9finition : m\u00eames profils que la similarit\u00e9, mais les cinq corr\u00e9lations les plus n\u00e9gatives par zone, 1999\u20132019. Support candidat construit. Une corr\u00e9lation n\u00e9gative entre deux trajectoires n'est pas une compl\u00e9mentarit\u00e9 \u00e9conomique : c'est une hypoth\u00e8se \u00e0 tester, pas un r\u00e9sultat.",
+   "distance_threshold_km": 459.5849599466268,
+   "far_pairs_drawn": 72,
+   "pairs": 1400,
+   "pairs_drawn_left": 180,
+   "sample_seed": 20260813,
+   "zoom_pairs": 300,
+   "zoom_zones": 60
+  },
+  "F05": {
+   "commuting": 840,
+   "commuting_similarity_overlap": 54,
+   "complementarity": 1400,
+   "similarity": 1400,
+   "union": 3578
+  },
+  "F06": {
+   "rule": "zones at the 10th, 50th and 90th percentile of mean level",
+   "signals": [
+    "headcount",
+    "payroll",
+    "establishments",
+    "unemployment",
+    "creations"
+   ]
+  },
+  "F07": {
+   "illustration_window": 5,
+   "model_windows": {
+    "momentum": 8,
+    "trend": 12,
+    "volatility": 8
+   },
+   "years": [
+    1998,
+    2024
+   ],
+   "zone": "9306"
+  }
+ },
+ "kind": "herald_visual_evidence_provenance",
+ "rule": "no learned relational score is drawn for France at this stage"
+}
