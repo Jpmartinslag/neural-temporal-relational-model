@@ -1,0 +1,658 @@
+{
+  "kind": "herald95_ladder_summary",
+  "interpretive_scales": [
+    0.0,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "stress_scales": [
+    4.0
+  ],
+  "min_gain": 0.01,
+  "table": {
+    "N0_NULL@0.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.0,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.0,
+      "clipped_share": 0.007653061224489796,
+      "oracle_gain": 0.0,
+      "oracle_gain_per_seed": [
+        -6.661338147750939e-16,
+        2.220446049250313e-16,
+        0.0
+      ],
+      "network_gain": 0.13425762036806432,
+      "network_gain_per_seed": [
+        0.17150644907531065,
+        -1.0719657327622074,
+        0.13425762036806432
+      ],
+      "network_gain_after_interaction_destroyed": 0.11414612557048154,
+      "edge_auprc": 0.7309189460627942,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7215561224489797,
+      "edge_dense_correlation": 0.11705451271335147,
+      "score_correlation_with_prior": 0.11928428270775233,
+      "score_correlation_with_truth": 0.09549500698000687
+    },
+    "N0_NULL@0.5": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.0,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.0,
+      "clipped_share": 0.007653061224489796,
+      "oracle_gain": 0.0,
+      "oracle_gain_per_seed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "network_gain": 0.13425762036806432,
+      "network_gain_per_seed": [
+        0.17150644907530144,
+        -1.0719657327622119,
+        0.13425762036806432
+      ],
+      "network_gain_after_interaction_destroyed": 0.11414612557048154,
+      "edge_auprc": 0.7267650288258791,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7205357142857142,
+      "edge_dense_correlation": 0.12099916318499093,
+      "score_correlation_with_prior": 0.12413968234033324,
+      "score_correlation_with_truth": 0.09560309151905984
+    },
+    "N0_NULL@1.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.0,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.0,
+      "clipped_share": 0.007653061224489796,
+      "oracle_gain": 0.0,
+      "oracle_gain_per_seed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "network_gain": 0.13425762036806432,
+      "network_gain_per_seed": [
+        0.17150644907530144,
+        -1.0719657327622119,
+        0.13425762036806432
+      ],
+      "network_gain_after_interaction_destroyed": 0.11414612557048154,
+      "edge_auprc": 0.7267650288258791,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7205357142857142,
+      "edge_dense_correlation": 0.12099916318499093,
+      "score_correlation_with_prior": 0.12413968234033324,
+      "score_correlation_with_truth": 0.09560309151905984
+    },
+    "N0_NULL@2.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.0,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.0,
+      "clipped_share": 0.007653061224489796,
+      "oracle_gain": 0.0,
+      "oracle_gain_per_seed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "network_gain": 0.13425762036806432,
+      "network_gain_per_seed": [
+        0.17150644907530144,
+        -1.0719657327622119,
+        0.13425762036806432
+      ],
+      "network_gain_after_interaction_destroyed": 0.11414612557048154,
+      "edge_auprc": 0.7267650288258791,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7205357142857142,
+      "edge_dense_correlation": 0.12099916318499093,
+      "score_correlation_with_prior": 0.12413968234033324,
+      "score_correlation_with_truth": 0.09560309151905984
+    },
+    "N0_NULL@4.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.0,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.0,
+      "clipped_share": 0.007653061224489796,
+      "oracle_gain": 0.0,
+      "oracle_gain_per_seed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "network_gain": 0.13425762036806432,
+      "network_gain_per_seed": [
+        0.17150644907530144,
+        -1.0719657327622119,
+        0.13425762036806432
+      ],
+      "network_gain_after_interaction_destroyed": 0.11414612557048154,
+      "edge_auprc": 0.7267650288258791,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7205357142857142,
+      "edge_dense_correlation": 0.12099916318499093,
+      "score_correlation_with_prior": 0.12413968234033324,
+      "score_correlation_with_truth": 0.09560309151905984
+    },
+    "N2_NONLINEAR@0.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.0,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.0,
+      "clipped_share": 0.007653061224489796,
+      "oracle_gain": 0.0,
+      "oracle_gain_per_seed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "network_gain": 0.13425762036806432,
+      "network_gain_per_seed": [
+        0.17150644907530144,
+        -1.0719657327622119,
+        0.13425762036806432
+      ],
+      "network_gain_after_interaction_destroyed": 0.11414612557048154,
+      "edge_auprc": 0.7267650288258791,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7205357142857142,
+      "edge_dense_correlation": 0.12099916318499093,
+      "score_correlation_with_prior": 0.12413968234033324,
+      "score_correlation_with_truth": 0.09560309151905984
+    },
+    "N2_NONLINEAR@0.5": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.02188794072503412,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.3174578211981455,
+      "clipped_share": 0.010172193877551021,
+      "oracle_gain": 0.008074871742535517,
+      "oracle_gain_per_seed": [
+        0.011389308026371503,
+        0.008074871742535517,
+        0.0032708985308452787
+      ],
+      "network_gain": -0.4508749152625857,
+      "network_gain_per_seed": [
+        -0.4508749152625857,
+        -0.9990608698707033,
+        0.1515290214067343
+      ],
+      "network_gain_after_interaction_destroyed": 0.13435076941321056,
+      "edge_auprc": 0.7249083045794043,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7182397959183674,
+      "edge_dense_correlation": 0.12097109002196975,
+      "score_correlation_with_prior": 0.12410778319764852,
+      "score_correlation_with_truth": 0.09558048499076649
+    },
+    "N2_NONLINEAR@1.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.0402166819424015,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.5773240240785208,
+      "clipped_share": 0.02177933673469388,
+      "oracle_gain": 0.0254459232567793,
+      "oracle_gain_per_seed": [
+        0.027969356301400183,
+        0.0254459232567793,
+        0.01665376229540705
+      ],
+      "network_gain": 0.1334098481170528,
+      "network_gain_per_seed": [
+        0.18591582612244617,
+        -0.9439677830802031,
+        0.1334098481170528
+      ],
+      "network_gain_after_interaction_destroyed": 0.122876422067704,
+      "edge_auprc": 0.7257647133438071,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7197704081632653,
+      "edge_dense_correlation": 0.1209814167866955,
+      "score_correlation_with_prior": 0.12411886716230112,
+      "score_correlation_with_truth": 0.09559070877508567
+    },
+    "N2_NONLINEAR@2.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.06239014769181024,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.8956315983470778,
+      "clipped_share": 0.07879464285714285,
+      "oracle_gain": 0.04892738091703597,
+      "oracle_gain_per_seed": [
+        0.049834264426649844,
+        0.04892738091703597,
+        0.0438491961844516
+      ],
+      "network_gain": 0.10067389733548593,
+      "network_gain_per_seed": [
+        0.16884838243192546,
+        -0.7191899455088879,
+        0.10067389733548593
+      ],
+      "network_gain_after_interaction_destroyed": -0.4022701742655501,
+      "edge_auprc": 0.7274117517226732,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7202806122448978,
+      "edge_dense_correlation": 0.12096934814945931,
+      "score_correlation_with_prior": 0.12410593598948726,
+      "score_correlation_with_truth": 0.09557877286101898
+    },
+    "N2_NONLINEAR@4.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.08188455175353505,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 1.1754803391269983,
+      "clipped_share": 0.2287308673469388,
+      "oracle_gain": 0.07225043365379935,
+      "oracle_gain_per_seed": [
+        0.07742098420529986,
+        0.06548679778366528,
+        0.07225043365379935
+      ],
+      "network_gain": 0.10139796813064794,
+      "network_gain_per_seed": [
+        0.13753058519430106,
+        -0.5831150607238935,
+        0.10139796813064794
+      ],
+      "network_gain_after_interaction_destroyed": 0.05588329479864662,
+      "edge_auprc": 0.72528006421633,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7192602040816325,
+      "edge_dense_correlation": 0.12097128609139013,
+      "score_correlation_with_prior": 0.12410806830702066,
+      "score_correlation_with_truth": 0.09558059363949498
+    },
+    "N3_REGIME@0.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.0,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.0,
+      "clipped_share": 0.007653061224489796,
+      "oracle_gain": 0.0,
+      "oracle_gain_per_seed": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "network_gain": 0.13425762036806432,
+      "network_gain_per_seed": [
+        0.17150644907530144,
+        -1.0719657327622119,
+        0.13425762036806432
+      ],
+      "network_gain_after_interaction_destroyed": 0.11414612557048154,
+      "edge_auprc": 0.7267650288258791,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7205357142857142,
+      "edge_dense_correlation": 0.12099916318499093,
+      "score_correlation_with_prior": 0.12413968234033324,
+      "score_correlation_with_truth": 0.09560309151905984
+    },
+    "N3_REGIME@0.5": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.02057558049682566,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.29983980809759925,
+      "clipped_share": 0.011065051020408164,
+      "oracle_gain": 0.006344580304661118,
+      "oracle_gain_per_seed": [
+        0.01058363140851104,
+        0.006344580304661118,
+        0.005214263579206624
+      ],
+      "network_gain": 0.1493033532756316,
+      "network_gain_per_seed": [
+        0.17935370907641313,
+        -0.446220007583523,
+        0.1493033532756316
+      ],
+      "network_gain_after_interaction_destroyed": 0.1347700468653371,
+      "edge_auprc": 0.7251763047394845,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.71875,
+      "edge_dense_correlation": 0.11957103709685699,
+      "score_correlation_with_prior": 0.12262926158345797,
+      "score_correlation_with_truth": 0.0943013241625948
+    },
+    "N3_REGIME@1.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.03807999568119028,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.546651172641337,
+      "clipped_share": 0.02114158163265306,
+      "oracle_gain": 0.01768432604509418,
+      "oracle_gain_per_seed": [
+        0.023381207601570142,
+        0.01768432604509418,
+        0.016876745115465885
+      ],
+      "network_gain": -0.4630062596213147,
+      "network_gain_per_seed": [
+        -0.4630062596213147,
+        -1.1454448255432261,
+        0.15034911367845782
+      ],
+      "network_gain_after_interaction_destroyed": 0.12605624253783243,
+      "edge_auprc": 0.7253683552240573,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.719515306122449,
+      "edge_dense_correlation": 0.12097143130389662,
+      "score_correlation_with_prior": 0.1241081805312931,
+      "score_correlation_with_truth": 0.09558073953270875
+    },
+    "N3_REGIME@2.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.05736946704228911,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.8459465513338668,
+      "clipped_share": 0.062181122448979595,
+      "oracle_gain": 0.03217617283623808,
+      "oracle_gain_per_seed": [
+        0.04198278068940864,
+        0.03217617283623808,
+        0.024668328120845295
+      ],
+      "network_gain": 0.1391940991988586,
+      "network_gain_per_seed": [
+        0.14105204497230261,
+        -1.0347503779505978,
+        0.1391940991988586
+      ],
+      "network_gain_after_interaction_destroyed": 0.0743490176026308,
+      "edge_auprc": 0.7260594943345179,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7233418367346938,
+      "edge_dense_correlation": 0.11705475989832899,
+      "score_correlation_with_prior": 0.11928461237194411,
+      "score_correlation_with_truth": 0.09248804494769262
+    },
+    "N3_REGIME@4.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.07247719288270421,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 1.0534913435404103,
+      "clipped_share": 0.17496811224489797,
+      "oracle_gain": 0.05025552549719947,
+      "oracle_gain_per_seed": [
+        0.05025552549719947,
+        0.05064145824415156,
+        0.039704610630199255
+      ],
+      "network_gain": -0.9560291514208898,
+      "network_gain_per_seed": [
+        -1.0636636896103466,
+        -0.9560291514208898,
+        0.12519808408075317
+      ],
+      "network_gain_after_interaction_destroyed": -0.3469162868361759,
+      "edge_auprc": 0.7269642064440179,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7196428571428571,
+      "edge_dense_correlation": 0.12097242900500403,
+      "score_correlation_with_prior": 0.12411081752089963,
+      "score_correlation_with_truth": 0.09558262950069148
+    },
+    "N4_INTERACTION@0.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.0,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.0,
+      "clipped_share": 0.007653061224489796,
+      "oracle_gain": 4.440892098500626e-16,
+      "oracle_gain_per_seed": [
+        4.440892098500626e-16,
+        0.0,
+        4.440892098500626e-16
+      ],
+      "network_gain": -0.593669499912193,
+      "network_gain_per_seed": [
+        -0.593669499912193,
+        -1.0121267834884562,
+        0.20200409524611307
+      ],
+      "network_gain_after_interaction_destroyed": -0.11076607597283061,
+      "edge_auprc": 0.7261725328165254,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7196428571428571,
+      "edge_dense_correlation": 0.12097139776700427,
+      "score_correlation_with_prior": 0.12410813178816268,
+      "score_correlation_with_truth": 0.09558069886243872
+    },
+    "N4_INTERACTION@0.5": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.017636954415133674,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.2597464828129209,
+      "clipped_share": 0.009088010204081632,
+      "oracle_gain": 0.008493737617732866,
+      "oracle_gain_per_seed": [
+        0.007170942396463875,
+        0.011901528899944225,
+        0.008493737617732866
+      ],
+      "network_gain": 0.16646052180443338,
+      "network_gain_per_seed": [
+        0.16646052180443338,
+        -1.2560697323492862,
+        0.17006041866796018
+      ],
+      "network_gain_after_interaction_destroyed": 0.08970529607040567,
+      "edge_auprc": 0.7252248409987891,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.71875,
+      "edge_dense_correlation": 0.12101565779384203,
+      "score_correlation_with_prior": 0.12415642429120109,
+      "score_correlation_with_truth": 0.09561923674043929
+    },
+    "N4_INTERACTION@1.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.03180976589737321,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.4704385741922245,
+      "clipped_share": 0.01760204081632653,
+      "oracle_gain": 0.019409378162575597,
+      "oracle_gain_per_seed": [
+        0.018688221178736364,
+        0.019409378162575597,
+        0.025185872278970844
+      ],
+      "network_gain": 0.1438775135346566,
+      "network_gain_per_seed": [
+        0.16605809180334163,
+        -0.15284884093475348,
+        0.1438775135346566
+      ],
+      "network_gain_after_interaction_destroyed": 0.10667013819289106,
+      "edge_auprc": 0.7237084771546638,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7183673469387754,
+      "edge_dense_correlation": 0.12097143127895343,
+      "score_correlation_with_prior": 0.1241081805042454,
+      "score_correlation_with_truth": 0.0955807394959482
+    },
+    "N4_INTERACTION@2.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.05174380774618692,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 0.7540420736731749,
+      "clipped_share": 0.05739795918367347,
+      "oracle_gain": 0.03704272943393294,
+      "oracle_gain_per_seed": [
+        0.03348717545631341,
+        0.03704272943393294,
+        0.050882215101795136
+      ],
+      "network_gain": -0.17638758730343929,
+      "network_gain_per_seed": [
+        -0.5511685025481736,
+        -0.17638758730343929,
+        0.1207097507660223
+      ],
+      "network_gain_after_interaction_destroyed": 0.04656625584024021,
+      "edge_auprc": 0.7235524773537441,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7200255102040818,
+      "edge_dense_correlation": 0.12097065153331453,
+      "score_correlation_with_prior": 0.12410734803655157,
+      "score_correlation_with_truth": 0.09558002493395827
+    },
+    "N4_INTERACTION@4.0": {
+      "n_seeds": 3,
+      "worlds_are_paired": true,
+      "observable_relational_rms": 0.07764842402097809,
+      "observable_residual_rms": 0.06862191057075455,
+      "observable_snr": 1.13153981541969,
+      "clipped_share": 0.171109693877551,
+      "oracle_gain": 0.07614655048329089,
+      "oracle_gain_per_seed": [
+        0.048675826634913544,
+        0.07614655048329089,
+        0.08046197919282205
+      ],
+      "network_gain": -0.2742382963183927,
+      "network_gain_per_seed": [
+        -0.2742382963183927,
+        -0.7969170382290625,
+        0.00967316038513688
+      ],
+      "network_gain_after_interaction_destroyed": -0.044825192826703386,
+      "edge_auprc": 0.7274584432986889,
+      "edge_prevalence": 0.7,
+      "edge_f1": 0.7202806122448978,
+      "edge_dense_correlation": 0.1209714328831208,
+      "score_correlation_with_prior": 0.1241081844885147,
+      "score_correlation_with_truth": 0.09558075475382634
+    }
+  },
+  "null_scenario_is_flat_across_scales": true,
+  "all_worlds_paired": true,
+  "interpretation": {
+    "N2_NONLINEAR": {
+      "scales": [
+        0.0,
+        0.5,
+        1.0,
+        2.0
+      ],
+      "observable_snr": [
+        0.0,
+        0.3174578211981455,
+        0.5773240240785208,
+        0.8956315983470778
+      ],
+      "oracle_gain": [
+        0.0,
+        0.008074871742535517,
+        0.0254459232567793,
+        0.04892738091703597
+      ],
+      "network_gain": [
+        0.13425762036806432,
+        -0.4508749152625857,
+        0.1334098481170528,
+        0.10067389733548593
+      ],
+      "oracle_is_monotone_in_scale": true,
+      "network_is_monotone_in_scale": false,
+      "network_gains_in_null_scenario": true,
+      "scale_at_which_oracle_starts_recovering": 1.0,
+      "scale_at_which_network_starts_recovering": 1.0,
+      "unit_scale_is_observable": true,
+      "verdict": "NETWORK_GAIN_IS_NOT_RELATIONAL"
+    },
+    "N3_REGIME": {
+      "scales": [
+        0.0,
+        0.5,
+        1.0,
+        2.0
+      ],
+      "observable_snr": [
+        0.0,
+        0.29983980809759925,
+        0.546651172641337,
+        0.8459465513338668
+      ],
+      "oracle_gain": [
+        0.0,
+        0.006344580304661118,
+        0.01768432604509418,
+        0.03217617283623808
+      ],
+      "network_gain": [
+        0.13425762036806432,
+        0.1493033532756316,
+        -0.4630062596213147,
+        0.1391940991988586
+      ],
+      "oracle_is_monotone_in_scale": true,
+      "network_is_monotone_in_scale": false,
+      "network_gains_in_null_scenario": true,
+      "scale_at_which_oracle_starts_recovering": 1.0,
+      "scale_at_which_network_starts_recovering": 0.5,
+      "unit_scale_is_observable": true,
+      "verdict": "NETWORK_GAIN_IS_NOT_RELATIONAL"
+    },
+    "N4_INTERACTION": {
+      "scales": [
+        0.0,
+        0.5,
+        1.0,
+        2.0
+      ],
+      "observable_snr": [
+        0.0,
+        0.2597464828129209,
+        0.4704385741922245,
+        0.7540420736731749
+      ],
+      "oracle_gain": [
+        4.440892098500626e-16,
+        0.008493737617732866,
+        0.019409378162575597,
+        0.03704272943393294
+      ],
+      "network_gain": [
+        -0.593669499912193,
+        0.16646052180443338,
+        0.1438775135346566,
+        -0.17638758730343929
+      ],
+      "oracle_is_monotone_in_scale": true,
+      "network_is_monotone_in_scale": false,
+      "network_gains_in_null_scenario": true,
+      "scale_at_which_oracle_starts_recovering": 1.0,
+      "scale_at_which_network_starts_recovering": 0.5,
+      "unit_scale_is_observable": true,
+      "verdict": "NETWORK_GAIN_IS_NOT_RELATIONAL"
+    }
+  }
+}

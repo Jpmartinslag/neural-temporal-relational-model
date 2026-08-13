@@ -1,0 +1,391 @@
+{
+  "kind": "herald95_ladder_task",
+  "scenario": "N4_INTERACTION",
+  "relational_scale": 0.5,
+  "seed": 9903,
+  "n_zones": 280,
+  "primary_signal": "headcount",
+  "origins": [
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111
+  ],
+  "environment": {
+    "python": "3.10.20",
+    "numpy": "2.2.6"
+  },
+  "observable_diagnostics": {
+    "baseline_scale": 0.0,
+    "per_scale": {
+      "0.0": {
+        "observable": {
+          "headcount": {
+            "relational_rms": 0.0,
+            "residual_rms": 0.06966050305388245,
+            "snr": 0.0,
+            "n_cells": 29118
+          },
+          "payroll": {
+            "relational_rms": 0.0,
+            "residual_rms": 0.23636249085653152,
+            "snr": 0.0,
+            "n_cells": 29068
+          },
+          "establishments": {
+            "relational_rms": 0.0,
+            "residual_rms": 0.07079016804658017,
+            "snr": 0.0,
+            "n_cells": 6987
+          },
+          "unemployment": {
+            "relational_rms": 0.0,
+            "residual_rms": 0.12477998409855919,
+            "snr": 0.0,
+            "n_cells": 23677
+          },
+          "creations": {
+            "relational_rms": 0.0,
+            "residual_rms": 0.11875464613214166,
+            "snr": 0.0,
+            "n_cells": 3487
+          }
+        },
+        "latent_relational_rms": {
+          "headcount": 0.0,
+          "payroll": 0.0,
+          "establishments": 0.0,
+          "unemployment": 0.0,
+          "creations": 0.0
+        },
+        "latent_common_rms": {
+          "headcount": 0.036015840529850206,
+          "payroll": 0.036766170540888765,
+          "establishments": 0.02089506917278511,
+          "unemployment": 0.03401496050041409,
+          "creations": 0.041240268104181146
+        },
+        "clipped_share": {
+          "headcount": 0.007780612244897959,
+          "payroll": 0.007270408163265306,
+          "establishments": 0.020695153061224488,
+          "unemployment": 0.031186224489795918,
+          "creations": 0.10768494897959184
+        }
+      },
+      "0.5": {
+        "observable": {
+          "headcount": {
+            "relational_rms": 0.018094070659224703,
+            "residual_rms": 0.06966050305388245,
+            "snr": 0.2597464828129209,
+            "n_cells": 29118
+          },
+          "payroll": {
+            "relational_rms": 0.018912914972278684,
+            "residual_rms": 0.23636249085653152,
+            "snr": 0.08001656651925597,
+            "n_cells": 29068
+          },
+          "establishments": {
+            "relational_rms": 0.01796907926990092,
+            "residual_rms": 0.07079016804658017,
+            "snr": 0.25383580468515354,
+            "n_cells": 6987
+          },
+          "unemployment": {
+            "relational_rms": 0.037921395731153114,
+            "residual_rms": 0.12477998409855919,
+            "snr": 0.303906079208989,
+            "n_cells": 23677
+          },
+          "creations": {
+            "relational_rms": 0.024153031046533692,
+            "residual_rms": 0.11875464613214166,
+            "snr": 0.20338598811248135,
+            "n_cells": 3487
+          }
+        },
+        "latent_relational_rms": {
+          "headcount": 0.015000000000000001,
+          "payroll": 0.015750000000000004,
+          "establishments": 0.009349999999999999,
+          "unemployment": 0.013999999999999999,
+          "creations": 0.0165
+        },
+        "latent_common_rms": {
+          "headcount": 0.036015840529850206,
+          "payroll": 0.036766170540888765,
+          "establishments": 0.02089506917278511,
+          "unemployment": 0.03401496050041409,
+          "creations": 0.041240268104181146
+        },
+        "clipped_share": {
+          "headcount": 0.010363520408163265,
+          "payroll": 0.008832908163265306,
+          "establishments": 0.027168367346938775,
+          "unemployment": 0.03590561224489796,
+          "creations": 0.11855867346938775
+        }
+      }
+    }
+  },
+  "worlds_are_paired": {
+    "same_territory": true,
+    "same_graph": true,
+    "same_component_u": true,
+    "same_component_v": true,
+    "same_common_state": true,
+    "same_masks": true
+  },
+  "arms": {
+    "ridge_linear": {
+      "out_of_sample": {
+        "mse": 0.002103376443970446,
+        "mae": 0.03629708409280965,
+        "r2": 0.566809335402068,
+        "n": 3213
+      },
+      "in_sample": {
+        "mse": 0.0008633251894716862,
+        "mae": 0.022704364857916676,
+        "r2": 0.8441235521247197,
+        "n": 20544
+      },
+      "configuration": {
+        "alpha": 1000.0,
+        "alpha_at_grid_boundary": false
+      },
+      "seconds": 0.51,
+      "gain_over_ridge_linear": 0.0,
+      "per_origin_mse": {
+        "100": 0.004734713194328012,
+        "101": 0.0019341657846845297,
+        "102": 0.0023288095119620763,
+        "103": 0.0023784652907338903,
+        "104": 0.0025010641312101936,
+        "105": 0.0010212803375031615,
+        "106": 0.0012304287400825775,
+        "107": 0.0018846411940177865,
+        "108": 0.0021857972902479417,
+        "109": 0.0014055928530291096,
+        "110": 0.0014362252288300918,
+        "111": 0.0021597595327430543
+      }
+    },
+    "mlp_nonlinear": {
+      "out_of_sample": {
+        "mse": 0.0017456753652925067,
+        "mae": 0.0326461723453643,
+        "r2": 0.6404779211866443,
+        "n": 3213
+      },
+      "in_sample": {
+        "mse": 0.0009148585421688082,
+        "mae": 0.02327195823444065,
+        "r2": 0.834819021151348,
+        "n": 20544
+      },
+      "configuration": {
+        "weight_decay": 0.01,
+        "epochs": 137,
+        "epochs_at_budget_ceiling": false
+      },
+      "seconds": 245.0,
+      "gain_over_ridge_linear": 0.17006041866796018,
+      "per_origin_mse": {
+        "100": 0.004341288655117748,
+        "101": 0.0012044186433024947,
+        "102": 0.0014763742746518452,
+        "103": 0.0018230416519785808,
+        "104": 0.001971064196581588,
+        "105": 0.0010091776612151113,
+        "106": 0.0011302343366703872,
+        "107": 0.0016051838903459964,
+        "108": 0.00191469532157989,
+        "109": 0.001283826421782228,
+        "110": 0.0012450322404755367,
+        "111": 0.001905648669574862
+      }
+    },
+    "oracle_relational": {
+      "out_of_sample": {
+        "mse": 0.002085510916344041,
+        "mae": 0.036129884586588494,
+        "r2": 0.570488743245614,
+        "n": 3213
+      },
+      "in_sample": {
+        "mse": 0.0008593132203341495,
+        "mae": 0.02263835207755054,
+        "r2": 0.8448479274884539,
+        "n": 20544
+      },
+      "configuration": {
+        "alpha": 1000.0,
+        "alpha_at_grid_boundary": false
+      },
+      "seconds": 0.55,
+      "gain_over_ridge_linear": 0.008493737617732866,
+      "per_origin_mse": {
+        "100": 0.004662727342130356,
+        "101": 0.001927452437393852,
+        "102": 0.002338574660545837,
+        "103": 0.002363911922452593,
+        "104": 0.0025028101121629,
+        "105": 0.0010041157900741473,
+        "106": 0.0012146136989042173,
+        "107": 0.0018653865658624497,
+        "108": 0.0021525085801759663,
+        "109": 0.0013944143783230312,
+        "110": 0.001426656645279171,
+        "111": 0.002134183589507781
+      }
+    }
+  },
+  "controls": {
+    "interaction_destroyed": {
+      "ridge_linear": {
+        "out_of_sample": {
+          "mse": 0.0023418087255620773,
+          "mae": 0.03801220396461826,
+          "r2": 0.5177041745924743,
+          "n": 3213
+        },
+        "gain_over_ridge_linear": 0.0
+      },
+      "mlp_nonlinear": {
+        "out_of_sample": {
+          "mse": 0.001985406787697539,
+          "mae": 0.0346093732782963,
+          "r2": 0.5911052021499072,
+          "n": 3213
+        },
+        "gain_over_ridge_linear": 0.15219088304447037
+      },
+      "oracle_relational": {
+        "out_of_sample": {
+          "mse": 0.0023102943653092313,
+          "mae": 0.03776217948254339,
+          "r2": 0.5241945613710479,
+          "n": 3213
+        },
+        "gain_over_ridge_linear": 0.013457273392506464
+      }
+    }
+  },
+  "edge_recovery": {
+    "edge_f1": 0.7210459183673469,
+    "precision": 0.721045918367347,
+    "recall": 0.721045918367347,
+    "dense_correlation": 0.15545384333863835,
+    "auprc": 0.7385339426149363,
+    "prevalence": 0.7,
+    "direction_precision": 0.19112781954887217,
+    "predicted_added_edge_rate": 0.27895408163265306,
+    "true_edges_outside_support": 0,
+    "budget": 7840,
+    "cost_seconds": 360.44,
+    "support_size": 11200,
+    "score_diagnostics": {
+      "mean": 0.0250000001684696,
+      "std": 0.00808768529750494,
+      "correlation_with_prior": 0.16266211811099857,
+      "correlation_with_true_propagation": 0.12734405020204956,
+      "checksum": 280.00000188685954
+    }
+  },
+  "calibration": {
+    "scenario": "N4_INTERACTION",
+    "link": "product",
+    "relational_scale": 0.5,
+    "common_scale": 1.0,
+    "clipped_share": {
+      "headcount": 0.010363520408163265,
+      "payroll": 0.008832908163265306,
+      "establishments": 0.027168367346938775,
+      "unemployment": 0.03590561224489796,
+      "creations": 0.11855867346938775
+    },
+    "loadings": {
+      "headcount": {
+        "loading": 0.5,
+        "gamma": 1.2,
+        "noise_group": "headcount",
+        "component": "u"
+      },
+      "payroll": {
+        "loading": 0.45,
+        "gamma": 1.05,
+        "noise_group": "payroll",
+        "component": "u"
+      },
+      "establishments": {
+        "loading": 0.425,
+        "gamma": 0.95,
+        "noise_group": "establishments",
+        "component": "v"
+      },
+      "unemployment": {
+        "loading": -0.35,
+        "gamma": -0.85,
+        "noise_group": "unemployment",
+        "component": "u"
+      },
+      "creations": {
+        "loading": 0.3,
+        "gamma": 0.75,
+        "noise_group": "creations",
+        "component": "v"
+      }
+    },
+    "relational_rms": {
+      "headcount": 0.015000000000000001,
+      "payroll": 0.015750000000000004,
+      "establishments": 0.009349999999999999,
+      "unemployment": 0.013999999999999999,
+      "creations": 0.0165
+    },
+    "common_state_rms": {
+      "headcount": 0.036015840529850206,
+      "payroll": 0.036766170540888765,
+      "establishments": 0.02089506917278511,
+      "unemployment": 0.03401496050041409,
+      "creations": 0.041240268104181146
+    },
+    "noise_rms": {
+      "headcount": 0.03,
+      "payroll": 0.035,
+      "establishments": 0.022,
+      "unemployment": 0.04,
+      "creations": 0.055
+    },
+    "low_information_zones": 70,
+    "relational_share": {
+      "headcount": 0.5000000000000001,
+      "payroll": 0.45000000000000007,
+      "establishments": 0.425,
+      "unemployment": 0.35,
+      "creations": 0.3
+    },
+    "common_share": {
+      "headcount": 1.2005280176616735,
+      "payroll": 1.0504620154539646,
+      "establishments": 0.9497758714902323,
+      "unemployment": 0.8503740125103522,
+      "creations": 0.7498230564396572
+    }
+  },
+  "cost": {
+    "peak_memory_mb": 1006.1,
+    "total_seconds": 872.5
+  }
+}

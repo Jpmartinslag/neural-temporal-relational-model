@@ -1,0 +1,147 @@
+{
+  "kind": "herald96_neural_granger_task",
+  "scenario": "M1_MULTIRELATIONAL",
+  "relational_scale": 1.0,
+  "support": "similarity_only",
+  "seed": 9951,
+  "n_zones": 80,
+  "origins": [
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111
+  ],
+  "environment": {
+    "python": "3.10.20",
+    "numpy": "2.2.6"
+  },
+  "baseline": {
+    "alpha": 1000.0,
+    "checksum_before": 0.16016469741611383,
+    "checksum_after": 0.16016469741611383,
+    "frozen": true,
+    "train_residual_sd": 0.030419069094709608,
+    "test_residual_sd": 0.04433290876736594
+  },
+  "oracles": {
+    "commuting": 0.017312944345919457,
+    "similarity": 0.09089208698444584,
+    "complementarity": 0.022479756012617758,
+    "all_families": 0.10925185316172448
+  },
+  "oracle_is_usable": true,
+  "arm": {
+    "residual_gain": 0.011688590494634554,
+    "per_horizon_gain": {
+      "1": -0.01326737564580438,
+      "2": 0.05275736131008135,
+      "4": -0.0036412442981625937
+    },
+    "parameters": 227,
+    "n_pairs": 800,
+    "fan_in": 10.0,
+    "final_loss": 0.0009681307860702629
+  },
+  "recovery": {
+    "auprc": 0.0652756661150431,
+    "prevalence": 0.05625,
+    "edge_f1": 0.022222222222222223,
+    "precision": 0.022222222222222223,
+    "recall": 0.022222222222222223,
+    "budget": 45,
+    "n_true_in_support": 45,
+    "n_true_outside_commuting_in_support": 32,
+    "auprc_outside_commuting": 0.07584939814890666,
+    "recall_outside_commuting": 0.0,
+    "per_family": {
+      "commuting": {
+        "n_in_support": 15,
+        "auprc": 0.03479802426456926,
+        "prevalence": 0.01875,
+        "recall_at_budget": 0.06666666666666667,
+        "mean_score": 0.0017279382936455148,
+        "mean_score_elsewhere": 0.0015626123007582162
+      },
+      "similarity": {
+        "n_in_support": 16,
+        "auprc": 0.020054796444678752,
+        "prevalence": 0.02,
+        "recall_at_budget": 0.0,
+        "mean_score": 0.0014863214857705601,
+        "mean_score_elsewhere": 0.0015673323810300429
+      },
+      "complementarity": {
+        "n_in_support": 14,
+        "auprc": 0.020847772352949084,
+        "prevalence": 0.0175,
+        "recall_at_budget": 0.0,
+        "mean_score": 0.0015391470238946406,
+        "mean_score_elsewhere": 0.0015661853335437119
+      }
+    },
+    "edge_types": {
+      "from_commuting": 346,
+      "from_similarity": 800
+    }
+  },
+  "calibration": {
+    "scenario": "M1_MULTIRELATIONAL",
+    "relational_scale": 1.0,
+    "edges_per_family": {
+      "commuting": 40,
+      "similarity": 40,
+      "complementarity": 40
+    },
+    "decoys_per_family": {
+      "commuting": 40,
+      "similarity": 40,
+      "complementarity": 40
+    },
+    "true_edges_outside_commuting": {
+      "commuting": 0,
+      "similarity": 40,
+      "complementarity": 40
+    },
+    "relational_rms": {
+      "headcount": 0.03,
+      "payroll": 0.03150000000000001,
+      "establishments": 0.018699999999999998,
+      "unemployment": 0.027999999999999997,
+      "creations": 0.033
+    },
+    "noise_rms": {
+      "headcount": 0.03,
+      "payroll": 0.035,
+      "establishments": 0.022,
+      "unemployment": 0.04,
+      "creations": 0.055
+    },
+    "clipped_share": {
+      "headcount": 0.021763392857142856,
+      "payroll": 0.021986607142857145,
+      "establishments": 0.034933035714285715,
+      "unemployment": 0.04285714285714286,
+      "creations": 0.11741071428571428
+    },
+    "low_information_zones": 20,
+    "relational_share": {
+      "headcount": 1.0,
+      "payroll": 0.9000000000000001,
+      "establishments": 0.85,
+      "unemployment": 0.7,
+      "creations": 0.6
+    }
+  },
+  "cost": {
+    "peak_memory_mb": 195.5,
+    "total_seconds": 40.6
+  }
+}
