@@ -7393,3 +7393,67 @@ out-of-commuting relations with the null controlled -- is not met.
 `tests/test_herald96_guards.py`, `tests/run_herald96_mutations.py`,
 `reports/canonical/HERALD_96_NEURAL_GRANGER_RESULTS.md`. Results at
 `hpc_results/herald96/tasks`.
+
+## DEC-146
+
+**Date:** 2026-08-13
+**Subject:** The broad experimental stage closes. The evidence is consolidated into an
+auditable visual archive, the final comparison is specified and not run, and the next step is
+writing rather than computing.
+
+**Nothing was computed to reach this decision.** No training, no grid, no array, no
+submission. The audit reads committed artefacts and the figures redraw the synthetic world
+from its deterministic generator. That constraint is the reason the decision can be trusted:
+a stage that re-runs itself while being audited is auditing a moving object.
+
+**What is frozen.** HERALD 93, 94, 95 and 96 stand as they are. No reliable relational
+recovery has been demonstrated by any method, in any support, at any intensity tested.
+Applying learned edges to France is not authorised, and no learned structure from this stage
+may be presented as an association, a precedence, a candidate relation or a recommendation for
+France. French analysis remains permitted for temporal results, observed data and exploratory
+candidate relations, the last marked as constructed rather than discovered. No new
+hyperparameter search is authorised. Multirelational attention fusion is registered as future
+work, is not implemented and must never appear beside a performance number.
+
+**What the audit found, and what it did not do about it.** Fourteen findings, none of which
+changes a verdict, and none repaired by altering a model, a seed, a threshold or a result.
+Two are substantive enough to carry into the report. HERALD 95 states that the null scenario
+returns identical numbers at all five scales; that is true of every forecasting arm and
+control, which are bit-identical, and false of the edge scorer, which differs at scale 0.0 for
+two of three seeds -- an order of magnitude below the seed spread, and inconsequential only
+because edge recovery is inert everywhere. HERALD 96 summarises as "AUPRC equals prevalence"
+what its own table states more precisely: the similarity-only support sits about a quarter
+above its prevalence, and does so equally in the null scenario, which makes it a property of
+the support rather than a recovery. The remainder are transcription slips in cost sentences,
+one non-existent commit hash, and a stale threshold label in a HERALD 93 artefact whose
+applied rule was the one the report describes.
+
+**Provenance repaired.** The HERALD 94, 95 and 96 task artefacts existed only on the cluster.
+They are mirrored into `hpc_results/` so that every figure and every audit line is
+reproducible from the repository alone, with `numpy` and `matplotlib` as the sole
+dependencies.
+
+**Protocol separation, made structural.** HERALD 93 and HERALD 96 differ in population,
+target, scenarios, support and prevalence, and their numbers are not comparable. The archive
+enforces this: no table merges them, and the figure that shows both prints them as two panels
+with different axes and a caption saying why. What is comparable is each measurement's
+distance from its own prevalence, which is zero in both.
+
+**What may be claimed.** That a causal temporal representation removes 11 to 24 per cent of
+out-of-sample squared error against the best single signal. That the relational mechanism is
+observable, worth about 2 per cent of squared error on raw growth and about 10 per cent of the
+residual after a frozen local baseline. That no method tested recovers the true edges above
+chance. That the bottleneck is identification, not candidate generation.
+
+**What may not.** That any learned edge is an economic relation; that the proposal outperforms
+its competitors; that relations were discovered in France; that the future architecture works;
+that a smoke result is a finding.
+
+**The final comparison is specified and not run.** Three axes -- temporal prediction, the
+usefulness of territorial context, and relational recovery -- on one universe, with the
+fairness conditions, gates and cost fixed before any submission. It requires explicit
+authorisation. Its estimated cost is about sixteen CPU-hours across roughly 130 array tasks.
+
+**Affected files:** `reports/canonical/HERALD_97_STAGE_CLOSURE_AND_VISUAL_EVIDENCE.md`,
+`reports/canonical/HERALD_98_FINAL_MODEL_COMPARISON_SPECIFICATION.md`,
+`reports/final_visual_evidence/`, `hpc_results/herald94|95|96`.

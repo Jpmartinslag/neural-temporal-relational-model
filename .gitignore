@@ -225,3 +225,9 @@ data/processed/herald_observatory_v05_narrative/*.csv
 data/processed/herald_observatory_v051_narrative/*.json
 data/processed/herald_observatory_v051_narrative/*.csv
 !data/processed/herald_observatory_v051_narrative/manifest.json
+
+# ── Acervo visual final ────────────────────────────────────────────
+# As figuras vetoriais do acervo são o entregável para o relatório, não um artefacto de
+# compilação: a regra `*.pdf` acima as excluiria. Reintroduzidas explicitamente e só aqui.
+!reports/final_visual_evidence/figures/report/*.pdf
+!reports/final_visual_evidence/figures/slides/*.pdf

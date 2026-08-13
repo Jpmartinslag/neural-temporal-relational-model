@@ -1,0 +1,11 @@
+# T03 — Candidate relations, and the rule attached to each
+
+'Observée' means measured by a statistical body. 'Construite' means defined by this study from observed data. Neither is a discovered relation. No learned edge is applied to France at this stage.
+
+| famille | définition | nature | portée | règle d'usage | catégorie |
+|---|---|---|---|---|---|
+| commuting | flux domicile-travail observés (Insee mobilités professionnelles) | observée | 40 destinations les plus fortes par zone | prior de candidature ; jamais une étiquette, jamais dans une perte | REAL_FRANCE |
+| similarité économique | cosinus des profils temporels standardisés causalement, k plus proches | construite | k = 10 par zone, normalisation ajustée sur l'entraînement seul | peut proposer des candidats ; n'entre jamais comme valeur dans le scorer | EXPLORATORY |
+| complémentarité | association non linéaire conditionnée au régime | construite | définie dans le monde synthétique ; en France, exploratoire | aucune arête apprise n'est appliquée à la France | EXPLORATORY |
+| union typée | commuting ∪ similarité, le type servant au rapport seulement | construite | 3127–3234 paires sur 80 zones synthétiques | le type ne parvient pas au modèle comme variable | SYNTHETIC_KNOWN_TRUTH |
+| toutes les paires | toutes les paires ordonnées distinctes | construite | 6320 paires sur 80 zones synthétiques | contient toutes les arêtes vraies ; sert à localiser le goulot | SYNTHETIC_KNOWN_TRUTH |

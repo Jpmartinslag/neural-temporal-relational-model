@@ -1,0 +1,112 @@
+{
+ "category": "SYNTHETIC_KNOWN_TRUTH",
+ "figures": {
+  "S01": {
+   "low_information_zones": 20,
+   "seed": 9961,
+   "zones": 80
+  },
+  "S02": {
+   "commuting_density": 0.5,
+   "edges_per_family": {
+    "commuting": 40,
+    "complementarity": 40,
+    "similarity": 40
+   },
+   "outside_commuting": {
+    "commuting": 0,
+    "complementarity": 40,
+    "similarity": 40
+   }
+  },
+  "S03": {
+   "support_sizes": {
+    "all_pairs": 6320,
+    "commuting_only": 2762,
+    "similarity_only": 800,
+    "typed_union": 3208
+   },
+   "true_edges_inside_commuting": 40,
+   "true_edges_outside_commuting": 80
+  },
+  "S04": {
+   "scales": [
+    0.0,
+    1.0,
+    2.0
+   ],
+   "seeds": [
+    9961,
+    9962,
+    9963,
+    9964,
+    9965
+   ],
+   "support": "typed_union"
+  },
+  "S05": {
+   "max_arriving_rms": 0.0,
+   "scenario": "M0_NULL"
+  },
+  "S06": {
+   "max_arriving_rms": 0.06969115998360868,
+   "scenario": "M1_MULTIRELATIONAL"
+  },
+  "S07": {
+   "peak_arriving_rms_by_scale": {
+    "0.0": 0.0,
+    "0.5": 0.03484557999180434,
+    "1.0": 0.06969115998360868,
+    "2.0": 0.13938231996721737
+   }
+  },
+  "S08_S09": {
+   "herald95_scales": [
+    0.0,
+    0.5,
+    1.0,
+    2.0
+   ],
+   "herald96_scales": [
+    0.0,
+    1.0,
+    2.0
+   ],
+   "network_gain_in_null": 0.13425762036806432
+  },
+  "S10": {
+   "budget": 70,
+   "caveat": "the highlighted edge is illustrative; only the count is measured",
+   "recall_at_budget": 0.014285714285714285,
+   "recovered": 1,
+   "true_edges": 120,
+   "true_edges_in_support": 70
+  },
+  "S11": {
+   "reading_rule": "a bar above prevalence counts only if the same bar does not rise in M0_NULL",
+   "scale": 1.0,
+   "supports": [
+    "commuting_only",
+    "similarity_only",
+    "typed_union",
+    "all_pairs"
+   ]
+  },
+  "S12": {
+   "scale": 1.0,
+   "supports": [
+    "commuting_only",
+    "similarity_only",
+    "typed_union",
+    "all_pairs"
+   ]
+  }
+ },
+ "kind": "herald_visual_evidence_provenance",
+ "rule": "the world is regenerated deterministically; every measured quantity is read from hpc_results, never recomputed by fitting anything",
+ "world": {
+  "generator": "src/data/synthetic/generate_multirelational_v96.py",
+  "n_zones": 80,
+  "seed": 9961
+ }
+}
