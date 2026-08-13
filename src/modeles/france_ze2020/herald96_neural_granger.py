@@ -44,9 +44,15 @@ from src.modeles.france_ze2020 import herald94_temporal_features as feat
 HORIZONS = (1, 2, 4)
 HIDDEN = 8
 FORBIDDEN_WIDTH = 256
-EPOCHS = 300
+# Twelve hundred epochs, and the number matters: at three hundred the arm had not yet
+# reached a positive residual gain on the smoke seed, and at twelve hundred it did. Fixed
+# here rather than selected per task.
+EPOCHS = 1200
+# A learning rate of 0.05 diverged on the smoke seed, returning a residual gain of -108.
 LEARNING_RATE = 0.02
-GROUP_PENALTY = 3e-3
+# Small, and applied to the *mean* pair norm so that it does not vary with support size.
+# Calibrated on the smoke seed 9951 alone; the final seeds were never used for it.
+GROUP_PENALTY = 1e-3
 SIMILARITY_K = 10
 COMMUTING_K = 40
 PRIMARY_SIGNAL = "headcount"
@@ -248,14 +254,22 @@ def fit(params: dict, x: np.ndarray, pairs: np.ndarray, targets: np.ndarray,
         error = (prediction - targets) * masks
         loss = float((error ** 2).sum() / denominator)
 
-        # Group penalty on the contribution of each pair across time and horizon.
+        # Group penalty on the contribution of each pair across time and horizon,
+        # **averaged** over pairs rather than summed.
+        #
+        # Summed, its weight grows with the size of the support, so the same nominal penalty
+        # is a different pressure on a support of 3216 candidates than on one of 6320 -- and
+        # this stage exists to compare supports of exactly those sizes. Comparing them under
+        # different effective penalties would compare the penalties. Summed at 3e-3 it also
+        # dominated the loss outright: the pilot returned a training gain of -1.71, worse
+        # than predicting zero, while the same fit without it reached +0.024.
         norms = np.sqrt((contribution ** 2).sum(axis=(0, 2)) + 1e-12)
-        loss = loss + group_penalty * float(norms.sum())
+        loss = loss + group_penalty * float(norms.mean())
         history.append(loss)
 
         upstream = 2.0 * error / denominator
         grad_contribution = upstream[:, pairs[1], :]
-        grad_contribution = grad_contribution + group_penalty * (
+        grad_contribution = grad_contribution + (group_penalty / len(norms)) * (
             contribution / norms[None, :, None])
 
         flat_c = grad_contribution.reshape(-1, grad_contribution.shape[-1])
