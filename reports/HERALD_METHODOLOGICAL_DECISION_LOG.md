@@ -7258,3 +7258,65 @@ search was started.
 `tests/test_herald95_guards.py`, `tests/run_herald95_mutations.py`,
 `reports/canonical/HERALD_95_RELATIONAL_SCALE_LADDER.md`. Results at
 `hpc_results/herald95/tasks` with `ladder_summary.json`.
+
+## DEC-144
+
+**Date:** 2026-08-13
+**Subject:** HERALD 96 opens a Neural Granger / NAVAR arm on a multirelational universe. The
+specification is written before any result, and every design choice in it follows from a
+verified property of the earlier code rather than from preference.
+
+**The audit, and what each finding forces.**
+
+The temporal baseline removes 11 to 24 per cent of the out-of-sample squared error, measured
+in `hpc/herald94/summarize_layer1.py` as the full table against the best single feature, with
+`headcount.relative` the floor in every scenario and seed. It is by far the largest effect in
+the project and it is entirely local. The relational arm must therefore predict the
+**residual** against a frozen baseline, or it will be credited with local skill.
+
+`herald93_benchmark.train_neural` optimises the forecasting likelihood and nothing else, so
+the scorer receives gradient only because its edges feed a prediction. Nothing in the
+objective asks the graph to be right. The edge score in this stage is therefore a **measured
+out-of-sample contribution** of the source, not an internal attention weight.
+
+`HeraldMultisignal` builds a `node_head` whose output is summed with the relational one. The
+class docstring's claim that there is no node-only path refers to the relational arm's
+internals; at model level a local path exists, is much stronger, and can absorb the task.
+This stage admits **no node head and no local path** in the relational arm: the only route
+from input to prediction passes through another zone.
+
+`SharedRelationalScorer.forward` concatenates the commuting prior into its pair features, and
+the truth is drawn inside that prior. That is what made HERALD 93's `S0` and `S1` scores
+indistinguishable. Here commuting and similarity may **propose candidates only** and never
+enter the scorer as a value.
+
+`candidate_support(prior, k=40)` restricts candidates to the forty nearest commuting
+neighbours in every earlier stage, so no relation outside commuting could be found or even
+considered. Four supports are therefore compared, including all pairs on a reduced eighty
+zone panel.
+
+HERALD 95's oracle removes 1.8 to 2.5 per cent of the squared error at unit scale, is exactly
+zero without a mechanism, and rises monotonically with the scale. The mechanism is observable
+and the ceiling is real but low. That number is carried into this stage as the quantity any
+success would be measured against.
+
+**The stopping condition, inherited from HERALD 95 and not optional.** Oracles run first, per
+relation family, on the residual target. If the oracle does not beat the frozen baseline, or
+does not respond monotonically across zero, one and two times, or shows any gain in `N0`, the
+stage stops and reports that the instrument cannot evaluate the model. A model's failure
+against a broken instrument is uninterpretable, and the previous stage exists because that
+distinction was not available earlier.
+
+**The five-part test for an out-of-commuting relation, fixed before execution.** It must be
+absent from the commuting-only support; found by the all-pairs or typed-union arm; survive
+shuffled endpoints and shuffled time; hold in at least four of five seeds; and not appear in
+`N0`. All five, or it does not count.
+
+**Scope of the word "relation".** Directed, temporal, predictive association. No causal
+economic claim is made in this stage, and France is not touched before the synthetic result.
+
+**Status.** Specification only. No universe generated, no arm implemented, no oracle run.
+Supports, families, gates, horizons and the interpretation matrix are fixed in the
+specification before submission.
+
+**Affected files:** `reports/canonical/HERALD_96_NEURAL_GRANGER_SPECIFICATION.md`.
