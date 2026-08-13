@@ -7320,3 +7320,76 @@ Supports, families, gates, horizons and the interpretation matrix are fixed in t
 specification before submission.
 
 **Affected files:** `reports/canonical/HERALD_96_NEURAL_GRANGER_SPECIFICATION.md`.
+
+## DEC-145
+
+**Date:** 2026-08-13
+**Subject:** HERALD 96 closes. The oracle passes, no model recovers, and by the matrix fixed
+before the run the bottleneck is identification. France is not authorised.
+
+**What ran.** Job 7867595: sixteen guards, sixteen mutants killed, and a smoke on the
+reserved seed. Job 7867596: two scenarios by three scales by four supports by five seeds,
+120 tasks, all COMPLETED, on seeds 9961-9965 which had never been generated. All 120 report
+the baseline bit-identical before and after relational training.
+
+**The instrument is sound.** The oracle is exactly zero in `M0_NULL`, rises monotonically
+across scales 0, 1 and 2, and reaches 10 per cent of the residual at nominal scale -- five
+times the ceiling HERALD 95 measured on raw growth, because the target is what a frozen local
+baseline could not explain. A floor is recorded: at scale zero the edges exist and nothing
+propagates, yet the oracle still marks 1.1 to 1.6 per cent, because economically similar
+zones co-move by construction. Any gain below that is co-movement.
+
+**The arm recovers nothing.** AUPRC equals prevalence in every support, every scale and every
+family: commuting 0.0115 against 0.0109, similarity 0.0057 against 0.0053, complementarity
+0.0054 against 0.0060. The out-of-commuting figure reads 0.0838 against a prevalence of about
+0.084 at scale 1, and in `M0_NULL`, where nothing propagates, it exceeds its own prevalence by
+more than the mechanism scenario does -- so it is not tracking the mechanism. The residual
+gain is negative in every support and does not respond to the scale while the oracle's does.
+`M0_NULL` stays clean: the arm fabricates nothing, it simply finds nothing.
+
+**The smoke was wrong, and the final seeds are why they exist.** On seed 9951 the typed union
+returned +0.0414 against commuting-only's +0.0210, an apparent near-doubling that read as
+support for the multirelational direction. On the five untouched seeds the same comparison is
+-0.0281 against -0.0114. Reading the smoke as a finding would have produced a positive claim
+from one draw.
+
+**Two generator defects found before any run.** The decoys were drawn from further down the
+similarity ranking, leaving true pairs at a profile similarity of 0.725 against 0.039, so a
+detector ranking on similarity would have scored perfectly without discovering anything. And
+the latent profile only chose which pairs to connect and never reached the observations, so
+two "similar" zones were not observably similar and a similarity-only support could not have
+contained a single true edge. Both corrected; guard `p13b` now measures the matching.
+
+**A defect in the arm that would have invalidated the support comparison.** The group penalty
+was summed over pairs, so its weight grew with the size of the support -- and the stage exists
+to compare supports of 2762, 800, 3190 and 6320 candidates. Comparing them under different
+effective penalties would have compared the penalties. Averaged now. Summed at 3e-3 it also
+dominated the loss outright, returning a training gain of -1.71 where the same fit without it
+reached +0.024.
+
+**Three guards were weak enough for a mutant to pass.** The edge-score guard checked shape and
+sign, so a score computed from the weights rather than the measured contributions survived;
+the causality guard fed pre-truncated views, so the truncation did the work and a similarity
+reading the whole panel survived; and nothing checked the decoys were matched at all.
+
+**Scope of the negative result, stated deliberately.** What is established is that this
+additive per-source arm identifies none of a mechanism the oracle confirms is worth 10 per
+cent, at three scales, in four supports, across five seeds. What is not established is that
+the family cannot work. Three limitations of this implementation are visible and none was
+addressed, because addressing them would have been the architecture search the instruction
+forbids: one fit in five diverges; the arm reads one signal's twelve features per zone, chosen
+for cost; and the group penalty was fixed from one smoke seed rather than selected on training
+folds. A fair test of the formulation would repair all three first.
+
+**Where the bottleneck is.** All pairs contains every true edge and recovers nothing. The
+typed union contains most and recovers nothing. Widening candidate generation does not help
+when the scorer cannot rank inside the set it is given.
+
+**France: not authorised.** The precondition fixed in the specification -- recovery of
+out-of-commuting relations with the null controlled -- is not met.
+
+**Affected files:** `src/data/synthetic/generate_multirelational_v96.py`,
+`src/modeles/france_ze2020/herald96_neural_granger.py`, `hpc/herald96/`,
+`tests/test_herald96_guards.py`, `tests/run_herald96_mutations.py`,
+`reports/canonical/HERALD_96_NEURAL_GRANGER_RESULTS.md`. Results at
+`hpc_results/herald96/tasks`.
