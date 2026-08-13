@@ -1,0 +1,707 @@
+{
+  "kind": "herald94_layer1_summary",
+  "thresholds": {
+    "min_gain": 0.01,
+    "min_seeds": 4,
+    "min_origins": 8,
+    "surviving_gain_ceiling": 0.3,
+    "duplicated_ceiling": 0.01,
+    "linear_composite_tolerance": 0.05
+  },
+  "table": {
+    "N0_NULL": {
+      "n_seeds": 5,
+      "temporal_features": {
+        "gain_of_full_table_over_best_single_median": -0.08228168651251888,
+        "per_seed": [
+          -0.05844116091856866,
+          -0.08228168651251888,
+          -0.13391139558156584,
+          0.07528431783774059,
+          -0.2374504936331261
+        ],
+        "temporal_features_add_information": false,
+        "best_single_columns": [
+          "headcount.relative"
+        ]
+      },
+      "ridge_composite": {
+        "checks": {
+          "beats_best_single": false,
+          "beats_ridge_linear": false,
+          "gain_is_out_of_sample": true,
+          "holds_in_enough_seeds": false,
+          "holds_in_enough_origins": true,
+          "gain_lost_when_interaction_destroyed": true,
+          "no_gain_in_null_scenario": true,
+          "duplicated_channel_shows_no_gain": true
+        },
+        "informative": false,
+        "gain_over_best_single_median": -0.08684660731132765,
+        "gain_over_ridge_linear_median": 0.0005989342130664488,
+        "gain_over_ridge_linear_per_seed": [
+          0.0005989342130664488,
+          -0.004217867543816922,
+          0.0011981082342747973,
+          -0.0007547894966970503,
+          0.001448865779923647
+        ],
+        "seeds_beating_best_single": 1,
+        "seeds_beating_ridge_linear": 0,
+        "origins_won_median": 8.0,
+        "origins_total": 12,
+        "gain_after_interaction_destroyed_median": 0.0005104213053697126,
+        "surviving_share_of_gain": NaN,
+        "gain_in_null_scenario_median": NaN,
+        "duplicated_gain_median": -0.002148427025290278,
+        "linear_composites_effect_median": -0.006425648035743636,
+        "n_seeds": 5
+      },
+      "mlp_nonlinear": {
+        "checks": {
+          "beats_best_single": true,
+          "beats_ridge_linear": true,
+          "gain_is_out_of_sample": true,
+          "holds_in_enough_seeds": false,
+          "holds_in_enough_origins": true,
+          "gain_lost_when_interaction_destroyed": false,
+          "no_gain_in_null_scenario": true,
+          "duplicated_channel_shows_no_gain": true
+        },
+        "informative": false,
+        "gain_over_best_single_median": 0.015934862054648224,
+        "gain_over_ridge_linear_median": 0.1255036544543423,
+        "gain_over_ridge_linear_per_seed": [
+          0.385974434313348,
+          0.09074952463037078,
+          0.1255036544543423,
+          -0.24230298927311078,
+          0.2952784182277225
+        ],
+        "seeds_beating_best_single": 3,
+        "seeds_beating_ridge_linear": 4,
+        "origins_won_median": 8.0,
+        "origins_total": 12,
+        "gain_after_interaction_destroyed_median": 0.254904629807416,
+        "surviving_share_of_gain": 2.0310534455404983,
+        "gain_in_null_scenario_median": NaN,
+        "duplicated_gain_median": -0.002148427025290278,
+        "linear_composites_effect_median": -0.006425648035743636,
+        "n_seeds": 5
+      },
+      "ablation_median": {
+        "headcount": -0.6789607237200945,
+        "payroll": -0.6010018254742271,
+        "establishments": -0.36304231235741136,
+        "unemployment": -0.4216885507226995,
+        "creations": 0.1594866830318098
+      },
+      "top_interactions": [
+        {
+          "first": "headcount.national",
+          "second": "unemployment.national",
+          "strength": 0.0006551886198177311
+        },
+        {
+          "first": "headcount.national",
+          "second": "establishments.national",
+          "strength": 0.0006028223812588147
+        },
+        {
+          "first": "headcount.trend",
+          "second": "establishments.national",
+          "strength": 0.0005559797898034667
+        },
+        {
+          "first": "headcount.national",
+          "second": "creations.national",
+          "strength": 0.0005337619869644056
+        },
+        {
+          "first": "headcount.national",
+          "second": "payroll.national",
+          "strength": 0.0005227877759163674
+        }
+      ]
+    },
+    "N1_LINEAR": {
+      "n_seeds": 5,
+      "temporal_features": {
+        "gain_of_full_table_over_best_single_median": -0.09914908280472812,
+        "per_seed": [
+          -0.11651152494721306,
+          -0.09914908280472812,
+          -0.0659392955158089,
+          0.1287707025666588,
+          -0.3417797929137698
+        ],
+        "temporal_features_add_information": false,
+        "best_single_columns": [
+          "headcount.relative"
+        ]
+      },
+      "ridge_composite": {
+        "checks": {
+          "beats_best_single": false,
+          "beats_ridge_linear": false,
+          "gain_is_out_of_sample": true,
+          "holds_in_enough_seeds": false,
+          "holds_in_enough_origins": false,
+          "gain_lost_when_interaction_destroyed": true,
+          "no_gain_in_null_scenario": true,
+          "duplicated_channel_shows_no_gain": true
+        },
+        "informative": false,
+        "gain_over_best_single_median": -0.0984280575006855,
+        "gain_over_ridge_linear_median": 0.000503811634364304,
+        "gain_over_ridge_linear_per_seed": [
+          -0.005178402996879106,
+          0.0006559849935939832,
+          -0.0003753177814553865,
+          0.000503811634364304,
+          0.0010527453863206082
+        ],
+        "seeds_beating_best_single": 1,
+        "seeds_beating_ridge_linear": 0,
+        "origins_won_median": 7.0,
+        "origins_total": 12,
+        "gain_after_interaction_destroyed_median": 0.0003234757769703389,
+        "surviving_share_of_gain": NaN,
+        "gain_in_null_scenario_median": 0.0005989342130664488,
+        "duplicated_gain_median": -0.0016211257502456444,
+        "linear_composites_effect_median": -0.005006821548889873,
+        "n_seeds": 5
+      },
+      "mlp_nonlinear": {
+        "checks": {
+          "beats_best_single": false,
+          "beats_ridge_linear": true,
+          "gain_is_out_of_sample": true,
+          "holds_in_enough_seeds": false,
+          "holds_in_enough_origins": false,
+          "gain_lost_when_interaction_destroyed": false,
+          "no_gain_in_null_scenario": false,
+          "duplicated_channel_shows_no_gain": true
+        },
+        "informative": false,
+        "gain_over_best_single_median": -0.01786087531686653,
+        "gain_over_ridge_linear_median": 0.07395557960202825,
+        "gain_over_ridge_linear_per_seed": [
+          0.007398496362279627,
+          0.07395557960202825,
+          0.3236999682033569,
+          -6.867385149154506,
+          0.3353105619174671
+        ],
+        "seeds_beating_best_single": 2,
+        "seeds_beating_ridge_linear": 3,
+        "origins_won_median": 6.0,
+        "origins_total": 12,
+        "gain_after_interaction_destroyed_median": 0.20359158296179658,
+        "surviving_share_of_gain": 2.7528901004815194,
+        "gain_in_null_scenario_median": 0.1255036544543423,
+        "duplicated_gain_median": -0.0016211257502456444,
+        "linear_composites_effect_median": -0.005006821548889873,
+        "n_seeds": 5
+      },
+      "ablation_median": {
+        "headcount": -0.4422350069992893,
+        "payroll": -0.29202088052242603,
+        "establishments": -0.18322588469532386,
+        "unemployment": -0.25233073838652365,
+        "creations": -0.36744085110190094
+      },
+      "top_interactions": [
+        {
+          "first": "headcount.national",
+          "second": "establishments.national",
+          "strength": 0.0021271258789555786
+        },
+        {
+          "first": "establishments.national",
+          "second": "creations.national",
+          "strength": 0.0019843067917862797
+        },
+        {
+          "first": "headcount.momentum",
+          "second": "establishments.national",
+          "strength": 0.0019007839045779456
+        },
+        {
+          "first": "headcount.momentum",
+          "second": "headcount.national",
+          "strength": 0.00165430947685115
+        },
+        {
+          "first": "headcount.growth",
+          "second": "establishments.national",
+          "strength": 0.0015343611577062562
+        }
+      ]
+    },
+    "N2_NONLINEAR": {
+      "n_seeds": 5,
+      "temporal_features": {
+        "gain_of_full_table_over_best_single_median": -0.02552970021217993,
+        "per_seed": [
+          -0.25782270831060905,
+          -0.02552970021217993,
+          -0.00151546777528333,
+          -0.0159557114920148,
+          -0.25020268100152276
+        ],
+        "temporal_features_add_information": false,
+        "best_single_columns": [
+          "headcount.relative"
+        ]
+      },
+      "ridge_composite": {
+        "checks": {
+          "beats_best_single": false,
+          "beats_ridge_linear": false,
+          "gain_is_out_of_sample": true,
+          "holds_in_enough_seeds": false,
+          "holds_in_enough_origins": true,
+          "gain_lost_when_interaction_destroyed": true,
+          "no_gain_in_null_scenario": true,
+          "duplicated_channel_shows_no_gain": true
+        },
+        "informative": false,
+        "gain_over_best_single_median": -0.03001938893933742,
+        "gain_over_ridge_linear_median": -0.000837344277581753,
+        "gain_over_ridge_linear_per_seed": [
+          -0.0011575991128340846,
+          -0.00437792169863882,
+          0.0034088605715782982,
+          0.002646482546572848,
+          -0.000837344277581753
+        ],
+        "seeds_beating_best_single": 0,
+        "seeds_beating_ridge_linear": 0,
+        "origins_won_median": 8.0,
+        "origins_total": 12,
+        "gain_after_interaction_destroyed_median": 0.0006893854003096056,
+        "surviving_share_of_gain": NaN,
+        "gain_in_null_scenario_median": 0.0005989342130664488,
+        "duplicated_gain_median": -0.0011525573276345291,
+        "linear_composites_effect_median": -0.0033469302116819755,
+        "n_seeds": 5
+      },
+      "mlp_nonlinear": {
+        "checks": {
+          "beats_best_single": false,
+          "beats_ridge_linear": false,
+          "gain_is_out_of_sample": true,
+          "holds_in_enough_seeds": false,
+          "holds_in_enough_origins": false,
+          "gain_lost_when_interaction_destroyed": true,
+          "no_gain_in_null_scenario": false,
+          "duplicated_channel_shows_no_gain": true
+        },
+        "informative": false,
+        "gain_over_best_single_median": -1.6548165658471419,
+        "gain_over_ridge_linear_median": -1.5098180954230807,
+        "gain_over_ridge_linear_per_seed": [
+          -1.5098180954230807,
+          -1.6248922571307176,
+          0.2967440618284237,
+          -1.6131223397015257,
+          0.33511915710995366
+        ],
+        "seeds_beating_best_single": 2,
+        "seeds_beating_ridge_linear": 2,
+        "origins_won_median": 2.0,
+        "origins_total": 12,
+        "gain_after_interaction_destroyed_median": 0.16271420004552473,
+        "surviving_share_of_gain": NaN,
+        "gain_in_null_scenario_median": 0.1255036544543423,
+        "duplicated_gain_median": -0.0011525573276345291,
+        "linear_composites_effect_median": -0.0033469302116819755,
+        "n_seeds": 5
+      },
+      "ablation_median": {
+        "headcount": 0.06173537211200475,
+        "payroll": -0.7999610207085617,
+        "establishments": 0.05000342517073164,
+        "unemployment": -0.05997896248594925,
+        "creations": -0.31075284509536294
+      },
+      "top_interactions": [
+        {
+          "first": "headcount.trend",
+          "second": "establishments.national",
+          "strength": 0.00187711074278488
+        },
+        {
+          "first": "headcount.trend",
+          "second": "headcount.momentum",
+          "strength": 0.0016625969378591446
+        },
+        {
+          "first": "headcount.acceleration",
+          "second": "headcount.trend",
+          "strength": 0.0014988593052609298
+        },
+        {
+          "first": "headcount.acceleration",
+          "second": "establishments.national",
+          "strength": 0.0011494621464181662
+        },
+        {
+          "first": "establishments.national",
+          "second": "creations.national",
+          "strength": 0.0011258357261716724
+        }
+      ]
+    },
+    "N3_REGIME": {
+      "n_seeds": 5,
+      "temporal_features": {
+        "gain_of_full_table_over_best_single_median": -0.0875910673761926,
+        "per_seed": [
+          -0.15918829271888812,
+          0.15208645573818835,
+          -0.0875910673761926,
+          0.08064098042788548,
+          -1.9267192481899578
+        ],
+        "temporal_features_add_information": false,
+        "best_single_columns": [
+          "headcount.relative"
+        ]
+      },
+      "ridge_composite": {
+        "checks": {
+          "beats_best_single": false,
+          "beats_ridge_linear": false,
+          "gain_is_out_of_sample": true,
+          "holds_in_enough_seeds": false,
+          "holds_in_enough_origins": false,
+          "gain_lost_when_interaction_destroyed": true,
+          "no_gain_in_null_scenario": true,
+          "duplicated_channel_shows_no_gain": false
+        },
+        "informative": false,
+        "gain_over_best_single_median": -0.08547775286910464,
+        "gain_over_ridge_linear_median": -0.00039854214886059225,
+        "gain_over_ridge_linear_per_seed": [
+          -0.00039854214886059225,
+          -0.0028494052813916593,
+          0.0019431149909923118,
+          -0.00037682110982961703,
+          -0.00041951535518003347
+        ],
+        "seeds_beating_best_single": 2,
+        "seeds_beating_ridge_linear": 0,
+        "origins_won_median": 4.0,
+        "origins_total": 12,
+        "gain_after_interaction_destroyed_median": -0.000746483302007217,
+        "surviving_share_of_gain": NaN,
+        "gain_in_null_scenario_median": 0.0005989342130664488,
+        "duplicated_gain_median": 0.07171170150154216,
+        "linear_composites_effect_median": -0.010575722771117846,
+        "n_seeds": 5
+      },
+      "mlp_nonlinear": {
+        "checks": {
+          "beats_best_single": true,
+          "beats_ridge_linear": true,
+          "gain_is_out_of_sample": true,
+          "holds_in_enough_seeds": false,
+          "holds_in_enough_origins": false,
+          "gain_lost_when_interaction_destroyed": false,
+          "no_gain_in_null_scenario": false,
+          "duplicated_channel_shows_no_gain": false
+        },
+        "informative": false,
+        "gain_over_best_single_median": 0.1886648049744457,
+        "gain_over_ridge_linear_median": 0.28124813846058383,
+        "gain_over_ridge_linear_per_seed": [
+          0.3000833426961558,
+          0.28124813846058383,
+          0.30258521805785366,
+          -0.5522415438554726,
+          0.16394412751835596
+        ],
+        "seeds_beating_best_single": 3,
+        "seeds_beating_ridge_linear": 4,
+        "origins_won_median": 7.0,
+        "origins_total": 12,
+        "gain_after_interaction_destroyed_median": 0.23688377972241292,
+        "surviving_share_of_gain": 0.8422590137627224,
+        "gain_in_null_scenario_median": 0.1255036544543423,
+        "duplicated_gain_median": 0.07171170150154216,
+        "linear_composites_effect_median": -0.010575722771117846,
+        "n_seeds": 5
+      },
+      "ablation_median": {
+        "headcount": -0.830796041827802,
+        "payroll": -0.07955484267889057,
+        "establishments": -0.05929181916950621,
+        "unemployment": -0.15226510052401054,
+        "creations": 0.1654502274318006
+      },
+      "top_interactions": [
+        {
+          "first": "establishments.national",
+          "second": "creations.national",
+          "strength": 0.0009336136813904408
+        },
+        {
+          "first": "payroll.national",
+          "second": "establishments.national",
+          "strength": 0.000560908423646789
+        },
+        {
+          "first": "establishments.national",
+          "second": "unemployment.national",
+          "strength": 0.0005197130691473922
+        },
+        {
+          "first": "payroll.national",
+          "second": "creations.national",
+          "strength": 0.0004959683745616948
+        },
+        {
+          "first": "headcount.national",
+          "second": "establishments.national",
+          "strength": 0.00046845812418233265
+        }
+      ]
+    },
+    "N4_INTERACTION": {
+      "n_seeds": 5,
+      "temporal_features": {
+        "gain_of_full_table_over_best_single_median": -0.02435369649567276,
+        "per_seed": [
+          0.11947979943274711,
+          -0.09467803204331449,
+          -0.02435369649567276,
+          0.06756774283020228,
+          -0.041359674829830606
+        ],
+        "temporal_features_add_information": false,
+        "best_single_columns": [
+          "headcount.relative"
+        ]
+      },
+      "ridge_composite": {
+        "checks": {
+          "beats_best_single": true,
+          "beats_ridge_linear": false,
+          "gain_is_out_of_sample": true,
+          "holds_in_enough_seeds": false,
+          "holds_in_enough_origins": true,
+          "gain_lost_when_interaction_destroyed": true,
+          "no_gain_in_null_scenario": true,
+          "duplicated_channel_shows_no_gain": true
+        },
+        "informative": false,
+        "gain_over_best_single_median": 0.012395036200000487,
+        "gain_over_ridge_linear_median": 0.00029572886233120155,
+        "gain_over_ridge_linear_per_seed": [
+          0.000715349434478596,
+          -0.006844417172318096,
+          0.035875042791753464,
+          -0.004147818108148016,
+          0.00029572886233120155
+        ],
+        "seeds_beating_best_single": 3,
+        "seeds_beating_ridge_linear": 1,
+        "origins_won_median": 8.0,
+        "origins_total": 12,
+        "gain_after_interaction_destroyed_median": 0.00021220245050057596,
+        "surviving_share_of_gain": NaN,
+        "gain_in_null_scenario_median": 0.0005989342130664488,
+        "duplicated_gain_median": -0.002115687906668162,
+        "linear_composites_effect_median": 0.004607910206169241,
+        "n_seeds": 5
+      },
+      "mlp_nonlinear": {
+        "checks": {
+          "beats_best_single": true,
+          "beats_ridge_linear": true,
+          "gain_is_out_of_sample": true,
+          "holds_in_enough_seeds": true,
+          "holds_in_enough_origins": false,
+          "gain_lost_when_interaction_destroyed": false,
+          "no_gain_in_null_scenario": false,
+          "duplicated_channel_shows_no_gain": true
+        },
+        "informative": false,
+        "gain_over_best_single_median": 0.10409581149996727,
+        "gain_over_ridge_linear_median": 0.035661596182703925,
+        "gain_over_ridge_linear_per_seed": [
+          0.035661596182703925,
+          -0.12974429396476106,
+          0.21462253786228758,
+          0.021199480539316973,
+          0.13967843180941963
+        ],
+        "seeds_beating_best_single": 4,
+        "seeds_beating_ridge_linear": 4,
+        "origins_won_median": 7.0,
+        "origins_total": 12,
+        "gain_after_interaction_destroyed_median": 0.17164806244925568,
+        "surviving_share_of_gain": 4.813246764666859,
+        "gain_in_null_scenario_median": 0.1255036544543423,
+        "duplicated_gain_median": -0.002115687906668162,
+        "linear_composites_effect_median": 0.004607910206169241,
+        "n_seeds": 5
+      },
+      "ablation_median": {
+        "headcount": -1.6798893678589253,
+        "payroll": -0.1370645767065528,
+        "establishments": 0.06114037729192823,
+        "unemployment": -0.08414538248290948,
+        "creations": -0.13827654597403005
+      },
+      "top_interactions": [
+        {
+          "first": "headcount.national",
+          "second": "establishments.national",
+          "strength": 0.0032101728774618686
+        },
+        {
+          "first": "headcount.national",
+          "second": "creations.national",
+          "strength": 0.0029862583709504027
+        },
+        {
+          "first": "establishments.national",
+          "second": "creations.national",
+          "strength": 0.0029590545424124795
+        },
+        {
+          "first": "headcount.national",
+          "second": "available[58]",
+          "strength": 0.001761163061257152
+        },
+        {
+          "first": "establishments.national",
+          "second": "available[58]",
+          "strength": 0.0017396037991471028
+        }
+      ]
+    },
+    "N5_REDUNDANT": {
+      "n_seeds": 5,
+      "temporal_features": {
+        "gain_of_full_table_over_best_single_median": -0.040552099383312834,
+        "per_seed": [
+          -0.13621512985324524,
+          0.06994405010093141,
+          -0.040552099383312834,
+          0.06871427906230265,
+          -0.3180499864761206
+        ],
+        "temporal_features_add_information": false,
+        "best_single_columns": [
+          "headcount.relative"
+        ]
+      },
+      "ridge_composite": {
+        "checks": {
+          "beats_best_single": true,
+          "beats_ridge_linear": false,
+          "gain_is_out_of_sample": true,
+          "holds_in_enough_seeds": false,
+          "holds_in_enough_origins": true,
+          "gain_lost_when_interaction_destroyed": true,
+          "no_gain_in_null_scenario": true,
+          "duplicated_channel_shows_no_gain": true
+        },
+        "informative": false,
+        "gain_over_best_single_median": 0.05908182397044626,
+        "gain_over_ridge_linear_median": -0.0002777257839896574,
+        "gain_over_ridge_linear_per_seed": [
+          -0.0047194514015147515,
+          -0.0006812942881000428,
+          0.09575101853411039,
+          -0.00022141356048765992,
+          -0.0002777257839896574
+        ],
+        "seeds_beating_best_single": 3,
+        "seeds_beating_ridge_linear": 1,
+        "origins_won_median": 8.0,
+        "origins_total": 12,
+        "gain_after_interaction_destroyed_median": -0.00027172946371645246,
+        "surviving_share_of_gain": NaN,
+        "gain_in_null_scenario_median": 0.0005989342130664488,
+        "duplicated_gain_median": -0.028058284772705777,
+        "linear_composites_effect_median": 0.0018323236483229755,
+        "n_seeds": 5
+      },
+      "mlp_nonlinear": {
+        "checks": {
+          "beats_best_single": false,
+          "beats_ridge_linear": false,
+          "gain_is_out_of_sample": true,
+          "holds_in_enough_seeds": false,
+          "holds_in_enough_origins": false,
+          "gain_lost_when_interaction_destroyed": true,
+          "no_gain_in_null_scenario": false,
+          "duplicated_channel_shows_no_gain": true
+        },
+        "informative": false,
+        "gain_over_best_single_median": -0.020241420092047546,
+        "gain_over_ridge_linear_median": -0.0955192344888336,
+        "gain_over_ridge_linear_per_seed": [
+          0.2297671599750979,
+          -1.9125827819467491,
+          0.2789433336565226,
+          -0.0955192344888336,
+          -0.1351120012567384
+        ],
+        "seeds_beating_best_single": 2,
+        "seeds_beating_ridge_linear": 2,
+        "origins_won_median": 5.0,
+        "origins_total": 12,
+        "gain_after_interaction_destroyed_median": -0.6377290035180092,
+        "surviving_share_of_gain": NaN,
+        "gain_in_null_scenario_median": 0.1255036544543423,
+        "duplicated_gain_median": -0.028058284772705777,
+        "linear_composites_effect_median": 0.0018323236483229755,
+        "n_seeds": 5
+      },
+      "ablation_median": {
+        "headcount": -0.5417981994847845,
+        "payroll": -0.4083249935233553,
+        "establishments": 0.2351860085901769,
+        "unemployment": -0.20022220487574782,
+        "creations": -0.3378109111941412
+      },
+      "top_interactions": [
+        {
+          "first": "establishments.national",
+          "second": "creations.national",
+          "strength": 0.0004759178029462049
+        },
+        {
+          "first": "headcount.momentum",
+          "second": "establishments.national",
+          "strength": 0.00047492140554780525
+        },
+        {
+          "first": "headcount.relative",
+          "second": "establishments.national",
+          "strength": 0.00047285520617959927
+        },
+        {
+          "first": "headcount.trend",
+          "second": "establishments.national",
+          "strength": 0.00044069199348735857
+        },
+        {
+          "first": "headcount.national",
+          "second": "establishments.national",
+          "strength": 0.00041090144819173484
+        }
+      ]
+    }
+  },
+  "scenarios_with_an_informative_composite": [],
+  "null_scenario_stayed_clean": true,
+  "layer2_authorised": false,
+  "layer2_reason": "no composite cleared the gate in any scenario containing a mechanism"
+}
