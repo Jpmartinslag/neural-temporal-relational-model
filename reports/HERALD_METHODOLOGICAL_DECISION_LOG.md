@@ -7179,3 +7179,82 @@ neighbours.
 **Affected files:** `reports/canonical/HERALD_94_COMPOSITE_SIGNAL_RESULTS.md`. Results at
 `hpc_results/herald94/tasks` with `layer1_summary.json`; the retired first grid preserved
 unmodified at `hpc_results/herald94/tasks_mean_rule_retired_seeds`.
+
+## DEC-143
+
+**Date:** 2026-08-13
+**Subject:** HERALD 95, the relational scale ladder. The mechanism is observable at nominal
+scale, so HERALD 94's failure was the model's and not the benchmark's -- but the ceiling the
+model failed to reach is about two per cent of squared error.
+
+**What ran.** Job 7865295: twelve new guards, twelve mutants killed, twenty-five HERALD 94
+guards intact, and a six-case smoke. Job 7865298: four scenarios by five scales by three
+seeds, sixty tasks, all COMPLETED, on seeds 9901-9903 which had never been generated. Every
+calibration decision was taken on 9891-9892. Commits `b52ffeb`, `3a4aaef`, `185202a`.
+
+**Three defects in the parameter, found by the review the design required, two of them
+fatal to the experiment.**
+
+`relational_scale` multiplied `gamma` as well as the loading. `gamma` is the loading on the
+common state, which is not relational, so at scale zero the world lost its common state
+along with its relation and the intended control did not exist.
+
+The worlds were not paired. `rng.poisson` at these rates uses rejection sampling and consumes
+a variable number of uniforms depending on its mean, so changing the latent path -- exactly
+what changing the scale does -- put the generator out of step. Separating the generators per
+signal fixed the leak between signals and left the one inside each signal untouched. The
+Gamma deviate is now drawn as `standard_gamma(dispersion)` and scaled afterwards, since its
+consumption depends on the shape and not the mean, and the Poisson layer gets a generator per
+`(signal, period, zone)`. Measured at 120 zones, sharing the streams inflated the observable
+signal-to-noise ratio by 94 per cent at half scale and 34 per cent at unit scale -- worst
+exactly where a sensitivity threshold is read.
+
+The clip and the drift normalisation damp the parameter. Both are part of the model of a
+bounded growth rate and were measured rather than removed. The consequence is recorded as a
+standing fact: the scale is not a multiplier on what the model sees, and the guard on the
+observable effect demands monotonicity while explicitly refusing to demand linearity. Scale
+four saturates 17 to 23 per cent of cells and is declared a stress test, excluded from every
+threshold and verdict.
+
+**The oracle works, and that is what makes the stage readable.** It returns exactly zero
+where there is no mechanism -- not nearly zero -- and rises monotonically with the scale in
+all three scenarios and in every individual seed. In `N4_INTERACTION` the per-seed gains at
+scales 0, 0.5, 1 and 2 are (0, 0, 0), (0.0085, 0.0119, 0.0072), (0.0187, 0.0194, 0.0252) and
+(0.0509, 0.0370, 0.0335).
+
+**The network fails both declared disqualifying tests.** Its median gain in `N0_NULL`, which
+carries no loading at any scale, is +0.1343. Its gain does not respond monotonically to the
+scale: in `N4_INTERACTION` it runs +0.1665, +0.1439, -0.1764 as the mechanism grows. Verdict
+`NETWORK_GAIN_IS_NOT_RELATIONAL` in all three scenarios. The gain also survives the
+destruction of its own interaction, as in HERALD 94.
+
+**Edge recovery is inert, and this is now measured rather than inferred.** AUPRC sits at
+0.723 to 0.731 against a prevalence of 0.70 at every scale including zero. The dense
+correlation agrees to six decimal places between a world with no mechanism and one with four
+times the nominal amount. The metric was checked directly and responds correctly, returning
+-0.03 for random scores and 1.00 for the truth, so the scorer is the insensitive part. The
+task now records the scores' own correlation with the true propagation, 0.096 at every scale,
+and with the commuting prior, 0.124. Multiplying the mechanism by four moves the learned
+graph by about 1e-8.
+
+**Why a strong observable signal buys so little, which is the finding that qualifies all the
+others.** At unit scale the relational effect has a signal-to-noise ratio near 0.5 in the
+published growth, yet perfect knowledge of it removes only about two per cent of the squared
+error. The oracle adds one column to a design that already carries a hundred and twenty, and
+the relational term moves the latent path, which the signal's own history already records. It
+contributes the increment over what the history reveals, and that increment is small. So the
+ceiling at nominal scale is real but low, against a target HERALD 93 established is close to
+measurement noise at horizon one.
+
+**Consequence.** The benchmark is not the reason HERALD 94 found nothing; the model is. But
+"fix the model" is worth about two per cent of squared error at this horizon, and that number
+belongs beside any future architectural work rather than after it.
+
+**Not applied to France.** No gate was changed after seeing a result, and no architecture
+search was started.
+
+**Affected files:** `src/data/synthetic/generate_france_multisignal_v94.py`,
+`src/modeles/france_ze2020/herald95_scale_ladder.py`, `hpc/herald95/`,
+`tests/test_herald95_guards.py`, `tests/run_herald95_mutations.py`,
+`reports/canonical/HERALD_95_RELATIONAL_SCALE_LADDER.md`. Results at
+`hpc_results/herald95/tasks` with `ladder_summary.json`.
