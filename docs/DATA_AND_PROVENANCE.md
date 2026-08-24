@@ -8,15 +8,22 @@ status there before trusting it).
 
 ## 1. French sources
 
-| Indicator | Publisher | Frequency | Period | Territories | Evidence type |
+The five signals retained for the multisignal panel, with their **native publication
+frequency** — verified against the report's data-construction section
+(`tab:five-signal-construction`) rather than against any single downstream analysis grid:
+
+| Indicator | Publisher | Native frequency | Period | Territories | Evidence type |
 |---|---|---|---|---|---|
-| Private-sector employment | Urssaf | Annual | 1998–2024 | 280 | Observed |
-| Private-sector payroll | Urssaf | Annual | 1998–2024 | 280 | Observed |
-| Employing establishments | Urssaf | Annual | 1998–2024 | 280 | Observed |
-| Local unemployment rate | Insee | Annual | 2003–2025 | 280 | Observed |
-| Local unemployment rate, adjusted | Insee | Quarterly | 2003–2026 | 280 | Observed |
-| Private-sector employment, adjusted | Urssaf | Quarterly | 1998–2026 | 280 | Observed |
-| New establishments | Sirene / SIDE | Annual | 2012–2025 | 280 | Observed |
+| Private salaried employment | Urssaf | **Quarterly** | 1998–2026 | 280 | Observed |
+| Gross payroll | Urssaf | **Quarterly** | 1998–2026 | 280 | Observed |
+| Employer establishments | Urssaf | Annual | 1998–2024 | 280 | Observed |
+| Localised unemployment | Insee | **Quarterly** | 2003–2026 | 280 | Observed |
+| Establishment creations | Insee / SIDE | Annual | 2012–2025 | 280 | Observed |
+
+Two supplementary sources appear in the panel but are not part of the five retained signals:
+
+| Indicator | Publisher | Native frequency | Period | Territories | Evidence type |
+|---|---|---|---|---|---|
 | Establishments | Flores | Annual | 2017–2024 | 280 | Observed (99.3% coverage) |
 | Active-establishment stock | SIDE | Annual | 2014–2024 | 280 | Observed |
 
@@ -25,14 +32,21 @@ excluded in this phase. A territory-period cell is counted once even when a sour
 several sector rows; a missing observation is never silently replaced by zero — it is carried
 as an explicit availability flag (see `PROJECT_OVERVIEW.md`, "causal temporal representation").
 
-Full table with cell counts and sector-entry counts: `reports/final_visual_evidence/tables/T01_sources_and_periods.{csv,md}`.
+Because two signals are native-annual and three are native-quarterly, the report places annual
+observations at the fourth quarter of one common quarterly grid rather than interpolating
+unobserved quarters — it does not convert the quarterly series down to an annual grid. A
+separate cell-count table, `reports/final_visual_evidence/tables/T01_sources_and_periods.{csv,md}`,
+reports annual cell counts for a specific downstream aggregation (the FR ZE2020 baseline
+training panel, which targets annual growth); that table's "Frequency" column describes that
+aggregation, not the native publication frequency used above, and the two should not be
+conflated.
 
 ## 2. Transformations
 
 - All features are computed causally: only information published on or before the decision
-  date is used (see `reports/HERALD_DATA_AVAILABILITY_CALENDAR.md` /
-  `reports/herald_feature_availability_calendar_v1.csv` for the publication-lag calendar
-  behind this rule).
+  date is used. The publication-lag calendar this rule follows exists only as an untracked,
+  local-only file in the primary worktree (not part of this delivery branch) — see
+  `EXPERIMENT_PROVENANCE.md` §6 for why some supporting documentation was not carried over.
 - The temporal representation (level, growth, acceleration, trend, momentum, volatility,
   regime, national/relative components, availability flag) is built by
   `src/data/france_ze2020/build_fr_ze2020_temporal_relation_signals.py` and consumed by
@@ -46,19 +60,28 @@ Full table with cell counts and sector-entry counts: `reports/final_visual_evide
   built by `src/data/france_ze2020/build_fr_ze2020_model_ready_panel.py` — this is the file the
   minimal reproducible example reads (see `REPRODUCIBILITY.md`).
 
-## 3. Synthetic known-truth data
+## 3. Synthetic known-truth data — two separate protocols
 
-The synthetic benchmark generates **280 artificial zones calibrated to reproduce French
-marginal statistics** (not real French data), with a **known relational graph** built from
-three relation families and a controllable relational-scale parameter. Because the true graph
-is known by construction, this is the only dataset on which relation *recovery* (not just
-forecast accuracy) can be measured. Generator and provenance:
-`reports/final_visual_evidence/scripts/fig_synthetic.py`,
+Both protocols generate **artificial zones calibrated to reproduce French marginal statistics**
+(not real French data), each with a **known relational graph**. Because the true graph is known
+by construction, these are the only datasets on which relation *recovery* (not just forecast
+accuracy) can be measured. They are **not interchangeable and not comparable to each other**:
+
+- **Main benchmark**: 280 zones, the true graph drawn inside a commuting candidate support,
+  next-period growth as target. Used to compare forecasting methods against persistence and to
+  measure relation recovery against that support's own prevalence.
+- **Residual diagnostic**: 80 zones, 3 relation families with most true edges outside the
+  commuting support, the residual after a frozen local temporal baseline as target. Used to test
+  a single additive relational arm across four candidate supports, including all 6,320 ordered
+  pairs.
+
+Generator and provenance: `reports/final_visual_evidence/scripts/fig_synthetic.py`,
 `reports/final_visual_evidence/provenance/figures_synthetic.json`, and the specification/result
 pair `reports/canonical/HERALD_93_MODEL_EVALUATION_AND_COMPARISON.md` /
 `HERALD_96_NEURAL_GRANGER_RESULTS.md` / `HERALD_97_STAGE_CLOSURE_AND_VISUAL_EVIDENCE.md`.
-**Synthetic results must never be presented as, or averaged with, French results** — see
-`RESULTS_AND_LIMITATIONS.md`.
+**Synthetic results must never be presented as, or averaged with, French results — and results
+from the two synthetic protocols must never be presented as, or averaged with, each other** —
+see `RESULTS_AND_LIMITATIONS.md` for the full protocol-separation table.
 
 ## 4. Derived / processed files worth knowing about
 
