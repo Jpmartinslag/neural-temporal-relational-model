@@ -1,7 +1,18 @@
 pandas
+numpy
+scipy
+scikit-learn
+networkx
 matplotlib
+plotly
+requests
 openpyxl
 geopandas
 shapely
 fiona
 pyogrio
+
+# Optional — only needed for the src/modeles/synthetic/ and src/modeles/real_world/
+# research track (torch-based relation-learning experiments). Not required for the
+# minimal reproducible example or the fast test suites in REPRODUCIBILITY.md.
+# torch
