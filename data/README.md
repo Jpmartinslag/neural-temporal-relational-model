@@ -1,5 +1,10 @@
 # Données HERALD
 
+> **Note (2026-08-24):** this file predates the France ZE2020 multisignal panel and the
+> synthetic known-truth benchmark. For the current, audited data inventory, read
+> [`../docs/DATA_AND_PROVENANCE.md`](../docs/DATA_AND_PROVENANCE.md) first. The content below is
+> kept for the earlier (pre-Q7, Phase 2I) panels it still correctly describes.
+
 Ce dossier contient les sources et panels nécessaires à HERALD-France.
 
 ## Structure
