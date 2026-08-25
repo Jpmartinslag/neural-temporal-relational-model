@@ -1,3 +1,8 @@
+# Data preparation and the persistence/Ridge baselines (scripts/run_minimal_example.sh).
+# For the neural temporal-relational model (scripts/run_model_smoke.sh,
+# scripts/run_temporal_relational_model.py), install requirements-neural.txt as well -- it
+# is a superset of this file plus torch, pinned; see docs/REPRODUCIBILITY.md.
+
 pandas
 numpy
 scipy
@@ -11,8 +16,3 @@ geopandas
 shapely
 fiona
 pyogrio
-
-# Optional — only needed for the src/modeles/synthetic/ and src/modeles/real_world/
-# research track (torch-based relation-learning experiments). Not required for the
-# minimal reproducible example or the fast test suites in REPRODUCIBILITY.md.
-# torch

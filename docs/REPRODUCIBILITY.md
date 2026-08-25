@@ -2,27 +2,63 @@
 
 ## Environment
 
-Python 3.12 (tested on 3.12.3). No `environment.yml`/conda file exists; use a virtual
-environment and `requirements.txt`:
+Python 3.12 (tested on 3.12.3). No conda/system dependency is required. Three tiers, from
+smallest to most exactly pinned:
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt                    # data prep + baselines only
+pip install -r requirements-neural.txt              # + the neural model, torch pinned to ~=2.13.0
+# or, to match the exact environment this branch's smoke/guard suite was validated in:
+pip install -r environment-neural-validated.txt     # every package pinned exactly
 ```
 
-`torch` is commented out in `requirements.txt` — it is only needed for the
-`src/modeles/synthetic/` and `src/modeles/real_world/` research track (the relation-learning
-experiments behind the known-truth synthetic benchmark, `hpc_results/herald93/` through
-`herald98/`), not for the minimal example or the fast test suites below. Install it separately
-(`pip install torch`) if you need that track.
+- **`requirements.txt`** — enough for `scripts/run_minimal_example.sh` (data preparation and
+  the persistence/Ridge baselines). No neural dependency.
+- **`requirements-neural.txt`** — superset, adds `torch` for
+  `scripts/run_model_smoke.sh`/`scripts/run_temporal_relational_model.py`. `torch` is capped at
+  `~=2.13.0`, the line this branch's own smoke and guard suite were actually validated against
+  — loosely pinned like the rest of this file would let `pip install` silently pull a future,
+  never-validated release, which is exactly what this cap exists to prevent.
+- **`environment-neural-validated.txt`** — a full `pip freeze` snapshot of the environment this
+  branch's neural tests actually ran in (67 packages, exact versions). Use this when you need
+  the closest possible match to "what was tested here," not just "what should work."
 
 `geopandas`/`shapely`/`fiona`/`pyogrio` are needed for territorial-geometry code (PT
 municipality shapes, ZE2020 boundaries) and for full test collection; they pull in GDAL and
 can be the slowest part of the install.
 
-This was verified in a fresh venv during this cleanup: `pip install -r requirements.txt` plus
-`torch` gives a clean `pytest tests/ --collect-only` (**2826 tests collected, 0 errors**).
+**Cluster environment** (what the reported headline numbers in `RESULTS_AND_LIMITATIONS.md`
+actually ran under) — read directly from a committed task artifact
+(`results/selected/main_benchmark/tasks/*.json`'s own `"environment"` field, not assumed):
+Python 3.10.20, numpy 2.2.6, torch 2.6.0+cu124 (a CUDA build; the cluster used a GPU node, this
+repository's own validation does not). This is documented as a **reference**, not installed by
+any `requirements*.txt` here — see "Numeric tolerances" below for what that gap does and does
+not affect.
+
+Verified in a fresh venv during this pass: `pip install -r requirements.txt -r
+requirements-neural.txt` gives a clean `pytest tests/ --collect-only` (**2848 tests collected, 0
+errors**) and a fully passing, deterministic (5/5 repeated runs identical)
+`scripts/run_model_smoke.sh`.
+
+## Numeric tolerances
+
+Two different claims, two different tolerances:
+
+- **`tests/test_selected_benchmark_provenance.py`** re-derives reported numbers from committed
+  artefacts (JSON reads and medians over already-computed per-task values) — it never retrains
+  a model, so it is **not** affected by the local-vs-cluster environment gap above. Tolerances
+  there are tight (`1e-6` for exact re-aggregation of a value already in the artefact, `1e-3` to
+  `2e-2` for cross-artefact comparisons against a number written in prose in
+  `RESULTS_AND_LIMITATIONS.md`, e.g. "0.0194" or "11% to 24%").
+- **`tests/test_herald93_guards.py`**, **`tests/run_herald93_mutations.py`**, and
+  `scripts/run_model_smoke.sh` train a real (small) model fresh, in whatever local environment
+  runs them. Their assertions are about **qualitative** properties (a gradient is exactly zero
+  vs. clearly nonzero; a value is finite; two runs with the same seed are bit-identical; a
+  candidate set behaves as documented) — not about matching a specific decimal reported
+  elsewhere. **Bit-for-bit numeric equality between the local and cluster environments is not
+  promised anywhere in this repository**, and no test asserts it.
 
 ## Minimal reproducible example
 
@@ -78,14 +114,25 @@ python3 -m pytest tests/ --collect-only -q
 ```
 
 This only imports every test module; it does not execute them. Verified during this cleanup:
-2826 tests collected, 0 errors (with `torch` and the `geopandas` stack installed).
+2848 tests collected, 0 errors (with `torch` and the `geopandas` stack installed).
 
 ## Reproducing the frozen headline results
 
-The numbers in `RESULTS_AND_LIMITATIONS.md` come from HPC job artefacts already committed
-under `hpc_results/herald93/`, `herald94/`, `herald95/`, `herald96/`, plus the France ZE2020
-job families under `hpc_results/` and `data/processed/france_ze2020/`. They are **not**
-recomputed by a local script — they are read and re-derived from the committed artefacts by:
+The numbers in `RESULTS_AND_LIMITATIONS.md` come from HPC job artefacts. For the main
+280-territory benchmark, the minimal necessary subset is versioned in this repository at
+`results/selected/main_benchmark/` (see its own README and `manifest.json` for exactly what was
+selected and why); `hpc_results/herald94/`, `herald95/`, `herald96/` are committed in full. They
+are **not** recomputed by a local script — they are read and re-derived from the committed
+artefacts by:
+
+```bash
+python3 -m pytest tests/test_selected_benchmark_provenance.py -v
+```
+
+which fails if any documented number no longer matches its artefact (best forecast skill, edge
+recovery at prevalence, the no-relation-control disqualification, the 11-24% temporal gain, both
+protocols' oracle values, and the all-pairs-at-prevalence result). A second, independent
+read-only path over the same kind of evidence for the report's own figures:
 
 ```bash
 python3 reports/final_visual_evidence/scripts/audit_stage.py
