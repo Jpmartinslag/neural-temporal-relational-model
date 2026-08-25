@@ -7,7 +7,7 @@ These tests are FIXED before the diagnostic runs. They do NOT tune thresholds.
 All tests use the trivial scenario (5T × 3S × 30Y, 1 edge, seed=42).
 
 Run:
-    /home/jpdark/miniconda3/envs/mineru/bin/python -m pytest tests/test_diagnostic.py -v
+    python3 -m pytest tests/test_diagnostic.py -v
 """
 
 from __future__ import annotations

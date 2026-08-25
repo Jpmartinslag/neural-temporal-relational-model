@@ -24,7 +24,7 @@ import numpy as np
 import pandas as pd
 
 
-BASE = Path("/home/jpdark/Downloads/project_recomm/dataset")
+BASE = Path(__file__).resolve().parents[2]  # repository root
 
 
 def _find_latest_run(base: Path) -> Path:
