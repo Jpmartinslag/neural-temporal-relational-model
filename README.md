@@ -47,7 +47,8 @@ Full framing: [`docs/PROJECT_OVERVIEW.md`](docs/PROJECT_OVERVIEW.md).
 ```text
 dataset/
 ├── README.md                    — you are here
-├── requirements.txt              — Python dependencies (pip)
+├── requirements.txt              — data + baselines dependencies (pip)
+├── requirements-neural.txt       — adds the neural model's one extra dependency (torch)
 ├── docs/                         — canonical documentation (this is the required reading path)
 │   ├── PROJECT_OVERVIEW.md
 │   ├── DATA_AND_PROVENANCE.md
@@ -58,7 +59,8 @@ dataset/
 │   ├── data/                     — ingestion + panel/graph builders (incl. data/france_ze2020/)
 │   ├── modeles/                  — models, baselines, training/evaluation (incl. modeles/france_ze2020/)
 │   ├── analyse/, visualisation/  — narrow-purpose analysis/plotting
-├── scripts/                       — small entrypoint wrappers (e.g. run_minimal_example.sh)
+├── scripts/                       — entrypoints: run_temporal_relational_model.py (the model),
+│                                     run_minimal_example.sh (data + baselines), run_model_smoke.sh
 ├── tests/                        — one suite per decision/phase/dashboard version
 ├── data/                         — raw (mostly gitignored) / interim / processed panels — see docs/DATA_AND_PROVENANCE.md
 ├── hpc/                          — SLURM job scripts, active and historical (check the phase name against the decision log)
@@ -89,23 +91,35 @@ file as permission to redistribute.
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.txt          # data prep + persistence/Ridge baselines
+pip install -r requirements-neural.txt   # add this for the neural model (adds torch)
 ```
 
-`torch` is optional (commented out in `requirements.txt`) — only needed for the research track
-under `src/modeles/synthetic/` and `src/modeles/real_world/`. See
-[`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) for the full validation record.
+`requirements.txt` alone is enough for `run_minimal_example.sh`. `run_model_smoke.sh` and
+`run_temporal_relational_model.py` need `requirements-neural.txt`. See
+[`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) for what was actually verified in each
+environment, the cluster's own recorded dependency versions, and the full validation record.
 
 ## Minimal run
 
+Two small, fast, local commands — neither reproduces the frozen HPC results in
+[`docs/RESULTS_AND_LIMITATIONS.md`](docs/RESULTS_AND_LIMITATIONS.md) by itself; see
+[`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) for that separately-documented path.
+
 ```bash
-./scripts/run_minimal_example.sh   # runs entirely on committed data, no download/HPC
+./scripts/run_minimal_example.sh   # data + baselines: persistence and Ridge on committed data
+./scripts/run_model_smoke.sh       # the neural architecture: temporal encoder + relational
+                                    # learner actually run, trained, and gradient-checked on CPU
 ```
 
-This runs the persistence + Ridge(lag-only) baselines on the canonical France ZE2020 panel — the
-smallest path that exercises real code on real committed data, without a download or HPC job.
-Full reproduction path, fast test suites, and what needs the cluster:
-[`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md).
+`run_minimal_example.sh` validates that the data pipeline and the non-neural baselines work — it
+never touches the neural model. `run_model_smoke.sh` validates that the proposed neural
+architecture itself runs: it trains a real (small) instance on CPU in about a minute, checks
+every component receives a nonzero gradient, checks the no-mechanism control does not explode,
+and checks the run is deterministic. It makes no scientific claim and is not evidence for any
+result in `docs/RESULTS_AND_LIMITATIONS.md` — those come from the frozen HPC grid, reproduced
+only by reading its committed artefacts (`docs/REPRODUCIBILITY.md`, "Reproducing the frozen
+headline results").
 
 ## Main results, with their correct scope
 

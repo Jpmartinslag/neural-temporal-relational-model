@@ -65,7 +65,10 @@ demonstrated effect (see Results).
 ## The relational learner
 
 The "territorial context second" half of the architecture is a model that **learns a graph**
-over the candidate relations above, rather than assuming a fixed adjacency. It is evaluated
+over the candidate relations above, rather than assuming a fixed adjacency. The canonical
+implementation is confirmed component-by-component against this description in
+`docs/EXPERIMENT_PROVENANCE.md`. A neutral entrypoint runs it directly:
+`./scripts/run_temporal_relational_model.py --smoke` (`docs/REPRODUCIBILITY.md`). It is evaluated
 under **two separate, non-comparable synthetic protocols** — never a single shared setting —
 described fully in [`RESULTS_AND_LIMITATIONS.md`](RESULTS_AND_LIMITATIONS.md):
 

@@ -44,9 +44,10 @@ conflated.
 ## 2. Transformations
 
 - All features are computed causally: only information published on or before the decision
-  date is used. The publication-lag calendar this rule follows exists only as an untracked,
-  local-only file in the primary worktree (not part of this delivery branch) — see
-  `EXPERIMENT_PROVENANCE.md` §6 for why some supporting documentation was not carried over.
+  date is used. The publication-lag calendar this rule follows (`HERALD_DATA_AVAILABILITY_CALENDAR.md`
+  and its companion CSV) exists only as an untracked, local-only file in the repository's primary
+  working copy — it was never part of any commit this branch is based on, so it is not cited by
+  path here.
 - The temporal representation (level, growth, acceleration, trend, momentum, volatility,
   regime, national/relative components, availability flag) is built by
   `src/data/france_ze2020/build_fr_ze2020_temporal_relation_signals.py` and consumed by
