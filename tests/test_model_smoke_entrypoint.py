@@ -126,3 +126,63 @@ def test_full_size_run_refuses_to_guess_a_seed():
     the 5 seeds used for reported results would blur a local run with a frozen one."""
     entry = _load_entrypoint()
     assert entry.main([]) != 0, "running without --smoke and without --seed did not fail"
+
+
+# ── Guards over the guard suite itself: technical vs. scientific classification ──────────
+
+def _load_guards_module():
+    spec = importlib.util.spec_from_file_location(
+        "herald93_guards_meta", REPO / "tests" / "test_herald93_guards.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)  # type: ignore[union-attr]
+    return module
+
+
+def test_scientific_gate_classification_cannot_silently_disappear():
+    """docs/EXPERIMENT_PROVENANCE.md and RESULTS_AND_LIMITATIONS.md both promise that a
+    known scientific limitation (the relational scorer saturating relative to the head
+    that consumes it, after extended training) is reported as SCIENTIFIC_RECOVERY_GATE,
+    separate from TECHNICAL_EXECUTION. This fails loudly if that separation is removed or
+    if the specific guard is silently moved back into the technical bucket."""
+    guards = _load_guards_module()
+    assert guards.SCIENTIFIC_GATES == {
+        "test_h23_the_relational_scorer_still_learns_after_training"}, (
+        "the scientific-gate classification changed without an accompanying "
+        "documentation update -- see docs/EXPERIMENT_PROVENANCE.md")
+    all_names = {name for name in dir(guards) if name.startswith("test_h")}
+    assert guards.SCIENTIFIC_GATES <= all_names, "a classified gate no longer exists"
+
+
+def test_technical_and_scientific_results_are_reported_and_gated_separately():
+    """Runs the real guard suite (subprocess, so it sees the module exactly as a CI run
+    would) and checks the exit code depends only on TECHNICAL_EXECUTION -- a scientific
+    gate failure must never fail the smoke script, and must never be silently absent from
+    its output either."""
+    result = subprocess.run(
+        [sys.executable, str(REPO / "tests" / "test_herald93_guards.py")],
+        capture_output=True, text=True)
+    output = result.stdout + result.stderr
+    assert "TECHNICAL_EXECUTION: PASS" in output, "technical guards did not report PASS"
+    assert "SCIENTIFIC_RECOVERY_GATE:" in output, (
+        "the scientific gate line is missing from the guard suite's output")
+    assert result.returncode == 0, (
+        "exit code depends on something other than TECHNICAL_EXECUTION "
+        f"(got {result.returncode})")
+
+
+def test_h23_result_is_deterministic_once_threads_are_pinned():
+    """The scientific gate's own result must be reproducible run over run in this
+    environment -- a flaky pass/fail here would mean thread-scheduling nondeterminism in
+    the CPU reduction ops (index_add/index_reduce) is deciding the outcome instead of the
+    model, which is exactly the failure mode hpc/herald93/run_model_benchmark.py already
+    guards against for the real benchmark grid."""
+    guards = _load_guards_module()
+    outcomes = []
+    for _ in range(2):
+        try:
+            guards.test_h23_the_relational_scorer_still_learns_after_training()
+            outcomes.append("PASS")
+        except AssertionError:
+            outcomes.append("FAIL")
+    assert outcomes[0] == outcomes[1], (
+        f"the scientific gate is not deterministic within one process: {outcomes}")
