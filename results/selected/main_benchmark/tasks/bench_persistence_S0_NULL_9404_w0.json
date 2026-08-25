@@ -1,0 +1,90 @@
+{
+  "kind": "herald93_benchmark_task",
+  "method": "persistence",
+  "scenario": "S0_NULL",
+  "seed": 9404,
+  "width": 0,
+  "n_zones": 280,
+  "n_score": 12,
+  "origins": [
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111
+  ],
+  "environment": {
+    "python": "3.10.20",
+    "numpy": "2.2.6",
+    "torch": "2.6.0+cu124"
+  },
+  "cost": {
+    "parameters": 0,
+    "epochs": 0,
+    "seconds": 0.0,
+    "peak_memory_mb": 608.3,
+    "total_seconds": 1.5
+  },
+  "capabilities": {
+    "learns_graph": false,
+    "graph_kind": null,
+    "objective": "none",
+    "aim": "forecast floor"
+  },
+  "forecast": {
+    "mae": 0.08479296175134093,
+    "wmape": 1.0,
+    "deviance": 0.017233345722420735,
+    "skill_vs_persistence": 0.0,
+    "n": 11017
+  },
+  "forecast_per_signal": {
+    "headcount": {
+      "mae": 0.03526651944920889,
+      "wmape": 1.0,
+      "deviance": 0.0018434441018568373,
+      "skill_vs_persistence": 0.0,
+      "n": 3228
+    },
+    "payroll": {
+      "mae": 0.17795534412537886,
+      "wmape": 1.0,
+      "deviance": 0.04963808177074753,
+      "skill_vs_persistence": 0.0,
+      "n": 3221
+    },
+    "establishments": {
+      "mae": 0.05826596281698616,
+      "wmape": 1.0,
+      "deviance": 0.005326934123558865,
+      "skill_vs_persistence": 0.0,
+      "n": 535
+    },
+    "unemployment": {
+      "mae": 0.04331448342442311,
+      "wmape": 1.0,
+      "deviance": 0.003019363686761847,
+      "skill_vs_persistence": 0.0,
+      "n": 3222
+    },
+    "creations": {
+      "mae": 0.09420223884593415,
+      "wmape": 1.0,
+      "deviance": 0.014114144666691619,
+      "skill_vs_persistence": 0.0,
+      "n": 811
+    }
+  },
+  "relational": {},
+  "events": {},
+  "gradients": {},
+  "abstention_rate": null,
+  "support_size": 11200
+}
