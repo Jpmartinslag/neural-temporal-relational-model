@@ -2,11 +2,15 @@
 
 ## Purpose
 
-Controlled synthetic benchmark to provide falsifiable evidence that HERALD graph-aware
-imputation outperforms statistical baselines when recovering missing economic panel labels
-with known ground truth.
+Controlled synthetic benchmark to provide falsifiable evidence that the model's
+graph-aware imputation outperforms statistical baselines when recovering missing
+economic panel labels with known ground truth.
 
-Governed by a pre-specified, fail-closed contract (`reports/HERALD_SYNTHETIC_BENCHMARK_CONTRACT.md`).
+Governed by a pre-specified, fail-closed contract enforced in code by
+`src/modeles/synthetic/gates.py`. The original prose contract document was
+consolidated into the repository's documentation history before this delivery branch
+existed and is not part of the current file tree; `gates.py` is now the operative
+record of the gate logic and thresholds.
 **Do not adjust gate thresholds after observing results.**
 
 ---
@@ -73,9 +77,9 @@ python src/modeles/synthetic/run_full_benchmark.py \
 **Commands:**
 
 ```bash
-# 1. Sync to cluster
+# 1. Sync to cluster (run from the repo root)
 rsync -avz --exclude='data/external' --exclude='data/raw' \
-  /home/jpdark/Downloads/project_recomm/dataset/ \
+  ./ \
   CLUSTER_USER@CLUSTER_HOST:~/project_recomm/dataset/
 
 # 2. Cluster smoke
@@ -171,8 +175,7 @@ for scenario in ['mixed_default', 'linear', 'nonlinear_heavy', 'generalization']
 |------|-------------|
 | `run_phase9.slurm` | Slurm array job script |
 | `src/modeles/synthetic/run_full_benchmark.py` | Main runner |
-| `src/modeles/synthetic/gates.py` | Fail-closed gate evaluation |
-| `reports/HERALD_SYNTHETIC_BENCHMARK_CONTRACT.md` | Sealed contract |
+| `src/modeles/synthetic/gates.py` | Fail-closed gate evaluation — operative contract |
 
 ---
 
