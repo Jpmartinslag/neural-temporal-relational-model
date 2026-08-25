@@ -1,90 +1,94 @@
-# HERALD Phase 4 — Batteries HPC Internationales
+# Phase 4 — international HPC batteries
 
-Batteries SLURM pour la généralisation de HERALD à NL/BE/PT.
-Scripts France (Phase 2+3) → `hpc/regime/`. Ne pas mélanger.
+SLURM batteries for generalizing the model to NL/BE/PT.
+France scripts (Phase 2+3) live under `hpc/regime/`. Do not mix the two.
 
-> **⚠️ Statut actuel (2026-06-09) — ce fichier décrit les batteries par pays
-> initiales (Phase 4 NL/BE/PT). Le travail a depuis évolué vers un protocole
-> LOCO 4 pays (Phase 4G/4H/4I).** Résultat validé : la persistance (~0.0939) est
-> le meilleur baseline balancé et Ridge non pondéré (~0.0969) le meilleur modèle
-> entraînable ; le graphe/résiduel ne transfère pas robustement **dans ce
-> protocole** (ce qui ne prouve pas qu'il ne marche jamais ailleurs). Protocole =
-> LOCO *parameter zero-shot avec historique du pays-cible*, **pas cold-start**.
-> Prochains pas (2 gates) : audit sémantique officiel des targets, puis benchmark
-> de combinaison persistance/Ridge. Voir
-> `reports/HERALD_PHASE4_NEXT_STEP_INDEPENDENT_AUDIT.md`,
-> `reports/HERALD_PHASE4H_B_RESULTS_AUDIT.md`,
-> `reports/HERALD_PHASE4I_A_RESULTS_AUDIT.md`. Le contenu ci-dessous est conservé
-> comme registre historique des batteries initiales.
+> **⚠️ Current status (2026-06-09) — this file describes the initial per-country
+> batteries (Phase 4 NL/BE/PT). The work has since moved to a 4-country LOCO
+> protocol (Phase 4G/4H/4I).** Validated result: persistence (~0.0939) is the best
+> balanced baseline and unweighted Ridge (~0.0969) the best trainable model; the
+> graph/residual mechanism does not transfer robustly **under this protocol** (which
+> does not prove it never works elsewhere). Protocol = LOCO *zero-shot parameters
+> with target-country history*, **not** cold-start. Next steps (2 gates): the
+> official semantic target audit, then a persistence/Ridge combination benchmark.
+> The three prose write-ups originally cited here — an independent-audit note and
+> the Phase 4H-B / Phase 4I-A results audits — were consolidated into the
+> repository's documentation history before this delivery branch existed and are
+> not part of the current file tree; they remain recoverable from git history. The
+> content below is kept as the historical record of the initial batteries.
 
 ---
 
-## Candidat de départ
+## Starting candidate
 
 **France Q7:** `Q7_effectifs_lag1` — features: `side_lag_1`, `growth_1y`, `effectifs_lag1` × A10.
-Les batteries Phase 4 testent si la même architecture généralise hors France.
+The Phase 4 batteries test whether the same architecture generalizes outside France.
 
 ---
 
-## Pays et panneaux
+## Countries and panels
 
-| Pays | Zones | Fenêtre modélisation | Tensor | Q7-equiv |
+| Country | Zones | Modelling window | Tensor | Employment-equivalent |
 |------|-------|---------------------|--------|----------|
-| **Pays-Bas** | 40 COROP (CR01–CR40) | 2016–2024 | `qtensor_jobs` — CBS employee jobs × SBI-A10 | ✅ oui |
-| **Belgique** | 42 arrondissements | 2009–2020 | `qtensor_jobs` — ONSS jobs × NACE-A10 | ✅ oui |
+| **Netherlands** | 40 COROP (CR01–CR40) | 2016–2024 | `qtensor_jobs` — CBS employee jobs × SBI-A10 | ✅ yes |
+| **Belgium** | 42 arrondissements | 2009–2020 | `qtensor_jobs` — ONSS jobs × NACE-A10 | ✅ yes |
 | **Portugal** | 25 NUTS3 (PT_111–PT_300) | 2009–2022 | `sector_births_tensor` — births × CAE-A10 | ⚠️ proxy |
 
-Preflight avant tout lancement: `python3 src/data/phase4_preflight.py`
+Preflight before any launch: `python3 src/data/phase4_preflight.py`
 
 ---
 
-## Structure prévue
+## Planned structure
 
 ```text
 hpc/phase4/
-├── README.md                           ← ce fichier
-├── submit_herald_phase4_nl.sh          ← batterie Pays-Bas
-├── submit_herald_phase4_be.sh          ← batterie Belgique
-├── submit_herald_phase4_pt.sh          ← batterie Portugal (tensor proxy)
-├── smoke_test_phase4_nl.sh             ← smoke test NL (1 seed, 1 epoch)
-├── smoke_test_phase4_be.sh             ← smoke test BE
-├── smoke_test_phase4_pt.sh             ← smoke test PT
-├── audit_phase4_results.py             ← aggrégation + comparaison 4 pays
-└── phase4_configs.sh                   ← registre central des configs
+├── README.md                           ← this file
+├── submit_herald_phase4_nl.sh          ← Netherlands battery
+├── submit_herald_phase4_be.sh          ← Belgium battery
+├── submit_herald_phase4_pt.sh          ← Portugal battery (tensor proxy)
+├── smoke_test_phase4_nl.sh             ← NL smoke test (1 seed, 1 epoch)
+├── smoke_test_phase4_be.sh             ← BE smoke test
+├── smoke_test_phase4_pt.sh             ← PT smoke test
+├── audit_phase4_results.py             ← aggregation + 4-country comparison
+└── phase4_configs.sh                   ← central config registry
 ```
+
+The filenames above keep the legacy `herald_phase4` naming from when they were
+written; renaming ~80 files across `hpc/phase4/` was judged not worth the risk this
+late in the delivery and does not change what they do.
 
 ---
 
-## Configs prévus (par pays)
+## Planned configs (per country)
 
-Chaque pays teste les configs suivantes en parallèle (NL/BE) ou comme variante (PT):
+Each country tests the following configs, in parallel (NL/BE) or as a variant (PT):
 
 | Config | Description | NL | BE | PT |
 |--------|-------------|----|----|-----|
 | `baseline_side2` | `side_lag_1 + growth_1y`, no tensor | ✅ | ✅ | ✅ |
 | `qtensor_jobs_lag1` | + employment tensor lag1 | ✅ | ✅ | — |
-| `sector_births_lag1` | + sector_births_tensor lag1 | — | — | ✅ |
-| `no_qtensor_control` | features only, no Q7 | ✅ | ✅ | ✅ |
+| `sector_births_lag1` | + `sector_births_tensor` lag1 | — | — | ✅ |
+| `no_qtensor_control` | features only, no employment tensor | ✅ | ✅ | ✅ |
 
-Seeds: 20 par config. Total estimé: ~4 configs × 20 seeds × 3 pays = ~240 runs.
+Seeds: 20 per config. Estimated total: ~4 configs × 20 seeds × 3 countries = ~240 runs.
 
 ---
 
-## Protocole de lancement
+## Launch protocol
 
-1. Vérifier preflight: `python3 src/data/phase4_preflight.py`
-2. Copier les panels vers le cluster (voir section Transfer)
+1. Check the preflight: `python3 src/data/phase4_preflight.py`
+2. Copy the panels to the cluster (see the Transfer section)
 3. Smoke test: `bash hpc/phase4/smoke_test_phase4_nl.sh` (1 seed, 1 epoch)
-4. Vérifier artefacts smoke
+4. Verify the smoke artifacts
 5. Submit: `STAMP=$(date +%Y%m%d_%H%M%S) bash hpc/phase4/submit_herald_phase4_nl.sh`
-6. Repeat pour BE et PT
+6. Repeat for BE and PT
 
 ---
 
-## Transfer des données vers le cluster
+## Transferring data to the cluster
 
 ```bash
-# Panels Phase 4 (NL/BE/PT)
+# Phase 4 panels (NL/BE/PT)
 rsync -av \
   data/external/netherlands/processed/ \
   meso-direct:~/project_recomm_herald_v6_2025_20260430/dataset/data/external/netherlands/processed/
@@ -98,7 +102,7 @@ rsync -av \
   meso-direct:~/project_recomm_herald_v6_2025_20260430/dataset/data/external/portugal/processed/
 ```
 
-## Récupération des résultats
+## Retrieving results
 
 ```bash
 rsync -av \
@@ -110,10 +114,11 @@ python3 hpc/phase4/audit_phase4_results.py --root hpc_results/<OUT_ROOT>
 
 ---
 
-## Règles
+## Rules
 
-- `OUT_ROOT` unique daté par run.
-- Ne jamais réutiliser un `OUT_ROOT` existant.
-- Label `sector_births_tensor` obligatoire pour PT — ne jamais écrire `qtensor_jobs` ou `Q7` pour PT.
-- Smoke test obligatoire avant tout submit.
-- Résultats → `reports/metrics/` après agrégation.
+- `OUT_ROOT` must be unique and dated per run.
+- Never reuse an existing `OUT_ROOT`.
+- The `sector_births_tensor` label is mandatory for PT — never write `qtensor_jobs`
+  or an employment-tensor label for PT.
+- A smoke test is mandatory before any submit.
+- Results go to `reports/metrics/` after aggregation.
