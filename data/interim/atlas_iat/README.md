@@ -1,7 +1,8 @@
 # data/interim/atlas_iat/
 
 Atlas/IAT intermediate data directory.  
-All files here are derived from the Atlas/IAT dump: `/home/jpdark/Downloads/project_recomm/iat.dump`
+All files here are derived from an external Atlas/IAT database dump (`iat.dump`, not
+part of this repository — kept locally by whoever runs the restore).
 
 **Dump date:** 2022-01-20  
 **Audit date:** 2026-05-18  
@@ -45,9 +46,9 @@ All files here are derived from the Atlas/IAT dump: `/home/jpdark/Downloads/proj
 ```
 Phase 1 (DONE): DB restored, TOC audited, ZE2020 coverage confirmed (98.1%, 306/306 zones)
 Phase 2 (DONE): static_features_v0 + v1 generated, audited, use policy defined
-Phase 3 (CURRENT): Post-model/dashboard overlay — use v1 as interpretation layer for HERALD output
+Phase 3 (CURRENT): Post-model/dashboard overlay — use v1 as interpretation layer for the model's output
 Phase 4 (FUTURE): Annual dynamic reconstruction — SIRENE Dec 2011-2024, Douanes, CLAP
-Phase 5 (FUTURE): Controlled HERALD training experiments with Atlas features
+Phase 5 (FUTURE): Controlled training experiments with Atlas features
 ```
 
 **Current priority:** Close static layer. Use v1 as Stage A post-model overlay. Do not start Phase 4 until Stage A validation is complete.
@@ -120,13 +121,17 @@ Arrondissement fix applied:
 - Marseille `1320X` → `13055`
 
 Coverage after fix: **98.1%** of establishments mappable to ZE2020.  
-Unmapped 1.9% = overseas territories (971XX–976XX), correctly outside HERALD metropolitan panel.
+Unmapped 1.9% = overseas territories (971XX–976XX), correctly outside the metropolitan panel.
 
 ---
 
 ## Source Reproducibility Summary
 
-See full audit: `reports/ATLAS_IAT_SOURCE_REPRODUCIBILITY_AUDIT.md`  
+The full prose audit was consolidated into the repository's documentation history
+before this delivery branch existed and is not part of the current file tree; it
+remains recoverable from git history
+(`git log --all -- reports/ATLAS_IAT_SOURCE_REPRODUCIBILITY_AUDIT.md`). The table
+below and the machine-readable matrix are the operative summary.  
 See machine-readable matrix: `source_reproducibility_matrix.csv`
 
 | Feature block | Source status | Reconstructible annually | Training safe |
@@ -148,6 +153,6 @@ See machine-readable matrix: `source_reproducibility_matrix.csv`
 ## Isolation Guarantee
 
 All files here are:
-- New additions only — no HERALD training files modified
+- New additions only — no training files modified
 - Isolated from HPC outputs
 - Not pushed to remote (manual push by user)
