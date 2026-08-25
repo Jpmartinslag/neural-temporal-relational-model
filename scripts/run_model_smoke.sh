@@ -8,17 +8,25 @@
 # real gradient, checks the no-mechanism scenario does not explode, and checks
 # determinism by running twice and diffing the result.
 #
+# TECHNICAL_EXECUTION and SCIENTIFIC_RECOVERY_GATE are reported and gated SEPARATELY (see
+# step 1): a model can execute correctly and still fail scientifically, and this script's
+# own exit code depends only on the technical side. A SCIENTIFIC_RECOVERY_GATE failure is
+# not a smoke failure -- it means the smoke reproduced an already-documented scientific
+# limitation (docs/RESULTS_AND_LIMITATIONS.md), and is reported loudly, not hidden.
+#
 # This is a smoke test, not a reproduction of any reported result -- see
 # docs/RESULTS_AND_LIMITATIONS.md and docs/REPRODUCIBILITY.md. It makes no scientific
-# claim. Runs in well under a minute on a laptop CPU, no SLURM, no download.
+# claim on its own. Runs in well under two minutes on a laptop CPU, no SLURM, no download.
 set -euo pipefail
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-echo "=== [1/4] architecture guards (leakage, gradients, fairness between arms) ==="
+echo "=== [1/4] architecture guards: TECHNICAL_EXECUTION and SCIENTIFIC_RECOVERY_GATE ==="
+echo "    (leakage, gradients, fairness between arms; the scientific gate does not"
+echo "     affect this script's exit code -- see docs/EXPERIMENT_PROVENANCE.md)"
 python3 tests/test_herald93_guards.py
 
 echo
-echo "=== [2/4] anti-substitution mutation tests ==="
+echo "=== [2/4] MUTATION_TESTING: anti-substitution mutation tests ==="
 echo "    (proves each guard above actually catches the defect it names)"
 python3 tests/run_herald93_mutations.py
 
@@ -50,6 +58,10 @@ echo "=== [extra] structural anti-substitution guards on the entrypoint itself =
 python3 -m pytest tests/test_model_smoke_entrypoint.py -q
 
 echo
-echo "All smoke checks passed. This proves the architecture runs, trains, produces a real"
-echo "gradient in every component, and is deterministic. It is NOT evidence for any"
-echo "scientific claim -- see docs/RESULTS_AND_LIMITATIONS.md."
+echo "TECHNICAL_EXECUTION: PASS -- the architecture runs, trains, produces a real gradient"
+echo "in every component, and is deterministic."
+echo "MUTATION_TESTING: PASS -- every guard above was proven to catch the defect it names."
+echo "SCIENTIFIC_RECOVERY_GATE: see the guard output above (step 1) -- a FAIL there is"
+echo "expected and does not fail this script; it reproduces an already-documented"
+echo "limitation, not a new failure. Neither a PASS nor a FAIL on that line is evidence for"
+echo "any scientific claim on its own -- see docs/RESULTS_AND_LIMITATIONS.md."
