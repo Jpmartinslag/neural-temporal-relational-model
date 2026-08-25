@@ -50,8 +50,8 @@ Phase 4P (Italy spatial-lag) and Phase 4Q (Italy Spatial-Durbin) both FAIL. Geog
 | `hpc/tools/` | rsync, env setup scripts |
 | `hpc/archive/legacy_runs/` | V3-V6 historical scripts (read-only) |
 
-SSH alias: `meso` → `hpc2.mesocentre.uca.fr` (user `jpmartinsd`)
-Remote base: `~/project_recomm_herald_v6_2025_20260430/dataset`
+SSH alias: `meso` (resolves via `~/.ssh/config`, not committed here — see `hpc/france_ze2020/README.md`)
+Remote base: `~/project_recomm_herald_v6_2025_20260430/dataset` (relative to the remote account's own home)
 Slurm constraint: `#SBATCH --constraint=mpi`
 
 ---
