@@ -1,68 +1,65 @@
-# HERALD — datasets principaux à maintenir
+# Primary datasets to maintain — France pipeline
 
 Date: 2026-05-07
 
-Ce document liste les sources réellement importantes pour HERALD-France. Les fichiers bruts peuvent
-rester sur la machine locale; le dépôt doit conserver la trace, les scripts et les panels dérivés
-nécessaires à la reproductibilité.
+This document lists the sources that actually matter for the France pipeline. Raw files can stay
+on the local machine; the repository only needs to keep the trace, the scripts, and the derived
+panels required for reproducibility.
 
-## Règle générale
+## General rule
 
-- Les datasets bruts lourds restent hors Git.
-- Les panels propres, graphes et cibles canoniques peuvent être versionnés si leur taille reste
-  raisonnable.
-- Chaque source doit avoir une fréquence de mise à jour et une date de disponibilité documentées.
-- Pour un forecast, une variable `t-1` n'est autorisée que si elle est publiée avant la date de
-  prévision.
+- Heavy raw datasets stay out of git.
+- Clean panels, graphs, and canonical targets can be versioned if their size stays reasonable.
+- Every source must have a documented update frequency and availability date.
+- For a forecast, a `t-1` variable is only allowed if it was published before the forecast date.
 
-## Sources canoniques
+## Canonical sources
 
-| Source | Rôle dans HERALD | Fichiers dérivés actuels | Mise à jour | Action |
+| Source | Role in the pipeline | Current derived files | Update cadence | Action |
 |---|---|---|---|---|
-| SIDE créations d'établissements | cible principale et lags AR | `data/processed/target_side_establishments_annual_core_through_2025_v1.csv`; `data/processed/dynamic_stgnn_feature_panel_through_2025_v1.csv` | annuelle | automatiser téléchargement dès nouvelle publication INSEE |
-| SIDE A10 créations | cible/prior sectoriel | `data/processed/side_creations_a10_ze2020_through_2025_v1.csv` | annuelle | mettre à jour avec SIDE créations |
-| Graphes ZE2020 géographie | prior spatial fixe et cartographie | `graph_adjacency_core_v0.csv`; `graph_edges_ze2020_core_v0.csv`; `graph_nodes_ze2020_core_v0.csv`; `graph_node_index_core_v0.csv` | rare, à chaque changement de géographie | garder stable pour comparabilité; reconstruire seulement si nomenclature change |
-| Graphe mobilité domicile-travail | prior de connexions économiques | `graph_adjacency_mobility_v0.csv` | lent, selon recensement / mobilité INSEE | documenter millésime; reconstruire si nouvelle matrice fiable disponible |
-| FLORES établissements / emploi salarié | contexte productif local | `data/processed/flores_panel_ze2020_annual_v1.csv` | annuelle avec retard | vérifier disponibilité avant forecast; utiliser surtout `t_minus_1` |
-| URSSAF trimestriel emploi / masse salariale | signal conjoncturel rapide | `data/raw/employment/urssaf/urssaf_emploi_ze_quarterly_raw.csv`; tensors quarterly | trimestrielle, fin de trimestre + ~80 jours | prioritaire pour extraction régulière; ne pas utiliser Q4 si cutoff ne le permet pas |
-| SIDE stocks établissements / unités légales | contexte stock économique | `data/processed/side_stocks_lagged_ze2020_annual_v1.csv` | annuelle mais actuellement jusqu'à 2023 | traiter comme manquant après 2023; ne pas forcer comme signal courant |
-| Splits walk-forward | protocole d'évaluation | `metadata/dynamic_stgnn_walk_forward_splits_through_2025_v1.csv` | à chaque extension d'année | conserver et versionner |
+| SIDE establishment creations | main target and AR lags | `data/processed/target_side_establishments_annual_core_through_2025_v1.csv`; `data/processed/dynamic_stgnn_feature_panel_through_2025_v1.csv` | annual | automate the download as soon as INSEE publishes a new release |
+| SIDE A10 creations | sectoral target/prior | `data/processed/side_creations_a10_ze2020_through_2025_v1.csv` | annual | update alongside SIDE creations |
+| ZE2020 geography graphs | fixed spatial prior and mapping | `graph_adjacency_core_v0.csv`; `graph_edges_ze2020_core_v0.csv`; `graph_nodes_ze2020_core_v0.csv`; `graph_node_index_core_v0.csv` | rare, only on a geography change | keep stable for comparability; rebuild only if the nomenclature changes |
+| Home-to-work commuting graph | prior for economic connections | `graph_adjacency_mobility_v0.csv` | slow, tied to the census / INSEE mobility release | document the vintage; rebuild if a new, reliable matrix becomes available |
+| FLORES establishments / salaried employment | local productive context | `data/processed/flores_panel_ze2020_annual_v1.csv` | annual, with a delay | check availability before forecasting; mostly use `t_minus_1` |
+| URSSAF quarterly employment / payroll | fast conjunctural signal | `data/raw/employment/urssaf/urssaf_emploi_ze_quarterly_raw.csv`; quarterly tensors | quarterly, end of quarter + ~80 days | priority for regular extraction; do not use Q4 if the cutoff does not allow it |
+| SIDE establishment / legal-unit stocks | economic-stock context | `data/processed/side_stocks_lagged_ze2020_annual_v1.csv` | annual, but currently only through 2023 | treat as missing after 2023; do not force it as a current signal |
+| Walk-forward splits | evaluation protocol | `metadata/dynamic_stgnn_walk_forward_splits_through_2025_v1.csv` | on every year extension | keep and version |
 
-## Sources brutes à conserver localement
+## Raw sources to keep locally only
 
-Ces sources peuvent rester sur le PC local ou être téléchargées à la demande:
+These sources can stay on the local machine or be downloaded on demand:
 
-- ZIP SIDE créations / établissements 2012-2025;
-- ZIP SIDE A10;
-- ZIP SIDE stocks;
-- ZIP FLORES;
-- fichiers URSSAF open data;
-- fichiers territoriaux INSEE ZE2020/COG;
-- archives de téléchargement et logs.
+- SIDE creations/establishments ZIPs, 2012-2025;
+- SIDE A10 ZIP;
+- SIDE stocks ZIP;
+- FLORES ZIP;
+- URSSAF open-data files;
+- INSEE territorial files (ZE2020/COG);
+- download archives and logs.
 
-Elles ne doivent pas être commitées si elles sont lourdes ou facilement récupérables.
+They must not be committed if they are heavy or easily re-downloadable.
 
-## Fréquence d'extraction recommandée
+## Recommended extraction frequency
 
-| Source | Fréquence pratique | Usage |
+| Source | Practical frequency | Use |
 |---|---|---|
-| URSSAF trimestriel | mensuelle ou trimestrielle | signaux rapides, forecast opérationnel |
-| SIDE créations/A10 | annuelle après publication INSEE | cible, backtest, forecast année suivante |
-| FLORES | annuelle après publication | contexte économique `t-1` |
-| SIDE stocks | annuelle, si nouveau millésime publié | contexte structurel |
-| Géographie ZE/COG | annuelle ou lors de changement de nomenclature | jointures, cartes |
-| Mobilité domicile-travail | quand nouveau millésime fiable existe | graphe structurel |
+| URSSAF quarterly | monthly or quarterly | fast signals, operational forecasting |
+| SIDE creations/A10 | annual, after the INSEE release | target, backtest, next-year forecast |
+| FLORES | annual, after the release | `t-1` economic context |
+| SIDE stocks | annual, if a new vintage is published | structural context |
+| ZE/COG geography | annual, or on a nomenclature change | joins, maps |
+| Home-to-work mobility | whenever a new reliable vintage exists | structural graph |
 
-## À exposer via API plus tard
+## To expose via API later
 
-Pour une application, il faudra préparer une couche d'accès qui met à jour:
+For an application, an access layer will be needed that keeps up to date:
 
-- les observations SIDE;
-- les prévisions HERALD;
-- les indicateurs dérivés par zone;
-- les géométries simplifiées;
-- les connexions top-k du graphe;
-- les métadonnées de disponibilité des sources.
+- SIDE observations;
+- model forecasts;
+- derived indicators by zone;
+- simplified geometries;
+- top-k graph connections;
+- source-availability metadata.
 
-La première API ne doit pas servir les bruts INSEE. Elle doit servir des tables propres et auditées.
-
+The first API must not serve raw INSEE data. It must serve clean, audited tables.
