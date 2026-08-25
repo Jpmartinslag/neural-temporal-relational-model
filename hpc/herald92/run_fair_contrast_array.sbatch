@@ -8,11 +8,11 @@
 #SBATCH --time=00:40:00
 #SBATCH --array=0-59%20
 # Slurm opens these before the shell runs; the directory is created at submission time.
-#SBATCH --output=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/herald92/logs/fair-%A_%a.out
-#SBATCH --error=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/herald92/logs/fair-%A_%a.err
+#SBATCH --output=hpc_results/herald92/logs/fair-%A_%a.out
+#SBATCH --error=hpc_results/herald92/logs/fair-%A_%a.err
 set -euo pipefail
 
-cd /home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset
+cd "${REPO_ROOT:?set REPO_ROOT to the repository root}"
 module load conda/23.3.1
 source activate herald-v5
 export PYTHONHASHSEED=0 OMP_NUM_THREADS=2
