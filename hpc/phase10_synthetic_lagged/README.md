@@ -1,4 +1,4 @@
-# HERALD Phase 10 — HPC Infrastructure
+# Phase 10 — HPC infrastructure
 
 **Decision:** DEC-043  
 **Target cluster:** meso  
@@ -20,9 +20,9 @@
 # 1. Commit and push all code locally
 git push origin main
 
-# 2. Sync to meso (no --delete)
+# 2. Sync to meso (run from the repo root; no --delete)
 rsync -avz --exclude='*.pyc' --exclude='hpc_results/' --exclude='data/external/' \
-    /home/jpdark/Downloads/project_recomm/dataset/ \
+    ./ \
     meso:~/project_recomm_herald_v6_2025_20260430/dataset/
 
 # 3. Smoke test on meso (1 task, 50 epochs)
