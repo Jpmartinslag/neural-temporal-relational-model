@@ -110,16 +110,14 @@ derived from wall-clock time or randomness at run time.
 
 ## HPC vs. local
 
-- **Local / this repository**: baselines, the fast test suites above, and any script this
-  branch's kept code-path traceability map classifies as active without an `hpc/` counterpart
-  (`reports/canonical/`, the code path map document — see `EXPERIMENT_PROVENANCE.md` §7 for
-  which documents were kept and why).
+- **Local / this repository**: baselines, the fast test suites above, and any script
+  `reports/canonical/HERALD_10_CODE_PATH_MAP.md` classifies as active without an `hpc/`
+  counterpart (see `EXPERIMENT_PROVENANCE.md` §8 for which documents were kept and why).
 - **HPC (SLURM, Mésocentre)**: the dynamic-graph training, relation-objective, and known-truth
   synthetic benchmark runs (`hpc_results/herald93/` through `herald98/`). Submission scripts
   live under `hpc/<phase>/`; **none of them were (re)launched by this cleanup** — the committed
   `hpc_results/` artefacts are the frozen output of runs already completed. See
-  `reports/canonical/` (kept HPC/results map, `EXPERIMENT_PROVENANCE.md` §7) for which job
-  produced which result.
+  `reports/canonical/HERALD_11_HPC_AND_RESULTS_MAP.md` for which job produced which result.
 
 ## What was NOT run in this cleanup, and why
 
@@ -139,30 +137,38 @@ derived from wall-clock time or randomness at run time.
 ## Validation record (this delivery)
 
 **Branch:** `delivery/repository-cleanup`. **Base commit:** `f730e72` on `main` (see
-`EXPERIMENT_PROVENANCE.md` §4 for what that base does and does not include). **Date:**
-2026-08-25. **Environment:** fresh venv, `pip install -r requirements.txt` plus `torch`
-(§ "Environment" above).
+`EXPERIMENT_PROVENANCE.md` §5 for what that base does and does not include). **Date:**
+2026-08-25. **Environment:** fresh venv, `pip install -r requirements.txt -r requirements-neural.txt`
+(local, CPU; Python 3.12.3 / torch 2.13.0 — see `requirements-neural.txt` for how this compares
+to the cluster's own recorded environment).
 
 | # | Check | Status | Detail |
 |---|---|---|---|
-| 1 | Markdown links in `README.md` + `docs/*.md` resolve | PASS | Checked every `](...)` link against the filesystem |
-| 2 | Personal filesystem paths in public docs | PASS | None found |
-| 3 | Secrets/tokens (AWS keys, private-key headers, Slack/GitHub tokens, hardcoded passwords) | PASS | None found in `README.md`/`docs/*.md` |
-| 4 | Legacy model name in `README.md`, `docs/PROJECT_OVERVIEW.md`, `docs/RESULTS_AND_LIMITATIONS.md` | PASS | Zero occurrences |
-| 5 | Legacy model name in `docs/DATA_AND_PROVENANCE.md`, `docs/REPRODUCIBILITY.md` | PASS | Occurrences are limited to real, still-existing technical paths (e.g. `hpc_results/herald93/`), none presenting it as a current name |
-| 6 | "frugal"/"frugality" in public docs | PASS | Zero occurrences |
-| 7 | Five signal frequencies vs. the protected report's `tab:five-signal-construction` | PASS | Verified line-by-line against `Report_project.tex`; corrected employment, payroll, and unemployment from an earlier incorrect "Annual" to "Quarterly" |
-| 8 | 280-territory vs. 80-territory protocol separation | PASS | `RESULTS_AND_LIMITATIONS.md` §0 table added; every subsequent section states which protocol a number belongs to |
-| 9 | `./scripts/run_minimal_example.sh` | PASS | 12/12 |
-| 10 | `pytest tests/ --collect-only` (2826 tests) | PASS | 0 errors |
-| 11 | Fast local suites (DEC-060→066, artifact registry) | PASS | 356 passed / 10 skipped, and 13 passed |
-| 12 | Broken references after archiving 55 `reports/canonical/` documents | PASS | Zero test/code/registry-test dependency on the archived files (verified before archiving, re-verified by check #10 after) |
-| 13 | Checksums of the 4 protected directories, before vs. after this pass | 3× PASS, 1 informational | `reports/final_visual_evidence/`, `reports/results_evidence_selection/`, and `Pesquisa_stage/report_present/presentation/` are byte-identical. `Pesquisa_stage/report_present/report/` changed again during this session — **not from this branch** (no `Write`/`Edit`/write-capable `Bash` call ever targeted it); it reflects someone else's concurrent editing of the report, reported here rather than silently absorbed |
-| 14 | `tests/run_guards_no_pytest.py` | NOT RUN | Fails at the branch's base commit with a pre-existing missing-module error, unrelated to this cleanup (§ "What was NOT run" above) |
-| 15 | Full non-collection execution of all 2826 tests | NOT RUN | Several suites are HPC-scale; collection-only used instead (check #10) |
-| 16 | HPC re-submission / cluster-dependent reproduction | NOT RUN | No cluster access from this environment |
+| 1 | `pytest tests/ --collect-only` (full test collection) | PASS | 2835 tests collected, 0 errors |
+| 2 | `./scripts/run_minimal_example.sh` | PASS | 12/12 |
+| 3 | `./scripts/run_model_smoke.sh` (neural model smoke) | PASS | Full script ~90s; see rows 5-8 below for its parts |
+| 4 | Smoke repeated twice, same seed, for determinism | PASS | Forecast, connection scores, and gradients bit-identical across two independent runs |
+| 5 | Temporal-encoder tests | PASS | `tests/test_herald93_guards.py::test_h14/h15` (every signal's encoder branch and the fusion gate all receive nonzero gradient) |
+| 6 | Relational-learner tests | PASS | `test_h9/h12/h13/h17/h18` (no self-loops, no node-only path, top-k does not block gradient, HERALD/NRI/MTGNN share one candidate set) |
+| 7 | Per-component gradient tests | 22/23 PASS, 1 documented FAIL | `test_herald93_guards.py`: 22/23 guards pass. `test_h23` fails on this small CPU fixture (scorer gradient ratio 2.9e-5 against a 1e-4 gate after 25 epochs) — this reproduces, at smaller scale, an already-documented finding in the module's own record (the scorer can saturate/freeze after extended training); it is not a regression introduced by this pass and is not silently hidden. `run_herald93_mutations.py`: 22/22 targeted mutants killed. `tests/test_model_smoke_entrypoint.py`: 9/9 pass |
+| 8 | No-mechanism (`S0_NULL`) does not explode | PASS | `test_no_mechanism_scenario_does_not_explode` and the smoke script's own `no-mechanism` run: finite MAE, finite skill, finite gradients |
+| 9 | `tests/test_herald_artifact_registry.py` | PASS | 13/13 |
+| 10 | Import verification | PASS | `pytest --collect-only` imports every test module including the two new files; the entrypoint's own `importlib` loads succeed (rows 1-4) |
+| 11 | Markdown links in `README.md` + `docs/*.md` resolve | PASS | Checked every `](...)` link against the filesystem |
+| 12 | Personal filesystem paths in public docs | PASS | None found |
+| 13 | Secrets/tokens (AWS keys, private-key headers, Slack/GitHub tokens, hardcoded passwords) | PASS | None found in `README.md`/`docs/*.md` |
+| 14 | Legacy model name on the public surface | PASS | Zero occurrences in `README.md`, `docs/PROJECT_OVERVIEW.md`, `docs/RESULTS_AND_LIMITATIONS.md`, and in the entrypoint's own `--help` output (`test_cli_help_carries_no_legacy_internal_name`). Remaining occurrences in `docs/DATA_AND_PROVENANCE.md`/`docs/REPRODUCIBILITY.md` are real, still-existing technical paths only |
+| 15 | Efficiency/cost-savings claim wording in public docs | PASS | Zero occurrences of that word family, verified by direct search |
+| 16 | Five signal frequencies vs. the protected report's own construction table | PASS | Verified line-by-line against `Report_project.tex`; employment, payroll, and unemployment corrected from an earlier incorrect "Annual" to "Quarterly" |
+| 17 | 280-territory vs. 80-territory protocol separation | PASS | `RESULTS_AND_LIMITATIONS.md` §0 table; every subsequent section states which protocol a number belongs to |
+| 18 | Checksums of the 4 protected directories, before this cleanup started vs. now | 3× PASS, 1 informational | `reports/final_visual_evidence/`, `reports/results_evidence_selection/`, and `Pesquisa_stage/report_present/presentation/` are byte-identical. `Pesquisa_stage/report_present/report/` has changed across every session of this cleanup so far — **not from this branch** (no write-capable call from any session ever targeted it); it reflects the user's own ongoing editing, reported here rather than silently absorbed into "no change" |
+| — | `tests/run_guards_no_pytest.py` | NOT RUN | Fails at the branch's base commit with a pre-existing missing-module error, unrelated to this cleanup (§ "What was NOT run" above) |
+| — | Full non-collection execution of all 2835 tests | NOT RUN | Several suites are HPC-scale; collection-only used instead (row 1) |
+| — | HPC re-submission / cluster-dependent reproduction | NOT RUN | No cluster access from this environment |
 
-**Limitations of this validation:** it covers the documents and code paths this cleanup touched
-plus the fast/collection-level test surface; it does not re-run the HPC jobs behind the reported
-numbers (those are read from committed artefacts, per "Reproducing the frozen headline results"
-above), and it does not constitute a fresh peer review of the underlying science.
+**Limitations of this validation:** it covers the documents and code paths this cleanup touched,
+the neural smoke/guard surface, and the fast/collection-level test surface; it does not re-run
+the HPC jobs behind the reported headline numbers (those are read from committed artefacts, per
+"Reproducing the frozen headline results" above), it does not exactly match the cluster's pinned
+dependency versions (`requirements-neural.txt`), and it does not constitute a fresh peer review
+of the underlying science.
