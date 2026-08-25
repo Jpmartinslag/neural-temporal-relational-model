@@ -9,7 +9,7 @@ artefato de código novo é um orquestrador que chama os 4 scripts já existente
 Itália/Áustria, dados brutos, `train_herald_v6/v7/semi_v2/regime_experiment`, e não usa
 `dynamic_stgnn_feature_panel*` em lugar nenhum.
 
-**Lido antes desta pass:** `/home/jpdark/.codex/RTK.md`, `README.md`, `reports/README.md`,
+**Lido antes desta pass:** `RTK.md`, `README.md`, `reports/README.md`,
 `reports/HERALD_CURRENT_STATE.md`, `reports/HERALD_NAMING_CONVENTIONS.md`,
 `reports/canonical/HERALD_15/16/17`, `reports/herald_artifact_registry.json`.
 

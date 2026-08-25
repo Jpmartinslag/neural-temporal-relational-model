@@ -6,7 +6,7 @@ submissão HPC para o cluster `meso` seguindo o "modo normal" já documentado do
 executado para produzir este documento. Submissão real exige confirmação humana
 explícita (flag `--confirm-submit`, ver §6).
 
-**Lido antes desta pass:** `/home/jpdark/.codex/RTK.md`, `hpc/README.md`,
+**Lido antes desta pass:** `RTK.md`, `hpc/README.md`,
 `hpc/phase10_synthetic_lagged/README.md`, `reports/canonical/HERALD_18_FR_ZE2020_TRAINING_PLAN.md`,
 `reports/herald_artifact_registry.json`, `reports/canonical/HERALD_10_CODE_PATH_MAP.md`.
 
@@ -147,7 +147,7 @@ no mínimo — decisão humana, não automática.**
 
 ```bash
 rsync -avz --exclude='*.pyc' --exclude='hpc_results/' --exclude='data/external/' \
-    /home/jpdark/Downloads/project_recomm/dataset/ \
+    ./ \
     meso:~/project_recomm_herald_v6_2025_20260430/dataset/
 ```
 
