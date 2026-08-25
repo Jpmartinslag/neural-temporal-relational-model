@@ -1,0 +1,287 @@
+{
+  "kind": "herald93_benchmark_summary",
+  "thresholds": {
+    "edge_f1": 0.5,
+    "dense_correlation": 0.3,
+    "stability": 0.9,
+    "s0_added_edge": 0.1,
+    "event_f1": 0.3
+  },
+  "table": {
+    "herald@32": {
+      "checks": {
+        "edge_f1_at_least_0_50": false,
+        "dense_correlation_at_least_0_30": false,
+        "stability_across_seeds_at_least_0_90": true,
+        "no_structure_found_in_s0": false,
+        "auprc_above_prevalence": true,
+        "typed_event_f1_at_least_0_30": true,
+        "relational_gradient_is_non_zero": true
+      },
+      "relational_recovery_supported": false,
+      "forecast_at_least_persistence": false,
+      "label": "NOT_SUPPORTED_IN_THIS_SCENARIO",
+      "edge_f1_median": 0.7150510204081632,
+      "dense_correlation_median": 0.11600358858997256,
+      "auprc_median": 0.7256552308328019,
+      "prevalence_median": 0.7,
+      "event_f1_median": NaN,
+      "stability": 0.9966585193982728,
+      "s0_added_edge_rate_median": 0.2854591836734694,
+      "s0_auprc_median": 0.7216314003887015,
+      "s0_prevalence_median": 0.7,
+      "forecast_skill_median": -0.008729408774548642,
+      "n_seeds": 5,
+      "cost": {
+        "parameters": 24596,
+        "epochs": 30,
+        "seconds": 348.3,
+        "peak_memory_mb": 686.3
+      },
+      "capabilities": {
+        "learns_graph": true,
+        "graph_kind": "dynamic",
+        "objective": "forecast",
+        "aim": "relational recovery + forecast",
+        "support_restricted": true
+      },
+      "abstention_rate": 0.7339285661776861
+    },
+    "herald@64": {
+      "checks": {
+        "edge_f1_at_least_0_50": false,
+        "dense_correlation_at_least_0_30": false,
+        "stability_across_seeds_at_least_0_90": true,
+        "no_structure_found_in_s0": false,
+        "auprc_above_prevalence": true,
+        "typed_event_f1_at_least_0_30": true,
+        "relational_gradient_is_non_zero": true
+      },
+      "relational_recovery_supported": false,
+      "forecast_at_least_persistence": false,
+      "label": "NOT_SUPPORTED_IN_THIS_SCENARIO",
+      "edge_f1_median": 0.7149234693877551,
+      "dense_correlation_median": 0.11179607841824697,
+      "auprc_median": 0.7227663258535456,
+      "prevalence_median": 0.7,
+      "event_f1_median": NaN,
+      "stability": 0.9967904186506309,
+      "s0_added_edge_rate_median": 0.28482142857142856,
+      "s0_auprc_median": 0.7253585505538964,
+      "s0_prevalence_median": 0.7,
+      "forecast_skill_median": -0.017025655394532935,
+      "n_seeds": 5,
+      "cost": {
+        "parameters": 94228,
+        "epochs": 30,
+        "seconds": 322.9,
+        "peak_memory_mb": 725.3
+      },
+      "capabilities": {
+        "learns_graph": true,
+        "graph_kind": "dynamic",
+        "objective": "forecast",
+        "aim": "relational recovery + forecast",
+        "support_restricted": true
+      },
+      "abstention_rate": 0.008630952623207122
+    },
+    "herald@128": {
+      "checks": {
+        "edge_f1_at_least_0_50": false,
+        "dense_correlation_at_least_0_30": false,
+        "stability_across_seeds_at_least_0_90": true,
+        "no_structure_found_in_s0": false,
+        "auprc_above_prevalence": true,
+        "typed_event_f1_at_least_0_30": true,
+        "relational_gradient_is_non_zero": true
+      },
+      "relational_recovery_supported": false,
+      "forecast_at_least_persistence": false,
+      "label": "NOT_SUPPORTED_IN_THIS_SCENARIO",
+      "edge_f1_median": 0.7169642857142857,
+      "dense_correlation_median": 0.11594153316351366,
+      "auprc_median": 0.729354470611458,
+      "prevalence_median": 0.7,
+      "event_f1_median": NaN,
+      "stability": 0.9182919114601936,
+      "s0_added_edge_rate_median": 0.28341836734693876,
+      "s0_auprc_median": 0.7268909021992236,
+      "s0_prevalence_median": 0.7,
+      "forecast_skill_median": -0.004639480761239767,
+      "n_seeds": 5,
+      "cost": {
+        "parameters": 368660,
+        "epochs": 30,
+        "seconds": 1366.9,
+        "peak_memory_mb": 821.8
+      },
+      "capabilities": {
+        "learns_graph": true,
+        "graph_kind": "dynamic",
+        "objective": "forecast",
+        "aim": "relational recovery + forecast",
+        "support_restricted": true
+      },
+      "abstention_rate": 0.0
+    },
+    "mtgnn@64": {
+      "checks": {
+        "edge_f1_at_least_0_50": false,
+        "dense_correlation_at_least_0_30": false,
+        "stability_across_seeds_at_least_0_90": true,
+        "no_structure_found_in_s0": true,
+        "auprc_above_prevalence": true,
+        "typed_event_f1_at_least_0_30": true,
+        "relational_gradient_is_non_zero": true
+      },
+      "relational_recovery_supported": false,
+      "forecast_at_least_persistence": false,
+      "label": "NOT_SUPPORTED_IN_THIS_SCENARIO",
+      "edge_f1_median": 0.704719387755102,
+      "dense_correlation_median": 0.043156012385345686,
+      "auprc_median": 0.7147363722338452,
+      "prevalence_median": 0.7,
+      "event_f1_median": NaN,
+      "stability": 0.9969284963334629,
+      "s0_added_edge_rate_median": 0.2931122448979592,
+      "s0_auprc_median": 0.7079481704873534,
+      "s0_prevalence_median": 0.7,
+      "forecast_skill_median": -0.19774912609225015,
+      "n_seeds": 5,
+      "cost": {
+        "parameters": 90506,
+        "epochs": 30,
+        "seconds": 110.3,
+        "peak_memory_mb": 664.6
+      },
+      "capabilities": {
+        "learns_graph": true,
+        "graph_kind": "static",
+        "objective": "forecast",
+        "aim": "forecast",
+        "support_restricted": true
+      },
+      "abstention_rate": NaN
+    },
+    "nri@64": {
+      "checks": {
+        "edge_f1_at_least_0_50": false,
+        "dense_correlation_at_least_0_30": false,
+        "stability_across_seeds_at_least_0_90": true,
+        "no_structure_found_in_s0": true,
+        "auprc_above_prevalence": true,
+        "typed_event_f1_at_least_0_30": true,
+        "relational_gradient_is_non_zero": true
+      },
+      "relational_recovery_supported": false,
+      "forecast_at_least_persistence": false,
+      "label": "NOT_SUPPORTED_IN_THIS_SCENARIO",
+      "edge_f1_median": 0.7005102040816327,
+      "dense_correlation_median": -0.004916514754147321,
+      "auprc_median": 0.7005322435515915,
+      "prevalence_median": 0.7,
+      "event_f1_median": NaN,
+      "stability": 0.9950378768556761,
+      "s0_added_edge_rate_median": 0.3,
+      "s0_auprc_median": 0.702706377456416,
+      "s0_prevalence_median": 0.7,
+      "forecast_skill_median": -0.0494457181020882,
+      "n_seeds": 5,
+      "cost": {
+        "parameters": 89228,
+        "epochs": 30,
+        "seconds": 325.8,
+        "peak_memory_mb": 699.7
+      },
+      "capabilities": {
+        "learns_graph": true,
+        "graph_kind": "static",
+        "objective": "forecast + KL",
+        "aim": "relational recovery",
+        "support_restricted": true
+      },
+      "abstention_rate": NaN
+    },
+    "persistence@0": {
+      "checks": {
+        "edge_f1_at_least_0_50": false,
+        "dense_correlation_at_least_0_30": false,
+        "stability_across_seeds_at_least_0_90": false,
+        "no_structure_found_in_s0": false,
+        "auprc_above_prevalence": false,
+        "typed_event_f1_at_least_0_30": true,
+        "relational_gradient_is_non_zero": false
+      },
+      "relational_recovery_supported": false,
+      "forecast_at_least_persistence": true,
+      "label": "PREDICTIVE_ONLY_NO_RELATIONAL_DISCOVERY_CLAIM",
+      "edge_f1_median": NaN,
+      "dense_correlation_median": NaN,
+      "auprc_median": NaN,
+      "prevalence_median": NaN,
+      "event_f1_median": NaN,
+      "stability": NaN,
+      "s0_added_edge_rate_median": NaN,
+      "s0_auprc_median": NaN,
+      "s0_prevalence_median": NaN,
+      "forecast_skill_median": 0.0,
+      "n_seeds": 5,
+      "cost": {
+        "parameters": 0,
+        "epochs": 0,
+        "seconds": 1.4,
+        "peak_memory_mb": 607.3
+      },
+      "capabilities": {
+        "learns_graph": false,
+        "graph_kind": null,
+        "objective": "none",
+        "aim": "forecast floor"
+      },
+      "abstention_rate": NaN
+    },
+    "sparse_var@0": {
+      "checks": {
+        "edge_f1_at_least_0_50": false,
+        "dense_correlation_at_least_0_30": false,
+        "stability_across_seeds_at_least_0_90": true,
+        "no_structure_found_in_s0": true,
+        "auprc_above_prevalence": false,
+        "typed_event_f1_at_least_0_30": true,
+        "relational_gradient_is_non_zero": false
+      },
+      "relational_recovery_supported": false,
+      "forecast_at_least_persistence": true,
+      "label": "PREDICTIVE_ONLY_NO_RELATIONAL_DISCOVERY_CLAIM",
+      "edge_f1_median": 0.7016581632653062,
+      "dense_correlation_median": 0.0028116899258326844,
+      "auprc_median": 0.6982756955711044,
+      "prevalence_median": 0.7,
+      "event_f1_median": NaN,
+      "stability": 0.9950643891608839,
+      "s0_added_edge_rate_median": 0.2993622448979592,
+      "s0_auprc_median": 0.7009246852488596,
+      "s0_prevalence_median": 0.7,
+      "forecast_skill_median": 0.00012526397397871758,
+      "n_seeds": 5,
+      "cost": {
+        "parameters": 50400,
+        "epochs": 0,
+        "seconds": 5.5,
+        "peak_memory_mb": 608.1
+      },
+      "capabilities": {
+        "learns_graph": true,
+        "graph_kind": "static",
+        "objective": "lasso",
+        "aim": "relational recovery",
+        "support_restricted": true
+      },
+      "abstention_rate": NaN
+    }
+  },
+  "chosen_herald_width": null,
+  "width_choice_reason": "no width controlled false positives in S0",
+  "france_decision": "CASE_C_DO_NOT_APPLY_RELATIONS"
+}
