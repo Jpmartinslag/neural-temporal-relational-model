@@ -184,38 +184,79 @@ derived from wall-clock time or randomness at run time.
 ## Validation record (this delivery)
 
 **Branch:** `delivery/repository-cleanup`. **Base commit:** `f730e72` on `main` (see
-`EXPERIMENT_PROVENANCE.md` §5 for what that base does and does not include). **Date:**
-2026-08-25. **Environment:** fresh venv, `pip install -r requirements.txt -r requirements-neural.txt`
-(local, CPU; Python 3.12.3 / torch 2.13.0 — see `requirements-neural.txt` for how this compares
-to the cluster's own recorded environment).
+`EXPERIMENT_PROVENANCE.md` §5 for what that base does and does not include — this is a proposed
+delivery structure, not necessarily the final scientific snapshot). **Date:** 2026-08-25.
+**Environment:** fresh venv, `pip install -r requirements.txt -r requirements-neural.txt` (local,
+CPU; Python 3.12.3 / torch 2.13.0 — see `requirements-neural.txt` / `environment-neural-validated.txt`
+for how this compares to the cluster's own recorded environment).
+
+Four statuses are used, and none is presented as another: `PASS`, `FAIL`,
+`EXPECTED_SCIENTIFIC_FAIL` (the condition reproduces an already-documented, pre-existing
+scientific limitation — never used for a technical defect), `NOT RUN` (never counted as a pass).
+
+**Code and tests**
 
 | # | Check | Status | Detail |
 |---|---|---|---|
-| 1 | `pytest tests/ --collect-only` (full test collection) | PASS | 2835 tests collected, 0 errors |
-| 2 | `./scripts/run_minimal_example.sh` | PASS | 12/12 |
-| 3 | `./scripts/run_model_smoke.sh` (neural model smoke) | PASS | Full script ~90s; see rows 5-8 below for its parts |
-| 4 | Smoke repeated twice, same seed, for determinism | PASS | Forecast, connection scores, and gradients bit-identical across two independent runs |
-| 5 | Temporal-encoder tests | PASS | `tests/test_herald93_guards.py::test_h14/h15` (every signal's encoder branch and the fusion gate all receive nonzero gradient) |
-| 6 | Relational-learner tests | PASS | `test_h9/h12/h13/h17/h18` (no self-loops, no node-only path, top-k does not block gradient, HERALD/NRI/MTGNN share one candidate set) |
-| 7 | Per-component gradient tests | 22/23 PASS, 1 documented FAIL | `test_herald93_guards.py`: 22/23 guards pass. `test_h23` fails on this small CPU fixture (scorer gradient ratio 2.9e-5 against a 1e-4 gate after 25 epochs) — this reproduces, at smaller scale, an already-documented finding in the module's own record (the scorer can saturate/freeze after extended training); it is not a regression introduced by this pass and is not silently hidden. `run_herald93_mutations.py`: 22/22 targeted mutants killed. `tests/test_model_smoke_entrypoint.py`: 9/9 pass |
-| 8 | No-mechanism (`S0_NULL`) does not explode | PASS | `test_no_mechanism_scenario_does_not_explode` and the smoke script's own `no-mechanism` run: finite MAE, finite skill, finite gradients |
-| 9 | `tests/test_herald_artifact_registry.py` | PASS | 13/13 |
-| 10 | Import verification | PASS | `pytest --collect-only` imports every test module including the two new files; the entrypoint's own `importlib` loads succeed (rows 1-4) |
-| 11 | Markdown links in `README.md` + `docs/*.md` resolve | PASS | Checked every `](...)` link against the filesystem |
-| 12 | Personal filesystem paths in public docs | PASS | None found |
-| 13 | Secrets/tokens (AWS keys, private-key headers, Slack/GitHub tokens, hardcoded passwords) | PASS | None found in `README.md`/`docs/*.md` |
-| 14 | Legacy model name on the public surface | PASS | Zero occurrences in `README.md`, `docs/PROJECT_OVERVIEW.md`, `docs/RESULTS_AND_LIMITATIONS.md`, and in the entrypoint's own `--help` output (`test_cli_help_carries_no_legacy_internal_name`). Remaining occurrences in `docs/DATA_AND_PROVENANCE.md`/`docs/REPRODUCIBILITY.md` are real, still-existing technical paths only |
-| 15 | Efficiency/cost-savings claim wording in public docs | PASS | Zero occurrences of that word family, verified by direct search |
-| 16 | Five signal frequencies vs. the protected report's own construction table | PASS | Verified line-by-line against `Report_project.tex`; employment, payroll, and unemployment corrected from an earlier incorrect "Annual" to "Quarterly" |
-| 17 | 280-territory vs. 80-territory protocol separation | PASS | `RESULTS_AND_LIMITATIONS.md` §0 table; every subsequent section states which protocol a number belongs to |
-| 18 | Checksums of the 4 protected directories, before this cleanup started vs. now | 3× PASS, 1 informational | `reports/final_visual_evidence/`, `reports/results_evidence_selection/`, and `Pesquisa_stage/report_present/presentation/` are byte-identical. `Pesquisa_stage/report_present/report/` has changed across every session of this cleanup so far — **not from this branch** (no write-capable call from any session ever targeted it); it reflects the user's own ongoing editing, reported here rather than silently absorbed into "no change" |
-| — | `tests/run_guards_no_pytest.py` | NOT RUN | Fails at the branch's base commit with a pre-existing missing-module error, unrelated to this cleanup (§ "What was NOT run" above) |
-| — | Full non-collection execution of all 2835 tests | NOT RUN | Several suites are HPC-scale; collection-only used instead (row 1) |
-| — | HPC re-submission / cluster-dependent reproduction | NOT RUN | No cluster access from this environment |
+| 1 | `pytest tests/ --collect-only` (full test collection) | PASS | 2848 tests collected, 0 errors |
+| 2 | `./scripts/run_minimal_example.sh` | PASS | 12/12, ~1s |
+| 3 | `./scripts/run_model_smoke.sh` (neural model smoke, full) | PASS (script exit 0) | ~2m45s total, no SLURM, no download; the script's own exit code depends only on the technical rows below |
+| 4 | Smoke repeated twice, same seed | PASS | Forecast, connection scores, and gradients bit-identical (`scripts/run_model_smoke.sh` step 4, and `test_determinism_same_seed_same_config`) |
+| 5 | Technical execution guards (`tests/test_herald93_guards.py`) | PASS — `TECHNICAL_EXECUTION: 22/22` | Leakage, masks/absence, graph mechanics, fairness between arms; stable across 5 repeated fresh-process runs after the thread-pinning fix this pass added |
+| 6 | Scientific recovery gate (`test_h23`, same file) | `EXPECTED_SCIENTIFIC_FAIL` | Scorer-vs-consuming-head gradient ratio falls under threshold after extended training — reproduces, at smoke scale, the full-scale disqualification already reported in `RESULTS_AND_LIMITATIONS.md` Sec.3. Reported as `SCIENTIFIC_RECOVERY_GATE`, separate from and never gating `TECHNICAL_EXECUTION`. Stable (FAIL in 5/5 repeated runs after the same fix) |
+| 7 | Mutation testing (`tests/run_herald93_mutations.py`) | PASS | 22/22 targeted mutants killed — every technical guard proven to actually catch the defect it names |
+| 8 | Temporal-encoder gradient tests | PASS | `test_h14` (every per-signal encoder branch), `test_h15` (fusion never zeroes a signal), `test_gradients_are_nonzero_in_every_component` |
+| 9 | Relational-learner gradient/mechanics tests | PASS | `test_h9` (no self-loops), `test_h12` (no node-only path), `test_h13` (top-k does not block gradient), `test_h17`/`test_h18` (herald/NRI/MTGNN share one candidate set) |
+| 10 | Temporal-causality (no-leakage) tests | PASS | `test_h1` (no future period reaches a view), `test_h2` (release dates gate inputs), `test_h5` (view is reconstructible from published signals alone) |
+| 11 | No-mechanism (`S0_NULL`) control | PASS | `test_no_mechanism_scenario_does_not_explode` and the smoke script's own `no-mechanism` run: finite MAE, finite skill, finite gradients |
+| 12 | Anti-substitution guards on the entrypoint | PASS | `tests/test_model_smoke_entrypoint.py`, 12/12 — confirms the run used the real dynamic-graph model (not persistence/sparse_var/mtgnn/nri), confirms `--help` never leaks the legacy name, confirms the technical/scientific classification cannot silently change, confirms two different seeds give different connection scores |
+| 13 | Benchmark provenance reconstruction | PASS | `tests/test_selected_benchmark_provenance.py`, 10/10 — rederives best forecast skill, edge recovery at prevalence, the no-relation-control disqualification, the 11-24% temporal gain, both protocols' oracle values, and the all-pairs-at-prevalence result from committed artefacts; fails if artefact and documentation diverge |
+| 14 | `tests/test_herald_artifact_registry.py` | PASS | 13/13 |
+| 15 | Import verification | PASS | `pytest --collect-only` imports every test module including all new files this pass added; every `importlib` load in the entrypoint and its guards succeeds (rows 1-13) |
+| 16 | `tests/run_guards_no_pytest.py` | NOT RUN | Fails at the branch's base commit with a pre-existing missing-module error, unrelated to this cleanup |
+| 17 | Full non-collection execution of all 2848 tests | NOT RUN | Several suites are HPC-scale; collection-only used instead (row 1) |
+| 18 | HPC re-submission / cluster-dependent reproduction | NOT RUN | No cluster access from this environment |
+
+**Documentation**
+
+| # | Check | Status | Detail |
+|---|---|---|---|
+| 19 | Markdown links in `README.md` + `docs/*.md` resolve | PASS | Checked every `](...)` link against the filesystem |
+| 20 | Legacy model name on the public surface | PASS | Zero occurrences in `README.md`, `docs/PROJECT_OVERVIEW.md`, `docs/RESULTS_AND_LIMITATIONS.md`, and in the entrypoint's own `--help` (test row 12). Remaining occurrences in `docs/DATA_AND_PROVENANCE.md`/`docs/REPRODUCIBILITY.md` are real, still-existing technical paths only |
+| 21 | Five signal frequencies vs. the protected report's own construction table | PASS | Verified line-by-line against `Report_project.tex` |
+| 22 | 280-territory vs. 80-territory protocol separation | PASS | `RESULTS_AND_LIMITATIONS.md` §0 table; every subsequent section states which protocol a number belongs to; `all_pairs` scoped explicitly to the 80-territory diagnostic only (§4 header) |
+| 23 | Results and limitations coherent with what was actually run | PASS | Cross-checked against test rows 5-13 and the reconstruction test (row 13) |
+| 24 | Commands documented actually work as documented | PASS | Every command block in `README.md`/`docs/REPRODUCIBILITY.md` was run verbatim this session |
+| 25 | Environment documentation matches what was installed | PASS | `environment-neural-validated.txt` is a direct `pip freeze` of the venv these tests ran in, not a separate claim |
+| 26 | Manifests match files on disk | PASS | `test_manifest_matches_the_selected_files_on_disk` (part of row 13) |
+| 27 | Files cited in docs actually exist | PASS | Covered by row 19 plus a manual pass over non-markdown-link path citations |
+
+**Security**
+
+| # | Check | Status | Detail |
+|---|---|---|---|
+| 28 | Secrets/tokens (AWS keys, private-key headers, Slack/GitHub tokens, hardcoded passwords) | PASS | None found in `README.md`/`docs/*.md`/`results/selected/main_benchmark/*.md`/`requirements*.txt`/`environment-neural-validated.txt` |
+| 29 | Personal filesystem paths in public docs | PASS | None found |
+| 30 | Large data added this pass | PASS (none added) | `results/selected/main_benchmark/` is 300KB; the two synced visual-evidence files are under 1MB combined; nothing else was added |
+| 31 | Temporary files / caches committed | PASS | None staged; `.venv/`, `__pycache__/`, `.pytest_cache/` remain gitignored |
+| 32 | File permissions | PASS | No mode changes beyond the two `chmod +x` on `scripts/*.sh`/`.py`, both intentional and necessary |
+
+**Scientific coherence (adversarial falsification attempts)**
+
+| # | Claim tested | Status | Evidence |
+|---|---|---|---|
+| 33 | The smoke executes the real model, not a substitute | PASS | Row 12: `capabilities.graph_kind == "dynamic"`, unique to the proposed model |
+| 34 | The temporal encoder receives gradient | PASS | Row 8 |
+| 35 | The relational learner receives gradient | PASS | Row 9 |
+| 36 | Forecast and connection scores are produced, and reported, separately | PASS | `output["prediction"]` and `output["edge_weight"]` are distinct fields; `test_h19` asserts a perfect forecast cannot satisfy the recovery gate |
+| 37 | Documented results can be rederived from committed artefacts | PASS | Row 13 |
+| 38 | The no-mechanism scenario remains a real control | PASS | Row 11; `test_h10` additionally confirms a frozen/static score gets no credit on the typed-event metric |
+| 39 | No French score is presented as a validated relation | PASS | Row 20-class scan plus manual re-read of `docs/RESULTS_AND_LIMITATIONS.md` §8 and `PROJECT_OVERVIEW.md` |
+| 40 | `all_pairs` belongs only to the 80-territory protocol | PASS | `docs/PROJECT_OVERVIEW.md` candidate-relations table and `RESULTS_AND_LIMITATIONS.md` §4 both scope it explicitly; `T04_models_compared.md` (280-territory) does not include it |
+| 41 | The scientific failure (row 6) was not hidden as a technical success | PASS | Reported under a distinct `SCIENTIFIC_RECOVERY_GATE` label, in the smoke script's own stdout, gated by a dedicated test (row 12) that fails if the classification silently reverts |
 
 **Limitations of this validation:** it covers the documents and code paths this cleanup touched,
 the neural smoke/guard surface, and the fast/collection-level test surface; it does not re-run
 the HPC jobs behind the reported headline numbers (those are read from committed artefacts, per
 "Reproducing the frozen headline results" above), it does not exactly match the cluster's pinned
-dependency versions (`requirements-neural.txt`), and it does not constitute a fresh peer review
-of the underlying science.
+dependency versions, and it does not constitute a fresh peer review of the underlying science.
