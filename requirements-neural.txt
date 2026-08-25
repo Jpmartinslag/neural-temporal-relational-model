@@ -1,0 +1,40 @@
+# Dependencies for the neural temporal-relational model: the model itself
+# (src/modeles/france_ze2020/herald93_benchmark.py), its synthetic generator
+# (src/data/synthetic/generate_france_multisignal_v92.py), the entrypoint
+# (scripts/run_temporal_relational_model.py, scripts/run_model_smoke.sh), and their tests
+# (tests/test_herald93_guards.py, tests/run_herald93_mutations.py,
+# tests/test_model_smoke_entrypoint.py).
+#
+# Superset of requirements.txt -- install requirements.txt first, then this file, or just
+# this file on its own (it repeats the base scientific-stack pins).
+#
+# Verified cluster provenance (read from a committed task artifact,
+# hpc_results/herald96/tasks/*.json, and a same-format artifact for the main benchmark
+# itself that is not yet mirrored into git -- see docs/EXPERIMENT_PROVENANCE.md):
+#   python 3.10.20, numpy 2.2.6, torch 2.6.0+cu124 (CUDA build, GPU cluster node).
+#
+# This repository's own local/CPU validation of this file used Python 3.12.3 and
+# torch 2.13.0 (CPU/CUDA-agnostic build) -- a newer minor line than the cluster's, on a
+# different Python. No numeric result in docs/RESULTS_AND_LIMITATIONS.md was recomputed
+# under this newer combination; the smoke and guard tests were, and passed (see
+# docs/REPRODUCIBILITY.md, "Validation record"). Exactly reproducing the cluster's pinned
+# environment (a specific CUDA build under Python 3.10) was not verified here and is
+# recorded as a limitation, not papered over with an invented pin.
+
+pandas
+numpy>=2.2
+scipy
+scikit-learn
+networkx
+matplotlib
+plotly
+requests
+openpyxl
+geopandas
+shapely
+fiona
+pyogrio
+
+# The neural model itself. No version ceiling is asserted beyond what was actually
+# verified locally (see the note above); pin exactly if you need to match the cluster.
+torch
