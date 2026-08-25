@@ -154,6 +154,7 @@ in the cleanup's external inventory for a future pass with more time budget.
 | France WMAPE headline figure from the pre-Q7 architecture search | Flagged for re-audit, potential causal-feature leakage; not usable as a headline claim |
 | A pre-Q7 P6 sector-label artefact | Sector names in that file don't match the tensor's actual sector IDs; kept only as historical record, never for interpretation |
 | `herald78…89` architecture-iteration chain (pre-`herald93`) | Superseded by the `herald93_benchmark.py` implementation in §2; still uncommitted in the primary worktree (§9), not part of this branch |
+| Legacy repository-migration helper (`src/analyse/archive_legacy_for_herald_focus.py`) | Archived from the delivery tree: no code or test imports it, its one-off migration had already been completed, and rerunning it would move files according to an obsolete pre-Q7 allowlist |
 
 Full DEC-numbered detail for every row above: `reports/HERALD_METHODOLOGICAL_DECISION_LOG.md`.
 None of these are reopened by this cleanup — reopening any of them requires a new decision-log

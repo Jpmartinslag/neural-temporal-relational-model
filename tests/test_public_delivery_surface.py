@@ -144,7 +144,7 @@ def _candidate_repo_paths(text: str) -> set[str]:
         if not target or _URL_RE.match(target) or _PLACEHOLDER_RE.search(target):
             continue
         # Strip a trailing markdown anchor or query-like suffix, and any leading "./".
-        target = target.split("#", 1)[0]
+        target = target.split("#", 1)[0].rstrip("/")
         if target.startswith("./"):
             target = target[2:]
         if not target or not _LOOKS_LIKE_PATH_RE.match(target):

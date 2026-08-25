@@ -71,7 +71,6 @@ dataset/
 ├── reports/                      — the deep scientific record
 │   ├── canonical/                 — phase/spec/result documents kept as final evidence or active-code dependencies (see docs/EXPERIMENT_PROVENANCE.md for what was consolidated out and why)
 │   ├── final_visual_evidence/     — frozen figures/tables used by the report and presentation (do not edit)
-│   ├── results_evidence_selection/— curated evidence selection for the report's Results section (do not edit)
 │   ├── dashboards/, bibliography/
 │   └── (decision log) — every decision, never renumbered or deleted (exact filename: see docs/EXPERIMENT_PROVENANCE.md)
 └── metadata/                     — older per-country data catalogs
@@ -81,9 +80,11 @@ dataset/
 ~180 tracked files' imports for no functional gain and was judged out of scope this close to
 delivery.
 
-`reports/final_visual_evidence/` and `reports/results_evidence_selection/` are **frozen
-dependencies of the report and presentation** (`Pesquisa_stage/report_present/`, outside this
-repository) — do not move, rename, or regenerate their contents as part of routine work here.
+`reports/final_visual_evidence/` is a **frozen dependency of the report and presentation** and
+must not be moved, renamed, or regenerated as part of routine work here. A separate curated
+evidence-selection workspace exists only in the author's report worktree and is not versioned in
+this delivery branch; the report uses its own local copies rather than reading that workspace at
+run time. The report and presentation sources are also outside this repository.
 
 **License:** none has been chosen yet. This repository is intended for academic evaluation; its
 distribution policy is still to be defined by the author. Do not treat the absence of a license
