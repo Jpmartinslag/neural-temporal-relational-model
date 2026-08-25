@@ -48,7 +48,8 @@ Full framing: [`docs/PROJECT_OVERVIEW.md`](docs/PROJECT_OVERVIEW.md).
 dataset/
 ├── README.md                    — you are here
 ├── requirements.txt              — data + baselines dependencies (pip)
-├── requirements-neural.txt       — adds the neural model's one extra dependency (torch)
+├── requirements-neural.txt       — adds the neural model's one dependency (torch, pinned ~=2.13.0)
+├── environment-neural-validated.txt — exact pip-freeze snapshot of the validated environment
 ├── docs/                         — canonical documentation (this is the required reading path)
 │   ├── PROJECT_OVERVIEW.md
 │   ├── DATA_AND_PROVENANCE.md
@@ -62,6 +63,8 @@ dataset/
 ├── scripts/                       — entrypoints: run_temporal_relational_model.py (the model),
 │                                     run_minimal_example.sh (data + baselines), run_model_smoke.sh
 ├── tests/                        — one suite per decision/phase/dashboard version
+├── results/selected/              — minimal versioned provenance for reported numbers
+│   └── main_benchmark/            — see docs/RESULTS_AND_LIMITATIONS.md Sec.0-3
 ├── data/                         — raw (mostly gitignored) / interim / processed panels — see docs/DATA_AND_PROVENANCE.md
 ├── hpc/                          — SLURM job scripts, active and historical (check the phase name against the decision log)
 ├── hpc_results/                  — raw job outputs, mostly historical/superseded — see docs/EXPERIMENT_PROVENANCE.md
@@ -92,11 +95,14 @@ file as permission to redistribute.
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt          # data prep + persistence/Ridge baselines
-pip install -r requirements-neural.txt   # add this for the neural model (adds torch)
+pip install -r requirements-neural.txt   # add this for the neural model (torch, pinned ~=2.13.0)
 ```
 
 `requirements.txt` alone is enough for `run_minimal_example.sh`. `run_model_smoke.sh` and
-`run_temporal_relational_model.py` need `requirements-neural.txt`. See
+`run_temporal_relational_model.py` need `requirements-neural.txt` — `torch` there is capped at
+the exact line this branch's own smoke was validated against, not left to install an
+unvalidated future release. For the precise, fully-pinned environment that validation actually
+ran in, use `environment-neural-validated.txt` instead. See
 [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md) for what was actually verified in each
 environment, the cluster's own recorded dependency versions, and the full validation record.
 
@@ -114,12 +120,23 @@ Two small, fast, local commands — neither reproduces the frozen HPC results in
 
 `run_minimal_example.sh` validates that the data pipeline and the non-neural baselines work — it
 never touches the neural model. `run_model_smoke.sh` validates that the proposed neural
-architecture itself runs: it trains a real (small) instance on CPU in about a minute, checks
-every component receives a nonzero gradient, checks the no-mechanism control does not explode,
-and checks the run is deterministic. It makes no scientific claim and is not evidence for any
-result in `docs/RESULTS_AND_LIMITATIONS.md` — those come from the frozen HPC grid, reproduced
-only by reading its committed artefacts (`docs/REPRODUCIBILITY.md`, "Reproducing the frozen
-headline results").
+architecture itself runs: it trains a real (small) instance on CPU in a couple of minutes,
+checks every component receives a nonzero gradient, checks the no-mechanism control does not
+explode, and checks the run is deterministic.
+
+The smoke script reports **technical execution and scientific recovery separately, and never
+mixes them**: `TECHNICAL_EXECUTION` (does the architecture run, train, and produce real,
+deterministic gradients — always expected to pass) is distinct from `SCIENTIFIC_RECOVERY_GATE`
+(does the relational scorer keep learning under extended training — may legitimately fail, and
+currently does, reproducing in miniature the same disqualification
+`docs/RESULTS_AND_LIMITATIONS.md` Sec.3 reports at full scale). A `SCIENTIFIC_RECOVERY_GATE`
+failure does not fail the script and is not a bug; a `TECHNICAL_EXECUTION` failure would be.
+
+Neither script is evidence for any result in `docs/RESULTS_AND_LIMITATIONS.md` on its own —
+those come from the frozen HPC grid. The minimal necessary provenance for the main benchmark's
+numbers is versioned at [`results/selected/main_benchmark/`](results/selected/main_benchmark/)
+and re-derived by a dedicated test; see `docs/REPRODUCIBILITY.md`, "Reproducing the frozen
+headline results."
 
 ## Main results, with their correct scope
 
