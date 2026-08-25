@@ -142,11 +142,11 @@ python3 reports/final_visual_evidence/scripts/audit_stage.py
 and the `hpc_results/` artefacts; it does not write into `reports/final_visual_evidence/` unless
 you also run `make_all.py`, which is protected — see the note below).
 
-**Do not run `reports/final_visual_evidence/scripts/make_all.py` or anything under
-`reports/results_evidence_selection/scripts/` as part of routine reproduction.** Both
-directories are the frozen source of the figures/tables actually used by the report and
-presentation (`Pesquisa_stage/report_present/`); regenerating them is a report-editing action,
-not a repository-reproducibility one, and is out of scope for this document.
+**Do not run `reports/final_visual_evidence/scripts/make_all.py` as part of routine
+reproduction.** Regenerating that frozen visual archive is a report-editing action, not a
+repository-reproducibility one. The author's separate evidence-selection workspace and the report
+and presentation sources are not versioned in this delivery branch; the report uses local copies
+of the selected assets, so neither workspace is part of this repository's reproduction path.
 
 ## Seeds
 
@@ -198,7 +198,7 @@ scientific limitation — never used for a technical defect), `NOT RUN` (never c
 
 | # | Check | Status | Detail |
 |---|---|---|---|
-| 1 | `pytest tests/ --collect-only` (full test collection) | PASS | 2848 tests collected, 0 errors |
+| 1 | `pytest tests/ --collect-only` (full test collection) | PASS | 2904 tests collected, 0 errors |
 | 2 | `./scripts/run_minimal_example.sh` | PASS | 12/12, ~1s |
 | 3 | `./scripts/run_model_smoke.sh` (neural model smoke, full) | PASS (script exit 0) | ~2m45s total, no SLURM, no download; the script's own exit code depends only on the technical rows below |
 | 4 | Smoke repeated twice, same seed | PASS | Forecast, connection scores, and gradients bit-identical (`scripts/run_model_smoke.sh` step 4, and `test_determinism_same_seed_same_config`) |
@@ -214,7 +214,7 @@ scientific limitation — never used for a technical defect), `NOT RUN` (never c
 | 14 | `tests/test_herald_artifact_registry.py` | PASS | 13/13 |
 | 15 | Import verification | PASS | `pytest --collect-only` imports every test module including all new files this pass added; every `importlib` load in the entrypoint and its guards succeeds (rows 1-13) |
 | 16 | `tests/run_guards_no_pytest.py` | NOT RUN | Fails at the branch's base commit with a pre-existing missing-module error, unrelated to this cleanup |
-| 17 | Full non-collection execution of all 2848 tests | NOT RUN | Several suites are HPC-scale; collection-only used instead (row 1) |
+| 17 | Full non-collection execution of all 2904 tests | NOT RUN | Several suites are HPC-scale; collection-only used instead (row 1) |
 | 18 | HPC re-submission / cluster-dependent reproduction | NOT RUN | No cluster access from this environment |
 
 ### Scientific recovery gate — environment sensitivity

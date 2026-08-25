@@ -37,10 +37,11 @@ in `RESULTS_AND_LIMITATIONS.md`.
 ## Protected — do not edit, regenerate, or recompile
 
 - `final_visual_evidence/` — frozen figures/tables the report and presentation read directly.
-- `results_evidence_selection/` — curated evidence selection for the report's Results section.
 
-Both are still being edited outside this branch; see `../docs/EXPERIMENT_PROVENANCE.md` §11 for
-what was and wasn't synchronized here, and why.
+The author's separate curated evidence-selection workspace is not versioned in this delivery
+branch, and the report uses local copies of the selected assets rather than reading that workspace
+at run time. See `../docs/EXPERIMENT_PROVENANCE.md` §11 for what was and was not synchronized
+here, and why.
 
 ## Dashboards
 
