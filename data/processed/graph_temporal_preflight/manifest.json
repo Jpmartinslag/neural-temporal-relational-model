@@ -9,9 +9,9 @@
     "deterministic_ordering": true
   },
   "sources": {
-    "sector_panel": "/home/jpdark/Downloads/project_recomm/dataset/data/processed/economic_graph/sector_panel_fr_nl_pt.csv",
+    "sector_panel": "data/processed/economic_graph/sector_panel_fr_nl_pt.csv",
     "sector_panel_checksum": "0dbe2320e05143d4bc6da2aa0b9b1a9a",
-    "panel_NL": "/home/jpdark/Downloads/project_recomm/dataset/data/processed/european_panel/nl_panel.csv",
+    "panel_NL": "data/processed/european_panel/nl_panel.csv",
     "panel_NL_checksum": "ff34d1fb2f1cc582ed779112fa227f9a"
   },
   "window": 5,

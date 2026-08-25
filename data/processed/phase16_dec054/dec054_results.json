@@ -13,7 +13,7 @@
   ],
   "n_sectors": 9,
   "n_territories": 30,
-  "backbone_path": "/home/jpdark/Downloads/project_recomm/dataset/data/processed/synthetic_benchmark/phase15_stable_objective/checkpoints/model_TEMPORAL_MASKED_NLL_CLAMPED_ep75.pt",
+  "backbone_path": "data/processed/synthetic_benchmark/phase15_stable_objective/checkpoints/model_TEMPORAL_MASKED_NLL_CLAMPED_ep75.pt",
   "elapsed_seconds_train": 5.792811393737793,
   "elapsed_seconds_fixtures": 2.558305263519287,
   "oos_aggregated": {
