@@ -32,8 +32,7 @@ Verdicts:
   DIAGNOSTIC_INCONCLUSIVE — contradictory evidence
 
 Usage:
-    /home/jpdark/miniconda3/envs/mineru/bin/python \\
-        src/modeles/synthetic/run_diagnostic.py \\
+    python3 src/modeles/synthetic/run_diagnostic.py \\
         [--output-dir data/processed/synthetic_benchmark/diagnostic]
         [--n-epochs 200]
 """
