@@ -203,7 +203,7 @@ scientific limitation — never used for a technical defect), `NOT RUN` (never c
 | 3 | `./scripts/run_model_smoke.sh` (neural model smoke, full) | PASS (script exit 0) | ~2m45s total, no SLURM, no download; the script's own exit code depends only on the technical rows below |
 | 4 | Smoke repeated twice, same seed | PASS | Forecast, connection scores, and gradients bit-identical (`scripts/run_model_smoke.sh` step 4, and `test_determinism_same_seed_same_config`) |
 | 5 | Technical execution guards (`tests/test_herald93_guards.py`) | PASS — `TECHNICAL_EXECUTION: 22/22` | Leakage, masks/absence, graph mechanics, fairness between arms; stable across 5 repeated fresh-process runs after the thread-pinning fix this pass added |
-| 6 | Scientific recovery gate (`test_h23`, same file) | `EXPECTED_SCIENTIFIC_FAIL` | Scorer-vs-consuming-head gradient ratio falls under threshold after extended training — reproduces, at smoke scale, the full-scale disqualification already reported in `RESULTS_AND_LIMITATIONS.md` Sec.3. Reported as `SCIENTIFIC_RECOVERY_GATE`, separate from and never gating `TECHNICAL_EXECUTION`. Stable (FAIL in 5/5 repeated runs after the same fix) |
+| 6 | Scientific recovery gate (`test_h23`, same file) | `EXPECTED_SCIENTIFIC_FAIL` in this environment — **environment-sensitive, see note below** | Scorer-vs-consuming-head gradient ratio falls under threshold after extended training — reproduces, at smoke scale, the full-scale disqualification already reported in `RESULTS_AND_LIMITATIONS.md` Sec.3. Reported as `SCIENTIFIC_RECOVERY_GATE`, separate from and never gating `TECHNICAL_EXECUTION`. Stable within this environment (FAIL in 5/5 repeated runs after the same fix), but not stable across environments — see below |
 | 7 | Mutation testing (`tests/run_herald93_mutations.py`) | PASS | 22/22 targeted mutants killed — every technical guard proven to actually catch the defect it names |
 | 8 | Temporal-encoder gradient tests | PASS | `test_h14` (every per-signal encoder branch), `test_h15` (fusion never zeroes a signal), `test_gradients_are_nonzero_in_every_component` |
 | 9 | Relational-learner gradient/mechanics tests | PASS | `test_h9` (no self-loops), `test_h12` (no node-only path), `test_h13` (top-k does not block gradient), `test_h17`/`test_h18` (herald/NRI/MTGNN share one candidate set) |
@@ -216,6 +216,31 @@ scientific limitation — never used for a technical defect), `NOT RUN` (never c
 | 16 | `tests/run_guards_no_pytest.py` | NOT RUN | Fails at the branch's base commit with a pre-existing missing-module error, unrelated to this cleanup |
 | 17 | Full non-collection execution of all 2848 tests | NOT RUN | Several suites are HPC-scale; collection-only used instead (row 1) |
 | 18 | HPC re-submission / cluster-dependent reproduction | NOT RUN | No cluster access from this environment |
+
+### Scientific recovery gate — environment sensitivity
+
+`SCIENTIFIC_RECOVERY_GATE` (`test_h23`) is a small, deliberately sensitive diagnostic that
+retrains the model for extra epochs at smoke scale and checks whether the relational scorer
+keeps receiving usable gradient relative to the head consuming it. Its outcome has been observed
+to depend on the PyTorch build:
+
+- **FAIL** in the validated local environment this repository documents (Python 3.12.3,
+  torch 2.13.0 — see `environment-neural-validated.txt`), stable across 5 repeated runs. Row 6
+  above reports this run.
+- **PASS** under an independently reproduced run on PyTorch 2.9.1, with `TECHNICAL_EXECUTION`
+  still 22/22 and mutation testing still fully killed in that same run.
+
+Neither observation changes the scientific conclusion in `docs/RESULTS_AND_LIMITATIONS.md` Sec.3,
+which is derived from the frozen full-scale benchmark artifacts under
+`results/selected/main_benchmark/`, not from this smoke-scale diagnostic. This gate is exactly
+what it is documented to be: a small, environment-sensitive scientific probe, run at a scale and
+epoch count chosen for a CPU smoke test rather than for statistical power. Do not treat a PASS
+here as evidence the full-scale disqualification was wrong, and do not treat a FAIL here as
+independent proof of it — read `docs/RESULTS_AND_LIMITATIONS.md` Sec.3 for the actual evidence.
+`TECHNICAL_EXECUTION` passing is the only hard requirement for the smoke script to exit 0;
+`SCIENTIFIC_RECOVERY_GATE` is reported, in either direction, never gated on, and never silently
+dropped (row 12, `tests/test_model_smoke_entrypoint.py`, asserts the classification itself cannot
+change). Thresholds, seeds, and the model were not altered to produce either outcome.
 
 **Documentation**
 

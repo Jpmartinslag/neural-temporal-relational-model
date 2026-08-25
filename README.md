@@ -127,10 +127,15 @@ explode, and checks the run is deterministic.
 The smoke script reports **technical execution and scientific recovery separately, and never
 mixes them**: `TECHNICAL_EXECUTION` (does the architecture run, train, and produce real,
 deterministic gradients — always expected to pass) is distinct from `SCIENTIFIC_RECOVERY_GATE`
-(does the relational scorer keep learning under extended training — may legitimately fail, and
-currently does, reproducing in miniature the same disqualification
-`docs/RESULTS_AND_LIMITATIONS.md` Sec.3 reports at full scale). A `SCIENTIFIC_RECOVERY_GATE`
-failure does not fail the script and is not a bug; a `TECHNICAL_EXECUTION` failure would be.
+(does the relational scorer keep learning under extended training). This gate is a small,
+environment-sensitive diagnostic, not a fixed universal result: it has been observed to FAIL in
+the validated local environment this repository documents (`environment-neural-validated.txt`),
+reproducing in miniature the same disqualification `docs/RESULTS_AND_LIMITATIONS.md` Sec.3
+reports at full scale, and to PASS under a newer, unvalidated PyTorch build. Either outcome is
+reported as-is and neither fails the script or counts as a bug — only a `TECHNICAL_EXECUTION`
+failure would. The scientific conclusion in `docs/RESULTS_AND_LIMITATIONS.md` rests on the frozen
+full-scale benchmark artifacts, not on this smoke-scale diagnostic; see `docs/REPRODUCIBILITY.md`,
+"Scientific recovery gate," for the full explanation.
 
 Neither script is evidence for any result in `docs/RESULTS_AND_LIMITATIONS.md` on its own —
 those come from the frozen HPC grid. The minimal necessary provenance for the main benchmark's
