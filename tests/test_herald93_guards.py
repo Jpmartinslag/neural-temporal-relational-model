@@ -405,17 +405,21 @@ def test_h23_the_relational_scorer_still_learns_after_training():
     the squashing function saturated, and the graph froze while the rest of the model went
     on training against it.
 
-    Reclassified (this delivery, docs/EXPERIMENT_PROVENANCE.md): this is not an
+    Reclassified (this delivery, docs/REPRODUCIBILITY.md): this is not an
     execution-correctness check. A diagnostic swept 2/6/12/18/25/40 epochs on this same
     fixture and found the scorer's own gradient staying flat and small (~1e-4 to 2e-3)
     while the consuming head's gradient grows by orders of magnitude (0.03 to 4.9) -- a
     monotonic-in-trend saturation, not a single miscalibrated threshold. That is the same
     phenomenon docs/RESULTS_AND_LIMITATIONS.md Sec.3 reports at full scale ("the study's own
     architecture is the one arm its own control disqualifies"), reproduced here in
-    miniature. Failing this assertion is therefore an expected, already-reported scientific
-    limitation, not a defect to patch in the model -- see run_model_smoke.sh's
-    SCIENTIFIC_RECOVERY_GATE line and tests/test_model_smoke_entrypoint.py for the test that
-    keeps this classification from silently reverting to a plain pass/fail.
+    miniature -- in the validated local environment this repository documents
+    (torch 2.13.0, see environment-neural-validated.txt). This specific smoke-scale outcome
+    is environment-sensitive: it has been observed to pass under a newer, unvalidated
+    PyTorch build (2.9.1), unlike TECHNICAL_EXECUTION, which held in both. Either outcome is
+    an expected report, not a defect to patch in the model -- see run_model_smoke.sh's
+    SCIENTIFIC_RECOVERY_GATE line, docs/REPRODUCIBILITY.md's "Scientific recovery gate --
+    environment sensitivity" section, and tests/test_model_smoke_entrypoint.py for the test
+    that keeps this classification from silently reverting to a plain pass/fail.
     """
     data = dataset()
     model = herald_model(data, width=16)
@@ -438,10 +442,12 @@ def test_h23_the_relational_scorer_still_learns_after_training():
 # rather than execution correctness (gradient/shape/finitude/causality/determinism/scorer
 # execution/relational-path presence/leakage/anti-substitution). Kept in this same file so
 # the fixture code is not duplicated, but reported and gated separately from TECHNICAL_
-# EXECUTION -- see docs/EXPERIMENT_PROVENANCE.md, "the h23 classification," for the full
-# investigation (an epoch sweep showing the scorer's gradient stays flat while the
-# consuming head's grows by orders of magnitude -- the same disqualification already
-# reported at full scale, not a fixture-specific bug).
+# EXECUTION -- see docs/REPRODUCIBILITY.md, "Scientific recovery gate -- environment
+# sensitivity," for the full investigation (an epoch sweep showing the scorer's gradient
+# stays flat while the consuming head's grows by orders of magnitude in the validated local
+# environment -- the same disqualification already reported at full scale, not a
+# fixture-specific bug) and for the cross-environment finding that this specific smoke-scale
+# outcome is not stable across PyTorch builds, unlike TECHNICAL_EXECUTION.
 SCIENTIFIC_GATES = {"test_h23_the_relational_scorer_still_learns_after_training"}
 
 
