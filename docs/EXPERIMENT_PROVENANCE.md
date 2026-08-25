@@ -167,8 +167,39 @@ entry.
 the protected report's own writing-memory citations, and this delivery's 5 public docs) before
 any decision was made; none was kept or removed on the strength of its filename alone.
 
-**42 kept, 55 archived — re-verified this pass, no document removed just to shrink the count.**
-Every one of the 42 was re-checked against the categories the task defines
+**41 kept, 56 archived — re-verified this pass, no document removed just to shrink the count.**
+The previous pass's own re-verification found 8 documents whose only surviving citation had
+been *added during this cleanup itself* to satisfy the dependency check, rather than reflecting
+a pre-existing need — a real risk of manufacturing dependency to preserve a file. Each of the 8
+was re-examined against the task's own questions (unique final evidence? read by code? required
+by a test? backs a report number? backs a still-needed methodological decision? required by the
+registry? already consolidated into the 5 public docs?):
+
+- `HERALD_08_REPOSITORY_TRACEABILITY_MAP.md` — **archived this pass.** Its content (which
+  top-level folder means what) is now fully restated in `README.md`'s own "Repository
+  structure" section, written independently rather than copied; nothing in the public docs
+  points to it for information not already there, and the citation that had kept it was added
+  solely to pass the dependency check. This is exactly the case the task warned against.
+- `HERALD_09_DATA_ASSET_MAP.md`, `HERALD_10_CODE_PATH_MAP.md`, `HERALD_11_HPC_AND_RESULTS_MAP.md`
+  — **kept.** Each enumerates hundreds of individual `data/`/`src/`/`hpc/` paths that the public
+  docs summarize by category but do not replicate file-by-file; `DATA_AND_PROVENANCE.md`
+  explicitly calls `HERALD_09` "the deeper, file-by-file classification this summarizes" (a
+  pre-existing citation, not one added this pass), and `HERALD_10`/`HERALD_11` were used
+  directly, substantively, and repeatedly across this cleanup's own archival decisions (§9,
+  and the very first archival pass this branch made) — not cited only to survive a check.
+- `HERALD_92_EXPERIMENTAL_CLOSURE_AND_REPORT_HANDOFF.md`, `HERALD_94_COMPOSITE_SIGNAL_SPECIFICATION.md`,
+  `HERALD_94_COMPOSITE_SIGNAL_RESULTS.md`, `HERALD_95_RELATIONAL_SCALE_LADDER.md`,
+  `HERALD_98_FINAL_MODEL_COMPARISON_SPECIFICATION.md` — **kept.** These are the
+  specification/result documents for numbers this delivery states as fact and, for 94 and 95,
+  directly machine-checks in `tests/test_selected_benchmark_provenance.py` against the raw
+  `hpc_results/herald94/`, `herald95/` artefacts. The prose document is where a reader learns
+  *why* the test asserts what it does (the methodology and controls); the raw artefact is
+  what the test actually reads. The two are complementary, not duplicates of each other or of
+  anything in the 5 public docs, and `HERALD_92` in particular records a still-relevant
+  methodological constraint ("no further general sweep... is authorised" without a
+  documented mechanical defect) that is not otherwise written down anywhere public.
+
+Every one of the remaining 41 was re-checked against the categories the task defines
 (`REQUIRED_MACHINE_DEPENDENCY`, `REQUIRED_FINAL_EVIDENCE`, "required by the artifact registry,"
 "necessary to interpret a frozen identifier") and confirmed to satisfy at least one:
 
@@ -176,9 +207,9 @@ Every one of the 42 was re-checked against the categories the task defines
 |---|---|---|
 | Cited by the protected report's own writing/methodology notes as final evidence | 11 | the documents behind the temporal-integrity correction, the sectoral-persistence and ranking-gap audits, and the full closure chain for the known-truth benchmark (§4) |
 | Cited by an active, currently-tested script's own docstring as its specification | 27 | the France ZE2020 data-treatment, training-plan, HPC-spec, dynamic-graph, and availability-mask documents still read by scripts this branch's tests exercise |
-| Repository/data/code/HPC traceability maps this delivery's own docs cite | 4 | `HERALD_08_REPOSITORY_TRACEABILITY_MAP.md`, `HERALD_09_DATA_ASSET_MAP.md`, `HERALD_10_CODE_PATH_MAP.md`, `HERALD_11_HPC_AND_RESULTS_MAP.md` — the four maps this cleanup itself used to classify every directory and script in the repository, cited directly in `DATA_AND_PROVENANCE.md` and `REPRODUCIBILITY.md` |
+| Repository/data/code/HPC traceability maps this delivery's own docs cite, with genuine unconsolidated content | 3 | `HERALD_09_DATA_ASSET_MAP.md`, `HERALD_10_CODE_PATH_MAP.md`, `HERALD_11_HPC_AND_RESULTS_MAP.md` |
 
-The 55 archived documents are **not deleted**: full copies with checksums live outside the repo
+The 56 archived documents are **not deleted**: full copies with checksums live outside the repo
 at `_delivery_cleanup_archive/2026-08-24/reports/canonical/` (recoverable independently of git),
 and every one of them remains in this branch's git history (`git log --diff-filter=D -- <path>`,
 or `git show <commit>:<path>` against any commit before the removal). They fall into two groups:
@@ -223,22 +254,35 @@ fully committed at `f730e72`; nothing the primary worktree is still editing was 
 the entrypoint or the smoke test. This was verified, not assumed — see the import-dependency
 grep referenced in §2's last row.
 
-## 10. The four actively-edited training files
+## 10. The four actively-edited training files — re-audited, corrected
 
-| File | Participates in the final implementation (§2)? | Imported by it? | Used by any test? | Status |
-|---|---|---|---|---|
-| `src/modeles/train_herald_v6.py` | No | No | No | `LEGACY_EXPERIMENT`, pre-Q7 architecture search; under active edit in the primary worktree |
-| `src/modeles/train_herald_v7.py` | No | No | No | Same |
-| `src/modeles/train_herald_semi_v2.py` | No | No | No | Same |
-| `src/modeles/train_herald_regime_experiment.py` | No | No | No | Same |
+Still shown as modified in the primary worktree across every pass of this cleanup so far —
+**not touched, renamed, or removed** in this branch either, per instruction.
 
-None of the four is imported by `herald93_benchmark.py`, `generate_france_multisignal_v92.py`,
-`hpc/herald93/run_model_benchmark.py`, or any test in §2 (confirmed by grep). They are fully
-superseded by the neutral entrypoint for anyone wanting to run "the model." They were **not**
-renamed or removed, per instruction, because they are under active edit in the primary worktree;
-none of the three needs (final implementation, test dependency, or public entrypoint) requires
-touching them. They remain an internal historical dependency only insofar as `git blame`/history
-still traces through them — no current script imports them.
+| File | Participates in the final implementation (§2)? | Imported by it? | Used by a test? | Cited in the artifact registry? | Any real dependency? |
+|---|---|---|---|---|---|
+| `src/modeles/train_herald_v6.py` | No | No | Indirectly — `tests/test_fr_ze2020_dashboard_mvp.py` references `build_fr_ze2020_dashboard_mvp.py`, which is unrelated to training; the reference to this file's own name is a docstring/comment mention, not an import | 3 mentions, all in narrative fields (not a "specification"/machine field) | **Yes, real but historical-to-historical**: called by `hpc/phase4/run_herald_phase4_array.sbatch` and its `submit_herald_phase4{,b,c,d}_{be,nl,pt}.sh` family, `hpc/validation/run_herald_semiv2_validation_{seed.sh,array.sbatch}`, `hpc/audit/run_herald_strict_exante_seed.sh`, `hpc/forecast/run_herald_forecast_2026_2027_seed.sh` |
+| `src/modeles/train_herald_v7.py` | No | No | No | 0 | Same caller family as above |
+| `src/modeles/train_herald_semi_v2.py` | No | No | No | 0 | Same caller family as above |
+| `src/modeles/train_herald_regime_experiment.py` | No | No | No | 0 | Same caller family as above, plus imported by `src/modeles/herald_regime_modes.py` |
+
+**Correction from the previous pass:** an earlier round of this audit checked only against
+`src/`, `hpc/`, `tests/`, `scripts/` for the *canonical model chain specifically* and reported
+"no dependency" — true for that narrower question, but incomplete as a general claim. A
+broader, unrestricted grep this pass found the caller family above. None of it changes the
+substantive conclusion: every caller is itself part of the **un-lettered** `hpc/phase4/`
+script family (the *pre*-lettered-subphase, pre-Q7 international-harmonization search that
+predates the 4A-4Q split `HERALD_11` documents), `hpc/validation/`, `hpc/audit/`, and
+`hpc/forecast/` — none of which is imported by, tested alongside, or produces a number cited
+in the canonical implementation (§2), `docs/RESULTS_AND_LIMITATIONS.md`, or the protected
+report. The dependency is real; it is entirely internal to an already-historical cluster.
+
+**Decision:** keep all four as internal historical modules, exactly as instructed for a file
+with a real dependency. None is presented as, or needed for, the current public entrypoint
+(`scripts/run_temporal_relational_model.py`) — that entrypoint imports only
+`herald93_benchmark.py` and `generate_france_multisignal_v92.py` (§2), never any of these
+four, directly or transitively (confirmed: neither of those two modules nor anything they
+import mentions `train_herald_v6/v7/semi_v2/regime_experiment` anywhere).
 
 ## 11. Report and presentation resources — pending gate, not a failure
 
