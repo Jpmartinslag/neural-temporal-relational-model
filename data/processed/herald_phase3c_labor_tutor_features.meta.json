@@ -1,5 +1,5 @@
 {
-  "script": "/home/jpdark/Downloads/project_recomm/dataset/src/data/build_herald_phase3c_labor_tutor_features.py",
+  "script": "src/data/build_herald_phase3c_labor_tutor_features.py",
   "panel_path": "data/processed/dynamic_stgnn_feature_panel_through_2025_v1.csv",
   "defm_path": "data/raw/phase3c_labor_tutor/defm_cat_a_ze_raw/defm_ze2020_trim_brut.csv",
   "defm_available": true,
