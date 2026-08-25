@@ -284,20 +284,56 @@ with a real dependency. None is presented as, or needed for, the current public 
 four, directly or transitively (confirmed: neither of those two modules nor anything they
 import mentions `train_herald_v6/v7/semi_v2/regime_experiment` anywhere).
 
-## 11. Report and presentation resources — pending gate, not a failure
+## 11. Report and presentation resources — partially synchronized, gate still open
 
-`reports/final_visual_evidence/`, `reports/results_evidence_selection/`, the report, the
-presentation, TikZ diagrams, and the PDFs/PNGs they use were **not touched, copied, or
-synchronized** in this pass — they are still being edited by the user (§9). This is a
-**deliberate, pending gate**, not an omission: once the report and presentation are frozen, a
-future pass should selectively pull the final versions of whichever figures/tables/captions
-changed since `f730e72` into this branch (they are already git-tracked at `f730e72`; only the
-*newer, uncommitted* versions in the primary worktree are outstanding). Also outstanding for the
-same reason: `hpc_results/herald93/` (§4) is not yet mirrored into git the way `herald94-96` were
-in commit `ce1a3c8` — the *derived* tables (`reports/final_visual_evidence/tables/T04*.md`,
-`T05*.md`) are already committed and protected, but their *raw* per-task provenance currently
-exists only in the primary worktree. Do not present this branch as containing the final,
-frozen visual/report evidence until this gate is closed.
+The report and presentation sources (`Pesquisa_stage/report_present/`) were **only read**, never
+compiled, edited, or moved, in every pass of this cleanup, this one included — checksummed
+before and after each pass to confirm (`_delivery_cleanup_archive/2026-08-24/PROTECTED_report*`,
+`PROTECTED_presentation*`; `report/` has changed under the user's own hand across all three
+passes so far, `presentation/` has not).
+
+**What this pass synchronized, and why exactly these three files.** A grep across every
+non-archived `.tex`/`.py`/`.sty` file under `Pesquisa_stage/report_present/` for a live path
+into `reports/final_visual_evidence/` or `reports/results_evidence_selection/` (not just
+`presentation_canonical.tex`, checked in an earlier pass — every source file this time) found
+exactly three distinct target files, all under `final_visual_evidence/`, none under
+`results_evidence_selection/` (the report never references either directory live; it uses local
+copies under `Pesquisa_stage/report_present/report/Report/assets/`):
+
+| File | Referenced by |
+|---|---|
+| `reports/final_visual_evidence/tikz/metropolian_transparent.png` | `presentation/update_cover.py`, `update_cover_graph.py`, `replace_cover.py`, `fix_cover.py`, `interactive_graph_builder.py`, `test_cover_graph.tex`, `beamerthemeTerritorialIntelligenceReportPalette.sty` |
+| `reports/final_visual_evidence/tikz/A10_complete_neural_temporal_relational_framework_v12.png` | `presentation/presentation_canonical.tex`, `presentation_scientific_transport_v2.tex` |
+| `reports/final_visual_evidence/figures/slides/F01_ze2020_zones.pdf` | `presentation/figures/tikz/france_relation_learning_iterations_v1.tex` |
+
+All three were copied from the primary worktree (read-only source) into this branch, checksummed
+before and after on both sides: source unchanged, destination byte-identical to source
+(`_delivery_cleanup_archive/2026-08-24/SYNCED_VISUAL_EVIDENCE_{source,dest}.sha256`). The first
+two were entirely new to this branch (`tikz/` did not previously exist here — the directory is
+untracked in the primary worktree, so it was never committed at `f730e72` either); the third
+updates an already-tracked file whose primary-worktree version had diverged.
+
+**Deliberately not synchronized, and why:** every other modified/untracked path under
+`reports/final_visual_evidence/` (130 further modified files, 4 new figures, one deleted
+caption) and all of `reports/results_evidence_selection/` (untracked in its entirety) — none is
+read live by any report or presentation source; copying them would be exactly the
+"backups/superseded versions/unused contact sheets/duplicate renderings/compilation
+auxiliaries/excluded visual experiments" the task explicitly excludes, and `results_evidence_selection`
+itself states in its own README that it "contains no Results prose and proposes none" for the
+report — i.e., it is curation material, not yet a report dependency. The report's own
+`assets/results/V*.pdf` figures are local copies whose *source* naming (`V10_temporal_gain_v5`,
+etc.) matches files under `results_evidence_selection/figures_v3/`, `figures_v4_temporal/`,
+`figures_v4_synthetic/` — useful provenance to know, but the report does not read those source
+files live, and versioning that entire multi-version figure history was judged out of scope for
+"minimal necessary" here. Flagged for a future pass, not silently dropped.
+
+**Still outstanding, still a pending gate, not a failure:** the 130 further `final_visual_evidence`
+modifications above (once the user freezes them), all of `results_evidence_selection` (if a
+future decision is made that the report should read it live), and `hpc_results/herald93/`'s
+remaining raw provenance beyond what §4/`results/selected/main_benchmark/` already versions
+(mirroring it fully the way `herald94-96` were in commit `ce1a3c8` was judged out of scope for a
+"minimal necessary" selection). Do not present this branch as containing the *complete* frozen
+visual/report evidence until these are closed.
 
 ## 12. Large blobs already committed
 
