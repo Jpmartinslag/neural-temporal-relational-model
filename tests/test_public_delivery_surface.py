@@ -290,3 +290,30 @@ def test_canonical_docs_are_all_linked_from_readme():
 def test_canonical_docs_exist():
     for rel in CANONICAL_DOCS:
         assert (REPO / rel).is_file(), f"canonical doc missing: {rel}"
+
+
+# ── 7. The public timeline mirrors the report rather than the old roadmap ───────
+
+def test_readme_contains_the_report_project_timeline():
+    readme = (REPO / "README.md").read_text(encoding="utf-8")
+    required = {
+        "## Project timeline and milestones",
+        "```mermaid\ngantt",
+        "Literature review and design",
+        "French territorial data",
+        "Temporal forecasting",
+        "Neural architectures",
+        "European experiments",
+        "Dynamic graph",
+        "Synthetic validation",
+        "Model comparison and audits",
+        "Scientific consolidation",
+        "Correction — temporal leakage detected",
+        "Correction — causality not demonstrated",
+        "Report submission",
+        "Attention-based mechanism — future article",
+    }
+    missing = sorted(fragment for fragment in required if fragment not in readme)
+    assert not missing, f"README project timeline is incomplete: {missing}"
+    assert "Research Gantt — working target" not in readme
+    assert "HERALD_05_OBSERVATORY_DASHBOARD_AND_ARTICLE_ROADMAP.md" not in readme
