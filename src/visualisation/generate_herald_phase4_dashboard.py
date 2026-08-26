@@ -22,7 +22,7 @@ import numpy as np
 import pandas as pd
 
 
-BASE = Path("/home/jpdark/Downloads/project_recomm/dataset")
+BASE = Path(__file__).resolve().parents[2]  # repository root
 
 COUNTRY_CFG = {
     "nl": {

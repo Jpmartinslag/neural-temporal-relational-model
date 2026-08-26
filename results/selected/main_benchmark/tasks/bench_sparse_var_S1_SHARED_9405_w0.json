@@ -1,0 +1,107 @@
+{
+  "kind": "herald93_benchmark_task",
+  "method": "sparse_var",
+  "scenario": "S1_SHARED",
+  "seed": 9405,
+  "width": 0,
+  "n_zones": 280,
+  "n_score": 12,
+  "origins": [
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111
+  ],
+  "environment": {
+    "python": "3.10.20",
+    "numpy": "2.2.6",
+    "torch": "2.6.0+cu124"
+  },
+  "cost": {
+    "parameters": 50400,
+    "epochs": 0,
+    "seconds": 3.99,
+    "peak_memory_mb": 608.4,
+    "total_seconds": 5.5
+  },
+  "capabilities": {
+    "learns_graph": true,
+    "graph_kind": "static",
+    "objective": "lasso",
+    "aim": "relational recovery",
+    "support_restricted": true
+  },
+  "forecast": {
+    "mae": 0.08769731502773377,
+    "wmape": 0.9980917925836812,
+    "deviance": 0.018742635571792607,
+    "skill_vs_persistence": 0.0019082074163186968,
+    "n": 10991
+  },
+  "forecast_per_signal": {
+    "headcount": {
+      "mae": 0.03477164692790881,
+      "wmape": 1.0064479159876039,
+      "deviance": 0.0017530414523404857,
+      "skill_vs_persistence": -0.006447915987603858,
+      "n": 3220
+    },
+    "payroll": {
+      "mae": 0.18523843959160458,
+      "wmape": 0.9994741502248357,
+      "deviance": 0.05415504239789364,
+      "skill_vs_persistence": 0.0005258497751644553,
+      "n": 3213
+    },
+    "establishments": {
+      "mae": 0.048113932264103744,
+      "wmape": 0.8692184738240737,
+      "deviance": 0.004540235321548849,
+      "skill_vs_persistence": 0.1307815261759263,
+      "n": 534
+    },
+    "unemployment": {
+      "mae": 0.047505485604265575,
+      "wmape": 1.0106519023782334,
+      "deviance": 0.0036408942807981126,
+      "skill_vs_persistence": -0.010651902378233435,
+      "n": 3233
+    },
+    "creations": {
+      "mae": 0.0979359104507054,
+      "wmape": 1.0,
+      "deviance": 0.015372776228921001,
+      "skill_vs_persistence": 0.0,
+      "n": 791
+    }
+  },
+  "relational": {
+    "edge_f1": 0.6991071428571428,
+    "precision": 0.6991071428571428,
+    "recall": 0.6991071428571428,
+    "dense_correlation": 0.008818194569668081,
+    "auprc": 0.7059193850849348,
+    "prevalence": 0.7,
+    "direction_precision": 0.204031007751938,
+    "predicted_added_edge_rate": 0.30089285714285713,
+    "true_edges_outside_support": 0,
+    "budget": 7840
+  },
+  "events": {
+    "event_f1": NaN,
+    "n_events": 0,
+    "static_periods": 11,
+    "false_event_rate": 0.0
+  },
+  "gradients": {},
+  "abstention_rate": null,
+  "support_size": 11200
+}

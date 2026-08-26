@@ -21,7 +21,7 @@ at folder-name granularity).
 **Answer to the one-line question this audit exists to answer:** no training script in
 this repository today reads `fr_ze2020_model_ready_panel.csv`. The France ZE2020 tabular
 forecasting track has a clean data lineage (HERALD_15) but **no current trainer** — that
-gap is what Tarefa 3 below closes with a new, minimal, smoke-tested script.
+gap is what Task 3 below closes with a new, minimal, smoke-tested script.
 
 ---
 
@@ -29,11 +29,11 @@ gap is what Tarefa 3 below closes with a new, minimal, smoke-tested script.
 
 | Question | Answer |
 |---|---|
-| Does any current/active trainer read the new canonical panel (`fr_ze2020_model_ready_panel.csv`)? | **No, until this pass.** New script added: `src/modeles/france_ze2020/train_fr_ze2020_baselines.py` (Tarefa 3). |
+| Does any current/active trainer read the new canonical panel (`fr_ze2020_model_ready_panel.csv`)? | **No, until this pass.** New script added: `src/modeles/france_ze2020/train_fr_ze2020_baselines.py` (Task 3). |
 | Does any script claimed as "current" read the legacy panel (`dynamic_stgnn_feature_panel_v1.csv`)? | **No.** Every script that reads it is already classified `HISTORICAL_EXPERIMENT`/`LEGACY_DO_NOT_USE` in `HERALD_10_CODE_PATH_MAP.md`, and that classification is confirmed accurate by this pass (see §1). |
 | Were any legacy files moved or deleted? | **No.** Four files (`train_herald_v6.py`, `v7.py`, `train_herald_semi_v2.py`, `train_herald_regime_experiment.py`) are currently **modified/uncommitted** in the worktree. Human clarification on 2026-06-24: these are intentional historical architecture-improvement attempts, not accidental scope creep. They remain outside the current canonical trainer and cannot support current claims without reauditing, but should be preserved as architecture-history evidence (see §5). |
 | Is there a current graph-forecast pipeline for ZE2020? | **No, and none is proposed.** Two prior FR ZE2020 graph-forecast attempts both failed/closed (DEC-031 `S1_FR_FAIL`, plus the dual-graph branch on FR NUTS3, DEC-029 `DUAL_GRAPH_S1_FAIL`). §4 documents what exists as raw material for *future* research, explicitly not a pipeline. |
-| Final status | **PARCIAL** — see §8. Documentation, one new smoke-tested script, and registry/map updates done; no file moved; nothing trained beyond local smoke. |
+| Final status | **PARTIAL** — see §8. Documentation, one new smoke-tested script, and registry/map updates done; no file moved; nothing trained beyond local smoke. |
 
 ---
 
@@ -42,7 +42,7 @@ gap is what Tarefa 3 below closes with a new, minimal, smoke-tested script.
 This is the track the task is about: every script that does or did try to forecast
 `establishment_creations`/`side_establishment_creations_official` per ZE2020 zone × year.
 
-| File | Entrada | Saída | Tipo de modelo | Painel legado? | Painel novo? | Status recomendado | Observação |
+| File | Input | Output | Model type | Legacy panel? | New panel? | Recommended status | Note |
 |---|---|---|---|---|---|---|---|
 | `src/modeles/train_herald_v3.py` | `dynamic_stgnn_feature_panel_v1.csv` (`PANEL_PATH`), `graph_adjacency_core_v0.csv`, `graph_adjacency_mobility_v0.csv`, `graph_node_index_core_v0.csv`, raw URSSAF quarterly | `herald_v3_predictions_*_v1.csv`, `*_internals_*_v1.npz` | GRU quarterly encoder + gated dynamic graph residual (`HERALDv3Residual`) + Ridge persistence inside the same file | **Yes** | No | `LEGACY_DO_NOT_USE` | Standalone (no import of other `train_herald_*`). Tracked, clean (no pending diff). |
 | `src/modeles/train_herald_v4.py` | same as v3 + `side_creations_a10_ze2020_v1.csv` (A10 sector) | `herald_v4_predictions_*_v1.csv` | Sectoral dynamic graph residual (`HERALDv4Residual`) | **Yes** | No | `LEGACY_DO_NOT_USE` | Standalone. Tracked, clean. |
@@ -63,12 +63,17 @@ This is the track the task is about: every script that does or did try to foreca
 | `src/modeles/herald_map_utils.py` | `graph_adjacency_core_v0.csv`, `graph_adjacency_mobility_v0.csv`, `graph_node_index_core_v0.csv`, legacy panel-derived map data | map/visualization helper outputs | UTILITY (no model) | **Yes** | No | `LEGACY_DO_NOT_USE` (adjacent) | Feeds `src/visualisation/plot_herald_v3_dashboard.py`, `plot_herald_v3_v6_dashboard.py`, `plot_herald_v6_2025_dashboard.py` — all pre-Q7, already `HISTORICAL_EXPERIMENT` per HERALD_10. |
 | `src/analyse/02_ridge_ar_official.py` | `import train_herald_v6 as base` for `PANEL_PATH`/`SPAT_COLS=["side_lag_1","growth_1y"]` | Ridge AR metrics (printed/CSV, CLI-driven) | Ridge (AR + spatial-aggregate features) | **Yes** | No | `LEGACY_DO_NOT_USE` | **This is the script HERALD_15 §5 found reading `growth_1y` directly as a feature** (`SPAT_COLS`), the exact same-row target leak. Confirms the file's own comment ("forecast-safe") is wrong for that column. Path note: HERALD_15 and the registry's `claim_forbidden` text both wrote `scripts/02_ridge_ar_official.py`; the real path is `src/analyse/02_ridge_ar_official.py` — **fixed in the registry by this pass** (§6). |
 | `src/analyse/01_sector_baselines.py`, `03_select_gate.py` | legacy panel (via shared constants) | gate-selection CSV/JSON | Sector baselines + Q7 architecture gate selection | **Yes** | No | `LEGACY_DO_NOT_USE` | Pre-Q7 architecture search (Phase 3E). |
-| `src/analyse/analyze_herald_v3_statistical_evidence.py`, `evaluate_dynamic_feature_panel_baselines_v1.py`, `summarize_herald_semi_total.py`, `archive_legacy_for_herald_focus.py` | legacy panel / v3-v6 prediction outputs | analysis reports/CSVs | Post-hoc statistical analysis, not trainers | **Yes** | No | `LEGACY_DO_NOT_USE` | Analysis-only, downstream of the scripts above. |
-| **`src/modeles/france_ze2020/train_fr_ze2020_baselines.py`** | **`data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv`** | `fr_ze2020_baseline_predictions_v1.csv`, `fr_ze2020_baseline_metrics_v1.csv` (CLI-driven `--output-dir`, not committed by default) | Persistence (`y_hat = lag_1`) + Ridge(lag_1, lag_2, lag_3, growth_1y_safe, growth_2y_safe), causal rolling-origin | **No** | **Yes** | `CURRENT_BASELINE_CANDIDATE` | **New, this pass.** See Tarefa 3 (§3). 12/12 tests pass, runs in <1s. |
+| `src/analyse/analyze_herald_v3_statistical_evidence.py`, `evaluate_dynamic_feature_panel_baselines_v1.py`, `summarize_herald_semi_total.py` | legacy panel / v3-v6 prediction outputs | analysis reports/CSVs | Post-hoc statistical analysis, not trainers | **Yes** | No | `LEGACY_DO_NOT_USE` | Analysis-only, downstream of the scripts above. |
+| **`src/modeles/france_ze2020/train_fr_ze2020_baselines.py`** | **`data/processed/france_ze2020/fr_ze2020_model_ready_panel.csv`** | `fr_ze2020_baseline_predictions_v1.csv`, `fr_ze2020_baseline_metrics_v1.csv` (CLI-driven `--output-dir`, not committed by default) | Persistence (`y_hat = lag_1`) + Ridge(lag_1, lag_2, lag_3, growth_1y_safe, growth_2y_safe), causal rolling-origin | **No** | **Yes** | `CURRENT_BASELINE_CANDIDATE` | **New, this pass.** See Task 3 (§3). 12/12 tests pass, runs in <1s. |
 
 **Confirms HERALD_10's existing classification is accurate** for every row above except the
 new one — no re-classification was needed, only verification (every `PANEL_PATH` constant
 was actually read from source, not assumed from the file name).
+
+The one-off repository-migration helper previously listed in this table was subsequently
+archived from the delivery tree after a dependency audit confirmed that no code or test imported
+it. Its completed migration remains traceable through the repository history and the delivery
+provenance record.
 
 ---
 
@@ -79,7 +84,7 @@ tensors. Listed for completeness because the task asked about the whole training
 because §4 needs to distinguish these (closed, real, forecast-oriented) from the *future*
 graph track (not yet built).
 
-| File | Entrada | Tipo de modelo | Status recomendado | DEC |
+| File | Input | Model type | Recommended status | DEC |
 |---|---|---|---|---|
 | `src/modeles/train_dual_graph_experiment.py`, `dual_graph_models.py`, `run_dual_graph_pilot.py`, `run_dual_graph_smoke.py` | `data/processed/dual_graph_tensors/fr_{year}.npz` (FR **NUTS3**, not ZE2020) | Dynamic dual economic graph GNN, 5 controls × 5 seeds | `LEGACY_DO_NOT_USE` (`CLOSED_BRANCH`) | DEC-029, `DUAL_GRAPH_S1_FAIL` — all 7 gate criteria fail |
 | `src/modeles/graph_temporal_models.py`, `graph_temporal_train.py`, `run_e0_smoke_nl.py`, `run_e0_smoke_nl_v2.py`, `run_s0_fr_smoke.py`, `run_s1_fr_local.py` | `data/processed/graph_temporal_v2/{country}/{year}/fold_v2.npz` (FR **ZE2020** + NL COROP, schema 2.0) | GConvGRU / EvolveGCN-H low-capacity residual over a statistically-derived per-year adjacency | `LEGACY_DO_NOT_USE` (`CLOSED_BRANCH`) | DEC-031, `S1_FR_FAIL` — fails all 5 frozen gate criteria; indistinguishable from permutation nulls (p=1.0) |
@@ -99,7 +104,7 @@ data** (`data/processed/european_panel/{france,pt_municipal_sector,nl}_panel.csv
 different question (do sectors temporally precede other sectors?) than this task's question
 (can ZE2020 zones be forecast, and could a future zone-to-zone graph help?).
 
-| File(s) | Tipo | Status recomendado | Observação |
+| File(s) | Type | Recommended status | Note |
 |---|---|---|---|
 | `build_sector_precedence_graph.py`, `gates_dec060_france_audit.py`, `run_dec060_france_signal_audit.py`, `gates_dec064_pt_municipal_phase7.py`, `run_dec064_pt_municipal_phase7.py`, `phase7_threshold_calibration.py`, `merge_nl_gemeente_proxy_phase7.py`, `preflight_granular_phase7.py` | Signed lag-1 sector precedence (bootstrap/permutation/FDR) | `REAL_WORLD_RELATION_PIPELINE` | `ACTIVE_RELATION_EVIDENCE` per HERALD_10. Methodologically the strongest prior art for *any* future relation-evidence work (rigorous null/stability controls) — reusable as a **methodology template**, not as code that touches ZE2020-to-ZE2020 edges. |
 | `build_phase7_weak_labels.py`, `train_real_relation_weak_labels.py`, `run_shared_relation_real.py`, `run_p0_checkpointed.py`, `run_dec059_weak_label_revalidation.py`, `gates_dec058.py`, `gates_dec059.py` | `SharedRelationEncoder` (trained on synthetic data) fine-tuned/evaluated on real sector pairs | `EXPERIMENTAL_RESEARCH` | DEC-056/058/059, `REAL_WEAK_LABEL_TUNING_PARTIAL`. Sign transfer weak (0.438-0.667), no robust cross-country replication. Not reusable as-is; the *encoder architecture* could be a reference if a future zone-to-zone encoder is ever attempted, but that is a different graph (sector pairs, not territory pairs). |
@@ -122,10 +127,10 @@ constraint — this section documents, it does not implement).
 | `data/processed/graph_node_index_core_v0.csv` | 280-row node index (`node_idx` ↔ `ZE2020`) | Not found. | `UNKNOWN_REVIEW_REQUIRED` |
 
 These are **real**, already at the exact ZE2020 grain the task asks about, and conceptually
-match two of the five relation types the task lists (`vizinhança territorial` ≈ `core`,
+match two of the five relation types the task lists (`territorial neighborhood` ≈ `core`,
 `commuting flows` ≈ `mobility`) — confirmed by `reports/HERALD_INTELLIGENCE_LAYER_SPEC.md`
-line 46, which independently describes `graph_adjacency_mobility_v0.csv` as *"Matrice de
-poids de mobilité 280×280 ... Mobilité pré-COVID, peut sous-représenter télétravail"*. **But
+line 46, which independently describes `graph_adjacency_mobility_v0.csv` as a 280×280
+pre-COVID mobility-weight matrix that may underrepresent remote work. **But
 their construction method (distance threshold? administrative contiguity? which commuting
 survey/year?) cannot be verified — the builder script is missing from the current tree.**
 Same provenance-gap pattern already documented for other pre-Q7 artifacts in HERALD_15 §1.
@@ -164,12 +169,12 @@ conclusion was negative everywhere it was tried.
 
 ### 4.4 Classification answering the task's exact question
 
-| Categoria pedida | Scripts |
+| Requested category | Scripts |
 |---|---|
-| **Sintéticos** | `src/modeles/synthetic/` whole tree (`phase11_generalization/` ... `phase16_decoupled/`, `gates*.py`, `herald_graph_imputer*.py`, `run_*.py`) — zero real data, `SYNTHETIC_BENCHMARK` |
-| **Reais** | `train_dual_graph_experiment.py`+tensors (FR NUTS3), `graph_temporal_*`+tensors (FR ZE2020/NL COROP), `build_phase4c/4d_*` (NL/BE/PT NUTS3), `build_g1_*`/`build_g2_*` (FR/NL/PT sector-territory co-growth), `real_world/*relation*` (FR/NL/PT sector pairs) — all real, all closed/partial, none is a territory-to-territory ZE2020 commuting/distance/similarity graph |
-| **Reaproveitáveis** | (a) the bootstrap/permutation/FDR/LOYO methodology pattern from `build_sector_precedence_graph.py` and `build_g2_*` (statistical rigor template); (b) `graph_adjacency_core_v0.csv`/`mobility_v0.csv` as **candidate raw data only**, pending provenance verification (§4.1) |
-| **Não devem ser usados** | Everything in §2 as a *forecast-improvement* claim (both FR attempts — NUTS3 dual-graph and ZE2020 graph-temporal — failed their gates); `graph_adjacency_core_v0.csv`/`mobility_v0.csv` as a *silently-trusted* input (provenance unverified) |
+| **Synthetic** | `src/modeles/synthetic/` whole tree (`phase11_generalization/` ... `phase16_decoupled/`, `gates*.py`, `herald_graph_imputer*.py`, `run_*.py`) — zero real data, `SYNTHETIC_BENCHMARK` |
+| **Real** | `train_dual_graph_experiment.py`+tensors (FR NUTS3), `graph_temporal_*`+tensors (FR ZE2020/NL COROP), `build_phase4c/4d_*` (NL/BE/PT NUTS3), `build_g1_*`/`build_g2_*` (FR/NL/PT sector-territory co-growth), `real_world/*relation*` (FR/NL/PT sector pairs) — all real, all closed/partial, none is a territory-to-territory ZE2020 commuting/distance/similarity graph |
+| **Reusable** | (a) the bootstrap/permutation/FDR/LOYO methodology pattern from `build_sector_precedence_graph.py` and `build_g2_*` (statistical rigor template); (b) `graph_adjacency_core_v0.csv`/`mobility_v0.csv` as **candidate raw data only**, pending provenance verification (§4.1) |
+| **Must not be used** | Everything in §2 as a *forecast-improvement* claim (both FR attempts — NUTS3 dual-graph and ZE2020 graph-temporal — failed their gates); `graph_adjacency_core_v0.csv`/`mobility_v0.csv` as a *silently-trusted* input (provenance unverified) |
 
 **No `CURRENT_GRAPH_CANDIDATE` exists, and none is proposed by this pass** — consistent with
 the task's explicit instruction not to implement the future graph track yet, only to
@@ -179,10 +184,10 @@ unverified legacy matrix).
 
 ---
 
-## 5. Legacy isolation decision (Tarefa 5)
+## 5. Legacy isolation decision (Task 5)
 
-**Decision: document-only, no file moved.** Per the task's own fallback rule ("se mover for
-arriscado: deixar no lugar; marcar em docs/mapa"), moving is not safe right now because:
+**Decision: document-only, no file moved.** The task's fallback rule required risky moves to
+be replaced by an explicit documentation classification, and moving was not safe at that point because:
 
 1. Four files (`train_herald_v6.py`, `v7.py`, `train_herald_semi_v2.py`,
    `train_herald_regime_experiment.py`) are **currently modified, uncommitted**, with real
@@ -211,7 +216,7 @@ anywhere in this repository's documentation as a current or recommended training
 ## 6. Documentation and registry changes made by this pass
 
 - **New file:** `reports/canonical/HERALD_16_MODEL_TRAINING_BLOCK_AUDIT.md` (this document).
-- **New file:** `src/modeles/france_ze2020/train_fr_ze2020_baselines.py` (Tarefa 3).
+- **New file:** `src/modeles/france_ze2020/train_fr_ze2020_baselines.py` (Task 3).
 - **New file:** `tests/test_fr_ze2020_baselines.py` (12 tests).
 - **`reports/canonical/HERALD_10_CODE_PATH_MAP.md`:** added the new script under
   `ACTIVE_PREDICTION`, with a cross-reference to this document.

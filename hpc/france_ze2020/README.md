@@ -32,9 +32,9 @@ collect `feature_signals`/`relation_signals` across seeds to assess stability (H
 ## Sequence
 
 ```bash
-# 1. Sync local -> meso (no --delete, never touches hpc_results/ or data/external/)
+# 1. Sync local -> meso (run from the repo root; no --delete, never touches hpc_results/ or data/external/)
 rsync -avz --exclude='*.pyc' --exclude='hpc_results/' --exclude='data/external/' \
-    /home/jpdark/Downloads/project_recomm/dataset/ \
+    ./ \
     meso:~/project_recomm_herald_v6_2025_20260430/dataset/
 
 # 2. Smoke test on meso (no sbatch, plain python, ~seconds)

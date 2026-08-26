@@ -15,9 +15,8 @@ emits all required outputs, and never touches the target year in the feature
 sequence (leakage check). It does NOT authorize any scientific claim: no
 metric reported here is a result, only a liveness signal.
 
-Run (mlearning env):
-  /home/jpdark/miniconda3/envs/mlearning/bin/python \
-    -m src.modeles.run_dual_graph_smoke
+Run:
+  python3 -m src.modeles.run_dual_graph_smoke
 """
 from __future__ import annotations
 

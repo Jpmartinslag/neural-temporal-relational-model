@@ -5,14 +5,14 @@
 #SBATCH --mem=8G
 #SBATCH --time=04:00:00
 #SBATCH --constraint=mpi
-#SBATCH --output=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_sector_precedence/logs/task_%a.out
-#SBATCH --error=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_sector_precedence/logs/task_%a.err
+#SBATCH --output=hpc_results/phase7_sector_precedence/logs/task_%a.out
+#SBATCH --error=hpc_results/phase7_sector_precedence/logs/task_%a.err
 #SBATCH --partition=normal
 
 set -euo pipefail
 
-REPO=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset
-PYTHON=/home/jpmartinsd/.conda/envs/herald-v5/bin/python
+REPO="${REPO_ROOT:?set REPO_ROOT to the repository root}"
+PYTHON="${PYTHON:-python3}"
 MANIFEST="${REPO}/hpc/phase7_sector_precedence/configs/task_manifest.json"
 PANEL="${REPO}/data/processed/herald_observatory_v02/herald_observatory_v02_panel.csv"
 OUT_DIR="${REPO}/hpc_results/phase7_sector_precedence/raw"

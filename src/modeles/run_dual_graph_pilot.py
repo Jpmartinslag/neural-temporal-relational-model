@@ -14,8 +14,8 @@ Scope (deliberately limited):
 This pilot does NOT apply or report the scientific fail-closed gate. No metric
 printed here is a result; it is a pipeline health signal.
 
-Run (mlearning env):
-  /home/jpdark/miniconda3/envs/mlearning/bin/python -m src.modeles.run_dual_graph_pilot
+Run:
+  python3 -m src.modeles.run_dual_graph_pilot
 """
 from __future__ import annotations
 

@@ -4,8 +4,8 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=8G
 #SBATCH --time=03:00:00
-#SBATCH --output=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_nl_gemeente_proxy/logs/task_%a.out
-#SBATCH --error=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/phase7_nl_gemeente_proxy/logs/task_%a.err
+#SBATCH --output=hpc_results/phase7_nl_gemeente_proxy/logs/task_%a.out
+#SBATCH --error=hpc_results/phase7_nl_gemeente_proxy/logs/task_%a.err
 #SBATCH --partition=normal
 #SBATCH --constraint=mpi
 
@@ -16,8 +16,8 @@
 
 set -euo pipefail
 
-REPO=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset
-PYTHON=/home/jpmartinsd/.conda/envs/herald-v5/bin/python
+REPO="${REPO_ROOT:?set REPO_ROOT to the repository root}"
+PYTHON="${PYTHON:-python3}"
 PANEL=$REPO/data/processed/phase7_nl_gemeente_proxy/nl_gemeente_phase7_panel.csv
 MANIFEST=$REPO/data/processed/phase7_nl_gemeente_proxy/hpc_task_manifest.json
 RAW_DIR=$REPO/hpc_results/phase7_nl_gemeente_proxy/raw
