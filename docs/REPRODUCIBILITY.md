@@ -37,10 +37,12 @@ repository's own validation does not). This is documented as a **reference**, no
 any `requirements*.txt` here — see "Numeric tolerances" below for what that gap does and does
 not affect.
 
-Verified in a fresh venv during this pass: `pip install -r requirements.txt -r
-requirements-neural.txt` gives a clean `pytest tests/ --collect-only` (**2848 tests collected, 0
+Verified in a fresh venv during the initial delivery pass: `pip install -r requirements.txt -r
+requirements-neural.txt` gave a clean `pytest tests/ --collect-only` (**2848 tests collected, 0
 errors**) and a fully passing, deterministic (5/5 repeated runs identical)
-`scripts/run_model_smoke.sh`.
+`scripts/run_model_smoke.sh`. Subsequent public-surface, privacy, and timeline guards bring the
+current branch to **2911 tests collected, 0 errors**, without changing the model or the smoke
+configuration.
 
 ## Numeric tolerances
 
@@ -113,8 +115,8 @@ needs `torch`. To sanity-check that nothing is broken without running everything
 python3 -m pytest tests/ --collect-only -q
 ```
 
-This only imports every test module; it does not execute them. Verified during this cleanup:
-2848 tests collected, 0 errors (with `torch` and the `geopandas` stack installed).
+This only imports every test module; it does not execute them. Verified on the current delivery
+branch: 2911 tests collected, 0 errors (with `torch` and the `geopandas` stack installed).
 
 ## Reproducing the frozen headline results
 
@@ -198,7 +200,7 @@ scientific limitation — never used for a technical defect), `NOT RUN` (never c
 
 | # | Check | Status | Detail |
 |---|---|---|---|
-| 1 | `pytest tests/ --collect-only` (full test collection) | PASS | 2904 tests collected, 0 errors |
+| 1 | `pytest tests/ --collect-only` (full test collection) | PASS | 2911 tests collected, 0 errors |
 | 2 | `./scripts/run_minimal_example.sh` | PASS | 12/12, ~1s |
 | 3 | `./scripts/run_model_smoke.sh` (neural model smoke, full) | PASS (script exit 0) | ~2m45s total, no SLURM, no download; the script's own exit code depends only on the technical rows below |
 | 4 | Smoke repeated twice, same seed | PASS | Forecast, connection scores, and gradients bit-identical (`scripts/run_model_smoke.sh` step 4, and `test_determinism_same_seed_same_config`) |
@@ -214,7 +216,7 @@ scientific limitation — never used for a technical defect), `NOT RUN` (never c
 | 14 | `tests/test_herald_artifact_registry.py` | PASS | 13/13 |
 | 15 | Import verification | PASS | `pytest --collect-only` imports every test module including all new files this pass added; every `importlib` load in the entrypoint and its guards succeeds (rows 1-13) |
 | 16 | `tests/run_guards_no_pytest.py` | NOT RUN | Fails at the branch's base commit with a pre-existing missing-module error, unrelated to this cleanup |
-| 17 | Full non-collection execution of all 2904 tests | NOT RUN | Several suites are HPC-scale; collection-only used instead (row 1) |
+| 17 | Full non-collection execution of all 2911 tests | NOT RUN | Several suites are HPC-scale; collection-only used instead (row 1) |
 | 18 | HPC re-submission / cluster-dependent reproduction | NOT RUN | No cluster access from this environment |
 
 ### Scientific recovery gate — environment sensitivity
@@ -260,8 +262,8 @@ change). Thresholds, seeds, and the model were not altered to produce either out
 
 | # | Check | Status | Detail |
 |---|---|---|---|
-| 28 | Secrets/tokens (AWS keys, private-key headers, Slack/GitHub tokens, hardcoded passwords) | PASS | None found in `README.md`/`docs/*.md`/`results/selected/main_benchmark/*.md`/`requirements*.txt`/`environment-neural-validated.txt` |
-| 29 | Personal filesystem paths in public docs | PASS | None found |
+| 28 | Secrets/tokens (AWS keys, private-key headers, Slack/GitHub tokens, hardcoded passwords) | PASS | Full-history and current-tree `gitleaks` scans found no real secret; the only detections were verified public Banque de France series identifiers |
+| 29 | Personal filesystem paths in the current public tree | PASS | `tests/test_no_personal_data_leak.py`: 6/6; historical commit metadata and previously corrected paths remain explicitly disclosed as a publication identity decision |
 | 30 | Large data added this pass | PASS (none added) | `results/selected/main_benchmark/` is 300KB; the two synced visual-evidence files are under 1MB combined; nothing else was added |
 | 31 | Temporary files / caches committed | PASS | None staged; `.venv/`, `__pycache__/`, `.pytest_cache/` remain gitignored |
 | 32 | File permissions | PASS | No mode changes beyond the two `chmod +x` on `scripts/*.sh`/`.py`, both intentional and necessary |

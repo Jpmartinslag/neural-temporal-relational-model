@@ -199,15 +199,65 @@ underlying record — the decision log, the artifact registry, and the subset of
 documents still needed as final evidence or as an active script's cited specification — for
 provenance and deep audit, not as a required starting point.
 
-## Conceptual project timeline
+## Project timeline and milestones
 
-1. Data and territorial definition (French sources, 280 employment zones).
-2. Causal temporal representation of each territory's own trajectory.
-3. Candidate relation construction (commuting, similarity, complementarity).
-4. Known-truth synthetic evaluation (two separate protocols — see
-   [`docs/RESULTS_AND_LIMITATIONS.md`](docs/RESULTS_AND_LIMITATIONS.md)).
-5. Forecasting and relation-recovery findings, evaluated separately.
-6. Current limitations and future work (relation-scoring objective, attention-based fusion,
-   relation-family-specific representations).
+The timeline below mirrors the project evolution presented in the report, from the initial
+framing in March to the final consolidation in September. Green milestones in the report denote
+consolidated results, while orange milestones identify corrections or limitations that redirected
+the subsequent work. The Mermaid version preserves that distinction through explicit
+`Consolidated` and `Correction` labels. Repository evidence begins on 8 April 2026, so the March
+segment records the conceptual work that preceded the first commit rather than claiming Git
+evidence for that period.
 
-Detailed, dated provenance: [`docs/EXPERIMENT_PROVENANCE.md`](docs/EXPERIMENT_PROVENANCE.md).
+```mermaid
+gantt
+    accTitle: Project Timeline and Milestones
+    accDescr: Research timeline from March to September 2026, covering conceptual design, French territorial data, temporal forecasting, neural and graph modelling, synthetic validation, audits, and final scientific consolidation.
+
+    title Neural Temporal–Relational Model — Project Evolution
+    dateFormat YYYY-MM-DD
+    axisFormat %b
+
+    section Literature review and design
+        Conceptual framing                         :done, concept, 2026-03-01, 28d
+        Theoretical foundations                    :done, theory, 2026-03-22, 24d
+
+    section French territorial data
+        ZE2020, SIDE and commuting data            :done, france_data, 2026-04-01, 51d
+
+    section Temporal forecasting
+        Persistence and temporal baselines         :done, temporal, 2026-04-08, 69d
+        Consolidated — first temporal benchmark    :milestone, temporal_m1, 2026-05-01, 0d
+        Consolidated — improved representation     :milestone, temporal_m2, 2026-06-15, 0d
+
+    section Neural architectures
+        Spatio-temporal neural exploration         :done, neural, 2026-05-01, 82d
+        Consolidated — first neural architecture   :milestone, neural_m1, 2026-05-15, 0d
+
+    section European experiments
+        Cross-territory and sector experiments     :done, europe, 2026-05-08, 54d
+        Correction — temporal leakage detected     :crit, milestone, europe_m1, 2026-06-15, 0d
+
+    section Dynamic graph
+        Candidate supports and graph incidence     :done, graph, 2026-06-01, 51d
+        Consolidated — ZE2020 dynamic graph        :milestone, graph_m1, 2026-07-08, 0d
+
+    section Synthetic validation
+        Oracles and relational observability       :done, synthetic, 2026-06-08, 75d
+        Consolidated — observable mechanism        :milestone, synthetic_m1, 2026-07-01, 0d
+        Correction — strict null controls          :crit, milestone, synthetic_m2, 2026-08-01, 0d
+
+    section Model comparison and audits
+        Comparative diagnostics                    :done, audits, 2026-07-01, 52d
+        Correction — prior evidence reassessed     :crit, milestone, audit_m1, 2026-07-08, 0d
+        Consolidated — fair model comparison       :milestone, audit_m2, 2026-08-08, 0d
+        Correction — causality not demonstrated    :crit, milestone, audit_m3, 2026-08-08, 0d
+
+    section Scientific consolidation
+        Scientific report                          :active, report, 2026-08-01, 38d
+        Report submission                          :milestone, report_m1, 2026-09-02, 0d
+        Attention-based mechanism — future article :attention, 2026-09-02, 29d
+```
+
+Detailed, dated Git and experiment provenance is available in
+[`docs/EXPERIMENT_PROVENANCE.md`](docs/EXPERIMENT_PROVENANCE.md).
