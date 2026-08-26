@@ -4,8 +4,8 @@
 set -euo pipefail
 
 REMOTE=${REMOTE:-meso-direct}
-REMOTE_ROOT=${REMOTE_ROOT:-/home/jpmartinsd/project_recomm_herald_v6_2025_20260430}
-LOCAL_ROOT=${LOCAL_ROOT:-/home/jpdark/Downloads/project_recomm/dataset}
+REMOTE_ROOT=${REMOTE_ROOT:?set REMOTE_ROOT to the cluster repository path}
+LOCAL_ROOT=${LOCAL_ROOT:?set LOCAL_ROOT to the local repository root}
 
 STRICT_RUN=${STRICT_RUN:-herald_strict_exante_20260506_night_final}
 STRESS_RUN=${STRESS_RUN:-herald_leak_stress_20260507_target_shuffle}

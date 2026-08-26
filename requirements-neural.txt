@@ -1,0 +1,45 @@
+# Dependencies for the neural temporal-relational model: the model itself
+# (src/modeles/france_ze2020/herald93_benchmark.py), its synthetic generator
+# (src/data/synthetic/generate_france_multisignal_v92.py), the entrypoint
+# (scripts/run_temporal_relational_model.py, scripts/run_model_smoke.sh), and their tests
+# (tests/test_herald93_guards.py, tests/run_herald93_mutations.py,
+# tests/test_model_smoke_entrypoint.py, tests/test_selected_benchmark_provenance.py).
+#
+# Superset of requirements.txt -- install requirements.txt first, then this file, or just
+# this file on its own (it repeats the base scientific-stack pins).
+#
+# For an exact, fully-pinned snapshot of every package actually installed when this branch's
+# smoke and guard suite were validated, use environment-neural-validated.txt instead (or in
+# addition -- it is a strict superset). This file stays loosely pinned on everything except
+# torch, which is capped at the validated major.minor line specifically because an
+# unconstrained `torch` here would silently let `pip install` pull a future, never-validated
+# release -- exactly what this pin exists to prevent.
+#
+# Verified cluster provenance (the environment the reported headline numbers actually ran
+# under -- read directly from a committed task artifact,
+# results/selected/main_benchmark/tasks/*.json's own "environment" field, not assumed):
+#   python 3.10.20, numpy 2.2.6, torch 2.6.0+cu124 (CUDA build, GPU cluster node).
+#
+# Verified local/CPU validation environment for this branch's own smoke and guard suite
+# (docs/REPRODUCIBILITY.md, "Validation record"): python 3.12.3, torch 2.13.0. Neither
+# environment claims bit-for-bit numeric equality with the other -- see
+# docs/REPRODUCIBILITY.md, "Numeric tolerances," for what is actually promised instead.
+
+pandas
+numpy>=2.2,<3
+scipy
+scikit-learn
+networkx
+matplotlib
+plotly
+requests
+openpyxl
+geopandas
+shapely
+fiona
+pyogrio
+
+# Pinned to the exact major.minor line this branch's smoke/guard suite was validated
+# against (docs/REPRODUCIBILITY.md). Not a promise that only this line works -- a promise
+# that only this line was actually run.
+torch~=2.13.0

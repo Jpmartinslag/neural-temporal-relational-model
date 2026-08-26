@@ -1,40 +1,39 @@
-# HERALD — datasets exploratoires ou secondaires
+# Exploratory or secondary datasets — France pipeline
 
 Date: 2026-05-07
 
-Ces datasets ont été collectés ou envisagés, mais ne structurent pas encore le modèle principal. Ils
-doivent rester documentés pour éviter de les perdre, sans encombrer la narration scientifique.
+These datasets were collected or considered, but do not yet structure the main model. They should
+stay documented so they are not lost, without cluttering the scientific narrative.
 
-## Candidats utiles mais non principaux
+## Useful but non-primary candidates
 
-| Source | Fichier actuel | Potentiel | Risque / raison de prudence |
+| Source | Current file | Potential | Risk / reason for caution |
 |---|---|---|---|
-| BPE équipements | `data/interim/tables/bpe_commune_2024.csv`; `bpe_evolution_commune_2019_2024_geo2025.csv` | services, équipements, attractivité locale | plutôt structurel; risque de faible valeur prédictive annuelle |
-| FILOSOFI revenus | `data/interim/tables/filosofi_commune_2020.csv`; `filosofi_commune_2021.csv` | contexte socio-économique | publication lente; signal peu dynamique |
-| Population / RP | `rp_population_commune_2021.csv`; `rp_population_commune_2022.csv`; `population_history_annual_ze2020_v0.csv` | normalisation par taille, contexte démographique | peut dominer par effet taille si mal normalisé |
-| Emploi lieu résidence / travail | `rp_emploi_*` | structure du marché du travail | recensement lent; pas conjoncturel |
-| SITADEL construction | `sitadel_monthly_*`; `sitadel_surface_*` | signal avancé territorial, immobilier/construction | attention au cutoff mensuel; peut être très utile mais pas encore canonique |
-| Énergie | `energy_consumption_ze2020_v0.csv` | activité productive indirecte | hétérogénéité de sources et délais |
-| ZRR/QPV/ZAN/politiques publiques | `data/interim/policy/*` | lecture politique territoriale, app/recommandation | ne pas utiliser sans ablation; risque d'interprétation causale abusive |
-| A17 sectoriel | `zone_sectoral_profile_a17_v0.csv`; `zone_sectoral_profile_history_v0.csv` | granularité sectorielle plus fine que A10 | complexifie la tête sectorielle; à tester après A10 robuste |
-| REI / CFE historique | `rei_cfe_ze2020_v0.csv` | benchmark historique | rupture méthodologique avec SIDE; à garder en quarantaine |
+| BPE facilities/amenities | `data/interim/tables/bpe_commune_2024.csv`; `bpe_evolution_commune_2019_2024_geo2025.csv` | services, amenities, local attractiveness | mostly structural; risk of low annual predictive value |
+| FILOSOFI income | `data/interim/tables/filosofi_commune_2020.csv`; `filosofi_commune_2021.csv` | socio-economic context | slow release cadence; not a very dynamic signal |
+| Population / census | `rp_population_commune_2021.csv`; `rp_population_commune_2022.csv`; `population_history_annual_ze2020_v0.csv` | size normalization, demographic context | can dominate through a size effect if not properly normalized |
+| Employment at place of residence/work | `rp_emploi_*` | labor-market structure | slow census cadence; not conjunctural |
+| SITADEL construction | `sitadel_monthly_*`; `sitadel_surface_*` | leading territorial signal, real estate/construction | watch the monthly cutoff; potentially very useful but not yet canonical |
+| Energy | `energy_consumption_ze2020_v0.csv` | indirect productive activity | source heterogeneity and publication lags |
+| ZRR/QPV/ZAN public-policy zoning | `data/interim/policy/*` | territorial policy reading, app/recommendation use | do not use without an ablation; risk of overreaching causal interpretation |
+| A17 sectoral | `zone_sectoral_profile_a17_v0.csv`; `zone_sectoral_profile_history_v0.csv` | finer sectoral granularity than A10 | complicates the sector head; test only after A10 is robust |
+| Historical REI / CFE | `rei_cfe_ze2020_v0.csv` | historical benchmark | methodological break vs. SIDE; keep in quarantine |
 
-## Règle d'intégration
+## Promotion rule
 
-Une source exploratoire ne devient principale que si:
+An exploratory source only becomes primary if:
 
-1. sa date de publication est connue;
-2. elle peut être alignée en geo2025/ZE2020;
-3. elle améliore une métrique ou un indicateur interprétable dans une ablation dédiée;
-4. elle ne transforme pas un forecast en nowcast caché;
-5. elle apporte une lecture économique claire.
+1. its publication date is known;
+2. it can be aligned to geo2025/ZE2020;
+3. it improves a metric or an interpretable indicator in a dedicated ablation;
+4. it does not turn a forecast into a hidden nowcast;
+5. it carries a clear economic reading.
 
-## Priorité future
+## Future priority
 
-Ordre recommandé:
+Recommended order:
 
-1. SITADEL mensuel avec cutoff propre;
-2. BPE/FILOSOFI/population comme contexte lent;
-3. politiques publiques pour interprétation, pas prédiction principale;
-4. A17/A20 seulement quand A10 est stabilisé.
-
+1. Monthly SITADEL with a clean cutoff;
+2. BPE/FILOSOFI/population as slow context;
+3. Public-policy zoning for interpretation, not as a primary predictor;
+4. A17/A20 only once A10 is stable.

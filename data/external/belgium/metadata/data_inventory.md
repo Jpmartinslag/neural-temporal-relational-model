@@ -1,16 +1,16 @@
-# Belgium — Data Inventory (Phase 4 HERALD)
+# Belgium — data inventory (Phase 4)
 
 **Date:** 2026-05-28
 **Status:** ✅ ingested — panels validated, HPC-ready
 
 ---
 
-## Panels produits
+## Panels produced
 
-| Fichier | Rows | Zones | Years | Description |
+| File | Rows | Zones | Years | Description |
 |---------|------|-------|-------|-------------|
-| `processed/belgium_births_panel.csv` | 588 | 42 | 2007–2020 | Births (TVA primo-assujetissements) × arrondissement × year |
-| `processed/belgium_stock_panel.csv` | 588 | 42 | 2007–2020 | Stock (TVA entreprises actives) × arrondissement × year |
+| `processed/belgium_births_panel.csv` | 588 | 42 | 2007–2020 | Births (first VAT registration) × arrondissement × year |
+| `processed/belgium_stock_panel.csv` | 588 | 42 | 2007–2020 | Stock (active VAT-registered enterprises) × arrondissement × year |
 | `processed/belgium_qtensor_jobs_panel.csv` | 5460 | 42 | 2008–2020 | ONSS employee jobs × A10 × arrondissement × year |
 
 Zone IDs: `BE_<arrondissement>` (e.g. `BE_bruxelles`, `BE_anvers`, `BE_tournai_mouscron`).
@@ -19,39 +19,43 @@ Zone IDs: `BE_<arrondissement>` (e.g. `BE_bruxelles`, `BE_anvers`, `BE_tournai_m
 
 ## Sources
 
-| Composant | Source | Indicateur | Licence |
+| Component | Source | Indicator | License |
 |-----------|--------|-----------|---------|
-| Births | Statbel — beSTAT API | TVA primo-assujetissements par arrondissement | CC BY 4.0 |
-| Stock | Statbel — beSTAT API | TVA entreprises actives par arrondissement | CC BY 4.0 |
-| Q-tensor | ONSS — archives localunit | Postes de travail par lieu de travail × NACE-BEL × arrondissement (Q4) | Open |
+| Births | Statbel — beSTAT API | First VAT registration by arrondissement | CC BY 4.0 |
+| Stock | Statbel — beSTAT API | Active VAT-registered enterprises by arrondissement | CC BY 4.0 |
+| Q-tensor | ONSS — local-unit archives | Jobs by place of work × NACE-BEL × arrondissement (Q4) | Open |
 
 ---
 
-## Notes méthodologiques critiques
+## Critical methodological notes
 
-### Concept births
-- **TVA primo-assujetissements** = premier enregistrement TVA (entreprise légale).
-- Différent de France SIRENE = établissement physique (unité locale).
-- Documenter explicitement dans le papier.
+### Births concept
+- **First VAT registration** = the first VAT registration event (a legal enterprise).
+- This differs from the French SIRENE concept, which is a physical establishment
+  (local unit).
+- This must be documented explicitly in the paper.
 
-### Fenêtre Q-tensor
-- 2007 NACE Rev.1 (40 colonnes) incompatible avec NACE Rev.2 (42 colonnes, A10-mappable).
-- Q-tensor commence en **2008**; 2007 absent par design.
-- Ne pas interpoler 2007 dans le pipeline principal.
+### Q-tensor window
+- 2007 NACE Rev.1 (40 columns) is not compatible with NACE Rev.2 (42 columns,
+  A10-mappable).
+- The Q-tensor starts in **2008**; 2007 is absent by design.
+- Do not interpolate 2007 in the main pipeline.
 
-### Géographie
-- **42 arrondissements** (pas 43): Tournai et Mouscron fusionnés en `BE_tournai_mouscron`
-  dans les fichiers ONSS 2019+; séparés dans 2008–2018 → mergés lors de l'ingestion.
-- La Louvière (ancien arrondissement pré-2002) présent dans ONSS → mappé à `BE_soignies`.
+### Geography
+- **42 arrondissements** (not 43): Tournai and Mouscron are merged into
+  `BE_tournai_mouscron` in the 2019+ ONSS files; they are separate in 2008–2018 and
+  merged during ingestion.
+- La Louvière (a pre-2002 arrondissement) appears in ONSS data → mapped to
+  `BE_soignies`.
 
-### Brisure méthodologique 2018
-- Statbel a révisé la série TVA en 2018 (concept groupe d'entreprises).
-- Flagger dans les résultats; ne bloque pas Phase 4A.
+### 2018 methodological break
+- Statbel revised the VAT series in 2018 (enterprise-group concept).
+- Must be flagged in results; does not block Phase 4A.
 
-### Fenêtre de modélisation effective
-- Births + stock: 2007–2020 (2007 conservé pour lag)
+### Effective modelling window
+- Births + stock: 2007–2020 (2007 kept for the lag)
 - Q-tensor: 2008–2020
-- **Première évaluation: 2009** (lag-1 sur births 2008 disponible)
+- **First evaluation year: 2009** (lag-1 on 2008 births is available)
 
 ---
 
@@ -59,6 +63,6 @@ Zone IDs: `BE_<arrondissement>` (e.g. `BE_bruxelles`, `BE_anvers`, `BE_tournai_m
 
 Script: `src/data/ingest_belgium_panel.py`
 
-- Télécharge automatiquement les archives ONSS via attributs `data-spreadsheet` HTML
-- Cache local dans `raw/statbel/` et `raw/onss/`
+- Automatically downloads ONSS archives via the `data-spreadsheet` HTML attributes
+- Local cache under `raw/statbel/` and `raw/onss/`
 - Preflight: `python3 src/data/phase4_preflight.py`

@@ -6,11 +6,11 @@
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=16G
 #SBATCH --time=02:00:00
-#SBATCH --output=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/herald93/logs/smoke-%j.out
-#SBATCH --error=/home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset/hpc_results/herald93/logs/smoke-%j.err
+#SBATCH --output=hpc_results/herald93/logs/smoke-%j.out
+#SBATCH --error=hpc_results/herald93/logs/smoke-%j.err
 set -euo pipefail
 
-cd /home/jpmartinsd/project_recomm_herald_v6_2025_20260430/dataset
+cd "${REPO_ROOT:?set REPO_ROOT to the repository root}"
 module load conda/23.3.1
 source activate herald-v5
 export PYTHONHASHSEED=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1

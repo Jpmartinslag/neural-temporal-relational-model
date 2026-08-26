@@ -15,7 +15,7 @@ branch fechado (DEC-008/009/023/029/031) sem nova hipótese — ver §4 e §7.
 **Lido antes desta pass:** `README.md`, `reports/README.md`,
 `reports/HERALD_CURRENT_STATE.md`, `reports/HERALD_NAMING_CONVENTIONS.md`,
 `reports/canonical/HERALD_03..04, 09, 10, 14, 15, 16`, `reports/herald_artifact_registry.json`,
-`/home/jpdark/.codex/RTK.md`, `CODEX_MEMORY.md`. Cross-referenciado, não duplicado.
+`RTK.md`, `CODEX_MEMORY.md`. Cross-referenciado, não duplicado.
 
 ---
 
