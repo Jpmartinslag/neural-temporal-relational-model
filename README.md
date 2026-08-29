@@ -1,4 +1,4 @@
-# Neural Temporal–Relational Model — French territorial economic intelligence
+# Neural Temporal–Relational Model — temporal-relational forecasting and relation identification
 
 An auditable temporal-relational architecture for territorial economic forecasting and relation
 identification, applied to France's 280 employment zones (ZE2020) and validated against a
