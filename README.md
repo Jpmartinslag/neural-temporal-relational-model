@@ -4,6 +4,16 @@ An auditable temporal-relational architecture for territorial economic forecasti
 identification, applied to France's 280 employment zones (ZE2020) and validated against a
 synthetic known-truth benchmark.
 
+**Contents:** [Scientific question](#scientific-question) ·
+[Approach](#approach-in-brief) ·
+[Repository structure](#repository-structure) ·
+[Installation](#installation) ·
+[Minimal run](#minimal-run) ·
+[Main results](#main-results-with-their-correct-scope) ·
+[Limitations](#limitations-short-version) ·
+[Canonical documentation](#canonical-documentation) ·
+[Timeline](#project-timeline-and-milestones)
+
 ## Scientific question
 
 Do several French economic signals, and the candidate territorial relations built from them,
