@@ -55,7 +55,7 @@ Full framing: [`docs/PROJECT_OVERVIEW.md`](docs/PROJECT_OVERVIEW.md).
 ## Repository structure
 
 ```text
-dataset/
+./
 ├── README.md                    — you are here
 ├── requirements.txt              — data + baselines dependencies (pip)
 ├── requirements-neural.txt       — adds the neural model's one dependency (torch, pinned ~=2.13.0)
